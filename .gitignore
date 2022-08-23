@@ -6,6 +6,11 @@
 third_party_libraries/**
 third_party_libraries
 
+tkcore/build
+tkcore/.idea
+tkcore/cmake-build-debug
+tkcore/*build*
+
 .DS_Store
 /build
 /captures
