@@ -3,6 +3,8 @@
 /local.properties
 /.idea/*
 .idea
+third_party_libraries/**
+third_party_libraries
 
 .DS_Store
 /build
