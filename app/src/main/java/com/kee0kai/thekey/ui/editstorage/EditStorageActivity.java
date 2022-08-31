@@ -5,7 +5,6 @@ import static com.kee0kai.thekey.App.DI;
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Toast;
 
@@ -57,7 +56,7 @@ public class EditStorageActivity extends BaseActivity implements IRefreshView, V
 
         presenter.subscribe(this);
 
-        EditStorageActivityContract.CreateStorageTask createStorageTask = getIntent().getParcelableExtra(EditStorageActivityContract.CHANGE_TASK_EXTRA);
+        EditStorageActivityContract.EditStorageTask createStorageTask = getIntent().getParcelableExtra(EditStorageActivityContract.CHANGE_TASK_EXTRA);
         if (createStorageTask != null)
             presenter.init(createStorageTask.storagePath, createStorageTask.mode);
         else presenter.init(null, null);
@@ -103,7 +102,7 @@ public class EditStorageActivity extends BaseActivity implements IRefreshView, V
                 binding.edStorageDescription.setFocusable(false);
                 binding.tlStoragePassw.setVisibility(View.GONE);
                 binding.vPasswDivider.setVisibility(View.GONE);
-            case CHANGE:
+            case EDIT:
                 binding.edStoragePath.setFocusable(false);
                 binding.toolbar.setTitle(R.string.popup_change);
                 binding.btSave.setText(R.string.popup_change);
@@ -133,7 +132,7 @@ public class EditStorageActivity extends BaseActivity implements IRefreshView, V
         if (storage != null) {
             tvWatcherUpdate.ignoreChanges = true;
             String path = storage.path;
-            path = path.substring(0, path.lastIndexOf("."));
+            path = path != null ? path.substring(0, path.lastIndexOf(".")) : "";
             ViewUtils.changeTextIfNeed(binding.edStoragePath, path);
             ViewUtils.changeTextIfNeed(binding.edStorageName, storage.name);
             ViewUtils.changeTextIfNeed(binding.edStorageDescription, storage.description);
@@ -152,6 +151,7 @@ public class EditStorageActivity extends BaseActivity implements IRefreshView, V
             case SUCCESS:
                 Toast.makeText(this, successRes, Toast.LENGTH_SHORT).show();
                 setResult(Activity.RESULT_OK);
+                finish();
                 break;
             case EMPTY_STORAGE_PATH_ERROR:
                 Toast.makeText(this, R.string.err_input_path, Toast.LENGTH_LONG).show();

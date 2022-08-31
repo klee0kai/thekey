@@ -2,6 +2,7 @@ package com.kee0kai.thekey.ui.editstorage;
 
 import static com.kee0kai.thekey.App.DI;
 
+import com.kee0kai.thekey.domain.StorageFilesRepository;
 import com.kee0kai.thekey.engine.CryptStorageEngine;
 import com.kee0kai.thekey.model.Storage;
 import com.kee0kai.thekey.utils.adapter.CloneableHelper;
@@ -18,12 +19,15 @@ public class EditStoragePresenter extends SimplePresenter {
 
     private final ThreadPoolExecutor secThread = Threads.newSingleThreadExecutor("cr_st");
     private final CryptStorageEngine engine = DI.engine().cryptEngine();
+    private final StorageFilesRepository rep = DI.domain().storageFilesRepository();
     private Storage originalStorage, storage;
     private ChangeStorageMode mode;
 
     public void init(String originStoragePath, ChangeStorageMode mode) {
+        this.originalStorage = rep.findStorage(originStoragePath);
         this.storage = CloneableHelper.tryClone(originalStorage, new Storage());
         this.mode = mode != null ? mode : ChangeStorageMode.CREATE;
+        views.refreshAllViews();
     }
 
     public void save(String passw) {
@@ -32,9 +36,12 @@ public class EditStoragePresenter extends SimplePresenter {
                 switch (mode) {
                     case CREATE: {
                         int r = engine.createStorage(storage);
-                        return r == 0 ? SaveStorageResult.SUCCESS : SaveStorageResult.ERROR;
+                        if (r != 0)
+                            return SaveStorageResult.ERROR;
+                        rep.addStorage(storage);
+                        return SaveStorageResult.SUCCESS;
                     }
-                    case CHANGE: {
+                    case EDIT: {
                         int r = engine.changeStorage(originalStorage, storage);
                         return r == 0 ? SaveStorageResult.SUCCESS : SaveStorageResult.ERROR;
                     }
@@ -86,7 +93,7 @@ public class EditStoragePresenter extends SimplePresenter {
 
     public enum ChangeStorageMode {
         CREATE,// создание нового хранилища
-        CHANGE,//  изменение перемещение хранилища
+        EDIT,//  изменение перемещение хранилища
         DETAILS, // детали хранилища, недоступны изменения
         COPY, // коприрование хранилища
         CHANGE_PASSW // изменение текущего хранилища

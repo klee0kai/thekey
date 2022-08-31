@@ -14,8 +14,9 @@ public class ControlModule {
     }
 
     @Singleton
-    public ActivitySecureManager activitySecureManager(){
+    public ActivitySecureManager activitySecureManager() {
         return new ActivitySecureManager();
     }
+
 
 }

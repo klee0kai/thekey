@@ -38,6 +38,16 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:exported="false" />
 
+        <provider
+            android:name=".providers.StorageFileProvider"
+            android:authorities="com.kee0kai.thekey.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+
     </application>
 
 </manifest>

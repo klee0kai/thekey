@@ -10,22 +10,25 @@
 
 static JNIEnv *envGlb = NULL;
 static jmethodID jmethodIdGlb = NULL;
-static jclass jStorageFilesEngineGlb;
+static jobject jStorageFilesEngineGlb;
 
 static void storeFound(Storage storage) {
     jobject jStorage = jmapping::jStorage::map(envGlb, &storage);
-    envGlb->CallStaticVoidMethod(jStorageFilesEngineGlb, jmethodIdGlb, jStorage);
+    envGlb->CallVoidMethod(jStorageFilesEngineGlb, jmethodIdGlb, jStorage);
     envGlb->DeleteLocalRef(jStorage);
 }
 
 
 extern "C" JNIEXPORT void JNICALL
-Java_com_kuzubov_thekey_tojni_FindStorageEngine_findStorage(JNIEnv *env, jclass jclass1, jstring jSourceDir) {
-    jmethodID jmethodId = env->GetStaticMethodID(jclass1, "onStorageFounded", "(Lcom/kuzubov/thekey/model/Storage;)V");
+Java_com_kee0kai_thekey_engine_FindStorageEngine_findStorage(JNIEnv *env, jobject thiz,
+                                                             jstring jSourceDir) {
+    jclass jclass1 = env->GetObjectClass(thiz);
+    jmethodID jmethodId = env->GetMethodID(jclass1, "onStorageFounded",
+                                                 "(Lcom/kee0kai/thekey/model/Storage;)V");
     if (jmethodId == NULL)return;
     ::jmethodIdGlb = jmethodId;
     ::envGlb = env;
-    ::jStorageFilesEngineGlb = jclass1;
+    ::jStorageFilesEngineGlb = thiz;
 
     const char *sourceDir = env->GetStringUTFChars(jSourceDir, NULL);
     key_finder::findStorages(sourceDir, storeFound);
@@ -35,3 +38,4 @@ Java_com_kuzubov_thekey_tojni_FindStorageEngine_findStorage(JNIEnv *env, jclass 
     ::jmethodIdGlb = NULL;
     ::jStorageFilesEngineGlb = NULL;
 }
+
