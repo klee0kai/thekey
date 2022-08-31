@@ -12,8 +12,10 @@
 
 Перед сборкой в проекте должен быть файл local.properties к примеру:
 
-    sdk.dir=/home/panda/Android/Sdk
+    sdk.dir=/home/<user>/Android/Sdk
     android.ndkVersion=21.1.6352462 
+    android.useAndroidX=true
+    android.enableJetifier=true
 
 Сборка проекта упрощена системами сборки cmake и gradle. Для настройки окружение используйте скрипт
 env_build.sh
