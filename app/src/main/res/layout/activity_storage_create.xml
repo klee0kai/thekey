@@ -144,8 +144,8 @@
             android:imeOptions="actionDone"
             android:inputType="textPassword"
             android:singleLine="true"
-            android:text="    "
-            android:textColorHint="@color/black" />
+            android:textColorHint="@color/black"
+            tools:text="    " />
 
     </com.google.android.material.textfield.TextInputLayout>
 

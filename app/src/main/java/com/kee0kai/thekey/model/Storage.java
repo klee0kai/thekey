@@ -1,25 +1,32 @@
 package com.kee0kai.thekey.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.kee0kai.thekey.utils.adapter.ICloneable;
 import com.kee0kai.thekey.utils.adapter.ISameModel;
 
 import java.util.Objects;
 
-public class Storage implements ISameModel, ICloneable {
+public class Storage implements ISameModel, ICloneable, Parcelable {
+
     /**
      * полный путь к ранилищу
      */
-    public final String path;
+    public String path;
 
     /**
      * имя хранилища
      */
-    public final String name;
+    public String name;
 
     /**
      * описание хранилища
      */
-    public final String description;
+    public String description;
+
+    public Storage() {
+    }
 
     public Storage(String path, String name, String description) {
         this.path = path;
@@ -27,6 +34,24 @@ public class Storage implements ISameModel, ICloneable {
         this.description = description;
     }
 
+
+    protected Storage(Parcel in) {
+        path = in.readString();
+        name = in.readString();
+        description = in.readString();
+    }
+
+    public static final Creator<Storage> CREATOR = new Creator<Storage>() {
+        @Override
+        public Storage createFromParcel(Parcel in) {
+            return new Storage(in);
+        }
+
+        @Override
+        public Storage[] newArray(int size) {
+            return new Storage[size];
+        }
+    };
 
     @Override
     public boolean isSame(Object ob) {
@@ -54,4 +79,15 @@ public class Storage implements ISameModel, ICloneable {
     }
 
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(path);
+        parcel.writeString(name);
+        parcel.writeString(description);
+    }
 }

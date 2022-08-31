@@ -33,7 +33,7 @@ public class StoragesActivity extends AppCompatActivity implements IRefreshView,
             new StorageAdapterDelegate(R.layout.activity_storages, this)
     );
 
-    private ActivityResultLauncher<Object> createStorageLauncher;
+    private ActivityResultLauncher<CreateStorageActivityContract.CreateStorageTask> createStorageLauncher;
 
     private ActivityStoragesBinding binding;
 
