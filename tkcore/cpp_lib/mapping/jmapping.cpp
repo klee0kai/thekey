@@ -38,35 +38,38 @@ int jmapping::init(JavaVM *pVM) {
     {
         // create jDecriptedNoteClassInfo
         jDecriptedNoteClassInfo = new jDecriptedNoteClass_info{};
-        jclass cls = env->FindClass("com/kuzubov/thekey/tojni/model/DecryptedNote");
-//TODO выяснить почему нельзя сохранять cls = env->FindClass("com/kuzubov/thekey/tojni/model/DecryptedNote");
+        jclass cls = env->FindClass("com/kee0kai/thekey/engine/model/DecryptedNote");
         jDecriptedNoteClassInfo->site = env->GetFieldID(cls, "site", "Ljava/lang/String;");
         jDecriptedNoteClassInfo->login = env->GetFieldID(cls, "login", "Ljava/lang/String;");
         jDecriptedNoteClassInfo->passw = env->GetFieldID(cls, "passw", "Ljava/lang/String;");
         jDecriptedNoteClassInfo->desc = env->GetFieldID(cls, "desc", "Ljava/lang/String;");
         jDecriptedNoteClassInfo->chtime = env->GetFieldID(cls, "chTime", "J");
-        jDecriptedNoteClassInfo->hist = env->GetFieldID(cls, "hist", "[Lcom/kuzubov/thekey/tojni/model/DecryptedPassw;");
-        jDecriptedNoteClassInfo->initMethod = env->GetMethodID(cls, "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;J[Lcom/kuzubov/thekey/tojni/model/DecryptedPassw;)V");
+        jDecriptedNoteClassInfo->hist = env->GetFieldID(cls, "hist",
+                                                        "[Lcom/kee0kai/thekey/engine/model/DecryptedPassw;");
+        jDecriptedNoteClassInfo->initMethod = env->GetMethodID(cls, "<init>",
+                                                               "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;J[Lcom/kee0kai/thekey/engine/model/DecryptedPassw;)V");
     }
 
     {
         // create jDecriptedPasswClassInfo
         jDecriptedPasswClassInfo = new jDecriptedPasswClass_info{};
-        jclass cls = env->FindClass("com/kuzubov/thekey/tojni/model/DecryptedPassw");
+        jclass cls = env->FindClass("com/kee0kai/thekey/engine/model/DecryptedPassw");
         jDecriptedPasswClassInfo->passw = env->GetFieldID(cls, "passw", "Ljava/lang/String;");
         jDecriptedPasswClassInfo->chtime = env->GetFieldID(cls, "chTime", "J");
-        jDecriptedPasswClassInfo->initMethod = env->GetMethodID(cls, "<init>", "(Ljava/lang/String;J)V");
+        jDecriptedPasswClassInfo->initMethod = env->GetMethodID(cls, "<init>",
+                                                                "(Ljava/lang/String;J)V");
 
     }
 
     {
         //create JStorageClassInfo
         jStorageClassInfo = new jStorageClass_info{};
-        jclass cls = env->FindClass("com/kuzubov/thekey/model/Storage");
+        jclass cls = env->FindClass("com/kee0kai/thekey/model/Storage");
         jStorageClassInfo->path = env->GetFieldID(cls, "path", "Ljava/lang/String;");
         jStorageClassInfo->name = env->GetFieldID(cls, "name", "Ljava/lang/String;");
         jStorageClassInfo->description = env->GetFieldID(cls, "description", "Ljava/lang/String;");
-        jStorageClassInfo->initMethod = env->GetMethodID(cls, "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V");
+        jStorageClassInfo->initMethod = env->GetMethodID(cls, "<init>",
+                                                         "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V");
     }
 
     return 0;
@@ -79,9 +82,10 @@ jobject jmapping::jDecryptedNote::map(JNIEnv *env, DecryptedNote *note) {
     jstring jDesc = note->description ? env->NewStringUTF((const char *) note->description) : NULL;
     jobjectArray jhist = jmapping::jDecryptedPassw::mapArray(env, note->hist, note->histLen);
 
-    jclass cls = env->FindClass("com/kuzubov/thekey/tojni/model/DecryptedNote");
+    jclass cls = env->FindClass("com/kee0kai/thekey/engine/model/DecryptedNote");
 
-    jobject jDecrNote = env->NewObject(cls, jDecriptedNoteClassInfo->initMethod, jSite, jLogin, jPassw, jDesc, note->genTime, jhist);
+    jobject jDecrNote = env->NewObject(cls, jDecriptedNoteClassInfo->initMethod, jSite, jLogin,
+                                       jPassw, jDesc, note->genTime, jhist);
     return jDecrNote;
 }
 
@@ -113,14 +117,16 @@ DecryptedNote *jmapping::jDecryptedNote::map(JNIEnv *env, jobject jDecryptedNote
 
 jobject jmapping::jDecryptedPassw::map(JNIEnv *env, DecryptedPassw *dpassw) {
     jstring jPassw = dpassw->passw != NULL ? env->NewStringUTF((const char *) dpassw->passw) : NULL;
-    jclass cls = env->FindClass("com/kuzubov/thekey/tojni/model/DecryptedPassw");
+    jclass cls = env->FindClass("com/kee0kai/thekey/engine/model/DecryptedPassw");
 
-    jobject jDecrPassw = env->NewObject(cls, jDecriptedPasswClassInfo->initMethod, jPassw, dpassw->genTime);
+    jobject jDecrPassw = env->NewObject(cls, jDecriptedPasswClassInfo->initMethod, jPassw,
+                                        dpassw->genTime);
     return jDecrPassw;
 }
 
 DecryptedPassw *jmapping::jDecryptedPassw::map(JNIEnv *env, jobject jDecryptedPassw) {
-    jstring jPassw = (jstring) env->GetObjectField(jDecryptedPassw, jDecriptedPasswClassInfo->passw);
+    jstring jPassw = (jstring) env->GetObjectField(jDecryptedPassw,
+                                                   jDecriptedPasswClassInfo->passw);
     long chTime = (long) env->GetLongField(jDecryptedPassw, jDecriptedPasswClassInfo->chtime);
     const char *passw = jPassw != NULL ? env->GetStringUTFChars(jPassw, NULL) : NULL;
 
@@ -133,7 +139,7 @@ DecryptedPassw *jmapping::jDecryptedPassw::map(JNIEnv *env, jobject jDecryptedPa
 }
 
 jobjectArray jmapping::jDecryptedPassw::mapArray(JNIEnv *env, DecryptedPassw *dpassws, int len) {
-    jclass cls = env->FindClass("com/kuzubov/thekey/tojni/model/DecryptedPassw");
+    jclass cls = env->FindClass("com/kee0kai/thekey/engine/model/DecryptedPassw");
     jobject initObj = env->NewObject(cls, jDecriptedPasswClassInfo->initMethod, NULL, 0);
 
     jobjectArray jDecPassws = env->NewObjectArray(len, cls, initObj);
@@ -145,11 +151,15 @@ jobjectArray jmapping::jDecryptedPassw::mapArray(JNIEnv *env, DecryptedPassw *dp
     return jDecPassws;
 }
 
-DecryptedPassw *jmapping::jDecryptedPassw::mapArray(JNIEnv *env, jobjectArray jDecryptedPassws, int &outLen) {
+DecryptedPassw *
+jmapping::jDecryptedPassw::mapArray(JNIEnv *env, jobjectArray jDecryptedPassws, int &outLen) {
     outLen = env->GetArrayLength(jDecryptedPassws);
     DecryptedPassw *passwds = new DecryptedPassw[outLen];
     for (int i = 0; i < outLen; i++) {
-        DecryptedPassw *decryptedPassw = jmapping::jDecryptedPassw::map(env, env->GetObjectArrayElement(jDecryptedPassws, i));
+        DecryptedPassw *decryptedPassw = jmapping::jDecryptedPassw::map(env,
+                                                                        env->GetObjectArrayElement(
+                                                                                jDecryptedPassws,
+                                                                                i));
         memcpy(passwds + i, decryptedPassw, sizeof(DecryptedPassw));
         memset(decryptedPassw, 0, sizeof(DecryptedPassw));
         delete decryptedPassw;
@@ -159,7 +169,7 @@ DecryptedPassw *jmapping::jDecryptedPassw::mapArray(JNIEnv *env, jobjectArray jD
 
 
 Storage jmapping::jStorage::map(JNIEnv *env, jobject jStorage) {
-    jclass cls = env->FindClass("com/kuzubov/thekey/model/Storage");
+    jclass cls = env->FindClass("com/kee0kai/thekey/model/Storage");
     if (jStorage == NULL)
         return {};
 
@@ -210,7 +220,7 @@ void jmapping::jStorage::release(Storage &storage) {
 }
 
 jobject jmapping::jStorage::map(JNIEnv *env, const Storage *storage) {
-    jclass cls = env->FindClass("com/kuzubov/thekey/model/Storage");
+    jclass cls = env->FindClass("com/kee0kai/thekey/model/Storage");
     jstring jPath = env->NewStringUTF(storage->file);
     jstring jName = env->NewStringUTF(storage->name);
     jstring jDescr = env->NewStringUTF(storage->description);
