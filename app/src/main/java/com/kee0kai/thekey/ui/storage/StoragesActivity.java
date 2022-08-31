@@ -10,7 +10,6 @@ import android.view.View;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.hannesdorfmann.adapterdelegates3.ListDelegationAdapter;
@@ -18,12 +17,13 @@ import com.kee0kai.thekey.R;
 import com.kee0kai.thekey.databinding.ActivityStoragesBinding;
 import com.kee0kai.thekey.model.Storage;
 import com.kee0kai.thekey.navig.activity_contracts.EditStorageActivityContract;
+import com.kee0kai.thekey.ui.common.BaseActivity;
 import com.kee0kai.thekey.utils.adapter.CompositeAdapter;
 import com.kee0kai.thekey.utils.arch.IRefreshView;
 
 import java.util.List;
 
-public class StoragesActivity extends AppCompatActivity implements IRefreshView, StorageAdapterDelegate.IStorageListener, View.OnClickListener {
+public class StoragesActivity extends BaseActivity implements IRefreshView, StorageAdapterDelegate.IStorageListener, View.OnClickListener {
 
     private final StoragesPresenter presenter = DI.presenter().storagesPresenter();
 

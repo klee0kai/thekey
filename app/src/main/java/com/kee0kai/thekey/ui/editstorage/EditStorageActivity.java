@@ -16,11 +16,12 @@ import com.kee0kai.thekey.R;
 import com.kee0kai.thekey.databinding.ActivityStorageCreateBinding;
 import com.kee0kai.thekey.model.Storage;
 import com.kee0kai.thekey.navig.activity_contracts.EditStorageActivityContract;
+import com.kee0kai.thekey.ui.common.BaseActivity;
 import com.kee0kai.thekey.utils.android.UserShortPaths;
 import com.kee0kai.thekey.utils.arch.IRefreshView;
 import com.kee0kai.thekey.utils.views.EmptyTextWatcher;
 
-public class EditStorageActivity extends AppCompatActivity implements IRefreshView, View.OnFocusChangeListener, View.OnClickListener {
+public class EditStorageActivity extends BaseActivity implements IRefreshView, View.OnFocusChangeListener, View.OnClickListener {
 
     private final EditStoragePresenter presenter = DI.presenter().editStoragePresenter();
 
@@ -134,7 +135,11 @@ public class EditStorageActivity extends AppCompatActivity implements IRefreshVi
         }
 
         binding.prSaveProcessing.setVisibility(presenter.saveStorageFuture.isInProcess() ? View.VISIBLE : View.GONE);
-        binding.btSave.setVisibility(presenter.hasChanges() ? View.VISIBLE : View.GONE);
+
+        boolean isSaveAvailable = presenter.getMode() != EditStoragePresenter.ChangeStorageMode.DETAILS;
+        boolean hasChanges = presenter.hasChanges();
+        boolean isPathEmpty = binding.edStoragePath.getText().toString().isEmpty();
+        binding.btSave.setVisibility(isSaveAvailable && hasChanges && !isPathEmpty ? View.VISIBLE : View.GONE);
 
         EditStoragePresenter.SaveStorageResult result = presenter.saveStorageFuture.popResult();
         if (result != null) switch (result) {

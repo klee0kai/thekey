@@ -18,9 +18,10 @@ import com.kee0kai.thekey.R;
 import com.kee0kai.thekey.databinding.ActivityLoginBinding;
 import com.kee0kai.thekey.navig.InnerNavigator;
 import com.kee0kai.thekey.navig.activity_contracts.FindStorageActivityContract;
+import com.kee0kai.thekey.ui.common.BaseActivity;
 import com.kee0kai.thekey.utils.arch.IRefreshView;
 
-public class LoginActivity extends AppCompatActivity implements IRefreshView, View.OnClickListener {
+public class LoginActivity extends BaseActivity implements IRefreshView, View.OnClickListener {
 
     private final LoginPresenter presenter = DI.presenter().loginPresenter();
 

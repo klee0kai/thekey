@@ -41,4 +41,8 @@ public class WeakListCollection<T> {
         }
     }
 
+    public void clear(){
+        items.clear();
+    }
+
 }

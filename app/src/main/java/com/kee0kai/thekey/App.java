@@ -21,6 +21,6 @@ public class App extends Application {
         super.onCreate();
         DI.init(this, new ProviderModule(), new EngineModule(), new DomainModule(),
                 new ControlModule(), new PresenterModule());
-
     }
+
 }
