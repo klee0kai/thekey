@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cl_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        style="@style/AppTheme.ToolBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:title="@string/storage_create" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tl_storage_path"
+        style="@style/AppTheme.TextInputLayout.Transparent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/screen_margin"
+        android:layout_marginTop="@dimen/item_padding"
+        android:layout_marginRight="@dimen/screen_margin"
+        android:hint="@string/storage_path"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/br_barrier_provider"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+        <com.kee0kai.thekey.ui.common.views.InstantAutoCompleteTextView
+            android:id="@+id/ed_storage_path"
+            style="@style/AppTheme.TextInputEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionDone"
+            android:singleLine="true" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/br_barrier_provider"
+        android:layout_width="0dp"
+        android:layout_height="10dp"
+        app:barrierDirection="left"
+        app:constraint_referenced_ids="iv_path_to_provider,tv_tkey_format" />
+
+    <ImageButton
+        android:id="@+id/iv_path_to_provider"
+        style="@style/AppTheme.ClickableItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/screen_margin"
+        android:padding="10dp"
+        android:src="@drawable/ic_attachment_24px"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@id/tl_storage_path"
+        app:layout_constraintLeft_toRightOf="@id/br_barrier_provider"
+        app:layout_constraintRight_toRightOf="parent"
+
+        app:layout_constraintTop_toTopOf="@id/tl_storage_path" />
+
+
+    <TextView
+        android:id="@+id/tv_tkey_format"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/screen_margin"
+        android:text="@string/tkey_format"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/tl_storage_path"
+        app:layout_constraintLeft_toRightOf="@id/br_barrier_provider"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tl_storage_path" />
+
+
+    <View
+        android:id="@+id/v_path_divider"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/item_padding"
+        android:background="@color/dividerTransparent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tl_storage_path" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tl_storage_name"
+        style="@style/AppTheme.TextInputLayout.Transparent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/screen_margin"
+        android:layout_marginTop="@dimen/item_padding"
+        android:layout_marginRight="@dimen/screen_margin"
+        android:hint="@string/storage_name"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/v_path_divider">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/ed_storage_name"
+            style="@style/AppTheme.TextInputEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+
+
+            android:singleLine="true" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <View
+        android:id="@+id/v_name_divider"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/item_padding"
+        android:background="@color/dividerTransparent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tl_storage_name" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tl_storage_passw"
+        style="@style/AppTheme.TextInputLayout.Transparent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/screen_margin"
+        android:layout_marginTop="@dimen/item_padding"
+        android:layout_marginRight="@dimen/screen_margin"
+        android:hint="@string/passw"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/v_name_divider">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/ed_storage_passw"
+            style="@style/AppTheme.TextInputEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionDone"
+            android:inputType="textPassword"
+            android:singleLine="true"
+            android:text="    "
+            android:textColorHint="@color/black" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <View
+        android:id="@+id/v_passw_divider"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/item_padding"
+        android:background="@color/dividerTransparent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tl_storage_passw" />
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tl_storage_description"
+        style="@style/AppTheme.TextInputLayout.Transparent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/screen_margin"
+        android:layout_marginTop="@dimen/item_padding"
+        android:layout_marginRight="@dimen/screen_margin"
+        android:layout_marginBottom="@dimen/item_padding"
+        android:hint="@string/storage_description"
+        app:layout_constraintBottom_toTopOf="@id/bt_save"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/v_passw_divider"
+        app:layout_constraintVertical_bias="0">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/ed_storage_description"
+            style="@style/AppTheme.TextInputEditText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="top"
+            android:imeOptions="actionNext"
+            android:inputType="textMultiLine"
+            android:minHeight="150dp"
+            tools:text="hfksdf hfjks fh hsdf shdf sdfklhds hfkjsdhfksjd  hfkjdshf ds fhkjsdfh fdskf" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <ProgressBar
+        android:id="@+id/pr_save_processing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="100dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/bt_save"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:visibility="visible" />
+
+    <Button
+        android:id="@+id/bt_save"
+        style="@style/AppTheme.Button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/screen_margin"
+        android:text="@string/save"
+        android:textAllCaps="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+

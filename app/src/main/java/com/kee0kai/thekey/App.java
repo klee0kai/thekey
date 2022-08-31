@@ -12,7 +12,7 @@ import com.kee0kai.thekey.di.ProviderModule;
 
 public class App extends Application {
 
-    public static final String STORAGE_EXT = "tkey";
+    public static final String STORAGE_EXT = "ckey";
 
     public static final AppComponent DI = Stone.createComponent(AppComponent.class);
 

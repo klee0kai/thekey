@@ -1,8 +1,11 @@
 package com.kee0kai.thekey.model;
 
+import com.kee0kai.thekey.utils.adapter.ICloneable;
+import com.kee0kai.thekey.utils.adapter.ISameModel;
+
 import java.util.Objects;
 
-public class Storage {
+public class Storage implements ISameModel, ICloneable {
     /**
      * полный путь к ранилищу
      */
@@ -26,6 +29,16 @@ public class Storage {
 
 
     @Override
+    public boolean isSame(Object ob) {
+        return ob instanceof Storage && Objects.equals(path, ((Storage) ob).path);
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -39,4 +52,6 @@ public class Storage {
     public int hashCode() {
         return Objects.hash(path, name, description);
     }
+
+
 }
