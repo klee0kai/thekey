@@ -72,6 +72,10 @@ public class EditStoragePresenter extends SimplePresenter {
         return storage;
     }
 
+    public void setStorage(Storage storage) {
+        this.storage = storage;
+        views.refreshAllViews();
+    }
 
     public enum SaveStorageResult {
         SUCCESS,

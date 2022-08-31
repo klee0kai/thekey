@@ -28,6 +28,10 @@ public class LoginActivity extends BaseActivity implements IRefreshView, View.On
     private ActivityLoginBinding binding;
     private ActivityResultLauncher<String> findStorageLauncher;
 
+    @Override
+    public SecureType getSecType() {
+        return SecureType.PUBLIC;
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

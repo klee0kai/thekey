@@ -36,6 +36,11 @@ public class StoragesActivity extends BaseActivity implements IRefreshView, Stor
     private ActivityStoragesBinding binding;
 
     @Override
+    public SecureType getSecType() {
+        return SecureType.PUBLIC;
+    }
+
+    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityStoragesBinding.inflate(getLayoutInflater());

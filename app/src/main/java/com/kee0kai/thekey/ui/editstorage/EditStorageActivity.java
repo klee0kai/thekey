@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.kee0kai.thekey.R;
 import com.kee0kai.thekey.databinding.ActivityStorageCreateBinding;
@@ -20,6 +19,7 @@ import com.kee0kai.thekey.ui.common.BaseActivity;
 import com.kee0kai.thekey.utils.android.UserShortPaths;
 import com.kee0kai.thekey.utils.arch.IRefreshView;
 import com.kee0kai.thekey.utils.views.EmptyTextWatcher;
+import com.kee0kai.thekey.utils.views.ViewUtils;
 
 public class EditStorageActivity extends BaseActivity implements IRefreshView, View.OnFocusChangeListener, View.OnClickListener {
 
@@ -27,13 +27,18 @@ public class EditStorageActivity extends BaseActivity implements IRefreshView, V
 
     private ActivityStorageCreateBinding binding;
 
-    private final TextWatcher tvWatcherUpdate = new EmptyTextWatcher() {
+    private final EmptyTextWatcher tvWatcherUpdate = new EmptyTextWatcher() {
 
         @Override
         public void afterTextChanged(Editable s) {
-
+            if (!ignoreChanges) cacheInput();
         }
     };
+
+    @Override
+    public SecureType getSecType() {
+        return SecureType.PUBLIC;
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,7 +65,6 @@ public class EditStorageActivity extends BaseActivity implements IRefreshView, V
         binding.btSave.setOnClickListener(this);
     }
 
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -78,9 +82,9 @@ public class EditStorageActivity extends BaseActivity implements IRefreshView, V
         presenter.save(passw);
     }
 
-
     @Override
     public void refreshUI() {
+
         int successRes = R.string.success_create_storage;
         int errRes = R.string.err_create_storage;
         switch (presenter.getMode()) {
@@ -127,11 +131,13 @@ public class EditStorageActivity extends BaseActivity implements IRefreshView, V
         }
         Storage storage = presenter.getStorage();
         if (storage != null) {
+            tvWatcherUpdate.ignoreChanges = true;
             String path = storage.path;
             path = path.substring(0, path.lastIndexOf("."));
-            binding.edStoragePath.setText(path);
-            binding.edStorageName.setText(storage.name);
-            binding.edStorageDescription.setText(storage.description);
+            ViewUtils.changeTextIfNeed(binding.edStoragePath, path);
+            ViewUtils.changeTextIfNeed(binding.edStorageName, storage.name);
+            ViewUtils.changeTextIfNeed(binding.edStorageDescription, storage.description);
+            tvWatcherUpdate.ignoreChanges = false;
         }
 
         binding.prSaveProcessing.setVisibility(presenter.saveStorageFuture.isInProcess() ? View.VISIBLE : View.GONE);
@@ -160,5 +166,12 @@ public class EditStorageActivity extends BaseActivity implements IRefreshView, V
 
     }
 
+    private void cacheInput() {
+        presenter.setStorage(new Storage(
+                UserShortPaths.absolutePath(binding.edStoragePath.getText().toString() + getString(R.string.tkey_format)),
+                binding.edStorageName.getText().toString(),
+                binding.edStorageDescription.getText().toString()
+        ));
+    }
 
 }
