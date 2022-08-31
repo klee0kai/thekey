@@ -8,8 +8,14 @@ public interface AppComponent extends IComponent {
 
     AppModule app();
 
-    DomainModule domain();
+    ProviderModule provider();
 
     EngineModule engine();
+
+    DomainModule domain();
+
+    ControlModule control();
+
+    PresenterModule presenter();
 
 }

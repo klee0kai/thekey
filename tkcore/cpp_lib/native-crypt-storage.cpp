@@ -6,8 +6,7 @@
 #include "dll_interface/key_manager_ctx.h"
 #include "mapping/jmapping.h"
 
-JNIEXPORT jint
-JNI_OnLoad(JavaVM *pVM, void *reserved) {
+JNIEXPORT jint JNI_OnLoad(JavaVM *pVM, void *reserved) {
     srand(time(NULL));
     jmapping::init(pVM);
     return JNI_VERSION_1_6;
@@ -15,7 +14,7 @@ JNI_OnLoad(JavaVM *pVM, void *reserved) {
 
 
 extern "C" JNIEXPORT jint JNICALL
-Java_com_kee0kai_thekey_engine_CryptStorageEngine_createStorage(JNIEnv *env, jclass clazz,
+Java_com_kee0kai_thekey_engine_CryptStorageEngine_createStorage(JNIEnv *env, jobject clazz,
                                                                 jobject jStorage) {
     Storage storage = jmapping::jStorage::map(env, jStorage);
     int res = key_manager_ctx::createStorage(storage);
@@ -24,7 +23,7 @@ Java_com_kee0kai_thekey_engine_CryptStorageEngine_createStorage(JNIEnv *env, jcl
 }
 
 extern "C" JNIEXPORT jint JNICALL
-Java_com_kee0kai_thekey_engine_CryptStorageEngine_changeStorage(JNIEnv *env, jclass clazz,
+Java_com_kee0kai_thekey_engine_CryptStorageEngine_changeStorage(JNIEnv *env, jobject clazz,
                                                                 jobject jOriginalStorage,
                                                                 jobject jStorage) {
     Storage originalStorage = jmapping::jStorage::map(env, jOriginalStorage);
@@ -36,7 +35,7 @@ Java_com_kee0kai_thekey_engine_CryptStorageEngine_changeStorage(JNIEnv *env, jcl
 }
 
 extern "C" JNIEXPORT jint JNICALL
-Java_com_kee0kai_thekey_engine_CryptStorageEngine_copyStorage(JNIEnv *env, jclass clazz,
+Java_com_kee0kai_thekey_engine_CryptStorageEngine_copyStorage(JNIEnv *env, jobject clazz,
                                                               jobject jOriginalStorage,
                                                               jobject jStorage) {
     Storage originalStorage = jmapping::jStorage::map(env, jOriginalStorage);
@@ -50,18 +49,18 @@ Java_com_kee0kai_thekey_engine_CryptStorageEngine_copyStorage(JNIEnv *env, jclas
 
 
 extern "C" JNIEXPORT jint JNICALL
-Java_com_kee0kai_thekey_engine_CryptStorageEngine_isLogined(JNIEnv *env, jclass clazz) {
+Java_com_kee0kai_thekey_engine_CryptStorageEngine_isLogined(JNIEnv *env, jobject clazz) {
     return key_manager_ctx::isLogined();
 }
 
 
 extern "C" JNIEXPORT jstring JNICALL
-Java_com_kee0kai_thekey_engine_CryptStorageEngine_getLoggedStoragePath(JNIEnv *env, jclass clazz) {
+Java_com_kee0kai_thekey_engine_CryptStorageEngine_getLoggedStoragePath(JNIEnv *env, jobject clazz) {
     return env->NewStringUTF(key_manager_ctx::getLoggedStoragePath());
 }
 
 extern "C" JNIEXPORT void JNICALL
-Java_com_kee0kai_thekey_engine_CryptStorageEngine_login(JNIEnv *env, jclass clazz, jstring jpath,
+Java_com_kee0kai_thekey_engine_CryptStorageEngine_login(JNIEnv *env, jobject clazz, jstring jpath,
                                                         jstring jpassw) {
     const char *passw = env->GetStringUTFChars(jpassw, NULL);
     const char *path = env->GetStringUTFChars(jpath, NULL);
@@ -73,7 +72,7 @@ Java_com_kee0kai_thekey_engine_CryptStorageEngine_login(JNIEnv *env, jclass claz
 }
 
 extern "C" JNIEXPORT jint JNICALL
-Java_com_kee0kai_thekey_engine_CryptStorageEngine_changeLoggedStorage(JNIEnv *env, jclass clazz,
+Java_com_kee0kai_thekey_engine_CryptStorageEngine_changeLoggedStorage(JNIEnv *env, jobject clazz,
                                                                       jobject jStorage,
                                                                       jstring jpassw) {
     const char *passw = env->GetStringUTFChars(jpassw, NULL);
@@ -98,13 +97,13 @@ Java_com_kee0kai_thekey_engine_CryptStorageEngine_changeLoggedStorage(JNIEnv *en
 }
 
 extern "C" JNIEXPORT void JNICALL
-Java_com_kee0kai_thekey_engine_CryptStorageEngine_unlogin(JNIEnv *env, jclass clazz) {
+Java_com_kee0kai_thekey_engine_CryptStorageEngine_unlogin(JNIEnv *env, jobject clazz) {
     key_manager_ctx::unLogin();
 }
 
 
 extern "C" JNIEXPORT jlongArray JNICALL
-Java_com_kee0kai_thekey_engine_CryptStorageEngine_getNotes(JNIEnv *env, jclass clazz) {
+Java_com_kee0kai_thekey_engine_CryptStorageEngine_getNotes(JNIEnv *env, jobject clazz) {
     long long *notes = key_manager_ctx::getNotes();
     int len;
     for (len = 0; notes[len] != NULL; len++);
@@ -114,7 +113,7 @@ Java_com_kee0kai_thekey_engine_CryptStorageEngine_getNotes(JNIEnv *env, jclass c
     return jNotes;
 }
 extern "C" JNIEXPORT jlongArray JNICALL
-Java_com_kee0kai_thekey_engine_CryptStorageEngine_getGenPasswds(JNIEnv *env, jclass clazz) {
+Java_com_kee0kai_thekey_engine_CryptStorageEngine_getGenPasswds(JNIEnv *env, jobject clazz) {
     long long *passwds = key_manager_ctx::getGenPassds();
     int len;
     for (len = 0; passwds[len] != NULL; len++);
@@ -128,7 +127,7 @@ Java_com_kee0kai_thekey_engine_CryptStorageEngine_getGenPasswds(JNIEnv *env, jcl
 
 extern "C"
 JNIEXPORT jobject JNICALL
-Java_com_kee0kai_thekey_engine_CryptStorageEngine_getGenPassw(JNIEnv *env, jclass clazz,
+Java_com_kee0kai_thekey_engine_CryptStorageEngine_getGenPassw(JNIEnv *env, jobject clazz,
                                                               jlong note) {
     if (note == 0)return NULL;
     DecryptedPassw *decryptedPassw = key_manager_ctx::getGenPassw((long long) note);
@@ -140,7 +139,7 @@ Java_com_kee0kai_thekey_engine_CryptStorageEngine_getGenPassw(JNIEnv *env, jclas
 }
 
 extern "C" JNIEXPORT jobject JNICALL
-Java_com_kee0kai_thekey_engine_CryptStorageEngine_getNote(JNIEnv *env, jclass clazz, jlong note,
+Java_com_kee0kai_thekey_engine_CryptStorageEngine_getNote(JNIEnv *env, jobject clazz, jlong note,
                                                           jboolean jDecrPassw) {
     if (note == 0)return NULL;
     DecryptedNote *dnote = key_manager_ctx::getNoteItem((long) note, jDecrPassw);
@@ -153,7 +152,7 @@ Java_com_kee0kai_thekey_engine_CryptStorageEngine_getNote(JNIEnv *env, jclass cl
 
 
 extern "C" JNIEXPORT void JNICALL
-Java_com_kee0kai_thekey_engine_CryptStorageEngine_setNote(JNIEnv *env, jclass clazz, jlong ptnote,
+Java_com_kee0kai_thekey_engine_CryptStorageEngine_setNote(JNIEnv *env, jobject clazz, jlong ptnote,
                                                           jobject note) {
     if (ptnote == 0)return;
     DecryptedNote *dnote = jmapping::jDecryptedNote::map(env, note);
@@ -164,13 +163,13 @@ Java_com_kee0kai_thekey_engine_CryptStorageEngine_setNote(JNIEnv *env, jclass cl
 }
 
 extern "C" JNIEXPORT jlong JNICALL
-Java_com_kee0kai_thekey_engine_CryptStorageEngine_createNote(JNIEnv *env, jclass clazz) {
+Java_com_kee0kai_thekey_engine_CryptStorageEngine_createNote(JNIEnv *env, jobject clazz) {
     return (jlong) key_manager_ctx::createNote();
 }
 
 
 extern "C" JNIEXPORT void JNICALL
-Java_com_kee0kai_thekey_engine_CryptStorageEngine_rmNote(JNIEnv *env, jclass clazz, jlong note) {
+Java_com_kee0kai_thekey_engine_CryptStorageEngine_rmNote(JNIEnv *env, jobject clazz, jlong note) {
     if (note == 0)return;
 
     key_manager_ctx::rmNote((long) note);
@@ -178,7 +177,7 @@ Java_com_kee0kai_thekey_engine_CryptStorageEngine_rmNote(JNIEnv *env, jclass cla
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_kee0kai_thekey_engine_CryptStorageEngine_generateNewPassw(JNIEnv *env, jclass clazz,
+Java_com_kee0kai_thekey_engine_CryptStorageEngine_generateNewPassw(JNIEnv *env, jobject clazz,
                                                                    jint len,
                                                                    jint genEncoding) {
     unsigned char *genPassw = key_manager_ctx::genPassw(len, genEncoding);

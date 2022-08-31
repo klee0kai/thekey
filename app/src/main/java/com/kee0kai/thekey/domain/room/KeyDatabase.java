@@ -1,4 +1,4 @@
-package com.kee0kai.thekey.room;
+package com.kee0kai.thekey.domain.room;
 
 import static com.kee0kai.thekey.App.DI;
 
@@ -6,10 +6,10 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-import com.kee0kai.thekey.room.dao.SettingDao;
-import com.kee0kai.thekey.room.dao.StorageFilesDao;
-import com.kee0kai.thekey.room.model.SettingPairEntry;
-import com.kee0kai.thekey.room.model.StorageFileEntry;
+import com.kee0kai.thekey.domain.room.dao.SettingDao;
+import com.kee0kai.thekey.domain.room.dao.StorageFilesDao;
+import com.kee0kai.thekey.domain.room.model.SettingPairEntry;
+import com.kee0kai.thekey.domain.room.model.StorageFileEntry;
 
 @Database(entities =
         {

@@ -1,10 +1,10 @@
-package com.kee0kai.thekey.room.model;
+package com.kee0kai.thekey.domain.room.model;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import com.kee0kai.thekey.room.dao.StorageFilesDao;
+import com.kee0kai.thekey.domain.room.dao.StorageFilesDao;
 
 @Entity(tableName = StorageFilesDao.TABLE_NAME)
 public class StorageFileEntry {
