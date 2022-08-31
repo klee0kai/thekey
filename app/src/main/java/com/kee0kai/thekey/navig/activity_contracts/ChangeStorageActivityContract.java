@@ -12,11 +12,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.kee0kai.thekey.model.Storage;
-import com.kee0kai.thekey.ui.createstorage.CreateStorageActivity;
-import com.kee0kai.thekey.ui.createstorage.CreateStoragePresenter;
+import com.kee0kai.thekey.ui.changestorage.ChangeStoragePresenter;
+import com.kee0kai.thekey.ui.changestorage.CreateStorageActivity;
 import com.kee0kai.thekey.utils.adapter.ICloneable;
 
-public class CreateStorageActivityContract extends ActivityResultContract<CreateStorageActivityContract.CreateStorageTask, Uri> {
+public class ChangeStorageActivityContract extends ActivityResultContract<ChangeStorageActivityContract.CreateStorageTask, Uri> {
 
     public static final String CHANGE_TASK_EXTRA = "ch";
 
@@ -36,20 +36,30 @@ public class CreateStorageActivityContract extends ActivityResultContract<Create
     }
 
     public static class CreateStorageTask implements ICloneable, Parcelable {
-        public Storage storage = null;
-        public CreateStoragePresenter.ChangeStorageMode mode = CreateStoragePresenter.ChangeStorageMode.CREATE;
+        public String storagePath = null;
+        public ChangeStoragePresenter.ChangeStorageMode mode = ChangeStoragePresenter.ChangeStorageMode.CREATE;
 
         public CreateStorageTask() {
 
         }
 
-        public CreateStorageTask(Storage storage, CreateStoragePresenter.ChangeStorageMode mode) {
-            this.storage = storage;
+        public CreateStorageTask(String storagePath, ChangeStoragePresenter.ChangeStorageMode mode) {
+            this.storagePath = storagePath;
             this.mode = mode;
         }
 
         protected CreateStorageTask(Parcel in) {
-            storage = in.readParcelable(Storage.class.getClassLoader());
+            storagePath = in.readString();
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(storagePath);
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
         }
 
         public static final Creator<CreateStorageTask> CREATOR = new Creator<CreateStorageTask>() {
@@ -63,16 +73,6 @@ public class CreateStorageActivityContract extends ActivityResultContract<Create
                 return new CreateStorageTask[size];
             }
         };
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel parcel, int i) {
-            parcel.writeParcelable(storage, i);
-        }
 
         @Override
         public Object clone() throws CloneNotSupportedException {

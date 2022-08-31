@@ -1,4 +1,4 @@
-package com.kee0kai.thekey.ui.createstorage;
+package com.kee0kai.thekey.ui.changestorage;
 
 import static com.kee0kai.thekey.App.DI;
 
@@ -15,14 +15,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.kee0kai.thekey.R;
 import com.kee0kai.thekey.databinding.ActivityStorageCreateBinding;
 import com.kee0kai.thekey.model.Storage;
-import com.kee0kai.thekey.navig.activity_contracts.CreateStorageActivityContract;
+import com.kee0kai.thekey.navig.activity_contracts.ChangeStorageActivityContract;
 import com.kee0kai.thekey.utils.android.UserShortPaths;
 import com.kee0kai.thekey.utils.arch.IRefreshView;
 import com.kee0kai.thekey.utils.views.EmptyTextWatcher;
 
 public class CreateStorageActivity extends AppCompatActivity implements IRefreshView, View.OnFocusChangeListener, View.OnClickListener {
 
-    private final CreateStoragePresenter presenter = DI.presenter().createStoragePresenter();
+    private final ChangeStoragePresenter presenter = DI.presenter().createStoragePresenter();
 
     private ActivityStorageCreateBinding binding;
 
@@ -51,9 +51,9 @@ public class CreateStorageActivity extends AppCompatActivity implements IRefresh
 
         presenter.subscribe(this);
 
-        CreateStorageActivityContract.CreateStorageTask createStorageTask = getIntent().getParcelableExtra(CreateStorageActivityContract.CHANGE_TASK_EXTRA);
+        ChangeStorageActivityContract.CreateStorageTask createStorageTask = getIntent().getParcelableExtra(ChangeStorageActivityContract.CHANGE_TASK_EXTRA);
         if (createStorageTask != null)
-            presenter.init(createStorageTask.storage, createStorageTask.mode);
+            presenter.init(createStorageTask.storagePath, createStorageTask.mode);
         else presenter.init(null, null);
 
         binding.btSave.setOnClickListener(this);
@@ -136,7 +136,7 @@ public class CreateStorageActivity extends AppCompatActivity implements IRefresh
         binding.prSaveProcessing.setVisibility(presenter.saveStorageFuture.isInProcess() ? View.VISIBLE : View.GONE);
         binding.btSave.setVisibility(presenter.hasChanges() ? View.VISIBLE : View.GONE);
 
-        CreateStoragePresenter.SaveStorageResult result = presenter.saveStorageFuture.popResult();
+        ChangeStoragePresenter.SaveStorageResult result = presenter.saveStorageFuture.popResult();
         if (result != null) switch (result) {
             case SUCCESS:
                 Toast.makeText(this, successRes, Toast.LENGTH_SHORT).show();

@@ -1,4 +1,4 @@
-package com.kee0kai.thekey.ui.createstorage;
+package com.kee0kai.thekey.ui.changestorage;
 
 import static com.kee0kai.thekey.App.DI;
 
@@ -12,7 +12,7 @@ import com.kee0kai.thekey.utils.arch.Threads;
 import java.util.Objects;
 import java.util.concurrent.ThreadPoolExecutor;
 
-public class CreateStoragePresenter extends SimplePresenter {
+public class ChangeStoragePresenter extends SimplePresenter {
 
     public final FutureHolder<SaveStorageResult> saveStorageFuture = new FutureHolder<>();
 
@@ -21,8 +21,7 @@ public class CreateStoragePresenter extends SimplePresenter {
     private Storage originalStorage, storage;
     private ChangeStorageMode mode;
 
-    public void init(Storage originalStorage, ChangeStorageMode mode) {
-        this.originalStorage = originalStorage;
+    public void init(String originStoragePath, ChangeStorageMode mode) {
         this.storage = CloneableHelper.tryClone(originalStorage, new Storage());
         this.mode = mode != null ? mode : ChangeStorageMode.CREATE;
     }
