@@ -17,7 +17,7 @@ import com.hannesdorfmann.adapterdelegates3.ListDelegationAdapter;
 import com.kee0kai.thekey.R;
 import com.kee0kai.thekey.databinding.ActivityStoragesBinding;
 import com.kee0kai.thekey.model.Storage;
-import com.kee0kai.thekey.navig.activity_contracts.ChangeStorageActivityContract;
+import com.kee0kai.thekey.navig.activity_contracts.EditStorageActivityContract;
 import com.kee0kai.thekey.utils.adapter.CompositeAdapter;
 import com.kee0kai.thekey.utils.arch.IRefreshView;
 
@@ -31,7 +31,7 @@ public class StoragesActivity extends AppCompatActivity implements IRefreshView,
             new StorageAdapterDelegate(R.layout.activity_storages, this)
     );
 
-    private ActivityResultLauncher<ChangeStorageActivityContract.CreateStorageTask> createStorageLauncher;
+    private ActivityResultLauncher<EditStorageActivityContract.CreateStorageTask> createStorageLauncher;
 
     private ActivityStoragesBinding binding;
 
@@ -46,7 +46,7 @@ public class StoragesActivity extends AppCompatActivity implements IRefreshView,
         binding.rvStorages.setAdapter(adapter);
         presenter.subscribe(this);
 
-        createStorageLauncher = registerForActivityResult(new ChangeStorageActivityContract(), result -> presenter.refreshData());
+        createStorageLauncher = registerForActivityResult(new EditStorageActivityContract(), result -> presenter.refreshData());
         binding.fdCreateStorage.setOnClickListener(this);
     }
 

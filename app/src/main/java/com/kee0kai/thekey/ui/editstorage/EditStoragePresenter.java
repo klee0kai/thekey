@@ -1,4 +1,4 @@
-package com.kee0kai.thekey.ui.changestorage;
+package com.kee0kai.thekey.ui.editstorage;
 
 import static com.kee0kai.thekey.App.DI;
 
@@ -12,7 +12,7 @@ import com.kee0kai.thekey.utils.arch.Threads;
 import java.util.Objects;
 import java.util.concurrent.ThreadPoolExecutor;
 
-public class ChangeStoragePresenter extends SimplePresenter {
+public class EditStoragePresenter extends SimplePresenter {
 
     public final FutureHolder<SaveStorageResult> saveStorageFuture = new FutureHolder<>();
 

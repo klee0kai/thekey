@@ -34,7 +34,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".ui.changestorage.CreateStorageActivity"
+            android:name=".ui.editstorage.EditStorageActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:exported="false" />
 

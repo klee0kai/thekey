@@ -1,4 +1,4 @@
-package com.kee0kai.thekey.ui.changestorage;
+package com.kee0kai.thekey.ui.editstorage;
 
 import android.view.LayoutInflater;
 import android.view.View;

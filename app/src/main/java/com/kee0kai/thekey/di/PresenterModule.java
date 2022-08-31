@@ -2,7 +2,7 @@ package com.kee0kai.thekey.di;
 
 import com.github.klee0kai.stone.annotations.Module;
 import com.github.klee0kai.stone.annotations.Singleton;
-import com.kee0kai.thekey.ui.changestorage.ChangeStoragePresenter;
+import com.kee0kai.thekey.ui.editstorage.EditStoragePresenter;
 import com.kee0kai.thekey.ui.login.LoginPresenter;
 import com.kee0kai.thekey.ui.storage.StoragesPresenter;
 
@@ -20,8 +20,8 @@ public class PresenterModule {
     }
 
     @Singleton(cache = Singleton.CacheType.WEAK)
-    public ChangeStoragePresenter createStoragePresenter() {
-        return new ChangeStoragePresenter();
+    public EditStoragePresenter editStoragePresenter() {
+        return new EditStoragePresenter();
     }
 
 }

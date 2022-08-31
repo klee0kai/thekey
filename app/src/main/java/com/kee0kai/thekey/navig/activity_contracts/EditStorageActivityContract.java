@@ -11,19 +11,18 @@ import androidx.activity.result.contract.ActivityResultContract;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.kee0kai.thekey.model.Storage;
-import com.kee0kai.thekey.ui.changestorage.ChangeStoragePresenter;
-import com.kee0kai.thekey.ui.changestorage.CreateStorageActivity;
+import com.kee0kai.thekey.ui.editstorage.EditStoragePresenter;
+import com.kee0kai.thekey.ui.editstorage.EditStorageActivity;
 import com.kee0kai.thekey.utils.adapter.ICloneable;
 
-public class ChangeStorageActivityContract extends ActivityResultContract<ChangeStorageActivityContract.CreateStorageTask, Uri> {
+public class EditStorageActivityContract extends ActivityResultContract<EditStorageActivityContract.CreateStorageTask, Uri> {
 
     public static final String CHANGE_TASK_EXTRA = "ch";
 
     @NonNull
     @Override
     public Intent createIntent(@NonNull Context context, CreateStorageTask task) {
-        Intent intent = new Intent(context, CreateStorageActivity.class);
+        Intent intent = new Intent(context, EditStorageActivity.class);
         intent.putExtra(CHANGE_TASK_EXTRA, 0);
         return intent;
     }
@@ -37,13 +36,13 @@ public class ChangeStorageActivityContract extends ActivityResultContract<Change
 
     public static class CreateStorageTask implements ICloneable, Parcelable {
         public String storagePath = null;
-        public ChangeStoragePresenter.ChangeStorageMode mode = ChangeStoragePresenter.ChangeStorageMode.CREATE;
+        public EditStoragePresenter.ChangeStorageMode mode = EditStoragePresenter.ChangeStorageMode.CREATE;
 
         public CreateStorageTask() {
 
         }
 
-        public CreateStorageTask(String storagePath, ChangeStoragePresenter.ChangeStorageMode mode) {
+        public CreateStorageTask(String storagePath, EditStoragePresenter.ChangeStorageMode mode) {
             this.storagePath = storagePath;
             this.mode = mode;
         }
