@@ -1,9 +1,12 @@
 package com.kee0kai.thekey.engine.model;
 
+import com.kee0kai.thekey.utils.adapter.ICloneable;
+import com.kee0kai.thekey.utils.adapter.ISameModel;
+
 import java.util.Arrays;
 import java.util.Objects;
 
-public class DecryptedNote {
+public class DecryptedNote implements ICloneable, ISameModel {
 
     public String site = null;
     public String login = null;
@@ -63,5 +66,15 @@ public class DecryptedNote {
         int result = Objects.hash(site, login, passw, desc, chTime);
         result = 31 * result + Arrays.hashCode(hist);
         return result;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
+    @Override
+    public boolean isSame(Object ob) {
+        return equals(ob);
     }
 }

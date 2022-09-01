@@ -56,7 +56,7 @@ public class GenPasswFragment extends Fragment implements IRefreshView, View.OnC
         } else if (v == binding.btSave) {
 
         } else if (v == binding.btHistory) {
-
+            startActivity(navigator.getGenHist());
         } else if (v == binding.tvGeneratedPassw) {
             presenter.copyPassw();
         }

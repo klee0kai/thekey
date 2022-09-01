@@ -45,6 +45,13 @@
             android:exported="false"
             android:theme="@style/AppTheme.NoActionBar" />
 
+
+        <activity
+            android:name=".ui.hist.HistActivity"
+            android:exported="false"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+
         <provider
             android:name=".providers.StorageFileProvider"
             android:authorities="com.kee0kai.thekey.fileprovider"
