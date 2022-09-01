@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 
 import com.kee0kai.thekey.domain.AppSettingsRepository;
+import com.kee0kai.thekey.domain.StorageFilesRepository;
 import com.kee0kai.thekey.engine.CryptStorageEngine;
 import com.kee0kai.thekey.model.Storage;
 import com.kee0kai.thekey.utils.arch.FutureHolder;
@@ -19,15 +20,19 @@ public class LoginPresenter extends SimplePresenter {
 
     private final ThreadPoolExecutor secThread = Threads.newSingleThreadExecutor("login");
     private final AppSettingsRepository apSetRep = DI.domain().appSettingsRepository();
+    private final StorageFilesRepository rep = DI.domain().storageFilesRepository();
     private final CryptStorageEngine engine = DI.engine().cryptEngine();
 
-    private final FutureHolder<Boolean> loginFuture = new FutureHolder<>();
+    public final FutureHolder<Boolean> loginFuture = new FutureHolder<>();
 
     private String storagePath;
     private Storage storageInfo;
 
 
     public void init() {
+        storagePath = apSetRep.get(AppSettingsRepository.SETTING_DEFAULT_STORAGE_PATH);
+        storageInfo = rep.findStorage(storagePath);
+        views.refreshAllViews();
 
     }
 
@@ -55,7 +60,12 @@ public class LoginPresenter extends SimplePresenter {
     }
 
     public void setStorage(Uri uri) {
-
+        if (uri == null)
+            return;
+        apSetRep.set(AppSettingsRepository.SETTING_DEFAULT_STORAGE_PATH, uri.getPath());
+        storagePath = uri.getPath();
+        storageInfo = rep.findStorage(storagePath);
+        views.refreshAllViews();
     }
 
 

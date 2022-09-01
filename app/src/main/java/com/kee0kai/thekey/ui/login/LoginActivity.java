@@ -36,7 +36,9 @@ public class LoginActivity extends BaseActivity implements IRefreshView, View.On
     private static final String[] PERMISSIONS = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
     private final LoginPresenter presenter = DI.presenter().loginPresenter();
+    private final InnerNavigator navigator = DI.control().innerNavigator();
 
+    private boolean permRegDone = false;
     private ActivityLoginBinding binding;
     private ActivityResultLauncher<String> findStorageLauncher;
     private ActivityResultLauncher<String[]> reqPermLauncher;
@@ -56,6 +58,7 @@ public class LoginActivity extends BaseActivity implements IRefreshView, View.On
 
         findStorageLauncher = registerForActivityResult(new FindStorageActivityContract(), presenter::setStorage);
         reqPermLauncher = registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), ignore -> {
+            permRegDone = true;
         });
         binding.edPassw.setOnEditorActionListener((textView, actionId, keyEvent) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -92,7 +95,18 @@ public class LoginActivity extends BaseActivity implements IRefreshView, View.On
 
     @Override
     public void refreshUI() {
+        binding.tvStorage.setText(presenter.getStoragePath());
+        binding.tvStorageName.setText(presenter.getStorageInfo() != null ? presenter.getStorageInfo().name : "");
+        binding.btLogin.setVisibility(presenter.getStorageInfo() != null ? View.VISIBLE : View.GONE);
+        binding.prLogingProcessing.setVisibility(presenter.loginFuture.isInProcess() ? View.VISIBLE : View.GONE);
 
+        Boolean loginResult = presenter.loginFuture.popResult();
+        if (loginResult != null)
+            if (loginResult) {
+                startActivity(navigator.notes());
+            } else {
+                Toast.makeText(this, R.string.login_error, Toast.LENGTH_SHORT).show();
+            }
     }
 
     private void login() {
@@ -109,9 +123,9 @@ public class LoginActivity extends BaseActivity implements IRefreshView, View.On
         for (String perm : PERMISSIONS) {
             if (ActivityCompat.checkSelfPermission(this, perm) != PackageManager.PERMISSION_GRANTED) {
                 boolean showRationale = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M && shouldShowRequestPermissionRationale(perm);
-                if (!showRationale) {
+                if (permRegDone && !showRationale) {
                     // user also CHECKED "never ask again"
-                    Toast.makeText(this, R.string.approve_permissions, Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, R.string.approve_permissions, Toast.LENGTH_SHORT).show();
                 } else reqPermLauncher.launch(PERMISSIONS);
                 return;
             }

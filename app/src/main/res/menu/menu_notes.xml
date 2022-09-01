@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/search_note"
+        android:icon="@drawable/ic_search_white_24dp"
+        android:title="@string/search_storage"
+        android:visible="true"
+        app:showAsAction="always|collapseActionView"
+        app:actionViewClass="android.widget.SearchView"/>
+
+
+    <item
+        android:id="@+id/about_storage"
+        android:title="@string/about_storage"
+        app:showAsAction="withText" />
+
+    <item
+        android:id="@+id/edit_storage"
+        android:title="@string/change_passw"
+        app:showAsAction="withText" />
+
+
+    <item
+        android:id="@+id/about_app"
+        android:title="@string/about_app"
+        app:showAsAction="withText" />
+</menu>

@@ -102,6 +102,7 @@ public class EditStorageActivity extends BaseActivity implements IRefreshView, V
                 binding.edStorageDescription.setFocusable(false);
                 binding.tlStoragePassw.setVisibility(View.GONE);
                 binding.vPasswDivider.setVisibility(View.GONE);
+            case EDIT_LOGGED_STORAGE:
             case EDIT:
                 binding.edStoragePath.setFocusable(false);
                 binding.toolbar.setTitle(R.string.popup_change);

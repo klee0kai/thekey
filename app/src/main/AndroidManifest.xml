@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.kee0kai.thekey">
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".App"
@@ -32,13 +32,18 @@
 
         <activity
             android:name=".ui.storage.StoragesActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.editstorage.EditStorageActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".ui.notes.NotesListActivity"
+            android:exported="false"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <provider
             android:name=".providers.StorageFileProvider"

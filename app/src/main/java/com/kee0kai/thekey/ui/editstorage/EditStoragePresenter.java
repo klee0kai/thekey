@@ -41,6 +41,7 @@ public class EditStoragePresenter extends SimplePresenter {
                         rep.addStorage(storage);
                         return SaveStorageResult.SUCCESS;
                     }
+                    case EDIT_LOGGED_STORAGE:
                     case EDIT: {
                         int r = engine.changeStorage(originalStorage, storage);
                         return r == 0 ? SaveStorageResult.SUCCESS : SaveStorageResult.ERROR;
@@ -94,6 +95,7 @@ public class EditStoragePresenter extends SimplePresenter {
     public enum ChangeStorageMode {
         CREATE,// создание нового хранилища
         EDIT,//  изменение перемещение хранилища
+        EDIT_LOGGED_STORAGE,//  изменение хранилища, в которое уже вошли, позволяет менять пароль
         DETAILS, // детали хранилища, недоступны изменения
         COPY, // коприрование хранилища
         CHANGE_PASSW // изменение текущего хранилища
