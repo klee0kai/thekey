@@ -97,7 +97,7 @@ public class NoteActivity extends BaseActivity implements IRefreshView, View.OnL
         } else if (v == binding.btGenerate) {
             presenter.genPassw();
         } else if (v == binding.btHistory) {
-            if (presenter.getPtNote() >= 0)
+            if (presenter.getPtNote() != 0)
                 startActivity(navigator.noteHist(presenter.getPtNote()));
         } else if (v == binding.clContainer) {
             binding.clContainer.clearFocus();

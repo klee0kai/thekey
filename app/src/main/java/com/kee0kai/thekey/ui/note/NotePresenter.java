@@ -16,7 +16,7 @@ public class NotePresenter extends SimplePresenter {
 
     private final ThreadPoolExecutor secThread = Threads.newSingleThreadExecutor("note");
     private final CryptStorageEngine engine = DI.engine().cryptEngine();
-    private long ptNote;
+    private long ptNote = 0;
     private DecryptedNote originNote = null, note = null;
 
     public final FutureHolder<Boolean> saveFuture = new FutureHolder<>();
@@ -36,7 +36,7 @@ public class NotePresenter extends SimplePresenter {
     public void save() {
         if (!saveFuture.isInProcess())
             saveFuture.set(secThread.submit(() -> {
-                if (ptNote <= 0)
+                if (ptNote == 0)
                     ptNote = engine.createNote();
                 if (originNote != null) {
                     //todo сделать в движке частичное изменение записи

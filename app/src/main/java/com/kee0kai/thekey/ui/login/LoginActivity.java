@@ -5,6 +5,7 @@ import static com.kee0kai.thekey.App.DI;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Toast;
@@ -90,7 +91,7 @@ public class LoginActivity extends BaseActivity implements IRefreshView, View.On
     @Override
     public void refreshUI() {
         binding.tvStorage.setText(UserShortPaths.shortPathName(presenter.getStoragePath()));
-        binding.tvStorageName.setText(presenter.getStorageInfo() != null ? presenter.getStorageInfo().name :
+        binding.tvStorageName.setText(presenter.getStorageInfo() != null && !TextUtils.isEmpty(presenter.getStorageInfo().name) ? presenter.getStorageInfo().name :
                 getString(R.string.storage_label));
         binding.prLogingProcessing.setVisibility(presenter.loginFuture.isInProcess() ? View.VISIBLE : View.GONE);
 
