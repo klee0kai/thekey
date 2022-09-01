@@ -51,6 +51,11 @@
             android:exported="false"
             android:theme="@style/AppTheme.NoActionBar" />
 
+        <activity
+            android:name=".ui.note.NoteActivity"
+            android:exported="false"
+            android:theme="@style/AppTheme.NoActionBar" />
+
 
         <provider
             android:name=".providers.StorageFileProvider"

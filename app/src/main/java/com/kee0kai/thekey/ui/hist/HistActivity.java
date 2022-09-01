@@ -1,6 +1,7 @@
 package com.kee0kai.thekey.ui.hist;
 
 import static com.kee0kai.thekey.App.DI;
+import static com.kee0kai.thekey.ui.note.NoteActivity.NOTE_PTR_EXTRA;
 
 import android.os.Bundle;
 
@@ -20,7 +21,6 @@ import java.util.List;
 
 public class HistActivity extends BaseActivity implements IRefreshView {
 
-    public static final String NOTE_ID_EXTRA = "n_id";
 
     private final HistPresenter presenter = DI.presenter().histPresenter();
 
@@ -42,7 +42,7 @@ public class HistActivity extends BaseActivity implements IRefreshView {
         binding.rvPasswds.setAdapter(adapter);
 
         presenter.subscribe(this);
-        presenter.init(getIntent().getLongExtra(NOTE_ID_EXTRA, 0),
+        presenter.init(getIntent().getLongExtra(NOTE_PTR_EXTRA, 0),
                 savedInstanceState == null);
         presenter.refreshData();
 

@@ -12,8 +12,8 @@ public class DecryptedNote implements ICloneable, ISameModel {
     public String login = null;
     public String passw = null;
     public String desc = null;
-    public final long chTime;
-    public final DecryptedPassw[] hist;
+    public long chTime;
+    public DecryptedPassw[] hist;
 
     public DecryptedNote() {
         this.chTime = 0;

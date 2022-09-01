@@ -1,11 +1,13 @@
 package com.kee0kai.thekey.utils.adapter;
 
 
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListUpdateCallback;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.hannesdorfmann.adapterdelegates3.AbsDelegationAdapter;
+import com.kee0kai.thekey.utils.Logs;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +30,6 @@ public class SimpleDiffResult<T> {
         else adapter.notifyDataSetChanged();
     }
 
-
     public DiffUtil.DiffResult getDiffResult() {
         return diffResult;
     }
@@ -47,4 +48,34 @@ public class SimpleDiffResult<T> {
         diffResult.dispatchUpdatesTo(adapter);
     }
 
+    public void logChanges() {
+        if (diffResult != null)
+            diffResult.dispatchUpdatesTo(new ListUpdateCallback() {
+                @Override
+                public void onInserted(int position, int count) {
+                    Logs.log("SimpleDiffResult onInserted " + position + " - " + count);
+
+                }
+
+                @Override
+                public void onRemoved(int position, int count) {
+                    Logs.log("SimpleDiffResult onRemoved " + position + " - " + count);
+
+                }
+
+                @Override
+                public void onMoved(int fromPosition, int toPosition) {
+                    Logs.log("SimpleDiffResult onMoved " + fromPosition + " - " + toPosition);
+
+                }
+
+                @Override
+                public void onChanged(int position, int count, @Nullable Object payload) {
+                    Logs.log("SimpleDiffResult onChanged " + position + " - " + count);
+                }
+            });
+        else {
+            Logs.log("SimpleDiffResult change all " + newList.size());
+        }
+    }
 }

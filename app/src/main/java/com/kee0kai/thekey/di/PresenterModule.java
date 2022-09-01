@@ -5,6 +5,7 @@ import com.github.klee0kai.stone.annotations.Singleton;
 import com.kee0kai.thekey.ui.editstorage.EditStoragePresenter;
 import com.kee0kai.thekey.ui.hist.HistPresenter;
 import com.kee0kai.thekey.ui.login.LoginPresenter;
+import com.kee0kai.thekey.ui.note.NotePresenter;
 import com.kee0kai.thekey.ui.notes.gen.GenPasswPresenter;
 import com.kee0kai.thekey.ui.notes.notelist.NoteListPresenter;
 import com.kee0kai.thekey.ui.storage.StoragesPresenter;
@@ -40,6 +41,11 @@ public class PresenterModule {
     @Singleton(cache = Singleton.CacheType.WEAK)
     public HistPresenter histPresenter() {
         return new HistPresenter();
+    }
+
+    @Singleton(cache = Singleton.CacheType.WEAK)
+    public NotePresenter notePresenter(){
+        return new NotePresenter();
     }
 
 }

@@ -75,6 +75,7 @@ public class LoginActivity extends BaseActivity implements IRefreshView, View.On
     protected void onResume() {
         super.onResume();
         checkPermissions();
+        presenter.unlogin();
     }
 
     @Override
