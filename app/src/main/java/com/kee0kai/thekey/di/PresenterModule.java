@@ -3,6 +3,7 @@ package com.kee0kai.thekey.di;
 import com.github.klee0kai.stone.annotations.Module;
 import com.github.klee0kai.stone.annotations.Singleton;
 import com.kee0kai.thekey.ui.editstorage.EditStoragePresenter;
+import com.kee0kai.thekey.ui.fileprovider.FileProviderPresenter;
 import com.kee0kai.thekey.ui.hist.HistPresenter;
 import com.kee0kai.thekey.ui.login.LoginPresenter;
 import com.kee0kai.thekey.ui.note.NotePresenter;
@@ -44,8 +45,13 @@ public class PresenterModule {
     }
 
     @Singleton(cache = Singleton.CacheType.WEAK)
-    public NotePresenter notePresenter(){
+    public NotePresenter notePresenter() {
         return new NotePresenter();
+    }
+
+    @Singleton(cache = Singleton.CacheType.WEAK)
+    public FileProviderPresenter fileProviderPresenter() {
+        return new FileProviderPresenter();
     }
 
 }

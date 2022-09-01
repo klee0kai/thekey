@@ -8,11 +8,14 @@ import android.text.Editable;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.Nullable;
 
+import com.kee0kai.thekey.App;
 import com.kee0kai.thekey.R;
 import com.kee0kai.thekey.databinding.ActivityStorageCreateBinding;
 import com.kee0kai.thekey.model.Storage;
+import com.kee0kai.thekey.navig.activity_contracts.CreateFileActivityContract;
 import com.kee0kai.thekey.navig.activity_contracts.EditStorageActivityContract;
 import com.kee0kai.thekey.ui.common.BaseActivity;
 import com.kee0kai.thekey.utils.android.UserShortPaths;
@@ -34,6 +37,8 @@ public class EditStorageActivity extends BaseActivity implements IRefreshView, V
         }
     };
 
+    private ActivityResultLauncher<String> createStorageLauncher;
+
     @Override
     public SecureType getSecType() {
         return SecureType.PUBLIC;
@@ -53,6 +58,7 @@ public class EditStorageActivity extends BaseActivity implements IRefreshView, V
         binding.edStorageDescription.addTextChangedListener(tvWatcherUpdate);
         binding.edStorageName.addTextChangedListener(tvWatcherUpdate);
         binding.edStoragePassw.addTextChangedListener(tvWatcherUpdate);
+        binding.ivPathToProvider.setOnClickListener(this);
 
         presenter.subscribe(this);
 
@@ -60,6 +66,11 @@ public class EditStorageActivity extends BaseActivity implements IRefreshView, V
         if (createStorageTask != null)
             presenter.init(createStorageTask.storagePath, createStorageTask.mode);
         else presenter.init(null, null);
+
+        createStorageLauncher = registerForActivityResult(new CreateFileActivityContract(), uri -> {
+            if (uri != null)
+                binding.edStoragePath.setText(uri.getPath());
+        });
 
         binding.btSave.setOnClickListener(this);
     }
@@ -76,14 +87,17 @@ public class EditStorageActivity extends BaseActivity implements IRefreshView, V
     }
 
     @Override
-    public void onClick(View view) {
-        String passw = binding.edStoragePassw.getText() != null ? binding.edStoragePassw.getText().toString() : "";
-        presenter.save(passw);
+    public void onClick(View v) {
+        if (v == binding.btSave) {
+            String passw = binding.edStoragePassw.getText() != null ? binding.edStoragePassw.getText().toString() : "";
+            presenter.save(passw);
+        } else if (v == binding.ivPathToProvider) {
+            createStorageLauncher.launch(App.STORAGE_EXT);
+        }
     }
 
     @Override
     public void refreshUI() {
-
         int successRes = R.string.success_create_storage;
         int errRes = R.string.err_create_storage;
         switch (presenter.getMode()) {
