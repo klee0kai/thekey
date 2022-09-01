@@ -30,7 +30,8 @@ public class LoginPresenter extends SimplePresenter {
 
 
     public void init() {
-        storagePath = apSetRep.get(AppSettingsRepository.SETTING_DEFAULT_STORAGE_PATH);
+        storagePath = apSetRep.get(AppSettingsRepository.SETTING_DEFAULT_STORAGE_PATH,
+                DI.app().application().getApplicationInfo().dataDir + "/keys.ckey");
         storageInfo = rep.findStorage(storagePath);
         views.refreshAllViews();
 

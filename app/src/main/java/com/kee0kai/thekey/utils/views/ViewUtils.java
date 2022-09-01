@@ -1,6 +1,6 @@
 package com.kee0kai.thekey.utils.views;
 
-import android.app.slice.Slice;
+import android.text.SpannableString;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
@@ -12,6 +12,12 @@ public class ViewUtils {
 
     public static void changeTextIfNeed(TextView textView, String txt) {
         if (Objects.equals(textView.getText().toString(), txt))
+            return;
+        textView.setText(txt);
+    }
+
+    public static void changeTextIfNeed(TextView textView, SpannableString txt) {
+        if (Objects.equals(textView.getText().toString(), txt.toString()))
             return;
         textView.setText(txt);
     }

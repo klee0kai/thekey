@@ -4,18 +4,14 @@ import static com.kee0kai.thekey.App.DI;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.kee0kai.thekey.App;
@@ -24,12 +20,8 @@ import com.kee0kai.thekey.databinding.ActivityLoginBinding;
 import com.kee0kai.thekey.navig.InnerNavigator;
 import com.kee0kai.thekey.navig.activity_contracts.FindStorageActivityContract;
 import com.kee0kai.thekey.ui.common.BaseActivity;
+import com.kee0kai.thekey.utils.android.UserShortPaths;
 import com.kee0kai.thekey.utils.arch.IRefreshView;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
 public class LoginActivity extends BaseActivity implements IRefreshView, View.OnClickListener {
 
@@ -96,9 +88,9 @@ public class LoginActivity extends BaseActivity implements IRefreshView, View.On
 
     @Override
     public void refreshUI() {
-        binding.tvStorage.setText(presenter.getStoragePath());
-        binding.tvStorageName.setText(presenter.getStorageInfo() != null ? presenter.getStorageInfo().name : "");
-        binding.btLogin.setVisibility(presenter.getStorageInfo() != null ? View.VISIBLE : View.GONE);
+        binding.tvStorage.setText(UserShortPaths.shortPathName(presenter.getStoragePath()));
+        binding.tvStorageName.setText(presenter.getStorageInfo() != null ? presenter.getStorageInfo().name :
+                getString(R.string.storage_label));
         binding.prLogingProcessing.setVisibility(presenter.loginFuture.isInProcess() ? View.VISIBLE : View.GONE);
 
         Boolean loginResult = presenter.loginFuture.popResult();
