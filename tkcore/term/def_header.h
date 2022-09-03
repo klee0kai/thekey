@@ -14,6 +14,6 @@
 #include <cstring>
 #include <memory>
 
-#include <libs/def_header.h>
+#include <def_header.h>
 
 #endif //TKCORE_DEF_HEADER_H

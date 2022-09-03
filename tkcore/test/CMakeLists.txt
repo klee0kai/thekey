@@ -11,18 +11,17 @@ include_directories(${GTEST_INCLUDE_DIR})
 
 
 add_executable(tkey_test
-        ${SRC_FILES}
-        test/salt_testing.cpp
+        salt_testing.cpp
         )
 
 
 target_include_directories(tkey_test PUBLIC
         ${GTEST_INCLUDE_DIR}
-        cpp_lib
-        term)
+        )
 
 target_link_libraries(tkey_test
         gtest_main
+        lib_tkcore
         openssl
         openssl_crypto
         dl

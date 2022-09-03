@@ -5,7 +5,7 @@
 #ifndef THEKEY_KEY_FINDER_H
 #define THEKEY_KEY_FINDER_H
 
-#include "dll_interface/key_manager_ctx.h"
+#include <dll_interface/key_manager_ctx.h>
 
 namespace key_finder {
 

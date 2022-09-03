@@ -2,6 +2,11 @@
 set(OPENSSL_LIB_PATH ${PROJECT_SOURCE_DIR}/../prebuild/openssl)
 set(openssl_include ${OPENSSL_LIB_PATH}/include)
 
+add_library(openssl_interface INTERFACE)
+set_target_properties(openssl_interface PROPERTIES
+        INTERFACE_INCLUDE_DIRECTORIES ${openssl_include}
+        )
+
 add_library(openssl STATIC IMPORTED)
 set_target_properties(openssl PROPERTIES
         IMPORTED_LOCATION ${OPENSSL_LIB_PATH}/${SYSTEM_INFO_TYPE}/lib/libssl.a

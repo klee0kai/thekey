@@ -15,7 +15,7 @@
 #include <cstdlib>
 #include <string>
 #include <math.h>
-#include "libs/def_header.h"
+#include "def_header.h"
 
 
 #define PASSW_MIN_LEN 4L
