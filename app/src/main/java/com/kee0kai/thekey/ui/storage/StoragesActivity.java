@@ -22,10 +22,12 @@ import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.hannesdorfmann.adapterdelegates3.ListDelegationAdapter;
+import com.kee0kai.thekey.App;
 import com.kee0kai.thekey.R;
 import com.kee0kai.thekey.databinding.ActivityStoragesBinding;
 import com.kee0kai.thekey.model.Storage;
 import com.kee0kai.thekey.navig.activity_contracts.EditStorageActivityContract;
+import com.kee0kai.thekey.navig.activity_contracts.OpenFileActivityContract;
 import com.kee0kai.thekey.providers.StorageFileProvider;
 import com.kee0kai.thekey.ui.common.BaseActivity;
 import com.kee0kai.thekey.ui.editstorage.EditStoragePresenter;
@@ -44,6 +46,8 @@ public class StoragesActivity extends BaseActivity implements IRefreshView, Stor
     );
 
     private ActivityResultLauncher<EditStorageActivityContract.EditStorageTask> editStorageLauncher;
+    private ActivityResultLauncher<String> openStorageLauncher;
+
 
     private ActivityStoragesBinding binding;
 
@@ -64,6 +68,14 @@ public class StoragesActivity extends BaseActivity implements IRefreshView, Stor
         presenter.subscribe(this);
 
         editStorageLauncher = registerForActivityResult(new EditStorageActivityContract(), result -> presenter.refreshData(false));
+        openStorageLauncher = registerForActivityResult(new OpenFileActivityContract(), result -> {
+            if (result != null) {
+                Intent resultIntent = new Intent();
+                resultIntent.setData(result);
+                setResult(Activity.RESULT_OK, resultIntent);
+                finish();
+            }
+        });
         binding.fdCreateStorage.setOnClickListener(this);
     }
 
@@ -103,6 +115,16 @@ public class StoragesActivity extends BaseActivity implements IRefreshView, Stor
             }
         });
         return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.to_provider) {
+            openStorageLauncher.launch(App.STORAGE_EXT);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

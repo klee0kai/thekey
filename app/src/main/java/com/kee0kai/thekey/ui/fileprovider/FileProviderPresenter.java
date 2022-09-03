@@ -3,7 +3,6 @@ package com.kee0kai.thekey.ui.fileprovider;
 import android.os.Environment;
 import android.text.TextUtils;
 
-import com.kee0kai.thekey.model.Storage;
 import com.kee0kai.thekey.ui.fileprovider.model.FileItem;
 import com.kee0kai.thekey.utils.adapter.ICloneable;
 import com.kee0kai.thekey.utils.adapter.SimpleDiffResult;
@@ -13,6 +12,7 @@ import com.kee0kai.thekey.utils.arch.Threads;
 import com.kee0kai.thekey.utils.collections.ListsUtils;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -24,7 +24,8 @@ public class FileProviderPresenter extends SimplePresenter {
 
     private final ThreadPoolExecutor secThread = Threads.newSingleThreadExecutor("prov");
     private File curPath = null;
-    private WorkMode mode = WorkMode.OPEN_STORAGE;
+    private WorkMode mode = WorkMode.OPEN_FILE;
+    private String fileType = null;
 
     private String searchQuery = null;
     private List<FileItem> files = Collections.emptyList();
@@ -32,9 +33,16 @@ public class FileProviderPresenter extends SimplePresenter {
     private final SimpleDiffUtilHelper<ICloneable> flatListDiffUtil = new SimpleDiffUtilHelper();
 
 
-    public void init(WorkMode mode, boolean force) {
-        if (force || curPath == null)
+    public void init(WorkMode mode, String fileType, boolean force) {
+        if (force) {
+            searchQuery = null;
+            curPath = null;
+        }
+        if (curPath == null)
             curPath = new File(Environment.getExternalStorageDirectory().getAbsolutePath());
+        this.fileType = fileType != null ? fileType.toLowerCase(Locale.ROOT) : "";
+        if (!this.fileType.startsWith("."))
+            this.fileType = "." + this.fileType;
         this.mode = mode;
         refreshData();
     }
@@ -45,7 +53,8 @@ public class FileProviderPresenter extends SimplePresenter {
                 return;
 
             flatListDiffUtil.saveOld(flatList);
-            File[] files = curPath.listFiles();
+            File[] files = curPath.listFiles((FileFilter) pathname ->
+                    pathname.isDirectory() || pathname.isFile() && pathname.getName().toLowerCase(Locale.ROOT).endsWith(fileType));
 
             ArrayList<FileItem> fileItems = new ArrayList<>(files != null ? files.length : 0);
             for (int i = 0; files != null && i < files.length; i++) {
@@ -107,6 +116,10 @@ public class FileProviderPresenter extends SimplePresenter {
         return mode;
     }
 
+    public String getFileType() {
+        return fileType;
+    }
+
     private List<ICloneable> flatList(List<FileItem> files) {
         List<FileItem> filtered = ListsUtils.filter(files, (i, it) -> TextUtils.isEmpty(searchQuery) ||
                 it.name != null && it.name.toLowerCase(Locale.ROOT).contains(searchQuery));
@@ -116,7 +129,7 @@ public class FileProviderPresenter extends SimplePresenter {
 
 
     public enum WorkMode {
-        OPEN_STORAGE,
-        CREATE_STORAGE
+        OPEN_FILE,
+        CREATE_FILE
     }
 }

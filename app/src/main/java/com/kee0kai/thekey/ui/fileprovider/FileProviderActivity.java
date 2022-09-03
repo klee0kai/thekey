@@ -3,7 +3,6 @@ package com.kee0kai.thekey.ui.fileprovider;
 import static com.kee0kai.thekey.App.DI;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -25,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.kee0kai.thekey.R;
 import com.kee0kai.thekey.databinding.ActivityFileproviderBinding;
+import com.kee0kai.thekey.databinding.DlgCreateStorageBinding;
 import com.kee0kai.thekey.ui.common.BaseActivity;
 import com.kee0kai.thekey.ui.fileprovider.model.FileItem;
 import com.kee0kai.thekey.utils.adapter.CompositeAdapter;
@@ -45,8 +45,7 @@ public class FileProviderActivity extends BaseActivity implements IRefreshView, 
             new FileAdapterDelegate(R.layout.item_file, this)
     );
 
-    private WeakReference<View> dlgView = null;
-
+    private WeakReference<DlgCreateStorageBinding> dlgBinding = null;
     private ActivityFileproviderBinding binding = null;
 
     @Override
@@ -61,8 +60,9 @@ public class FileProviderActivity extends BaseActivity implements IRefreshView, 
         binding.rvFilesList.setAdapter(adapter);
         presenter.subscribe(this);
 
-        FileProviderPresenter.WorkMode workMode = FileProviderPresenter.WorkMode.values()[getIntent().getIntExtra(WORK_MODE_EXTRA, FileProviderPresenter.WorkMode.CREATE_STORAGE.ordinal())];
-        presenter.init(workMode, savedInstanceState == null);
+        String fileType = getIntent().getType();
+        FileProviderPresenter.WorkMode workMode = FileProviderPresenter.WorkMode.values()[getIntent().getIntExtra(WORK_MODE_EXTRA, FileProviderPresenter.WorkMode.CREATE_FILE.ordinal())];
+        presenter.init(workMode, fileType, savedInstanceState == null);
 
         binding.fdCreateStorage.setOnClickListener(this);
         binding.tvCurPath.setOnClickListener(this);
@@ -109,20 +109,21 @@ public class FileProviderActivity extends BaseActivity implements IRefreshView, 
     @Override
     public void onClick(View v) {
         if (v == binding.fdCreateStorage) {
+            dlgBinding = new WeakReference<>(DlgCreateStorageBinding.inflate(LayoutInflater.from(this)));
+            dlgBinding.get().tvTkeyFormat.setText(presenter.getFileType());
             new AlertDialog.Builder(this)
                     .setTitle(UserShortPaths.shortPathName(presenter.getCurPath().getAbsolutePath() + "/"))
-                    .setView((dlgView = new WeakReference<>(LayoutInflater.from(this).inflate(R.layout.dlg_create_storage, null))).get())
+                    .setView(dlgBinding.get().getRoot())
                     .setPositiveButton(R.string.create, (dialog, which) -> {
-                        View v1 = dlgView != null ? dlgView.get() : null;
+                        View v1 = dlgBinding != null ? dlgBinding.get().getRoot() : null;
                         if (v1 == null) return;
-                        EditText edStorageName = v1.findViewById(R.id.ed_storage_name);
-                        String storageName = edStorageName.getText().toString();
+                        String storageName = dlgBinding.get().edStorageName.getText().toString();
                         if (storageName.isEmpty()) {
                             Toast.makeText(FileProviderActivity.this, R.string.err_input_path, Toast.LENGTH_SHORT).show();
                             return;
                         }
                         Intent intent = new Intent();
-                        File stFile = new File(presenter.getCurPath().getAbsolutePath(), storageName);
+                        File stFile = new File(presenter.getCurPath().getAbsolutePath(), storageName + presenter.getFileType());
                         intent.putExtra("path", stFile.getAbsolutePath());
                         intent.setData(Uri.fromFile(stFile));
                         setResult(Activity.RESULT_OK, intent);
@@ -139,12 +140,25 @@ public class FileProviderActivity extends BaseActivity implements IRefreshView, 
 
     @Override
     public void onItemSelected(FileItem fileItem) {
-        if (!fileItem.isFile)
+        if (!fileItem.isFile) {
             presenter.openDir(fileItem.name);
+            return;
+        }
+        if (presenter.getMode() == FileProviderPresenter.WorkMode.OPEN_FILE) {
+            Intent resultIntent = new Intent();
+            File f = new File(presenter.getCurPath().getAbsolutePath(), fileItem.name);
+            resultIntent.putExtra("path", f.getAbsolutePath());
+            resultIntent.setData(Uri.fromFile(f));
+            setResult(Activity.RESULT_OK, resultIntent);
+            finish();
+        }
     }
 
     @Override
     public void refreshUI() {
+        boolean isCreateMode = presenter.getMode() == FileProviderPresenter.WorkMode.CREATE_FILE;
+        setTitle(isCreateMode ? R.string.storage_create : R.string.select_storage);
+        binding.fdCreateStorage.setVisibility(isCreateMode ? View.VISIBLE : View.GONE);
         ViewUtils.changeTextIfNeed(binding.tvCurPath, UserShortPaths.shortPathName(presenter.getCurPath().getAbsolutePath()));
         presenter.popFlatListChanges().applyTo(adapter);
     }

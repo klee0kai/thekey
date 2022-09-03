@@ -12,12 +12,12 @@ import androidx.annotation.Nullable;
 import com.kee0kai.thekey.ui.fileprovider.FileProviderActivity;
 import com.kee0kai.thekey.ui.fileprovider.FileProviderPresenter;
 
-public class CreateFileActivityContract extends ActivityResultContract<String, Uri> {
+public class OpenFileActivityContract extends ActivityResultContract<String, Uri> {
     @NonNull
     @Override
     public Intent createIntent(@NonNull Context context, String type) {
         Intent intent = new Intent(context, FileProviderActivity.class);
-        intent.putExtra(FileProviderActivity.WORK_MODE_EXTRA, FileProviderPresenter.WorkMode.CREATE_FILE.ordinal());
+        intent.putExtra(FileProviderActivity.WORK_MODE_EXTRA, FileProviderPresenter.WorkMode.OPEN_FILE.ordinal());
         intent.setType(type);
         return intent;
     }

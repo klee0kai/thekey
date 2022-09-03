@@ -68,8 +68,11 @@ public class EditStorageActivity extends BaseActivity implements IRefreshView, V
         else presenter.init(null, null);
 
         createStorageLauncher = registerForActivityResult(new CreateFileActivityContract(), uri -> {
-            if (uri != null)
-                binding.edStoragePath.setText(uri.getPath());
+            if (uri == null) return;
+            String p = uri.getPath();
+            if (p.endsWith("." + App.STORAGE_EXT))
+                p = p.substring(0, p.lastIndexOf("."));
+            binding.edStoragePath.setText(p);
         });
 
         binding.btSave.setOnClickListener(this);
