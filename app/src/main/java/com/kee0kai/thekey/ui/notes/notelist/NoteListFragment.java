@@ -131,10 +131,12 @@ public class NoteListFragment extends Fragment implements IRefreshView, View.OnC
     @Override
     public void onDeleteClicked(NoteItem noteItem) {
         presenter.setDeletingPtNote(noteItem.id);
-        AcceptDialogFragment.newInstance(new AcceptDialogFragment.AcceptDialogArgs(
+        AcceptDialogFragment dlg = AcceptDialogFragment.newInstance(new AcceptDialogFragment.AcceptDialogArgs(
                 getString(R.string.del_note_title),
                 getString(R.string.del_note_message)
-        )).show(getChildFragmentManager(), DEL_ACCEPT_DLG_TAG);
+        ));
+        dlg.setListener(this);
+        dlg.show(getChildFragmentManager(), DEL_ACCEPT_DLG_TAG);
     }
 
     @Override

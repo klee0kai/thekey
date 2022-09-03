@@ -173,10 +173,12 @@ public class StoragesActivity extends BaseActivity implements IRefreshView, Stor
     @Override
     public void onStorageDeleteClicked(Storage storage) {
         presenter.setDeletingStoragePath(storage.path);
-        AcceptDialogFragment.newInstance(new AcceptDialogFragment.AcceptDialogArgs(
+        AcceptDialogFragment dlg = AcceptDialogFragment.newInstance(new AcceptDialogFragment.AcceptDialogArgs(
                 getString(R.string.del_storage_title),
                 getString(R.string.del_storage_message)
-        )).show(getSupportFragmentManager(), DEL_ACCEPT_DLG_TAG);
+        ));
+        dlg.setListener(this);
+        dlg.show(getSupportFragmentManager(), DEL_ACCEPT_DLG_TAG);
     }
 
     @Override

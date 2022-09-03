@@ -12,12 +12,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,6 +24,7 @@ import com.kee0kai.thekey.R;
 import com.kee0kai.thekey.databinding.ActivityFileproviderBinding;
 import com.kee0kai.thekey.databinding.DlgCreateStorageBinding;
 import com.kee0kai.thekey.ui.common.BaseActivity;
+import com.kee0kai.thekey.ui.dialogs.CreateFileDialogFragment;
 import com.kee0kai.thekey.ui.fileprovider.model.FileItem;
 import com.kee0kai.thekey.utils.adapter.CompositeAdapter;
 import com.kee0kai.thekey.utils.android.UserShortPaths;
@@ -36,9 +35,10 @@ import java.io.File;
 import java.lang.ref.WeakReference;
 
 
-public class FileProviderActivity extends BaseActivity implements IRefreshView, View.OnClickListener, FileAdapterDelegate.IFileAdapterListener {
+public class FileProviderActivity extends BaseActivity implements IRefreshView, View.OnClickListener, FileAdapterDelegate.IFileAdapterListener, CreateFileDialogFragment.ICreateFileListener {
 
     public static final String WORK_MODE_EXTRA = "md";
+    private static final String INPUT_FLNAME_DLG_TAG = "flname_dlg";
 
     private final FileProviderPresenter presenter = DI.presenter().fileProviderPresenter();
     private final CompositeAdapter adapter = CompositeAdapter.create(
@@ -66,6 +66,9 @@ public class FileProviderActivity extends BaseActivity implements IRefreshView, 
 
         binding.fdCreateStorage.setOnClickListener(this);
         binding.tvCurPath.setOnClickListener(this);
+        Fragment fr = getSupportFragmentManager().findFragmentByTag(INPUT_FLNAME_DLG_TAG);
+        if (fr instanceof CreateFileDialogFragment)
+            ((CreateFileDialogFragment) fr).setListener(this);
     }
 
     @Override
@@ -111,28 +114,11 @@ public class FileProviderActivity extends BaseActivity implements IRefreshView, 
         if (v == binding.fdCreateStorage) {
             dlgBinding = new WeakReference<>(DlgCreateStorageBinding.inflate(LayoutInflater.from(this)));
             dlgBinding.get().tvTkeyFormat.setText(presenter.getFileType());
-            new AlertDialog.Builder(this)
-                    .setTitle(UserShortPaths.shortPathName(presenter.getCurPath().getAbsolutePath() + "/"))
-                    .setView(dlgBinding.get().getRoot())
-                    .setPositiveButton(R.string.create, (dialog, which) -> {
-                        View v1 = dlgBinding != null ? dlgBinding.get().getRoot() : null;
-                        if (v1 == null) return;
-                        String storageName = dlgBinding.get().edStorageName.getText().toString();
-                        if (storageName.isEmpty()) {
-                            Toast.makeText(FileProviderActivity.this, R.string.err_input_path, Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                        Intent intent = new Intent();
-                        File stFile = new File(presenter.getCurPath().getAbsolutePath(), storageName + presenter.getFileType());
-                        intent.putExtra("path", stFile.getAbsolutePath());
-                        intent.setData(Uri.fromFile(stFile));
-                        setResult(Activity.RESULT_OK, intent);
-                        finish();
-                    })
-                    .setNegativeButton(R.string.cancel, null)
-                    .create()
-                    .show();
-
+            CreateFileDialogFragment dlg = CreateFileDialogFragment.newInstance(new CreateFileDialogFragment.CreateFileDlgArgs(
+                    presenter.getCurPath().getAbsolutePath(), presenter.getFileType()
+            ));
+            dlg.setListener(this);
+            dlg.show(getSupportFragmentManager(), INPUT_FLNAME_DLG_TAG);
         } else if (v == binding.tvCurPath) {
             presenter.toUp();
         }
@@ -152,6 +138,15 @@ public class FileProviderActivity extends BaseActivity implements IRefreshView, 
             setResult(Activity.RESULT_OK, resultIntent);
             finish();
         }
+    }
+
+    @Override
+    public void onCreateFileDone(CreateFileDialogFragment dlg, File f) {
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("path", f.getAbsolutePath());
+        resultIntent.setData(Uri.fromFile(f));
+        setResult(Activity.RESULT_OK, resultIntent);
+        finish();
     }
 
     @Override
