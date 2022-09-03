@@ -5,7 +5,7 @@
 #ifndef TKCORE_DEF_HEADER_H
 #define TKCORE_DEF_HEADER_H
 
-#define TERM_VERSION 1
+#define TERM_VERSION "0.0.2"
 
 #include <getopt.h>
 #include <iostream>
