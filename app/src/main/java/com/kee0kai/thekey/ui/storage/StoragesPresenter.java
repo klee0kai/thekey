@@ -53,6 +53,8 @@ public class StoragesPresenter extends SimplePresenter {
         if (!refreshDateFuture.isInProcess())
             refreshDateFuture.set(secThread.submit(() -> {
                 try {
+                    views.refreshAllViews();   //show loading
+
                     findStoragesOnDevice(force);
                     flatListDiffUtil.saveOld(flatList);
 

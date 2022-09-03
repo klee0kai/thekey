@@ -31,6 +31,7 @@ import com.kee0kai.thekey.ui.common.BaseActivity;
 import com.kee0kai.thekey.utils.Logs;
 import com.kee0kai.thekey.utils.android.UserShortPaths;
 import com.kee0kai.thekey.utils.arch.IRefreshView;
+import com.kee0kai.thekey.utils.views.ViewUtils;
 
 import java.security.spec.ECField;
 
@@ -125,6 +126,7 @@ public class LoginActivity extends BaseActivity implements IRefreshView, View.On
             Toast.makeText(this, R.string.input_passw, Toast.LENGTH_SHORT).show();
             return;
         }
+        ViewUtils.hideKeyboard(binding.getRoot());
         presenter.login(passw);
     }
 
@@ -145,7 +147,7 @@ public class LoginActivity extends BaseActivity implements IRefreshView, View.On
                 intent.addCategory("android.intent.category.DEFAULT");
                 intent.setData(Uri.parse(String.format("package:%s", getPackageName())));
                 reqRawFileManager.launch(intent);
-            }catch (Exception e){
+            } catch (Exception e) {
                 Logs.e(e);
             }
             return;

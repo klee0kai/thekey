@@ -41,6 +41,9 @@ public class LoginPresenter extends SimplePresenter {
         if (!TextUtils.isEmpty(storagePath) && !loginFuture.isInProcess())
             loginFuture.set(secThread.submit(() -> {
                 try {
+
+                    views.refreshAllViews();   //show loading
+
                     engine.login(storagePath, passw);
                     return engine.isLogined() != 0 ? Boolean.TRUE : Boolean.FALSE;
                 } finally {
