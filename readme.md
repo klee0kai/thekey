@@ -1,3 +1,5 @@
+![License Info](https://img.shields.io/badge/license-GNU_GPLv3-blue.svg?style=flat-square)
+
 # TheKey 
 
 Менеджер паролей
