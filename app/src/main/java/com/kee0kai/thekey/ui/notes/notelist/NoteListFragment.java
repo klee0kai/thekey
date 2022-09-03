@@ -23,6 +23,7 @@ import com.kee0kai.thekey.databinding.FragmentNotesBinding;
 import com.kee0kai.thekey.engine.CryptStorageEngine;
 import com.kee0kai.thekey.navig.InnerNavigator;
 import com.kee0kai.thekey.navig.activity_contracts.EditStorageActivityContract;
+import com.kee0kai.thekey.ui.dialogs.AcceptDialogFragment;
 import com.kee0kai.thekey.ui.editstorage.EditStoragePresenter;
 import com.kee0kai.thekey.ui.notes.model.NoteItem;
 import com.kee0kai.thekey.utils.adapter.CompositeAdapter;
@@ -30,7 +31,9 @@ import com.kee0kai.thekey.utils.adapter.ICloneable;
 import com.kee0kai.thekey.utils.adapter.SimpleDiffResult;
 import com.kee0kai.thekey.utils.arch.IRefreshView;
 
-public class NoteListFragment extends Fragment implements IRefreshView, View.OnClickListener, NoteAdapterDelegate.INoteListener {
+public class NoteListFragment extends Fragment implements IRefreshView, View.OnClickListener, NoteAdapterDelegate.INoteListener, AcceptDialogFragment.IAcceptListener {
+
+    private static final String DEL_ACCEPT_DLG_TAG = "del_note_dlg";
 
     private final NoteListPresenter presenter = DI.presenter().noteListPresenter();
     private final InnerNavigator navigator = DI.control().innerNavigator();
@@ -56,6 +59,9 @@ public class NoteListFragment extends Fragment implements IRefreshView, View.OnC
         binding.fdCreateEntry.setOnClickListener(this);
         editStorageLauncher = registerForActivityResult(new EditStorageActivityContract(), res -> {
         });
+        Fragment fr = getChildFragmentManager().findFragmentByTag(DEL_ACCEPT_DLG_TAG);
+        if (fr instanceof AcceptDialogFragment)
+            ((AcceptDialogFragment) fr).setListener(this);
         return binding.getRoot();
     }
 
@@ -110,14 +116,12 @@ public class NoteListFragment extends Fragment implements IRefreshView, View.OnC
         presenter.unsubscribe(this);
     }
 
-
     @Override
     public void onClick(View v) {
         if (v == binding.fdCreateEntry) {
             startActivity(navigator.note(0));
         }
     }
-
 
     @Override
     public void onClicked(NoteItem noteItem) {
@@ -126,7 +130,16 @@ public class NoteListFragment extends Fragment implements IRefreshView, View.OnC
 
     @Override
     public void onDeleteClicked(NoteItem noteItem) {
-        presenter.delNote(noteItem.id);
+        presenter.setDeletingPtNote(noteItem.id);
+        AcceptDialogFragment.newInstance(new AcceptDialogFragment.AcceptDialogArgs(
+                getString(R.string.del_note_title),
+                getString(R.string.del_note_message)
+        )).show(getChildFragmentManager(), DEL_ACCEPT_DLG_TAG);
+    }
+
+    @Override
+    public void onAcceptDlgDone(AcceptDialogFragment dlg, boolean accept) {
+        presenter.delNote(accept);
     }
 
     @Override

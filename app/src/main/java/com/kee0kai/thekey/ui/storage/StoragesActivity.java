@@ -19,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ShareCompat;
 import androidx.core.content.FileProvider;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.hannesdorfmann.adapterdelegates3.ListDelegationAdapter;
@@ -30,6 +31,7 @@ import com.kee0kai.thekey.navig.activity_contracts.EditStorageActivityContract;
 import com.kee0kai.thekey.navig.activity_contracts.OpenFileActivityContract;
 import com.kee0kai.thekey.providers.StorageFileProvider;
 import com.kee0kai.thekey.ui.common.BaseActivity;
+import com.kee0kai.thekey.ui.dialogs.AcceptDialogFragment;
 import com.kee0kai.thekey.ui.editstorage.EditStoragePresenter;
 import com.kee0kai.thekey.utils.adapter.CompositeAdapter;
 import com.kee0kai.thekey.utils.arch.IRefreshView;
@@ -37,8 +39,9 @@ import com.kee0kai.thekey.utils.arch.IRefreshView;
 import java.io.File;
 import java.util.List;
 
-public class StoragesActivity extends BaseActivity implements IRefreshView, StorageAdapterDelegate.IStorageListener, View.OnClickListener {
+public class StoragesActivity extends BaseActivity implements IRefreshView, StorageAdapterDelegate.IStorageListener, View.OnClickListener, AcceptDialogFragment.IAcceptListener {
 
+    private static final String DEL_ACCEPT_DLG_TAG = "del_storage_dlg";
     private final StoragesPresenter presenter = DI.presenter().storagesPresenter();
 
     private final ListDelegationAdapter<List<Object>> adapter = CompositeAdapter.create(
@@ -77,6 +80,9 @@ public class StoragesActivity extends BaseActivity implements IRefreshView, Stor
             }
         });
         binding.fdCreateStorage.setOnClickListener(this);
+        Fragment fr = getSupportFragmentManager().findFragmentByTag(DEL_ACCEPT_DLG_TAG);
+        if (fr instanceof AcceptDialogFragment)
+            ((AcceptDialogFragment) fr).setListener(this);
     }
 
     @Override
@@ -166,7 +172,11 @@ public class StoragesActivity extends BaseActivity implements IRefreshView, Stor
 
     @Override
     public void onStorageDeleteClicked(Storage storage) {
-        presenter.delStorage(storage);
+        presenter.setDeletingStoragePath(storage.path);
+        AcceptDialogFragment.newInstance(new AcceptDialogFragment.AcceptDialogArgs(
+                getString(R.string.del_storage_title),
+                getString(R.string.del_storage_message)
+        )).show(getSupportFragmentManager(), DEL_ACCEPT_DLG_TAG);
     }
 
     @Override
@@ -174,6 +184,11 @@ public class StoragesActivity extends BaseActivity implements IRefreshView, Stor
         if (view == binding.fdCreateStorage) {
             editStorageLauncher.launch(null);
         }
+    }
+
+    @Override
+    public void onAcceptDlgDone(AcceptDialogFragment dlg, boolean accept) {
+        presenter.delStorage(accept);
     }
 
     @Override

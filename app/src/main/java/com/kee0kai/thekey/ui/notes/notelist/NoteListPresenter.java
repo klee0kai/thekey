@@ -29,11 +29,16 @@ public class NoteListPresenter extends SimplePresenter {
     private final CryptStorageEngine engine = DI.engine().cryptEngine();
 
     private String searchQuery = null;
+    private long deletingPtNote = 0;
     private List<NoteItem> allNotes = Collections.emptyList();
     private List<ICloneable> flatList = Collections.emptyList();
     private final SimpleDiffUtilHelper<ICloneable> flatListDiffUtil = new SimpleDiffUtilHelper<>();
 
     public void init(boolean force) {
+        if (force) {
+            searchQuery = null;
+            deletingPtNote = 0;
+        }
         refreshData();
     }
 
@@ -56,9 +61,15 @@ public class NoteListPresenter extends SimplePresenter {
             });
     }
 
-    public void delNote(long ptNote) {
+    public void delNote(boolean accept) {
         secThread.submit(() -> {
-            engine.rmNote(ptNote);
+            if (deletingPtNote == 0)
+                return;
+            if (!accept) {
+                deletingPtNote = 0;
+                return;
+            }
+            engine.rmNote(deletingPtNote);
             Threads.runMain(this::refreshData);
         });
     }
@@ -80,7 +91,6 @@ public class NoteListPresenter extends SimplePresenter {
     }
 
 
-
     //getters and setters
     public String getSearchQuery() {
         return searchQuery;
@@ -90,6 +100,13 @@ public class NoteListPresenter extends SimplePresenter {
         return flatListDiffUtil.popDiffResult(flatList);
     }
 
+    public void setDeletingPtNote(long deletingPtNote) {
+        this.deletingPtNote = deletingPtNote;
+    }
+
+    public long getDeletingPtNote() {
+        return deletingPtNote;
+    }
 
     //private
     private List<ICloneable> flatList(List<NoteItem> notes) {

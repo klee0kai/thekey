@@ -40,6 +40,7 @@ public class StoragesPresenter extends SimplePresenter {
     public final FutureHolder refreshDateFuture = new FutureHolder<>();
 
     private String searchQuery = null;
+    private String deletingStoragePath = null;
     private long lastStartTime = 0;
     private int foundStorageCount = 0;
 
@@ -50,6 +51,10 @@ public class StoragesPresenter extends SimplePresenter {
 
     public void refreshData(boolean force) {
         long curTime = System.currentTimeMillis();
+        if (force) {
+            deletingStoragePath = null;
+            searchQuery = null;
+        }
         if (!refreshDateFuture.isInProcess())
             refreshDateFuture.set(secThread.submit(() -> {
                 try {
@@ -67,10 +72,16 @@ public class StoragesPresenter extends SimplePresenter {
             }));
     }
 
-    public void delStorage(Storage storage) {
+    public void delStorage(boolean accept) {
         secThread.submit(() -> {
-            new File(storage.path).delete();
-            rep.deleteStorage(storage.path);
+            if (deletingStoragePath == null)
+                return;
+            if (!accept) {
+                deletingStoragePath = null;
+                return;
+            }
+            new File(deletingStoragePath).deleteOnExit();
+            rep.deleteStorage(deletingStoragePath);
             Threads.runMain(() -> refreshData(false));
         });
 
@@ -96,6 +107,14 @@ public class StoragesPresenter extends SimplePresenter {
     //getters and setters
     public String getSearchQuery() {
         return searchQuery;
+    }
+
+    public void setDeletingStoragePath(String deletingStoragePath) {
+        this.deletingStoragePath = deletingStoragePath;
+    }
+
+    public String getDeletingStoragePath() {
+        return deletingStoragePath;
     }
 
     public SimpleDiffResult<ICloneable> popFlatListChanges() {

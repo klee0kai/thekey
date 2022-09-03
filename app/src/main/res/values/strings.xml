@@ -67,4 +67,10 @@
     <string name="change_passw">Сменить пароль</string>
     <string name="approve_permissions">Предоставьте разрешения</string>
     <string name="login_error">Ошибка входа</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+    <string name="del_note_title">Удалить запись</string>
+    <string name="del_note_message">Вы точно хотите удалить запись безвозвратно</string>
+    <string name="del_storage_title">Удалить хранилище</string>
+    <string name="del_storage_message">Вы уверены, что хотите удалить безвозвратно хранилище паролей</string>
 </resources>
