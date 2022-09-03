@@ -17,15 +17,14 @@ add_executable(tkey_test
 
 
 target_include_directories(tkey_test PUBLIC
-        ${OPENSSL_LIB_PATH}/current-os/include
         ${GTEST_INCLUDE_DIR}
         cpp_lib
         term)
 
 target_link_libraries(tkey_test
         gtest_main
-        ${OPENSSL_LIB_PATH}/current-os/lib/libssl.a
-        ${OPENSSL_LIB_PATH}/current-os/lib/libcrypto.a
+        openssl
+        openssl_crypto
         dl
         pthread
         )

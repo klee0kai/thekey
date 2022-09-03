@@ -19,6 +19,11 @@ set(SRC_FILES
         )
 
 set(OPENSSL_LIB_PATH ${PROJECT_SOURCE_DIR}/../prebuild/openssl)
+set(SYSTEM_INFO_TYPE ${CMAKE_HOST_SYSTEM_NAME}_${CMAKE_SYSTEM_PROCESSOR})
+
+include(FindOpensslLib.cmake)
+
+message(SYSTEM_INFO_TYPE = ${SYSTEM_INFO_TYPE})
 message(OPENSSL_LIB_PATH = ${OPENSSL_LIB_PATH})
 
 if (${ANDROID})

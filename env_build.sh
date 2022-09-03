@@ -39,11 +39,12 @@ function download_openssl() {
 function build_openssl_cur_os() {
   cd ${TR_LIBS}/openssl
 
-  ./config --strict-warnings no-filenames no-afalgeng threads --prefix="${TR_LIBS_BUILD}/openssl/cur"
+  ./config --strict-warnings no-filenames no-afalgeng threads --prefix="${TR_LIBS_BUILD}/openssl/${CUR_OS_UNAME}"
   make clean
-  make j8 install
+  make -j8
+  make install -j8
 
-  cd "$WORKSPACE_PATH"
+  cd "$WORKSPACE"
 }
 
 function build_openssl_android_all() {
@@ -69,7 +70,7 @@ function build_openssl_android_all() {
     make install -j8
   done
 
-  cd "$WORKSPACE_PATH"
+  cd "$WORKSPACE"
 }
 
 function build_apk() {
@@ -77,10 +78,12 @@ function build_apk() {
   mkdir -p builds
   cp app/build/outputs/apk/release/app-release.apk builds/app-release.apk
 
-   cd "$WORKSPACE_PATH"
+   cd "$WORKSPACE"
 }
 
 function build_term_app() {
+  mkdir -p builds/${CUR_OS_UNAME}
+
    cd tkcore
    rm -rf build
    mkdir -p build
@@ -89,15 +92,15 @@ function build_term_app() {
    cmake ..
    make
 
-   cd "$WORKSPACE_PATH"
+   cd "$WORKSPACE"
 
-   cp tkcore/build/tkey_test builds/tkey_test
-   cp tkcore/build/tkey builds/tkey
+   cp tkcore/build/tkey_test builds/${CUR_OS_UNAME}/tkey_test
+   cp tkcore/build/tkey builds/${CUR_OS_UNAME}/tkey
 
    #run tests
-   ./builds/tkey_test
+   "./builds/${CUR_OS_UNAME}/tkey_test"
 
-   cd "$WORKSPACE_PATH"
+   cd "$WORKSPACE"
 }
 
 
@@ -140,6 +143,7 @@ export ANDROID_NDK_VERSION=$(realpath $NDK_ROOT)
 export ANDROID_API="21"
 export PROTOBUF_VERSION="3.9.0"
 export WORKSPACE=$(pwd)
+export CUR_OS_UNAME=$(uname -sm | sed 's/ /_/g')
 
 
 mkdir -p ${TR_LIBS}

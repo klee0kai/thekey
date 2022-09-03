@@ -3,6 +3,7 @@
 /local.properties
 /.idea/*
 .idea
+builds
 third_party_libraries/**
 third_party_libraries
 

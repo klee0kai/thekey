@@ -6,17 +6,14 @@ add_executable(tkey
         main.cpp
         )
 
-message("include dirs  ${OPENSSL_LIB_PATH}/include")
+message("include dirs ${OPENSSL_LIB_PATH}/include")
 
-target_include_directories(tkey PUBLIC
-        ${OPENSSL_LIB_PATH}/include
-        cpp_lib
-        term)
+target_include_directories(tkey PUBLIC cpp_lib term)
 
 
 target_link_libraries(tkey
-        ${OPENSSL_LIB_PATH}/current-os/lib/libssl.a
-        ${OPENSSL_LIB_PATH}/current-os/lib/libcrypto.a
+        openssl
+        openssl_crypto
         dl
         pthread
         )

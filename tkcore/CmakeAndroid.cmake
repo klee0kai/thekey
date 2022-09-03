@@ -17,12 +17,10 @@
 
 
  target_include_directories(crypt-storage-lib PUBLIC
-         ${OPENSSL_LIB_PATH}/include
          cpp_lib)
 
- message(opennssllib ${OPENSSL_LIB_PATH}/android-${ANDROID_SYSROOT_ABI}/lib/libssl.a)
 
  target_link_libraries(crypt-storage-lib
-         ${OPENSSL_LIB_PATH}/android-${ANDROID_SYSROOT_ABI}/lib/libssl.a
-         ${OPENSSL_LIB_PATH}/android-${ANDROID_SYSROOT_ABI}/lib/libcrypto.a
+         openssl_android
+         openssl_android_crypto
          )
