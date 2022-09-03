@@ -8,7 +8,7 @@ import com.kee0kai.thekey.utils.adapter.ISameModel;
 
 import java.util.Objects;
 
-public class Storage implements ISameModel, ICloneable, Parcelable {
+public class Storage implements ISameModel, ICloneable, Parcelable, Comparable<Storage> {
 
     /**
      * полный путь к ранилищу
@@ -80,6 +80,11 @@ public class Storage implements ISameModel, ICloneable, Parcelable {
 
 
     @Override
+    public int compareTo(Storage o) {
+        return path != null ? path.compareTo(o.path) : -1;
+    }
+
+    @Override
     public int describeContents() {
         return 0;
     }
@@ -90,4 +95,6 @@ public class Storage implements ISameModel, ICloneable, Parcelable {
         parcel.writeString(name);
         parcel.writeString(description);
     }
+
+
 }

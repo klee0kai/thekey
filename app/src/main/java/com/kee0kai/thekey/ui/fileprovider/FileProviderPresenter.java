@@ -1,6 +1,7 @@
 package com.kee0kai.thekey.ui.fileprovider;
 
 import android.os.Environment;
+import android.text.TextUtils;
 
 import com.kee0kai.thekey.model.Storage;
 import com.kee0kai.thekey.ui.fileprovider.model.FileItem;
@@ -9,11 +10,13 @@ import com.kee0kai.thekey.utils.adapter.SimpleDiffResult;
 import com.kee0kai.thekey.utils.adapter.SimpleDiffUtilHelper;
 import com.kee0kai.thekey.utils.arch.SimplePresenter;
 import com.kee0kai.thekey.utils.arch.Threads;
+import com.kee0kai.thekey.utils.collections.ListsUtils;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -23,6 +26,7 @@ public class FileProviderPresenter extends SimplePresenter {
     private File curPath = null;
     private WorkMode mode = WorkMode.OPEN_STORAGE;
 
+    private String searchQuery = null;
     private List<FileItem> files = Collections.emptyList();
     private List<ICloneable> flatList = Collections.emptyList();
     private final SimpleDiffUtilHelper<ICloneable> flatListDiffUtil = new SimpleDiffUtilHelper();
@@ -60,7 +64,6 @@ public class FileProviderPresenter extends SimplePresenter {
         refreshData();
     }
 
-
     public boolean toUp() {
         if (Objects.equals(curPath.getAbsolutePath(), "/")
                 || curPath.getParentFile() == null
@@ -71,7 +74,27 @@ public class FileProviderPresenter extends SimplePresenter {
         return true;
     }
 
+    public void search(String query) {
+        String finalQuery = query.toLowerCase(Locale.ROOT);
+        if (Objects.equals(finalQuery, this.searchQuery))
+            return;
+        this.searchQuery = finalQuery;
+        secThread.submit(() -> {
+            if (!Objects.equals(finalQuery, this.searchQuery))
+                //search query changed
+                return;
+            flatListDiffUtil.saveOld(flatList);
+            flatList = flatList(files);
+            flatListDiffUtil.calculateWith(flatList);
+            views.refreshAllViews();
+        });
+    }
+
     //getters and setters
+    public String getSearchQuery() {
+        return searchQuery;
+    }
+
     public SimpleDiffResult<ICloneable> popFlatListChanges() {
         return flatListDiffUtil.popDiffResult(flatList);
     }
@@ -85,7 +108,10 @@ public class FileProviderPresenter extends SimplePresenter {
     }
 
     private List<ICloneable> flatList(List<FileItem> files) {
-        return new ArrayList<>(files);
+        List<FileItem> filtered = ListsUtils.filter(files, (i, it) -> TextUtils.isEmpty(searchQuery) ||
+                it.name != null && it.name.toLowerCase(Locale.ROOT).contains(searchQuery));
+        Collections.sort(filtered);
+        return new ArrayList<>(filtered);
     }
 
 

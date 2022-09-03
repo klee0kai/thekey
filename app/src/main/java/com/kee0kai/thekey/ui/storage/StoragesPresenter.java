@@ -2,6 +2,8 @@ package com.kee0kai.thekey.ui.storage;
 
 import static com.kee0kai.thekey.App.DI;
 
+import android.text.TextUtils;
+
 import androidx.recyclerview.widget.DiffUtil;
 
 import com.kee0kai.thekey.domain.StorageFilesRepository;
@@ -14,6 +16,7 @@ import com.kee0kai.thekey.utils.android.UserShortPaths;
 import com.kee0kai.thekey.utils.arch.FutureHolder;
 import com.kee0kai.thekey.utils.arch.SimplePresenter;
 import com.kee0kai.thekey.utils.arch.Threads;
+import com.kee0kai.thekey.utils.collections.ListsUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -21,6 +24,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -34,6 +39,7 @@ public class StoragesPresenter extends SimplePresenter {
 
     public final FutureHolder refreshDateFuture = new FutureHolder<>();
 
+    private String searchQuery = null;
     private long lastStartTime = 0;
     private int foundStorageCount = 0;
 
@@ -59,7 +65,6 @@ public class StoragesPresenter extends SimplePresenter {
             }));
     }
 
-
     public void delStorage(Storage storage) {
         secThread.submit(() -> {
             new File(storage.path).delete();
@@ -69,6 +74,33 @@ public class StoragesPresenter extends SimplePresenter {
 
     }
 
+
+    public void search(String query) {
+        String finalQuery = query.toLowerCase(Locale.ROOT);
+        if (Objects.equals(finalQuery, this.searchQuery))
+            return;
+        this.searchQuery = finalQuery;
+        secThread.submit(() -> {
+            if (!Objects.equals(finalQuery, this.searchQuery))
+                //search query changed
+                return;
+            flatListDiffUtil.saveOld(flatList);
+            flatList = flatList(allStorages);
+            flatListDiffUtil.calculateWith(flatList);
+            views.refreshAllViews();
+        });
+    }
+
+    //getters and setters
+    public String getSearchQuery() {
+        return searchQuery;
+    }
+
+    public SimpleDiffResult<ICloneable> popFlatListChanges() {
+        return flatListDiffUtil.popDiffResult(flatList);
+    }
+
+    //  private
     private int findStoragesOnDevice(boolean force) {
         long curTime = System.currentTimeMillis();
         if (!force && curTime - lastStartTime < RESTART_TIMEOUT)
@@ -85,14 +117,12 @@ public class StoragesPresenter extends SimplePresenter {
         return foundStorageCount;
     }
 
-    //getters and setters
-    public SimpleDiffResult<ICloneable> popFlatListChanges() {
-        return flatListDiffUtil.popDiffResult(flatList);
-    }
-
-
     private List<ICloneable> flatList(List<Storage> storages) {
-        return new ArrayList<>(storages);
+        List<Storage> filtered = ListsUtils.filter(storages, (i, it) -> TextUtils.isEmpty(searchQuery) ||
+                it.path != null && it.path.toLowerCase(Locale.ROOT).contains(searchQuery) ||
+                it.name != null && it.name.toLowerCase(Locale.ROOT).contains(searchQuery));
+        Collections.sort(filtered);
+        return new ArrayList<>(filtered);
     }
 
 }

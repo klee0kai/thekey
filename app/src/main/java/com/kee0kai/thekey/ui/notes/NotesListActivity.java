@@ -26,9 +26,6 @@ import com.kee0kai.thekey.ui.notes.notelist.NoteListFragment;
 
 public class NotesListActivity extends BaseActivity {
 
-    private final CryptStorageEngine engine = DI.engine().cryptEngine();
-    private ActivityResultLauncher<EditStorageActivityContract.EditStorageTask> editStorageLauncher;
-
     private ActivityNotesBinding binding;
 
 
@@ -39,36 +36,9 @@ public class NotesListActivity extends BaseActivity {
         setContentView(binding.getRoot());
         setSupportActionBar(binding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        editStorageLauncher = registerForActivityResult(new EditStorageActivityContract(), res -> {
-        });
-
         binding.vpFragmentsContainer.setAdapter(new FragmentsAdapter(getSupportFragmentManager(), 0));
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_notes, menu);
-        return true;
-    }
-
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.about_storage) {
-            editStorageLauncher.launch(new EditStorageActivityContract.EditStorageTask(
-                    engine.getLoggedStoragePath(), EditStoragePresenter.ChangeStorageMode.DETAILS
-            ));
-        } else if (item.getItemId() == R.id.edit_storage) {
-            editStorageLauncher.launch(new EditStorageActivityContract.EditStorageTask(
-                    engine.getLoggedStoragePath(), EditStoragePresenter.ChangeStorageMode.EDIT_LOGGED_STORAGE
-            ));
-        } else if (item.getItemId() == R.id.about_app) {
-
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     public static class FragmentsAdapter extends FragmentPagerAdapter {
 

@@ -3,18 +3,27 @@ package com.kee0kai.thekey.ui.notes.notelist;
 import static com.kee0kai.thekey.App.DI;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.kee0kai.thekey.R;
 import com.kee0kai.thekey.databinding.FragmentNotesBinding;
+import com.kee0kai.thekey.engine.CryptStorageEngine;
 import com.kee0kai.thekey.navig.InnerNavigator;
+import com.kee0kai.thekey.navig.activity_contracts.EditStorageActivityContract;
+import com.kee0kai.thekey.ui.editstorage.EditStoragePresenter;
 import com.kee0kai.thekey.ui.notes.model.NoteItem;
 import com.kee0kai.thekey.utils.adapter.CompositeAdapter;
 import com.kee0kai.thekey.utils.adapter.ICloneable;
@@ -25,22 +34,68 @@ public class NoteListFragment extends Fragment implements IRefreshView, View.OnC
 
     private final NoteListPresenter presenter = DI.presenter().noteListPresenter();
     private final InnerNavigator navigator = DI.control().innerNavigator();
+    private final CryptStorageEngine engine = DI.engine().cryptEngine();
+
 
     private final CompositeAdapter adapter = CompositeAdapter.create(
             new NoteAdapterDelegate(R.layout.item_account_note, this)
     );
+    private ActivityResultLauncher<EditStorageActivityContract.EditStorageTask> editStorageLauncher;
+
     private FragmentNotesBinding binding;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         binding = FragmentNotesBinding.inflate(inflater, container, false);
         binding.rvNotes.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.rvNotes.setAdapter(adapter);
         presenter.subscribe(this);
         presenter.init(savedInstanceState == null);
         binding.fdCreateEntry.setOnClickListener(this);
+        editStorageLauncher = registerForActivityResult(new EditStorageActivityContract(), res -> {
+        });
         return binding.getRoot();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_notes, menu);
+        MenuItem searchItem = menu.findItem(R.id.search_note);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        if (!TextUtils.isEmpty(presenter.getSearchQuery())) {
+            searchItem.expandActionView();
+            searchView.setQuery(presenter.getSearchQuery(), true);
+        }
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                presenter.search(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                presenter.search(newText);
+                return false;
+            }
+        });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.about_storage) {
+            editStorageLauncher.launch(new EditStorageActivityContract.EditStorageTask(
+                    engine.getLoggedStoragePath(), EditStoragePresenter.ChangeStorageMode.DETAILS
+            ));
+        } else if (item.getItemId() == R.id.edit_storage) {
+            editStorageLauncher.launch(new EditStorageActivityContract.EditStorageTask(
+                    engine.getLoggedStoragePath(), EditStoragePresenter.ChangeStorageMode.EDIT_LOGGED_STORAGE
+            ));
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -54,6 +109,7 @@ public class NoteListFragment extends Fragment implements IRefreshView, View.OnC
         super.onDestroyView();
         presenter.unsubscribe(this);
     }
+
 
     @Override
     public void onClick(View v) {

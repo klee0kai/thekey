@@ -40,7 +40,6 @@
     <string name="login_name">Логин</string>
     <string name="passw">Пароль</string>
     <string name="about_storage">О хранилище</string>
-    <string name="about_app">О приложении</string>
     <string name="err_input_path">Введите путь к файлу</string>
     <string name="tkey_format">.ckey</string>
     <string name="cancel">Отмена</string>

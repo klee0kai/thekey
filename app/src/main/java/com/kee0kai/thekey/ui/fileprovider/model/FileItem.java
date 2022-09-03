@@ -5,7 +5,7 @@ import com.kee0kai.thekey.utils.adapter.ISameModel;
 
 import java.util.Objects;
 
-public class FileItem implements ISameModel, ICloneable {
+public class FileItem implements ISameModel, ICloneable, Comparable<FileItem> {
 
     public final String name;
     public final boolean isFile;
@@ -36,5 +36,12 @@ public class FileItem implements ISameModel, ICloneable {
     @Override
     public int hashCode() {
         return Objects.hash(name, isFile);
+    }
+
+    @Override
+    public int compareTo(FileItem o) {
+        int c1 = Boolean.compare(isFile, o.isFile);
+        if (c1 != 0) return c1;
+        return name != null ? name.compareTo(o.name) : -1;
     }
 }

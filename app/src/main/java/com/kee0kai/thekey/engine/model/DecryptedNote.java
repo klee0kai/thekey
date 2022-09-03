@@ -1,12 +1,14 @@
 package com.kee0kai.thekey.engine.model;
 
+import android.text.TextUtils;
+
 import com.kee0kai.thekey.utils.adapter.ICloneable;
 import com.kee0kai.thekey.utils.adapter.ISameModel;
 
 import java.util.Arrays;
 import java.util.Objects;
 
-public class DecryptedNote implements ICloneable, ISameModel {
+public class DecryptedNote implements ICloneable, ISameModel, Comparable<DecryptedNote> {
 
     public String site = null;
     public String login = null;
@@ -76,5 +78,10 @@ public class DecryptedNote implements ICloneable, ISameModel {
     @Override
     public boolean isSame(Object ob) {
         return equals(ob);
+    }
+
+    @Override
+    public int compareTo(DecryptedNote o) {
+        return site != null ? site.compareTo(o.site) : -1;
     }
 }

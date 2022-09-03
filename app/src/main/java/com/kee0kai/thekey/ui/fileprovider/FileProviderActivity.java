@@ -7,15 +7,18 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -42,9 +45,9 @@ public class FileProviderActivity extends BaseActivity implements IRefreshView, 
             new FileAdapterDelegate(R.layout.item_file, this)
     );
 
-    private WeakReference<View> dlgView;
+    private WeakReference<View> dlgView = null;
 
-    private ActivityFileproviderBinding binding;
+    private ActivityFileproviderBinding binding = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,6 +72,25 @@ public class FileProviderActivity extends BaseActivity implements IRefreshView, 
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_search_only, menu);
+        MenuItem searchItem = menu.findItem(R.id.search_storage);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        if (!TextUtils.isEmpty(presenter.getSearchQuery())) {
+            searchItem.expandActionView();
+            searchView.setQuery(presenter.getSearchQuery(), true);
+        }
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                presenter.search(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                presenter.search(newText);
+                return false;
+            }
+        });
         return true;
     }
 

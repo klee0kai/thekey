@@ -7,13 +7,16 @@ import android.content.ClipData;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ShareCompat;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -80,6 +83,25 @@ public class StoragesActivity extends BaseActivity implements IRefreshView, Stor
     public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_storages, menu);
+        MenuItem searchItem = menu.findItem(R.id.search_storage);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        if (!TextUtils.isEmpty(presenter.getSearchQuery())) {
+            searchItem.expandActionView();
+            searchView.setQuery(presenter.getSearchQuery(), true);
+        }
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                presenter.search(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                presenter.search(newText);
+                return false;
+            }
+        });
         return true;
     }
 
@@ -135,7 +157,6 @@ public class StoragesActivity extends BaseActivity implements IRefreshView, Stor
     @Override
     public void refreshUI() {
         binding.pbUpdatestorageProgress.setVisibility(presenter.refreshDateFuture.isInProcess() ? View.VISIBLE : View.GONE);
-
         presenter.popFlatListChanges().applyTo(adapter);
     }
 
