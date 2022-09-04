@@ -12,10 +12,4 @@
 #define MAX(a, b) (a>b?a:b)
 #define MIN(a, b) (a<b?a:b)
 
-#ifndef DEBUG_TEST
-#define static_rls static
-#else
-#define static_rls
-#endif
-
 #endif //THEKEY_DEF_HEADER_H

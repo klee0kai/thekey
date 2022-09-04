@@ -49,8 +49,8 @@ static void memsalt(unsigned char *in, int len, int blockSize);
 
 static void memdesalt(unsigned char *in, int len, int blockSize);
 
-static_rls void saltHeader(SaltTextHeader *header, size_t lenRing);// соление заголовка соления
-static_rls void desaltgHeader(SaltTextHeader *header, size_t lenRing);// соление заголовка соления
+void saltHeader(SaltTextHeader *header, size_t lenRing);// соление заголовка соления
+void desaltgHeader(SaltTextHeader *header, size_t lenRing);// соление заголовка соления
 
 static void randmem(unsigned char *in, int len);
 
@@ -267,7 +267,7 @@ static void memdesalt(unsigned char *in, int len, int blockSize) {
 }
 
 
-static_rls void saltHeader(SaltTextHeader *header, size_t lenRing) {
+void saltHeader(SaltTextHeader *header, size_t lenRing) {
     long charMax = TYPE_MAX(sizeof(char));
     long uint32Max = TYPE_MAX(sizeof(uint32_t));
 
@@ -283,7 +283,7 @@ static_rls void saltHeader(SaltTextHeader *header, size_t lenRing) {
     header->lenCoding = (unsigned char) SALT_IN_RING(header->lenCoding, charMax, 2L);
 }
 
-static_rls void desaltgHeader(SaltTextHeader *header, size_t lenRing) {
+void desaltgHeader(SaltTextHeader *header, size_t lenRing) {
     header->lenCoding %= 2;
     header->coding %= 5;
     if (header->lenCoding == ENC_LEN_PASSW)
