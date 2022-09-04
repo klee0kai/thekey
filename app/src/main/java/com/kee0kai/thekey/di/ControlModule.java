@@ -13,7 +13,7 @@ public class ControlModule {
         return new InnerNavigator();
     }
 
-    @Singleton
+    @Singleton(cache = Singleton.CacheType.STRONG)
     public ActivitySecureManager activitySecureManager() {
         return new ActivitySecureManager();
     }

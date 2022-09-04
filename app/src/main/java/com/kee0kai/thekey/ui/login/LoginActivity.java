@@ -21,6 +21,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 
+import com.github.klee0kai.stone.Stone;
 import com.kee0kai.thekey.App;
 import com.kee0kai.thekey.R;
 import com.kee0kai.thekey.databinding.ActivityLoginBinding;
@@ -85,6 +86,7 @@ public class LoginActivity extends BaseActivity implements IRefreshView, View.On
         checkPermissions();
         presenter.unlogin();
         binding.edPassw.setText("");
+        Stone.gc(true);
     }
 
     @Override

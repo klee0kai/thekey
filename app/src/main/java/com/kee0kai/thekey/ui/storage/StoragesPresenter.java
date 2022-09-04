@@ -60,12 +60,22 @@ public class StoragesPresenter extends SimplePresenter {
                 try {
                     views.refreshAllViews();   //show loading
 
-                    findStoragesOnDevice(force);
+                    //load from repository current list
                     flatListDiffUtil.saveOld(flatList);
-
                     this.allStorages = Arrays.asList(rep.getStorages());
                     this.flatList = flatList(allStorages);
                     flatListDiffUtil.calculateWith(flatList);
+                    views.refreshAllViews();   //show loading and current list
+
+
+                    int found = findStoragesOnDevice(force);
+                    if (found > 0) {
+                        //update new list
+                        flatListDiffUtil.saveOld(flatList);
+                        this.allStorages = Arrays.asList(rep.getStorages());
+                        this.flatList = flatList(allStorages);
+                        flatListDiffUtil.calculateWith(flatList);
+                    }
                 } finally {
                     views.refreshAllViews(10);
                 }
@@ -115,6 +125,10 @@ public class StoragesPresenter extends SimplePresenter {
 
     public String getDeletingStoragePath() {
         return deletingStoragePath;
+    }
+
+    public List<ICloneable> getFlatList() {
+        return flatList;
     }
 
     public SimpleDiffResult<ICloneable> popFlatListChanges() {

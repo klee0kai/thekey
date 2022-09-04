@@ -195,7 +195,8 @@ public class StoragesActivity extends BaseActivity implements IRefreshView, Stor
 
     @Override
     public void refreshUI() {
-        binding.pbUpdatestorageProgress.setVisibility(presenter.refreshDateFuture.isInProcess() ? View.VISIBLE : View.GONE);
+        boolean isEmptyList = presenter.getFlatList().isEmpty();
+        binding.pbUpdatestorageProgress.setVisibility(presenter.refreshDateFuture.isInProcess() && isEmptyList ? View.VISIBLE : View.GONE);
         presenter.popFlatListChanges().applyTo(adapter);
     }
 
