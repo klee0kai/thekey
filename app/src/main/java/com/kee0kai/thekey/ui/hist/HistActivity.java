@@ -18,11 +18,13 @@ import com.kee0kai.thekey.utils.arch.IRefreshView;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 
 public class HistActivity extends BaseActivity implements IRefreshView {
 
-
-    private final HistPresenter presenter = DI.presenter().histPresenter();
+    @Inject
+    public HistPresenter presenter;
 
     private final ListDelegationAdapter<List<Object>> adapter = CompositeAdapter.create(
             new PasswAdapterDelegate(R.layout.item_passw)
@@ -33,6 +35,7 @@ public class HistActivity extends BaseActivity implements IRefreshView {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DI.inject(this);
         binding = ActivityHistoryBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         setSupportActionBar(binding.toolbar);

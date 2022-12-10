@@ -4,7 +4,6 @@ import static com.kee0kai.thekey.App.DI;
 
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
@@ -25,14 +24,19 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 
 public class NoteActivity extends BaseActivity implements IRefreshView, View.OnLayoutChangeListener, View.OnClickListener {
 
     public static final String NOTE_PTR_EXTRA = "n_ptr";
 
     private final DateFormat dateFormat = TimeFormats.simpleDateFormat();
-    private final NotePresenter presenter = DI.presenter().notePresenter();
-    private final InnerNavigator navigator = DI.control().innerNavigator();
+
+    @Inject
+    public NotePresenter presenter;
+    @Inject
+    public InnerNavigator navigator;
 
     private final EmptyTextWatcher tvWatcherUpdate = new EmptyTextWatcher() {
         @Override
@@ -48,6 +52,7 @@ public class NoteActivity extends BaseActivity implements IRefreshView, View.OnL
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DI.inject(this);
         binding = ActivityAccountNoteBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         setSupportActionBar(binding.toolbar);

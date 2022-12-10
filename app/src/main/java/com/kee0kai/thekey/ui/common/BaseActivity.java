@@ -13,13 +13,17 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.kee0kai.thekey.managers.ActivitySecureManager;
 
+import javax.inject.Inject;
+
 public class BaseActivity extends AppCompatActivity {
 
-    private final ActivitySecureManager activitySecureManager = DI.control().activitySecureManager();
+    @Inject
+    public ActivitySecureManager activitySecureManager ;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DI.inject(this);
         if (getSecType() == SecureType.SECURE)
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         activitySecureManager.addActivity(this);

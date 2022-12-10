@@ -27,17 +27,20 @@ import com.kee0kai.thekey.ui.dialogs.AcceptDialogFragment;
 import com.kee0kai.thekey.ui.editstorage.EditStoragePresenter;
 import com.kee0kai.thekey.ui.notes.model.NoteItem;
 import com.kee0kai.thekey.utils.adapter.CompositeAdapter;
-import com.kee0kai.thekey.utils.adapter.ICloneable;
-import com.kee0kai.thekey.utils.adapter.SimpleDiffResult;
 import com.kee0kai.thekey.utils.arch.IRefreshView;
+
+import javax.inject.Inject;
 
 public class NoteListFragment extends Fragment implements IRefreshView, View.OnClickListener, NoteAdapterDelegate.INoteListener, AcceptDialogFragment.IAcceptListener {
 
     private static final String DEL_ACCEPT_DLG_TAG = "del_note_dlg";
 
-    private final NoteListPresenter presenter = DI.presenter().noteListPresenter();
-    private final InnerNavigator navigator = DI.control().innerNavigator();
-    private final CryptStorageEngine engine = DI.engine().cryptEngine();
+    @Inject
+    public NoteListPresenter presenter;
+    @Inject
+    public InnerNavigator navigator;
+    @Inject
+    public CryptStorageEngine engine;
 
 
     private final CompositeAdapter adapter = CompositeAdapter.create(
@@ -51,6 +54,7 @@ public class NoteListFragment extends Fragment implements IRefreshView, View.OnC
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         setHasOptionsMenu(true);
+        DI.inject(this);
         binding = FragmentNotesBinding.inflate(inflater, container, false);
         binding.rvNotes.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.rvNotes.setAdapter(adapter);

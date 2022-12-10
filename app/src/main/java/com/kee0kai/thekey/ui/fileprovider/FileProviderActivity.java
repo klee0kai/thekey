@@ -34,13 +34,17 @@ import com.kee0kai.thekey.utils.views.ViewUtils;
 import java.io.File;
 import java.lang.ref.WeakReference;
 
+import javax.inject.Inject;
+
 
 public class FileProviderActivity extends BaseActivity implements IRefreshView, View.OnClickListener, FileAdapterDelegate.IFileAdapterListener, CreateFileDialogFragment.ICreateFileListener {
 
     public static final String WORK_MODE_EXTRA = "md";
     private static final String INPUT_FLNAME_DLG_TAG = "flname_dlg";
 
-    private final FileProviderPresenter presenter = DI.presenter().fileProviderPresenter();
+    @Inject
+    public FileProviderPresenter presenter;
+
     private final CompositeAdapter adapter = CompositeAdapter.create(
             new FileAdapterDelegate(R.layout.item_file, this)
     );
@@ -51,6 +55,7 @@ public class FileProviderActivity extends BaseActivity implements IRefreshView, 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DI.inject(this);
         binding = ActivityFileproviderBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         setSupportActionBar(binding.toolbar);

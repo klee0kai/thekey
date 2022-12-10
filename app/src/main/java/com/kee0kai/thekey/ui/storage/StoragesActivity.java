@@ -39,10 +39,15 @@ import com.kee0kai.thekey.utils.arch.IRefreshView;
 import java.io.File;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class StoragesActivity extends BaseActivity implements IRefreshView, StorageAdapterDelegate.IStorageListener, View.OnClickListener, AcceptDialogFragment.IAcceptListener {
 
     private static final String DEL_ACCEPT_DLG_TAG = "del_storage_dlg";
-    private final StoragesPresenter presenter = DI.presenter().storagesPresenter();
+
+    @Inject
+    public StoragesPresenter presenter;
+
 
     private final ListDelegationAdapter<List<Object>> adapter = CompositeAdapter.create(
             new StorageAdapterDelegate(R.layout.item_storage, this)
@@ -62,6 +67,7 @@ public class StoragesActivity extends BaseActivity implements IRefreshView, Stor
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DI.inject(this);
         binding = ActivityStoragesBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         setSupportActionBar(binding.toolbar);

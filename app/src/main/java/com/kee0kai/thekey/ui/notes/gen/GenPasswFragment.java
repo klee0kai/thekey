@@ -19,16 +19,21 @@ import com.kee0kai.thekey.navig.InnerNavigator;
 import com.kee0kai.thekey.utils.arch.IRefreshView;
 import com.kee0kai.thekey.utils.views.ViewUtils;
 
+import javax.inject.Inject;
+
 public class GenPasswFragment extends Fragment implements IRefreshView, View.OnClickListener, CompoundButton.OnCheckedChangeListener, Slider.OnChangeListener {
 
-    private final GenPasswPresenter presenter = DI.presenter().genPasswPresenter();
-    private final InnerNavigator navigator = DI.control().innerNavigator();
+    @Inject
+    public GenPasswPresenter presenter;
+    @Inject
+    public InnerNavigator navigator;
 
     private FragmentGenerationBinding binding;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        DI.inject(this);
         binding = FragmentGenerationBinding.inflate(inflater, container, false);
         presenter.subscribe(this);
         presenter.init();

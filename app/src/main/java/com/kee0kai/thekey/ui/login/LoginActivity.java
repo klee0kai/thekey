@@ -1,6 +1,5 @@
 package com.kee0kai.thekey.ui.login;
 
-import static android.provider.Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION;
 import static com.kee0kai.thekey.App.DI;
 
 import android.Manifest;
@@ -21,7 +20,6 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 
-import com.github.klee0kai.stone.Stone;
 import com.kee0kai.thekey.App;
 import com.kee0kai.thekey.R;
 import com.kee0kai.thekey.databinding.ActivityLoginBinding;
@@ -34,14 +32,16 @@ import com.kee0kai.thekey.utils.android.UserShortPaths;
 import com.kee0kai.thekey.utils.arch.IRefreshView;
 import com.kee0kai.thekey.utils.views.ViewUtils;
 
-import java.security.spec.ECField;
+import javax.inject.Inject;
 
 public class LoginActivity extends BaseActivity implements IRefreshView, View.OnClickListener {
 
     private static final String[] PERMISSIONS = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
-    private final LoginPresenter presenter = DI.presenter().loginPresenter();
-    private final InnerNavigator navigator = DI.control().innerNavigator();
+    @Inject
+    public LoginPresenter presenter;
+    @Inject
+    public InnerNavigator navigator;
 
     private boolean permRegDone = false;
     private ActivityLoginBinding binding;
@@ -57,6 +57,7 @@ public class LoginActivity extends BaseActivity implements IRefreshView, View.On
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DI.inject(this);
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         presenter.subscribe(this);

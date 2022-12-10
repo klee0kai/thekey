@@ -23,9 +23,12 @@ import com.kee0kai.thekey.utils.arch.IRefreshView;
 import com.kee0kai.thekey.utils.views.EmptyTextWatcher;
 import com.kee0kai.thekey.utils.views.ViewUtils;
 
+import javax.inject.Inject;
+
 public class EditStorageActivity extends BaseActivity implements IRefreshView, View.OnFocusChangeListener, View.OnClickListener {
 
-    private final EditStoragePresenter presenter = DI.presenter().editStoragePresenter();
+    @Inject
+    public EditStoragePresenter presenter;
 
     private ActivityStorageCreateBinding binding;
 
@@ -47,6 +50,7 @@ public class EditStorageActivity extends BaseActivity implements IRefreshView, V
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DI.inject(this);
         binding = ActivityStorageCreateBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         setSupportActionBar(binding.toolbar);
