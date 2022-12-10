@@ -1,7 +1,7 @@
 package com.kee0kai.thekey.di;
 
 import com.github.klee0kai.stone.annotations.component.Component;
-import com.github.klee0kai.stone.annotations.component.GcAllScope;
+import com.github.klee0kai.stone.annotations.component.GcSoftScope;
 import com.github.klee0kai.stone.interfaces.IComponent;
 
 @Component
@@ -19,7 +19,7 @@ public interface AppComponent extends IComponent, IAppComponentInject {
 
     PresenterModule presenter();
 
-    @GcAllScope
-    void gcAll();
+    @GcSoftScope
+    void gcAllSoftRefs();
 
 }

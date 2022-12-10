@@ -87,7 +87,7 @@ public class LoginActivity extends BaseActivity implements IRefreshView, View.On
         checkPermissions();
         presenter.unlogin();
         binding.edPassw.setText("");
-        DI.gcAll();
+        DI.gcAllSoftRefs();
     }
 
     @Override
