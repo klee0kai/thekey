@@ -11,6 +11,7 @@ import androidx.lifecycle.OnLifecycleEvent;
 import androidx.lifecycle.ProcessLifecycleOwner;
 
 import com.github.klee0kai.stone.Stone;
+import com.kee0kai.thekey.App;
 import com.kee0kai.thekey.ui.common.BaseActivity;
 import com.kee0kai.thekey.utils.collections.WeakListCollection;
 
@@ -31,7 +32,7 @@ public class ActivitySecureManager implements LifecycleObserver {
                     }
                 }
                 openedActivities.clearNulls(null);
-                Stone.gc(true);
+                App.DI.gcAll();
             }
         });
     }

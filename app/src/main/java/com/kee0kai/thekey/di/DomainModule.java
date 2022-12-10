@@ -1,21 +1,17 @@
 package com.kee0kai.thekey.di;
 
-import com.github.klee0kai.stone.annotations.Module;
-import com.github.klee0kai.stone.annotations.Singleton;
+import com.github.klee0kai.stone.annotations.module.Module;
+import com.github.klee0kai.stone.annotations.module.Provide;
 import com.kee0kai.thekey.domain.AppSettingsRepository;
 import com.kee0kai.thekey.domain.StorageFilesRepository;
 
 @Module
-public class DomainModule {
+public interface DomainModule {
 
-    @Singleton
-    public AppSettingsRepository appSettingsRepository() {
-        return new AppSettingsRepository();
-    }
+    @Provide
+    public AppSettingsRepository appSettingsRepository();
 
-    @Singleton
-    public StorageFilesRepository storageFilesRepository() {
-        return new StorageFilesRepository();
-    }
+    @Provide
+    public StorageFilesRepository storageFilesRepository();
 
 }

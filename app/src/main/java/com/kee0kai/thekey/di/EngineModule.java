@@ -1,21 +1,17 @@
 package com.kee0kai.thekey.di;
 
-import com.github.klee0kai.stone.annotations.Module;
-import com.github.klee0kai.stone.annotations.Singleton;
+import com.github.klee0kai.stone.annotations.module.Module;
+import com.github.klee0kai.stone.annotations.module.Provide;
 import com.kee0kai.thekey.engine.CryptStorageEngine;
 import com.kee0kai.thekey.engine.FindStorageEngine;
 
 @Module
-public class EngineModule {
+public interface EngineModule {
 
-    @Singleton
-    public CryptStorageEngine cryptEngine() {
-        return new CryptStorageEngine();
-    }
+    @Provide
+    public CryptStorageEngine cryptEngine();
 
-    @Singleton
-    public FindStorageEngine findStorageEngine() {
-        return new FindStorageEngine();
-    }
+    @Provide
+    public FindStorageEngine findStorageEngine();
 
 }

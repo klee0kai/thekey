@@ -1,7 +1,7 @@
 package com.kee0kai.thekey.di;
 
-import com.github.klee0kai.stone.annotations.Module;
-import com.github.klee0kai.stone.annotations.Singleton;
+import com.github.klee0kai.stone.annotations.module.Module;
+import com.github.klee0kai.stone.annotations.module.Provide;
 import com.kee0kai.thekey.ui.editstorage.EditStoragePresenter;
 import com.kee0kai.thekey.ui.fileprovider.FileProviderPresenter;
 import com.kee0kai.thekey.ui.hist.HistPresenter;
@@ -12,46 +12,30 @@ import com.kee0kai.thekey.ui.notes.notelist.NoteListPresenter;
 import com.kee0kai.thekey.ui.storage.StoragesPresenter;
 
 @Module
-public class PresenterModule {
+public interface PresenterModule {
 
-    @Singleton(cache = Singleton.CacheType.WEAK)
-    public LoginPresenter loginPresenter() {
-        return new LoginPresenter();
-    }
+    @Provide(cache = Provide.CacheType.Weak)
+    public LoginPresenter loginPresenter();
 
-    @Singleton(cache = Singleton.CacheType.WEAK)
-    public StoragesPresenter storagesPresenter() {
-        return new StoragesPresenter();
-    }
+    @Provide(cache = Provide.CacheType.Weak)
+    public StoragesPresenter storagesPresenter();
 
-    @Singleton(cache = Singleton.CacheType.WEAK)
-    public EditStoragePresenter editStoragePresenter() {
-        return new EditStoragePresenter();
-    }
+    @Provide(cache = Provide.CacheType.Weak)
+    public EditStoragePresenter editStoragePresenter();
 
-    @Singleton(cache = Singleton.CacheType.WEAK)
-    public NoteListPresenter noteListPresenter() {
-        return new NoteListPresenter();
-    }
+    @Provide(cache = Provide.CacheType.Weak)
+    public NoteListPresenter noteListPresenter();
 
-    @Singleton(cache = Singleton.CacheType.WEAK)
-    public GenPasswPresenter genPasswPresenter() {
-        return new GenPasswPresenter();
-    }
+    @Provide(cache = Provide.CacheType.Weak)
+    public GenPasswPresenter genPasswPresenter();
 
-    @Singleton(cache = Singleton.CacheType.WEAK)
-    public HistPresenter histPresenter() {
-        return new HistPresenter();
-    }
+    @Provide(cache = Provide.CacheType.Weak)
+    public HistPresenter histPresenter();
 
-    @Singleton(cache = Singleton.CacheType.WEAK)
-    public NotePresenter notePresenter() {
-        return new NotePresenter();
-    }
+    @Provide(cache = Provide.CacheType.Weak)
+    public NotePresenter notePresenter();
 
-    @Singleton(cache = Singleton.CacheType.WEAK)
-    public FileProviderPresenter fileProviderPresenter() {
-        return new FileProviderPresenter();
-    }
+    @Provide(cache = Provide.CacheType.Weak)
+    public FileProviderPresenter fileProviderPresenter();
 
 }

@@ -3,14 +3,14 @@ plugins {
 }
 
 android {
-    compileSdk 32
+    compileSdk 33
     ndkVersion "21.4.7075529"
 
 
     defaultConfig {
         applicationId "com.kee0kai.thekey"
         minSdk 21
-        targetSdk 32
+        targetSdk 33
         versionCode 1
         versionName "0.0.3"
 
@@ -53,24 +53,24 @@ apply from: '../signing.gradle'
 
 dependencies {
 
-    implementation 'androidx.appcompat:appcompat:1.5.0'
-    implementation 'com.google.android.material:material:1.6.1'
+    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'com.google.android.material:material:1.7.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
 
     //stone
-    implementation 'com.github.klee0kai.stone:stone_lib:0.0.4'
-    annotationProcessor 'com.github.klee0kai.stone:stone_processor:0.0.4'
+    implementation 'com.github.klee0kai.stone:stone_lib:0.0.6'
+    annotationProcessor 'com.github.klee0kai.stone:stone_processor:0.0.6'
 
     // room
     implementation "androidx.room:room-runtime:2.4.3"
     annotationProcessor "androidx.room:room-compiler:2.4.3"
 
     //adapter delegate
-    api 'com.hannesdorfmann:adapterdelegates3:3.1.0'
+    implementation 'com.hannesdorfmann:adapterdelegates3:3.1.0'
 
 
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.4'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
 }

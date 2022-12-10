@@ -19,8 +19,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        DI.init(this, new ProviderModule(), new EngineModule(), new DomainModule(),
-                new ControlModule(), new PresenterModule());
+        DI.bind(this);
     }
 
 }

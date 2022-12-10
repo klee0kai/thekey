@@ -1,22 +1,18 @@
 package com.kee0kai.thekey.di;
 
-import com.github.klee0kai.stone.annotations.Module;
-import com.github.klee0kai.stone.annotations.Singleton;
+import com.github.klee0kai.stone.annotations.module.Module;
+import com.github.klee0kai.stone.annotations.module.Provide;
 import com.kee0kai.thekey.managers.ActivitySecureManager;
 import com.kee0kai.thekey.navig.InnerNavigator;
 
 @Module
-public class ControlModule {
+public interface ControlModule {
 
-    @Singleton
-    public InnerNavigator innerNavigator() {
-        return new InnerNavigator();
-    }
+    @Provide
+    public InnerNavigator innerNavigator();
 
-    @Singleton(cache = Singleton.CacheType.STRONG)
-    public ActivitySecureManager activitySecureManager() {
-        return new ActivitySecureManager();
-    }
+    @Provide(cache = Provide.CacheType.Strong)
+    public ActivitySecureManager activitySecureManager();
 
 
 }
