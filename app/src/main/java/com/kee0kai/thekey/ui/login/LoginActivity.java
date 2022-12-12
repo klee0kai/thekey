@@ -20,6 +20,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 
+import com.github.klee0kai.stone.AndroidStone;
 import com.kee0kai.thekey.App;
 import com.kee0kai.thekey.R;
 import com.kee0kai.thekey.databinding.ActivityLoginBinding;
@@ -57,7 +58,7 @@ public class LoginActivity extends BaseActivity implements IRefreshView, View.On
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DI.inject(this);
+        DI.inject(this, AndroidStone.lifeCycleOwner(getLifecycle()));
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         presenter.subscribe(this);

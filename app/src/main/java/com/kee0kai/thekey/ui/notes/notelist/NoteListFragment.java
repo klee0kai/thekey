@@ -18,6 +18,7 @@ import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.github.klee0kai.stone.AndroidStone;
 import com.kee0kai.thekey.R;
 import com.kee0kai.thekey.databinding.FragmentNotesBinding;
 import com.kee0kai.thekey.engine.CryptStorageEngine;
@@ -54,7 +55,7 @@ public class NoteListFragment extends Fragment implements IRefreshView, View.OnC
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         setHasOptionsMenu(true);
-        DI.inject(this);
+        DI.inject(this, AndroidStone.lifeCycleOwner(getLifecycle()));
         binding = FragmentNotesBinding.inflate(inflater, container, false);
         binding.rvNotes.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.rvNotes.setAdapter(adapter);

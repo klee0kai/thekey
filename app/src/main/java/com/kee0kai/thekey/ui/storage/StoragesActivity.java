@@ -22,6 +22,7 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.github.klee0kai.stone.AndroidStone;
 import com.hannesdorfmann.adapterdelegates3.ListDelegationAdapter;
 import com.kee0kai.thekey.App;
 import com.kee0kai.thekey.R;
@@ -67,7 +68,7 @@ public class StoragesActivity extends BaseActivity implements IRefreshView, Stor
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DI.inject(this);
+        DI.inject(this, AndroidStone.lifeCycleOwner(getLifecycle()));
         binding = ActivityStoragesBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         setSupportActionBar(binding.toolbar);

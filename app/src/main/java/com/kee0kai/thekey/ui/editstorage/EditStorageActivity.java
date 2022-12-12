@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.Nullable;
 
+import com.github.klee0kai.stone.AndroidStone;
 import com.kee0kai.thekey.App;
 import com.kee0kai.thekey.R;
 import com.kee0kai.thekey.databinding.ActivityStorageCreateBinding;
@@ -50,7 +51,7 @@ public class EditStorageActivity extends BaseActivity implements IRefreshView, V
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DI.inject(this);
+        DI.inject(this, AndroidStone.lifeCycleOwner(getLifecycle()));
         binding = ActivityStorageCreateBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         setSupportActionBar(binding.toolbar);

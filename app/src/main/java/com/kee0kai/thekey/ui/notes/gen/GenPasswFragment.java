@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.github.klee0kai.stone.AndroidStone;
 import com.google.android.material.slider.Slider;
 import com.kee0kai.thekey.R;
 import com.kee0kai.thekey.databinding.FragmentGenerationBinding;
@@ -33,7 +34,7 @@ public class GenPasswFragment extends Fragment implements IRefreshView, View.OnC
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        DI.inject(this);
+        DI.inject(this, AndroidStone.lifeCycleOwner(getLifecycle()));
         binding = FragmentGenerationBinding.inflate(inflater, container, false);
         presenter.subscribe(this);
         presenter.init();

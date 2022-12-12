@@ -59,8 +59,8 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
 
     //stone
-    implementation 'com.github.klee0kai.stone:stone_lib:0.0.7'
-    annotationProcessor 'com.github.klee0kai.stone:stone_processor:0.0.7'
+    implementation 'com.github.klee0kai.stone:android_lib:0.0.10'
+    annotationProcessor 'com.github.klee0kai.stone:stone_processor:0.0.10'
 
     // room
     implementation "androidx.room:room-runtime:2.4.3"

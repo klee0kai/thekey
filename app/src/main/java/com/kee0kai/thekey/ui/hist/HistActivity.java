@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.github.klee0kai.stone.AndroidStone;
 import com.hannesdorfmann.adapterdelegates3.ListDelegationAdapter;
 import com.kee0kai.thekey.R;
 import com.kee0kai.thekey.databinding.ActivityHistoryBinding;
@@ -35,7 +36,7 @@ public class HistActivity extends BaseActivity implements IRefreshView {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DI.inject(this);
+        DI.inject(this, AndroidStone.lifeCycleOwner(getLifecycle()));
         binding = ActivityHistoryBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         setSupportActionBar(binding.toolbar);
