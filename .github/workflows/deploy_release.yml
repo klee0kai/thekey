@@ -1,0 +1,59 @@
+name: Deploy Release
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'release/**'
+      - 'releases/**'
+
+jobs:
+  gh_release_diff:
+    name: Collect Changes with Master
+    runs-on: ubuntu-latest
+    if: ${{ always() }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          lfs: true
+      - uses: klee0kai/screwdriver@master
+        with:
+          gh_api_token: ${{ secrets.SECRETS_GH_API_TOKEN }}
+          cmd: "gh_release_diff  -l -d --summary -w changes.md"
+
+      - name: Upload changes artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: changes
+          path: |
+            ./changes.md
+
+
+  build_and_artifact:
+    name: Build and Artifact
+    runs-on: ubuntu-latest
+    if: ${{ always() }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: gradle
+      - name: Grant execute permission for env_build.sh
+        run: chmod +x env_build.sh
+
+      - name: Build Release
+        run: ./env_build.sh build_term_app
+
+      - name: Build Release
+        run: ./env_build.sh build_apk
+
+      - name: Upload changes artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: artifacts
+          path: |
+            ./builds

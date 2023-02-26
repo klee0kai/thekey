@@ -1,0 +1,29 @@
+name: Deploy Prebuild
+
+on:
+  workflow_dispatch:
+
+jobs:
+  prebuild_openssl:
+    name: Build OpenSSL lib
+    runs-on: ubuntu-latest
+    if: ${{ always() }}
+    steps:
+      - name: Grant execute permission for env_build.sh
+        run: chmod +x env_build.sh
+
+      - name: Download OpenSSL
+        run: ./env_build.sh download_openssl
+
+      - name: Build OpenSSL for curOS
+        run: ./env_build.sh build_openssl_cur_os
+
+      - name: Build OpenSSL for Android
+        run: ./env_build.sh build_openssl_android_all
+
+      - name: Upload OpenSSL libs
+        uses: actions/upload-artifact@v3
+        with:
+          name: openssl
+          path: |
+            ./third_party_libraries/build
