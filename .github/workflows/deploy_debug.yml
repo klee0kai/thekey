@@ -13,7 +13,7 @@ jobs:
         with:
           fetch-depth: 0
           lfs: true
-      - uses: klee0kai/screwdriver@master
+      - uses: klee0kai/screwdriver@dev
         with:
           gh_api_token: ${{ secrets.SECRETS_GH_API_TOKEN }}
           cmd: "hello_world -l -d --summary"
