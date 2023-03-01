@@ -10,6 +10,20 @@ on:
       - 'dev'
 
 jobs:
+
+  term_tests:
+    name: Run Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/prepare
+        with:
+          decrypt_key: ${{ secrets.ENCRYPT_KEY }}
+
+      - name: Build and test
+        run: ./env_build.sh build_term_app
+
+
   app_tests:
     name: Run Unit Tests
     runs-on: ubuntu-latest
