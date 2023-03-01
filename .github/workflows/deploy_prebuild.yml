@@ -1,0 +1,31 @@
+name: Deploy Prebuild
+
+on:
+  workflow_dispatch:
+
+jobs:
+  prebuild_openssl:
+    name: Build OpenSSL lib
+    runs-on: ubuntu-latest
+    if: ${{ always() }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/prepare
+        with:
+          decrypt_key: ${{ secrets.ENCRYPT_KEY }}
+
+      - name: Download OpenSSL
+        run: download_openssl
+
+      - name: Build OpenSSL for curOS
+        run: build_openssl_cur_os
+
+      - name: Build OpenSSL for Android
+        run: build_openssl_android_all
+
+      - name: Upload OpenSSL libs
+        uses: actions/upload-artifact@v3
+        with:
+          name: openssl
+          path: |
+            ./third_party_libraries/build
