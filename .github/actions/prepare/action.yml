@@ -1,5 +1,10 @@
 name: 'Prepare theKey Project for run'
 description: 'The Key Prepare scripts'
+inputs:
+  decrypt_key:
+    description: 'Decrypt Key'
+    required: true
+    default: ''
 runs:
   using: "composite"
   steps:
@@ -13,10 +18,10 @@ runs:
     - name: Decrypt files
       uses: klee0kai/screwdriver@dev
       with:
-        cmd: "decrypt_file --key ${{ secrets.ENCRYPT_KEY }} --in_file ./apkSert.jks.encrypted --out_file ./apkSert.jks"
+        cmd: "decrypt_file --key ${{ inputs.decrypt_key }} --in_file ./apkSert.jks.encrypted --out_file ./apkSert.jks"
     - uses: klee0kai/screwdriver@dev
       with:
-        cmd: "decrypt_file --key ${{ secrets.ENCRYPT_KEY }} --in_file ./keystore.properties.encrypted --out_file ./keystore.properties"
+        cmd: "decrypt_file --key ${{ inputs.decrypt_key }} --in_file ./keystore.properties.encrypted --out_file ./keystore.properties"
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
