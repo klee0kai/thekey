@@ -36,7 +36,7 @@ jobs:
     if: ${{ always() }}
     steps:
       - uses: actions/checkout@v3
-      - uses: ./.github/actions/prepare.yml
+      - uses: ./.github/actions/prepare
 
       - name: Build Release
         run: build_term_app
