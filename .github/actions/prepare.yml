@@ -1,0 +1,22 @@
+name: 'Prepare theKey Project for run'
+runs:
+  using: "composite"
+  steps:
+    - name: set up JDK 11
+      uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+        cache: gradle
+    - name: Decrypt files
+      uses: klee0kai/screwdriver@dev
+      with:
+        cmd: "decrypt_file --key ${{ secrets.ENCRYPT_KEY }} --in_file ./apkSert.jks.encrypted --out_file ./apkSert.jks"
+    - uses: klee0kai/screwdriver@dev
+      with:
+        cmd: "decrypt_file --key ${{ secrets.ENCRYPT_KEY }} --in_file ./keystore.properties.encrypted --out_file ./keystore.properties"
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - name: Prepare build env
+      run: source env_build.sh
+
