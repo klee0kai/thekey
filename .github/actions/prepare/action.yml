@@ -27,7 +27,7 @@ runs:
       run: chmod +x gradlew
       shell: bash
 
-    - name: Prepare build env
-      run: source env_build.sh
+    - name: Grant execute permission for env_build
+      run: chmod +x env_build.sh
       shell: bash
 

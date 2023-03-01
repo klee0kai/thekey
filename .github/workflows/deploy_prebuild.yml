@@ -10,16 +10,16 @@ jobs:
     if: ${{ always() }}
     steps:
       - uses: actions/checkout@v3
-      - uses: ./.github/actions/prepare
+      - name: Prepare Env
+        uses: ./.github/actions/prepare
         with:
           decrypt_key: ${{ secrets.ENCRYPT_KEY }}
+      - run: source env_build.sh
 
       - name: Download OpenSSL
         run: download_openssl
-
       - name: Build OpenSSL for curOS
         run: build_openssl_cur_os
-
       - name: Build OpenSSL for Android
         run: build_openssl_android_all
 
