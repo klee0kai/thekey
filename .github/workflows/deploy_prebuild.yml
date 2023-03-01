@@ -14,14 +14,13 @@ jobs:
         uses: ./.github/actions/prepare
         with:
           decrypt_key: ${{ secrets.ENCRYPT_KEY }}
-      - run: source env_build.sh
 
       - name: Download OpenSSL
-        run: download_openssl
+        run: ./env_build.sh download_openssl
       - name: Build OpenSSL for curOS
-        run: build_openssl_cur_os
+        run: ./env_build.sh build_openssl_cur_os
       - name: Build OpenSSL for Android
-        run: build_openssl_android_all
+        run: ./env_build.sh build_openssl_android_all
 
       - name: Upload OpenSSL libs
         uses: actions/upload-artifact@v3

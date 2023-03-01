@@ -40,13 +40,12 @@ jobs:
         uses: ./.github/actions/prepare
         with:
           decrypt_key: ${{ secrets.ENCRYPT_KEY }}
-      - run: source env_build.sh
 
       - name: Build Release
-        run: build_term_app
+        run: ./env_build.sh build_term_app
 
       - name: Build Release
-        run: build_apk
+        run: ./env_build.sh build_apk
 
       - name: Upload changes artifacts
         uses: actions/upload-artifact@v3
