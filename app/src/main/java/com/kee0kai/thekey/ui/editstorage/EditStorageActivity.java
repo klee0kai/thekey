@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.Nullable;
 
+import com.github.klee0kai.hummus.arch.mvp.IRefreshView;
 import com.github.klee0kai.stone.AndroidStone;
 import com.kee0kai.thekey.App;
 import com.kee0kai.thekey.R;
@@ -20,7 +21,6 @@ import com.kee0kai.thekey.navig.activity_contracts.CreateFileActivityContract;
 import com.kee0kai.thekey.navig.activity_contracts.EditStorageActivityContract;
 import com.kee0kai.thekey.ui.common.BaseActivity;
 import com.kee0kai.thekey.utils.android.UserShortPaths;
-import com.kee0kai.thekey.utils.arch.IRefreshView;
 import com.kee0kai.thekey.utils.views.EmptyTextWatcher;
 import com.kee0kai.thekey.utils.views.ViewUtils;
 

@@ -8,13 +8,13 @@ import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ProcessLifecycleOwner;
 
+import com.github.klee0kai.hummus.collections.weaklist.WeakList;
 import com.kee0kai.thekey.App;
 import com.kee0kai.thekey.ui.common.BaseActivity;
-import com.kee0kai.thekey.utils.collections.WeakListCollection;
 
 public class ActivitySecureManager implements LifecycleObserver {
 
-    private final WeakListCollection<BaseActivity> openedActivities = new WeakListCollection<>();
+    private final WeakList<BaseActivity> openedActivities = new WeakList<>();
 
 
     public ActivitySecureManager() {
@@ -22,13 +22,13 @@ public class ActivitySecureManager implements LifecycleObserver {
             @Override
             public void onPause(@NonNull LifecycleOwner owner) {
                 DefaultLifecycleObserver.super.onPause(owner);
-                for (BaseActivity activity : openedActivities.toList()) {
+                for (BaseActivity activity : openedActivities) {
                     if (activity != null && activity.getSecType() == BaseActivity.SecureType.SECURE) {
                         activity.setResult(Activity.RESULT_CANCELED);
                         activity.finish();
                     }
                 }
-                openedActivities.clearNulls(null);
+                openedActivities.clearNulls();
                 App.DI.gcAllSoftRefs();
             }
         });

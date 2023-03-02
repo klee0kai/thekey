@@ -9,15 +9,12 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.github.klee0kai.hummus.adapterdelegates.CompositeAdapter;
+import com.github.klee0kai.hummus.arch.mvp.IRefreshView;
 import com.github.klee0kai.stone.AndroidStone;
-import com.hannesdorfmann.adapterdelegates3.ListDelegationAdapter;
 import com.kee0kai.thekey.R;
 import com.kee0kai.thekey.databinding.ActivityHistoryBinding;
 import com.kee0kai.thekey.ui.common.BaseActivity;
-import com.kee0kai.thekey.utils.adapter.CompositeAdapter;
-import com.kee0kai.thekey.utils.arch.IRefreshView;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -27,7 +24,7 @@ public class HistActivity extends BaseActivity implements IRefreshView {
     @Inject
     public HistPresenter presenter;
 
-    private final ListDelegationAdapter<List<Object>> adapter = CompositeAdapter.create(
+    private final CompositeAdapter adapter = CompositeAdapter.create(
             new PasswAdapterDelegate(R.layout.item_passw)
     );
 

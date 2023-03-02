@@ -4,24 +4,22 @@ import static com.kee0kai.thekey.App.DI;
 
 import android.text.TextUtils;
 
-import androidx.recyclerview.widget.DiffUtil;
-
+import com.github.klee0kai.hummus.adapterdelegates.diffutil.ListDiffResult;
+import com.github.klee0kai.hummus.adapterdelegates.diffutil.SameDiffUtilHelper;
+import com.github.klee0kai.hummus.arch.mvp.SimplePresenter;
+import com.github.klee0kai.hummus.collections.ListUtils;
+import com.github.klee0kai.hummus.model.ICloneable;
+import com.github.klee0kai.hummus.threads.AndroidThreads;
+import com.github.klee0kai.hummus.threads.FutureHolder;
+import com.github.klee0kai.hummus.threads.Threads;
 import com.kee0kai.thekey.domain.StorageFilesRepository;
 import com.kee0kai.thekey.engine.FindStorageEngine;
 import com.kee0kai.thekey.model.Storage;
-import com.kee0kai.thekey.utils.adapter.ICloneable;
-import com.kee0kai.thekey.utils.adapter.SimpleDiffResult;
-import com.kee0kai.thekey.utils.adapter.SimpleDiffUtilHelper;
 import com.kee0kai.thekey.utils.android.UserShortPaths;
-import com.kee0kai.thekey.utils.arch.FutureHolder;
-import com.kee0kai.thekey.utils.arch.SimplePresenter;
-import com.kee0kai.thekey.utils.arch.Threads;
-import com.kee0kai.thekey.utils.collections.ListsUtils;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -47,7 +45,7 @@ public class StoragesPresenter extends SimplePresenter {
 
     private List<Storage> allStorages = Collections.emptyList();
     private List<ICloneable> flatList = Collections.emptyList();
-    private final SimpleDiffUtilHelper<ICloneable> flatListDiffUtil = new SimpleDiffUtilHelper();
+    private final SameDiffUtilHelper<ICloneable> flatListDiffUtil = new SameDiffUtilHelper<>();
 
     public void refreshData(boolean force) {
         long curTime = System.currentTimeMillis();
@@ -61,7 +59,7 @@ public class StoragesPresenter extends SimplePresenter {
                     views.refreshAllViews();   //show loading
 
                     //load from repository current list
-                    flatListDiffUtil.saveOld(flatList);
+                    flatListDiffUtil.saveOld(flatList, true);
                     this.allStorages = Arrays.asList(rep.getStorages());
                     this.flatList = flatList(allStorages);
                     flatListDiffUtil.calculateWith(flatList);
@@ -71,7 +69,7 @@ public class StoragesPresenter extends SimplePresenter {
                     int found = findStoragesOnDevice(force);
                     if (found > 0) {
                         //update new list
-                        flatListDiffUtil.saveOld(flatList);
+                        flatListDiffUtil.saveOld(flatList, true);
                         this.allStorages = Arrays.asList(rep.getStorages());
                         this.flatList = flatList(allStorages);
                         flatListDiffUtil.calculateWith(flatList);
@@ -92,7 +90,7 @@ public class StoragesPresenter extends SimplePresenter {
             }
             new File(deletingStoragePath).deleteOnExit();
             rep.deleteStorage(deletingStoragePath);
-            Threads.runMain(() -> refreshData(false));
+            AndroidThreads.runMain(() -> refreshData(false));
         });
 
     }
@@ -107,7 +105,7 @@ public class StoragesPresenter extends SimplePresenter {
             if (!Objects.equals(finalQuery, this.searchQuery))
                 //search query changed
                 return;
-            flatListDiffUtil.saveOld(flatList);
+            flatListDiffUtil.saveOld(flatList, true);
             flatList = flatList(allStorages);
             flatListDiffUtil.calculateWith(flatList);
             views.refreshAllViews();
@@ -131,7 +129,7 @@ public class StoragesPresenter extends SimplePresenter {
         return flatList;
     }
 
-    public SimpleDiffResult<ICloneable> popFlatListChanges() {
+    public ListDiffResult<ICloneable> popFlatListChanges() {
         return flatListDiffUtil.popDiffResult(flatList);
     }
 
@@ -153,7 +151,7 @@ public class StoragesPresenter extends SimplePresenter {
     }
 
     private List<ICloneable> flatList(List<Storage> storages) {
-        List<Storage> filtered = ListsUtils.filter(storages, (i, it) -> TextUtils.isEmpty(searchQuery) ||
+        List<Storage> filtered = ListUtils.filter(storages, (i, it) -> TextUtils.isEmpty(searchQuery) ||
                 it.path != null && it.path.toLowerCase(Locale.ROOT).contains(searchQuery) ||
                 it.name != null && it.name.toLowerCase(Locale.ROOT).contains(searchQuery));
         Collections.sort(filtered);

@@ -12,12 +12,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.github.klee0kai.hummus.arch.mvp.IRefreshView;
 import com.github.klee0kai.stone.AndroidStone;
 import com.google.android.material.slider.Slider;
 import com.kee0kai.thekey.R;
 import com.kee0kai.thekey.databinding.FragmentGenerationBinding;
 import com.kee0kai.thekey.navig.InnerNavigator;
-import com.kee0kai.thekey.utils.arch.IRefreshView;
 import com.kee0kai.thekey.utils.views.ViewUtils;
 
 import javax.inject.Inject;

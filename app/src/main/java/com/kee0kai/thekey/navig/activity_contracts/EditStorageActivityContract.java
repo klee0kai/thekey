@@ -11,9 +11,9 @@ import androidx.activity.result.contract.ActivityResultContract;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.kee0kai.thekey.ui.editstorage.EditStoragePresenter;
+import com.github.klee0kai.hummus.model.ICloneable;
 import com.kee0kai.thekey.ui.editstorage.EditStorageActivity;
-import com.kee0kai.thekey.utils.adapter.ICloneable;
+import com.kee0kai.thekey.ui.editstorage.EditStoragePresenter;
 
 public class EditStorageActivityContract extends ActivityResultContract<EditStorageActivityContract.EditStorageTask, Uri> {
 

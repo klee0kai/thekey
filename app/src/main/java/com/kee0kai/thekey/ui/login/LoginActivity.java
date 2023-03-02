@@ -20,6 +20,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 
+import com.github.klee0kai.hummus.arch.mvp.IRefreshView;
 import com.github.klee0kai.stone.AndroidStone;
 import com.kee0kai.thekey.App;
 import com.kee0kai.thekey.R;
@@ -30,7 +31,6 @@ import com.kee0kai.thekey.navig.activity_contracts.SimplerActivityContract;
 import com.kee0kai.thekey.ui.common.BaseActivity;
 import com.kee0kai.thekey.utils.Logs;
 import com.kee0kai.thekey.utils.android.UserShortPaths;
-import com.kee0kai.thekey.utils.arch.IRefreshView;
 import com.kee0kai.thekey.utils.views.ViewUtils;
 
 import javax.inject.Inject;

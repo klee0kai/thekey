@@ -6,14 +6,11 @@ import android.widget.PopupMenu;
 
 import androidx.annotation.NonNull;
 
+import com.github.klee0kai.hummus.adapterdelegates.delegate.simple.ClassAdapterDelegate;
+import com.github.klee0kai.hummus.adapterdelegates.delegate.simple.SimpleViewHolder;
 import com.kee0kai.thekey.R;
 import com.kee0kai.thekey.databinding.ItemAccountNoteBinding;
-import com.kee0kai.thekey.engine.model.DecryptedNote;
 import com.kee0kai.thekey.ui.notes.model.NoteItem;
-import com.kee0kai.thekey.utils.adapter.ClassAdapterDelegate;
-import com.kee0kai.thekey.utils.adapter.SimpleViewHolder;
-
-import java.util.List;
 
 public class NoteAdapterDelegate extends ClassAdapterDelegate<NoteItem> {
 
@@ -31,7 +28,7 @@ public class NoteAdapterDelegate extends ClassAdapterDelegate<NoteItem> {
     }
 
     @Override
-    protected void onBindViewHolder(NoteItem it, int pos, @NonNull SimpleViewHolder vh, @NonNull List<Object> allObjects, @NonNull List<Object> allOldlist) {
+    protected void onBindViewHolder(NoteItem it, int i, @NonNull SimpleViewHolder vh) {
         ItemAccountNoteBinding binding = ItemAccountNoteBinding.bind(vh.itemView);
         binding.tvSite.setText(it.decryptedNote.site);
         binding.tvLogin.setText(it.decryptedNote.login);

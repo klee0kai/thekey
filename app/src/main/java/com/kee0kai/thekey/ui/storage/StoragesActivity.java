@@ -22,8 +22,9 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.github.klee0kai.hummus.adapterdelegates.CompositeAdapter;
+import com.github.klee0kai.hummus.arch.mvp.IRefreshView;
 import com.github.klee0kai.stone.AndroidStone;
-import com.hannesdorfmann.adapterdelegates3.ListDelegationAdapter;
 import com.kee0kai.thekey.App;
 import com.kee0kai.thekey.R;
 import com.kee0kai.thekey.databinding.ActivityStoragesBinding;
@@ -34,11 +35,8 @@ import com.kee0kai.thekey.providers.StorageFileProvider;
 import com.kee0kai.thekey.ui.common.BaseActivity;
 import com.kee0kai.thekey.ui.dialogs.AcceptDialogFragment;
 import com.kee0kai.thekey.ui.editstorage.EditStoragePresenter;
-import com.kee0kai.thekey.utils.adapter.CompositeAdapter;
-import com.kee0kai.thekey.utils.arch.IRefreshView;
 
 import java.io.File;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -50,7 +48,7 @@ public class StoragesActivity extends BaseActivity implements IRefreshView, Stor
     public StoragesPresenter presenter;
 
 
-    private final ListDelegationAdapter<List<Object>> adapter = CompositeAdapter.create(
+    private final CompositeAdapter adapter = CompositeAdapter.create(
             new StorageAdapterDelegate(R.layout.item_storage, this)
     );
 

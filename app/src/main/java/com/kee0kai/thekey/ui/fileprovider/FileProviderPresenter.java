@@ -3,16 +3,15 @@ package com.kee0kai.thekey.ui.fileprovider;
 import android.os.Environment;
 import android.text.TextUtils;
 
+import com.github.klee0kai.hummus.adapterdelegates.diffutil.ListDiffResult;
+import com.github.klee0kai.hummus.adapterdelegates.diffutil.SameDiffUtilHelper;
+import com.github.klee0kai.hummus.arch.mvp.SimplePresenter;
+import com.github.klee0kai.hummus.collections.ListUtils;
+import com.github.klee0kai.hummus.model.ICloneable;
+import com.github.klee0kai.hummus.threads.Threads;
 import com.kee0kai.thekey.ui.fileprovider.model.FileItem;
-import com.kee0kai.thekey.utils.adapter.ICloneable;
-import com.kee0kai.thekey.utils.adapter.SimpleDiffResult;
-import com.kee0kai.thekey.utils.adapter.SimpleDiffUtilHelper;
-import com.kee0kai.thekey.utils.arch.SimplePresenter;
-import com.kee0kai.thekey.utils.arch.Threads;
-import com.kee0kai.thekey.utils.collections.ListsUtils;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -30,7 +29,7 @@ public class FileProviderPresenter extends SimplePresenter {
     private String searchQuery = null;
     private List<FileItem> files = Collections.emptyList();
     private List<ICloneable> flatList = Collections.emptyList();
-    private final SimpleDiffUtilHelper<ICloneable> flatListDiffUtil = new SimpleDiffUtilHelper();
+    private final SameDiffUtilHelper<ICloneable> flatListDiffUtil = new SameDiffUtilHelper();
 
 
     public void init(WorkMode mode, String fileType, boolean force) {
@@ -52,8 +51,8 @@ public class FileProviderPresenter extends SimplePresenter {
             if (curPath == null)
                 return;
 
-            flatListDiffUtil.saveOld(flatList);
-            File[] files = curPath.listFiles((FileFilter) pathname ->
+            flatListDiffUtil.saveOld(flatList, true);
+            File[] files = curPath.listFiles(pathname ->
                     pathname.isDirectory() || pathname.isFile() && pathname.getName().toLowerCase(Locale.ROOT).endsWith(fileType));
 
             ArrayList<FileItem> fileItems = new ArrayList<>(files != null ? files.length : 0);
@@ -92,7 +91,7 @@ public class FileProviderPresenter extends SimplePresenter {
             if (!Objects.equals(finalQuery, this.searchQuery))
                 //search query changed
                 return;
-            flatListDiffUtil.saveOld(flatList);
+            flatListDiffUtil.saveOld(flatList, true);
             flatList = flatList(files);
             flatListDiffUtil.calculateWith(flatList);
             views.refreshAllViews();
@@ -104,7 +103,7 @@ public class FileProviderPresenter extends SimplePresenter {
         return searchQuery;
     }
 
-    public SimpleDiffResult<ICloneable> popFlatListChanges() {
+    public ListDiffResult<ICloneable> popFlatListChanges() {
         return flatListDiffUtil.popDiffResult(flatList);
     }
 
@@ -121,7 +120,7 @@ public class FileProviderPresenter extends SimplePresenter {
     }
 
     private List<ICloneable> flatList(List<FileItem> files) {
-        List<FileItem> filtered = ListsUtils.filter(files, (i, it) -> TextUtils.isEmpty(searchQuery) ||
+        List<FileItem> filtered = ListUtils.filter(files, (i, it) -> TextUtils.isEmpty(searchQuery) ||
                 it.name != null && it.name.toLowerCase(Locale.ROOT).contains(searchQuery));
         Collections.sort(filtered);
         return new ArrayList<>(filtered);

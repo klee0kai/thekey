@@ -6,13 +6,11 @@ import android.graphics.drawable.Drawable;
 
 import androidx.annotation.NonNull;
 
+import com.github.klee0kai.hummus.adapterdelegates.delegate.simple.ClassAdapterDelegate;
+import com.github.klee0kai.hummus.adapterdelegates.delegate.simple.SimpleViewHolder;
 import com.kee0kai.thekey.R;
 import com.kee0kai.thekey.databinding.ItemFileBinding;
 import com.kee0kai.thekey.ui.fileprovider.model.FileItem;
-import com.kee0kai.thekey.utils.adapter.ClassAdapterDelegate;
-import com.kee0kai.thekey.utils.adapter.SimpleViewHolder;
-
-import java.util.List;
 
 public class FileAdapterDelegate extends ClassAdapterDelegate<FileItem> {
 
@@ -30,7 +28,7 @@ public class FileAdapterDelegate extends ClassAdapterDelegate<FileItem> {
     }
 
     @Override
-    protected void onBindViewHolder(FileItem it, int pos, @NonNull SimpleViewHolder vh, @NonNull List<Object> allObjects, @NonNull List<Object> allOldlist) {
+    protected void onBindViewHolder(FileItem it, int i, @NonNull SimpleViewHolder vh) {
         ItemFileBinding binding = ItemFileBinding.bind(vh.itemView);
         binding.ivIcon.setImageDrawable(it.isFile ? null : folderDrawable);
         binding.tvGroupHeader.setText(it.name);

@@ -10,6 +10,7 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 
+import com.github.klee0kai.hummus.arch.mvp.IRefreshView;
 import com.github.klee0kai.stone.AndroidStone;
 import com.kee0kai.thekey.R;
 import com.kee0kai.thekey.databinding.ActivityAccountNoteBinding;
@@ -17,7 +18,6 @@ import com.kee0kai.thekey.engine.model.DecryptedNote;
 import com.kee0kai.thekey.navig.InnerNavigator;
 import com.kee0kai.thekey.ui.common.BaseActivity;
 import com.kee0kai.thekey.utils.TimeFormats;
-import com.kee0kai.thekey.utils.arch.IRefreshView;
 import com.kee0kai.thekey.utils.views.EmptyTextWatcher;
 import com.kee0kai.thekey.utils.views.ViewUtils;
 
