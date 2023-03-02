@@ -3,8 +3,8 @@ package com.kee0kai.thekey.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.kee0kai.thekey.utils.adapter.ICloneable;
-import com.kee0kai.thekey.utils.adapter.ISameModel;
+import com.github.klee0kai.hummus.model.ICloneable;
+import com.github.klee0kai.hummus.model.ISameModel;
 
 import java.util.Objects;
 

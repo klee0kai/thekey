@@ -1,8 +1,8 @@
 package com.kee0kai.thekey.ui.notes.model;
 
+import com.github.klee0kai.hummus.model.ICloneable;
+import com.github.klee0kai.hummus.model.ISameModel;
 import com.kee0kai.thekey.engine.model.DecryptedNote;
-import com.kee0kai.thekey.utils.adapter.ICloneable;
-import com.kee0kai.thekey.utils.adapter.ISameModel;
 
 import java.util.Objects;
 

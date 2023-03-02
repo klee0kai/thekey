@@ -66,9 +66,9 @@ dependencies {
     implementation "androidx.room:room-runtime:2.4.3"
     annotationProcessor "androidx.room:room-compiler:2.4.3"
 
-    //adapter delegate
-    implementation 'com.hannesdorfmann:adapterdelegates3:3.1.0'
 
+    //hummus
+    implementation 'com.github.klee0kai.hummus:android_java_hummus:0.0.1_local3'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'

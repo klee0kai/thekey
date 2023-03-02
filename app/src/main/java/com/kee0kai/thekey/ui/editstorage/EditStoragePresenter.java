@@ -2,10 +2,10 @@ package com.kee0kai.thekey.ui.editstorage;
 
 import static com.kee0kai.thekey.App.DI;
 
+import com.github.klee0kai.hummus.model.CloneableHelper;
 import com.kee0kai.thekey.domain.StorageFilesRepository;
 import com.kee0kai.thekey.engine.CryptStorageEngine;
 import com.kee0kai.thekey.model.Storage;
-import com.kee0kai.thekey.utils.adapter.CloneableHelper;
 import com.kee0kai.thekey.utils.arch.FutureHolder;
 import com.kee0kai.thekey.utils.arch.SimplePresenter;
 import com.kee0kai.thekey.utils.arch.Threads;

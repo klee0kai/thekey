@@ -7,15 +7,14 @@ import android.widget.PopupMenu;
 
 import androidx.annotation.NonNull;
 
+import com.github.klee0kai.hummus.adapterdelegates.delegate.simple.ClassAdapterDelegate;
+import com.github.klee0kai.hummus.adapterdelegates.delegate.simple.SimpleViewHolder;
 import com.kee0kai.thekey.R;
 import com.kee0kai.thekey.databinding.ItemStorageBinding;
 import com.kee0kai.thekey.model.Storage;
-import com.kee0kai.thekey.utils.adapter.ClassAdapterDelegate;
-import com.kee0kai.thekey.utils.adapter.SimpleViewHolder;
 import com.kee0kai.thekey.utils.android.UserShortPaths;
 
 import java.io.File;
-import java.util.List;
 
 public class StorageAdapterDelegate extends ClassAdapterDelegate<Storage> {
 
@@ -41,7 +40,7 @@ public class StorageAdapterDelegate extends ClassAdapterDelegate<Storage> {
     }
 
     @Override
-    protected void onBindViewHolder(Storage storage, int pos, @NonNull SimpleViewHolder vh, @NonNull List<Object> allObjects, @NonNull List<Object> allOldlist) {
+    protected void onBindViewHolder(Storage storage, int i, @NonNull SimpleViewHolder vh) {
         ItemStorageBinding binding = ItemStorageBinding.bind(vh.itemView);
 
         binding.tvFilepath.setText(UserShortPaths.shortPathName(storage.path));

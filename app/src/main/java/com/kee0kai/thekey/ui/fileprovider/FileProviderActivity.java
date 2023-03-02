@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.github.klee0kai.hummus.adapterdelegates.CompositeAdapter;
 import com.github.klee0kai.stone.AndroidStone;
 import com.kee0kai.thekey.R;
 import com.kee0kai.thekey.databinding.ActivityFileproviderBinding;
@@ -27,7 +28,6 @@ import com.kee0kai.thekey.databinding.DlgCreateStorageBinding;
 import com.kee0kai.thekey.ui.common.BaseActivity;
 import com.kee0kai.thekey.ui.dialogs.CreateFileDialogFragment;
 import com.kee0kai.thekey.ui.fileprovider.model.FileItem;
-import com.kee0kai.thekey.utils.adapter.CompositeAdapter;
 import com.kee0kai.thekey.utils.android.UserShortPaths;
 import com.kee0kai.thekey.utils.arch.IRefreshView;
 import com.kee0kai.thekey.utils.views.ViewUtils;
