@@ -23,6 +23,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.github.klee0kai.hummus.adapterdelegates.CompositeAdapter;
+import com.github.klee0kai.hummus.arch.mvp.IRefreshView;
 import com.github.klee0kai.stone.AndroidStone;
 import com.kee0kai.thekey.App;
 import com.kee0kai.thekey.R;
@@ -34,7 +35,6 @@ import com.kee0kai.thekey.providers.StorageFileProvider;
 import com.kee0kai.thekey.ui.common.BaseActivity;
 import com.kee0kai.thekey.ui.dialogs.AcceptDialogFragment;
 import com.kee0kai.thekey.ui.editstorage.EditStoragePresenter;
-import com.kee0kai.thekey.utils.arch.IRefreshView;
 
 import java.io.File;
 

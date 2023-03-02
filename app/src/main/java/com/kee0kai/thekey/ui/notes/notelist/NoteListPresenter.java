@@ -6,13 +6,14 @@ import android.text.TextUtils;
 
 import com.github.klee0kai.hummus.adapterdelegates.diffutil.ListDiffResult;
 import com.github.klee0kai.hummus.adapterdelegates.diffutil.SameDiffUtilHelper;
+import com.github.klee0kai.hummus.arch.mvp.SimplePresenter;
+import com.github.klee0kai.hummus.collections.ListUtils;
 import com.github.klee0kai.hummus.model.ICloneable;
+import com.github.klee0kai.hummus.threads.AndroidThreads;
+import com.github.klee0kai.hummus.threads.Threads;
 import com.kee0kai.thekey.engine.CryptStorageEngine;
 import com.kee0kai.thekey.engine.model.DecryptedNote;
 import com.kee0kai.thekey.ui.notes.model.NoteItem;
-import com.kee0kai.thekey.utils.arch.SimplePresenter;
-import com.kee0kai.thekey.utils.arch.Threads;
-import com.kee0kai.thekey.utils.collections.ListsUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -68,7 +69,7 @@ public class NoteListPresenter extends SimplePresenter {
                 return;
             }
             engine.rmNote(deletingPtNote);
-            Threads.runMain(this::refreshData);
+            AndroidThreads.runMain(this::refreshData);
         });
     }
 
@@ -108,7 +109,7 @@ public class NoteListPresenter extends SimplePresenter {
 
     //private
     private List<ICloneable> flatList(List<NoteItem> notes) {
-        List<NoteItem> filtered = ListsUtils.filter(notes, (i, it) -> TextUtils.isEmpty(searchQuery) ||
+        List<NoteItem> filtered = ListUtils.filter(notes, (i, it) -> TextUtils.isEmpty(searchQuery) ||
                 it.decryptedNote.site != null && it.decryptedNote.site.toLowerCase(Locale.ROOT).contains(searchQuery) ||
                 it.decryptedNote.login != null && it.decryptedNote.login.toLowerCase(Locale.ROOT).contains(searchQuery));
         Collections.sort(filtered, (o1, o2) -> o1.decryptedNote.compareTo(o2.decryptedNote));

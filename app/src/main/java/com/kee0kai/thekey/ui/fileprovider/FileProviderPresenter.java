@@ -5,11 +5,11 @@ import android.text.TextUtils;
 
 import com.github.klee0kai.hummus.adapterdelegates.diffutil.ListDiffResult;
 import com.github.klee0kai.hummus.adapterdelegates.diffutil.SameDiffUtilHelper;
+import com.github.klee0kai.hummus.arch.mvp.SimplePresenter;
+import com.github.klee0kai.hummus.collections.ListUtils;
 import com.github.klee0kai.hummus.model.ICloneable;
+import com.github.klee0kai.hummus.threads.Threads;
 import com.kee0kai.thekey.ui.fileprovider.model.FileItem;
-import com.kee0kai.thekey.utils.arch.SimplePresenter;
-import com.kee0kai.thekey.utils.arch.Threads;
-import com.kee0kai.thekey.utils.collections.ListsUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -120,7 +120,7 @@ public class FileProviderPresenter extends SimplePresenter {
     }
 
     private List<ICloneable> flatList(List<FileItem> files) {
-        List<FileItem> filtered = ListsUtils.filter(files, (i, it) -> TextUtils.isEmpty(searchQuery) ||
+        List<FileItem> filtered = ListUtils.filter(files, (i, it) -> TextUtils.isEmpty(searchQuery) ||
                 it.name != null && it.name.toLowerCase(Locale.ROOT).contains(searchQuery));
         Collections.sort(filtered);
         return new ArrayList<>(filtered);

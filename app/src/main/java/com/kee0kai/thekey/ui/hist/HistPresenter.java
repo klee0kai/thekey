@@ -4,12 +4,12 @@ import static com.kee0kai.thekey.App.DI;
 
 import com.github.klee0kai.hummus.adapterdelegates.diffutil.ListDiffResult;
 import com.github.klee0kai.hummus.adapterdelegates.diffutil.SameDiffUtilHelper;
+import com.github.klee0kai.hummus.arch.mvp.SimplePresenter;
 import com.github.klee0kai.hummus.model.ICloneable;
+import com.github.klee0kai.hummus.threads.Threads;
 import com.kee0kai.thekey.engine.CryptStorageEngine;
 import com.kee0kai.thekey.engine.model.DecryptedNote;
 import com.kee0kai.thekey.engine.model.DecryptedPassw;
-import com.kee0kai.thekey.utils.arch.SimplePresenter;
-import com.kee0kai.thekey.utils.arch.Threads;
 
 import java.util.ArrayList;
 import java.util.Arrays;

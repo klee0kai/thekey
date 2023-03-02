@@ -1,16 +1,18 @@
 package com.kee0kai.thekey.ui.notes.gen;
 
 import static com.kee0kai.thekey.App.DI;
-import static com.kee0kai.thekey.domain.AppSettingsRepository.*;
+import static com.kee0kai.thekey.domain.AppSettingsRepository.SETTING_GEN_PASS_INCLUDE_EN;
+import static com.kee0kai.thekey.domain.AppSettingsRepository.SETTING_GEN_PASS_INCLUDE_SPEC_SYMBOLS;
+import static com.kee0kai.thekey.domain.AppSettingsRepository.SETTING_GEN_PASS_LEN;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 
+import com.github.klee0kai.hummus.arch.mvp.SimplePresenter;
+import com.github.klee0kai.hummus.threads.Threads;
 import com.kee0kai.thekey.domain.AppSettingsRepository;
 import com.kee0kai.thekey.engine.CryptStorageEngine;
-import com.kee0kai.thekey.utils.arch.SimplePresenter;
-import com.kee0kai.thekey.utils.arch.Threads;
 
 import java.util.concurrent.ThreadPoolExecutor;
 

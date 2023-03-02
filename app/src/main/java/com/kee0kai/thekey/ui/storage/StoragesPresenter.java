@@ -6,15 +6,16 @@ import android.text.TextUtils;
 
 import com.github.klee0kai.hummus.adapterdelegates.diffutil.ListDiffResult;
 import com.github.klee0kai.hummus.adapterdelegates.diffutil.SameDiffUtilHelper;
+import com.github.klee0kai.hummus.arch.mvp.SimplePresenter;
+import com.github.klee0kai.hummus.collections.ListUtils;
 import com.github.klee0kai.hummus.model.ICloneable;
+import com.github.klee0kai.hummus.threads.AndroidThreads;
+import com.github.klee0kai.hummus.threads.FutureHolder;
+import com.github.klee0kai.hummus.threads.Threads;
 import com.kee0kai.thekey.domain.StorageFilesRepository;
 import com.kee0kai.thekey.engine.FindStorageEngine;
 import com.kee0kai.thekey.model.Storage;
 import com.kee0kai.thekey.utils.android.UserShortPaths;
-import com.kee0kai.thekey.utils.arch.FutureHolder;
-import com.kee0kai.thekey.utils.arch.SimplePresenter;
-import com.kee0kai.thekey.utils.arch.Threads;
-import com.kee0kai.thekey.utils.collections.ListsUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -89,7 +90,7 @@ public class StoragesPresenter extends SimplePresenter {
             }
             new File(deletingStoragePath).deleteOnExit();
             rep.deleteStorage(deletingStoragePath);
-            Threads.runMain(() -> refreshData(false));
+            AndroidThreads.runMain(() -> refreshData(false));
         });
 
     }
@@ -150,7 +151,7 @@ public class StoragesPresenter extends SimplePresenter {
     }
 
     private List<ICloneable> flatList(List<Storage> storages) {
-        List<Storage> filtered = ListsUtils.filter(storages, (i, it) -> TextUtils.isEmpty(searchQuery) ||
+        List<Storage> filtered = ListUtils.filter(storages, (i, it) -> TextUtils.isEmpty(searchQuery) ||
                 it.path != null && it.path.toLowerCase(Locale.ROOT).contains(searchQuery) ||
                 it.name != null && it.name.toLowerCase(Locale.ROOT).contains(searchQuery));
         Collections.sort(filtered);

@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.github.klee0kai.hummus.adapterdelegates.CompositeAdapter;
+import com.github.klee0kai.hummus.arch.mvp.IRefreshView;
 import com.github.klee0kai.stone.AndroidStone;
 import com.kee0kai.thekey.R;
 import com.kee0kai.thekey.databinding.FragmentNotesBinding;
@@ -28,7 +29,6 @@ import com.kee0kai.thekey.navig.activity_contracts.EditStorageActivityContract;
 import com.kee0kai.thekey.ui.dialogs.AcceptDialogFragment;
 import com.kee0kai.thekey.ui.editstorage.EditStoragePresenter;
 import com.kee0kai.thekey.ui.notes.model.NoteItem;
-import com.kee0kai.thekey.utils.arch.IRefreshView;
 
 import javax.inject.Inject;
 
