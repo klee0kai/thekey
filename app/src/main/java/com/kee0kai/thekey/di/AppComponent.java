@@ -2,10 +2,11 @@ package com.kee0kai.thekey.di;
 
 import com.github.klee0kai.stone.annotations.component.Component;
 import com.github.klee0kai.stone.annotations.component.GcSoftScope;
-import com.github.klee0kai.stone.interfaces.IComponent;
+import com.github.klee0kai.stone.annotations.module.BindInstance;
+import com.kee0kai.thekey.App;
 
 @Component
-public interface AppComponent extends IComponent, IAppComponentInject {
+public interface AppComponent extends IAppComponentInject {
 
     AppModule app();
 
@@ -21,5 +22,8 @@ public interface AppComponent extends IComponent, IAppComponentInject {
 
     @GcSoftScope
     void gcAllSoftRefs();
+
+    @BindInstance
+    void bind(App app);
 
 }
