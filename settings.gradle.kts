@@ -11,8 +11,8 @@ dependencyResolutionManagement {
         mavenLocal()
         google()
         mavenCentral()
-        maven { url 'https://jitpack.io' }
+        maven(url = "https://jitpack.io")
     }
 }
 rootProject.name = "TheKey"
-include ':app'
+include(":app")
