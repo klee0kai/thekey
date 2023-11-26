@@ -1,4 +1,4 @@
-import org.jetbrains.kotlin.gradle.utils.loadPropertyFromResources
+import org.jetbrains.kotlin.konan.properties.Properties
 
 plugins {
     id("com.android.application")
@@ -30,15 +30,20 @@ android {
         }
     }
     signingConfigs.register("release") {
-        fun keystoreProperties(key: String) =
-            rootProject.loadPropertyFromResources("keystore.properties", key)
         try {
-            storeFile = file(keystoreProperties("storeFile"))
-            storePassword = keystoreProperties("storePassword")
-            keyAlias = keystoreProperties("keyAlias")
-            keyPassword = keystoreProperties("keyPassword")
-        } catch (ignore: Exception) {
-            println("error to configure signing")
+            val keystoreProperties = Properties().apply {
+                File("keystore.properties").inputStream().use { fis ->
+                    load(fis)
+                }
+            }
+            storeFile = file(keystoreProperties.getProperty("storeFile")).also {
+                check(it.exists()) { "storeFile $it no exist" }
+            }
+            storePassword = keystoreProperties.getProperty("storePassword")
+            keyAlias = keystoreProperties.getProperty("keyAlias")
+            keyPassword = keystoreProperties.getProperty("keyPassword")
+        } catch (e: Exception) {
+            println("error to configure signing ${e}")
         }
     }
     buildTypes {
