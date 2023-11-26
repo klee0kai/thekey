@@ -5,22 +5,8 @@ on:
     types: [ opened, synchronize, reopened ]
 
 jobs:
-  wf_meta:
-    name: Workflow Metadata
-    runs-on: ubuntu-latest
-    steps:
-      - name: Get Github Object
-        continue-on-error: true
-        run: echo ${{ toJSON(github) }} > github.json
-      - name: Upload Meta artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: wf-meta
-          path: |
-            github.json 
-
   term_tests:
-    name: Run Unit Tests
+    name: Run Term Unit Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -32,7 +18,7 @@ jobs:
         run: ./env_build.sh build_term_app
 
   app_tests:
-    name: Run Unit Tests
+    name: Run App Unit Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
