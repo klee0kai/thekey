@@ -1,9 +1,13 @@
+import org.jetbrains.kotlin.gradle.utils.loadPropertyFromResources
+
 plugins {
     id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+    kotlin("kapt")
 }
 
-android {
 
+android {
     namespace = "com.kee0kai.thekey"
     compileSdk = 34
     ndkVersion = "21.4.7075529"
@@ -25,6 +29,23 @@ android {
             }
         }
     }
+    signingConfigs.register("release") {
+        fun keystoreProperties(key: String) =
+            rootProject.loadPropertyFromResources("keystore.properties", key)
+        try {
+            storeFile = file(keystoreProperties("storeFile"))
+            storePassword = keystoreProperties("storePassword")
+            keyAlias = keystoreProperties("keyAlias")
+            keyPassword = keystoreProperties("keyPassword")
+        } catch (ignore: Exception) {
+            println("error to configure signing")
+        }
+    }
+    buildTypes {
+        release {
+            signingConfig = signingConfigs["release"]
+        }
+    }
 
 
     buildTypes {
@@ -38,8 +59,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     externalNativeBuild {
         cmake {
@@ -52,7 +73,7 @@ android {
     }
 }
 
-apply(from = "../signing.gradle")
+
 
 dependencies {
 
@@ -64,10 +85,12 @@ dependencies {
     //stone
     implementation("com.github.klee0kai.stone:android_lib:1.0.3")
     annotationProcessor("com.github.klee0kai.stone:stone_processor:1.0.3")
+    kapt("com.github.klee0kai.stone:stone_processor:1.0.3")
 
     // room
     implementation("androidx.room:room-runtime:2.6.0")
     annotationProcessor("androidx.room:room-compiler:2.6.0")
+    kapt("androidx.room:room-compiler:2.6.0")
 
 
     //hummus
