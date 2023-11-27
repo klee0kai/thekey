@@ -88,6 +88,9 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
 
+    // coroutine
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+
     //stone
     implementation("com.github.klee0kai.stone:android_lib:1.0.3")
     annotationProcessor("com.github.klee0kai.stone:stone_processor:1.0.3")
@@ -95,11 +98,14 @@ dependencies {
 
     // room
     implementation("androidx.room:room-runtime:2.6.0")
-    annotationProcessor("androidx.room:room-compiler:2.6.0")
     kapt("androidx.room:room-compiler:2.6.0")
 
     //hummus
     implementation("com.github.klee0kai.hummus:android_kotlin_hummus:0.0.2")
+
+
+    // compose-navigation-reimagined
+    implementation("dev.olshevski.navigation:reimagined:1.5.0")
 
 
     testImplementation("junit:junit:4.13.2")
