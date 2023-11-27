@@ -2,17 +2,23 @@ pluginManagement {
     repositories {
         gradlePluginPortal()
         google()
+        mavenLocal()
         mavenCentral()
+        maven(url = "https://jitpack.io")
     }
 }
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
-        mavenLocal()
         google()
+        mavenLocal()
         mavenCentral()
-        maven { url 'https://jitpack.io' }
+        maven(url = "https://jitpack.io")
     }
 }
+
+
 rootProject.name = "TheKey"
-include ':app'
+include(":app_mobile_legacy")
+include(":app_mobile")

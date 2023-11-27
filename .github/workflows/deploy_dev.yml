@@ -10,9 +10,8 @@ on:
       - 'dev'
 
 jobs:
-
   term_tests:
-    name: Run Unit Tests
+    name: Run Term Unit Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -23,9 +22,8 @@ jobs:
       - name: Build and test
         run: ./env_build.sh build_term_app
 
-
   app_tests:
-    name: Run Unit Tests
+    name: Run App Unit Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
