@@ -92,7 +92,7 @@ dependencies {
     // coroutine
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 
-    //stone
+    // stone
     implementation("com.github.klee0kai.stone:android_lib:1.0.3")
     annotationProcessor("com.github.klee0kai.stone:stone_processor:1.0.3")
     kapt("com.github.klee0kai.stone:stone_processor:1.0.3")
@@ -101,7 +101,7 @@ dependencies {
     implementation("androidx.room:room-runtime:2.6.0")
     kapt("androidx.room:room-compiler:2.6.0")
 
-    //hummus
+    // hummus
     implementation("com.github.klee0kai.hummus:android_kotlin_hummus:0.0.2")
 
 
