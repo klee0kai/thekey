@@ -48,7 +48,11 @@ fun LoginScreen() {
                     .padding(16.dp)
                     .fillMaxSize()
             ) {
-                val (logoIcon, appDesc, passwTextField, storagesButton, loginButton) = createRefs()
+                val (
+                    logoIcon, appDesc, passwTextField,
+                    storageName, storagePath,
+                    storagesButton, loginButton
+                ) = createRefs()
 
                 Image(
                     painter = painterResource(id = R.drawable.logo_big),
@@ -100,7 +104,6 @@ fun LoginScreen() {
                     onValueChange = { loginInput = it },
                     label = { Text(stringResource(R.string.password)) }
                 )
-
 
                 TextButton(
                     modifier = Modifier
