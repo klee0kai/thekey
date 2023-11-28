@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">app_mobile</string>
+    <string name="app_name">TheKey</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="app_login_description">Create and remember your passport for your key masster storage</string>
+    <string name="storages">Storages</string>
 </resources>

@@ -1,21 +1,24 @@
 package com.github.klee0kai.thekey.app.ui.navigation
 
 import androidx.compose.runtime.Composable
-import com.github.klee0kai.thekey.app.ui.main.MainScreen
+import androidx.compose.runtime.saveable.rememberSaveable
+import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.ui.login.LoginScreen
+import com.github.klee0kai.thekey.app.ui.storages.StoragesScreen
 import dev.olshevski.navigation.reimagined.NavBackHandler
 import dev.olshevski.navigation.reimagined.NavHost
-import dev.olshevski.navigation.reimagined.rememberNavController
+import dev.olshevski.navigation.reimagined.navController
 
 @Composable
 fun MainNavContainer() {
-    val navController = rememberNavController<Destination>(
-        startDestination = Destination.MainScreen
-    )
+    val navController = rememberSaveable {
+        DI.navigator(navController(startDestination = Destination.LoginScreen))
+    }
     NavBackHandler(navController)
     NavHost(navController) { destination ->
         when (destination) {
-            is Destination.MainScreen -> MainScreen()
+            is Destination.LoginScreen -> LoginScreen()
+            is Destination.StoragesScreen -> StoragesScreen()
         }
     }
-
 }

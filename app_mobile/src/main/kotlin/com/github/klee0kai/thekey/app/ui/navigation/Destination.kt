@@ -6,6 +6,9 @@ import kotlinx.parcelize.Parcelize
 sealed interface Destination : Parcelable {
 
     @Parcelize
-    data object MainScreen : Destination
+    data object LoginScreen : Destination
+
+    @Parcelize
+    data object StoragesScreen : Destination
 
 }
