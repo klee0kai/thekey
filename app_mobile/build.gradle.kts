@@ -94,7 +94,7 @@ dependencies {
 
     // stone
     implementation("com.github.klee0kai.stone:android_lib:1.0.3")
-    annotationProcessor("com.github.klee0kai.stone:stone_processor:1.0.3")
+    implementation("com.github.klee0kai.stone:kotlin_lib:1.0.3")
     kapt("com.github.klee0kai.stone:stone_processor:1.0.3")
 
     // room

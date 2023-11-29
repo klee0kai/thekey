@@ -9,7 +9,6 @@ public class AppSettingsRepository {
 
 
     public static final long SETTING_DEFAULT_STORAGE_PATH = 944;
-
     public static final int SETTING_GEN_PASS_LEN = 247;
     public static final int SETTING_GEN_PASS_INCLUDE_EN = 43;
     public static final int SETTING_GEN_PASS_INCLUDE_SPEC_SYMBOLS = 44;

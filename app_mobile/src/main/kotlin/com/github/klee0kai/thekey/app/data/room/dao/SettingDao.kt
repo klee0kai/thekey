@@ -12,7 +12,7 @@ interface SettingDao {
     fun update(entry: SettingPairEntry)
 
     @Query("SELECT * FROM $TABLE_NAME WHERE id = :id")
-    operator fun get(id: Long): SettingPairEntry?
+    operator fun get(id: Int): SettingPairEntry?
 
     companion object {
         const val TABLE_NAME = "settting_pairs"

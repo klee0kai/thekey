@@ -37,7 +37,7 @@ fun LoginScreen() {
     val presenter = remember { DI.mainViewModule() }
     val navigator = remember { DI.navigator() }
 
-    var loginInput by remember { mutableStateOf("") }
+    var passwordInputText by remember { mutableStateOf("") }
 
 
     Scaffold(
@@ -100,8 +100,8 @@ fun LoginScreen() {
                             )
                         },
                     visualTransformation = PasswordVisualTransformation(),
-                    value = loginInput,
-                    onValueChange = { loginInput = it },
+                    value = passwordInputText,
+                    onValueChange = { passwordInputText = it },
                     label = { Text(stringResource(R.string.password)) }
                 )
 
@@ -129,7 +129,7 @@ fun LoginScreen() {
                             end.linkTo(parent.end)
                         },
                     onClick = {
-                        presenter.login()
+                        presenter.login(passwordInputText)
                     }
                 ) {
                     Text(stringResource(R.string.login))

@@ -12,14 +12,14 @@ import kotlinx.parcelize.Parcelize
 data class StorageFileEntry(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(index = true, name = "id")
-    var id: Long = 0,
+    val id: Long = 0,
 
     @ColumnInfo(name = "path")
-    var path: String? = null,
+    val path: String? = null,
 
     @ColumnInfo(name = "name")
-    var name: String? = null,
+    val name: String? = null,
 
     @ColumnInfo(name = "description")
-    var description: String? = null,
+    val description: String? = null,
 ) : Parcelable

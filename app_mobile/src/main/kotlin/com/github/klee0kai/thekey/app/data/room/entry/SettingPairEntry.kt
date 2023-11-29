@@ -12,7 +12,7 @@ import kotlinx.parcelize.Parcelize
 data class SettingPairEntry(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(index = true, name = "id")
-    val id: Long,
+    val id: Int,
 
     @ColumnInfo(name = "value")
     val value: String,

@@ -24,10 +24,10 @@ interface StorageFilesDao {
     fun deleteAll()
 
     @Query("SELECT * FROM $TABLE_NAME")
-    fun get(): Array<StorageFileEntry?>?
+    fun getAll(): List<StorageFileEntry>
 
     @Query("SELECT * FROM $TABLE_NAME WHERE path=:path")
-    operator fun get(path: String?): StorageFileEntry?
+    fun getAll(path: String?): StorageFileEntry?
 
     companion object {
         const val TABLE_NAME = "storagefiles"

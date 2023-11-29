@@ -17,8 +17,9 @@ import com.github.klee0kai.thekey.app.di.DI
 )
 abstract class KeyDatabase : RoomDatabase() {
 
-    abstract fun cachedFilesDao(): StorageFilesDao?
-    abstract fun settingsDao(): SettingDao?
+    abstract fun storagesDao(): StorageFilesDao
+
+    abstract fun settingsDao(): SettingDao
 
     companion object {
         fun create(): KeyDatabase =
