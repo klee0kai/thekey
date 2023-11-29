@@ -8,12 +8,18 @@ plugins {
     id("brooklyn-plugin")
 }
 
+val appGroup = "com.github.klee0kai.thekey.app"
+
+brooklyn {
+    group = appGroup
+}
+
 android {
-    namespace = "com.github.klee0kai.thekey.app"
+    namespace = appGroup
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.github.klee0kai.thekey.app"
+        applicationId = appGroup
         minSdk = 24
         targetSdk = 34
         versionCode = 1
