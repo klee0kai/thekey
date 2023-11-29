@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.ui.theme
+package com.github.klee0kai.thekey.app.ui.designkit.theme
 
 import androidx.compose.ui.graphics.Color
 

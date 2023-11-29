@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.ui.theme
+package com.github.klee0kai.thekey.app.ui.designkit
 
 import android.app.Activity
 import android.os.Build
@@ -14,6 +14,13 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import com.github.klee0kai.thekey.app.ui.designkit.theme.Pink40
+import com.github.klee0kai.thekey.app.ui.designkit.theme.Pink80
+import com.github.klee0kai.thekey.app.ui.designkit.theme.Purple40
+import com.github.klee0kai.thekey.app.ui.designkit.theme.Purple80
+import com.github.klee0kai.thekey.app.ui.designkit.theme.PurpleGrey40
+import com.github.klee0kai.thekey.app.ui.designkit.theme.PurpleGrey80
+import com.github.klee0kai.thekey.app.ui.designkit.theme.Typography
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
