@@ -12,6 +12,7 @@ val appGroup = "com.github.klee0kai.thekey.app"
 
 brooklyn {
     group = appGroup
+    cacheFile = null
 }
 
 android {

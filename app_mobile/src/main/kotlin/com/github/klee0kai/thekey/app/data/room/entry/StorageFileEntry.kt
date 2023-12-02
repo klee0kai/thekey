@@ -15,11 +15,11 @@ data class StorageFileEntry(
     val id: Long = 0,
 
     @ColumnInfo(name = "path")
-    val path: String? = null,
+    val path: String = "",
 
     @ColumnInfo(name = "name")
-    val name: String? = null,
+    val name: String = "",
 
     @ColumnInfo(name = "description")
-    val description: String? = null,
+    val description: String = "",
 ) : Parcelable

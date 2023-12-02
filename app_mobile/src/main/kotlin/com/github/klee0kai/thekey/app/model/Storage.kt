@@ -8,6 +8,6 @@ import kotlinx.parcelize.Parcelize
 @JniPojo
 data class Storage(
     val path: String,
-    val name: String?,
-    val description: String?
+    val name: String = "",
+    val description: String = ""
 ) : Parcelable

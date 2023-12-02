@@ -15,16 +15,12 @@ class StorageFilesRepository {
     private val scope = DI.ioThreadScope()
 
     fun getStorages() = scope.async {
-        storagesDao.getAll().mapNotNull { entry ->
-            if (entry.path != null) {
-                Storage(
-                    path = entry.path,
-                    name = entry.name,
-                    description = entry.description
-                )
-            } else {
-                null
-            }
+        storagesDao.getAll().map { entry ->
+            Storage(
+                path = entry.path,
+                name = entry.name,
+                description = entry.description
+            )
         }
     }
 
