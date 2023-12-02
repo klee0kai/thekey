@@ -1,6 +1,6 @@
 
-set(OPENSSL_LIB_PATH ${PROJECT_SOURCE_DIR}/../prebuild/openssl)
-set(openssl_include ${OPENSSL_LIB_PATH}/include)
+get_filename_component(OPENSSL_LIB_PATH ${CMAKE_CURRENT_LIST_DIR}/../prebuild/openssl ABSOLUTE)
+get_filename_component(openssl_include ${OPENSSL_LIB_PATH}/include ABSOLUTE)
 
 add_library(openssl_interface INTERFACE)
 set_target_properties(openssl_interface PROPERTIES
@@ -21,11 +21,9 @@ set_target_properties(openssl_crypto PROPERTIES
         )
 
 
-
-
 add_library(openssl_android STATIC IMPORTED)
 set_target_properties(openssl_android PROPERTIES
-        IMPORTED_LOCATION  ${OPENSSL_LIB_PATH}/android-${ANDROID_SYSROOT_ABI}/lib/libssl.a
+        IMPORTED_LOCATION ${OPENSSL_LIB_PATH}/android-${ANDROID_SYSROOT_ABI}/lib/libssl.a
         INTERFACE_INCLUDE_DIRECTORIES ${openssl_include}
         )
 

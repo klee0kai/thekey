@@ -8,12 +8,18 @@ plugins {
     id("brooklyn-plugin")
 }
 
+val appGroup = "com.github.klee0kai.thekey.app"
+
+brooklyn {
+    group = appGroup
+}
+
 android {
-    namespace = "com.github.klee0kai.thekey.app"
+    namespace = appGroup
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.github.klee0kai.thekey.app"
+        applicationId = appGroup
         minSdk = 24
         targetSdk = 34
         versionCode = 1
@@ -23,17 +29,16 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-    }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+        externalNativeBuild {
+            cmake {
+                cppFlags.add("")
+                arguments.add("ANDROID_BUILD=TRUE")
+                targets.add("crypt-storage-lib")
+            }
         }
     }
+
+
     signingConfigs.register("release") {
         try {
             val keystoreProperties = Properties().apply {
@@ -53,8 +58,43 @@ android {
     }
     buildTypes {
         release {
+            isMinifyEnabled = false
             signingConfig = signingConfigs["release"]
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+            ndk {
+                abiFilters.addAll(listOf("x86", "x86_64", "armeabi-v7a", "arm64-v8a"))
+            }
+            externalNativeBuild {
+                cmake {
+                    arguments.add("-DBROOKLYN_FOLDER=release")
+                }
+            }
         }
+        debug {
+            externalNativeBuild {
+                cmake {
+                    arguments.add("-DBROOKLYN_FOLDER=debug")
+                }
+            }
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    externalNativeBuild {
+        cmake {
+            path = File("src/main/cpp/CMakeLists.txt")
+            version = "3.10.2"
+        }
+    }
+
+    buildFeatures {
+        viewBinding = true
     }
 
     compileOptions {
@@ -77,8 +117,20 @@ android {
     }
 }
 
-dependencies {
+afterEvaluate {
+    val kotlinCompileTasks = tasks
+        .filterIsInstance<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>()
+    val cmakeTasks = tasks
+        .filterIsInstance<com.android.build.gradle.tasks.ExternalNativeBuildTask>()
 
+    cmakeTasks.forEach { cmakeTask ->
+        kotlinCompileTasks.forEach { kotlinTask ->
+            cmakeTask.mustRunAfter(kotlinTask)
+        }
+    }
+}
+
+dependencies {
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
     implementation("androidx.activity:activity-compose:1.8.1")

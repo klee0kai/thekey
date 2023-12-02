@@ -69,7 +69,7 @@ android {
     }
     externalNativeBuild {
         cmake {
-            path = File("../tkcore/CMakeLists.txt")
+            path = File("src/main/cpp/CMakeLists.txt")
             version = "3.10.2"
         }
     }

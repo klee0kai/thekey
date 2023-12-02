@@ -10,23 +10,17 @@ SET(CMAKE_CXX_FLAGS "-g -Wall  -std=c++11 -pthread ")
 #set (CMAKE_LINKER_FLAGS_DEBUG "${CMAKE_LINKER_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=address")
 
 
-set(OPENSSL_LIB_PATH ${PROJECT_SOURCE_DIR}/../prebuild/openssl)
+get_filename_component(OPENSSL_LIB_PATH ${PROJECT_SOURCE_DIR}/../prebuild/openssl ABSOLUTE)
 set(SYSTEM_INFO_TYPE ${CMAKE_HOST_SYSTEM_NAME}_${CMAKE_SYSTEM_PROCESSOR})
 message(SYSTEM_INFO_TYPE = ${SYSTEM_INFO_TYPE})
 message(OPENSSL_LIB_PATH = ${OPENSSL_LIB_PATH})
 
 include(FindOpensslLib.cmake)
+include(FindTheKeyLib.cmake)
 
-
-add_subdirectory(cpp_lib)
-
-if (${ANDROID})
-    add_subdirectory(android)
-
-else ()
+if (NOT DEFINED ${ANDROID})
     add_subdirectory(term)
     add_subdirectory(test)
-
 endif ()
 
 
