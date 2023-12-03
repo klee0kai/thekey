@@ -34,7 +34,7 @@ import dev.olshevski.navigation.reimagined.navigate
 @Composable
 fun LoginScreen() {
     val scope = rememberCoroutineScope()
-    val presenter = remember { DI.mainViewModule() }
+    val presenter = remember { DI.loginPresenter() }
     val navigator = remember { DI.navigator() }
 
     var passwordInputText by remember { mutableStateOf("") }

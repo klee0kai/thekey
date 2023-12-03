@@ -6,7 +6,7 @@ import kotlinx.coroutines.launch
 
 class LoginPresenter {
 
-    private val storagesRep by DI.storagesRepositoryLazy()
+    private val storagesRep by DI.foundStoragesRepositoryLazy()
     private val settingsRep by DI.settingsRepositoryLazy()
     private val navigator = DI.navigator()
     private val scope = DI.mainThreadScope()

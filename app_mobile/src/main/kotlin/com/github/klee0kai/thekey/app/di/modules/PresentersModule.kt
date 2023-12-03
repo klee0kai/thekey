@@ -9,7 +9,7 @@ import com.github.klee0kai.thekey.app.ui.storages.StoragesPresenter
 interface PresentersModule {
 
     @Provide(cache = Provide.CacheType.Weak)
-    fun mainPresenter(): LoginPresenter
+    fun loginPresenter(): LoginPresenter
 
     @Provide(cache = Provide.CacheType.Weak)
     fun storagesPresenter(): StoragesPresenter

@@ -5,6 +5,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.github.klee0kai.thekey.app.data.room.dao.StorageFilesDao
+import com.github.klee0kai.thekey.app.model.Storage
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -23,3 +24,15 @@ data class StorageFileEntry(
     @ColumnInfo(name = "description")
     val description: String = "",
 ) : Parcelable
+
+
+fun StorageFileEntry.toStorage(): Storage = this.run {
+    Storage(path, name, description)
+}
+
+fun Storage.toStorageEntry(
+    id: Long? = null
+): StorageFileEntry = this.run {
+    StorageFileEntry(id = id ?: 0, path = path, name = name, description = description)
+}
+

@@ -3,11 +3,14 @@ package com.github.klee0kai.thekey.app.di
 import com.github.klee0kai.stone.KotlinWrappersStone
 import com.github.klee0kai.stone.Stone
 import com.github.klee0kai.stone.annotations.component.Component
+import com.github.klee0kai.stone.annotations.component.Init
 import com.github.klee0kai.stone.annotations.module.BindInstance
 import com.github.klee0kai.thekey.app.App
 import com.github.klee0kai.thekey.app.di.dependencies.AppComponentProviders
 import com.github.klee0kai.thekey.app.di.modules.CoroutineModule
 import com.github.klee0kai.thekey.app.di.modules.DBModule
+import com.github.klee0kai.thekey.app.di.modules.EngineModule
+import com.github.klee0kai.thekey.app.di.modules.InteractorsModule
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.di.modules.RepositoriesModule
 import com.github.klee0kai.thekey.app.ui.navigation.Destination
@@ -26,10 +29,16 @@ interface AppComponent : AppComponentProviders {
 
     open fun presenters(): PresentersModule
 
+    open fun interactors(): InteractorsModule
+
     open fun repositories(): RepositoriesModule
+
+    open fun engine(): EngineModule
 
     open fun databases(): DBModule
 
+    @Init
+    fun initEngineModule(engineModule: Class<out EngineModule>)
 
     @BindInstance(cache = BindInstance.CacheType.Weak)
     fun app(app: App? = null): App

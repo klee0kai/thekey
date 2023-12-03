@@ -9,9 +9,9 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
 
 @JniMirror
-class FindStorageEngine {
+open class FindStorageEngine {
 
-    external fun findStorages(folder: String, listener: FindStorageListener)
+    open external fun findStorages(folder: String, listener: FindStorageListener)
 
 }
 
