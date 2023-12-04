@@ -4,4 +4,5 @@
     <string name="password">Password</string>
     <string name="app_login_description">Create and remember your passport for your key masster storage</string>
     <string name="storages">Storages</string>
+    <string name="approve_permissions">Approve permissions</string>
 </resources>
