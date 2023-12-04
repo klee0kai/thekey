@@ -33,7 +33,7 @@ android {
         externalNativeBuild {
             cmake {
                 cppFlags.add("")
-                arguments.add("ANDROID_BUILD=TRUE")
+                arguments.add("")
                 targets.add("crypt-storage-lib")
             }
         }
@@ -119,10 +119,13 @@ android {
 }
 
 afterEvaluate {
-    val kotlinCompileTasks = tasks
-        .filterIsInstance<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>()
-    val cmakeTasks = tasks
-        .filterIsInstance<com.android.build.gradle.tasks.ExternalNativeBuildTask>()
+    val kotlinCompileTasks = tasks.filterIsInstance<JavaCompile>()
+    val cmakeTasks = tasks.filter {
+        it is com.android.build.gradle.tasks.ExternalNativeBuildJsonTask ||
+                it is com.android.build.gradle.tasks.ExternalNativeBuildTask
+    }
+    println("kotlinCompileTasks ${kotlinCompileTasks.joinToString { it.name }}")
+    println("cmakeTasks ${cmakeTasks.joinToString { it.name }}")
 
     cmakeTasks.forEach { cmakeTask ->
         kotlinCompileTasks.forEach { kotlinTask ->

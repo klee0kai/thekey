@@ -1,5 +1,6 @@
 package com.github.klee0kai.thekey.app.engine
 
+import com.github.klee0kai.brooklyn.Brooklyn
 import com.github.klee0kai.brooklyn.JniMirror
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.model.Storage
@@ -11,22 +12,24 @@ import kotlinx.coroutines.launch
 @JniMirror
 open class FindStorageEngine {
 
+    init {
+        Brooklyn.loadLibrary("crypt-storage-lib")
+    }
+
     open external fun findStorages(folder: String, listener: FindStorageListener)
 
 }
 
-@JniMirror
-abstract class FindStorageListener {
-    open fun onStorageFound(storage: Storage) {}
-}
-
-fun FindStorageEngine.findStorages(folder: String): Flow<Storage> = callbackFlow {
+fun FindStorageEngine.findStoragesFlow(folder: String): Flow<Storage> = callbackFlow {
     launch(DI.ioDispatcher()) {
         findStorages(folder, object : FindStorageListener() {
             override fun onStorageFound(storage: Storage) {
                 launch { send(storage) }
             }
         })
+
+        channel.close()
     }
+
     awaitClose()
 }

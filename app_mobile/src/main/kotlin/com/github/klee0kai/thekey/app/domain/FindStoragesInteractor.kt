@@ -2,7 +2,7 @@ package com.github.klee0kai.thekey.app.domain
 
 import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.engine.findStorages
+import com.github.klee0kai.thekey.app.engine.findStoragesFlow
 import com.github.klee0kai.thekey.app.model.Storage
 import com.github.klee0kai.thekey.app.utils.android.UserShortPaths
 import kotlinx.coroutines.channels.awaitClose
@@ -32,16 +32,13 @@ class FindStoragesInteractor {
 
     fun findStorages(force: Boolean = false) = scope.launch {
         if (!checkForceFind(force = force)) return@launch
-        val searchingJobs = UserShortPaths.getRootPaths(false)
+        UserShortPaths.getRootPaths(false)
             .map { root ->
-                launch {
-                    engine.findStorages(root)
-                        .collect { storage ->
-                            rep.addStorage(storage = storage).join()
-                        }
-                }
+                engine.findStoragesFlow(root)
+                    .collect { storage ->
+                        rep.addStorage(storage = storage).join()
+                    }
             }
-        searchingJobs.forEach { it.join() }
     }
 
     private fun checkForceFind(force: Boolean = false): Boolean {
