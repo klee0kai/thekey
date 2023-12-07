@@ -1,6 +1,5 @@
 package com.github.klee0kai.thekey.app.ui.storages
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -39,8 +38,8 @@ fun StoragesScreen() {
         },
         sheetContent = {
             LazyColumn(
-                modifier = Modifier.fillMaxSize()
-
+                modifier = Modifier
+                    .fillMaxSize()
             ) {
                 storages.value.forEach { storage ->
                     item {
@@ -67,7 +66,6 @@ fun StorageItem(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .background(Color.White)
     ) {
         val (colorGroup, path, desctiption) = createRefs()
 

@@ -15,7 +15,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import com.github.klee0kai.thekey.app.R
-import com.github.klee0kai.thekey.app.ui.designkit.TheKeyTheme
+import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.navigation.MainNavContainer
 import com.github.klee0kai.thekey.app.ui.navigation.contracts.SimpleActivityContract
 import timber.log.Timber
@@ -36,7 +36,7 @@ class MainActivity : ComponentActivity() {
         reqRawFileManager = registerForActivityResult(SimpleActivityContract()) { }
 
         setContent {
-            TheKeyTheme {
+            AppTheme {
                 MainNavContainer()
             }
         }
