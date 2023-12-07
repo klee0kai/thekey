@@ -4,12 +4,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Divider
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -23,8 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.model.Storage
-import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleAppBar
-import dev.olshevski.navigation.reimagined.pop
+import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleBottomSheetScaffold
 
 @Preview
 @Composable
@@ -36,29 +33,24 @@ fun StoragesScreen() {
 
     val storages = presenter.storages().collectAsState(initial = emptyList())
 
-    Scaffold(
-        topBar = { SimpleAppBar(backClick = { navigator.pop() }) },
-        content = { padding ->
-            ConstraintLayout(
-                modifier = Modifier
-                    .padding(padding)
-                    .padding(16.dp)
-                    .fillMaxSize()
-            ) {
-                val (storagesList) = createRefs()
+    SimpleBottomSheetScaffold(
+        topContent = {
 
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    storages.value.forEach { storage ->
-                        item {
-                            StorageItem(storage)
-                        }
+        },
+        sheetContent = {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize()
+
+            ) {
+                storages.value.forEach { storage ->
+                    item {
+                        StorageItem(storage)
                     }
                 }
             }
-        }
+        },
     )
+
 }
 
 
@@ -108,9 +100,5 @@ fun StorageItem(
                     top.linkTo(path.bottom)
                 }
         )
-
-
     }
-
-
 }

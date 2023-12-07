@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.konan.properties.Properties
 
 plugins {
@@ -12,7 +13,6 @@ val appGroup = "com.github.klee0kai.thekey.app"
 
 brooklyn {
     group = appGroup
-    cacheFile = null
 }
 
 android {
@@ -119,7 +119,9 @@ android {
 }
 
 afterEvaluate {
-    val kotlinCompileTasks = tasks.filterIsInstance<JavaCompile>()
+    val kotlinCompileTasks = tasks.filter {
+        it is JavaCompile || it is KotlinCompile
+    }
     val cmakeTasks = tasks.filter {
         it is com.android.build.gradle.tasks.ExternalNativeBuildJsonTask ||
                 it is com.android.build.gradle.tasks.ExternalNativeBuildTask
@@ -128,7 +130,10 @@ afterEvaluate {
     println("cmakeTasks ${cmakeTasks.joinToString { it.name }}")
 
     cmakeTasks.forEach { cmakeTask ->
+//        cmakeTask.outputs.upToDateWhen { false }
+
         kotlinCompileTasks.forEach { kotlinTask ->
+//            kotlinTask.outputs.upToDateWhen { false }
             cmakeTask.mustRunAfter(kotlinTask)
         }
     }
