@@ -64,7 +64,7 @@ fun SimpleBottomSheetScaffold(
     val scaffoldState = rememberBottomSheetScaffoldState()
 
     val viewHeight = with(LocalDensity.current) {
-        if (LocalView.current.isInEditMode) 600.dp else LocalView.current.height.toDp()
+        if (LocalView.current.isInEditMode) 900.dp else LocalView.current.height.toDp()
     }
     val scaffoldTopOffset = runCatching {
         with(LocalDensity.current) { scaffoldState.bottomSheetState.requireOffset().toDp() }
@@ -90,21 +90,20 @@ fun SimpleBottomSheetScaffold(
                     modifier = Modifier
                         .padding(innerPadding)
                         .fillMaxWidth()
-                        .height(scaffoldTopOffset)
-                        .background(colorScheme.background),
+                        .height(scaffoldTopOffset),
                     content = {
                         topContent.invoke(this)
-
                     }
                 )
             },
-            sheetShape = BottomSheetDefaults.HiddenShape,
+            contentColor = colorScheme.background,
+            containerColor = colorScheme.background,
+            sheetContainerColor = colorScheme.surface,
+            sheetShape = BottomSheetDefaults.ExpandedShape,
             sheetDragHandle = {
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(dragHandleSize)
-                        .background(colorScheme.surface),
+                        .height(dragHandleSize),
                     contentAlignment = Alignment.Center
                 ) {
                     Box(
@@ -118,8 +117,7 @@ fun SimpleBottomSheetScaffold(
                 ConstraintLayout(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(sheetMaxSize)
-                        .background(colorScheme.surface),
+                        .height(sheetMaxSize),
                     content = { sheetContent.invoke(this) }
                 )
             }
