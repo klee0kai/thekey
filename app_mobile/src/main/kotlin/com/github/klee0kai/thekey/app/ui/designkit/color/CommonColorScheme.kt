@@ -7,20 +7,14 @@ interface CommonColorScheme {
 
     val isDarkScheme: Boolean get() = false
 
-    val violetPrimary: Color
-    val turquoisePrimary: Color
-    val pinkPrimary: Color
-    val orangePrimary: Color
-    val coralPrimary: Color
+    val statusBarColor: Color get() = androidColorScheme.background
 
-    val primaryBackground: Color
-    val secondBackground: Color
+    val colorsGroupCollection: List<Color>
 
-    val firstElement: Color
-    val secondElement: Color
-
-    val statusBarColor: Color get() = primaryBackground
-
+    /**
+     * Read more
+     * https://m3.material.io/styles/color/choosing-a-scheme
+     */
     val androidColorScheme: ColorScheme
 
 

@@ -59,7 +59,7 @@ fun SimpleBottomSheetScaffold(
     topContent: @Composable ConstraintLayoutScope.() -> Unit = {},
     sheetContent: @Composable ConstraintLayoutScope.() -> Unit = {},
 ) {
-    val colorScheme = DI.theme().colorScheme()
+    val colorScheme = DI.theme().colorScheme().androidColorScheme
     val scope = rememberCoroutineScope()
 
     val scaffoldState = rememberBottomSheetScaffoldState()
@@ -84,7 +84,7 @@ fun SimpleBottomSheetScaffold(
             topBar = {
                 TopAppBar(
                     colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = colorScheme.primaryBackground,
+                        containerColor = colorScheme.background,
                     ),
                     title = {
                         Box(
@@ -112,6 +112,16 @@ fun SimpleBottomSheetScaffold(
                     },
                 )
             },
+            content = { innerPadding ->
+                ConstraintLayout(
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .fillMaxWidth()
+                        .height(scaffoldSize)
+                        .background(colorScheme.background),
+                    content = { topContent.invoke(this) }
+                )
+            },
             sheetShape = BottomSheetDefaults.HiddenShape,
             sheetDragHandle = {
                 val alfa = when {
@@ -126,7 +136,7 @@ fun SimpleBottomSheetScaffold(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(dragHandleSize)
-                        .background(colorScheme.secondBackground),
+                        .background(colorScheme.surface),
                     contentAlignment = Alignment.Center
                 ) {
                     Box(
@@ -135,26 +145,16 @@ fun SimpleBottomSheetScaffold(
                                 width = 32.dp,
                                 height = 4.dp
                             )
-                            .background(colorScheme.secondElement.copy(alpha = 0.4f))
+                            .background(colorScheme.onSurface.copy(alpha = 0.4f))
                     )
                 }
-            },
-            content = { innerPadding ->
-                ConstraintLayout(
-                    modifier = Modifier
-                        .padding(innerPadding)
-                        .fillMaxWidth()
-                        .height(scaffoldSize)
-                        .background(colorScheme.primaryBackground),
-                    content = { topContent.invoke(this) }
-                )
             },
             sheetContent = {
                 ConstraintLayout(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(sheetMaxSize)
-                        .background(colorScheme.secondBackground),
+                        .background(colorScheme.surface),
                     content = { sheetContent.invoke(this) }
                 )
             }
