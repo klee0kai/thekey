@@ -61,19 +61,23 @@ fun SimpleBottomSheetScaffold(
 ) {
     val colorScheme = DI.theme().colorScheme().androidColorScheme
     val scope = rememberCoroutineScope()
-
     val scaffoldState = rememberBottomSheetScaffoldState()
-    val sheetMaxSize = with(LocalDensity.current) {
-        LocalView.current.height.toDp() - appBarSize - dragHandleSize
+
+    val viewHeight = with(LocalDensity.current) {
+        if (LocalView.current.isInEditMode) 600.dp else LocalView.current.height.toDp()
     }
-    val sheetMinSize = with(LocalDensity.current) {
-        LocalView.current.height.toDp() - appBarSize - topContentSize
-    }
-    val scaffoldSize = runCatching {
-        with(LocalDensity.current) {
-            scaffoldState.bottomSheetState.requireOffset().toDp()
-        }
+    val scaffoldTopOffset = runCatching {
+        with(LocalDensity.current) { scaffoldState.bottomSheetState.requireOffset().toDp() }
     }.getOrElse { 0.dp }
+
+    val sheetMaxSize = viewHeight - dragHandleSize
+    val sheetMinSize = viewHeight - appBarSize - dragHandleSize - topContentSize
+
+    val dragAlpha = ratio(
+        start = appBarSize + dragHandleSize * 0.5f,
+        end = appBarSize + dragHandleSize + 20.dp,
+        point = scaffoldTopOffset
+    ).coerceIn(0f, 1f)
 
     CompositionLocalProvider(
         LocalOverscrollConfiguration.provides(null),
@@ -81,57 +85,21 @@ fun SimpleBottomSheetScaffold(
         BottomSheetScaffold(
             scaffoldState = scaffoldState,
             sheetPeekHeight = sheetMinSize,
-            topBar = {
-                TopAppBar(
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = colorScheme.background,
-                    ),
-                    title = {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(4.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.logo_big),
-                                contentDescription = stringResource(id = R.string.app_name),
-                                contentScale = ContentScale.Inside,
-                                modifier = Modifier.scale(0.5f)
-                            )
-                        }
-                    },
-                    navigationIcon = {
-                        IconButton(onClick = { }) {
-                            Icon(
-                                Icons.Filled.Menu,
-                                contentDescription = null,
-                                modifier = Modifier
-                            )
-                        }
-                    },
-                )
-            },
             content = { innerPadding ->
                 ConstraintLayout(
                     modifier = Modifier
                         .padding(innerPadding)
                         .fillMaxWidth()
-                        .height(scaffoldSize)
+                        .height(scaffoldTopOffset)
                         .background(colorScheme.background),
-                    content = { topContent.invoke(this) }
+                    content = {
+                        topContent.invoke(this)
+
+                    }
                 )
             },
             sheetShape = BottomSheetDefaults.HiddenShape,
             sheetDragHandle = {
-                val alfa = when {
-                    scaffoldSize < 56.dp + 40.dp -> maxOf(
-                        0f,
-                        (scaffoldSize.value - 40.dp.value) / (56.dp.value + 40.dp.value)
-                    )
-
-                    else -> 1f
-                }
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -141,11 +109,8 @@ fun SimpleBottomSheetScaffold(
                 ) {
                     Box(
                         modifier = Modifier
-                            .size(
-                                width = 32.dp,
-                                height = 4.dp
-                            )
-                            .background(colorScheme.onSurface.copy(alpha = 0.4f))
+                            .size(width = 32.dp, height = 4.dp)
+                            .background(colorScheme.onSurface.copy(alpha = 0.4f * dragAlpha))
                     )
                 }
             },
@@ -160,4 +125,42 @@ fun SimpleBottomSheetScaffold(
             }
         )
     }
+
+    TopAppBar(
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = colorScheme.background,
+        ),
+        title = {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(4.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.logo_big),
+                    contentDescription = stringResource(id = R.string.app_name),
+                    contentScale = ContentScale.Inside,
+                    modifier = Modifier.scale(0.5f)
+                )
+            }
+        },
+        navigationIcon = {
+            IconButton(onClick = { }) {
+                Icon(
+                    Icons.Filled.Menu,
+                    contentDescription = null,
+                    modifier = Modifier
+                )
+            }
+        },
+    )
+
+}
+
+
+private fun ratio(start: Dp, end: Dp, point: Dp): Float {
+    val len = end - start
+    val passed = point - start
+    return passed / len
 }
