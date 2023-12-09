@@ -2,6 +2,7 @@ package com.github.klee0kai.thekey.app.ui.designkit
 
 import android.app.Activity
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.toArgb
@@ -29,6 +30,9 @@ fun AppTheme(
     MaterialTheme(
         colorScheme = colorScheme.androidColorScheme,
         typography = typeScheme.typography,
-        content = content
-    )
+    ){
+        Surface {
+            content.invoke()
+        }
+    }
 }
