@@ -9,7 +9,7 @@ interface CommonColorScheme {
 
     val statusBarColor: Color get() = androidColorScheme.background
 
-    val colorsGroupCollection: List<Color>
+    val colorsGroupCollection: List<SurfaceScheme>
 
     /**
      * Read more
@@ -17,5 +17,9 @@ interface CommonColorScheme {
      */
     val androidColorScheme: ColorScheme
 
-
 }
+
+data class SurfaceScheme(
+    val surfaceColor: Color,
+    val onSurfaceColor: Color,
+)

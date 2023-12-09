@@ -1,13 +1,11 @@
 package com.github.klee0kai.thekey.app.ui.designkit.components
 
 import android.annotation.SuppressLint
-import androidx.compose.animation.core.animate
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -21,7 +19,6 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Surface
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
@@ -50,12 +47,9 @@ import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleScaffoldConst.appBarSize
 import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleScaffoldConst.dragHandleSize
-import com.github.klee0kai.thekey.app.utils.views.accelerate
 import com.github.klee0kai.thekey.app.utils.views.accelerateDecelerate
-import com.github.klee0kai.thekey.app.utils.views.decelerate
 import com.github.klee0kai.thekey.app.utils.views.fadeOutInAnimate
 import com.github.klee0kai.thekey.app.utils.views.ratioBetween
-import kotlinx.coroutines.delay
 
 internal object SimpleScaffoldConst {
     val appBarSize = 64.dp // TopAppBarSmallTokens.ContainerHeight
@@ -89,7 +83,7 @@ fun SimpleBottomSheetScaffold(
         with(LocalDensity.current) { scaffoldState.bottomSheetState.requireOffset().toDp() }
     }.getOrElse { 0.dp }
 
-    val sheetMaxSize = viewHeight
+    val sheetMaxSize = viewHeight - appBarSize
     val sheetMinSize = viewHeight - appBarSize - dragHandleSize - topContentSize
 
     when {
@@ -101,7 +95,7 @@ fun SimpleBottomSheetScaffold(
 
     LaunchedEffect(key1 = mainTitleVisibility.value) {
         fadeOutInAnimate(
-            reverse = !mainTitleVisibility.value,
+            reverse = mainTitleVisibility.value,
             alpha1Init = mainTitleAlpha.value,
             alpha2Init = secondTitleAlpha.value,
         ) { newMainTitleAlpha, newSecondTitleAlpha ->
@@ -146,7 +140,7 @@ fun SimpleBottomSheetScaffold(
                 ) {
                     Box(
                         modifier = Modifier
-                            .size(width = 32.dp, height = 4.dp)
+                            .size(width = 48.dp, height = 4.dp)
                             .background(colorScheme.onSurface.copy(alpha = 0.4f * dragAlpha))
                     )
                 }

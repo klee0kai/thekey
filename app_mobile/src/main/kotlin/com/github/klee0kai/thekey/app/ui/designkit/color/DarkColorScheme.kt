@@ -16,15 +16,16 @@ class DarkColorScheme : CommonColorScheme {
     private val lightBackground = Color(0xFF242738)
     private val background = Color(0xFF1B1D2D)
 
+
     private val whiteColor = Color(0xFFFFFFFF)
     private val grayColor = Color(0xFFB7B7B7)
 
-    override val colorsGroupCollection: List<Color> = listOf(
-        violetColor,
-        turquoiseColor,
-        pinkColor,
-        orangeColor,
-        coralColor,
+    override val colorsGroupCollection = listOf(
+        SurfaceScheme(violetColor, whiteColor),
+        SurfaceScheme(turquoiseColor, whiteColor),
+        SurfaceScheme(pinkColor, whiteColor),
+        SurfaceScheme(orangeColor, whiteColor),
+        SurfaceScheme(coralColor, whiteColor),
     )
 
     override val androidColorScheme = darkColorScheme(
