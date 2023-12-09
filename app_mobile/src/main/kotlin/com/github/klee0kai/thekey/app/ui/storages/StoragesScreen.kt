@@ -15,9 +15,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.model.Storage
 import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleBottomSheetScaffold
@@ -33,6 +35,11 @@ fun StoragesScreen() {
     val storages = presenter.storages().collectAsState(initial = emptyList())
 
     SimpleBottomSheetScaffold(
+        appBarSticky = {
+            Text(
+                text = stringResource(id = R.string.storages),
+            )
+        },
         topContent = {
 
         },

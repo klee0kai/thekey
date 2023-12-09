@@ -1,11 +1,13 @@
 package com.github.klee0kai.thekey.app.ui.designkit.components
 
+import android.annotation.SuppressLint
+import androidx.compose.animation.core.animate
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -15,17 +17,23 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.BottomSheetScaffold
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.Surface
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
@@ -42,26 +50,37 @@ import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleScaffoldConst.appBarSize
 import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleScaffoldConst.dragHandleSize
+import com.github.klee0kai.thekey.app.utils.views.accelerate
+import com.github.klee0kai.thekey.app.utils.views.accelerateDecelerate
+import com.github.klee0kai.thekey.app.utils.views.decelerate
+import com.github.klee0kai.thekey.app.utils.views.fadeOutInAnimate
+import com.github.klee0kai.thekey.app.utils.views.ratioBetween
+import kotlinx.coroutines.delay
 
 internal object SimpleScaffoldConst {
     val appBarSize = 64.dp // TopAppBarSmallTokens.ContainerHeight
     val dragHandleSize = 48.dp
 }
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @Preview
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun SimpleBottomSheetScaffold(
-    title: String = stringResource(R.string.app_name),
     topContentSize: Dp = 190.dp,
     navIcon: ImageVector = Icons.Filled.ArrowBack,
     navClick: (() -> Unit)? = null,
+    appBarSticky: (@Composable () -> Unit)? = null,
     topContent: @Composable ConstraintLayoutScope.() -> Unit = {},
     sheetContent: @Composable ConstraintLayoutScope.() -> Unit = {},
 ) {
     val colorScheme = DI.theme().colorScheme().androidColorScheme
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberBottomSheetScaffoldState()
+
+    val mainTitleVisibility = remember { mutableStateOf(true) }
+    val mainTitleAlpha = remember { mutableFloatStateOf(1f) }
+    val secondTitleAlpha = remember { mutableFloatStateOf(0f) }
 
     val viewHeight = with(LocalDensity.current) {
         if (LocalView.current.isInEditMode) 900.dp else LocalView.current.height.toDp()
@@ -70,14 +89,34 @@ fun SimpleBottomSheetScaffold(
         with(LocalDensity.current) { scaffoldState.bottomSheetState.requireOffset().toDp() }
     }.getOrElse { 0.dp }
 
-    val sheetMaxSize = viewHeight - dragHandleSize
+    val sheetMaxSize = viewHeight
     val sheetMinSize = viewHeight - appBarSize - dragHandleSize - topContentSize
 
-    val dragAlpha = ratio(
+    when {
+        appBarSticky != null && scaffoldTopOffset < appBarSize + 10.dp ->
+            mainTitleVisibility.value = false
+
+        scaffoldTopOffset > appBarSize + 30.dp -> mainTitleVisibility.value = true
+    }
+
+    LaunchedEffect(key1 = mainTitleVisibility.value) {
+        fadeOutInAnimate(
+            reverse = !mainTitleVisibility.value,
+            alpha1Init = mainTitleAlpha.value,
+            alpha2Init = secondTitleAlpha.value,
+        ) { newMainTitleAlpha, newSecondTitleAlpha ->
+            mainTitleAlpha.value = newMainTitleAlpha
+            secondTitleAlpha.value = newSecondTitleAlpha
+        }
+    }
+
+    val dragAlpha = scaffoldTopOffset.ratioBetween(
         start = appBarSize + dragHandleSize * 0.5f,
         end = appBarSize + dragHandleSize + 20.dp,
-        point = scaffoldTopOffset
     ).coerceIn(0f, 1f)
+        .accelerateDecelerate()
+
+
 
     CompositionLocalProvider(
         LocalOverscrollConfiguration.provides(null),
@@ -85,6 +124,8 @@ fun SimpleBottomSheetScaffold(
         BottomSheetScaffold(
             scaffoldState = scaffoldState,
             sheetPeekHeight = sheetMinSize,
+            contentColor = colorScheme.onBackground,
+            containerColor = colorScheme.background,
             content = { innerPadding ->
                 ConstraintLayout(
                     modifier = Modifier
@@ -96,9 +137,6 @@ fun SimpleBottomSheetScaffold(
                     }
                 )
             },
-            contentColor = colorScheme.background,
-            containerColor = colorScheme.background,
-            sheetContainerColor = colorScheme.surface,
             sheetShape = BottomSheetDefaults.ExpandedShape,
             sheetDragHandle = {
                 Box(
@@ -113,33 +151,32 @@ fun SimpleBottomSheetScaffold(
                     )
                 }
             },
+            sheetContainerColor = colorScheme.surface,
+            sheetContentColor = colorScheme.onSurface,
             sheetContent = {
                 ConstraintLayout(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(sheetMaxSize),
-                    content = { sheetContent.invoke(this) }
+                    content = {
+                        sheetContent.invoke(this)
+                    }
                 )
             }
         )
     }
 
-    TopAppBar(
+    CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = colorScheme.background,
         ),
         title = {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(4.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.logo_big),
-                    contentDescription = stringResource(id = R.string.app_name),
-                    contentScale = ContentScale.Inside,
-                    modifier = Modifier.scale(0.5f)
+            if (mainTitleAlpha.value > 0) {
+                AppLabelTitle(modifier = Modifier.alpha(mainTitleAlpha.value))
+            } else {
+                AppLabelTitle(
+                    modifier = Modifier.alpha(secondTitleAlpha.value),
+                    content = appBarSticky
                 )
             }
         },
@@ -153,12 +190,33 @@ fun SimpleBottomSheetScaffold(
             }
         },
     )
-
 }
 
 
-private fun ratio(start: Dp, end: Dp, point: Dp): Float {
-    val len = end - start
-    val passed = point - start
-    return passed / len
+@Composable
+@Preview
+fun AppLabelTitle(
+    modifier: Modifier = Modifier,
+    content: (@Composable () -> Unit)? = null
+) {
+    Box(
+        modifier = modifier
+            .padding(4.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        if (content != null) {
+            content.invoke()
+        } else {
+            Image(
+                painter = painterResource(id = R.drawable.logo_big),
+                contentDescription = stringResource(id = R.string.app_name),
+                contentScale = ContentScale.Inside,
+                modifier = Modifier.scale(0.5f)
+            )
+        }
+    }
 }
+
+
+
+
