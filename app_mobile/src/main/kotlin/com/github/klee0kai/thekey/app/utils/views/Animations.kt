@@ -13,6 +13,12 @@ fun Dp.ratioBetween(start: Dp, end: Dp): Float {
     return passed / len
 }
 
+fun Number.ratioBetween(start: Number, end: Number): Float {
+    val len = end.toFloat() - start.toFloat()
+    val passed = this.toFloat() - start.toFloat()
+    return passed / len
+}
+
 
 fun Float.accelerateDecelerate(): Float =
     AccelerateDecelerateInterpolator().getInterpolation(this)

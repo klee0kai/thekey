@@ -6,6 +6,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -65,7 +66,7 @@ fun SimpleBottomSheetScaffold(
     navIcon: ImageVector = Icons.Filled.ArrowBack,
     navClick: (() -> Unit)? = null,
     appBarSticky: (@Composable () -> Unit)? = null,
-    topContent: @Composable ConstraintLayoutScope.() -> Unit = {},
+    topContent: @Composable () -> Unit = {},
     sheetContent: @Composable ConstraintLayoutScope.() -> Unit = {},
 ) {
     val colorScheme = DI.theme().colorScheme().androidColorScheme
@@ -84,7 +85,7 @@ fun SimpleBottomSheetScaffold(
     }.getOrElse { 0.dp }
 
     val sheetMaxSize = viewHeight - appBarSize
-    val sheetMinSize = viewHeight - appBarSize - dragHandleSize - topContentSize
+    val sheetMinSize = viewHeight - appBarSize - topContentSize
 
     when {
         appBarSticky != null && scaffoldTopOffset < appBarSize + 10.dp ->
@@ -111,7 +112,6 @@ fun SimpleBottomSheetScaffold(
         .accelerateDecelerate()
 
 
-
     CompositionLocalProvider(
         LocalOverscrollConfiguration.provides(null),
     ) {
@@ -121,15 +121,20 @@ fun SimpleBottomSheetScaffold(
             contentColor = colorScheme.onBackground,
             containerColor = colorScheme.background,
             content = { innerPadding ->
-                ConstraintLayout(
+                Box(
                     modifier = Modifier
                         .padding(innerPadding)
                         .fillMaxWidth()
-                        .height(scaffoldTopOffset),
-                    content = {
-                        topContent.invoke(this)
+                        .height(scaffoldTopOffset)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .padding(top = appBarSize)
+                            .fillMaxSize()
+                    ) {
+                        topContent.invoke()
                     }
-                )
+                }
             },
             sheetShape = BottomSheetDefaults.ExpandedShape,
             sheetDragHandle = {

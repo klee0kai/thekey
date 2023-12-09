@@ -17,7 +17,8 @@ class DarkColorScheme : CommonColorScheme {
     private val background = Color(0xFF1B1D2D)
 
 
-    private val whiteColor = Color(0xFFFFFFFF)
+    private val blackColor = Color.Black
+    private val whiteColor = Color.White
     private val grayColor = Color(0xFFB7B7B7)
 
     override val colorsGroupCollection = listOf(
@@ -51,8 +52,8 @@ class DarkColorScheme : CommonColorScheme {
         onSurface = whiteColor,
         surfaceVariant = lightBackground,
         onSurfaceVariant = whiteColor,
-        inverseSurface = grayColor,
-        inverseOnSurface = whiteColor,
+        inverseSurface = whiteColor,
+        inverseOnSurface = blackColor,
     )
 
 
