@@ -1,6 +1,5 @@
 package com.github.klee0kai.thekey.app.ui.designkit.components
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.LocalOverscrollConfiguration
@@ -16,6 +15,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.BottomSheetScaffold
+import androidx.compose.material3.BottomSheetScaffoldState
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -25,10 +25,10 @@ import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableFloatState
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -42,8 +42,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.ConstraintLayoutScope
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleScaffoldConst.appBarSize
@@ -57,35 +55,52 @@ internal object SimpleScaffoldConst {
     val dragHandleSize = 48.dp
 }
 
-@SuppressLint("CoroutineCreationDuringComposition")
+@OptIn(ExperimentalMaterial3Api::class)
+class SimpleBottomSheetScaffoldState(
+    val scaffoldState: BottomSheetScaffoldState,
+    val dragProgress: MutableFloatState = mutableFloatStateOf(0f),
+)
+
+
+@Composable
+@ExperimentalMaterial3Api
+fun rememberSimpleBottomSheetScaffoldState(
+    scaffoldState: BottomSheetScaffoldState = rememberBottomSheetScaffoldState(),
+): SimpleBottomSheetScaffoldState {
+    return remember { SimpleBottomSheetScaffoldState(scaffoldState) }
+}
+
 @Preview
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun SimpleBottomSheetScaffold(
+    simpleBottomSheetScaffoldState: SimpleBottomSheetScaffoldState = rememberSimpleBottomSheetScaffoldState(),
     topContentSize: Dp = 190.dp,
     navIcon: ImageVector = Icons.Filled.ArrowBack,
     navClick: (() -> Unit)? = null,
     appBarSticky: (@Composable () -> Unit)? = null,
     topContent: @Composable () -> Unit = {},
-    sheetContent: @Composable ConstraintLayoutScope.() -> Unit = {},
+    sheetContent: @Composable () -> Unit = {},
 ) {
-    val colorScheme = DI.theme().colorScheme().androidColorScheme
-    val scope = rememberCoroutineScope()
-    val scaffoldState = rememberBottomSheetScaffoldState()
+    val density = LocalDensity.current
+    val view = LocalView.current
+    val colorScheme = remember { DI.theme().colorScheme().androidColorScheme }
 
     val mainTitleVisibility = remember { mutableStateOf(true) }
     val mainTitleAlpha = remember { mutableFloatStateOf(1f) }
     val secondTitleAlpha = remember { mutableFloatStateOf(0f) }
-
-    val viewHeight = with(LocalDensity.current) {
-        if (LocalView.current.isInEditMode) 900.dp else LocalView.current.height.toDp()
+    val viewHeight = remember {
+        with(density) { if (view.isInEditMode) 900.dp else view.height.toDp() }
     }
+    val sheetMaxSize = remember { viewHeight - appBarSize }
+    val sheetMinSize = remember { viewHeight - appBarSize - topContentSize }
+
     val scaffoldTopOffset = runCatching {
-        with(LocalDensity.current) { scaffoldState.bottomSheetState.requireOffset().toDp() }
+        with(LocalDensity.current) {
+            simpleBottomSheetScaffoldState.scaffoldState.bottomSheetState.requireOffset().toDp()
+        }
     }.getOrElse { 0.dp }
 
-    val sheetMaxSize = viewHeight - appBarSize
-    val sheetMinSize = viewHeight - appBarSize - topContentSize
 
     when {
         appBarSticky != null && scaffoldTopOffset < appBarSize + 10.dp ->
@@ -94,29 +109,37 @@ fun SimpleBottomSheetScaffold(
         scaffoldTopOffset > appBarSize + 30.dp -> mainTitleVisibility.value = true
     }
 
+    simpleBottomSheetScaffoldState.dragProgress.floatValue = scaffoldTopOffset.ratioBetween(
+        start = appBarSize,
+        end = appBarSize + topContentSize
+    ).coerceIn(0f, 1f)
+
+    val dragAlpha = simpleBottomSheetScaffoldState.dragProgress.floatValue.ratioBetween(
+        start = 0.2f,
+        end = 0.5f,
+    ).coerceIn(0f, 1f)
+        .accelerateDecelerate()
+
+
+
+
     LaunchedEffect(key1 = mainTitleVisibility.value) {
         fadeOutInAnimate(
             reverse = mainTitleVisibility.value,
-            alpha1Init = mainTitleAlpha.value,
-            alpha2Init = secondTitleAlpha.value,
+            alpha1Init = mainTitleAlpha.floatValue,
+            alpha2Init = secondTitleAlpha.floatValue,
         ) { newMainTitleAlpha, newSecondTitleAlpha ->
-            mainTitleAlpha.value = newMainTitleAlpha
-            secondTitleAlpha.value = newSecondTitleAlpha
+            mainTitleAlpha.floatValue = newMainTitleAlpha
+            secondTitleAlpha.floatValue = newSecondTitleAlpha
         }
     }
-
-    val dragAlpha = scaffoldTopOffset.ratioBetween(
-        start = appBarSize + dragHandleSize * 0.5f,
-        end = appBarSize + dragHandleSize + 20.dp,
-    ).coerceIn(0f, 1f)
-        .accelerateDecelerate()
 
 
     CompositionLocalProvider(
         LocalOverscrollConfiguration.provides(null),
     ) {
         BottomSheetScaffold(
-            scaffoldState = scaffoldState,
+            scaffoldState = simpleBottomSheetScaffoldState.scaffoldState,
             sheetPeekHeight = sheetMinSize,
             contentColor = colorScheme.onBackground,
             containerColor = colorScheme.background,
@@ -153,12 +176,12 @@ fun SimpleBottomSheetScaffold(
             sheetContainerColor = colorScheme.surface,
             sheetContentColor = colorScheme.onSurface,
             sheetContent = {
-                ConstraintLayout(
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(sheetMaxSize),
                     content = {
-                        sheetContent.invoke(this)
+                        sheetContent.invoke()
                     }
                 )
             }

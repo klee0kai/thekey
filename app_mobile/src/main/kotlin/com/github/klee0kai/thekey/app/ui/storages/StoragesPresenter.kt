@@ -2,7 +2,7 @@ package com.github.klee0kai.thekey.app.ui.storages
 
 import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.model.Storage
+import com.github.klee0kai.thekey.app.model.ColoredStorage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +22,7 @@ class StoragesPresenter {
 
     private val mockedStoragesFlow = flowOf(
         (0..100).map {
-            Storage("/path${it}", "name${it}", "description${it}")
+            ColoredStorage("/path${it}", "name${it}", "description${it}")
         }
     )
 

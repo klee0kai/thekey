@@ -7,34 +7,28 @@ class DarkColorScheme : CommonColorScheme {
 
     override val isDarkScheme: Boolean = true
 
-    private val violetColor = Color(0xFF837AE8)
-    private val turquoiseColor = Color(0xFF7AE8E8)
-    private val pinkColor = Color(0xFFE87AD6)
-    private val orangeColor = Color(0xFFDC8938)
-    private val coralColor = Color(0xFFE87A7A)
-
     private val lightBackground = Color(0xFF242738)
     private val background = Color(0xFF1B1D2D)
-
 
     private val blackColor = Color.Black
     private val whiteColor = Color.White
     private val grayColor = Color(0xFFB7B7B7)
 
-    override val colorsGroupCollection = listOf(
-        SurfaceScheme(violetColor, whiteColor),
-        SurfaceScheme(turquoiseColor, whiteColor),
-        SurfaceScheme(pinkColor, whiteColor),
-        SurfaceScheme(orangeColor, whiteColor),
-        SurfaceScheme(coralColor, whiteColor),
-    )
+    private val violet = SurfaceScheme(Color(0xFF837AE8), whiteColor)
+    private val turquoise = SurfaceScheme(Color(0xFF7AE8E8), whiteColor)
+    private val pink = SurfaceScheme(Color(0xFFE87AD6), whiteColor)
+    private val orange = SurfaceScheme(Color(0xFFDC8938), whiteColor)
+    private val coral = SurfaceScheme(Color(0xFFE87A7A), whiteColor)
+
+
+    override val colorsGroupCollection = listOf(violet, turquoise, pink, orange, coral)
 
     override val androidColorScheme = darkColorScheme(
-        primary = turquoiseColor,
+        primary = turquoise.surfaceColor,
         onPrimary = whiteColor,
-        secondary = orangeColor,
+        secondary = orange.surfaceColor,
         onSecondary = whiteColor,
-        tertiary = orangeColor,
+        tertiary = orange.surfaceColor,
         onTertiary = whiteColor,
 
         primaryContainer = lightBackground,
@@ -55,6 +49,15 @@ class DarkColorScheme : CommonColorScheme {
         inverseSurface = whiteColor,
         inverseOnSurface = blackColor,
     )
+
+    override fun surfaceScheme(group: ColoredStorageGroup): SurfaceScheme =
+        when (group) {
+            ColoredStorageGroup.VIOLET -> violet
+            ColoredStorageGroup.TURQUOISE -> turquoise
+            ColoredStorageGroup.PINK -> pink
+            ColoredStorageGroup.ORANGE -> orange
+            ColoredStorageGroup.CORAL -> coral
+        }
 
 
 }

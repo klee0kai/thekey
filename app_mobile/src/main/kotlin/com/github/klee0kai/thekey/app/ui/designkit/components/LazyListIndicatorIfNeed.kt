@@ -24,19 +24,18 @@ fun LazyListIndicatorIfNeed(
     horizontal: Boolean = false,
     lazyListState: LazyListState = rememberLazyListState(),
 ) {
-    val firstVisibleItem = remember { derivedStateOf { lazyListState.firstVisibleItemIndex } }
+    val allItemsCounts = remember { derivedStateOf { lazyListState.layoutInfo.totalItemsCount } }
     val visibleItemsCount = remember {
         derivedStateOf { lazyListState.layoutInfo.visibleItemsInfo.size }
     }
-    val allItemsCounts = remember { derivedStateOf { lazyListState.layoutInfo.totalItemsCount } }
+    val isScrollIndicatorVisible = allItemsCounts.value > visibleItemsCount.value * 1.3f
+    if (!isScrollIndicatorVisible) return
+    val firstVisibleItem = remember { derivedStateOf { lazyListState.firstVisibleItemIndex } }
     val listVisibleRatio = visibleItemsCount.value.ratioBetween(0, allItemsCounts.value)
     val scrollRatio = firstVisibleItem.value.ratioBetween(
         start = 0,
         end = allItemsCounts.value - visibleItemsCount.value
     )
-    val isScrollIndicatorVisible = allItemsCounts.value > visibleItemsCount.value * 1.3f
-
-    if (!isScrollIndicatorVisible) return
 
     ConstraintLayout(
         modifier = modifier
