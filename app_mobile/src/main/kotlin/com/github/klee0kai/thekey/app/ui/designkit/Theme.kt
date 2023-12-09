@@ -8,13 +8,13 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.ui.designkit.theme.Typography
 
 @Composable
 fun AppTheme(
     content: @Composable () -> Unit
 ) {
     val colorScheme = DI.theme().colorScheme()
+    val typeScheme = DI.theme().typeScheme()
 
     val view = LocalView.current
     if (!view.isInEditMode) {
@@ -28,7 +28,7 @@ fun AppTheme(
 
     MaterialTheme(
         colorScheme = colorScheme.androidColorScheme,
-        typography = Typography,
+        typography = typeScheme.typography,
         content = content
     )
 }

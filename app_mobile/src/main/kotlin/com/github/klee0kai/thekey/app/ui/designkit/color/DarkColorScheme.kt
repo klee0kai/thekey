@@ -7,17 +7,17 @@ class DarkColorScheme : CommonColorScheme {
 
     override val isDarkScheme: Boolean = true
 
-    val violetColor = Color(0xFF837AE8)
-    val turquoiseColor = Color(0xFF7AE8E8)
-    val pinkColor = Color(0xFFE87AD6)
-    val orangeColor = Color(0xFFDC8938)
-    val coralColor = Color(0xFFE87A7A)
+    private val violetColor = Color(0xFF837AE8)
+    private val turquoiseColor = Color(0xFF7AE8E8)
+    private val pinkColor = Color(0xFFE87AD6)
+    private val orangeColor = Color(0xFFDC8938)
+    private val coralColor = Color(0xFFE87A7A)
 
-    val lightBackground = Color(0xFF242738)
-    val background = Color(0xFF1B1D2D)
+    private val lightBackground = Color(0xFF242738)
+    private val background = Color(0xFF1B1D2D)
 
-    val whiteColor = Color(0xFFFFFFFF)
-    val grayColor = Color(0xFFB7B7B7)
+    private val whiteColor = Color(0xFFFFFFFF)
+    private val grayColor = Color(0xFFB7B7B7)
 
     override val colorsGroupCollection: List<Color> = listOf(
         violetColor,
