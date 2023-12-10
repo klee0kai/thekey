@@ -1,6 +1,5 @@
 package com.github.klee0kai.thekey.app.ui.storages
 
-import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.model.ColoredStorage
 import kotlinx.coroutines.Dispatchers
@@ -9,12 +8,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 class StoragesPresenter {
 
     val searchingStoragesStatus = MutableStateFlow(false)
 
-    private val interactor by DI.findStoragesInteractorLazy()
+    private val interactor = DI.findStoragesInteractorLazy()
     private val navigator = DI.navigator()
     private val scope = DI.mainThreadScope()
 
@@ -27,7 +27,10 @@ class StoragesPresenter {
     )
 
     init {
-        searchingJob = interactor.findStorages().also { job ->
+        searchingJob = scope.launch {
+            interactor()
+                .findStorages()
+        }.also { job ->
             searchingStoragesStatus.value = job.isCompleted == false
             job.invokeOnCompletion {
                 searchingStoragesStatus.value = false
@@ -43,6 +46,5 @@ class StoragesPresenter {
                     filter.isBlank() || storage.path.contains(filter)
                 }
             }
-
 
 }

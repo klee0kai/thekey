@@ -22,14 +22,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -58,6 +55,11 @@ fun StoragesScreen() {
     val context = LocalView.current.context
     val scaffoldState = rememberSimpleBottomSheetScaffoldState()
 
+    val topContentAlpha = scaffoldState.dragProgress.floatValue
+        .ratioBetween(0.3f, 0.7f)
+        .coerceIn(0f, 1f)
+        .accelerateDecelerate()
+
     SimpleBottomSheetScaffold(
         simpleBottomSheetScaffoldState = scaffoldState,
         topContentSize = TOP_CONTENT_SIZE,
@@ -68,6 +70,7 @@ fun StoragesScreen() {
             GroupsSelectContainer(
                 modifier = Modifier
                     .fillMaxHeight()
+                    .alpha(topContentAlpha)
             )
         },
         sheetContent = {
@@ -85,20 +88,10 @@ fun GroupsSelectContainer(
     modifier: Modifier = Modifier
 ) {
     val lazyListState = rememberLazyListState()
-    val contentSizePx = remember { mutableIntStateOf(0) }
-    val contentSize = with(LocalDensity.current) { contentSizePx.intValue.toDp() }
-    val contentAlpha = contentSize
-        .ratioBetween(TOP_CONTENT_SIZE * 0.5f, TOP_CONTENT_SIZE * 0.8f)
-        .coerceIn(0f, 1f)
-        .accelerateDecelerate()
 
     ConstraintLayout(
         modifier = modifier
-            .alpha(contentAlpha)
             .fillMaxWidth()
-            .onGloballyPositioned {
-                contentSizePx.intValue = it.size.height
-            },
     ) {
         val (groupsHint, groupsList, indicator) = createRefs()
 
@@ -179,6 +172,7 @@ fun StoragesListContent(
         .height(600.dp)
         .background(Color.DarkGray),
 ) {
+    val scope = rememberCoroutineScope()
     val presenter = remember { DI.storagesPresenter() }
     val storages = presenter.storages().collectAsState(initial = emptyList())
     val titleAnimatedAlpha by animateFloatAsState(
@@ -186,9 +180,9 @@ fun StoragesListContent(
         label = "title animate"
     )
 
-
     LazyColumn(
         modifier = modifier
+            .fillMaxSize()
     ) {
         item {
             Text(
@@ -201,7 +195,10 @@ fun StoragesListContent(
         }
 
         storages.value.forEach { storage ->
-            item {
+            item(
+                key = storage.path,
+                contentType = storage::class,
+            ) {
                 StorageItem(storage)
             }
         }

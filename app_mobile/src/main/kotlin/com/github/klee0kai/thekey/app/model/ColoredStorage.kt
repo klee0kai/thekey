@@ -1,6 +1,7 @@
 package com.github.klee0kai.thekey.app.model
 
 import android.os.Parcelable
+import android.util.Log
 import com.github.klee0kai.thekey.app.ui.designkit.color.ColoredStorageGroup
 import kotlinx.parcelize.Parcelize
 
@@ -10,4 +11,10 @@ data class ColoredStorage(
     val name: String = "",
     val description: String = "",
     val colorGroup: ColoredStorageGroup = ColoredStorageGroup.TURQUOISE,
-) : Parcelable
+) : Parcelable {
+
+    fun logTake() {
+        Log.d("StoragesScreen", "taked ${path}")
+    }
+
+}

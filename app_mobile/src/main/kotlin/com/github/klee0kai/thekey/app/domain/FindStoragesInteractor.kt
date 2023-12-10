@@ -1,6 +1,5 @@
 package com.github.klee0kai.thekey.app.domain
 
-import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.engine.findStoragesFlow
 import com.github.klee0kai.thekey.app.model.Storage
@@ -15,18 +14,18 @@ class FindStoragesInteractor {
 
     val storagesFlow = callbackFlow<List<Storage>> {
         launch {
-            rep.updateDbFlow.collect {
-                send(rep.getStorages().await())
+            rep().updateDbFlow.collect {
+                send(rep().getStorages().await())
             }
         }
-        send(rep.getStorages().await())
+        send(rep().getStorages().await())
         awaitClose()
     }.distinctUntilChanged()
 
     private val scope = DI.ioThreadScope()
-    private val engine by DI.findStorageEngineLazy()
-    private val rep by DI.foundStoragesRepositoryLazy()
-    private val settingsRep by DI.settingsRepositoryLazy()
+    private val engine = DI.findStorageEngineLazy()
+    private val rep = DI.foundStoragesRepositoryLazy()
+    private val settingsRep = DI.settingsRepositoryLazy()
 
     private var lastStartTime: Long = 0
 
@@ -34,9 +33,9 @@ class FindStoragesInteractor {
         if (!checkForceFind(force = force)) return@launch
         UserShortPaths.getRootPaths(false)
             .map { root ->
-                engine.findStoragesFlow(root)
+                engine().findStoragesFlow(root)
                     .collect { storage ->
-                        rep.addStorage(storage = storage).join()
+                        rep().addStorage(storage = storage).join()
                     }
             }
     }

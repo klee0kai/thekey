@@ -148,7 +148,7 @@ fun SimpleBottomSheetScaffold(
                     modifier = Modifier
                         .padding(innerPadding)
                         .fillMaxWidth()
-                        .height(scaffoldTopOffset)
+                        .height(topContentSize)
                 ) {
                     Box(
                         modifier = Modifier
@@ -193,11 +193,11 @@ fun SimpleBottomSheetScaffold(
             containerColor = colorScheme.background,
         ),
         title = {
-            if (mainTitleAlpha.value > 0) {
-                AppLabelTitle(modifier = Modifier.alpha(mainTitleAlpha.value))
+            if (mainTitleAlpha.floatValue > 0) {
+                AppLabelTitle(modifier = Modifier.alpha(mainTitleAlpha.floatValue))
             } else {
                 AppLabelTitle(
-                    modifier = Modifier.alpha(secondTitleAlpha.value),
+                    modifier = Modifier.alpha(secondTitleAlpha.floatValue),
                     content = appBarSticky
                 )
             }
