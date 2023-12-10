@@ -82,6 +82,7 @@ fun SimpleBottomSheetScaffold(
     appBarSticky: (@Composable () -> Unit)? = null,
     topContent: @Composable () -> Unit = {},
     sheetContent: @Composable () -> Unit = {},
+    fab: @Composable (() -> Unit)? = null,
 ) {
     val density = LocalDensity.current
     val view = LocalView.current
@@ -214,6 +215,17 @@ fun SimpleBottomSheetScaffold(
             }
         },
     )
+
+    if (fab != null) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 56.dp, end = 16.dp),
+            contentAlignment = Alignment.BottomEnd
+        ) {
+            fab.invoke()
+        }
+    }
 }
 
 

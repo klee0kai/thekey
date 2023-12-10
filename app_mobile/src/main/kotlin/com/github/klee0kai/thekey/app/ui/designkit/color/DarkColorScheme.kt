@@ -31,11 +31,11 @@ class DarkColorScheme : CommonColorScheme {
         tertiary = orange.surfaceColor,
         onTertiary = whiteColor,
 
-        primaryContainer = lightBackground,
+        primaryContainer = turquoise.surfaceColor,
         onPrimaryContainer = whiteColor,
-        secondaryContainer = lightBackground,
+        secondaryContainer = orange.surfaceColor,
         onSecondaryContainer = whiteColor,
-        tertiaryContainer = lightBackground,
+        tertiaryContainer = orange.surfaceColor,
         onTertiaryContainer = whiteColor,
 
         background = background,

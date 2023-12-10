@@ -14,8 +14,11 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults.filledIconButtonColors
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -36,6 +39,7 @@ import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.model.ColoredStorage
 import com.github.klee0kai.thekey.app.ui.designkit.color.SurfaceScheme
+import com.github.klee0kai.thekey.app.ui.designkit.components.FabSimple
 import com.github.klee0kai.thekey.app.ui.designkit.components.LazyListIndicatorIfNeed
 import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleBottomSheetScaffold
 import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleBottomSheetScaffoldState
@@ -56,7 +60,6 @@ fun StoragesScreen() {
     val context = LocalView.current.context
     val scaffoldState = rememberSimpleBottomSheetScaffoldState()
 
-
     SimpleBottomSheetScaffold(
         simpleBottomSheetScaffoldState = scaffoldState,
         topContentSize = TOP_CONTENT_SIZE,
@@ -73,6 +76,13 @@ fun StoragesScreen() {
                 showStoragesTitle = scaffoldState.dragProgress.floatValue > 0.1f,
                 modifier = Modifier.fillMaxSize()
             )
+        },
+        fab = {
+            FabSimple(
+                onClick = {}
+            ) {
+                Icon(Icons.Default.Add, contentDescription = "Add")
+            }
         },
     )
 }
