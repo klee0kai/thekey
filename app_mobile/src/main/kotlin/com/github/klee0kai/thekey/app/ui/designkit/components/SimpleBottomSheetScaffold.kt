@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
@@ -167,7 +168,10 @@ fun SimpleBottomSheetScaffold(
                     Box(
                         modifier = Modifier
                             .size(width = 48.dp, height = 4.dp)
-                            .background(colorScheme.onSurface.copy(alpha = 0.4f * dragAlpha))
+                            .background(
+                                color = colorScheme.onSurface.copy(alpha = 0.4f * dragAlpha),
+                                shape = RoundedCornerShape(2.dp)
+                            )
                     )
                 }
             },

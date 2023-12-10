@@ -30,6 +30,7 @@ class StoragesPresenter {
         searchingJob = scope.launch {
             interactor()
                 .findStorages()
+                .join()
         }.also { job ->
             searchingStoragesStatus.value = job.isCompleted == false
             job.invokeOnCompletion {

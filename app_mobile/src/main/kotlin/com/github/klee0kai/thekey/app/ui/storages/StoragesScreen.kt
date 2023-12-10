@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.IconButtonDefaults.filledIconButtonColors
@@ -238,8 +239,11 @@ fun StorageItem(
 
         Box(
             modifier = Modifier
-                .size(1.dp, 24.dp)
-                .background(colorScheme.surfaceScheme(storage.colorGroup).surfaceColor)
+                .size(2.dp, 24.dp)
+                .background(
+                    color = colorScheme.surfaceScheme(storage.colorGroup).surfaceColor,
+                    shape = RoundedCornerShape(1.dp)
+                )
                 .constrainAs(colorGroup) {
                     start.linkTo(parent.start, 16.dp)
                     top.linkTo(path.top, 4.dp)

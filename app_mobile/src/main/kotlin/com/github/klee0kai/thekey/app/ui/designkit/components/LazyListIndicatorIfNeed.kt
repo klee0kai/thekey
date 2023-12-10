@@ -7,12 +7,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.klee0kai.thekey.app.utils.views.ratioBetween
 
@@ -56,7 +58,10 @@ fun LazyListIndicatorIfNeed(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.inverseSurface.copy(alpha = 0.4f))
+                .background(
+                    color = MaterialTheme.colorScheme.inverseSurface.copy(alpha = 0.4f),
+                    shape = RoundedCornerShape(2.dp)
+                )
                 .constrainAs(indicatorContainer) {
                     linkTo(
                         start = parent.start,
@@ -68,7 +73,10 @@ fun LazyListIndicatorIfNeed(
         )
         Box(
             modifier = indicatorModifier
-                .background(MaterialTheme.colorScheme.inverseSurface)
+                .background(
+                    color = MaterialTheme.colorScheme.inverseSurface,
+                    shape = RoundedCornerShape(2.dp)
+                )
                 .constrainAs(indicator) {
                     linkTo(
                         start = indicatorContainer.start,
