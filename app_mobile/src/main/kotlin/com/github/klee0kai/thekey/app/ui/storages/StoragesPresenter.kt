@@ -1,11 +1,13 @@
 package com.github.klee0kai.thekey.app.ui.storages
 
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.model.ColorGroup
 import com.github.klee0kai.thekey.app.model.ColoredStorage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -15,6 +17,7 @@ class StoragesPresenter {
     val searchingStoragesStatus = MutableStateFlow(false)
 
     private val interactor = DI.findStoragesInteractorLazy()
+    private val rep = DI.foundStoragesRepositoryLazy()
     private val navigator = DI.navigator()
     private val scope = DI.mainThreadScope()
 
@@ -32,6 +35,10 @@ class StoragesPresenter {
                 searchingStoragesStatus.value = false
             }
         }
+    }
+
+    suspend fun coloredGroups() = flow<List<ColorGroup>> {
+        rep().getAllColorGroups().await().let { emit(it) }
     }
 
     suspend fun storages(filter: String = ""): Flow<List<ColoredStorage>> {

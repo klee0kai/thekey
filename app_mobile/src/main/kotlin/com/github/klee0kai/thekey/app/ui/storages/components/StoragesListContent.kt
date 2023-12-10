@@ -68,13 +68,10 @@ private fun storagesState(): State<List<ColoredStorage>> {
     val scope = rememberCoroutineScope()
     val presenter = remember { DI.storagesPresenter() }
     return if (LocalView.current.isInEditMode) {
-        flowOf(
-            (0..100).map {
-                ColoredStorage("/path${it}", "name${it}", "description${it}")
-            }
-        ).collectAsState(initial = emptyList())
+        flowOf((0..100).map {
+            ColoredStorage("/path${it}", "name${it}", "description${it}")
+        })
     } else {
         flow { presenter.storages().collect { emit(it) } }
-            .collectAsState(initial = emptyList(), scope.coroutineContext)
-    }
+    }.collectAsState(initial = emptyList(), scope.coroutineContext)
 }
