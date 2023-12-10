@@ -11,16 +11,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.BottomSheetScaffoldState
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
@@ -34,7 +29,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
@@ -77,8 +71,7 @@ fun rememberSimpleBottomSheetScaffoldState(
 fun SimpleBottomSheetScaffold(
     simpleBottomSheetScaffoldState: SimpleBottomSheetScaffoldState = rememberSimpleBottomSheetScaffoldState(),
     topContentSize: Dp = 190.dp,
-    navIcon: ImageVector = Icons.Filled.ArrowBack,
-    navClick: (() -> Unit)? = null,
+    navigationIcon: (@Composable () -> Unit)? = null,
     appBarSticky: (@Composable () -> Unit)? = null,
     topContent: @Composable () -> Unit = {},
     sheetContent: @Composable () -> Unit = {},
@@ -205,15 +198,7 @@ fun SimpleBottomSheetScaffold(
                 )
             }
         },
-        navigationIcon = {
-            IconButton(onClick = { }) {
-                Icon(
-                    Icons.Filled.Menu,
-                    contentDescription = null,
-                    modifier = Modifier
-                )
-            }
-        },
+        navigationIcon = navigationIcon ?: {},
     )
 
     if (fab != null) {

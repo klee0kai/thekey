@@ -1,6 +1,6 @@
 package com.github.klee0kai.thekey.app.data
 
-import com.github.klee0kai.thekey.app.data.room.entry.toStorage
+import com.github.klee0kai.thekey.app.data.room.entry.toColoredStorage
 import com.github.klee0kai.thekey.app.data.room.entry.toStorageEntry
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.model.Storage
@@ -17,11 +17,11 @@ class FoundStoragesRepository {
     val updateDbFlow = MutableSharedFlow<Unit>()
 
     fun getStorages() = scope.async {
-        storagesDao().getAll().map { entry -> entry.toStorage() }
+        storagesDao().getAll().map { entry -> entry.toColoredStorage() }
     }
 
     fun findStorage(path: String) = scope.async {
-        storagesDao().get(path)?.toStorage()
+        storagesDao().get(path)?.toColoredStorage()
     }
 
     fun deleteStorage(path: String) = scope.launch {

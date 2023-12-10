@@ -4,8 +4,8 @@ import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.model.ColoredStorage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -20,11 +20,6 @@ class StoragesPresenter {
 
     private var searchingJob: Job? = null
 
-    private val mockedStoragesFlow = flowOf(
-        (0..100).map {
-            ColoredStorage("/path${it}", "name${it}", "description${it}")
-        }
-    )
 
     init {
         searchingJob = scope.launch {
@@ -39,13 +34,15 @@ class StoragesPresenter {
         }
     }
 
-    fun storages(filter: String = "") =
-        mockedStoragesFlow
+    suspend fun storages(filter: String = ""): Flow<List<ColoredStorage>> {
+        return interactor().storagesFlow
             .flowOn(Dispatchers.Default)
             .map {
                 it.filter { storage ->
                     filter.isBlank() || storage.path.contains(filter)
                 }
             }
+    }
+
 
 }

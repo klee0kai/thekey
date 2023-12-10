@@ -2,7 +2,7 @@ package com.github.klee0kai.thekey.app.domain
 
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.engine.findStoragesFlow
-import com.github.klee0kai.thekey.app.model.Storage
+import com.github.klee0kai.thekey.app.model.ColoredStorage
 import com.github.klee0kai.thekey.app.utils.android.UserShortPaths
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit
 
 class FindStoragesInteractor {
 
-    val storagesFlow = callbackFlow<List<Storage>> {
+    val storagesFlow = callbackFlow<List<ColoredStorage>> {
         launch {
             rep().updateDbFlow.collect {
                 send(rep().getStorages().await())

@@ -5,6 +5,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.github.klee0kai.thekey.app.data.room.dao.StorageFilesDao
+import com.github.klee0kai.thekey.app.model.ColoredStorage
 import com.github.klee0kai.thekey.app.model.Storage
 import kotlinx.parcelize.Parcelize
 
@@ -23,6 +24,9 @@ data class StorageFileEntry(
 
     @ColumnInfo(name = "description")
     val description: String = "",
+
+    @ColumnInfo(name = "color_group")
+    val coloredGroupId: Int = 0,
 ) : Parcelable
 
 
@@ -34,5 +38,9 @@ fun Storage.toStorageEntry(
     id: Long? = null
 ): StorageFileEntry = this.run {
     StorageFileEntry(id = id ?: 0, path = path, name = name, description = description)
+}
+
+fun StorageFileEntry.toColoredStorage(): ColoredStorage = this.run {
+    ColoredStorage(path, name, description)
 }
 
