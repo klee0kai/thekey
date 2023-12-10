@@ -93,7 +93,7 @@ fun SimpleBottomSheetScaffold(
         with(density) { if (view.isInEditMode) 900.dp else view.height.toDp() }
     }
     val sheetMaxSize = remember { viewHeight - appBarSize }
-    val sheetMinSize = remember { viewHeight - appBarSize - topContentSize }
+    val sheetMinSize = remember { viewHeight - topContentSize }
 
     val scaffoldTopOffset = runCatching {
         with(LocalDensity.current) {
@@ -119,8 +119,6 @@ fun SimpleBottomSheetScaffold(
         end = 0.5f,
     ).coerceIn(0f, 1f)
         .accelerateDecelerate()
-
-
 
 
     LaunchedEffect(key1 = mainTitleVisibility.value) {

@@ -3,7 +3,6 @@ package com.github.klee0kai.thekey.app.ui.storages
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -38,6 +37,7 @@ import com.github.klee0kai.thekey.app.model.ColoredStorage
 import com.github.klee0kai.thekey.app.ui.designkit.color.SurfaceScheme
 import com.github.klee0kai.thekey.app.ui.designkit.components.LazyListIndicatorIfNeed
 import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleBottomSheetScaffold
+import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleBottomSheetScaffoldState
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberSimpleBottomSheetScaffoldState
 import com.github.klee0kai.thekey.app.utils.views.accelerateDecelerate
 import com.github.klee0kai.thekey.app.utils.views.ratioBetween
@@ -55,10 +55,6 @@ fun StoragesScreen() {
     val context = LocalView.current.context
     val scaffoldState = rememberSimpleBottomSheetScaffoldState()
 
-    val topContentAlpha = scaffoldState.dragProgress.floatValue
-        .ratioBetween(0.3f, 0.7f)
-        .coerceIn(0f, 1f)
-        .accelerateDecelerate()
 
     SimpleBottomSheetScaffold(
         simpleBottomSheetScaffoldState = scaffoldState,
@@ -68,9 +64,7 @@ fun StoragesScreen() {
         },
         topContent = {
             GroupsSelectContainer(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .alpha(topContentAlpha)
+                scaffoldState = scaffoldState
             )
         },
         sheetContent = {
@@ -85,13 +79,28 @@ fun StoragesScreen() {
 @Preview
 @Composable
 fun GroupsSelectContainer(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    scaffoldState: SimpleBottomSheetScaffoldState? = null
 ) {
     val lazyListState = rememberLazyListState()
 
+    val topContentAlpha = scaffoldState?.dragProgress?.floatValue
+        ?.ratioBetween(0.3f, 0.7f)
+        ?.coerceIn(0f, 1f)
+        ?.accelerateDecelerate()
+        ?: 1f
+
+    val dragTranslateY = scaffoldState?.dragProgress?.floatValue
+        ?.ratioBetween(1f, 0f)
+        ?.coerceIn(0f, 1f)
+        ?.accelerateDecelerate()
+        ?.let { 30.dp * -it }
+        ?: 0.dp
+
     ConstraintLayout(
         modifier = modifier
-            .fillMaxWidth()
+            .fillMaxSize()
+            .alpha(topContentAlpha)
     ) {
         val (groupsHint, groupsList, indicator) = createRefs()
 
@@ -109,6 +118,7 @@ fun GroupsSelectContainer(
                     startMargin = 16.dp,
                     verticalBias = 1f,
                 )
+                translationY = dragTranslateY
             }
         )
 
@@ -125,6 +135,7 @@ fun GroupsSelectContainer(
                         bottom = parent.bottom,
                         verticalBias = 0f,
                     )
+                    translationY = dragTranslateY
                 },
         )
 
@@ -141,6 +152,7 @@ fun GroupsSelectContainer(
                         end = parent.end,
                         verticalBias = 0.6f
                     )
+                    translationY = dragTranslateY
                 })
         {
             val list = (0..20).toList()
