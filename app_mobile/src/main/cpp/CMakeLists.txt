@@ -14,6 +14,7 @@ find_library(log-lib log)
 add_library(crypt-storage-lib SHARED
         ${BROOKLYN_SRC}
         find-storages.cpp
+        cryp_storage.cpp
         )
 
 target_include_directories(crypt-storage-lib

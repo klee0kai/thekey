@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -29,7 +28,6 @@ import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.navigation.Destination
 import dev.olshevski.navigation.reimagined.navigate
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
 fun LoginScreen() {

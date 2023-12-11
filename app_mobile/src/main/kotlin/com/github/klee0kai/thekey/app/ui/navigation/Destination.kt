@@ -11,4 +11,13 @@ sealed interface Destination : Parcelable {
     @Parcelize
     data object StoragesScreen : Destination
 
+    @Parcelize
+    data class StorageScreen(
+        /**
+         * storage path
+         */
+        val path: String,
+    ) : Destination
+
+
 }

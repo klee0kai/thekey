@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.saveable.rememberSaveable
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.login.LoginScreen
+import com.github.klee0kai.thekey.app.ui.storage.StorageScreen
 import com.github.klee0kai.thekey.app.ui.storages.StoragesScreen
 import dev.olshevski.navigation.reimagined.AnimatedNavHost
 import dev.olshevski.navigation.reimagined.NavAction
@@ -31,6 +32,7 @@ fun MainNavContainer() {
         when (destination) {
             is Destination.LoginScreen -> LoginScreen()
             is Destination.StoragesScreen -> StoragesScreen()
+            is Destination.StorageScreen -> StorageScreen(path = destination.path)
         }
     }
 }
