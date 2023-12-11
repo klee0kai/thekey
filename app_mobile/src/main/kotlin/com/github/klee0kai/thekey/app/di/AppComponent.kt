@@ -7,6 +7,7 @@ import com.github.klee0kai.stone.annotations.component.Init
 import com.github.klee0kai.stone.annotations.module.BindInstance
 import com.github.klee0kai.thekey.app.App
 import com.github.klee0kai.thekey.app.di.dependencies.AppComponentProviders
+import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.di.modules.CoroutineModule
 import com.github.klee0kai.thekey.app.di.modules.DBModule
 import com.github.klee0kai.thekey.app.di.modules.EngineModule
@@ -21,6 +22,9 @@ import dev.olshevski.navigation.reimagined.NavController
 val DI: AppComponent = Stone.createComponent(AppComponent::class.java)
 
 @Component(
+    identifiers = [
+        StorageIdentifier::class
+    ],
     wrapperProviders = [
         KotlinWrappersStone::class,
         AppWrappersStone::class,

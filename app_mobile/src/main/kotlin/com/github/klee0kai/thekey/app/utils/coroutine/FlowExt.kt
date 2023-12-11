@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.utils
+package com.github.klee0kai.thekey.app.utils.coroutine
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow

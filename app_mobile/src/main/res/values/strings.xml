@@ -6,4 +6,5 @@
     <string name="storages">Storages</string>
     <string name="approve_permissions">Approve permissions</string>
     <string name="groups">groups</string>
+    <string name="passw_is_null">Password is null</string>
 </resources>

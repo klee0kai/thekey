@@ -4,6 +4,7 @@ import com.github.klee0kai.brooklyn.JniMirror
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.model.Storage
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
@@ -27,6 +28,7 @@ fun FindStorageEngine.findStoragesFlow(folder: String): Flow<Storage> = callback
             }
         })
 
+        delay(10)
         channel.close()
     }
 
