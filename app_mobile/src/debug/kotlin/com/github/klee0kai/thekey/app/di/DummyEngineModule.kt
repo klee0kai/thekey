@@ -9,6 +9,6 @@ import com.github.klee0kai.thekey.app.engine.FindStorageDummyEngine
 interface DummyEngineModule : EngineModule {
 
     @Provide(cache = Provide.CacheType.Strong)
-    override fun finStoragesEngine(): FindStorageDummyEngine
+    override fun findStoragesEngine(): FindStorageDummyEngine
 
 }

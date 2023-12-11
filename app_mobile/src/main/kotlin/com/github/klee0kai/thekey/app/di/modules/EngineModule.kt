@@ -8,6 +8,6 @@ import com.github.klee0kai.thekey.app.engine.FindStorageEngine
 interface EngineModule {
 
     @Provide(cache = Provide.CacheType.Strong)
-    fun finStoragesEngine(): FindStorageEngine
+    fun findStoragesEngine(): FindStorageEngine
 
 }

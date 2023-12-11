@@ -6,7 +6,6 @@ import android.text.Editable
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.utils.views.EmptyTextWatcher
 import java.io.File
@@ -21,6 +20,7 @@ object UserShortPaths {
     fun shortPathName(p: String): SpannableString {
         val path = runCatching { File(p).canonicalPath }.getOrNull() ?: p
         val context = DI.app()
+        val colorScheme = DI.theme().colorScheme().androidColorScheme
         val appData = context.applicationInfo.dataDir
         val phoneStorage = Environment.getExternalStorageDirectory().absolutePath
         var userPath: SpannableString? = null
@@ -28,7 +28,7 @@ object UserShortPaths {
             val pp = if (path.startsWith(appData)) path else p
             userPath = SpannableString(APPDATA + pp.substring(appData.length))
             userPath.setSpan(
-                ForegroundColorSpan(context.resources.getColor(R.color.colorPrimary)),
+                colorScheme.primary,
                 0,
                 APPDATA.length,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -40,7 +40,7 @@ object UserShortPaths {
             val pp = if (path.startsWith(phoneStorage)) path else p
             userPath = SpannableString(PHONE_STORAGE + pp.substring(phoneStorage.length))
             userPath.setSpan(
-                ForegroundColorSpan(context.resources.getColor(R.color.colorPrimary)),
+                colorScheme.primary,
                 0,
                 PHONE_STORAGE.length,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -77,6 +77,7 @@ object UserShortPaths {
 
     class ColoringUserPath : EmptyTextWatcher() {
         private val context: Context = DI.app()
+        private val colorScheme = DI.theme().colorScheme().androidColorScheme
         override fun afterTextChanged(s: Editable?) {
 
 
@@ -84,7 +85,7 @@ object UserShortPaths {
                     .startsWith(APPDATA.lowercase(Locale.getDefault()))
             ) {
                 s?.setSpan(
-                    ForegroundColorSpan(context.resources.getColor(R.color.colorPrimary)),
+                    colorScheme,
                     0,
                     APPDATA.length,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -98,7 +99,7 @@ object UserShortPaths {
                 )
             ) {
                 s!!.setSpan(
-                    ForegroundColorSpan(context.resources.getColor(R.color.colorPrimary)),
+                    colorScheme,
                     0,
                     PHONE_STORAGE.length,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE

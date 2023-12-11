@@ -16,7 +16,7 @@ fun FabSimple(
         containerColor = MaterialTheme.colorScheme.secondaryContainer,
         contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
         shape = FloatingActionButtonDefaults.largeShape,
-        onClick = { },
+        onClick = onClick,
         content = content
     )
 }

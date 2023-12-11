@@ -126,8 +126,6 @@ afterEvaluate {
         it is com.android.build.gradle.tasks.ExternalNativeBuildJsonTask ||
                 it is com.android.build.gradle.tasks.ExternalNativeBuildTask
     }
-    println("kotlinCompileTasks ${kotlinCompileTasks.joinToString { it.name }}")
-    println("cmakeTasks ${cmakeTasks.joinToString { it.name }}")
 
     cmakeTasks.forEach { cmakeTask ->
         kotlinCompileTasks.forEach { kotlinTask ->
