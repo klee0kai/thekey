@@ -130,10 +130,7 @@ afterEvaluate {
     println("cmakeTasks ${cmakeTasks.joinToString { it.name }}")
 
     cmakeTasks.forEach { cmakeTask ->
-//        cmakeTask.outputs.upToDateWhen { false }
-
         kotlinCompileTasks.forEach { kotlinTask ->
-//            kotlinTask.outputs.upToDateWhen { false }
             cmakeTask.mustRunAfter(kotlinTask)
         }
     }
