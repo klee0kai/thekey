@@ -11,6 +11,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.github.klee0kai.thekey.app.R
@@ -20,7 +21,8 @@ import com.github.klee0kai.thekey.app.R
 @Composable
 fun SimpleAppBar(
     title: String = stringResource(R.string.app_name),
-    backClick: (() -> Unit)? = null
+    navIcon: ImageVector = Icons.Filled.ArrowBack,
+    navClick: (() -> Unit)? = null
 ) {
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
@@ -30,9 +32,9 @@ fun SimpleAppBar(
 
         title = { Text(title) },
         navigationIcon = {
-            if (backClick != null) {
-                IconButton(onClick = { backClick.invoke() }) {
-                    Icon(Icons.Filled.ArrowBack, contentDescription = null, modifier = Modifier)
+            if (navClick != null) {
+                IconButton(onClick = { navClick.invoke() }) {
+                    Icon(navIcon, contentDescription = null, modifier = Modifier)
                 }
             }
         },

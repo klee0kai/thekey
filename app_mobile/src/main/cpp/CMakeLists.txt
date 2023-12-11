@@ -4,10 +4,11 @@ project("thekey")
 
 get_filename_component(BROOKLYN_FILE ../../../build/generated/sources/${BROOKLYN_FOLDER}/brooklyn/FindBrooklynBridge.cmake ABSOLUTE)
 message(BROOKLYN_FILE = ${BROOKLYN_FILE})
-if (EXISTS ${BROOKLYN_FILE})
-    include(${BROOKLYN_FILE})
-endif ()
+include(${BROOKLYN_FILE})
 
+
+include(../../../../tkcore/FindOpensslLib.cmake)
+include(../../../../tkcore/FindTheKeyLib.cmake)
 find_library(log-lib log)
 
 add_library(crypt-storage-lib SHARED
@@ -20,4 +21,16 @@ target_include_directories(crypt-storage-lib
         ${BROOKLYN_INCLUDE_DIRS}
         )
 
-target_link_libraries(crypt-storage-lib ${log-lib})
+target_link_libraries(crypt-storage-lib
+        ${log-lib}
+        lib_tkcore
+        openssl_android
+        openssl_android_crypto
+        )
+
+
+# for https://github.com/android/ndk/issues/517
+set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM BOTH)
+set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY BOTH)
+set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE BOTH)
+set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE BOTH)

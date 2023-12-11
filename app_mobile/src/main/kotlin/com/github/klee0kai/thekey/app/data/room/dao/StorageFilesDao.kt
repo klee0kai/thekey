@@ -27,7 +27,7 @@ interface StorageFilesDao {
     fun getAll(): List<StorageFileEntry>
 
     @Query("SELECT * FROM $TABLE_NAME WHERE path=:path")
-    fun getAll(path: String?): StorageFileEntry?
+    fun get(path: String?): StorageFileEntry?
 
     companion object {
         const val TABLE_NAME = "storagefiles"
