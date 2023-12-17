@@ -1,5 +1,6 @@
 package com.github.klee0kai.thekey.app.ui.storages
 
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -21,7 +22,6 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleBottomSheetS
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberSimpleBottomSheetScaffoldState
 import com.github.klee0kai.thekey.app.ui.storages.components.GroupsSelectContainer
 import com.github.klee0kai.thekey.app.ui.storages.components.StoragesListContent
-import dev.olshevski.navigation.reimagined.pop
 
 private val TOP_CONTENT_SIZE = 190.dp
 
@@ -30,14 +30,14 @@ private val TOP_CONTENT_SIZE = 190.dp
 @OptIn(ExperimentalMaterial3Api::class)
 fun StoragesScreen() {
     val presenter = remember { DI.storagesPresenter() }
-    val navigator = remember { DI.navigator() }
     val scaffoldState = rememberSimpleBottomSheetScaffoldState()
+    val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
 
     SimpleBottomSheetScaffold(
         simpleBottomSheetScaffoldState = scaffoldState,
         topContentSize = TOP_CONTENT_SIZE,
         navigationIcon = {
-            IconButton(onClick = { navigator.pop() }) {
+            IconButton(onClick = { backDispatcher?.onBackPressed() }) {
                 Icon(
                     Icons.Filled.ArrowBack,
                     contentDescription = null,

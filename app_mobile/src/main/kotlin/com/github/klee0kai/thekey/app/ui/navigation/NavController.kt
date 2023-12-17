@@ -7,7 +7,10 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.saveable.rememberSaveable
+import com.github.klee0kai.thekey.app.BuildConfig
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.ui.designkit.DesignScreen
+import com.github.klee0kai.thekey.app.ui.designkit.EmptyScreen
 import com.github.klee0kai.thekey.app.ui.login.LoginScreen
 import com.github.klee0kai.thekey.app.ui.storage.StorageScreen
 import com.github.klee0kai.thekey.app.ui.storages.StoragesScreen
@@ -27,12 +30,16 @@ fun MainNavContainer() {
 
     AnimatedNavHost(
         controller = navController,
-        transitionSpec = customTransitionSpec
+        transitionSpec = customTransitionSpec,
+        emptyBackstackPlaceholder = { EmptyScreen() }
     ) { destination ->
         when (destination) {
             is Destination.LoginScreen -> LoginScreen()
             is Destination.StoragesScreen -> StoragesScreen()
             is Destination.StorageScreen -> StorageScreen(path = destination.path)
+
+            // debug
+            is Destination.DesignScreen -> if (BuildConfig.DEBUG) DesignScreen() else EmptyScreen()
         }
     }
 }

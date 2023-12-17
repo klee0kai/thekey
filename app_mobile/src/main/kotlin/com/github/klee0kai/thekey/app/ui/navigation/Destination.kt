@@ -12,6 +12,9 @@ sealed interface Destination : Parcelable {
     data object StoragesScreen : Destination
 
     @Parcelize
+    data object DesignScreen : Destination
+
+    @Parcelize
     data class StorageScreen(
         /**
          * storage path
