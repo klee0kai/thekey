@@ -51,7 +51,7 @@ fun DesignScreen() {
                 selected = selected,
                 onClick = {
                     scope.launch {
-                        pagerState.animateScrollToPage(index)
+                        pagerState.scrollToPage(index)
                     }
                 }
             ) {

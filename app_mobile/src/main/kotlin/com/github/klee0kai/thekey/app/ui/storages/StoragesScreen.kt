@@ -17,8 +17,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarConst
+import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarStates
 import com.github.klee0kai.thekey.app.ui.designkit.components.FabSimple
 import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleBottomSheetScaffold
+import com.github.klee0kai.thekey.app.ui.designkit.components.rememberMainTitleVisibleFlow
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberSimpleBottomSheetScaffoldState
 import com.github.klee0kai.thekey.app.ui.storages.components.GroupsSelectContainer
 import com.github.klee0kai.thekey.app.ui.storages.components.StoragesListContent
@@ -30,21 +33,15 @@ private val TOP_CONTENT_SIZE = 190.dp
 @OptIn(ExperimentalMaterial3Api::class)
 fun StoragesScreen() {
     val presenter = remember { DI.storagesPresenter() }
-    val scaffoldState = rememberSimpleBottomSheetScaffoldState()
+    val scaffoldState = rememberSimpleBottomSheetScaffoldState(
+        topContentSize = TOP_CONTENT_SIZE,
+        appBarSize = AppBarConst.appBarSize
+    )
+    val mainTitleVisibility = scaffoldState.rememberMainTitleVisibleFlow()
     val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
 
     SimpleBottomSheetScaffold(
         simpleBottomSheetScaffoldState = scaffoldState,
-        topContentSize = TOP_CONTENT_SIZE,
-        navigationIcon = {
-            IconButton(onClick = { backDispatcher?.onBackPressed() }) {
-                Icon(
-                    Icons.Filled.ArrowBack,
-                    contentDescription = null,
-                )
-            }
-        },
-        appBarSticky = { Text(text = stringResource(id = R.string.storages)) },
         topContent = {
             GroupsSelectContainer(
                 scaffoldState = scaffoldState
@@ -64,5 +61,20 @@ fun StoragesScreen() {
             }
         },
     )
+
+    AppBarStates(
+        mainTitleVisibility = mainTitleVisibility,
+        navigationIcon = {
+            IconButton(onClick = { backDispatcher?.onBackPressed() }) {
+                Icon(
+                    Icons.Filled.ArrowBack,
+                    contentDescription = null,
+                )
+            }
+        },
+        appBarSticky = { Text(text = stringResource(id = R.string.storages)) },
+    )
+
+
 }
 

@@ -24,7 +24,7 @@ import dev.olshevski.navigation.reimagined.navController
 @Composable
 fun MainNavContainer() {
     val navController = rememberSaveable {
-        DI.navigator(navController(startDestination = Destination.LoginScreen))
+        DI.navigator(navController(startDestination = Destination.StoragesScreen))
     }
     NavBackHandler(navController)
 
