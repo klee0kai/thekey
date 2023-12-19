@@ -26,6 +26,7 @@ object AppBarConst {
 @Preview
 @Composable
 fun AppBarStates(
+    modifier: Modifier = Modifier,
     mainTitleVisibility: State<Boolean> = remember { mutableStateOf(true) },
     navigationIcon: (@Composable () -> Unit)? = null,
     appBarSticky: (@Composable () -> Unit)? = null,
@@ -47,6 +48,7 @@ fun AppBarStates(
     }
 
     CenterAlignedTopAppBar(
+        modifier = modifier,
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = colorScheme.background,
         ),

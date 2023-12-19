@@ -7,4 +7,6 @@
     <string name="approve_permissions">Approve permissions</string>
     <string name="groups">groups</string>
     <string name="passw_is_null">Password is null</string>
+    <string name="accounts">Accounts</string>
+    <string name="passw_generate">Generate</string>
 </resources>
