@@ -27,7 +27,7 @@ object AppBarConst {
 @Composable
 fun AppBarStates(
     modifier: Modifier = Modifier,
-    mainTitleVisibility: State<Boolean> = remember { mutableStateOf(true) },
+    mainTitleVisibility: Boolean = true,
     navigationIcon: (@Composable () -> Unit)? = null,
     appBarSticky: (@Composable () -> Unit)? = null,
 ) {
@@ -36,9 +36,9 @@ fun AppBarStates(
     val mainTitleAlpha = remember { mutableFloatStateOf(1f) }
     val secondTitleAlpha = remember { mutableFloatStateOf(0f) }
 
-    LaunchedEffect(key1 = mainTitleVisibility.value) {
+    LaunchedEffect(key1 = mainTitleVisibility) {
         fadeOutInAnimate(
-            reverse = mainTitleVisibility.value,
+            reverse = mainTitleVisibility,
             alpha1Init = mainTitleAlpha.floatValue,
             alpha2Init = secondTitleAlpha.floatValue,
         ) { newMainTitleAlpha, newSecondTitleAlpha ->

@@ -17,13 +17,15 @@ import com.github.klee0kai.thekey.app.di.DI
 
 @Preview
 @Composable
-fun GeneratePasswordPage() {
+fun GeneratePasswordPage(
+    modifier: Modifier = Modifier,
+) {
     val scope = rememberCoroutineScope()
     val presenter = remember { DI.loginPresenter() }
     val navigator = remember { DI.navigator() }
 
     ConstraintLayout(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {

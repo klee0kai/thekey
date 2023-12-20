@@ -63,7 +63,7 @@ fun StoragesScreen() {
     )
 
     AppBarStates(
-        mainTitleVisibility = mainTitleVisibility,
+        mainTitleVisibility = mainTitleVisibility.value,
         navigationIcon = {
             IconButton(onClick = { backDispatcher?.onBackPressed() }) {
                 Icon(

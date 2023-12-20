@@ -18,6 +18,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.rememberSimpleBott
 @Preview
 @Composable
 fun AccountsPage(
+    modifier: Modifier = Modifier,
     scaffoldState: SimpleBottomSheetScaffoldState =
         rememberSimpleBottomSheetScaffoldState(
             topContentSize = 190.dp,
