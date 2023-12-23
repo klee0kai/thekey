@@ -69,10 +69,10 @@ fun rememberSimpleBottomSheetScaffoldState(
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun SimpleBottomSheetScaffold(
+    modifier: Modifier = Modifier,
     simpleBottomSheetScaffoldState: SimpleBottomSheetScaffoldState = rememberSimpleBottomSheetScaffoldState(),
     topContent: @Composable () -> Unit = {},
     sheetContent: @Composable () -> Unit = {},
-    fab: @Composable (() -> Unit)? = null,
 ) {
     val density = LocalDensity.current
     val view = LocalView.current
@@ -110,6 +110,7 @@ fun SimpleBottomSheetScaffold(
         LocalOverscrollConfiguration.provides(null),
     ) {
         BottomSheetScaffold(
+            modifier = modifier,
             scaffoldState = simpleBottomSheetScaffoldState.scaffoldState,
             sheetPeekHeight = sheetMinSize,
             contentColor = colorScheme.onBackground,
@@ -160,17 +161,6 @@ fun SimpleBottomSheetScaffold(
                 )
             }
         )
-    }
-
-    if (fab != null) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(bottom = 56.dp, end = 16.dp),
-            contentAlignment = Alignment.BottomEnd
-        ) {
-            fab.invoke()
-        }
     }
 }
 

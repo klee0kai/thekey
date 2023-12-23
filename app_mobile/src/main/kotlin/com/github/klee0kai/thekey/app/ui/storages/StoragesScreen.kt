@@ -19,7 +19,7 @@ import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarStates
-import com.github.klee0kai.thekey.app.ui.designkit.components.FabSimple
+import com.github.klee0kai.thekey.app.ui.designkit.components.FabSimpleInContainer
 import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleBottomSheetScaffold
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberMainTitleVisibleFlow
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberSimpleBottomSheetScaffoldState
@@ -52,14 +52,7 @@ fun StoragesScreen() {
                 showStoragesTitle = scaffoldState.dragProgress.floatValue > 0.1f,
                 modifier = Modifier.fillMaxSize()
             )
-        },
-        fab = {
-            FabSimple(
-                onClick = { }
-            ) {
-                Icon(Icons.Default.Add, contentDescription = "Add")
-            }
-        },
+        }
     )
 
     AppBarStates(
@@ -73,6 +66,12 @@ fun StoragesScreen() {
             }
         },
         appBarSticky = { Text(text = stringResource(id = R.string.storages)) },
+    )
+
+
+    FabSimpleInContainer(
+        onClick = { },
+        content = { Icon(Icons.Default.Add, contentDescription = "Add") }
     )
 
 

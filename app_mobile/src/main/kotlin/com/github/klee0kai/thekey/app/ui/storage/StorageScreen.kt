@@ -5,6 +5,7 @@ package com.github.klee0kai.thekey.app.ui.storage
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
@@ -33,7 +34,6 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.rememberMainTitleV
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberSimpleBottomSheetScaffoldState
 import com.github.klee0kai.thekey.app.ui.storage.pages.AccountsPage
 import com.github.klee0kai.thekey.app.ui.storage.pages.GeneratePasswordPage
-import kotlin.math.absoluteValue
 
 
 @Preview(showBackground = true)
@@ -55,7 +55,7 @@ fun StorageScreen(
             appBarSize = AppBarConst.appBarSize
         )
     val isAccountTab = pagerState.currentPage == 0
-            && pagerState.currentPageOffsetFraction.absoluteValue < 0.3f
+            && pagerState.currentPageOffsetFraction == 0f
 
     val accountTitleVisibility = accountScaffoldState.rememberMainTitleVisibleFlow()
     val mainTitleVisibility = !isAccountTab || accountTitleVisibility.value
@@ -71,14 +71,17 @@ fun StorageScreen(
             .fillMaxSize(),
         beyondBoundsPageCount = titles.size, // fix bottomSheet
         pageContent = { page ->
-            when (page) {
-                0 -> AccountsPage(
-                    scaffoldState = accountScaffoldState
-                )
+            Box {
+                when (page) {
+                    0 -> AccountsPage(
+                        isPageFullyAvailable = isAccountTab,
+                        scaffoldState = accountScaffoldState
+                    )
 
-                1 -> GeneratePasswordPage(
-                    modifier = Modifier.padding(top = AppBarConst.appBarSize + SecondaryTabsConst.allHeight)
-                )
+                    1 -> GeneratePasswordPage(
+                        modifier = Modifier.padding(top = AppBarConst.appBarSize + SecondaryTabsConst.allHeight)
+                    )
+                }
             }
         }
     )
