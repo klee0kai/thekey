@@ -9,4 +9,8 @@
     <string name="passw_is_null">Password is null</string>
     <string name="accounts">Accounts</string>
     <string name="passw_generate">Generate</string>
+    <string name="symbols_in_passw">Symbols in password</string>
+    <string name="spec_in_passw">Spec symbols in password</string>
+    <string name="save">Save</string>
+    <string name="hist">History</string>
 </resources>

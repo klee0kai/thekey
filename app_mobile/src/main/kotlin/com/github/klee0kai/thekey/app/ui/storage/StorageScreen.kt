@@ -33,6 +33,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.rememberMainTitleV
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberSimpleBottomSheetScaffoldState
 import com.github.klee0kai.thekey.app.ui.storage.pages.AccountsPage
 import com.github.klee0kai.thekey.app.ui.storage.pages.GeneratePasswordPage
+import kotlin.math.absoluteValue
 
 
 @Preview(showBackground = true)
@@ -54,6 +55,7 @@ fun StorageScreen(
             appBarSize = AppBarConst.appBarSize
         )
     val isAccountTab = pagerState.currentPage == 0
+            && pagerState.currentPageOffsetFraction.absoluteValue < 0.3f
 
     val accountTitleVisibility = accountScaffoldState.rememberMainTitleVisibleFlow()
     val mainTitleVisibility = !isAccountTab || accountTitleVisibility.value
@@ -75,7 +77,7 @@ fun StorageScreen(
                 )
 
                 1 -> GeneratePasswordPage(
-                    modifier = Modifier.padding(top = AppBarConst.appBarSize)
+                    modifier = Modifier.padding(top = AppBarConst.appBarSize + SecondaryTabsConst.allHeight)
                 )
             }
         }
