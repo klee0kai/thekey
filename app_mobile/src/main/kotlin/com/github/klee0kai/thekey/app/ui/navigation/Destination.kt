@@ -22,5 +22,10 @@ sealed interface Destination : Parcelable {
         val path: String,
     ) : Destination
 
+    @Parcelize
+    data class AccountScreen(
+        val id: Long = 0,
+    ) : Destination
+
 
 }

@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.saveable.rememberSaveable
 import com.github.klee0kai.thekey.app.BuildConfig
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.ui.account.AccountScreen
 import com.github.klee0kai.thekey.app.ui.designkit.DesignScreen
 import com.github.klee0kai.thekey.app.ui.designkit.EmptyScreen
 import com.github.klee0kai.thekey.app.ui.login.LoginScreen
@@ -37,6 +38,7 @@ fun MainNavContainer() {
             is Destination.LoginScreen -> LoginScreen()
             is Destination.StoragesScreen -> StoragesScreen()
             is Destination.StorageScreen -> StorageScreen(path = destination.path)
+            is Destination.AccountScreen -> AccountScreen()
 
             // debug
             is Destination.DesignScreen -> if (BuildConfig.DEBUG) DesignScreen() else EmptyScreen()

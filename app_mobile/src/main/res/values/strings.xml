@@ -13,4 +13,6 @@
     <string name="spec_in_passw">Spec symbols in password</string>
     <string name="save">Save</string>
     <string name="hist">History</string>
+    <string name="site">Site</string>
+    <string name="description">Description</string>
 </resources>
