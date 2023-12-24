@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.ui.note
+package com.github.klee0kai.thekey.app.ui.editstorage
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,7 +10,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,17 +27,16 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarStates
 import com.github.klee0kai.thekey.app.ui.navigation.back
 
-@Preview(showBackground = true)
+@Preview
 @Composable
-fun NoteScreen(
-    notePtr: Long = 0,
+fun EditStorageScreen(
+    path: String? = null,
 ) {
     val navigator = remember { DI.navigator() }
-    var siteInputText by remember { mutableStateOf("") }
-    var loginInputText by remember { mutableStateOf("") }
-    var passwordInputText by remember { mutableStateOf("") }
-    var descriptionInputText by remember { mutableStateOf("") }
-
+    val presenter = remember { DI.editStoragePresenter() }
+    var pathInputText by remember { mutableStateOf("") }
+    var nameInputText by remember { mutableStateOf("") }
+    var descInputText by remember { mutableStateOf("") }
 
     AppBarStates(
         navigationIcon = {
@@ -49,7 +47,7 @@ fun NoteScreen(
                 )
             }
         },
-    ) { Text(text = stringResource(id = R.string.account)) }
+    ) { Text(text = stringResource(id = R.string.edit_storage)) }
 
     ConstraintLayout(
         modifier = Modifier
@@ -62,14 +60,15 @@ fun NoteScreen(
             .fillMaxSize()
     ) {
         val (
-            siteTextField, loginTextField,
-            passwTextField, descriptionTextField,
-            generatePasswButton, saveButton,
+            pathTextField,
+            nameTextField,
+            descTextField,
+            saveButton,
         ) = createRefs()
 
         OutlinedTextField(
             modifier = Modifier
-                .constrainAs(siteTextField) {
+                .constrainAs(pathTextField) {
                     width = Dimension.fillToConstraints
                     linkTo(
                         start = parent.start,
@@ -80,17 +79,17 @@ fun NoteScreen(
                         topMargin = 8.dp,
                     )
                 },
-            value = siteInputText,
-            onValueChange = { siteInputText = it },
-            label = { Text(stringResource(R.string.site)) }
+            value = pathInputText,
+            onValueChange = { pathInputText = it },
+            label = { Text(stringResource(R.string.storage_path)) }
         )
 
         OutlinedTextField(
             modifier = Modifier
-                .constrainAs(loginTextField) {
+                .constrainAs(nameTextField) {
                     width = Dimension.fillToConstraints
                     linkTo(
-                        top = siteTextField.bottom,
+                        top = pathTextField.bottom,
                         start = parent.start,
                         end = parent.end,
                         bottom = parent.bottom,
@@ -98,18 +97,18 @@ fun NoteScreen(
                         topMargin = 8.dp,
                     )
                 },
-            value = loginInputText,
-            onValueChange = { loginInputText = it },
-            label = { Text(stringResource(R.string.login)) }
+            value = nameInputText,
+            onValueChange = { nameInputText = it },
+            label = { Text(stringResource(R.string.storage_name)) }
         )
 
 
         OutlinedTextField(
             modifier = Modifier
-                .constrainAs(passwTextField) {
+                .constrainAs(descTextField) {
                     width = Dimension.fillToConstraints
                     linkTo(
-                        top = loginTextField.bottom,
+                        top = nameTextField.bottom,
                         start = parent.start,
                         end = parent.end,
                         bottom = parent.bottom,
@@ -117,44 +116,10 @@ fun NoteScreen(
                         topMargin = 8.dp,
                     )
                 },
-            value = passwordInputText,
-            onValueChange = { passwordInputText = it },
-            label = { Text(stringResource(R.string.password)) }
+            value = descInputText,
+            onValueChange = { descInputText = it },
+            label = { Text(stringResource(R.string.storage_description)) }
         )
-
-
-        OutlinedTextField(
-            modifier = Modifier
-                .constrainAs(descriptionTextField) {
-                    width = Dimension.fillToConstraints
-                    linkTo(
-                        top = passwTextField.bottom,
-                        start = parent.start,
-                        end = parent.end,
-                        bottom = parent.bottom,
-                        verticalBias = 0f,
-                        topMargin = 8.dp,
-                    )
-                },
-            value = descriptionInputText,
-            onValueChange = { descriptionInputText = it },
-            label = { Text(stringResource(R.string.description)) }
-        )
-
-        TextButton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .constrainAs(generatePasswButton) {
-                    bottom.linkTo(saveButton.top, margin = 12.dp)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                },
-            onClick = {
-
-            }
-        ) {
-            Text(stringResource(R.string.passw_generate))
-        }
 
         FilledTonalButton(
             modifier = Modifier

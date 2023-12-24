@@ -12,6 +12,7 @@ import com.github.klee0kai.thekey.app.BuildConfig
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.designkit.DesignScreen
 import com.github.klee0kai.thekey.app.ui.designkit.EmptyScreen
+import com.github.klee0kai.thekey.app.ui.editstorage.EditStorageScreen
 import com.github.klee0kai.thekey.app.ui.login.LoginScreen
 import com.github.klee0kai.thekey.app.ui.note.NoteScreen
 import com.github.klee0kai.thekey.app.ui.storage.StorageScreen
@@ -45,6 +46,7 @@ fun MainNavContainer() {
         when (destination) {
             is LoginDestination -> LoginScreen()
             is StoragesDestination -> StoragesScreen()
+            is EditStorageDestination -> EditStorageScreen(path = destination.path)
             is StorageDestination -> StorageScreen(path = destination.path)
             is NoteDestination -> NoteScreen()
 

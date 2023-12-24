@@ -16,4 +16,8 @@
     <string name="site">Site</string>
     <string name="description">Description</string>
     <string name="account">Account</string>
+    <string name="edit_storage">Edit Storage</string>
+    <string name="storage_path">Storage path</string>
+    <string name="storage_name">Storage name</string>
+    <string name="storage_description">Storage description</string>
 </resources>

@@ -13,6 +13,14 @@ data object LoginDestination : Destination
 data object StoragesDestination : Destination
 
 @Parcelize
+data class EditStorageDestination(
+    /**
+     * storage path
+     */
+    val path: String? = null
+) : Destination
+
+@Parcelize
 data object DesignDestination : Destination
 
 @Parcelize
