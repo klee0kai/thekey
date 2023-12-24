@@ -34,7 +34,7 @@ import kotlinx.coroutines.flow.flowOf
 
 @Preview
 @Composable
-fun GroupsSelectContainer(
+fun GroupsSelectContent(
     modifier: Modifier = Modifier,
     scaffoldState: SimpleBottomSheetScaffoldState? = null
 ) {

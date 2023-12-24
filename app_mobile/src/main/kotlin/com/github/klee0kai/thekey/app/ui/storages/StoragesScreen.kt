@@ -23,7 +23,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.FabSimpleInContain
 import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleBottomSheetScaffold
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberMainTitleVisibleFlow
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberSimpleBottomSheetScaffoldState
-import com.github.klee0kai.thekey.app.ui.storages.components.GroupsSelectContainer
+import com.github.klee0kai.thekey.app.ui.storages.components.GroupsSelectContent
 import com.github.klee0kai.thekey.app.ui.storages.components.StoragesListContent
 
 private val TOP_CONTENT_SIZE = 190.dp
@@ -40,10 +40,11 @@ fun StoragesScreen() {
     val mainTitleVisibility = scaffoldState.rememberMainTitleVisibleFlow()
     val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
 
+
     SimpleBottomSheetScaffold(
         simpleBottomSheetScaffoldState = scaffoldState,
         topContent = {
-            GroupsSelectContainer(
+            GroupsSelectContent(
                 scaffoldState = scaffoldState
             )
         },

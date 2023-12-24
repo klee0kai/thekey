@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 
-package com.github.klee0kai.thekey.app.ui.storage.pages
+package com.github.klee0kai.thekey.app.ui.storage.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -33,7 +33,7 @@ import com.github.klee0kai.thekey.app.di.DI
 
 @Preview
 @Composable
-fun GeneratePasswordPage(
+fun GeneratePasswordContent(
     modifier: Modifier = Modifier,
 ) {
     val scope = rememberCoroutineScope()

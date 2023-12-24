@@ -32,8 +32,8 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.SecondaryTabs
 import com.github.klee0kai.thekey.app.ui.designkit.components.SecondaryTabsConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberMainTitleVisibleFlow
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberSimpleBottomSheetScaffoldState
-import com.github.klee0kai.thekey.app.ui.storage.pages.AccountsPage
-import com.github.klee0kai.thekey.app.ui.storage.pages.GeneratePasswordPage
+import com.github.klee0kai.thekey.app.ui.storage.components.AccountsContent
+import com.github.klee0kai.thekey.app.ui.storage.components.GeneratePasswordContent
 
 
 @Preview(showBackground = true)
@@ -73,12 +73,12 @@ fun StorageScreen(
         pageContent = { page ->
             Box {
                 when (page) {
-                    0 -> AccountsPage(
+                    0 -> AccountsContent(
                         isPageFullyAvailable = isAccountTab,
                         scaffoldState = accountScaffoldState
                     )
 
-                    1 -> GeneratePasswordPage(
+                    1 -> GeneratePasswordContent(
                         modifier = Modifier.padding(top = AppBarConst.appBarSize + SecondaryTabsConst.allHeight)
                     )
                 }

@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 
-package com.github.klee0kai.thekey.app.ui.storage.pages
+package com.github.klee0kai.thekey.app.ui.storage.components
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -24,7 +24,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.rememberSimpleBott
 
 @Preview
 @Composable
-fun AccountsPage(
+fun AccountsContent(
     modifier: Modifier = Modifier,
     isPageFullyAvailable: Boolean = false,
     scaffoldState: SimpleBottomSheetScaffoldState =
