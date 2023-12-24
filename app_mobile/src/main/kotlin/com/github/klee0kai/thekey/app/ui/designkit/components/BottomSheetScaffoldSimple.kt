@@ -164,31 +164,17 @@ fun SimpleBottomSheetScaffold(
     }
 }
 
-
 @Composable
 @Preview
-fun AppLabelTitle(
+fun AppTitleImage(
     modifier: Modifier = Modifier,
-    content: (@Composable () -> Unit)? = null
-) {
-    Box(
-        modifier = modifier
-            .padding(4.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        if (content != null) {
-            content.invoke()
-        } else {
-            Image(
-                painter = painterResource(id = R.drawable.logo_big),
-                contentDescription = stringResource(id = R.string.app_name),
-                contentScale = ContentScale.Inside,
-                modifier = Modifier.scale(0.5f)
-            )
-        }
-    }
+){
+    Image(
+        painter = painterResource(id = R.drawable.logo_big),
+        contentDescription = stringResource(id = R.string.app_name),
+        contentScale = ContentScale.Inside,
+        modifier = modifier.scale(0.5f)
+    )
 }
-
-
 
 

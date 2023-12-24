@@ -1,14 +1,19 @@
 package com.github.klee0kai.thekey.app.ui.designkit.components
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalDensity
@@ -27,23 +32,35 @@ object AppBarConst {
 @Composable
 fun AppBarStates(
     modifier: Modifier = Modifier,
-    mainTitleVisibility: Boolean = true,
+    titleId: Int = 0,
     navigationIcon: (@Composable () -> Unit)? = null,
-    appBarSticky: (@Composable () -> Unit)? = null,
+    titleContent: (@Composable (titleId: Int) -> Unit)? = null,
 ) {
     val colorScheme = remember { DI.theme().colorScheme().androidColorScheme }
 
-    val mainTitleAlpha = remember { mutableFloatStateOf(1f) }
-    val secondTitleAlpha = remember { mutableFloatStateOf(0f) }
+    var prevTitleId by remember { mutableStateOf(titleId) }
+    var targetTitleId by remember { mutableStateOf(titleId) }
 
-    LaunchedEffect(key1 = mainTitleVisibility) {
+    val prevTitleAlpha = remember { mutableFloatStateOf(1f) }
+    val targetTitleAlpha = remember { mutableFloatStateOf(0f) }
+
+    LaunchedEffect(key1 = titleId) {
+        if (targetTitleAlpha.floatValue == 0f) {
+            targetTitleId = titleId
+            targetTitleAlpha.floatValue = 0f
+        } else {
+            prevTitleId = targetTitleId
+            targetTitleId = titleId
+            prevTitleAlpha.floatValue = 1f
+            targetTitleAlpha.floatValue = 0f
+        }
+
         fadeOutInAnimate(
-            reverse = mainTitleVisibility,
-            alpha1Init = mainTitleAlpha.floatValue,
-            alpha2Init = secondTitleAlpha.floatValue,
-        ) { newMainTitleAlpha, newSecondTitleAlpha ->
-            mainTitleAlpha.floatValue = newMainTitleAlpha
-            secondTitleAlpha.floatValue = newSecondTitleAlpha
+            alpha1Init = prevTitleAlpha.floatValue,
+            alpha2Init = targetTitleAlpha.floatValue,
+        ) { newPrevAlpha, newTargetAlpha ->
+            prevTitleAlpha.floatValue = newPrevAlpha
+            targetTitleAlpha.floatValue = newTargetAlpha
         }
     }
 
@@ -53,13 +70,23 @@ fun AppBarStates(
             containerColor = colorScheme.background,
         ),
         title = {
-            if (mainTitleAlpha.floatValue > 0) {
-                AppLabelTitle(modifier = Modifier.alpha(mainTitleAlpha.floatValue))
-            } else {
-                AppLabelTitle(
-                    modifier = Modifier.alpha(secondTitleAlpha.floatValue),
-                    content = appBarSticky
-                )
+            Box(
+                modifier = modifier
+                    .padding(4.dp),
+                contentAlignment = Alignment.Center
+            ) {
+
+                if (prevTitleAlpha.floatValue > 0f) {
+                    Box(modifier = Modifier.alpha(prevTitleAlpha.floatValue)) {
+                        titleContent?.invoke(prevTitleId)
+                    }
+                }
+
+                Box(
+                    modifier = modifier.alpha(targetTitleAlpha.floatValue),
+                ) {
+                    titleContent?.invoke(targetTitleId)
+                }
             }
         },
         navigationIcon = navigationIcon ?: {},

@@ -28,12 +28,16 @@ import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarStates
+import com.github.klee0kai.thekey.app.ui.designkit.components.AppTitleImage
 import com.github.klee0kai.thekey.app.ui.designkit.components.SecondaryTabs
 import com.github.klee0kai.thekey.app.ui.designkit.components.SecondaryTabsConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberMainTitleVisibleFlow
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberSimpleBottomSheetScaffoldState
 import com.github.klee0kai.thekey.app.ui.storage.components.AccountsContent
 import com.github.klee0kai.thekey.app.ui.storage.components.GeneratePasswordContent
+
+private const val MainTitleId = 0
+private const val SecondTittleId = 1
 
 
 @Preview(showBackground = true)
@@ -95,7 +99,7 @@ fun StorageScreen(
     }
 
     AppBarStates(
-        mainTitleVisibility = mainTitleVisibility,
+        titleId = if (mainTitleVisibility) MainTitleId else SecondTittleId,
         navigationIcon = {
             IconButton(onClick = { backDispatcher?.onBackPressed() }) {
                 Icon(
@@ -104,8 +108,11 @@ fun StorageScreen(
                 )
             }
         },
-        appBarSticky = {
-            Text(text = stringResource(id = R.string.accounts))
+        titleContent = { titleId ->
+            when (titleId) {
+                MainTitleId -> AppTitleImage()
+                SecondTittleId -> Text(text = stringResource(id = R.string.accounts))
+            }
         },
     )
 

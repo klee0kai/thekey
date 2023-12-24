@@ -27,6 +27,7 @@ import androidx.constraintlayout.compose.Dimension
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarStates
+import com.github.klee0kai.thekey.app.ui.designkit.components.AppTitleImage
 
 @Preview(showBackground = true)
 @Composable
@@ -49,8 +50,8 @@ fun AccountScreen(
                     contentDescription = null,
                 )
             }
-        }
-    )
+        },
+    ) { AppTitleImage() }
 
     ConstraintLayout(
         modifier = Modifier
