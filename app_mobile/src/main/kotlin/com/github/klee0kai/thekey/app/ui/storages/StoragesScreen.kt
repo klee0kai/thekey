@@ -1,6 +1,5 @@
 package com.github.klee0kai.thekey.app.ui.storages
 
-import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -24,6 +23,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.FabSimpleInContain
 import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleBottomSheetScaffold
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberMainTitleVisibleFlow
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberSimpleBottomSheetScaffoldState
+import com.github.klee0kai.thekey.app.ui.navigation.back
 import com.github.klee0kai.thekey.app.ui.storages.components.GroupsSelectContent
 import com.github.klee0kai.thekey.app.ui.storages.components.StoragesListContent
 
@@ -37,13 +37,12 @@ private const val SecondTittleId = 1
 @OptIn(ExperimentalMaterial3Api::class)
 fun StoragesScreen() {
     val presenter = remember { DI.storagesPresenter() }
+    val navigator = remember { DI.navigator() }
     val scaffoldState = rememberSimpleBottomSheetScaffoldState(
         topContentSize = TOP_CONTENT_SIZE,
         appBarSize = AppBarConst.appBarSize
     )
     val mainTitleVisibility = scaffoldState.rememberMainTitleVisibleFlow()
-    val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
-
 
     SimpleBottomSheetScaffold(
         simpleBottomSheetScaffoldState = scaffoldState,
@@ -63,7 +62,7 @@ fun StoragesScreen() {
     AppBarStates(
         titleId = if (mainTitleVisibility.value) MainTitleId else SecondTittleId,
         navigationIcon = {
-            IconButton(onClick = { backDispatcher?.onBackPressed() }) {
+            IconButton(onClick = { navigator.back() }) {
                 Icon(
                     Icons.Filled.ArrowBack,
                     contentDescription = null,

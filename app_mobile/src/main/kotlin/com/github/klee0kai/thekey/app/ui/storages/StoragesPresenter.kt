@@ -5,7 +5,6 @@ import com.github.klee0kai.thekey.app.model.ColorGroup
 import com.github.klee0kai.thekey.app.model.ColoredStorage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -37,18 +36,19 @@ class StoragesPresenter {
         }
     }
 
-    suspend fun coloredGroups() = flow<List<ColorGroup>> {
+    fun coloredGroups() = flow<List<ColorGroup>> {
         rep().getAllColorGroups().await().let { emit(it) }
     }
 
-    suspend fun storages(filter: String = ""): Flow<List<ColoredStorage>> {
-        return interactor().storagesFlow
+    fun storages(filter: String = "") = flow<List<ColoredStorage>> {
+        interactor().storagesFlow
             .flowOn(Dispatchers.Default)
             .map {
                 it.filter { storage ->
                     filter.isBlank() || storage.path.contains(filter)
                 }
             }
+            .collect(this)
     }
 
 

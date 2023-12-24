@@ -1,6 +1,7 @@
 package com.github.klee0kai.thekey.app.ui.storages.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -24,7 +25,8 @@ import com.github.klee0kai.thekey.app.model.ColoredStorage
 @Preview
 @Composable
 fun ColoredStorageItem(
-    storage: ColoredStorage = ColoredStorage()
+    storage: ColoredStorage = ColoredStorage(),
+    onClick: () -> Unit = {}
 ) {
     val colorScheme = remember { DI.theme().colorScheme() }
     val storage = if (LocalView.current.isInEditMode) {
@@ -36,6 +38,7 @@ fun ColoredStorageItem(
             .padding(top = 6.dp, bottom = 6.dp)
             .fillMaxWidth()
             .wrapContentHeight()
+            .clickable(onClick = onClick)
     ) {
         val (colorGroup, path, description) = createRefs()
 

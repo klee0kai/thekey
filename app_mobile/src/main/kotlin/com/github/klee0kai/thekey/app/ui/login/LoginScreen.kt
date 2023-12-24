@@ -29,8 +29,6 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.model.ColoredStorage
-import com.github.klee0kai.thekey.app.ui.navigation.Destination
-import dev.olshevski.navigation.reimagined.navigate
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 
@@ -141,7 +139,7 @@ fun LoginScreen() {
                     end.linkTo(parent.end)
                 },
             onClick = {
-                navigator.navigate(Destination.StoragesScreen)
+                presenter.selectStorage()
             }
         ) {
             Text(stringResource(R.string.storages))

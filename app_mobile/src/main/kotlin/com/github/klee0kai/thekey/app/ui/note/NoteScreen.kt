@@ -1,6 +1,5 @@
-package com.github.klee0kai.thekey.app.ui.account
+package com.github.klee0kai.thekey.app.ui.note
 
-import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -25,17 +24,17 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.github.klee0kai.thekey.app.R
+import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarStates
-import com.github.klee0kai.thekey.app.ui.designkit.components.AppTitleImage
+import com.github.klee0kai.thekey.app.ui.navigation.back
 
 @Preview(showBackground = true)
 @Composable
-fun AccountScreen(
-
+fun NoteScreen(
+    notePtr: Long = 0,
 ) {
-    val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
-
+    val navigator = remember { DI.navigator() }
     var siteInputText by remember { mutableStateOf("") }
     var loginInputText by remember { mutableStateOf("") }
     var passwordInputText by remember { mutableStateOf("") }
@@ -44,14 +43,14 @@ fun AccountScreen(
 
     AppBarStates(
         navigationIcon = {
-            IconButton(onClick = { backDispatcher?.onBackPressed() }) {
+            IconButton(onClick = { navigator.back() }) {
                 Icon(
                     Icons.Filled.ArrowBack,
                     contentDescription = null,
                 )
             }
         },
-    ) { AppTitleImage() }
+    ) { Text(text = stringResource(id = R.string.account)) }
 
     ConstraintLayout(
         modifier = Modifier

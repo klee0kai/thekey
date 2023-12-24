@@ -1,5 +1,6 @@
 package com.github.klee0kai.thekey.app.di
 
+import androidx.activity.OnBackPressedDispatcher
 import com.github.klee0kai.stone.KotlinWrappersStone
 import com.github.klee0kai.stone.Stone
 import com.github.klee0kai.stone.annotations.component.Component
@@ -54,5 +55,8 @@ interface AppComponent : AppComponentProviders {
 
     @BindInstance
     fun navigator(navController: NavController<Destination>? = null): NavController<Destination>
+
+    @BindInstance
+    fun backDispatcher(backDispatcher: OnBackPressedDispatcher? = null): OnBackPressedDispatcher
 
 }

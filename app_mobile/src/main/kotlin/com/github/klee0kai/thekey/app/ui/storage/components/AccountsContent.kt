@@ -23,7 +23,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.FabSimpleInContain
 import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleBottomSheetScaffold
 import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleBottomSheetScaffoldState
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberSimpleBottomSheetScaffoldState
-import com.github.klee0kai.thekey.app.ui.navigation.Destination
+import com.github.klee0kai.thekey.app.ui.navigation.NoteDestination
 import dev.olshevski.navigation.reimagined.navigate
 
 @Preview
@@ -62,7 +62,7 @@ fun AccountsContent(
     if (addButtonAlpha > 0) {
         FabSimpleInContainer(
             modifier = Modifier.alpha(addButtonAlpha),
-            onClick = { navigator.navigate(Destination.AccountScreen()) },
+            onClick = { navigator.navigate(NoteDestination()) },
             content = { Icon(Icons.Default.Add, contentDescription = "Add") }
         )
     }
