@@ -1,6 +1,7 @@
 package com.github.klee0kai.thekey.app.di
 
 import androidx.activity.OnBackPressedDispatcher
+import androidx.compose.material3.SnackbarHostState
 import com.github.klee0kai.stone.KotlinWrappersStone
 import com.github.klee0kai.stone.Stone
 import com.github.klee0kai.stone.annotations.component.Component
@@ -58,5 +59,8 @@ interface AppComponent : AppComponentProviders {
 
     @BindInstance
     fun backDispatcher(backDispatcher: OnBackPressedDispatcher? = null): OnBackPressedDispatcher
+
+    @BindInstance(cache = BindInstance.CacheType.Strong)
+    fun snackbarHostState(snackbarHostState: SnackbarHostState? = null): SnackbarHostState
 
 }

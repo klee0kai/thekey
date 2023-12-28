@@ -9,8 +9,10 @@ import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,9 +25,12 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
+import com.github.klee0kai.thekey.app.model.Storage
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarStates
 import com.github.klee0kai.thekey.app.ui.navigation.back
+import com.github.klee0kai.thekey.app.utils.coroutine.await
 
 @Preview
 @Composable
@@ -33,10 +38,12 @@ fun EditStorageScreen(
     path: String? = null,
 ) {
     val navigator = remember { DI.navigator() }
-    val presenter = remember { DI.editStoragePresenter() }
-    var pathInputText by remember { mutableStateOf("") }
-    var nameInputText by remember { mutableStateOf("") }
-    var descInputText by remember { mutableStateOf("") }
+    val presenter = remember { DI.editStoragePresenter(StorageIdentifier(path)) }
+    var storage by remember { mutableStateOf(Storage()) }
+
+    LaunchedEffect(Unit) {
+        storage = presenter.storageInfo.await(300L) ?: return@LaunchedEffect
+    }
 
     AppBarStates(
         navigationIcon = {
@@ -47,7 +54,7 @@ fun EditStorageScreen(
                 )
             }
         },
-    ) { Text(text = stringResource(id = R.string.edit_storage)) }
+    ) { Text(text = stringResource(id = presenter.titleRes)) }
 
     ConstraintLayout(
         modifier = Modifier
@@ -64,6 +71,7 @@ fun EditStorageScreen(
             nameTextField,
             descTextField,
             saveButton,
+            snackOverview,
         ) = createRefs()
 
         OutlinedTextField(
@@ -79,8 +87,8 @@ fun EditStorageScreen(
                         topMargin = 8.dp,
                     )
                 },
-            value = pathInputText,
-            onValueChange = { pathInputText = it },
+            value = storage.path,
+            onValueChange = { storage = storage.copy(path = it) },
             label = { Text(stringResource(R.string.storage_path)) }
         )
 
@@ -97,8 +105,8 @@ fun EditStorageScreen(
                         topMargin = 8.dp,
                     )
                 },
-            value = nameInputText,
-            onValueChange = { nameInputText = it },
+            value = storage.name,
+            onValueChange = { storage = storage.copy(name = it) },
             label = { Text(stringResource(R.string.storage_name)) }
         )
 
@@ -116,8 +124,8 @@ fun EditStorageScreen(
                         topMargin = 8.dp,
                     )
                 },
-            value = descInputText,
-            onValueChange = { descInputText = it },
+            value = storage.description,
+            onValueChange = { storage = storage.copy(description = it) },
             label = { Text(stringResource(R.string.storage_description)) }
         )
 
@@ -130,6 +138,7 @@ fun EditStorageScreen(
                     end.linkTo(parent.end)
                 },
             onClick = {
+                presenter.save(storage)
 
             }
         ) {
@@ -137,7 +146,21 @@ fun EditStorageScreen(
         }
 
 
-    }
 
+        SnackbarHost(
+            hostState = DI.snackbarHostState(),
+            modifier = Modifier.constrainAs(snackOverview) {
+                height = Dimension.wrapContent
+                width = Dimension.fillToConstraints
+                linkTo(
+                    top = parent.top,
+                    start = parent.start,
+                    end = parent.end,
+                    bottom = saveButton.top,
+                    verticalBias = 1f,
+                )
+            }
+        )
+    }
 
 }

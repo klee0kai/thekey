@@ -6,7 +6,9 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import com.github.klee0kai.thekey.app.BuildConfig
 import com.github.klee0kai.thekey.app.di.DI
@@ -31,7 +33,11 @@ fun MainNavContainer() {
         DI.navigator(navController(startDestination = LoginDestination))
     }
     val backPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
-    remember { DI.backDispatcher(backPressedDispatcher) }
+
+    LaunchedEffect(Unit) {
+        DI.backDispatcher(backPressedDispatcher)
+        DI.snackbarHostState(SnackbarHostState())
+    }
 
     NavBackHandler(navController)
 

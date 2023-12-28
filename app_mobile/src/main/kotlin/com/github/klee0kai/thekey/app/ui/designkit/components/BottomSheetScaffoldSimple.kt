@@ -15,6 +15,7 @@ import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.BottomSheetScaffoldState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -115,6 +116,7 @@ fun SimpleBottomSheetScaffold(
             sheetPeekHeight = sheetMinSize,
             contentColor = colorScheme.onBackground,
             containerColor = colorScheme.background,
+            snackbarHost = { SnackbarHost(hostState = DI.snackbarHostState()) },
             content = { innerPadding ->
                 Box(
                     modifier = Modifier
@@ -168,7 +170,7 @@ fun SimpleBottomSheetScaffold(
 @Preview
 fun AppTitleImage(
     modifier: Modifier = Modifier,
-){
+) {
     Image(
         painter = painterResource(id = R.drawable.logo_big),
         contentDescription = stringResource(id = R.string.app_name),

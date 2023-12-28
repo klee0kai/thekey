@@ -4,9 +4,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.takeWhile
+import kotlinx.coroutines.withTimeout
 
 inline fun <reified T> Flow<T>.shareLatest(scope: CoroutineScope): Flow<T> {
     val endl = object {}
@@ -19,3 +21,6 @@ inline fun <reified T> Flow<T>.shareLatest(scope: CoroutineScope): Flow<T> {
         .takeWhile { it !== endl }
         .filterIsInstance<T>()
 }
+
+suspend inline fun <reified T> Flow<T>.await(timeout: Long): T? =
+    withTimeout(timeout) { firstOrNull() }

@@ -20,4 +20,7 @@
     <string name="storage_path">Storage path</string>
     <string name="storage_name">Storage name</string>
     <string name="storage_description">Storage description</string>
+    <string name="save_success">Saved</string>
+    <string name="save_error">Error to save</string>
+    <string name="create_storage">Create Storage</string>
 </resources>

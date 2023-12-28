@@ -4,6 +4,7 @@ import com.github.klee0kai.stone.annotations.module.Module
 import com.github.klee0kai.stone.annotations.module.Provide
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.engine.CryptStorageEngine
+import com.github.klee0kai.thekey.app.engine.EditStorageEngine
 import com.github.klee0kai.thekey.app.engine.FindStorageEngine
 
 @Module
@@ -14,6 +15,10 @@ abstract class EngineModule {
 
     @Provide(cache = Provide.CacheType.Soft)
     open fun cryptStorageEngine(id: StorageIdentifier): CryptStorageEngine =
-        CryptStorageEngine(id.path)
+        CryptStorageEngine(id.path!!)
+
+    @Provide(cache = Provide.CacheType.Soft)
+    open fun editStorageEngine(): EditStorageEngine = EditStorageEngine()
+
 
 }
