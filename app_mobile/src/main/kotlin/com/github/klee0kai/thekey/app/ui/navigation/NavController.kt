@@ -30,13 +30,13 @@ import dev.olshevski.navigation.reimagined.navController
 @Composable
 fun MainNavContainer() {
     val navController = remember {
-        DI.navigator(navController(startDestination = LoginDestination))
+        DI.navigator(navController(startDestination = EditStorageDestination("")))
     }
     val backPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+    DI.snackbarHostState(SnackbarHostState())
 
     LaunchedEffect(Unit) {
         DI.backDispatcher(backPressedDispatcher)
-        DI.snackbarHostState(SnackbarHostState())
     }
 
     NavBackHandler(navController)
