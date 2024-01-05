@@ -1,9 +1,11 @@
 package com.github.klee0kai.thekey.app.ui.designkit.components
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -19,7 +21,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.utils.views.fadeOutInAnimate
 
 object AppBarConst {
@@ -34,10 +35,9 @@ fun AppBarStates(
     modifier: Modifier = Modifier,
     titleId: Int = 0,
     navigationIcon: (@Composable () -> Unit)? = null,
+    actions: @Composable RowScope.() -> Unit = {},
     titleContent: (@Composable (titleId: Int) -> Unit)? = null,
 ) {
-    val colorScheme = remember { DI.theme().colorScheme().androidColorScheme }
-
     var prevTitleId by remember { mutableStateOf(titleId) }
     var targetTitleId by remember { mutableStateOf(titleId) }
 
@@ -67,8 +67,10 @@ fun AppBarStates(
     CenterAlignedTopAppBar(
         modifier = modifier,
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = colorScheme.background,
+            containerColor = MaterialTheme.colorScheme.background,
+            titleContentColor = MaterialTheme.colorScheme.onBackground,
         ),
+        actions = actions,
         title = {
             Box(
                 modifier = modifier

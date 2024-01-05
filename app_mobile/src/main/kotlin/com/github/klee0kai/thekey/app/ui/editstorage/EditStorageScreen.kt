@@ -1,13 +1,20 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.github.klee0kai.thekey.app.ui.editstorage
 
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Done
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
@@ -18,6 +25,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
@@ -36,10 +45,8 @@ import com.github.klee0kai.thekey.app.utils.coroutine.await
 import com.github.klee0kai.thekey.app.utils.views.AutoFillList
 import com.github.klee0kai.thekey.app.utils.views.Keyboard
 import com.github.klee0kai.thekey.app.utils.views.ViewPositionPx
-import com.github.klee0kai.thekey.app.utils.views.belowAfter
 import com.github.klee0kai.thekey.app.utils.views.keyboardAsState
 import com.github.klee0kai.thekey.app.utils.views.onGlobalPositionState
-import com.github.klee0kai.thekey.app.utils.views.onTouch
 import com.github.klee0kai.thekey.app.utils.views.toDp
 
 @Preview
@@ -53,8 +60,11 @@ fun EditStorageScreen(
 
     var pathTextValue by remember { mutableStateOf(TextFieldValue()) }
     var storagePathFieldFocused by remember { mutableStateOf<Boolean>(false) }
-    var storagePathFieldPosition by remember { mutableStateOf<ViewPositionPx?>(null) }
+    var contentViewSize by remember { mutableStateOf<ViewPositionPx?>(null) }
     val keyboardState by keyboardAsState()
+
+    val bottomSaveButton = (contentViewSize?.toDp()?.size?.height ?: 0.dp) > 500.dp
+
 
     LaunchedEffect(Unit) {
         storage = presenter.storageInfo.await(300L) ?: return@LaunchedEffect
@@ -63,6 +73,9 @@ fun EditStorageScreen(
         if (keyboardState == Keyboard.Closed) {
             storagePathFieldFocused = false
         }
+    }
+    BackHandler(enabled = storagePathFieldFocused) {
+        storagePathFieldFocused = false
     }
 
     AppBarStates(
@@ -74,11 +87,25 @@ fun EditStorageScreen(
                 )
             }
         },
+        actions = {
+            if (!bottomSaveButton) {
+                IconButton(onClick = { presenter.save(storage) }) {
+                    Icon(
+                        imageVector = Icons.Filled.Done,
+                        contentDescription = stringResource(id = R.string.save),
+                        tint = MaterialTheme.colorScheme.onBackground
+                    )
+                }
+            }
+        }
     ) { Text(text = stringResource(id = presenter.titleRes)) }
 
     ConstraintLayout(
         modifier = Modifier
-            .onTouch { storagePathFieldFocused = false }
+            .onGlobalPositionState { contentViewSize = it }
+            .pointerInput(Unit) {
+                detectTapGestures { storagePathFieldFocused = false }
+            }
             .padding(
                 top = 16.dp + AppBarConst.appBarSize,
                 bottom = 16.dp,
@@ -93,12 +120,12 @@ fun EditStorageScreen(
             descTextField,
             saveButton,
             snackOverview,
+            autofillList,
         ) = createRefs()
 
         OutlinedTextField(
             modifier = Modifier
-                .onGlobalPositionState { storagePathFieldPosition = it }
-                .onTouch { storagePathFieldFocused = true }
+                .onFocusChanged { storagePathFieldFocused = it.isFocused }
                 .constrainAs(pathTextField) {
                     width = Dimension.fillToConstraints
                     linkTo(
@@ -155,19 +182,21 @@ fun EditStorageScreen(
             label = { Text(stringResource(R.string.storage_description)) }
         )
 
-        FilledTonalButton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .constrainAs(saveButton) {
-                    bottom.linkTo(parent.bottom)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                },
-            onClick = {
-                presenter.save(storage)
+        if (bottomSaveButton) {
+            FilledTonalButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .constrainAs(saveButton) {
+                        bottom.linkTo(parent.bottom)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    },
+                onClick = {
+                    presenter.save(storage)
+                }
+            ) {
+                Text(stringResource(R.string.save))
             }
-        ) {
-            Text(stringResource(R.string.save))
         }
 
 
@@ -185,14 +214,24 @@ fun EditStorageScreen(
                 )
             }
         )
-    }
 
-    if (storagePathFieldPosition != null) {
+
         AutoFillList(
-            modifier = Modifier.belowAfter(storagePathFieldPosition!!.toDp()),
+            modifier = Modifier.constrainAs(autofillList) {
+                height = Dimension.preferredWrapContent
+                width = Dimension.fillToConstraints
+                linkTo(
+                    start = pathTextField.start,
+                    end = pathTextField.end,
+                    top = pathTextField.bottom,
+                    bottom = parent.bottom,
+                    verticalBias = 0f,
+                    bottomMargin = 16.dp
+                )
+            },
             isVisible = storagePathFieldFocused,
             variants = listOf(
-                "121",
+                "start",
                 "end",
             ),
             onSelected = { selected ->
@@ -206,6 +245,7 @@ fun EditStorageScreen(
                 }
             }
         )
-
     }
+
+
 }
