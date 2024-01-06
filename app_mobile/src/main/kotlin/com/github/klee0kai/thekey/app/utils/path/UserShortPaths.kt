@@ -1,17 +1,21 @@
 package com.github.klee0kai.thekey.app.utils.path
 
 import android.os.Environment
-import android.text.Spannable
-import android.text.SpannableString
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.input.OffsetMapping
+import androidx.compose.ui.text.input.TransformedText
+import androidx.compose.ui.text.input.VisualTransformation
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.utils.common.runForEach
 import java.io.File
 import java.util.Locale
 
-data class ShortPath(
+class ShortPath(
     val short: String,
-    val absolutePath: String,
-)
+    longPath: String,
+) {
+    val absolutePath = longPath.fromRootPath()
+}
 
 open class UserShortPaths {
 
@@ -36,38 +40,56 @@ open class UserShortPaths {
             .map { it.short }
             .toTypedArray()
 
-    open fun shortPathName(p: String): SpannableString {
-        val path = runCatching { File(p).canonicalPath }.getOrNull() ?: p
-        val colorScheme = DI.theme().colorScheme().androidColorScheme
-        var userPath: SpannableString? = null
+    val colorTransformation
+        get() = VisualTransformation {
+            TransformedText(
+                text = buildAnnotatedString {
+
+                },
+                offsetMapping = OffsetMapping.Identity,
+            )
+        }
+
+    open fun shortPathName(originAbsolutePath: String): String {
+        if (originAbsolutePath.isBlank()) {
+            return originAbsolutePath.fromRootPath()
+        }
+
+        val path = runCatching { File(originAbsolutePath).canonicalPath }
+            .getOrNull()
+            ?: originAbsolutePath
 
         listOf(appData, phoneStorage).runForEach {
-            if (path.startsWith(absolutePath) || p.startsWith(absolutePath)) {
-                val pp = if (path.startsWith(absolutePath)) path else p
-                userPath = SpannableString(short + pp.substring(absolutePath.length))
-                userPath!!.setSpan(
-                    colorScheme.primary,
-                    0,
-                    short.length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-                return userPath!!
+            if (path.startsWith(absolutePath) || originAbsolutePath.startsWith(absolutePath)) {
+                val pp = if (path.startsWith(absolutePath)) path else originAbsolutePath
+                return (short + pp.substring(absolutePath.length)).fromRootPath()
             }
         }
 
 
-        return SpannableString(path)
+        return path
     }
 
     open fun absolutePath(userShortPath: String?): String? {
-        val lowerCase = userShortPath?.lowercase(Locale.getDefault()) ?: return null
+        if (userShortPath.isNullOrBlank()) {
+            return userShortPath
+        }
+        val lowerCase = userShortPath.lowercase(Locale.getDefault())
         listOf(appData, phoneStorage).runForEach {
             if (lowerCase.startsWith(short)) {
                 return absolutePath + userShortPath.substring(short.length)
             }
+            if (lowerCase.startsWith(short.fromRootPath())) {
+                return absolutePath + userShortPath.substring(short.length + 1)
+            }
         }
-        return userShortPath
+        return userShortPath.fromRootPath()
     }
 
+}
 
+fun String.fromRootPath(): String = when {
+    isNullOrBlank() -> this
+    firstOrNull() != '/' -> "/$this"
+    else -> this
 }

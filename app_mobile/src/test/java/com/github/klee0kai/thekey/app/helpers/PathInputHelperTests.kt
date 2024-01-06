@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app
+package com.github.klee0kai.thekey.app.helpers
 
 import androidx.compose.ui.text.input.TextFieldValue
 import com.github.klee0kai.thekey.app.di.DI

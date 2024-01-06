@@ -21,19 +21,9 @@ class PathInputHelper {
     private val dirFileNameFilter = FilenameFilter { dir, name -> File(dir, name).isDirectory }
 
     fun autoCompleteVariants(input: TextFieldValue) = flow<PathSearchResult> {
-        if (input.text.isEmpty()) {
-            val roots = shortPaths.rootUserPaths.asList()
-            emit(
-                PathSearchResult(
-                    textField = input.copy(),
-                    variants = roots.map { AnnotatedString(it) }
-                )
-            )
-            return@flow
-        }
-        emit(PathSearchResult(textField = input.copy()))
+        emit(PathSearchResult(textField = input.fromRootPath()))
 
-        val searchAbsPath = DI.userShortPaths().absolutePath(input.text) ?: ""
+        val searchAbsPath = shortPaths.absolutePath(input.text) ?: ""
         val isDir = searchAbsPath.lastOrNull() == '/'
         val searchFileName = if (!isDir) {
             File(searchAbsPath).name.lowercase(Locale.getDefault())
@@ -45,7 +35,7 @@ class PathInputHelper {
         val availableList = if (parent != null) {
             parent.list(dirFileNameFilter) ?: emptyArray()
         } else {
-            shortPaths.rootAbsolutePaths
+            shortPaths.rootUserPaths
         }.filter { it.lowercase(Locale.getDefault()).contains(searchFileName) }
 
         val shortPath = buildString {
@@ -67,6 +57,20 @@ class PathInputHelper {
 
     }.flowOn(DI.defaultDispatcher())
         .flowOn(DI.mainDispatcher())
+
+
+}
+
+
+fun TextFieldValue.fromRootPath(): TextFieldValue = when {
+    text.isEmpty() -> this
+    text.firstOrNull() != '/' ->
+        copy(
+            text = "/${text}",
+            selection = TextRange(selection.end + 1),
+        )
+
+    else -> this
 
 
 }
