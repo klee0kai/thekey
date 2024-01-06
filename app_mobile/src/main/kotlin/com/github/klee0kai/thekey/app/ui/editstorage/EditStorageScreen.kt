@@ -34,6 +34,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
@@ -54,7 +55,6 @@ import com.github.klee0kai.thekey.app.utils.views.ViewPositionPx
 import com.github.klee0kai.thekey.app.utils.views.currentViewSizeState
 import com.github.klee0kai.thekey.app.utils.views.keyboardAsState
 import com.github.klee0kai.thekey.app.utils.views.onGlobalPositionState
-import timber.log.Timber
 
 @Preview
 @Composable
@@ -63,10 +63,12 @@ fun EditStorageScreen(
 ) {
     val navigator = remember { DI.navigator() }
     val presenter = remember { DI.editStoragePresenter(StorageIdentifier(path)) }
+    val pathInputHelper = remember { DI.pathInputHelper() }
     var storage by remember { mutableStateOf(Storage()) }
 
-    var pathTextValue by remember { mutableStateOf(TextFieldValue()) }
+    var storagePathTextValue by remember { mutableStateOf(TextFieldValue()) }
     var storagePathFieldFocused by remember { mutableStateOf<Boolean>(false) }
+    var storagePathVariants by remember { mutableStateOf<List<AnnotatedString>>(emptyList()) }
     var contentViewSize by remember { mutableStateOf<ViewPositionPx?>(null) }
     val keyboardState by keyboardAsState()
     val viewSize by currentViewSizeState()
@@ -78,7 +80,6 @@ fun EditStorageScreen(
         label = "variants visible animate"
     )
 
-    Timber.d("scroll state ${scrollState.value}")
     LaunchedEffect(Unit) {
         storage = presenter.storageInfo.await(300L) ?: return@LaunchedEffect
     }
@@ -86,6 +87,14 @@ fun EditStorageScreen(
         if (keyboardState == Keyboard.Closed) {
             storagePathFieldFocused = false
         }
+    }
+    LaunchedEffect(storagePathTextValue.text) {
+        pathInputHelper
+            .autoCompleteVariants(storagePathTextValue)
+            .collect {
+                storagePathTextValue = it.textField
+                storagePathVariants = it.variants
+            }
     }
     BackHandler(enabled = storagePathFieldFocused) {
         storagePathFieldFocused = false
@@ -153,10 +162,10 @@ fun EditStorageScreen(
                         topMargin = 8.dp,
                     )
                 },
-            value = pathTextValue,
+            value = storagePathTextValue,
             onValueChange = {
                 storagePathFieldFocused = true
-                pathTextValue = it
+                storagePathTextValue = it
             },
             label = { Text(stringResource(R.string.storage_path)) }
         )
@@ -213,28 +222,14 @@ fun EditStorageScreen(
                 )
             },
             isVisible = storagePathFieldFocused,
-            variants = listOf(
-                "start",
-                "121",
-                "121",
-                "121",
-                "121",
-                "121",
-                "121",
-                "121",
-                "121",
-                "121",
-                "end",
-            ),
+            variants = storagePathVariants,
             onSelected = { selected ->
-                if (selected == null) {
-                    storagePathFieldFocused = false
-                } else {
-                    pathTextValue = TextFieldValue(
-                        text = selected,
-                        selection = TextRange(selected.length)
-                    )
-                }
+                if (selected == null) return@AutoFillList
+                val newText = storagePathTextValue.annotatedString + selected + AnnotatedString("/")
+                storagePathTextValue = storagePathTextValue.copy(
+                    annotatedString = newText,
+                    selection = TextRange(newText.length)
+                )
             }
         )
     }

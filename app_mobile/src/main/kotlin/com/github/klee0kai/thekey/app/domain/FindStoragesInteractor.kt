@@ -3,7 +3,6 @@ package com.github.klee0kai.thekey.app.domain
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.engine.findStoragesFlow
 import com.github.klee0kai.thekey.app.model.ColoredStorage
-import com.github.klee0kai.thekey.app.utils.android.UserShortPaths
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -31,7 +30,7 @@ class FindStoragesInteractor {
 
     fun findStorages(force: Boolean = false) = scope.launch {
         if (!checkForceFind(force = force)) return@launch
-        UserShortPaths.getRootPaths(false)
+        DI.userShortPaths().rootAbsolutePaths
             .map { root ->
                 engine().findStoragesFlow(root)
                     .collect { storage ->

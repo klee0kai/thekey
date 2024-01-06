@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
@@ -25,8 +26,8 @@ import androidx.compose.ui.unit.dp
 fun AutoFillList(
     modifier: Modifier = Modifier,
     isVisible: Boolean = false,
-    variants: List<String> = emptyList(),
-    onSelected: (String?) -> Unit = {},
+    variants: List<AnnotatedString> = emptyList(),
+    onSelected: (AnnotatedString?) -> Unit = {},
 ) {
     val variantsListAlpha by animateFloatAsState(
         targetValue = if (isVisible && variants.isNotEmpty()) 1f else 0f,

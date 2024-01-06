@@ -13,6 +13,7 @@ import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.di.modules.CoroutineModule
 import com.github.klee0kai.thekey.app.di.modules.DBModule
 import com.github.klee0kai.thekey.app.di.modules.EngineModule
+import com.github.klee0kai.thekey.app.di.modules.HelpersModule
 import com.github.klee0kai.thekey.app.di.modules.InteractorsModule
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.di.modules.RepositoriesModule
@@ -40,6 +41,8 @@ interface AppComponent : AppComponentProviders {
 
     open fun presenters(): PresentersModule
 
+    open fun helpers(): HelpersModule
+
     open fun interactors(): InteractorsModule
 
     open fun repositories(): RepositoriesModule
@@ -52,6 +55,9 @@ interface AppComponent : AppComponentProviders {
 
     @Init
     fun initEngineModule(engineModule: Class<out EngineModule>)
+
+    @Init
+    fun initHelpersModule(helpers: HelpersModule)
 
     @BindInstance(cache = BindInstance.CacheType.Weak)
     fun app(app: App? = null): App
