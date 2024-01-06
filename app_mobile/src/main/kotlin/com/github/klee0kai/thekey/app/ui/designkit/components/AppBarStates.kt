@@ -1,5 +1,6 @@
 package com.github.klee0kai.thekey.app.ui.designkit.components
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
@@ -33,6 +34,7 @@ object AppBarConst {
 @Composable
 fun AppBarStates(
     modifier: Modifier = Modifier,
+    isVisible: Boolean = true,
     titleId: Int = 0,
     navigationIcon: (@Composable () -> Unit)? = null,
     actions: @Composable RowScope.() -> Unit = {},
@@ -43,6 +45,11 @@ fun AppBarStates(
 
     val prevTitleAlpha = remember { mutableFloatStateOf(1f) }
     val targetTitleAlpha = remember { mutableFloatStateOf(0f) }
+
+    val appBarAlpha by animateFloatAsState(
+        targetValue = if (isVisible) 1f else 0f,
+        label = "appbar visible animate"
+    )
 
     LaunchedEffect(key1 = titleId) {
         if (targetTitleAlpha.floatValue == 0f) {
@@ -64,35 +71,38 @@ fun AppBarStates(
         }
     }
 
-    CenterAlignedTopAppBar(
-        modifier = modifier,
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.background,
-            titleContentColor = MaterialTheme.colorScheme.onBackground,
-        ),
-        actions = actions,
-        title = {
-            Box(
-                modifier = modifier
-                    .padding(4.dp),
-                contentAlignment = Alignment.Center
-            ) {
+    if (appBarAlpha > 0) {
+        CenterAlignedTopAppBar(
+            modifier = modifier
+                .alpha(appBarAlpha),
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.background,
+                titleContentColor = MaterialTheme.colorScheme.onBackground,
+            ),
+            actions = actions,
+            title = {
+                Box(
+                    modifier = modifier
+                        .padding(4.dp),
+                    contentAlignment = Alignment.Center
+                ) {
 
-                if (prevTitleAlpha.floatValue > 0f) {
-                    Box(modifier = Modifier.alpha(prevTitleAlpha.floatValue)) {
-                        titleContent?.invoke(prevTitleId)
+                    if (prevTitleAlpha.floatValue > 0f) {
+                        Box(modifier = Modifier.alpha(prevTitleAlpha.floatValue)) {
+                            titleContent?.invoke(prevTitleId)
+                        }
+                    }
+
+                    Box(
+                        modifier = modifier.alpha(targetTitleAlpha.floatValue),
+                    ) {
+                        titleContent?.invoke(targetTitleId)
                     }
                 }
-
-                Box(
-                    modifier = modifier.alpha(targetTitleAlpha.floatValue),
-                ) {
-                    titleContent?.invoke(targetTitleId)
-                }
-            }
-        },
-        navigationIcon = navigationIcon ?: {},
-    )
+            },
+            navigationIcon = navigationIcon ?: {},
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

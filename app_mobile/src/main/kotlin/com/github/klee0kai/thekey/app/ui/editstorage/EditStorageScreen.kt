@@ -3,10 +3,15 @@
 package com.github.klee0kai.thekey.app.ui.editstorage
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Done
@@ -25,6 +30,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
@@ -45,9 +51,10 @@ import com.github.klee0kai.thekey.app.utils.coroutine.await
 import com.github.klee0kai.thekey.app.utils.views.AutoFillList
 import com.github.klee0kai.thekey.app.utils.views.Keyboard
 import com.github.klee0kai.thekey.app.utils.views.ViewPositionPx
+import com.github.klee0kai.thekey.app.utils.views.currentViewSizeState
 import com.github.klee0kai.thekey.app.utils.views.keyboardAsState
 import com.github.klee0kai.thekey.app.utils.views.onGlobalPositionState
-import com.github.klee0kai.thekey.app.utils.views.toDp
+import timber.log.Timber
 
 @Preview
 @Composable
@@ -62,10 +69,16 @@ fun EditStorageScreen(
     var storagePathFieldFocused by remember { mutableStateOf<Boolean>(false) }
     var contentViewSize by remember { mutableStateOf<ViewPositionPx?>(null) }
     val keyboardState by keyboardAsState()
+    val viewSize by currentViewSizeState()
+    val scrollState = rememberScrollState()
 
-    val bottomSaveButton = (contentViewSize?.toDp()?.size?.height ?: 0.dp) > 500.dp
+    val bottomSaveButton = viewSize.height > 500.dp
+    val saveInToolbarAlpha by animateFloatAsState(
+        targetValue = if (bottomSaveButton) 0f else 1f,
+        label = "variants visible animate"
+    )
 
-
+    Timber.d("scroll state ${scrollState.value}")
     LaunchedEffect(Unit) {
         storage = presenter.storageInfo.await(300L) ?: return@LaunchedEffect
     }
@@ -79,6 +92,7 @@ fun EditStorageScreen(
     }
 
     AppBarStates(
+        isVisible = scrollState.value == 0,
         navigationIcon = {
             IconButton(onClick = { navigator.back() }) {
                 Icon(
@@ -88,8 +102,11 @@ fun EditStorageScreen(
             }
         },
         actions = {
-            if (!bottomSaveButton) {
-                IconButton(onClick = { presenter.save(storage) }) {
+            if (saveInToolbarAlpha > 0) {
+                IconButton(
+                    modifier = Modifier.alpha(saveInToolbarAlpha),
+                    onClick = { presenter.save(storage) }
+                ) {
                     Icon(
                         imageVector = Icons.Filled.Done,
                         contentDescription = stringResource(id = R.string.save),
@@ -100,26 +117,25 @@ fun EditStorageScreen(
         }
     ) { Text(text = stringResource(id = presenter.titleRes)) }
 
+
     ConstraintLayout(
+        optimizationLevel = 0,
         modifier = Modifier
+            .verticalScroll(scrollState)
             .onGlobalPositionState { contentViewSize = it }
-            .pointerInput(Unit) {
-                detectTapGestures { storagePathFieldFocused = false }
-            }
+            .pointerInput(Unit) { detectTapGestures { storagePathFieldFocused = false } }
+            .fillMaxSize()
             .padding(
                 top = 16.dp + AppBarConst.appBarSize,
                 bottom = 16.dp,
                 start = 16.dp,
                 end = 16.dp
             )
-            .fillMaxSize()
     ) {
         val (
             pathTextField,
             nameTextField,
             descTextField,
-            saveButton,
-            snackOverview,
             autofillList,
         ) = createRefs()
 
@@ -182,39 +198,6 @@ fun EditStorageScreen(
             label = { Text(stringResource(R.string.storage_description)) }
         )
 
-        if (bottomSaveButton) {
-            FilledTonalButton(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .constrainAs(saveButton) {
-                        bottom.linkTo(parent.bottom)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                    },
-                onClick = {
-                    presenter.save(storage)
-                }
-            ) {
-                Text(stringResource(R.string.save))
-            }
-        }
-
-
-        SnackbarHost(
-            hostState = DI.snackbarHostState(),
-            modifier = Modifier.constrainAs(snackOverview) {
-                height = Dimension.wrapContent
-                width = Dimension.fillToConstraints
-                linkTo(
-                    top = parent.top,
-                    start = parent.start,
-                    end = parent.end,
-                    bottom = saveButton.top,
-                    verticalBias = 1f,
-                )
-            }
-        )
-
 
         AutoFillList(
             modifier = Modifier.constrainAs(autofillList) {
@@ -232,6 +215,15 @@ fun EditStorageScreen(
             isVisible = storagePathFieldFocused,
             variants = listOf(
                 "start",
+                "121",
+                "121",
+                "121",
+                "121",
+                "121",
+                "121",
+                "121",
+                "121",
+                "121",
                 "end",
             ),
             onSelected = { selected ->
@@ -245,6 +237,37 @@ fun EditStorageScreen(
                 }
             }
         )
+    }
+
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(
+                top = 16.dp + AppBarConst.appBarSize,
+                bottom = 16.dp,
+                start = 16.dp,
+                end = 16.dp
+            ),
+    ) {
+        Spacer(modifier = Modifier.weight(1f))
+
+        SnackbarHost(
+            hostState = DI.snackbarHostState(),
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        if (bottomSaveButton) {
+            FilledTonalButton(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                onClick = {
+                    presenter.save(storage)
+                }
+            ) {
+                Text(stringResource(R.string.save))
+            }
+        }
     }
 
 

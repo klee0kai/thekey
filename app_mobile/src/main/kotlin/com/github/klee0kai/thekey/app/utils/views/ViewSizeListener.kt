@@ -1,14 +1,24 @@
 package com.github.klee0kai.thekey.app.utils.views
 
+import android.view.View
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.dp
 import kotlin.math.roundToInt
 
 data class ViewPositionPx(
@@ -36,10 +46,57 @@ fun Modifier.onGlobalPositionState(
 }
 
 @Composable
-fun ViewPositionPx.toDp() =
-    with(LocalDensity.current) {
-        ViewPositionDp(
-            globalPos = DpOffset(globalPos.x.toDp(), globalPos.y.toDp()),
-            size = DpSize(size.width.toDp(), size.height.toDp())
-        )
+fun ViewPositionPx.toDp() = with(LocalDensity.current) {
+    ViewPositionDp(
+        globalPos = DpOffset(globalPos.x.toDp(), globalPos.y.toDp()),
+        size = DpSize(size.width.toDp(), size.height.toDp())
+    )
+}
+
+@Composable
+fun IntSize.pxToDp() = with(LocalDensity.current) {
+    DpSize(width.toDp(), height.toDp())
+}
+
+
+@Composable
+fun Float.pxToDp(): Dp {
+    val px = this
+    return with(LocalDensity.current) { px.toDp() }
+}
+
+@Composable
+fun Int.pxToDp(): Dp {
+    val px = this
+    return with(LocalDensity.current) { px.toDp() }
+}
+
+@Composable
+fun Dp.toPx(): Float {
+    val dp = this
+    return with(LocalDensity.current) { dp.toPx() }
+}
+
+
+@Composable
+fun currentViewSizeState(): State<DpSize> {
+    val view = LocalView.current
+    var sizePx by remember { mutableStateOf(IntSize(0, 0)) }
+    val stateDp = remember { mutableStateOf(DpSize(0.dp, 0.dp)) }
+    sizePx = IntSize(view.width, view.height)
+
+    LaunchedEffect(Unit) {
+        view.addOnLayoutChangeListener(object : View.OnLayoutChangeListener {
+            override fun onLayoutChange(
+                v: View?, left: Int, top: Int, right: Int, bottom: Int,
+                oldLeft: Int, oldTop: Int, oldRight: Int, oldBottom: Int
+            ) {
+                sizePx = IntSize(view.width, view.height)
+                view.removeOnLayoutChangeListener(this)
+            }
+        })
     }
+
+    stateDp.value = sizePx.pxToDp()
+    return stateDp
+}

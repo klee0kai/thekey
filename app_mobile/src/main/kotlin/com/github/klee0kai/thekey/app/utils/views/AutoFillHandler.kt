@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -36,10 +37,11 @@ fun AutoFillList(
         LazyColumn(
             modifier = modifier
                 .alpha(variantsListAlpha)
+                .heightIn(0.dp,200.dp)
                 .background(
                     color = MaterialTheme.colorScheme.surface,
                     shape = RoundedCornerShape(16.dp)
-                )
+                ),
         ) {
             item {
                 Spacer(modifier = Modifier.height(8.dp))
