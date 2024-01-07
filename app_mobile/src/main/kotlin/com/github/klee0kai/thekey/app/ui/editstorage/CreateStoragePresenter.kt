@@ -31,7 +31,7 @@ open class CreateStoragePresenter {
             }
             if (error == EditStorageEngine.Error.OK) {
                 rep().addStorage(storage)
-                navigator.backWithResult(Result.success(Unit))
+                navigator.backWithResult(Unit)
             }
 
             navigator.snack(message = message)

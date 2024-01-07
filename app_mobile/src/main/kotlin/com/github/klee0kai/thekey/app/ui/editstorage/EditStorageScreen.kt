@@ -46,7 +46,7 @@ import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.model.Storage
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarStates
-import com.github.klee0kai.thekey.app.ui.navigation.back
+import com.github.klee0kai.thekey.app.ui.navigation.backWithResult
 import com.github.klee0kai.thekey.app.utils.coroutine.awaitSec
 import com.github.klee0kai.thekey.app.utils.path.appendTKeyFormat
 import com.github.klee0kai.thekey.app.utils.path.removeTKeyFormat
@@ -251,7 +251,7 @@ fun EditStorageScreen(
         isVisible = scrollState.value == 0,
         navigationIcon = {
             IconButton(onClick = {
-                navigator.back()
+                navigator.backWithResult(Unit)
             }) {
                 Icon(
                     Icons.Filled.ArrowBack,
