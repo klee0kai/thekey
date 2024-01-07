@@ -86,15 +86,10 @@ fun currentViewSizeState(): State<DpSize> {
     sizePx = IntSize(view.width, view.height)
 
     LaunchedEffect(Unit) {
-        view.addOnLayoutChangeListener(object : View.OnLayoutChangeListener {
-            override fun onLayoutChange(
-                v: View?, left: Int, top: Int, right: Int, bottom: Int,
-                oldLeft: Int, oldTop: Int, oldRight: Int, oldBottom: Int
-            ) {
-                sizePx = IntSize(view.width, view.height)
-                view.removeOnLayoutChangeListener(this)
-            }
-        })
+        view.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+            val newSizePx = IntSize(view.width, view.height)
+            if (sizePx != newSizePx) sizePx = newSizePx
+        }
     }
 
     stateDp.value = sizePx.pxToDp()

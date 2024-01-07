@@ -16,9 +16,10 @@
         android:theme="@style/Theme.TheKey">
         <activity
             android:name=".ui.MainActivity"
+            android:configChanges="orientation|keyboard|keyboardHidden|screenLayout|screenSize"
             android:exported="true"
-            android:windowSoftInputMode="adjustResize"
-            android:theme="@style/Theme.TheKey">
+            android:theme="@style/Theme.TheKey"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
