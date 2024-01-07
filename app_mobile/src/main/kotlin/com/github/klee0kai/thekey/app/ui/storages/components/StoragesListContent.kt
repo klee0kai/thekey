@@ -59,9 +59,7 @@ fun StoragesListContent(
             ) {
                 ColoredStorageItem(
                     storage = storage,
-                    onClick = {
-                        navigator.backWithResult(storage.path)
-                    }
+                    onClick = { navigator.backWithResult(Result.success(storage.path)) }
                 )
             }
         }

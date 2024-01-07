@@ -36,6 +36,7 @@ class LoginPresenter {
         val selectedStorage = navigator
             .navigateForResult<String>(StoragesDestination)
             .firstOrNull()
+            ?.getOrNull()
 
         if (selectedStorage != null) {
             settingsRep().set(SETTING_DEFAULT_STORAGE_PATH, selectedStorage)

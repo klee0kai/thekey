@@ -25,7 +25,7 @@ int EngineEditStorageEngine::createStorage(const brooklyn::ModelStorage &storage
             .description = storage.description.c_str(),
     });
 
-    return !error;
+    return error;
 }
 
 int EngineEditStorageEngine::editStorage(const brooklyn::ModelStorage &storage) {

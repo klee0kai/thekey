@@ -48,6 +48,8 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarStates
 import com.github.klee0kai.thekey.app.ui.navigation.back
 import com.github.klee0kai.thekey.app.utils.coroutine.awaitSec
+import com.github.klee0kai.thekey.app.utils.path.appendTKeyFormat
+import com.github.klee0kai.thekey.app.utils.path.removeTKeyFormat
 import com.github.klee0kai.thekey.app.utils.views.AutoFillList
 import com.github.klee0kai.thekey.app.utils.views.Keyboard
 import com.github.klee0kai.thekey.app.utils.views.ViewPositionPx
@@ -77,14 +79,13 @@ fun EditStorageScreen(
 
     val bottomSaveButton = viewSize.height > 500.dp
     val saveInToolbarAlpha by animateFloatAsState(
-        targetValue = if (bottomSaveButton) 0f else 1f,
-        label = "variants visible animate"
+        targetValue = if (bottomSaveButton) 0f else 1f, label = "variants visible animate"
     )
 
     LaunchedEffect(Unit) {
         storage = presenter.storageInfo.awaitSec() ?: return@LaunchedEffect
-        storagePathTextValue = userShortPathHelper
-            .shortPathName(storage.path)
+        storagePathTextValue = userShortPathHelper.shortPathName(storage.path)
+            .removeTKeyFormat()
             .toTextFieldValue()
     }
     LaunchedEffect(keyboardState) {
@@ -93,8 +94,11 @@ fun EditStorageScreen(
         }
     }
     LaunchedEffect(storagePathTextValue.text) {
-        pathInputHelper
-            .autoCompleteVariants(storagePathTextValue)
+        storage = storage.copy(
+            path = (userShortPathHelper.absolutePath(storagePathTextValue.text) ?: "")
+                .appendTKeyFormat()
+        )
+        pathInputHelper.autoCompleteVariants(storagePathTextValue)
             .collect {
                 storagePathTextValue = it.textField
                 storagePathVariants = it.variants
@@ -104,9 +108,7 @@ fun EditStorageScreen(
         storagePathFieldFocused = false
     }
 
-
-    ConstraintLayout(
-        optimizationLevel = 0,
+    ConstraintLayout(optimizationLevel = 0,
         modifier = Modifier
             .verticalScroll(scrollState)
             .onGlobalPositionState { contentViewSize = it }

@@ -14,9 +14,9 @@ class EditStorageEngine {
 
     external fun findStorageInfo(path: String): Storage?
 
-    external fun createStorage(storage: Storage): Boolean
+    external fun createStorage(storage: Storage): Int
 
-    external fun editStorage(storage: Storage): Boolean
+    external fun editStorage(storage: Storage): Int
 
     enum class Error(val code: Int, val stringResId: Int) {
         OK(0, 0),
@@ -26,11 +26,12 @@ class EditStorageEngine {
 
         ;
 
-        fun fromCode(code: Int): Error =
-            entries
-                .firstOrNull { it.code == code }
-                ?: UNKNOWN_ERROR
-
+        companion object {
+            fun fromCode(code: Int): Error =
+                entries
+                    .firstOrNull { it.code == code }
+                    ?: UNKNOWN_ERROR
+        }
 
     }
 }

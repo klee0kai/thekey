@@ -40,13 +40,13 @@ fun <T> NavController<T>.cleanNotUselessResultFlows() {
     }
 }
 
-inline fun <reified R> NavController<Destination>.navigateForResult(destination: Destination): Flow<R> {
+inline fun <reified R> NavController<Destination>.navigateForResult(destination: Destination): Flow<Result<R>> {
     val navEntry = navEntry(destination)
     setNewBackstack(
         entries = backstack.entries + navEntry,
         action = NavAction.Navigate
     )
-    return flow<R> {
+    return flow {
         delay(50)
         val result = navChanges
             .first { change ->
@@ -55,13 +55,15 @@ inline fun <reified R> NavController<Destination>.navigateForResult(destination:
                 destClosed || destinationLost
             }
         if (result.closedDestination?.first == navEntry.id) {
-            (result.closedDestination.second as? R)?.let { emit(it) }
+            runCatching {
+                emit(result.closedDestination.second as Result<R>)
+            }
         }
     }.shareLatest(resultsScope)
 }
 
 fun <R> NavController<Destination>.backWithResult(
-    result: R,
+    result: Result<R>,
     exitFromApp: Boolean = false,
 ): Boolean {
     val navId = backstack.entries.last().id
