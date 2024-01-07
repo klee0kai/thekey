@@ -49,7 +49,6 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarStates
 import com.github.klee0kai.thekey.app.ui.navigation.back
 import com.github.klee0kai.thekey.app.utils.coroutine.await
-import com.github.klee0kai.thekey.app.utils.path.fromRootPath
 import com.github.klee0kai.thekey.app.utils.views.AutoFillList
 import com.github.klee0kai.thekey.app.utils.views.Keyboard
 import com.github.klee0kai.thekey.app.utils.views.ViewPositionPx
@@ -211,7 +210,7 @@ fun EditStorageScreen(
 
         AutoFillList(
             modifier = Modifier.constrainAs(autofillList) {
-                height = Dimension.preferredWrapContent
+                height = Dimension.wrapContent
                 width = Dimension.fillToConstraints
                 linkTo(
                     start = pathTextField.start,
@@ -226,7 +225,10 @@ fun EditStorageScreen(
             variants = storagePathVariants,
             onSelected = { selected ->
                 if (selected == null) return@AutoFillList
-                val newText = (storagePathTextValue.text + selected.text + "/").fromRootPath()
+                val newText = pathInputHelper.folderSelected(
+                    input = storagePathTextValue.text,
+                    selected = selected.text
+                )
                 storagePathTextValue = storagePathTextValue.copy(
                     text = newText,
                     selection = TextRange(newText.length)

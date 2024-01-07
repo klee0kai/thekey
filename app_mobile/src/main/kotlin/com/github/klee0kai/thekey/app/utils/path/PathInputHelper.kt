@@ -32,7 +32,7 @@ class PathInputHelper {
         }
         val parent = if (isDir) File(searchAbsPath) else File(searchAbsPath).parentFile
 
-        val availableList = if (parent != null) {
+        val availableList = if (parent != null && parent.absolutePath != "/") {
             parent.list(dirFileNameFilter) ?: emptyArray()
         } else {
             shortPaths.rootUserPaths
@@ -49,7 +49,7 @@ class PathInputHelper {
             PathSearchResult(
                 textField = input.copy(
                     annotatedString = AnnotatedString(shortPath),
-                    TextRange(shortPath.length),
+                    selection = TextRange(shortPath.length),
                 ),
                 variants = availableList.map { AnnotatedString(it) }
             )
@@ -57,6 +57,15 @@ class PathInputHelper {
 
     }.flowOn(DI.defaultDispatcher())
         .flowOn(DI.mainDispatcher())
+
+
+    fun folderSelected(input: String, selected: String): String {
+        val isDir = input.lastOrNull() == '/'
+        val parent = (if (isDir) File(input) else File(input).parentFile)
+            ?.path
+            ?: ""
+        return ("$parent/$selected/").fromRootPath()
+    }
 
 
 }
