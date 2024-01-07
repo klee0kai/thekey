@@ -24,3 +24,5 @@ inline fun <reified T> Flow<T>.shareLatest(scope: CoroutineScope): Flow<T> {
 
 suspend inline fun <reified T> Flow<T>.await(timeout: Long): T? =
     withTimeout(timeout) { firstOrNull() }
+
+suspend inline fun <reified T> Flow<T>.awaitSec(): T? = await(1000)

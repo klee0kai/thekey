@@ -81,13 +81,6 @@ fun <R> NavController<Destination>.backWithResult(
     return popResult
 }
 
-fun NavController<Destination>.back(
-    exitFromApp: Boolean = false,
-): Boolean {
-    val popResult = pop()
-    if (!popResult && exitFromApp) {
-        DI.backDispatcher().onBackPressed()
-        return true
-    }
-    return popResult
+fun NavController<Destination>.back() {
+    DI.backDispatcher().onBackPressed()
 }

@@ -35,7 +35,6 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -48,13 +47,14 @@ import com.github.klee0kai.thekey.app.model.Storage
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarStates
 import com.github.klee0kai.thekey.app.ui.navigation.back
-import com.github.klee0kai.thekey.app.utils.coroutine.await
+import com.github.klee0kai.thekey.app.utils.coroutine.awaitSec
 import com.github.klee0kai.thekey.app.utils.views.AutoFillList
 import com.github.klee0kai.thekey.app.utils.views.Keyboard
 import com.github.klee0kai.thekey.app.utils.views.ViewPositionPx
 import com.github.klee0kai.thekey.app.utils.views.currentViewSizeState
 import com.github.klee0kai.thekey.app.utils.views.keyboardAsState
 import com.github.klee0kai.thekey.app.utils.views.onGlobalPositionState
+import com.github.klee0kai.thekey.app.utils.views.toTextFieldValue
 
 @Preview
 @Composable
@@ -64,6 +64,7 @@ fun EditStorageScreen(
     val navigator = remember { DI.navigator() }
     val presenter = remember { DI.editStoragePresenter(StorageIdentifier(path)) }
     val pathInputHelper = remember { DI.pathInputHelper() }
+    val userShortPathHelper = remember { DI.userShortPaths() }
     var storage by remember { mutableStateOf(Storage()) }
 
     var storagePathTextValue by remember { mutableStateOf(TextFieldValue()) }
@@ -81,7 +82,10 @@ fun EditStorageScreen(
     )
 
     LaunchedEffect(Unit) {
-        storage = presenter.storageInfo.await(300L) ?: return@LaunchedEffect
+        storage = presenter.storageInfo.awaitSec() ?: return@LaunchedEffect
+        storagePathTextValue = userShortPathHelper
+            .shortPathName(storage.path)
+            .toTextFieldValue()
     }
     LaunchedEffect(keyboardState) {
         if (keyboardState == Keyboard.Closed) {
@@ -99,32 +103,6 @@ fun EditStorageScreen(
     BackHandler(enabled = storagePathFieldFocused) {
         storagePathFieldFocused = false
     }
-
-    AppBarStates(
-        isVisible = scrollState.value == 0,
-        navigationIcon = {
-            IconButton(onClick = { navigator.back() }) {
-                Icon(
-                    Icons.Filled.ArrowBack,
-                    contentDescription = null,
-                )
-            }
-        },
-        actions = {
-            if (saveInToolbarAlpha > 0) {
-                IconButton(
-                    modifier = Modifier.alpha(saveInToolbarAlpha),
-                    onClick = { presenter.save(storage) }
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Done,
-                        contentDescription = stringResource(id = R.string.save),
-                        tint = MaterialTheme.colorScheme.onBackground
-                    )
-                }
-            }
-        }
-    ) { Text(text = stringResource(id = presenter.titleRes)) }
 
 
     ConstraintLayout(
@@ -225,14 +203,11 @@ fun EditStorageScreen(
             variants = storagePathVariants,
             onSelected = { selected ->
                 if (selected == null) return@AutoFillList
-                val newText = pathInputHelper.folderSelected(
-                    input = storagePathTextValue.text,
-                    selected = selected.text
-                )
-                storagePathTextValue = storagePathTextValue.copy(
-                    text = newText,
-                    selection = TextRange(newText.length)
-                )
+                storagePathTextValue = pathInputHelper
+                    .folderSelected(
+                        input = storagePathTextValue.text,
+                        selected = selected.text
+                    ).toTextFieldValue()
             }
         )
     }
@@ -267,6 +242,36 @@ fun EditStorageScreen(
             }
         }
     }
+
+
+
+    AppBarStates(
+        isVisible = scrollState.value == 0,
+        navigationIcon = {
+            IconButton(onClick = {
+                navigator.back()
+            }) {
+                Icon(
+                    Icons.Filled.ArrowBack,
+                    contentDescription = null,
+                )
+            }
+        },
+        actions = {
+            if (saveInToolbarAlpha > 0) {
+                IconButton(
+                    modifier = Modifier.alpha(saveInToolbarAlpha),
+                    onClick = { presenter.save(storage) }
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Done,
+                        contentDescription = stringResource(id = R.string.save),
+                        tint = MaterialTheme.colorScheme.onBackground
+                    )
+                }
+            }
+        }
+    ) { Text(text = stringResource(id = presenter.titleRes)) }
 
 
 }

@@ -29,7 +29,7 @@ import dev.olshevski.navigation.reimagined.navController
 @Composable
 fun MainNavContainer() {
     val navController = remember {
-        DI.navigator(navController(startDestination = EditStorageDestination("")))
+        DI.navigator(navController(startDestination = LoginDestination))
     }
     val backPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
 
