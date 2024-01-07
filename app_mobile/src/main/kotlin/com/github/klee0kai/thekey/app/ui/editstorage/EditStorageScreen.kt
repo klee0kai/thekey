@@ -142,6 +142,7 @@ fun EditStorageScreen(
                         topMargin = 8.dp,
                     )
                 },
+            visualTransformation = userShortPathHelper.colorTransformation,
             value = storagePathTextValue,
             onValueChange = {
                 storagePathFieldFocused = true

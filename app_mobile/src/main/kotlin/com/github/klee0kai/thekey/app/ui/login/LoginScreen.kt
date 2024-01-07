@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,7 +39,15 @@ fun LoginScreen() {
     val scope = rememberCoroutineScope()
     val presenter = remember { DI.loginPresenter() }
     val navigator = remember { DI.navigator() }
+    val userShortPaths = remember { DI.userShortPaths() }
     val currentStorageState = currentStorageState()
+    val shortStoragePath = currentStorageState.value.path
+        .let { userShortPaths.shortPathName(it) }
+        .let {
+            userShortPaths.colorTransformation
+                .filter(AnnotatedString(it))
+                .text
+        }
 
     var passwordInputText by remember { mutableStateOf("") }
 
@@ -118,7 +127,7 @@ fun LoginScreen() {
         )
 
         Text(
-            text = currentStorageState.value.path,
+            text = shortStoragePath,
             style = MaterialTheme.typography.labelSmall,
             modifier = Modifier.constrainAs(storagePath) {
                 linkTo(
