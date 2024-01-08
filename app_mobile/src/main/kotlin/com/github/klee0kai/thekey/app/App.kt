@@ -9,7 +9,6 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         DI.app(this)
-        TargetDI.initDI()
         TimberConfig.init()
     }
 

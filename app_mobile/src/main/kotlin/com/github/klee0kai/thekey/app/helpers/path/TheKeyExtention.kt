@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.utils.path
+package com.github.klee0kai.thekey.app.helpers.path
 
 const val tKeyFormat = ".ckey"
 

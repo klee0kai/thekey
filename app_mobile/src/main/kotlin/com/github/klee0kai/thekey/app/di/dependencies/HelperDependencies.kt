@@ -1,7 +1,7 @@
 package com.github.klee0kai.thekey.app.di.dependencies
 
-import com.github.klee0kai.thekey.app.utils.path.PathInputHelper
-import com.github.klee0kai.thekey.app.utils.path.UserShortPaths
+import com.github.klee0kai.thekey.app.helpers.path.PathInputHelper
+import com.github.klee0kai.thekey.app.helpers.path.UserShortPaths
 
 interface HelperDependencies {
 

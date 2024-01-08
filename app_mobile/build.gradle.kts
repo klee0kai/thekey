@@ -154,8 +154,8 @@ dependencies {
     kapt("com.github.klee0kai.stone:stone_processor:1.0.3")
 
     // room
-    implementation("androidx.room:room-runtime:2.6.0")
-    kapt("androidx.room:room-compiler:2.6.0")
+    implementation("androidx.room:room-runtime:2.6.1")
+    kapt("androidx.room:room-compiler:2.6.1")
 
     // hummus
     implementation("com.github.klee0kai.hummus:android_kotlin_hummus:0.0.2")

@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.utils.path
+package com.github.klee0kai.thekey.app.helpers.path
 
 import android.os.Environment
 import androidx.compose.ui.text.SpanStyle

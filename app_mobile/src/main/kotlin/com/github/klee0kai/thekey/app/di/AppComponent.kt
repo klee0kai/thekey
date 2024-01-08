@@ -8,6 +8,7 @@ import com.github.klee0kai.stone.annotations.component.Component
 import com.github.klee0kai.stone.annotations.component.Init
 import com.github.klee0kai.stone.annotations.module.BindInstance
 import com.github.klee0kai.thekey.app.App
+import com.github.klee0kai.thekey.app.TargetDI
 import com.github.klee0kai.thekey.app.di.dependencies.AppComponentProviders
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.di.modules.CoroutineModule
@@ -24,6 +25,12 @@ import dev.olshevski.navigation.reimagined.NavController
 
 val DI: AppComponent = Stone.createComponent(AppComponent::class.java).apply {
     snackbarHostState(SnackbarHostState())
+}
+
+object DIInit {
+    init {
+        TargetDI.initDI()
+    }
 }
 
 @Component(
@@ -57,7 +64,7 @@ interface AppComponent : AppComponentProviders {
     fun initEngineModule(engineModule: Class<out EngineModule>)
 
     @Init
-    fun initHelpersModule(helpers: HelpersModule)
+    fun initHelpersModule(helpers: Class<out HelpersModule>)
 
     @BindInstance(cache = BindInstance.CacheType.Weak)
     fun app(app: App? = null): App

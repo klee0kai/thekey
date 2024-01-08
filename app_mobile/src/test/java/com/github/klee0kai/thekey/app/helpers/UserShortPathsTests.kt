@@ -1,7 +1,7 @@
 package com.github.klee0kai.thekey.app.helpers
 
+import com.github.klee0kai.thekey.app.TargetDI
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.mocks.MocksHelpersModule
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
@@ -14,7 +14,7 @@ class UserShortPathsTests {
 
     @Before
     fun init() {
-        DI.initHelpersModule(MocksHelpersModule())
+        TargetDI.initDummyModules()
     }
 
 
