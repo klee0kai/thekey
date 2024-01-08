@@ -25,13 +25,10 @@ import dev.olshevski.navigation.reimagined.NavController
 
 val DI: AppComponent = Stone.createComponent(AppComponent::class.java).apply {
     snackbarHostState(SnackbarHostState())
+
+    with(TargetDI) { initDI() }
 }
 
-object DIInit {
-    init {
-        TargetDI.initDI()
-    }
-}
 
 @Component(
     identifiers = [

@@ -14,7 +14,7 @@ class PathInputHelperTests {
 
     @Before
     fun init() {
-        TargetDI.initDummyModules()
+        with(TargetDI) { DI.initDummyModules() }
     }
 
 
