@@ -1,6 +1,5 @@
 package com.github.klee0kai.thekey.app.ui.storages.components
 
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.navigation.backWithResult
+import com.github.klee0kai.thekey.app.utils.common.animateAlphaAsState
 
 
 @Preview
@@ -33,10 +33,7 @@ fun StoragesListContent(
     val storages = presenter.storages()
         .collectAsState(initial = emptyList(), scope.coroutineContext)
 
-    val titleAnimatedAlpha by animateFloatAsState(
-        targetValue = if (showStoragesTitle) 1.0f else 0f,
-        label = "title animate"
-    )
+    val titleAnimatedAlpha by animateAlphaAsState(showStoragesTitle)
 
     LazyColumn(
         modifier = modifier

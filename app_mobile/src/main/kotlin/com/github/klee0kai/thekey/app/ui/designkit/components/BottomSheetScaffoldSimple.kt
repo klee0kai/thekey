@@ -1,7 +1,6 @@
 package com.github.klee0kai.thekey.app.ui.designkit.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -24,16 +23,11 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleScaffoldConst.dragHandleSize
 import com.github.klee0kai.thekey.app.utils.views.accelerateDecelerate
@@ -164,19 +158,6 @@ fun SimpleBottomSheetScaffold(
             }
         )
     }
-}
-
-@Composable
-@Preview
-fun AppTitleImage(
-    modifier: Modifier = Modifier,
-) {
-    Image(
-        painter = painterResource(id = R.drawable.logo_big),
-        contentDescription = stringResource(id = R.string.app_name),
-        contentScale = ContentScale.Inside,
-        modifier = modifier.scale(0.5f)
-    )
 }
 
 

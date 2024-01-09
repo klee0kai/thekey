@@ -70,7 +70,7 @@ open class UserShortPaths {
             return originAbsolutePath.fromRootPath()
         }
 
-        val path = runCatching { File(originAbsolutePath).canonicalPath }
+        val path = runCatching { File(originAbsolutePath).absolutePath }
             .getOrNull()
             ?: originAbsolutePath
 

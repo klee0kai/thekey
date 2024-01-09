@@ -1,6 +1,5 @@
 package com.github.klee0kai.thekey.app.utils.views
 
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -20,6 +19,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.github.klee0kai.thekey.app.utils.common.animateAlphaAsState
 
 @Preview
 @Composable
@@ -29,16 +29,13 @@ fun AutoFillList(
     variants: List<AnnotatedString> = emptyList(),
     onSelected: (AnnotatedString?) -> Unit = {},
 ) {
-    val variantsListAlpha by animateFloatAsState(
-        targetValue = if (isVisible && variants.isNotEmpty()) 1f else 0f,
-        label = "variants visible animate"
-    )
+    val variantsListAlpha by animateAlphaAsState(isVisible && variants.isNotEmpty())
 
     if (variantsListAlpha > 0) {
         LazyColumn(
             modifier = modifier
                 .alpha(variantsListAlpha)
-                .heightIn(0.dp,200.dp)
+                .heightIn(0.dp, 200.dp)
                 .background(
                     color = MaterialTheme.colorScheme.surface,
                     shape = RoundedCornerShape(16.dp)

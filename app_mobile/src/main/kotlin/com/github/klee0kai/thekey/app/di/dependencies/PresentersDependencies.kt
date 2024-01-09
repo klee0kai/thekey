@@ -11,6 +11,6 @@ interface PresentersDependencies {
 
     fun storagesPresenter(): StoragesPresenter
 
-    fun editStoragePresenter(identifier: StorageIdentifier): CreateStoragePresenter
+    fun editStoragePresenter(identifier: StorageIdentifier? = null): CreateStoragePresenter
 
 }

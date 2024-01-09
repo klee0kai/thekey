@@ -3,7 +3,6 @@
 package com.github.klee0kai.thekey.app.ui.editstorage
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -48,7 +47,8 @@ import com.github.klee0kai.thekey.app.helpers.path.removeTKeyFormat
 import com.github.klee0kai.thekey.app.model.Storage
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarStates
-import com.github.klee0kai.thekey.app.ui.navigation.backWithResult
+import com.github.klee0kai.thekey.app.ui.navigation.back
+import com.github.klee0kai.thekey.app.utils.common.animateAlphaAsState
 import com.github.klee0kai.thekey.app.utils.coroutine.awaitSec
 import com.github.klee0kai.thekey.app.utils.views.AutoFillList
 import com.github.klee0kai.thekey.app.utils.views.Keyboard
@@ -78,9 +78,7 @@ fun EditStorageScreen(
     val scrollState = rememberScrollState()
 
     val bottomSaveButton = viewSize.height > 500.dp
-    val saveInToolbarAlpha by animateFloatAsState(
-        targetValue = if (bottomSaveButton) 0f else 1f, label = "variants visible animate"
-    )
+    val saveInToolbarAlpha by animateAlphaAsState(bottomSaveButton)
 
     LaunchedEffect(Unit) {
         storage = presenter.storageInfo.awaitSec() ?: return@LaunchedEffect
@@ -252,7 +250,7 @@ fun EditStorageScreen(
         isVisible = scrollState.value == 0,
         navigationIcon = {
             IconButton(onClick = {
-                navigator.backWithResult(Unit)
+                navigator.back()
             }) {
                 Icon(
                     Icons.Filled.ArrowBack,

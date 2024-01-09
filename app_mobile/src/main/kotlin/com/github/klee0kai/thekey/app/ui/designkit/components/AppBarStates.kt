@@ -1,6 +1,5 @@
 package com.github.klee0kai.thekey.app.ui.designkit.components
 
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
@@ -21,7 +20,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.github.klee0kai.thekey.app.utils.common.animateAlphaAsState
 import com.github.klee0kai.thekey.app.utils.views.fadeOutInAnimate
 
 object AppBarConst {
@@ -46,10 +47,7 @@ fun AppBarStates(
     val prevTitleAlpha = remember { mutableFloatStateOf(1f) }
     val targetTitleAlpha = remember { mutableFloatStateOf(0f) }
 
-    val appBarAlpha by animateFloatAsState(
-        targetValue = if (isVisible) 1f else 0f,
-        label = "appbar visible animate"
-    )
+    val appBarAlpha by animateAlphaAsState(isVisible)
 
     LaunchedEffect(key1 = titleId) {
         if (targetTitleAlpha.floatValue == 0f) {
@@ -91,12 +89,12 @@ fun AppBarStates(
                         Box(modifier = Modifier.alpha(prevTitleAlpha.floatValue)) {
                             titleContent?.invoke(prevTitleId)
                         }
-                    }
-
-                    Box(
-                        modifier = modifier.alpha(targetTitleAlpha.floatValue),
-                    ) {
-                        titleContent?.invoke(targetTitleId)
+                    } else {
+                        Box(
+                            modifier = modifier.alpha(targetTitleAlpha.floatValue),
+                        ) {
+                            titleContent?.invoke(targetTitleId)
+                        }
                     }
                 }
             },
@@ -107,7 +105,10 @@ fun AppBarStates(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SimpleBottomSheetScaffoldState.rememberMainTitleVisibleFlow(): State<Boolean> {
+fun SimpleBottomSheetScaffoldState.rememberMainTitleVisibleFlow(
+    hideTitleOffset: Dp = 10.dp,
+    showTitleOffset: Dp = 30.dp,
+): State<Boolean> {
     val mainTitleVisibility = remember { mutableStateOf(true) }
     val scaffoldTopOffset = runCatching {
         with(LocalDensity.current) {
@@ -116,8 +117,8 @@ fun SimpleBottomSheetScaffoldState.rememberMainTitleVisibleFlow(): State<Boolean
     }.getOrElse { 0.dp }
 
     when {
-        scaffoldTopOffset < appBarSize + 10.dp -> mainTitleVisibility.value = false
-        scaffoldTopOffset > appBarSize + 30.dp -> mainTitleVisibility.value = true
+        scaffoldTopOffset < appBarSize + hideTitleOffset -> mainTitleVisibility.value = false
+        scaffoldTopOffset > appBarSize + showTitleOffset -> mainTitleVisibility.value = true
     }
     return mainTitleVisibility
 }

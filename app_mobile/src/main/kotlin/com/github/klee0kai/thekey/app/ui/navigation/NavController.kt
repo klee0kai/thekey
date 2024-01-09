@@ -11,7 +11,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import com.github.klee0kai.thekey.app.BuildConfig
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.ui.designkit.DesignScreen
 import com.github.klee0kai.thekey.app.ui.designkit.EmptyScreen
 import com.github.klee0kai.thekey.app.ui.editstorage.EditStorageScreen
 import com.github.klee0kai.thekey.app.ui.login.LoginScreen
@@ -55,7 +54,7 @@ fun MainNavContainer() {
             is NoteDestination -> NoteScreen()
 
             // debug
-            is DesignDestination -> if (BuildConfig.DEBUG) DesignScreen() else EmptyScreen()
+            is DesignDestination -> if (BuildConfig.DEBUG) EmptyScreen()
         }
     }
 }

@@ -2,8 +2,6 @@
 
 package com.github.klee0kai.thekey.app.ui.storage
 
-import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -33,8 +31,10 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.SecondaryTabs
 import com.github.klee0kai.thekey.app.ui.designkit.components.SecondaryTabsConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberMainTitleVisibleFlow
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberSimpleBottomSheetScaffoldState
+import com.github.klee0kai.thekey.app.ui.navigation.back
 import com.github.klee0kai.thekey.app.ui.storage.components.AccountsContent
 import com.github.klee0kai.thekey.app.ui.storage.components.GeneratePasswordContent
+import com.github.klee0kai.thekey.app.utils.common.animateAlphaAsState
 
 private const val MainTitleId = 0
 private const val SecondTittleId = 1
@@ -45,7 +45,6 @@ private const val SecondTittleId = 1
 fun StorageScreen(
     path: String = ""
 ) {
-    val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     val presenter = remember { DI.loginPresenter() }
     val navigator = remember { DI.navigator() }
     val titles = listOf(
@@ -64,16 +63,13 @@ fun StorageScreen(
     val accountTitleVisibility = accountScaffoldState.rememberMainTitleVisibleFlow()
     val mainTitleVisibility = !isAccountTab || accountTitleVisibility.value
     val tabsVisible = !isAccountTab || accountScaffoldState.dragProgress.floatValue > 0.4f
-    val tabsAlpha by animateFloatAsState(
-        targetValue = if (tabsVisible) 1f else 0f,
-        label = "tabs visible animate"
-    )
+    val tabsAlpha by animateAlphaAsState(tabsVisible)
 
     HorizontalPager(
         pagerState,
         modifier = Modifier
             .fillMaxSize(),
-        beyondBoundsPageCount = titles.size, // fix bottomSheet
+        beyondBoundsPageCount = titles.size,
         pageContent = { page ->
             Box {
                 when (page) {
@@ -101,7 +97,7 @@ fun StorageScreen(
     AppBarStates(
         titleId = if (mainTitleVisibility) MainTitleId else SecondTittleId,
         navigationIcon = {
-            IconButton(onClick = { backDispatcher?.onBackPressed() }) {
+            IconButton(onClick = { navigator.back() }) {
                 Icon(
                     Icons.Filled.ArrowBack,
                     contentDescription = null,

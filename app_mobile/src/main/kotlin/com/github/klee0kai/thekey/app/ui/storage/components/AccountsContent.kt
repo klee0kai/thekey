@@ -2,7 +2,6 @@
 
 package com.github.klee0kai.thekey.app.ui.storage.components
 
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,6 +23,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleBottomSheetS
 import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleBottomSheetScaffoldState
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberSimpleBottomSheetScaffoldState
 import com.github.klee0kai.thekey.app.ui.navigation.NoteDestination
+import com.github.klee0kai.thekey.app.utils.common.animateAlphaAsState
 import dev.olshevski.navigation.reimagined.navigate
 
 @Preview
@@ -39,10 +39,7 @@ fun AccountsContent(
 ) {
     val navigator = remember { DI.navigator() }
 
-    val addButtonAlpha by animateFloatAsState(
-        targetValue = if (isPageFullyAvailable) 1f else 0f,
-        label = "addButton visible animate"
-    )
+    val addButtonAlpha by animateAlphaAsState(isPageFullyAvailable)
 
     SimpleBottomSheetScaffold(
         modifier = modifier,

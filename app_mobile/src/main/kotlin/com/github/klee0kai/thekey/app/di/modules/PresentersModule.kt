@@ -18,8 +18,8 @@ abstract class PresentersModule {
     abstract fun storagesPresenter(): StoragesPresenter
 
     @Provide(cache = Provide.CacheType.Weak)
-    open fun editStoragePresenter(storageIdentifier: StorageIdentifier): CreateStoragePresenter {
-        return if (storageIdentifier.path == null) {
+    open fun editStoragePresenter(storageIdentifier: StorageIdentifier?): CreateStoragePresenter {
+        return if (storageIdentifier?.path == null) {
             CreateStoragePresenter()
         } else {
             EditStoragePresenter(storageIdentifier.path)
