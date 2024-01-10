@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.data
+package com.github.klee0kai.thekey.app.data.repositories
 
 import com.github.klee0kai.thekey.app.data.room.entry.toColorGroup
 import com.github.klee0kai.thekey.app.data.room.entry.toColorGroupEntry

@@ -2,7 +2,9 @@ package com.github.klee0kai.thekey.app.utils.views
 
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.TransformedText
 
 fun String.toTextFieldValue(): TextFieldValue =
     TextFieldValue(
@@ -12,3 +14,9 @@ fun String.toTextFieldValue(): TextFieldValue =
 
 
 fun String.toAnnotationString() = AnnotatedString(this)
+
+fun AnnotatedString.toTransformationText() =
+    TransformedText(
+        text = this,
+        offsetMapping = OffsetMapping.Identity
+    )

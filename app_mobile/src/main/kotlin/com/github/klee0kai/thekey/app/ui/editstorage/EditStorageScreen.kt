@@ -56,6 +56,7 @@ import com.github.klee0kai.thekey.app.utils.views.currentViewSizeState
 import com.github.klee0kai.thekey.app.utils.views.keyboardAsState
 import com.github.klee0kai.thekey.app.utils.views.onGlobalPositionState
 import com.github.klee0kai.thekey.app.utils.views.toTextFieldValue
+import com.github.klee0kai.thekey.app.utils.views.toTransformationText
 
 @Preview
 @Composable
@@ -143,7 +144,12 @@ fun EditStorageScreen(
                         topMargin = 8.dp,
                     )
                 },
-            visualTransformation = userShortPathHelper.colorTransformation,
+            visualTransformation = { input ->
+                with(pathInputHelper) {
+                    input.coloredPath()
+                        .toTransformationText()
+                }
+            },
             value = storagePathTextValue,
             onValueChange = {
                 storagePathFieldFocused = true

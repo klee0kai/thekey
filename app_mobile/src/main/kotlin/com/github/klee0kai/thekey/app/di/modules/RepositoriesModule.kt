@@ -2,8 +2,8 @@ package com.github.klee0kai.thekey.app.di.modules
 
 import com.github.klee0kai.stone.annotations.module.Module
 import com.github.klee0kai.stone.annotations.module.Provide
-import com.github.klee0kai.thekey.app.data.FoundStoragesRepository
-import com.github.klee0kai.thekey.app.data.SettingsRepository
+import com.github.klee0kai.thekey.app.data.repositories.FoundStoragesRepository
+import com.github.klee0kai.thekey.app.data.repositories.SettingsRepository
 
 @Module
 interface RepositoriesModule {
