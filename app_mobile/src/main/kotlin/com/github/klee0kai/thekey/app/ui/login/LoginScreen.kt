@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -59,6 +60,7 @@ fun LoginScreen() {
         val (
             logoIcon, appDesc, passwTextField,
             storageName, storagePath,
+            snackHost,
             storagesButton, loginButton
         ) = createRefs()
 
@@ -135,6 +137,20 @@ fun LoginScreen() {
                     bias = 1f,
                 )
                 top.linkTo(storageName.bottom, 8.dp)
+            }
+        )
+
+        SnackbarHost(
+            hostState = DI.snackbarHostState(),
+            modifier = Modifier.constrainAs(snackHost) {
+                linkTo(
+                    top = passwTextField.bottom,
+                    bottom = storagesButton.top,
+                    start = parent.start,
+                    end = parent.end,
+                    verticalBias = 1f,
+                    bottomMargin = 12.dp
+                )
             }
         )
 

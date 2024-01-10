@@ -7,13 +7,13 @@ import com.github.klee0kai.thekey.app.model.ColoredStorage
 import com.github.klee0kai.thekey.app.ui.navigation.StorageDestination
 import com.github.klee0kai.thekey.app.ui.navigation.StoragesDestination
 import com.github.klee0kai.thekey.app.ui.navigation.navigateForResult
+import com.github.klee0kai.thekey.app.ui.navigation.snack
 import com.github.klee0kai.thekey.app.utils.coroutine.asyncResult
 import dev.olshevski.navigation.reimagined.navigate
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
-import java.io.IOException
 
 class LoginPresenter {
 
@@ -35,12 +35,17 @@ class LoginPresenter {
             .firstOrNull()
 
         if (selectedStorage != null) {
-            settingsRep().currentStoragePath.set(selectedStorage)
+            settingsRep()
+                .currentStoragePath
+                .set(selectedStorage)
         }
     }
 
     fun login(passw: String) = scope.asyncResult {
-        if (passw.isBlank()) throw IOException(DI.app().getString(R.string.passw_is_null))
+        if (passw.isBlank()) {
+            navigator.snack(R.string.passw_is_null)
+            return@asyncResult
+        }
         val storage = currentStorageFlow().first()
         val engine = DI.cryptStorageEngineLazy(StorageIdentifier(storage.path))
         engine().login(passw)
