@@ -14,6 +14,8 @@ import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.BottomSheetScaffoldState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SheetState
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
@@ -38,20 +40,40 @@ internal object SimpleScaffoldConst {
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-class SimpleBottomSheetScaffoldState(
+data class SimpleBottomSheetScaffoldState(
     val topContentSize: Dp = 190.dp,
     val appBarSize: Dp = 0.dp,
     val scaffoldState: BottomSheetScaffoldState,
     val dragProgress: MutableFloatState = mutableFloatStateOf(0f),
 )
 
+@Composable
+@ExperimentalMaterial3Api
+fun rememberNonClosableBottomSheetState(
+    initialValue: SheetValue = SheetValue.PartiallyExpanded,
+    confirmValueChange: (SheetValue) -> Boolean = { true },
+    skipHiddenState: Boolean = true,
+): SheetState {
+    val density = LocalDensity.current
+    return remember {
+        SheetState(
+            skipPartiallyExpanded = false,
+            density = density,
+            confirmValueChange = confirmValueChange,
+            initialValue = initialValue,
+            skipHiddenState = skipHiddenState
+        )
+    }
+}
 
 @Composable
 @ExperimentalMaterial3Api
 fun rememberSimpleBottomSheetScaffoldState(
     topContentSize: Dp = 190.dp,
     appBarSize: Dp = 0.dp,
-    scaffoldState: BottomSheetScaffoldState = rememberBottomSheetScaffoldState(),
+    scaffoldState: BottomSheetScaffoldState = rememberBottomSheetScaffoldState(
+        bottomSheetState = rememberNonClosableBottomSheetState(),
+    ),
 ): SimpleBottomSheetScaffoldState {
     return remember {
         SimpleBottomSheetScaffoldState(

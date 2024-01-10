@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -40,7 +41,7 @@ fun GeneratePasswordContent(
     val presenter = remember { DI.loginPresenter() }
     val navigator = remember { DI.navigator() }
     val sliderValues = (4..12)
-    var lenSliderPosition by remember { mutableStateOf(sliderValues.first) }
+    var lenSliderPosition by remember { mutableIntStateOf(sliderValues.first) }
     var symbolsChecked by remember { mutableStateOf(false) }
     var specSymbolsChecked by remember { mutableStateOf(false) }
     var passw by remember { mutableStateOf("GenPassw") }

@@ -69,7 +69,6 @@ fun StorageScreen(
         pagerState,
         modifier = Modifier
             .fillMaxSize(),
-        beyondBoundsPageCount = titles.size,
         pageContent = { page ->
             Box {
                 when (page) {
