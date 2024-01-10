@@ -13,36 +13,32 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.model.ColoredStorage
+import com.github.klee0kai.thekey.app.utils.views.toAnnotationString
 
 
 @Preview
 @Composable
 fun ColoredStorageItem(
-    storage: ColoredStorage = ColoredStorage(),
+    storage: ColoredStorage = ColoredStorage(
+        path = "path",
+        name = "name",
+        description = "description"
+    ),
     onClick: () -> Unit = {}
 ) {
     val colorScheme = remember { DI.theme().colorScheme() }
-    val userShortPaths = remember { DI.userShortPaths() }
-    val storage = if (LocalView.current.isInEditMode) {
-        ColoredStorage(path = "path", name = "name", description = "description")
-    } else {
-        storage
-    }
-    val pathShortPath = (if (!LocalView.current.isInEditMode) {
-        userShortPaths.shortPathName(storage.path)
-    } else {
+    val pathInputHelper = remember { DI.pathInputHelper() }
+
+    val pathShortPath = with(pathInputHelper) {
         storage.path
-    }).let {
-        userShortPaths.colorTransformation
-            .filter(AnnotatedString(it))
-            .text
+            .shortPath()
+            .toAnnotationString()
+            .coloredPath()
     }
 
     ConstraintLayout(

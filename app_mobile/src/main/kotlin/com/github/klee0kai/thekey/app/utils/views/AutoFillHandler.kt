@@ -16,7 +16,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.utils.common.animateAlphaAsState
@@ -26,8 +25,8 @@ import com.github.klee0kai.thekey.app.utils.common.animateAlphaAsState
 fun AutoFillList(
     modifier: Modifier = Modifier,
     isVisible: Boolean = false,
-    variants: List<AnnotatedString> = emptyList(),
-    onSelected: (AnnotatedString?) -> Unit = {},
+    variants: List<String> = emptyList(),
+    onSelected: (String?) -> Unit = {},
 ) {
     val variantsListAlpha by animateAlphaAsState(isVisible && variants.isNotEmpty())
 

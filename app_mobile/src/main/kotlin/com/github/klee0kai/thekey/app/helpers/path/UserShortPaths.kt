@@ -22,8 +22,6 @@ class ShortPath(
 
 open class UserShortPaths {
 
-    private val colorScheme by lazy { DI.theme().colorScheme() }
-
     open val shortPaths by lazy {
         listOf(
             ShortPath("appdata", DI.app().applicationInfo.dataDir),
@@ -44,27 +42,6 @@ open class UserShortPaths {
             .map { it.short }
             .toTypedArray()
 
-    val colorTransformation
-        get() = VisualTransformation { input ->
-            TransformedText(
-                text = buildAnnotatedString {
-                    val coloredSpanStyle = SpanStyle(color = colorScheme.androidColorScheme.primary)
-                    shortPaths.runForEach {
-                        listOf(short, shortFromRoot, absolutePath).forEach { coloredPath ->
-                            if (input.startsWith(coloredPath)) {
-                                withStyle(coloredSpanStyle) { append(coloredPath) }
-                                if (input.length > coloredPath.length) append(input.substring(coloredPath.length))
-                                return@buildAnnotatedString
-                            }
-                        }
-                    }
-                    // without visualization
-                    append(input)
-                },
-                offsetMapping = OffsetMapping.Identity,
-            )
-        }
-
     open fun shortPathName(originAbsolutePath: String): String {
         if (originAbsolutePath.isBlank()) {
             return originAbsolutePath.fromRootPath()
@@ -80,7 +57,6 @@ open class UserShortPaths {
                 return (short + pp.substring(absolutePath.length)).fromRootPath()
             }
         }
-
 
         return path
     }

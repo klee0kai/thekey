@@ -33,7 +33,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -71,14 +70,14 @@ fun EditStorageScreen(
 
     var storagePathTextValue by remember { mutableStateOf(TextFieldValue()) }
     var storagePathFieldFocused by remember { mutableStateOf<Boolean>(false) }
-    var storagePathVariants by remember { mutableStateOf<List<AnnotatedString>>(emptyList()) }
+    var storagePathVariants by remember { mutableStateOf<List<String>>(emptyList()) }
     var contentViewSize by remember { mutableStateOf<ViewPositionPx?>(null) }
     val keyboardState by keyboardAsState()
     val viewSize by currentViewSizeState()
     val scrollState = rememberScrollState()
 
     val bottomSaveButton = viewSize.height > 500.dp
-    val saveInToolbarAlpha by animateAlphaAsState(bottomSaveButton)
+    val saveInToolbarAlpha by animateAlphaAsState(!bottomSaveButton)
 
     LaunchedEffect(Unit) {
         storage = presenter.storageInfo.awaitSec() ?: return@LaunchedEffect
@@ -92,15 +91,19 @@ fun EditStorageScreen(
         }
     }
     LaunchedEffect(storagePathTextValue.text) {
-        storage = storage.copy(
-            path = (userShortPathHelper.absolutePath(storagePathTextValue.text) ?: "")
-                .appendTKeyFormat()
-        )
-        pathInputHelper.autoCompleteVariants(storagePathTextValue)
-            .collect {
-                storagePathTextValue = it.textField
-                storagePathVariants = it.variants
-            }
+        with(pathInputHelper) {
+            storage = storage.copy(
+                path = storagePathTextValue.text
+                    .absolutePath()
+                    ?.appendTKeyFormat()
+                    ?: ""
+            )
+            storagePathTextValue.text
+                .pathVariables()
+                .collect {
+                    storagePathVariants = it
+                }
+        }
     }
     BackHandler(enabled = storagePathFieldFocused) {
         storagePathFieldFocused = false
@@ -203,12 +206,12 @@ fun EditStorageScreen(
             isVisible = storagePathFieldFocused,
             variants = storagePathVariants,
             onSelected = { selected ->
-                if (selected == null) return@AutoFillList
-                storagePathTextValue = pathInputHelper
-                    .folderSelected(
-                        input = storagePathTextValue.text,
-                        selected = selected.text
-                    ).toTextFieldValue()
+                with(pathInputHelper) {
+                    if (selected == null) return@AutoFillList
+                    storagePathTextValue = storagePathTextValue.text
+                        .folderSelected(selected)
+                        .toTextFieldValue()
+                }
             }
         )
     }
