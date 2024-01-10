@@ -16,14 +16,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.ui.designkit.components.FabSimple
+import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarConst
+import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarStates
+import com.github.klee0kai.thekey.app.ui.designkit.components.AppTitleImage
+import com.github.klee0kai.thekey.app.ui.designkit.components.FabSimpleInContainer
 import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleBottomSheetScaffold
+import com.github.klee0kai.thekey.app.ui.designkit.components.rememberMainTitleVisibleFlow
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberSimpleBottomSheetScaffoldState
-import com.github.klee0kai.thekey.app.ui.storages.components.GroupsSelectContainer
+import com.github.klee0kai.thekey.app.ui.navigation.EditStorageDestination
+import com.github.klee0kai.thekey.app.ui.navigation.back
+import com.github.klee0kai.thekey.app.ui.storages.components.GroupsSelectContent
 import com.github.klee0kai.thekey.app.ui.storages.components.StoragesListContent
-import dev.olshevski.navigation.reimagined.pop
+import dev.olshevski.navigation.reimagined.navigate
 
 private val TOP_CONTENT_SIZE = 190.dp
+
+private const val MainTitleId = 0
+private const val SecondTittleId = 1
 
 @Preview
 @Composable
@@ -31,22 +40,16 @@ private val TOP_CONTENT_SIZE = 190.dp
 fun StoragesScreen() {
     val presenter = remember { DI.storagesPresenter() }
     val navigator = remember { DI.navigator() }
-    val scaffoldState = rememberSimpleBottomSheetScaffoldState()
+    val scaffoldState = rememberSimpleBottomSheetScaffoldState(
+        topContentSize = TOP_CONTENT_SIZE,
+        appBarSize = AppBarConst.appBarSize
+    )
+    val mainTitleVisibility = scaffoldState.rememberMainTitleVisibleFlow()
 
     SimpleBottomSheetScaffold(
         simpleBottomSheetScaffoldState = scaffoldState,
-        topContentSize = TOP_CONTENT_SIZE,
-        navigationIcon = {
-            IconButton(onClick = { navigator.pop() }) {
-                Icon(
-                    Icons.Filled.ArrowBack,
-                    contentDescription = null,
-                )
-            }
-        },
-        appBarSticky = { Text(text = stringResource(id = R.string.storages)) },
         topContent = {
-            GroupsSelectContainer(
+            GroupsSelectContent(
                 scaffoldState = scaffoldState
             )
         },
@@ -55,14 +58,33 @@ fun StoragesScreen() {
                 showStoragesTitle = scaffoldState.dragProgress.floatValue > 0.1f,
                 modifier = Modifier.fillMaxSize()
             )
+        }
+    )
+
+    AppBarStates(
+        titleId = if (mainTitleVisibility.value) MainTitleId else SecondTittleId,
+        navigationIcon = {
+            IconButton(onClick = { navigator.back() }) {
+                Icon(
+                    Icons.Filled.ArrowBack,
+                    contentDescription = null,
+                )
+            }
         },
-        fab = {
-            FabSimple(
-                onClick = { }
-            ) {
-                Icon(Icons.Default.Add, contentDescription = "Add")
+        titleContent = { titleId ->
+            when (titleId) {
+                MainTitleId -> AppTitleImage()
+                SecondTittleId -> Text(text = stringResource(id = R.string.storages))
             }
         },
     )
+
+
+    FabSimpleInContainer(
+        onClick = { navigator.navigate(EditStorageDestination()) },
+        content = { Icon(Icons.Default.Add, contentDescription = "Add") }
+    )
+
+
 }
 

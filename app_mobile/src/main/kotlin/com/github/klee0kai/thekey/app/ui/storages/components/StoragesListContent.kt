@@ -1,28 +1,24 @@
 package com.github.klee0kai.thekey.app.ui.storages.components
 
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.model.ColoredStorage
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
+import com.github.klee0kai.thekey.app.ui.navigation.backWithResult
+import com.github.klee0kai.thekey.app.utils.common.animateAlphaAsState
 
 
 @Preview
@@ -31,12 +27,13 @@ fun StoragesListContent(
     modifier: Modifier = Modifier,
     showStoragesTitle: Boolean = true,
 ) {
+    val scope = rememberCoroutineScope()
+    val presenter = remember { DI.storagesPresenter() }
+    val navigator = remember { DI.navigator() }
+    val storages = presenter.storages()
+        .collectAsState(initial = emptyList(), scope.coroutineContext)
 
-    val storages = storagesState()
-    val titleAnimatedAlpha by animateFloatAsState(
-        targetValue = if (showStoragesTitle) 1.0f else 0f,
-        label = "title animate"
-    )
+    val titleAnimatedAlpha by animateAlphaAsState(showStoragesTitle)
 
     LazyColumn(
         modifier = modifier
@@ -57,21 +54,12 @@ fun StoragesListContent(
                 key = storage.path,
                 contentType = storage::class,
             ) {
-                ColoredStorageItem(storage)
+                ColoredStorageItem(
+                    storage = storage,
+                    onClick = { navigator.backWithResult(storage.path) }
+                )
             }
         }
     }
 }
 
-@Composable
-private fun storagesState(): State<List<ColoredStorage>> {
-    val scope = rememberCoroutineScope()
-    val presenter = remember { DI.storagesPresenter() }
-    return if (LocalView.current.isInEditMode) {
-        flowOf((0..100).map {
-            ColoredStorage("/path${it}", "name${it}", "description${it}")
-        })
-    } else {
-        flow { presenter.storages().collect { emit(it) } }
-    }.collectAsState(initial = emptyList(), scope.coroutineContext)
-}

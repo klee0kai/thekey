@@ -32,7 +32,10 @@ fun AppTheme(
         colorScheme = colorScheme.androidColorScheme,
         typography = typeScheme.typography,
     ) {
-        Surface {
+        Surface(
+            color = MaterialTheme.colorScheme.background,
+            contentColor = MaterialTheme.colorScheme.onBackground,
+        ) {
             content.invoke()
         }
     }
