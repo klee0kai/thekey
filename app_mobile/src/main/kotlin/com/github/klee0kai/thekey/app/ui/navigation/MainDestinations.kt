@@ -34,6 +34,10 @@ data class StorageDestination(
 @Parcelize
 data class NoteDestination(
     /**
+     * storage path
+     */
+    val path: String,
+    /**
      * Note mem ptr
      */
     val notePtr: Long = 0,

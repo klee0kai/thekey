@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 
-package com.github.klee0kai.thekey.app.ui.storage.components
+package com.github.klee0kai.thekey.app.ui.storage.notes
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
@@ -17,6 +17,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.FabSimpleInContainer
 import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleBottomSheetScaffold
@@ -30,6 +31,7 @@ import dev.olshevski.navigation.reimagined.navigate
 @Composable
 fun AccountsContent(
     modifier: Modifier = Modifier,
+    storagePath: String = "",
     isPageFullyAvailable: Boolean = false,
     scaffoldState: SimpleBottomSheetScaffoldState =
         rememberSimpleBottomSheetScaffoldState(
@@ -38,6 +40,7 @@ fun AccountsContent(
         )
 ) {
     val navigator = remember { DI.navigator() }
+    val presenter = remember { DI.notesPresenter(StorageIdentifier(storagePath)) }
 
     val addButtonAlpha by animateAlphaAsState(isPageFullyAvailable)
 
@@ -59,7 +62,7 @@ fun AccountsContent(
     if (addButtonAlpha > 0) {
         FabSimpleInContainer(
             modifier = Modifier.alpha(addButtonAlpha),
-            onClick = { navigator.navigate(NoteDestination()) },
+            onClick = { navigator.navigate(NoteDestination(path = storagePath)) },
             content = { Icon(Icons.Default.Add, contentDescription = "Add") }
         )
     }

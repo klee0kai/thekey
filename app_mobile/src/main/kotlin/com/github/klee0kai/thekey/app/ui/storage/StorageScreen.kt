@@ -32,8 +32,8 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.SecondaryTabsConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberMainTitleVisibleFlow
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberSimpleBottomSheetScaffoldState
 import com.github.klee0kai.thekey.app.ui.navigation.back
-import com.github.klee0kai.thekey.app.ui.storage.components.AccountsContent
-import com.github.klee0kai.thekey.app.ui.storage.components.GeneratePasswordContent
+import com.github.klee0kai.thekey.app.ui.storage.genpassw.GeneratePasswordContent
+import com.github.klee0kai.thekey.app.ui.storage.notes.AccountsContent
 import com.github.klee0kai.thekey.app.utils.common.animateAlphaAsState
 
 private const val MainTitleId = 0

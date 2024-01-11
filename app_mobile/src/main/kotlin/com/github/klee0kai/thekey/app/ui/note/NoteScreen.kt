@@ -12,6 +12,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,6 +25,8 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.di.identifier.NoteIdentifier
+import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarStates
 import com.github.klee0kai.thekey.app.ui.navigation.back
@@ -31,13 +34,21 @@ import com.github.klee0kai.thekey.app.ui.navigation.back
 @Preview(showBackground = true)
 @Composable
 fun NoteScreen(
+    storagePath: String = "",
     notePtr: Long = 0,
 ) {
     val navigator = remember { DI.navigator() }
-    var siteInputText by remember { mutableStateOf("") }
-    var loginInputText by remember { mutableStateOf("") }
-    var passwordInputText by remember { mutableStateOf("") }
-    var descriptionInputText by remember { mutableStateOf("") }
+    val presenter = remember { DI.notePresenter(NoteIdentifier(storagePath, notePtr)) }
+    val isEditNote = notePtr != 0L
+    var isSkeleton by remember { mutableStateOf(isEditNote) }
+    var note by remember { mutableStateOf(DecryptedNote()) }
+
+    LaunchedEffect(Unit) {
+        if (!isEditNote) return@LaunchedEffect
+        isSkeleton = true
+        note = presenter.note().await()
+        isSkeleton = false
+    }
 
 
     AppBarStates(
@@ -80,8 +91,8 @@ fun NoteScreen(
                         topMargin = 8.dp,
                     )
                 },
-            value = siteInputText,
-            onValueChange = { siteInputText = it },
+            value = note.site,
+            onValueChange = { note = note.copy(site = it) },
             label = { Text(stringResource(R.string.site)) }
         )
 
@@ -98,8 +109,8 @@ fun NoteScreen(
                         topMargin = 8.dp,
                     )
                 },
-            value = loginInputText,
-            onValueChange = { loginInputText = it },
+            value = note.login,
+            onValueChange = { note = note.copy(login = it) },
             label = { Text(stringResource(R.string.login)) }
         )
 
@@ -117,8 +128,8 @@ fun NoteScreen(
                         topMargin = 8.dp,
                     )
                 },
-            value = passwordInputText,
-            onValueChange = { passwordInputText = it },
+            value = note.passw,
+            onValueChange = { note = note.copy(passw = it) },
             label = { Text(stringResource(R.string.password)) }
         )
 
@@ -136,8 +147,8 @@ fun NoteScreen(
                         topMargin = 8.dp,
                     )
                 },
-            value = descriptionInputText,
-            onValueChange = { descriptionInputText = it },
+            value = note.desc,
+            onValueChange = { note = note.copy(desc = it) },
             label = { Text(stringResource(R.string.description)) }
         )
 
@@ -165,7 +176,7 @@ fun NoteScreen(
                     end.linkTo(parent.end)
                 },
             onClick = {
-
+                presenter.save(note)
             }
         ) {
             Text(stringResource(R.string.save))

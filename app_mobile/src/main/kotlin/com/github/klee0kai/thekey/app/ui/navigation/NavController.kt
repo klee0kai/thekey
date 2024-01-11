@@ -51,7 +51,7 @@ fun MainNavContainer() {
             is StoragesDestination -> StoragesScreen()
             is EditStorageDestination -> EditStorageScreen(path = destination.path)
             is StorageDestination -> StorageScreen(path = destination.path)
-            is NoteDestination -> NoteScreen()
+            is NoteDestination -> NoteScreen(storagePath = destination.path, notePtr = destination.notePtr)
 
             // debug
             is DesignDestination -> if (BuildConfig.DEBUG) EmptyScreen()

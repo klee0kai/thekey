@@ -35,14 +35,48 @@ std::vector<EngineModelDecryptedNote> EngineCryptStorageEngine::notes() {
         DecryptedNote *dnote = key_manager_ctx::getNoteItem((long) btNotes[len], 0);
         notes.push_back(
                 EngineModelDecryptedNote{
-                        .site = (char *) dnote->site,
-                        .login = (char *) dnote->login,
-                        .desc = (char *) dnote->description,
+                        .ptnote = btNotes[len],
+                        .site = (char *) dnote->site ?: "",
+                        .login = (char *) dnote->login ?: "",
+                        .desc = (char *) dnote->description ?: "",
                         .chTime = (int64_t) dnote->genTime,
                 }
         );
+
+        memset(dnote, 0, sizeof(DecryptedNote));
+        delete dnote;
     }
+    delete[] btNotes;
     return notes;
+}
+
+EngineModelDecryptedNote EngineCryptStorageEngine::note(const int64_t &notePtr) {
+    DecryptedNote *dnote = key_manager_ctx::getNoteItem((long) notePtr, 0);
+
+    auto result = EngineModelDecryptedNote{
+            .ptnote = notePtr,
+            .site = (char *) dnote->site ?: "",
+            .login = (char *) dnote->login ?: "",
+            .desc = (char *) dnote->description ?: "",
+            .chTime = (int64_t) dnote->genTime,
+    };
+
+    memset(dnote, 0, sizeof(DecryptedNote));
+    delete dnote;
+    return result;
+}
+
+int EngineCryptStorageEngine::saveNote(const brooklyn::EngineModelDecryptedNote &decryptedNote) {
+    auto ptNote = decryptedNote.ptnote;
+    if (!ptNote) ptNote = key_manager_ctx::createNote();
+    DecryptedNote dnote = {};
+    strcpy((char *) dnote.site, decryptedNote.site.c_str());
+    strcpy((char *) dnote.login, decryptedNote.login.c_str());
+    strcpy((char *) dnote.passw, decryptedNote.passw.c_str());
+    strcpy((char *) dnote.description, decryptedNote.desc.c_str());
+    key_manager_ctx::setNote(ptNote, &dnote);
+    memset(&dnote, 0, sizeof(DecryptedNote));
+    return 0;
 }
 
 EngineModelDecryptedPassw EngineCryptStorageEngine::getGenPassw(const int64_t &ptNote) {
