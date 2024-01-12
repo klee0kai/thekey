@@ -2,10 +2,10 @@ package com.github.klee0kai.thekey.app.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.navigation.NavigateResults.navChanges
 import com.github.klee0kai.thekey.app.ui.navigation.NavigateResults.resultsScope
+import com.github.klee0kai.thekey.app.utils.coroutine.awaitSec
 import com.github.klee0kai.thekey.app.utils.coroutine.shareLatest
 import dev.olshevski.navigation.reimagined.NavAction
 import dev.olshevski.navigation.reimagined.NavController
@@ -17,6 +17,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
@@ -34,6 +35,17 @@ data class NavigateBackstackChange(
 object NavigateResults {
     val navChanges = MutableSharedFlow<NavigateBackstackChange>(replay = 1)
     val resultsScope = DI.mainThreadScope()
+}
+
+suspend fun <T> NavController<T>.awaitScreenEvent(destination: T) {
+    // wait screen open
+    navChanges.filter { change ->
+        change.currentNavStack.any { it.destination == destination }
+    }.awaitSec()
+    // wait screen close
+    navChanges.first { change ->
+        change.currentNavStack.all { it.destination != destination }
+    }
 }
 
 

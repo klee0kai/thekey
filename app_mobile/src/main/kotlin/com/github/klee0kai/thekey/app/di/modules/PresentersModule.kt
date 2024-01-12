@@ -8,7 +8,7 @@ import com.github.klee0kai.thekey.app.ui.editstorage.CreateStoragePresenter
 import com.github.klee0kai.thekey.app.ui.editstorage.EditStoragePresenter
 import com.github.klee0kai.thekey.app.ui.login.LoginPresenter
 import com.github.klee0kai.thekey.app.ui.note.NotePresenter
-import com.github.klee0kai.thekey.app.ui.storage.notes.NotesPresenter
+import com.github.klee0kai.thekey.app.ui.storage.StoragePresenter
 import com.github.klee0kai.thekey.app.ui.storages.StoragesPresenter
 
 @Module
@@ -30,8 +30,8 @@ abstract class PresentersModule {
     }
 
     @Provide(cache = Provide.CacheType.Weak)
-    open fun notesPresenter(storageIdentifier: StorageIdentifier) =
-        NotesPresenter(storagePath = storageIdentifier.path ?: "")
+    open fun storagePresenter(storageIdentifier: StorageIdentifier) =
+        StoragePresenter(storagePath = storageIdentifier.path ?: "")
 
     @Provide(cache = Provide.CacheType.Weak)
     open fun notePresenter(noteIdentifier: NoteIdentifier) =

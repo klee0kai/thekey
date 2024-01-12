@@ -28,7 +28,7 @@ data class StorageDestination(
     /**
      * storage path
      */
-    val path: String,
+    val path: String = "",
 ) : Destination
 
 @Parcelize
@@ -36,7 +36,7 @@ data class NoteDestination(
     /**
      * storage path
      */
-    val path: String,
+    val path: String = "",
     /**
      * Note mem ptr
      */

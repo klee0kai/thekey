@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.ui.storages.components
+package com.github.klee0kai.thekey.app.ui.storage.notes
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -6,10 +6,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
@@ -17,21 +15,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.ui.navigation.backWithResult
+import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
+import com.github.klee0kai.thekey.app.ui.navigation.NoteDestination
 import com.github.klee0kai.thekey.app.utils.common.animateAlphaAsState
-
+import com.github.klee0kai.thekey.app.utils.coroutine.awaitAsState
+import dev.olshevski.navigation.reimagined.navigate
 
 @Preview
 @Composable
-fun StoragesListContent(
+fun NotesListContent(
     modifier: Modifier = Modifier,
+    storagePath: String = "",
     showStoragesTitle: Boolean = true,
 ) {
-    val scope = rememberCoroutineScope()
-    val presenter = remember { DI.storagesPresenter() }
+    val presenter = remember { DI.storagePresenter(StorageIdentifier(storagePath)) }
     val navigator = remember { DI.navigator() }
-    val storages = presenter.storages()
-        .collectAsState(initial = emptyList(), scope.coroutineContext)
+    val notes = presenter.notes().awaitAsState(initial = emptyList())
 
     val titleAnimatedAlpha by animateAlphaAsState(showStoragesTitle)
 
@@ -41,7 +40,7 @@ fun StoragesListContent(
     ) {
         item {
             Text(
-                text = stringResource(id = R.string.storages),
+                text = stringResource(id = R.string.accounts),
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier
                     .padding(start = 16.dp, top = 4.dp, bottom = 22.dp)
@@ -49,14 +48,15 @@ fun StoragesListContent(
             )
         }
 
-        storages.value.forEach { storage ->
-            item(contentType = storage::class) {
-                ColoredStorageItem(
-                    storage = storage,
-                    onClick = { navigator.backWithResult(storage.path) }
+        notes.value.forEach { note ->
+            item {
+                ColoredNoteItem(
+                    note = note,
+                    onClick = {
+                        navigator.navigate(NoteDestination(path = storagePath, notePtr = note.ptnote))
+                    }
                 )
             }
         }
     }
 }
-

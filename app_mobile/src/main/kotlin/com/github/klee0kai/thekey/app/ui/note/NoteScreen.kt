@@ -29,17 +29,17 @@ import com.github.klee0kai.thekey.app.di.identifier.NoteIdentifier
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarStates
+import com.github.klee0kai.thekey.app.ui.navigation.NoteDestination
 import com.github.klee0kai.thekey.app.ui.navigation.back
 
 @Preview(showBackground = true)
 @Composable
 fun NoteScreen(
-    storagePath: String = "",
-    notePtr: Long = 0,
+    args: NoteDestination = NoteDestination(),
 ) {
     val navigator = remember { DI.navigator() }
-    val presenter = remember { DI.notePresenter(NoteIdentifier(storagePath, notePtr)) }
-    val isEditNote = notePtr != 0L
+    val presenter = remember { DI.notePresenter(NoteIdentifier(args.path, args.notePtr)) }
+    val isEditNote = args.notePtr != 0L
     var isSkeleton by remember { mutableStateOf(isEditNote) }
     var note by remember { mutableStateOf(DecryptedNote()) }
 
