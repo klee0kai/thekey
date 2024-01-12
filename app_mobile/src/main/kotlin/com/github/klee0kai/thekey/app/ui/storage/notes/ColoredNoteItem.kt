@@ -1,6 +1,8 @@
+@file:OptIn(ExperimentalFoundationApi::class)
+
 package com.github.klee0kai.thekey.app.ui.storage.notes
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
@@ -20,20 +22,19 @@ import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 @Preview
 @Composable
 fun ColoredNoteItem(
+    modifier: Modifier = Modifier,
     note: DecryptedNote = DecryptedNote(
         site = "site",
         login = "login",
         desc = "description",
-    ),
-    onClick: () -> Unit = {}
+    )
 ) {
     val colorScheme = remember { DI.theme().colorScheme() }
 
     ConstraintLayout(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .clickable(onClick = onClick)
     ) {
         val (colorGroup, path, description) = createRefs()
 

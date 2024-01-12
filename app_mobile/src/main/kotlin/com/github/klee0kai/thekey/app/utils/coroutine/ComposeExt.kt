@@ -9,7 +9,7 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
 @Composable
-fun <T : R, R> Deferred<T>.awaitAsState(
+fun <T : R, R> Deferred<T>.collectAsState(
     initial: R,
     context: CoroutineContext = EmptyCoroutineContext
 ): State<R> = produceState(initial, this, context) {

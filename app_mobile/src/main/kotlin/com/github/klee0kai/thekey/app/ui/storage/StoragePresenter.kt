@@ -5,8 +5,10 @@ import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.ui.navigation.StorageDestination
 import com.github.klee0kai.thekey.app.ui.navigation.awaitScreenEvent
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 
 class StoragePresenter(
@@ -15,6 +17,7 @@ class StoragePresenter(
     private val engine = DI.cryptStorageEngineLazy(StorageIdentifier(storagePath))
     private val navigator = DI.navigator()
     private val scope = DI.mainThreadScope()
+    private val updateTicks = MutableSharedFlow<Unit>()
 
     init {
         scope.launch {
@@ -24,11 +27,19 @@ class StoragePresenter(
     }
 
 
-    fun notes(): Deferred<List<DecryptedNote>> = scope.async {
-        engine().notes().toList()
+    fun notes(): Flow<List<DecryptedNote>> = flow {
+        emit(engine().notes().toList())
+        updateTicks.collect {
+            emit(engine().notes().toList())
+        }
+    }.flowOn(DI.defaultDispatcher())
+
+    fun remove(notePt: Long) = scope.launch {
+        engine().removeNote(notePt)
+        updateTicks.emit(Unit)
     }
 
     private fun doLogout() = scope.launch { engine().unlogin() }
-    
+
 
 }

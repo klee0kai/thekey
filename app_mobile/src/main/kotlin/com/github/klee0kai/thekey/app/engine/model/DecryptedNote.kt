@@ -1,8 +1,11 @@
 package com.github.klee0kai.thekey.app.engine.model
 
+import android.os.Parcelable
 import com.github.klee0kai.brooklyn.JniPojo
+import kotlinx.parcelize.Parcelize
 
 @JniPojo
+@Parcelize
 data class DecryptedNote(
     val ptnote: Long = 0L,
     val site: String = "",
@@ -11,5 +14,4 @@ data class DecryptedNote(
     val desc: String = "",
 
     val chTime: Long = 0,
-    val hist: Array<DecryptedPassw> = emptyArray(),
-)
+) : Parcelable

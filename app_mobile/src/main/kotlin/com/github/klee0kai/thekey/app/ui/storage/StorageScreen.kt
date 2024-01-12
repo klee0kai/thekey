@@ -35,7 +35,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.rememberSimpleBott
 import com.github.klee0kai.thekey.app.ui.navigation.StorageDestination
 import com.github.klee0kai.thekey.app.ui.navigation.back
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.GeneratePasswordContent
-import com.github.klee0kai.thekey.app.ui.storage.notes.AccountsContent
+import com.github.klee0kai.thekey.app.ui.storage.notes.NotesContent
 import com.github.klee0kai.thekey.app.utils.common.animateAlphaAsState
 
 private const val MainTitleId = 0
@@ -74,7 +74,7 @@ fun StorageScreen(
         pageContent = { page ->
             Box {
                 when (page) {
-                    0 -> AccountsContent(
+                    0 -> NotesContent(
                         isPageFullyAvailable = isAccountTab,
                         scaffoldState = accountScaffoldState
                     )

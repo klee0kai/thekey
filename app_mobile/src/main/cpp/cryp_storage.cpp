@@ -30,7 +30,7 @@ std::vector<EngineModelDecryptedNote> EngineCryptStorageEngine::notes() {
     long long *btNotes = key_manager_ctx::getNotes();
     int len;
     for (len = 0; btNotes[len]; len++);
-    auto notes = std::vector<EngineModelDecryptedNote>(len);
+    auto notes = std::vector<EngineModelDecryptedNote>();
     for (len = 0; btNotes[len]; len++) {
         DecryptedNote *dnote = key_manager_ctx::getNoteItem((long) btNotes[len], 0);
         notes.push_back(
@@ -76,6 +76,12 @@ int EngineCryptStorageEngine::saveNote(const brooklyn::EngineModelDecryptedNote 
     strcpy((char *) dnote.description, decryptedNote.desc.c_str());
     key_manager_ctx::setNote(ptNote, &dnote);
     memset(&dnote, 0, sizeof(DecryptedNote));
+    return 0;
+}
+
+int EngineCryptStorageEngine::removeNote(const int64_t &notePt) {
+    if (!notePt)return -1;
+    key_manager_ctx::rmNote(notePt);
     return 0;
 }
 

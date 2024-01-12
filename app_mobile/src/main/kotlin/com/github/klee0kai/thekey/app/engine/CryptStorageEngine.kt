@@ -25,6 +25,8 @@ class CryptStorageEngine(
 
     external fun saveNote(decryptedNote: DecryptedNote): Int
 
+    external fun removeNote(notePt: Long): Int
+
     external fun getGenPassw(ptNote: Long): DecryptedPassw
 
     external fun generateNewPassw(len: Int, genPasswEncoding: Int): String
