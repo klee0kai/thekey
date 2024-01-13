@@ -25,7 +25,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleBottomSheetS
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberSimpleBottomSheetScaffoldState
 import com.github.klee0kai.thekey.app.ui.navigation.NoteDestination
 import com.github.klee0kai.thekey.app.ui.storages.components.GroupsSelectContent
-import com.github.klee0kai.thekey.app.utils.common.animateAlphaAsState
+import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
 import dev.olshevski.navigation.reimagined.navigate
 
 @Preview

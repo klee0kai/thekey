@@ -36,7 +36,7 @@ import com.github.klee0kai.thekey.app.ui.navigation.StorageDestination
 import com.github.klee0kai.thekey.app.ui.navigation.back
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.GeneratePasswordContent
 import com.github.klee0kai.thekey.app.ui.storage.notes.NotesContent
-import com.github.klee0kai.thekey.app.utils.common.animateAlphaAsState
+import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
 
 private const val MainTitleId = 0
 private const val SecondTittleId = 1

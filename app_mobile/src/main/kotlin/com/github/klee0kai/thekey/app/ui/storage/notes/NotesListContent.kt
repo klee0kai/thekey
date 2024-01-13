@@ -30,7 +30,7 @@ import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.ui.navigation.NoteDestination
-import com.github.klee0kai.thekey.app.utils.common.animateAlphaAsState
+import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
 import dev.olshevski.navigation.reimagined.navigate
 
 @Preview

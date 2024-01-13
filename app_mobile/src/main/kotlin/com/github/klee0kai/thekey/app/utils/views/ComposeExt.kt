@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.utils.coroutine
+package com.github.klee0kai.thekey.app.utils.views
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
