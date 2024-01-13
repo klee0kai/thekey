@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarStates
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppTitleImage
@@ -31,10 +32,11 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.SecondaryTabs
 import com.github.klee0kai.thekey.app.ui.designkit.components.SecondaryTabsConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberMainTitleVisibleFlow
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberSimpleBottomSheetScaffoldState
+import com.github.klee0kai.thekey.app.ui.navigation.StorageDestination
 import com.github.klee0kai.thekey.app.ui.navigation.back
-import com.github.klee0kai.thekey.app.ui.storage.components.AccountsContent
-import com.github.klee0kai.thekey.app.ui.storage.components.GeneratePasswordContent
-import com.github.klee0kai.thekey.app.utils.common.animateAlphaAsState
+import com.github.klee0kai.thekey.app.ui.storage.genpassw.GeneratePasswordContent
+import com.github.klee0kai.thekey.app.ui.storage.notes.NotesContent
+import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
 
 private const val MainTitleId = 0
 private const val SecondTittleId = 1
@@ -43,9 +45,9 @@ private const val SecondTittleId = 1
 @Preview(showBackground = true)
 @Composable
 fun StorageScreen(
-    path: String = ""
+    args: StorageDestination = StorageDestination()
 ) {
-    val presenter = remember { DI.loginPresenter() }
+    val presenter = remember { DI.storagePresenter(StorageIdentifier(args.path)) }
     val navigator = remember { DI.navigator() }
     val titles = listOf(
         stringResource(id = R.string.accounts),
@@ -72,7 +74,7 @@ fun StorageScreen(
         pageContent = { page ->
             Box {
                 when (page) {
-                    0 -> AccountsContent(
+                    0 -> NotesContent(
                         isPageFullyAvailable = isAccountTab,
                         scaffoldState = accountScaffoldState
                     )

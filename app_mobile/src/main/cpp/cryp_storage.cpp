@@ -30,19 +30,59 @@ std::vector<EngineModelDecryptedNote> EngineCryptStorageEngine::notes() {
     long long *btNotes = key_manager_ctx::getNotes();
     int len;
     for (len = 0; btNotes[len]; len++);
-    auto notes = std::vector<EngineModelDecryptedNote>(len);
+    auto notes = std::vector<EngineModelDecryptedNote>();
     for (len = 0; btNotes[len]; len++) {
         DecryptedNote *dnote = key_manager_ctx::getNoteItem((long) btNotes[len], 0);
         notes.push_back(
                 EngineModelDecryptedNote{
-                        .site = (char *) dnote->site,
-                        .login = (char *) dnote->login,
-                        .desc = (char *) dnote->description,
+                        .ptnote = btNotes[len],
+                        .site = (char *) dnote->site ?: "",
+                        .login = (char *) dnote->login ?: "",
+                        .desc = (char *) dnote->description ?: "",
                         .chTime = (int64_t) dnote->genTime,
                 }
         );
+
+        memset(dnote, 0, sizeof(DecryptedNote));
+        delete dnote;
     }
+    delete[] btNotes;
     return notes;
+}
+
+EngineModelDecryptedNote EngineCryptStorageEngine::note(const int64_t &notePtr) {
+    DecryptedNote *dnote = key_manager_ctx::getNoteItem((long) notePtr, 0);
+
+    auto result = EngineModelDecryptedNote{
+            .ptnote = notePtr,
+            .site = (char *) dnote->site ?: "",
+            .login = (char *) dnote->login ?: "",
+            .desc = (char *) dnote->description ?: "",
+            .chTime = (int64_t) dnote->genTime,
+    };
+
+    memset(dnote, 0, sizeof(DecryptedNote));
+    delete dnote;
+    return result;
+}
+
+int EngineCryptStorageEngine::saveNote(const brooklyn::EngineModelDecryptedNote &decryptedNote) {
+    auto ptNote = decryptedNote.ptnote;
+    if (!ptNote) ptNote = key_manager_ctx::createNote();
+    DecryptedNote dnote = {};
+    strcpy((char *) dnote.site, decryptedNote.site.c_str());
+    strcpy((char *) dnote.login, decryptedNote.login.c_str());
+    strcpy((char *) dnote.passw, decryptedNote.passw.c_str());
+    strcpy((char *) dnote.description, decryptedNote.desc.c_str());
+    key_manager_ctx::setNote(ptNote, &dnote);
+    memset(&dnote, 0, sizeof(DecryptedNote));
+    return 0;
+}
+
+int EngineCryptStorageEngine::removeNote(const int64_t &notePt) {
+    if (!notePt)return -1;
+    key_manager_ctx::rmNote(notePt);
+    return 0;
 }
 
 EngineModelDecryptedPassw EngineCryptStorageEngine::getGenPassw(const int64_t &ptNote) {

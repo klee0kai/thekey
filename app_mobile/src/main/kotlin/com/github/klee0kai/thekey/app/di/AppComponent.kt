@@ -10,6 +10,7 @@ import com.github.klee0kai.stone.annotations.module.BindInstance
 import com.github.klee0kai.thekey.app.App
 import com.github.klee0kai.thekey.app.TargetDI
 import com.github.klee0kai.thekey.app.di.dependencies.AppComponentProviders
+import com.github.klee0kai.thekey.app.di.identifier.NoteIdentifier
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.di.modules.CoroutineModule
 import com.github.klee0kai.thekey.app.di.modules.DBModule
@@ -32,7 +33,8 @@ val DI: AppComponent = Stone.createComponent(AppComponent::class.java).apply {
 
 @Component(
     identifiers = [
-        StorageIdentifier::class
+        StorageIdentifier::class,
+        NoteIdentifier::class,
     ],
     wrapperProviders = [
         KotlinWrappersStone::class,

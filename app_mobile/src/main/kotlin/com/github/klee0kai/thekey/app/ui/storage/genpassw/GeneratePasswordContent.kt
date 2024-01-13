@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 
-package com.github.klee0kai.thekey.app.ui.storage.components
+package com.github.klee0kai.thekey.app.ui.storage.genpassw
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background

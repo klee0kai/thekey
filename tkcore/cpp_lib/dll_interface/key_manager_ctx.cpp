@@ -161,6 +161,7 @@ void key_manager_ctx::setLoggedStoragePath(const char *file) {
 }
 
 int key_manager_ctx::login(const unsigned char *file, const unsigned char *passw) {
+    unLogin();
     filePath = new char[FILE_PATH_LEN];
     tempFilePath = new char[FILE_PATH_LEN];
     strcpy(filePath, (const char *) file);

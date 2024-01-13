@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.navigation.backWithResult
-import com.github.klee0kai.thekey.app.utils.common.animateAlphaAsState
+import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
 
 
 @Preview
@@ -50,10 +50,7 @@ fun StoragesListContent(
         }
 
         storages.value.forEach { storage ->
-            item(
-                key = storage.path,
-                contentType = storage::class,
-            ) {
+            item(contentType = storage::class) {
                 ColoredStorageItem(
                     storage = storage,
                     onClick = { navigator.backWithResult(storage.path) }

@@ -55,8 +55,8 @@ fun StoragesScreen() {
         },
         sheetContent = {
             StoragesListContent(
+                modifier = Modifier.fillMaxSize(),
                 showStoragesTitle = scaffoldState.dragProgress.floatValue > 0.1f,
-                modifier = Modifier.fillMaxSize()
             )
         }
     )
