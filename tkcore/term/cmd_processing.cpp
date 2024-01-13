@@ -7,7 +7,7 @@
 #include <sys/ioctl.h>
 #include <sys/fcntl.h>
 #include <curses.h>
-#include "dll_interface/key_finder.h"
+#include "public/key_finder.h"
 #include "term_utils.h"
 
 #define COLUMN_WIDTH 40

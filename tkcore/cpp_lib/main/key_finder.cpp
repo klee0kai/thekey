@@ -4,7 +4,7 @@
 
 #include <ftw.h>
 #include <cstring>
-#include "key_finder.h"
+#include "public/key_finder.h"
 #include "sys/stat.h"
 
 static const char *const storageFormat = ".ckey";

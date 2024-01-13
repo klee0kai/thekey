@@ -2,13 +2,22 @@
 // Created by panda on 2020-01-26.
 //
 
-#include "key_manager_ctx.h"
-#include "libs/pass_spliter.h"
-#include "salt_text/s_text.h"
-#include "libs/utils.h"
-
+#include "public/key_manager_ctx.h"
 
 #include "def_header.h"
+#include "salt_text/s_text.h"
+#include "utils/pass_spliter.h"
+#include "utils/common.h"
+
+#include <openssl/evp.h>
+#include <openssl/objects.h>
+#include <openssl/evp.h>
+#include <openssl/rsa.h>
+#include <openssl/aes.h>
+#include <openssl/bio.h>
+#include <openssl/kdf.h>
+#include <openssl/sha.h>
+#include <openssl/rand.h>
 
 
 #define KEY_LEN 2048

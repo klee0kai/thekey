@@ -2,7 +2,7 @@
 // Created by panda on 01.03.2020.
 //
 
-#include "utils.h"
+#include "common.h"
 
 int memcmpr(void *mem, char mch, int len) {
     int i = 0;

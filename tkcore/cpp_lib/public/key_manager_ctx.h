@@ -5,25 +5,11 @@
 #ifndef THEKEY_KEY_MANAGER_CTX_H
 #define THEKEY_KEY_MANAGER_CTX_H
 
-
 #include <string>
 #include <fcntl.h>
 #include <unistd.h>
 #include <vector>
 #include <ctime>
-
-
-#include <openssl/evp.h>
-#include <openssl/objects.h>
-#include <openssl/evp.h>
-#include <openssl/rsa.h>
-#include <openssl/aes.h>
-#include <openssl/bio.h>
-#include <openssl/kdf.h>
-#include <openssl/sha.h>
-#include <openssl/rand.h>
-
-#include "libs/pass_spliter.h"
 
 #define FILE_VER_FIRST 0x01
 #define SIGNATURE_LEN 7
