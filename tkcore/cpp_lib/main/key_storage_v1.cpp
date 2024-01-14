@@ -135,7 +135,7 @@ std::shared_ptr<KeyStorageV1> thekey_v1::storage(std::string path, std::string p
     splitPasswForLogin(splitPassw->passwForLogin, (const unsigned char *) passw.c_str());
     splitPasswForPasswords(splitPassw->passwForPassw, (const unsigned char *) passw.c_str());
     splitPasswForNoteHistPassw(splitPassw->passwForNoteHistPassw, (const unsigned char *) passw.c_str());
-    splitPasswForDescription(splitPassw->passwForNoteHistPassw, (const unsigned char *) passw.c_str());
+    splitPasswForDescription(splitPassw->passwForDescription, (const unsigned char *) passw.c_str());
     splitPasswForGenPassw(splitPassw->passwForGenPassw, (const unsigned char *) passw.c_str());
 
     auto ctx = std::make_shared<CryptContext>();

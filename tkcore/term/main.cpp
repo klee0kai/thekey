@@ -9,7 +9,6 @@ int main(int argc, char **argv) {
     const struct option long_options[] = {
             {"help",  no_argument,       NULL, 'h'},
             {"find",  optional_argument, NULL, 'f'},
-            {"list",  optional_argument, NULL, 'f'},
             {"login", required_argument, NULL, 'l'},
             {NULL, 0,                    NULL, 0}
     };
