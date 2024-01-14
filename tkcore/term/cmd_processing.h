@@ -8,7 +8,7 @@
 #include "def_header.h"
 
 
-namespace cmd_pr {
+namespace thekey_term {
 
     void printHelp();
 

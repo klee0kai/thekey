@@ -8,6 +8,7 @@
 #include "def_header.h"
 
 namespace term_utils {
+
     std::string get_password();
 
     /**
