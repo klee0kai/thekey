@@ -17,6 +17,7 @@ static void printHelp();
 
 static void listNotes();
 
+
 static void notePassword();
 
 static void createNote();
@@ -34,6 +35,8 @@ static void changeStoragePassword();
 static void showInfo();
 
 static int processCmdsStTerm(int argc, char **argv);
+
+static void printNote(const thekey_v1::DecryptedNote &note);
 
 void thekey_term_v1::login(const std::string &filePath) {
     auto storageInfo = thekey_v1::storageV1Info(filePath);
@@ -211,10 +214,7 @@ static void listNotes() {
     for (const auto &item: storageV1->notes()) {
         auto note = storageV1->note(item);
         cout << "-------------------------------------------" << endl;
-        cout << "site: " << note->site << endl;
-        cout << "login: " << note->login << endl;
-        cout << "desc: " << note->description << endl;
-        cout << "hist len: " << note->histLen << endl;
+        printNote(*note);
     }
     cout << "-------------------------------------------" << endl;
 }
@@ -234,12 +234,7 @@ static void notePassword() {
     }
 
     auto noteFull = storageV1->note(notes[noteIndex - 1], 1);
-    cout << "site: '" << noteFull->site << "'" << endl;
-    cout << "login: '" << noteFull->login << "'" << endl;
-    cout << "passw: '" << noteFull->passw << "'" << endl;
-    cout << "desc: '" << noteFull->description << "'" << endl;
-    cout << "hist len: " << noteFull->histLen << endl;
-
+    printNote(*noteFull);
     cout << endl;
 }
 
@@ -258,6 +253,9 @@ static void noteHist() {
     }
     for (const auto &item: storageV1->noteHist(notes[noteIndex - 1])) {
         cout << "password: " << item.passw << endl;
+
+        std::tm *changeTm = std::gmtime((time_t *) &item.genTime);
+        cout << "change time : " << asctime(changeTm) << endl;
     }
     cout << endl;
 }
@@ -302,11 +300,7 @@ static void editNote() {
     while (true) {
         auto note = storageV1->note(notePtr, 1);
         cout << "current note is: " << endl;
-        cout << "site: '" << note->site << "'" << endl;
-        cout << "login: '" << note->login << "'" << endl;
-        cout << "passw: '" << note->passw << "'" << endl;
-        cout << "desc: '" << note->description << "'" << endl;
-        cout << "hist len: " << note->histLen << endl;
+        printNote(*note);
         cout << "input 'back' - to back from edit mode" << endl;
         cout << "input 'site' - edit site" << endl;
         cout << "input 'login' - edit login" << endl;
@@ -344,6 +338,8 @@ static void showGenHistory() {
     for (const auto &item: storageV1->genPasswHist()) {
         cout << "-------------------------------------------" << endl;
         cout << "passw: " << item.passw << endl;
+        std::tm *changeTm = std::gmtime((time_t *) &item.genTime);
+        cout << "change time : " << asctime(changeTm) << endl;
     }
     cout << "-------------------------------------------" << endl;
 }
@@ -397,4 +393,14 @@ static void changeStoragePassword() {
         return;
     }
     cout << "storage password changed to new file : " << newPath << endl;
+}
+
+static void printNote(const thekey_v1::DecryptedNote &note) {
+    cout << "site: '" << note.site << "'" << endl;
+    cout << "login: '" << note.login << "'" << endl;
+    if (!note.passw.empty()) cout << "passw: '" << note.passw << "'" << endl;
+    cout << "desc: '" << note.description << "'" << endl;
+    std::tm *changeTm = std::gmtime((time_t *) &note.genTime);
+    cout << "change time : " << asctime(changeTm) << endl;
+    cout << "hist len: " << note.histLen << endl;
 }
