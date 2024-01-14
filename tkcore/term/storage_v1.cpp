@@ -21,6 +21,8 @@ static void notePassword();
 
 static void createNote();
 
+static void editNote();
+
 static void noteHist();
 
 static void showGenHistory();
@@ -110,6 +112,11 @@ static int processCmdsStTerm(int argc, char **argv) {
         return 0;
     }
 
+    if (strcmp(argv[0], "edit") == 0) {
+        editNote();
+        return 0;
+    }
+
     if (strcmp(argv[0], "gen") == 0) {
         generateNewPassword();
         return 0;
@@ -159,6 +166,11 @@ static void printHelp() {
     cout << std::left << "create";
     cout << "create new note" << endl;
 
+    cout << ident;
+    cout.width(COLUMN_WIDTH);
+    cout << std::left << "edit";
+    cout << "edit note" << endl;
+
 
     cout << ident;
     cout.width(COLUMN_WIDTH);
@@ -168,7 +180,7 @@ static void printHelp() {
     cout << ident;
     cout.width(COLUMN_WIDTH);
     cout << std::left << "hist";
-    cout << "show history of gen passwds" << endl;
+    cout << "show history of gen passwords" << endl;
 
     cout << ident;
     cout.width(COLUMN_WIDTH);
@@ -212,7 +224,7 @@ static void notePassword() {
     auto noteFull = storageV1->note(notes[noteIndex - 1], 1);
     cout << "site: '" << noteFull->site << "'" << endl;
     cout << "login: '" << noteFull->login << "'" << endl;
-    cout << "pass: '" << noteFull->passw << "'" << endl;
+    cout << "passw: '" << noteFull->passw << "'" << endl;
     cout << "desc: '" << noteFull->description << "'" << endl;
     cout << "hist len: " << noteFull->histLen << endl;
 
@@ -256,7 +268,63 @@ static void createNote() {
         cerr << "error to save note " << error << endl;
         return;
     }
-    cout << "note saved " << notePtr;
+    cout << "note saved " << notePtr << endl;
+}
+
+static void editNote() {
+    if (!storageV1)return;
+    auto index = 0;
+    auto notes = storageV1->notes();
+    for (const auto &item: notes) {
+        auto note = storageV1->note(item, 0);
+        cout << ++index << ") '" << note->site << "' / '" << note->login << "' hist length " << note->histLen << endl;
+    }
+    auto noteIndex = term_utils::ask_int_from_term("Select note. Write index: ");
+    if (noteIndex < 1 || noteIndex > notes.size()) {
+        cerr << "incorrect index " << noteIndex << endl;
+        return;
+    }
+    auto notePtr = notes[noteIndex - 1];
+    auto info = storageV1->info();
+
+    while (true) {
+        auto note = storageV1->note(notePtr, 1);
+        cout << "current note is: " << endl;
+        cout << "site: '" << note->site << "'" << endl;
+        cout << "login: '" << note->login << "'" << endl;
+        cout << "passw: '" << note->passw << "'" << endl;
+        cout << "desc: '" << note->description << "'" << endl;
+        cout << "hist len: " << note->histLen << endl;
+        cout << "input 'back' - to back from edit mode" << endl;
+        cout << "input 'site' - edit site" << endl;
+        cout << "input 'login' - edit login" << endl;
+        cout << "input 'passw' - edit passw" << endl;
+        cout << "input 'desc' - edit description" << endl;
+
+        auto cmd = term_utils::ask_from_term();
+
+        if (cmd == "back") {
+            cout << "exit from edit mode" << endl;
+            return;
+        }
+        if (cmd == "site") {
+            note->site = term_utils::ask_from_term("site. max len " + to_string(info.siteLen) + " : ");
+        } else if (cmd == "login") {
+            note->login = term_utils::ask_from_term("login max len " + to_string(info.loginLen) + " : ");
+        } else if (cmd == "passw") {
+            note->passw = term_utils::ask_password_from_term("password max len " + to_string(info.passwLen) + " : ");
+        } else if (cmd == "desc") {
+            note->description = term_utils::ask_from_term("description max len " + to_string(info.descLen) + " : ");
+        } else {
+            cerr << "cmd incorrect '" << cmd << "' exit from edit mode" << endl;
+            return;
+        }
+        int error = storageV1->setNote(notePtr, *note);
+        if (error) {
+            cerr << "error to save note " << error << " exit from edit mode" << endl;
+            return;
+        }
+    }
 }
 
 static void showGenHistory() {
