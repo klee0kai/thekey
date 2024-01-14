@@ -121,6 +121,29 @@ std::shared_ptr<thekey::Storage> thekey_v1::storage(int fd, const string &path) 
     return storage;
 }
 
+std::shared_ptr<StorageV1Info> thekey_v1::storageV1Info(const std::string &file) {
+    int fd = open(file.c_str(), O_RDONLY | O_CLOEXEC);
+    if (fd == -1) return {};
+    auto fheader = storageHeader(fd);
+    if (!fheader)return {};
+    auto info = StorageV1Info{
+            .path = file,
+            .name = fheader->name,
+            .storageVersion = fheader->storageVersion,
+            .description = fheader->description,
+            .notesCount = fheader->notesCount,
+            .genPasswCount = fheader->notesCount,
+            //technical limitations
+            .storageNameLen = STORAGE_NAME_LEN,
+            .storageDescriptionLen = STORAGE_DESCRIPTION_LEN,
+            .siteLen = SITE_LEN,
+            .passwLen = PASSW_LEN,
+            .descName = DESC_LEN,
+            .noteMaxHist = NOTE_PASSW_HIST_LEN,
+    };
+    return make_shared<StorageV1Info>(info);
+}
+
 std::shared_ptr<KeyStorageV1> thekey_v1::storage(std::string path, std::string passw) {
     int fd = open(path.c_str(), O_RDONLY | O_CLOEXEC);
     if (fd == -1) return {};
@@ -225,7 +248,14 @@ StorageV1Info KeyStorageV1::info() {
             .storageVersion = fheader->storageVersion,
             .description = fheader->description,
             .notesCount = fheader->notesCount,
-            .genPasswCount = fheader->notesCount
+            .genPasswCount = fheader->notesCount,
+            //technical limitations
+            .storageNameLen = STORAGE_NAME_LEN,
+            .storageDescriptionLen = STORAGE_DESCRIPTION_LEN,
+            .siteLen = SITE_LEN,
+            .passwLen = PASSW_LEN,
+            .descName = DESC_LEN,
+            .noteMaxHist = NOTE_PASSW_HIST_LEN,
     };
 }
 

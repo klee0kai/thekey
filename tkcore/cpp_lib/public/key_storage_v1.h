@@ -24,6 +24,13 @@ namespace thekey_v1 {
         std::string description;
         unsigned int notesCount;
         unsigned int genPasswCount;
+        //technical limitations
+        unsigned int storageNameLen;
+        unsigned int storageDescriptionLen;
+        unsigned int siteLen;
+        unsigned int passwLen;
+        unsigned int descName;
+        unsigned int noteMaxHist;
     };
 
     struct DecryptedNote {
@@ -88,6 +95,8 @@ namespace thekey_v1 {
     };
 
     std::shared_ptr<thekey::Storage> storage(int fd, const std::string &file);
+
+    std::shared_ptr< StorageV1Info> storageV1Info(const std::string &file);
 
     int createStorage(const thekey::Storage &file);
 

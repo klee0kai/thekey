@@ -24,15 +24,15 @@ static void showInfo();
 static int processCmdsStTerm(int argc, char **argv);
 
 void thekey_term_v1::login(const std::string &filePath) {
-    auto storageInfo = thekey::storage(filePath);
+    auto storageInfo = thekey_v1::storageV1Info(filePath);
     if (!storageInfo) {
         cerr << "can't open file " << filePath << endl;
         return;
     }
 
-    cout << "TheKey (version " << TERM_VERSION << ") designed by Panda" << endl;
+    cout << "TheKey. Version is " << TERM_VERSION << ". Designed by Panda" << endl;
     for (int tryPasswInput = 0; tryPasswInput < 3; tryPasswInput++) {
-        cout << "Input passw:";
+        cout << "Input password. Max length " << storageInfo->passwLen << " : ";
         auto passw = term_utils::get_password();
         cout << endl;;
         storageV1 = thekey_v1::storage(filePath, passw);
@@ -172,5 +172,13 @@ static void showInfo() {
     cout << "desc: " << info.description << endl;
     cout << "notesCount: " << info.notesCount << endl;
     cout << "histCount: " << info.genPasswCount << endl;
+    cout << "technical limitations" << endl;
+    cout << "storage name max length: " << info.storageNameLen << endl;
+    cout << "storage description max length: " << info.storageDescriptionLen << endl;
+    cout << "site max length: " << info.siteLen << endl;
+    cout << "password max length: " << info.passwLen << endl;
+    cout << "description max length: " << info.descName << endl;
+    cout << "note max history: " << info.noteMaxHist << endl;
+
     cout << endl;
 }
