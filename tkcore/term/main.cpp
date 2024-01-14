@@ -35,7 +35,7 @@ int main(int argc, char **argv) {
             case ':':
                 switch (optopt) {
                     case 'f':
-                        cmd_pr::findStorages();
+                        cmd_pr::findStorages(optarg);
                         return 0;
                     default:
                         std::cerr << "invalid option: " << (char) optopt << std::endl;

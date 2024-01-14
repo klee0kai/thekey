@@ -5,6 +5,10 @@
 #ifndef THEKEY_COMMON_H
 #define THEKEY_COMMON_H
 
-int memcmpr(void * mem, char mch, int len);
+#include "string"
+
+int memcmpr(void *mem, char mch, int len);
+
+int ends_with(std::string const &value, std::string const &ending);
 
 #endif //THEKEY_COMMON_H

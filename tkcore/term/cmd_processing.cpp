@@ -7,38 +7,34 @@
 #include <sys/ioctl.h>
 #include <sys/fcntl.h>
 #include <curses.h>
-#include "public/key_finder.h"
+#include "thekey.h"
 #include "term_utils.h"
 
 #define COLUMN_WIDTH 40
 
 using namespace std;
+using namespace thekey;
 
 static char ident = '\t';
 
-static void storageFound(Storage storage) {
+static shared_ptr<thekey_v1::KeyStorageV1> storageV1 = {};
 
-    cout << endl;
-    cout << "-------------------------------------" << endl;
-    cout << "path: " << storage.file << endl;
-    cout << "name: " << storage.name << endl;
-    cout << "desc: " << storage.description << endl;
-
-
-}
-
-void cmd_pr::findStorages(const char *srcDir) {
-
-    if (srcDir == NULL)
-        srcDir = "/";
-    cout << "Available crypted storages on device: " << endl;
-    key_finder::findStorages(srcDir, storageFound);
+void cmd_pr::findStorages(const string &folder) {
+    cout << "Available crypted storages in folder: " << folder << endl;
+    auto storagesFound = thekey::findStorages(folder);
+    for (const auto &item: storagesFound) {
+        cout << "-------------------------------------" << endl;
+        cout << "storagePath: " << item.file << endl;
+        cout << "name: " << item.name << endl;
+        cout << "version: " << item.storageVersion << endl;
+        cout << "desc: " << item.description << endl;
+        cout << endl;
+    }
     cout << "-------------------------------------" << endl;
 }
 
 void cmd_pr::printHelp() {
-
-    cout << "TheKey - (ver. " << TERM_VERSION << ") cryp/encrypt your secure passwords storages" << endl;
+    cout << "TheKey - (storageVersion. " << TERM_VERSION << ") cryp/encrypt your secure passwords storages" << endl;
     cout << endl;
     cout << ident << "Options:" << endl;
 
@@ -54,13 +50,12 @@ void cmd_pr::printHelp() {
 
     cout << ident;
     cout.width(COLUMN_WIDTH);
-    cout << std::left << "-l [path] or --login [path]";
+    cout << std::left << "-l [storagePath] or --login [storagePath]";
     cout << "login to crypted storage" << endl;
 }
 
-
 static void printHelpStTerm() {
-    cout << "TheKey - (ver. " << TERM_VERSION << ") cryp/encrypt your secure passwords storages" << endl;
+    cout << "TheKey - (storageVersion. " << TERM_VERSION << ") cryp/encrypt your secure passwords storages" << endl;
     cout << endl;
     cout << ident << "Commands:" << endl;
 
@@ -95,67 +90,42 @@ static void printHelpStTerm() {
 
 
 static void listNotes() {
-    long long *notes = key_manager_ctx::getNotes();
-    for (int i = 0; notes[i]; i++) {
-        DecryptedNote *decryptedNote = key_manager_ctx::getNoteItem(notes[i], 1);
+    if (!storageV1)return;
+    for (const auto &item: storageV1->notes()) {
+        auto note = storageV1->note(item, 1);
         cout << "-------------------------------------------" << endl;
-        cout << "site: " << decryptedNote->site << endl;
-        cout << "login: " << decryptedNote->login << endl;
-        cout << "pass: " << decryptedNote->passw << endl;
-        cout << "desc: " << decryptedNote->description << endl;
-        if (decryptedNote->histLen > 0) {
-            cout << "passw hist" << endl;
-            for (int j = 0; j < decryptedNote->histLen; j++) {
-                cout << ident << decryptedNote->hist->passw << endl;
-            }
-        }
-        memset(decryptedNote, 0, sizeof(DecryptedNote));
-        delete decryptedNote;
+        cout << "site: " << note->site << endl;
+        cout << "login: " << note->login << endl;
+        cout << "pass: " << note->passw << endl;
+        cout << "desc: " << note->description << endl;
+        cout << "hist len: " << note->histLen << endl;
     }
-
     cout << "-------------------------------------------" << endl;
-
-    delete[]notes;
 }
 
-static void showHistory() {
-    long long *genPasswds = key_manager_ctx::getGenPassds();
-    for (int i = 0; genPasswds[i]; i++) {
-        DecryptedPassw *decryptedPassw = key_manager_ctx::getGenPassw(genPasswds[i]);
+static void showGenHistory() {
+    if (!storageV1)return;
+    for (const auto &item: storageV1->genPasswHist()) {
         cout << "-------------------------------------------" << endl;
-        cout << "passw: " << decryptedPassw->passw << endl;
-        memset(decryptedPassw, 0, sizeof(DecryptedPassw));
-        delete decryptedPassw;
+        cout << "passw: " << item.passw << endl;
     }
-
     cout << "-------------------------------------------" << endl;
-
-    delete[]genPasswds;
 }
 
 static void showInfo() {
-    const char *filePath = key_manager_ctx::getLoggedStoragePath();
-    int fd = open(filePath, O_RDONLY, 0);
-    if (fd == -1) {
-        cerr << "file not found " << filePath << endl;
-        return;
-    }
-
-    FileVer1_Header fileVer1Header;
-    read(fd, &fileVer1Header, FileVer1_HEADER_LEN);
-    close(fd);
-
-    cout << "storage: " << filePath << endl;
-    cout << "ver: " << (int) fileVer1Header.ver << endl;
-    cout << "name: " << fileVer1Header.name << endl;
-    cout << "desc: " << fileVer1Header.description << endl;
-    cout << "notesCount: " << fileVer1Header.notesCount << endl;
-    cout << "histCount: " << fileVer1Header.genPasswCount << endl;
+    if (!storageV1)return;
+    auto info = storageV1->info();
+    cout << "storage: " << info.path << endl;
+    cout << "storageVersion: " << info.storageVersion << endl;
+    cout << "name: " << info.name << endl;
+    cout << "desc: " << info.description << endl;
+    cout << "notesCount: " << info.notesCount << endl;
+    cout << "histCount: " << info.genPasswCount << endl;
     cout << endl;
 }
 
 static int processCmdsStTerm(int argc, char **argv) {
-    if (argc <= 0 || strlen(argv[0])==0)
+    if (argc <= 0 || strlen(argv[0]) == 0)
         //ignore, continue
         return 0;
 
@@ -172,8 +142,10 @@ static int processCmdsStTerm(int argc, char **argv) {
         return 0;
     }
 
+    //TODO hist of note
+
     if (strcmp(argv[0], "hist") == 0) {
-        showHistory();
+        showGenHistory();
         return 0;
     }
 
@@ -188,24 +160,21 @@ static int processCmdsStTerm(int argc, char **argv) {
     return 0;
 }
 
-void cmd_pr::login(const char *filePath) {
-    int fd = open(filePath, O_RDONLY, 0);
-    if (fd == -1) {
-        cerr << "file not found " << filePath << endl;
+void cmd_pr::login(const std::string &filePath) {
+    auto storageInfo = thekey::storage(filePath);
+    if (!storageInfo) {
+        cerr << "can't open file " << filePath << endl;
         return;
     }
 
-    cout << "TheKey (ver. " << TERM_VERSION << ") designed by Panda" << endl;
+    cout << "TheKey (version " << TERM_VERSION << ") designed by Panda" << endl;
     for (int tryPasswInput = 0; tryPasswInput < 3; tryPasswInput++) {
         cout << "Input passw:";
-        char passw[PASSW_LEN];
-        memset(passw, 0, PASSW_LEN);
-        term_utils::get_password(passw);
+        auto passw = term_utils::get_password();
         cout << endl;;
-        int res = key_manager_ctx::login((const unsigned char *) filePath, (const unsigned char *) passw);
-        memset(passw, 0, PASSW_LEN);
+        storageV1 = thekey_v1::storage(filePath, passw);
 
-        if (res || !key_manager_ctx::isLogined()) {
+        if (!storageV1) {
             cerr << "error login to " << filePath << endl;
             cout << endl;
             continue;
@@ -213,32 +182,28 @@ void cmd_pr::login(const char *filePath) {
         break;
     }
 
-    FileVer1_Header fileVer1Header;
-    read(fd, &fileVer1Header, FileVer1_HEADER_LEN);
-    close(fd);
+    cout << "Reading storage..." << endl;
+    storageV1->readAll();
 
-
-    cout << "Welcome to " << fileVer1Header.name << endl;
+    cout << "Welcome to storage " << storageInfo->name << " version " << storageInfo->storageVersion << endl;
     cout << "Input help for look the manual" << endl;
-
 
     char cmdBuf[100];
     int exitFlag = 0;
     while (!exitFlag) {
         cout << ">";
-        memset(cmdBuf,0,0);
-        cin.getline(cmdBuf, 100, '\n');
+        memset(cmdBuf, 0, 0);
+        cin.getline(cmdBuf, sizeof(cmdBuf) - 1, '\n');
 
         size_t argc = term_utils::argsCount(cmdBuf);
         char **argv = new char *[argc];
         term_utils::splitArgs(cmdBuf, argv, argc);
 
         exitFlag = processCmdsStTerm(argc, argv);
-
         delete[]argv;
-
     }
 
+    storageV1.reset();
 }
 
 

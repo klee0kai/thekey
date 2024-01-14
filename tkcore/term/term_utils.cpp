@@ -6,7 +6,10 @@
 #include <termios.h>
 
 
-void term_utils::get_password(char *password) {
+std::string term_utils::get_password() {
+    char password[BUFSIZ];
+    memset(password, 0, BUFSIZ);
+
     static struct termios old_terminal;
     static struct termios new_terminal;
 
@@ -31,9 +34,8 @@ void term_utils::get_password(char *password) {
 
     // go back to the old settings
     tcsetattr(STDIN_FILENO, TCSANOW, &old_terminal);
+    return password;
 }
-
-
 
 
 size_t term_utils::argsCount(const char *sourceText) {

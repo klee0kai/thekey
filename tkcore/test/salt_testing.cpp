@@ -3,9 +3,10 @@
 //
 
 #include <gtest/gtest.h>
-#include "libs/utils.h"
-#include "def_header.h"
+#include "thekey.h"
+#include "thekey_core.h"
 #include "salt_text/s_text.h"
+#include "utils/common.h"
 
 using namespace std;
 

@@ -5,8 +5,9 @@
 #ifndef THEKEY_THEKEY_H
 #define THEKEY_THEKEY_H
 
-#include "def_header.h"
-#include "public/key_finder.h"
-#include "public/key_manager_ctx.h"
+#include "thekey_core.h"
+#include "public/key_storage.h"
+#include "public/key_storage_v1.h"
+#include "public/key_errors.h"
 
 #endif //THEKEY_THEKEY_H
