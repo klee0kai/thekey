@@ -132,7 +132,7 @@ std::shared_ptr<StorageV1Info> thekey_v1::storageV1Info(const std::string &file)
             .storageVersion = fheader->storageVersion,
             .description = fheader->description,
             .notesCount = fheader->notesCount,
-            .genPasswCount = fheader->notesCount,
+            .genPasswCount = fheader->genPasswCount,
             //technical limitations
             .storageNameLen = STORAGE_NAME_LEN,
             .storageDescriptionLen = STORAGE_DESCRIPTION_LEN,
@@ -249,7 +249,7 @@ StorageV1Info KeyStorageV1::info() {
             .storageVersion = fheader->storageVersion,
             .description = fheader->description,
             .notesCount = fheader->notesCount,
-            .genPasswCount = fheader->notesCount,
+            .genPasswCount = fheader->genPasswCount,
             //technical limitations
             .storageNameLen = STORAGE_NAME_LEN,
             .storageDescriptionLen = STORAGE_DESCRIPTION_LEN,
@@ -450,9 +450,9 @@ std::string KeyStorageV1::genPassw(int len, int genEncoding) {
     CryptedPassw gen = {};
     gen.genTime = time(NULL);
     memcpy(gen.passw, encodedPassw, PASSW_LEN);
+
     cryptedGeneratedPassws.push_back(gen);
     fheader->genPasswCount = cryptedGeneratedPassws.size();
-
     auto error = save();
     return (char *) passw;
 }

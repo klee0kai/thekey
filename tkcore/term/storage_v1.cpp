@@ -17,11 +17,15 @@ static void printHelp();
 
 static void listNotes();
 
+static void notePassword();
+
 static void createNote();
 
 static void noteHist();
 
 static void showGenHistory();
+
+static void generateNewPassword();
 
 static void showInfo();
 
@@ -34,7 +38,7 @@ void thekey_term_v1::login(const std::string &filePath) {
         return;
     }
 
-    cout << "TheKey. Version is " << TERM_VERSION << ". Designed by Panda" << endl;
+    cout << "TheKey. Version is " << TERM_VERSION << ". Designed by Andrey Kuzubov / Klee0kai" << endl;
     for (int tryPasswInput = 0; tryPasswInput < 3; tryPasswInput++) {
         auto message = "Input password. Max length " + to_string(storageInfo->passwLen) + " : ";
         auto passw = term_utils::ask_password_from_term(message);
@@ -91,6 +95,11 @@ static int processCmdsStTerm(int argc, char **argv) {
         return 0;
     }
 
+    if (strcmp(argv[0], "passw") == 0 || strcmp(argv[0], "p") == 0) {
+        notePassword();
+        return 0;
+    }
+
     if (strcmp(argv[0], "noteHist") == 0) {
         noteHist();
         return 0;
@@ -98,6 +107,11 @@ static int processCmdsStTerm(int argc, char **argv) {
 
     if (strcmp(argv[0], "create") == 0) {
         createNote();
+        return 0;
+    }
+
+    if (strcmp(argv[0], "gen") == 0) {
+        generateNewPassword();
         return 0;
     }
 
@@ -112,7 +126,6 @@ static int processCmdsStTerm(int argc, char **argv) {
     }
 
     cerr << "unknown command  " << argv[0] << endl;
-
     return 0;
 }
 
@@ -133,8 +146,13 @@ static void printHelp() {
 
     cout << ident;
     cout.width(COLUMN_WIDTH);
+    cout << std::left << "passw or p";
+    cout << "print note password" << endl;
+
+    cout << ident;
+    cout.width(COLUMN_WIDTH);
     cout << std::left << "noteHist";
-    cout << "note passwords list" << endl;
+    cout << "note passwords history" << endl;
 
     cout << ident;
     cout.width(COLUMN_WIDTH);
@@ -144,9 +162,13 @@ static void printHelp() {
 
     cout << ident;
     cout.width(COLUMN_WIDTH);
+    cout << std::left << "gen";
+    cout << "generate new password" << endl;
+
+    cout << ident;
+    cout.width(COLUMN_WIDTH);
     cout << std::left << "hist";
     cout << "show history of gen passwds" << endl;
-
 
     cout << ident;
     cout.width(COLUMN_WIDTH);
@@ -163,15 +185,38 @@ static void printHelp() {
 static void listNotes() {
     if (!storageV1)return;
     for (const auto &item: storageV1->notes()) {
-        auto note = storageV1->note(item, 1);
+        auto note = storageV1->note(item);
         cout << "-------------------------------------------" << endl;
         cout << "site: " << note->site << endl;
         cout << "login: " << note->login << endl;
-        cout << "pass: " << note->passw << endl;
         cout << "desc: " << note->description << endl;
         cout << "hist len: " << note->histLen << endl;
     }
     cout << "-------------------------------------------" << endl;
+}
+
+static void notePassword() {
+    if (!storageV1)return;
+    auto index = 0;
+    auto notes = storageV1->notes();
+    for (const auto &item: notes) {
+        auto note = storageV1->note(item, 0);
+        cout << ++index << ") '" << note->site << "' / '" << note->login << "' / '" << note->description << "'" << endl;
+    }
+    auto noteIndex = term_utils::ask_int_from_term("Select note. Write index: ");
+    if (noteIndex < 1 || noteIndex > notes.size()) {
+        cerr << "incorrect index " << noteIndex << endl;
+        return;
+    }
+
+    auto noteFull = storageV1->note(notes[noteIndex - 1], 1);
+    cout << "site: '" << noteFull->site << "'" << endl;
+    cout << "login: '" << noteFull->login << "'" << endl;
+    cout << "pass: '" << noteFull->passw << "'" << endl;
+    cout << "desc: '" << noteFull->description << "'" << endl;
+    cout << "hist len: " << noteFull->histLen << endl;
+
+    cout << endl;
 }
 
 static void noteHist() {
@@ -182,7 +227,7 @@ static void noteHist() {
         auto note = storageV1->note(item, 0);
         cout << ++index << ") '" << note->site << "' / '" << note->login << "' hist length " << note->histLen << endl;
     }
-    auto noteIndex = stoi(term_utils::ask_from_term("Select note. Write index: "));
+    auto noteIndex = term_utils::ask_int_from_term("Select note. Write index: ");
     if (noteIndex < 1 || noteIndex > notes.size()) {
         cerr << "incorrect index " << noteIndex << endl;
         return;
@@ -222,6 +267,22 @@ static void showGenHistory() {
     }
     cout << "-------------------------------------------" << endl;
 }
+
+
+static void generateNewPassword() {
+    if (!storageV1)return;
+
+    cout << "select password encoding: " << endl;
+    cout << "0) numbers only " << endl;
+    cout << "1) english symbols and numbers " << endl;
+    cout << "2) english symbols, numbers, spec symbols " << endl;
+    cout << "3) english symbols, numbers, spec symbols, space " << endl;
+    auto encoding = term_utils::ask_int_from_term();
+    auto len = term_utils::ask_int_from_term("length of password: ");
+    auto passw = storageV1->genPassw(len, encoding);
+    cout << "generated password '" << passw << "' " << endl;
+}
+
 
 static void showInfo() {
     if (!storageV1)return;

@@ -9,9 +9,11 @@
 
 namespace term_utils {
 
-    std::string ask_from_term(std::string message);
+    std::string ask_from_term(std::string message = "");
 
-    std::string ask_password_from_term(std::string message);
+    int ask_int_from_term(std::string message = "");
+
+    std::string ask_password_from_term(std::string message = "");
 
     /**
     *

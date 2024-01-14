@@ -8,17 +8,23 @@
 using namespace std;
 
 string term_utils::ask_from_term(string message) {
-    std::string response;
-    cout << message;
-    cin >> response;
+    if (!message.empty())cout << message;
 
+    std::string response;
+    cin >> response;
+    return response;
+}
+
+int term_utils::ask_int_from_term(string message) {
+    if (!message.empty())cout << message;
+
+    int response;
+    cin >> response;
     return response;
 }
 
 std::string term_utils::ask_password_from_term(std::string message) {
-    std::string password;
-
-    cout << message;
+    if (!message.empty())cout << message;
 
     static struct termios old_terminal;
     static struct termios new_terminal;
@@ -32,6 +38,7 @@ std::string term_utils::ask_password_from_term(std::string message) {
 
     tcsetattr(STDIN_FILENO, TCSANOW, &new_terminal);
 
+    std::string password;
     cin >> password;
 
     // go back to the old settings
