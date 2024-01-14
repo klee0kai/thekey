@@ -62,7 +62,9 @@ namespace thekey_v1 {
 
         virtual int save();
 
-        virtual int save(std::string path);
+        virtual int save(const std::string& path);
+
+        virtual int saveToNewPassw(const std::string& path, const std::string passw);
 
         virtual std::vector<long long> notes();
 

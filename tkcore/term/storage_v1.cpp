@@ -29,6 +29,8 @@ static void showGenHistory();
 
 static void generateNewPassword();
 
+static void changeStoragePassword();
+
 static void showInfo();
 
 static int processCmdsStTerm(int argc, char **argv);
@@ -132,6 +134,11 @@ static int processCmdsStTerm(int argc, char **argv) {
         return 0;
     }
 
+    if (strcmp(argv[0], "changePassw") == 0) {
+        changeStoragePassword();
+        return 0;
+    }
+
     cerr << "unknown command  " << argv[0] << endl;
     return 0;
 }
@@ -186,6 +193,11 @@ static void printHelp() {
     cout.width(COLUMN_WIDTH);
     cout << std::left << "info or i";
     cout << "info about storage" << endl;
+
+    cout << ident;
+    cout.width(COLUMN_WIDTH);
+    cout << std::left << "changePassw";
+    cout << "change storage master password" << endl;
 
 
     cout << ident;
@@ -370,4 +382,19 @@ static void showInfo() {
     cout << "note max history: " << info.noteMaxHist << endl;
 
     cout << endl;
+}
+
+static void changeStoragePassword() {
+    if (!storageV1)return;
+
+    auto newPath = term_utils::ask_from_term("write new path to save storage: ");
+    auto passw = term_utils::ask_password_from_term("write new storage master passw: ");
+
+    cout << "changing password for storage...";
+    int error = storageV1->saveToNewPassw(newPath, passw);
+    if (error) {
+        cerr << "error to change storage password : " << error << endl;
+        return;
+    }
+    cout << "storage password changed to new file : " << newPath << endl;
 }

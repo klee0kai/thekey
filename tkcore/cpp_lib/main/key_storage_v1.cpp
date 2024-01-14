@@ -271,7 +271,7 @@ int KeyStorageV1::save() {
     return error;
 }
 
-int KeyStorageV1::save(std::string path) {
+int KeyStorageV1::save(const std::string &path) {
     int fd = open(path.c_str(), O_CREAT | O_TRUNC | O_WRONLY | O_CLOEXEC, S_IRUSR | S_IWUSR);
     if (fd < 0) return -1;
     fheader->notesCount = cryptedNotes.size();
@@ -295,6 +295,19 @@ int KeyStorageV1::save(std::string path) {
     write_file_error:
     close(fd);
     return KEY_WRITE_FILE_ERROR;
+}
+
+int KeyStorageV1::saveToNewPassw(const std::string &path, const std::string passw) {
+    auto storageInfo = info();
+    auto error = createStorage({.file = path, .storageVersion = storageInfo.storageVersion,
+                                       .name = storageInfo.name, .description = storageInfo.description});
+    if (error)return error;
+    auto newStorage = storage(path, passw);
+    //TODO deep copy
+    // notes with history
+    // gen password history
+
+    return error;
 }
 
 std::vector<long long> KeyStorageV1::notes() {
