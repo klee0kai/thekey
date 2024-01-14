@@ -137,8 +137,9 @@ std::shared_ptr<StorageV1Info> thekey_v1::storageV1Info(const std::string &file)
             .storageNameLen = STORAGE_NAME_LEN,
             .storageDescriptionLen = STORAGE_DESCRIPTION_LEN,
             .siteLen = SITE_LEN,
+            .loginLen = LOGIN_LEN,
             .passwLen = PASSW_LEN,
-            .descName = DESC_LEN,
+            .descLen = DESC_LEN,
             .noteMaxHist = NOTE_PASSW_HIST_LEN,
     };
     return make_shared<StorageV1Info>(info);
@@ -208,7 +209,7 @@ int thekey_v1::createStorage(const thekey::Storage &storage) {
 
 KeyStorageV1::KeyStorageV1(int fd, string path, shared_ptr<CryptContext> ctx) :
         fd(fd), storagePath(path), ctx(ctx) {
-    tempStoragePath = path.substr(path.find_last_of('.')) + "-temp.ckey";
+    tempStoragePath = path.substr(0, path.find_last_of('.')) + "-temp.ckey";
 }
 
 KeyStorageV1::~KeyStorageV1() {
@@ -253,8 +254,9 @@ StorageV1Info KeyStorageV1::info() {
             .storageNameLen = STORAGE_NAME_LEN,
             .storageDescriptionLen = STORAGE_DESCRIPTION_LEN,
             .siteLen = SITE_LEN,
+            .loginLen = LOGIN_LEN,
             .passwLen = PASSW_LEN,
-            .descName = DESC_LEN,
+            .descLen = DESC_LEN,
             .noteMaxHist = NOTE_PASSW_HIST_LEN,
     };
 }
@@ -265,7 +267,7 @@ int KeyStorageV1::save() {
     error = save(storagePath);
     if (error) return error;
     // everything went fine, you can delete the backup file
-    remove(storagePath.c_str());
+    remove(tempStoragePath.c_str());
     return error;
 }
 

@@ -8,6 +8,7 @@
 #include "thekey_core.h"
 #include "key_storage.h"
 #include "list"
+#include "salt_text/s_text.h"
 
 namespace thekey_v1 {
 
@@ -28,8 +29,9 @@ namespace thekey_v1 {
         unsigned int storageNameLen;
         unsigned int storageDescriptionLen;
         unsigned int siteLen;
+        unsigned int loginLen;
         unsigned int passwLen;
-        unsigned int descName;
+        unsigned int descLen;
         unsigned int noteMaxHist;
     };
 
@@ -64,7 +66,7 @@ namespace thekey_v1 {
 
         virtual std::vector<long long> notes();
 
-        virtual std::shared_ptr<DecryptedNote> note(long long notePtr, int decryptPassw);
+        virtual std::shared_ptr<DecryptedNote> note(long long notePtr, int decryptPassw = 0);
 
         virtual std::list<DecryptedPassw> noteHist(long long notePtr);
 
@@ -74,7 +76,7 @@ namespace thekey_v1 {
 
         virtual int removeNote(long long notePtr);
 
-        virtual std::string genPassw(int len, int genEncoding);
+        virtual std::string genPassw(int len, int genEncoding = ENC_NUM_ONLY);
 
         virtual std::string genPasswNote(long long notePtr);
 
@@ -96,7 +98,7 @@ namespace thekey_v1 {
 
     std::shared_ptr<thekey::Storage> storage(int fd, const std::string &file);
 
-    std::shared_ptr< StorageV1Info> storageV1Info(const std::string &file);
+    std::shared_ptr<StorageV1Info> storageV1Info(const std::string &file);
 
     int createStorage(const thekey::Storage &file);
 

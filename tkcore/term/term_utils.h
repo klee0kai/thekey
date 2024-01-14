@@ -9,7 +9,9 @@
 
 namespace term_utils {
 
-    std::string get_password();
+    std::string ask_from_term(std::string message);
+
+    std::string ask_password_from_term(std::string message);
 
     /**
     *
