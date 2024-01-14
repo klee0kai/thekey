@@ -45,7 +45,6 @@ void thekey_term_v1::login(const std::string &filePath) {
         return;
     }
 
-    cout << "TheKey. Version is " << TERM_VERSION << ". Designed by Andrey Kuzubov / Klee0kai" << endl;
     for (int tryPasswInput = 0; tryPasswInput < 3; tryPasswInput++) {
         auto message = "Input password. Max length " + to_string(storageInfo->passwLen) + " : ";
         auto passw = term_utils::ask_password_from_term(message);

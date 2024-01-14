@@ -32,6 +32,7 @@ void thekey_term::findStorages(const string &folder) {
 
 void thekey_term::printHelp() {
     cout << "TheKey - (storageVersion. " << TERM_VERSION << ") cryp/encrypt your secure passwords storages" << endl;
+    cout << "Designed by Andrey Kuzubov / klee0kai" << endl;
     cout << endl;
     cout << ident << "Options:" << endl;
 
