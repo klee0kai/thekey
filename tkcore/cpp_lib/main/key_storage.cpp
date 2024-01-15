@@ -9,7 +9,12 @@
 #include "thekey_core.h"
 #include "utils/common.h"
 
+#ifdef __ANDROID__
+namespace fs = std::__fs::filesystem;
+#else
 namespace fs = std::filesystem;
+#endif
+
 using namespace thekey;
 using namespace thekey_v1;
 using namespace std;

@@ -20,5 +20,5 @@ dependencyResolutionManagement {
 
 
 rootProject.name = "TheKey"
-include(":app_mobile_legacy")
+//include(":app_mobile_legacy")
 include(":app_mobile")
