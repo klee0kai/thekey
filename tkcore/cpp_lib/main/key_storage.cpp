@@ -78,3 +78,15 @@ std::list<Storage> thekey::findStorages(const std::string &filePath) {
     }
     return foundStorages;
 }
+
+void thekey::findStorages(const std::string &filePath, void (*foundStorageCallback)(const Storage &)) {
+    if (!fs::is_directory(filePath)) {
+        auto storageInfo = storage(filePath);
+        if (storageInfo) foundStorageCallback(*storageInfo);
+    } else {
+        for (const auto &entry: fs::directory_iterator(filePath)) {
+            findStorages(entry.path().string(), foundStorageCallback);
+        }
+    }
+}
+

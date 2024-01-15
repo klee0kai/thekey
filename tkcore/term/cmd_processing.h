@@ -12,7 +12,7 @@ namespace thekey_term {
 
     void printHelp();
 
-    void findStorages(const std::string &folder);
+    void findStorages(const std::string &storage);
 
     void login(const std::string &filePath);
 

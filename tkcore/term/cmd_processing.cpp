@@ -18,15 +18,14 @@ static shared_ptr<thekey_v1::KeyStorageV1> storageV1 = {};
 
 void thekey_term::findStorages(const string &folder) {
     cout << "Available crypted storages in folder: " << folder << endl;
-    auto storagesFound = thekey::findStorages(folder);
-    for (const auto &item: storagesFound) {
+    thekey::findStorages(folder, [](const Storage &storage) {
         cout << "-------------------------------------" << endl;
-        cout << "storagePath: " << item.file << endl;
-        cout << "name: " << item.name << endl;
-        cout << "version: " << item.storageVersion << endl;
-        cout << "desc: " << item.description << endl;
+        cout << "storagePath: " << storage.file << endl;
+        cout << "name: " << storage.name << endl;
+        cout << "version: " << storage.storageVersion << endl;
+        cout << "desc: " << storage.description << endl;
         cout << endl;
-    }
+    });
     cout << "-------------------------------------" << endl;
 }
 
