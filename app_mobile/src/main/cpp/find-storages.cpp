@@ -15,14 +15,13 @@ void EngineFindStorageEngine::findStorages(const std::string &folder,
                                            const EngineFindStorageListener &listener) {
     ::findStorageListener = std::make_shared<EngineFindStorageListener>(listener);
 
-    auto storages = thekey::findStorages(folder);
-    for (const auto &item: storages) {
+    thekey::findStorages(folder, [](const Storage &item) {
         findStorageListener->onStorageFound(ModelStorage{
                 .path = item.file,
                 .name = item.name,
                 .description = item.description
         });
-    }
+    });
 
 }
 
