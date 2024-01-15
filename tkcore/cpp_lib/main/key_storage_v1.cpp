@@ -439,10 +439,14 @@ int KeyStorageV1::setNote(
 }
 
 int KeyStorageV1::removeNote(long long notePtr) {
-    auto removed = std::remove_if(cryptedNotes.begin(), cryptedNotes.end(),
-                                  [notePtr](const CryptedNote &note) {
-                                      return (long long) &note == notePtr;
-                                  });
+    auto cryptedNote = std::find_if(cryptedNotes.begin(), cryptedNotes.end(),
+                                    [notePtr](const CryptedNote &note) {
+                                        return (long long) &note == notePtr;
+                                    });
+    if (cryptedNote == cryptedNotes.end()) {
+        return KEY_NOTE_NOT_FOUND;
+    }
+    cryptedNotes.erase(cryptedNote);
 
     fheader->notesCount = cryptedNotes.size();
     auto error = save();

@@ -17,12 +17,13 @@ static void printHelp();
 
 static void listNotes();
 
-
 static void notePassword();
 
 static void createNote();
 
 static void editNote();
+
+static void removeNote();
 
 static void noteHist();
 
@@ -121,6 +122,11 @@ static int processCmdsStTerm(int argc, char **argv) {
         return 0;
     }
 
+    if (strcmp(argv[0], "remove") == 0) {
+        removeNote();
+        return 0;
+    }
+
     if (strcmp(argv[0], "gen") == 0) {
         generateNewPassword();
         return 0;
@@ -180,6 +186,10 @@ static void printHelp() {
     cout << std::left << "edit";
     cout << "edit note" << endl;
 
+    cout << ident;
+    cout.width(COLUMN_WIDTH);
+    cout << std::left << "remove";
+    cout << "remove note" << endl;
 
     cout << ident;
     cout.width(COLUMN_WIDTH);
@@ -330,6 +340,24 @@ static void editNote() {
             return;
         }
     }
+}
+
+static void removeNote() {
+    if (!storageV1)return;
+    auto index = 0;
+    auto notes = storageV1->notes();
+    for (const auto &item: notes) {
+        auto note = storageV1->note(item, 0);
+        cout << ++index << ") '" << note->site << "' / '" << note->login << "' hist length " << note->histLen << endl;
+    }
+    auto noteIndex = term_utils::ask_int_from_term("Select note. Write index: ");
+    if (noteIndex < 1 || noteIndex > notes.size()) {
+        cerr << "incorrect index " << noteIndex << endl;
+        return;
+    }
+    auto notePtr = notes[noteIndex - 1];
+    storageV1->removeNote(notePtr);
+    cout << "note removed" << endl;
 }
 
 static void showGenHistory() {
