@@ -152,8 +152,11 @@ fun EditStorageScreen(
             },
             value = storagePathTextValue,
             onValueChange = {
-                storagePathFieldFocused = true
-                storagePathTextValue = it
+                with(pathInputHelper) {
+                    storagePathFieldFocused = true
+                    storagePathTextValue = it
+                        .pathInputMask()
+                }
             },
             label = { Text(stringResource(R.string.storage_path)) }
         )

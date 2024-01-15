@@ -26,7 +26,7 @@ class PathInputHelper {
         val coloredSpanStyle = SpanStyle(color = colorScheme.androidColorScheme.primary)
         shortPaths.shortPaths.runForEach {
             listOf(short, shortFromRoot, absolutePath).forEach { coloredPath ->
-                if (input.startsWith(coloredPath)) {
+                if (input.startsWith("$coloredPath/")) {
                     withStyle(coloredSpanStyle) { append(coloredPath) }
                     if (input.length > coloredPath.length) append(input.substring(coloredPath.length))
                     return@buildAnnotatedString
@@ -49,7 +49,7 @@ class PathInputHelper {
         }
         return input.copy(
             annotatedString = AnnotatedString(shortPath),
-            selection = TextRange(shortPath.length),
+            selection = if (input.text != shortPath) TextRange(shortPath.length) else input.selection,
         )
     }
 
@@ -77,9 +77,9 @@ class PathInputHelper {
         val input = this
         val isDir = input.lastOrNull() == '/'
         val parent = (if (isDir) File(input) else File(input).parentFile)
-            ?.path
+            ?.absolutePath
             ?: ""
-        return ("$parent/$selected/").fromRootPath()
+        return File(parent, selected).absolutePath.fromRootPath() + "/"
     }
 
     fun String.shortPath() = shortPaths.shortPathName(this)
