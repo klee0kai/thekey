@@ -64,7 +64,7 @@ namespace thekey_v1 {
 
         virtual int save(const std::string& path);
 
-        virtual int saveToNewPassw(const std::string& path, const std::string passw);
+        virtual int saveToNewPassw(const std::string& path, const std::string& passw);
 
         virtual std::vector<long long> notes();
 
@@ -79,8 +79,6 @@ namespace thekey_v1 {
         virtual int removeNote(long long notePtr);
 
         virtual std::string genPassw(int len, int genEncoding = ENC_NUM_ONLY);
-
-        virtual std::string genPasswNote(long long notePtr);
 
         virtual std::list<DecryptedPassw> genPasswHist();
 

@@ -297,16 +297,71 @@ int KeyStorageV1::save(const std::string &path) {
     return KEY_WRITE_FILE_ERROR;
 }
 
-int KeyStorageV1::saveToNewPassw(const std::string &path, const std::string passw) {
+int KeyStorageV1::saveToNewPassw(const std::string &path, const std::string &passw) {
     auto storageInfo = info();
     auto error = createStorage({.file = path, .storageVersion = storageInfo.storageVersion,
                                        .name = storageInfo.name, .description = storageInfo.description});
     if (error)return error;
     auto newStorage = storage(path, passw);
-    //TODO deep copy
-    // notes with history
-    // gen password history
+    newStorage->readAll();
+    auto newCryptCtx = newStorage->ctx;
 
+    for (const auto &crypNoteOriginal: cryptedNotes) {
+        CryptedNote crypNoteNew = {};
+        crypNoteNew.genTime = crypNoteOriginal.genTime;
+        crypNoteNew.histLen = crypNoteOriginal.histLen % NOTE_PASSW_HIST_LEN;
+
+        unsigned char siteDecrypted[SITE_LEN];
+        memset(siteDecrypted, 0, SITE_LEN);
+        if (memcmpr((void *) crypNoteOriginal.site, 0, SITE_LEN) != NULL) {
+            decode(siteDecrypted, crypNoteOriginal.site, SITE_LEN, ctx->keyForLogin);
+            encode(crypNoteNew.site, siteDecrypted, SITE_LEN, newCryptCtx->keyForLogin);
+        }
+
+        unsigned char loginDecrypted[LOGIN_LEN];
+        memset(loginDecrypted, 0, LOGIN_LEN);
+        if (memcmpr((void *) crypNoteOriginal.login, 0, LOGIN_LEN) != NULL) {
+            decode(loginDecrypted, crypNoteOriginal.login, LOGIN_LEN, ctx->keyForLogin);
+            encode(crypNoteNew.login, loginDecrypted, LOGIN_LEN, newCryptCtx->keyForLogin);
+        }
+
+        unsigned char passwDecrypted[PASSW_LEN];
+        memset(passwDecrypted, 0, PASSW_LEN);
+        if (memcmpr((void *) crypNoteOriginal.passw, 0, PASSW_LEN) != NULL) {
+            decode(passwDecrypted, crypNoteOriginal.passw, PASSW_LEN, ctx->keyForPassw);
+            encode(crypNoteNew.passw, passwDecrypted, PASSW_LEN, newCryptCtx->keyForPassw);
+        }
+
+        unsigned char descriptionDecrypted[DESC_LEN];
+        memset(descriptionDecrypted, 0, DESC_LEN);
+        if (memcmpr((void *) crypNoteOriginal.description, 0, DESC_LEN) != NULL) {
+            decode(descriptionDecrypted, crypNoteOriginal.description, DESC_LEN, ctx->keyForDescription);
+            encode(crypNoteNew.description, descriptionDecrypted, DESC_LEN, newCryptCtx->keyForDescription);
+        }
+
+        for (int i = 0; i < crypNoteOriginal.histLen; ++i) {
+            memset(passwDecrypted, 0, PASSW_LEN);
+            decode(passwDecrypted, crypNoteOriginal.hist[i].passw, PASSW_LEN, ctx->keyForNoteHistPassw);
+            encode(crypNoteNew.hist[i].passw, passwDecrypted, PASSW_LEN, newCryptCtx->keyForNoteHistPassw);
+            crypNoteNew.hist[i].genTime = crypNoteOriginal.hist[i].genTime;
+        }
+
+        newStorage->cryptedNotes.push_back(crypNoteNew);
+    }
+
+    for (const auto &cryptedHistOriginal: cryptedGeneratedPassws) {
+        CryptedPassw cryptedHistNew = {};
+
+        unsigned char passwDecrypted[PASSW_LEN];
+        memset(passwDecrypted, 0, PASSW_LEN);
+        decode(passwDecrypted, cryptedHistOriginal.passw, PASSW_LEN, ctx->keyForGenPassw);
+        encode(cryptedHistNew.passw, passwDecrypted, PASSW_LEN, newCryptCtx->keyForGenPassw);
+        cryptedHistNew.genTime = cryptedHistOriginal.genTime;
+
+        newStorage->cryptedGeneratedPassws.push_back(cryptedHistNew);
+    }
+
+    error = newStorage->save();
     return error;
 }
 
@@ -474,16 +529,6 @@ std::string KeyStorageV1::genPassw(int len, int genEncoding) {
     return (char *) passw;
 }
 
-std::string KeyStorageV1::genPasswNote(long long notePtr) {
-    auto cryptedNote = std::find_if(cryptedNotes.begin(), cryptedNotes.end(),
-                                    [notePtr](const CryptedNote &note) {
-                                        return (long long) &note == notePtr;
-                                    });
-    if (cryptedNote == cryptedNotes.end()) return "";
-
-    return "";
-}
-
 std::list<DecryptedPassw> KeyStorageV1::genPasswHist() {
     auto hist = list<DecryptedPassw>();
     for (const auto &item: cryptedGeneratedPassws) {
@@ -495,7 +540,6 @@ std::list<DecryptedPassw> KeyStorageV1::genPasswHist() {
     }
     return hist;
 }
-
 
 static std::shared_ptr<StorageV1_Header> storageHeader(int fd) {
     lseek(fd, 0, SEEK_SET);

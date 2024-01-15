@@ -4,6 +4,7 @@
 
 #include "storage_v1.h"
 #include "term_utils.h"
+#include "utils/common.h"
 
 using namespace std;
 using namespace thekey;
@@ -412,8 +413,9 @@ static void changeStoragePassword() {
 
     auto newPath = term_utils::ask_from_term("write new path to save storage: ");
     auto passw = term_utils::ask_password_from_term("write new storage master passw: ");
+    if (!ends_with(newPath, ".ckey")) newPath += ".ckey";
 
-    cout << "changing password for storage...";
+    cout << "changing password for storage..." << endl;
     int error = storageV1->saveToNewPassw(newPath, passw);
     if (error) {
         cerr << "error to change storage password : " << error << endl;
