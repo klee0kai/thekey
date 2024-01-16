@@ -6,6 +6,7 @@
 #include <list>
 #include "public/key_storage.h"
 #include "public/key_storage_v1.h"
+#include "public/key_storage_v2.h"
 #include "thekey_core.h"
 #include "utils/common.h"
 
@@ -22,14 +23,32 @@ using namespace std;
 namespace thekey {
 
 #pragma pack(push, 1)
-    struct StorageFileHeader {
-        char signature[SIGNATURE_LEN];
+
+    struct StorageV1HeaderShort {
+        char signature[SIGNATURE_LEN]; // TKEY_SIGNATURE_V1
         unsigned char storageVersion;
+
+        [[nodiscard]] int checkSignature() const {
+            return memcmp(signature, &storageSignature_V1, SIGNATURE_LEN) == 0;
+        }
+
     };
+
+    struct StorageV2HeaderShort {
+        char signature[SIGNATURE_LEN]; // TKEY_SIGNATURE_V2
+        INT32_BIG_ENDIAN(storageVersion)
+
+        [[nodiscard]] int checkSignature() const {
+            return memcmp(signature, &storageSignature_V2, SIGNATURE_LEN) == 0;
+        }
+
+    };
+
 #pragma pack(pop)
 
     const char *const storageFormat = ".ckey";
-    const char storageSignature[SIGNATURE_LEN] = TKEY_SIGNATURE;
+    const char storageSignature_V1[SIGNATURE_LEN] = TKEY_SIGNATURE_V1;
+    const char storageSignature_V2[SIGNATURE_LEN] = TKEY_SIGNATURE_V2;
 
 }
 
@@ -37,21 +56,30 @@ std::shared_ptr<Storage> thekey::storage(const std::string &path) {
     int fd = open(path.c_str(), O_RDONLY | O_CLOEXEC);
     if (fd == -1) return {};
 
-    StorageFileHeader header = {};
-    size_t readLen = read(fd, &header, sizeof(header));
-    if (readLen != sizeof(header)) {
+    char headerRaw[MAX(sizeof(StorageV1HeaderShort), sizeof(StorageV2HeaderShort))];
+    size_t readLen = read(fd, headerRaw, sizeof(headerRaw));
+    if (readLen != sizeof(headerRaw)) {
         close(fd);
         return {};
     }
-    if (memcmp(&header.signature, &storageSignature, SIGNATURE_LEN) != 0) {
-        close(fd);
-        return {};
+    auto *headerV1 = (StorageV1HeaderShort *) headerRaw;
+    auto *headerV2 = (StorageV2HeaderShort *) headerRaw;
+    unsigned int version = 0;
+    if (headerV1->checkSignature()) {
+        version = headerV1->storageVersion;
+    } else if (headerV2->checkSignature()) {
+        version = headerV2->storageVersion();
     }
-    auto version = header.storageVersion;
+
 
     switch (version) {
         case 1: {
             auto storage = thekey_v1::storage(fd, path);
+            close(fd);
+            return storage;
+        }
+        case 2: {
+            auto storage = thekey_v2::storage(fd, path);
             close(fd);
             return storage;
         }

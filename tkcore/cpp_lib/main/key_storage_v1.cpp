@@ -193,7 +193,7 @@ int thekey_v1::createStorage(const thekey::Storage &storage) {
     int fd = open(storage.file.c_str(), O_RDONLY | O_WRONLY | O_CLOEXEC | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
     if (fd < 0) return KEY_OPEN_FILE_ERROR;
     StorageV1_Header header = {};
-    memcpy(header.signature, storageSignature, SIGNATURE_LEN);
+    memcpy(header.signature, storageSignature_V1, SIGNATURE_LEN);
     header.storageVersion = STORAGE_VER_FIRST;
     strncpy(header.name, storage.name.c_str(), STORAGE_NAME_LEN);
     strncpy(header.description, storage.description.c_str(), STORAGE_DESCRIPTION_LEN);
@@ -548,7 +548,7 @@ static std::shared_ptr<StorageV1_Header> storageHeader(int fd) {
     if (readLen != sizeof(header)) {
         return {};
     }
-    if (memcmp(&header.signature, &thekey::storageSignature, SIGNATURE_LEN) != 0
+    if (memcmp(&header.signature, &thekey::storageSignature_V1, SIGNATURE_LEN) != 0
         || header.storageVersion != STORAGE_VER_FIRST)
         return {};
     return make_shared<thekey_v1::StorageV1_Header>(header);
