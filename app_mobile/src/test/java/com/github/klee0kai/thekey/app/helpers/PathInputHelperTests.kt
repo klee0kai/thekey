@@ -20,40 +20,53 @@ class PathInputHelperTests {
 
     @Test
     fun emptyInputTest() = runBlocking {
-        helper
-            .autoCompleteVariants(TextFieldValue(""))
-            .collect {
-                assertEquals("", it.textField.text)
-            }
+        with(helper) {
+            assertEquals(
+                "",
+                TextFieldValue("").pathInputMask().text
+            )
+        }
+
     }
 
 
     @Test
     fun rootPathTest() = runBlocking {
-        helper
-            .autoCompleteVariants(TextFieldValue("someFolder"))
-            .collect {
-                assertEquals("/someFolder", it.textField.text)
-            }
+        with(helper) {
+            assertEquals(
+                "/someFolder",
+                TextFieldValue("someFolder")
+                    .pathInputMask()
+                    .text
+            )
+        }
     }
 
 
     @Test
     fun somePathTest() = runBlocking {
-        helper
-            .autoCompleteVariants(TextFieldValue("someFolder/child"))
-            .collect {
-                assertEquals("/someFolder/child", it.textField.text)
-            }
+        with(helper) {
+            assertEquals(
+                "/someFolder/child",
+                TextFieldValue("someFolder/child")
+                    .pathInputMask()
+                    .text
+            )
+        }
+
     }
 
     @Test
     fun dirPathTest() = runBlocking {
-        helper
-            .autoCompleteVariants(TextFieldValue("someFolder/child/"))
-            .collect {
-                assertEquals("/someFolder/child/", it.textField.text)
-            }
+        with(helper) {
+            assertEquals(
+                "/someFolder/child/",
+                TextFieldValue("someFolder/child/")
+                    .pathInputMask()
+                    .text
+            )
+        }
+
     }
 
 }

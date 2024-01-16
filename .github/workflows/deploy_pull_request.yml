@@ -28,7 +28,7 @@ jobs:
 
       - name: Test with Gradle
         continue-on-error: true
-        run: ./gradlew test
+        run: ./gradlew testDebug
       - name: Upload test artifacts
         uses: actions/upload-artifact@v3
         with:

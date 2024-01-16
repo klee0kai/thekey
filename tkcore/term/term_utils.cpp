@@ -5,8 +5,27 @@
 #include "term_utils.h"
 #include <termios.h>
 
+using namespace std;
 
-void term_utils::get_password(char *password) {
+string term_utils::ask_from_term(string message) {
+    if (!message.empty())cout << message;
+
+    std::string response;
+    cin >> response;
+    return response;
+}
+
+int term_utils::ask_int_from_term(string message) {
+    if (!message.empty())cout << message;
+
+    int response;
+    cin >> response;
+    return response;
+}
+
+std::string term_utils::ask_password_from_term(std::string message) {
+    if (!message.empty())cout << message;
+
     static struct termios old_terminal;
     static struct termios new_terminal;
 
@@ -17,23 +36,17 @@ void term_utils::get_password(char *password) {
     new_terminal = old_terminal;
     new_terminal.c_lflag &= ~(ECHO);
 
-    // set this as the new terminal options
     tcsetattr(STDIN_FILENO, TCSANOW, &new_terminal);
 
-    // get the password
-    // the user can add chars and delete if he puts it wrong
-    // the input process is done when he hits the enter
-    // the \n is stored, we replace it with \0
-    if (fgets(password, BUFSIZ, stdin) == NULL)
-        password[0] = '\0';
-    else
-        password[strlen(password) - 1] = '\0';
+    std::string password;
+    cin >> password;
 
     // go back to the old settings
     tcsetattr(STDIN_FILENO, TCSANOW, &old_terminal);
+
+    cout << endl;
+    return password;
 }
-
-
 
 
 size_t term_utils::argsCount(const char *sourceText) {

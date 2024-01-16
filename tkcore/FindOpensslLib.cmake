@@ -2,6 +2,8 @@
 get_filename_component(OPENSSL_LIB_PATH ${CMAKE_CURRENT_LIST_DIR}/../prebuild/openssl ABSOLUTE)
 get_filename_component(openssl_include ${OPENSSL_LIB_PATH}/include ABSOLUTE)
 
+message(OPENSSL_LIB_PATH = ${OPENSSL_LIB_PATH})
+
 add_library(openssl_interface INTERFACE)
 set_target_properties(openssl_interface PROPERTIES
         INTERFACE_INCLUDE_DIRECTORIES ${openssl_include}

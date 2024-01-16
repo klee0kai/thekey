@@ -5,15 +5,17 @@
 #ifndef TKCORE_CMD_PROCESSING_H
 #define TKCORE_CMD_PROCESSING_H
 
-#include <def_header.h>
+#include "def_header.h"
 
 
-namespace cmd_pr {
+namespace thekey_term {
+
     void printHelp();
 
-    void findStorages(const char *srcDir = NULL);
+    void findStorages(const std::string &storage);
 
-    void login(const char *filePath);
+    void login(const std::string &filePath);
+
 }
 
 #endif //TKCORE_CMD_PROCESSING_H

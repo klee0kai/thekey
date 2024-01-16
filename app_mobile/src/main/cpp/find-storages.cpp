@@ -2,9 +2,11 @@
 #include <string>
 #include <android/log.h>
 #include "brooklyn.h"
-#include "dll_interface/key_finder.h"
+#include "thekey.h"
 
 using namespace brooklyn;
+using namespace thekey;
+using namespace thekey_v1;
 
 
 std::shared_ptr<EngineFindStorageListener> findStorageListener = {};
@@ -13,12 +15,13 @@ void EngineFindStorageEngine::findStorages(const std::string &folder,
                                            const EngineFindStorageListener &listener) {
     ::findStorageListener = std::make_shared<EngineFindStorageListener>(listener);
 
-    key_finder::findStorages(folder.c_str(), [](Storage storage) {
+    thekey::findStorages(folder, [](const Storage &item) {
         findStorageListener->onStorageFound(ModelStorage{
-                .path = storage.file,
-                .name = storage.name,
-                .description  = storage.description
+                .path = item.file,
+                .name = item.name,
+                .description = item.description
         });
     });
+
 }
 

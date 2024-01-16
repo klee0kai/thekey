@@ -5,83 +5,77 @@
 #include <string>
 #include <android/log.h>
 #include "brooklyn.h"
-#include "dll_interface/key_finder.h"
+#include "thekey.h"
+#include "memory"
 
 using namespace brooklyn;
+using namespace thekey;
+using namespace thekey_v1;
+using namespace std;
+
+static shared_ptr<KeyStorageV1> storageV1 = {};
 
 
 int EngineCryptStorageEngine::isLogined() {
-    return key_manager_ctx::isLogined()
-           && getStoragePath() == key_manager_ctx::getLoggedStoragePath();
+    return storageV1.get() != NULL;
 }
 
 void EngineCryptStorageEngine::login(const std::string &passw) {
-    key_manager_ctx::login(
-            (const unsigned char *) getStoragePath().c_str(),
-            (const unsigned char *) passw.c_str()
-    );
+    thekey_v1::storage(getStoragePath(), passw);
 }
 
 void EngineCryptStorageEngine::unlogin() {
-    key_manager_ctx::unLogin();
+    storageV1.reset();
 }
 
 std::vector<EngineModelDecryptedNote> EngineCryptStorageEngine::notes() {
-    long long *btNotes = key_manager_ctx::getNotes();
-    int len;
-    for (len = 0; btNotes[len]; len++);
+    if (!storageV1)return {};
     auto notes = std::vector<EngineModelDecryptedNote>();
-    for (len = 0; btNotes[len]; len++) {
-        DecryptedNote *dnote = key_manager_ctx::getNoteItem((long) btNotes[len], 0);
-        notes.push_back(
-                EngineModelDecryptedNote{
-                        .ptnote = btNotes[len],
-                        .site = (char *) dnote->site ?: "",
-                        .login = (char *) dnote->login ?: "",
-                        .desc = (char *) dnote->description ?: "",
-                        .chTime = (int64_t) dnote->genTime,
-                }
-        );
-
-        memset(dnote, 0, sizeof(DecryptedNote));
-        delete dnote;
+    for (const auto &ptnote: storageV1->notes()) {
+        auto dnote = storageV1->note(ptnote);
+        notes.push_back({
+                                .ptnote = ptnote,
+                                .site =  dnote->site,
+                                .login =  dnote->login,
+                                .desc =  dnote->description,
+                                .chTime = (int64_t) dnote->genTime,
+                        });
     }
-    delete[] btNotes;
     return notes;
 }
 
 EngineModelDecryptedNote EngineCryptStorageEngine::note(const int64_t &notePtr) {
-    DecryptedNote *dnote = key_manager_ctx::getNoteItem((long) notePtr, 0);
+    if (!storageV1)return {};
 
+    auto dnote = storageV1->note(notePtr, 1);
     auto result = EngineModelDecryptedNote{
             .ptnote = notePtr,
-            .site = (char *) dnote->site ?: "",
-            .login = (char *) dnote->login ?: "",
-            .desc = (char *) dnote->description ?: "",
+            .site =  dnote->site,
+            .login =  dnote->login,
+            .passw =  dnote->passw,
+            .desc =  dnote->description,
             .chTime = (int64_t) dnote->genTime,
     };
-
-    memset(dnote, 0, sizeof(DecryptedNote));
-    delete dnote;
     return result;
 }
 
 int EngineCryptStorageEngine::saveNote(const brooklyn::EngineModelDecryptedNote &decryptedNote) {
+    if (!storageV1)return -1;
     auto ptNote = decryptedNote.ptnote;
-    if (!ptNote) ptNote = key_manager_ctx::createNote();
-    DecryptedNote dnote = {};
-    strcpy((char *) dnote.site, decryptedNote.site.c_str());
-    strcpy((char *) dnote.login, decryptedNote.login.c_str());
-    strcpy((char *) dnote.passw, decryptedNote.passw.c_str());
-    strcpy((char *) dnote.description, decryptedNote.desc.c_str());
-    key_manager_ctx::setNote(ptNote, &dnote);
-    memset(&dnote, 0, sizeof(DecryptedNote));
+    if (!ptNote) ptNote = storageV1->createNote();
+    DecryptedNote dnote = {
+            .site = decryptedNote.site,
+            .login = decryptedNote.login,
+            .passw = decryptedNote.passw,
+            .description = decryptedNote.desc
+    };
+    storageV1->setNote(ptNote, dnote);
     return 0;
 }
 
 int EngineCryptStorageEngine::removeNote(const int64_t &notePt) {
-    if (!notePt)return -1;
-    key_manager_ctx::rmNote(notePt);
+    if (!notePt || !storageV1)return -1;
+    storageV1->removeNote(notePt);
     return 0;
 }
 
@@ -93,8 +87,6 @@ EngineModelDecryptedPassw EngineCryptStorageEngine::getGenPassw(const int64_t &p
 
 std::string
 EngineCryptStorageEngine::generateNewPassw(const int &len, const int &genPasswEncoding) {
-    unsigned char *genPassw = key_manager_ctx::genPassw(len, genPasswEncoding);
-    std::string passwStr = (char *) genPassw;
-    delete[] genPassw;
-    return passwStr;
+    if (!storageV1)return "";
+    return storageV1->genPassw(len, genPasswEncoding);
 }

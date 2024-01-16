@@ -1,4 +1,5 @@
 add_executable(tkey
+        storage_v1.cpp
         cmd_processing.cpp
         term_utils.cpp
         main.cpp
