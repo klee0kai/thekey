@@ -26,6 +26,11 @@
     [[nodiscard]] uint32_t name() const { return htonl(raw##name); } \
     void name(uint32_t name) { raw##name = htonl(name); }
 
+#define INT64_BIG_ENDIAN(name) \
+    uint64_t raw##name;        \
+    [[nodiscard]] uint64_t name() const { return htole64(raw##name); } \
+    void name(uint64_t name) { raw##name = htole64(name); }
+
 #define INT32_BIG_ENDIAN_ENUM(name, enum) \
     uint32_t raw##name;        \
     [[nodiscard]] enum name() const { return enum( htonl(raw##name) ); } \

@@ -6,7 +6,7 @@
 #include <list>
 #include "public/key_storage.h"
 #include "public/key_storage_v1.h"
-#include "public/key_storage_v2.h"
+#include "public/storage2/storage.h"
 #include "thekey_core.h"
 #include "utils/common.h"
 

@@ -2,30 +2,30 @@
 // Created by panda on 13.01.24.
 //
 
-#ifndef THEKEY_KEY_STORAGE_V2_H
-#define THEKEY_KEY_STORAGE_V2_H
+#ifndef THEKEY_STORAGE_H
+#define THEKEY_STORAGE_H
 
 #include "thekey_core.h"
-#include "key_storage.h"
+#include "public/key_storage.h"
 #include "list"
 #include "salt_text/s_text.h"
+#include "public/storage2/storage_structure.h"
 
 namespace thekey_v2 {
 
-    enum EncryptTypes {
-        Default,
-        AES256,
-    };
-
-    struct StorageV2_Header;
+    struct SplitPasswords;
     struct CryptContext;
 
     class KeyStorageV2 {
 
     public:
-        KeyStorageV2(int fd, std::string path, std::shared_ptr<CryptContext> passw);
+        KeyStorageV2(int fd, const std::string &path,const std::shared_ptr<CryptContext>& ctx);
 
         virtual ~KeyStorageV2();
+
+        virtual int readAll();
+
+        virtual StorageFullHeader info();
 
     private:
 
@@ -33,8 +33,9 @@ namespace thekey_v2 {
         int fd;
         std::string storagePath;
         std::string tempStoragePath; // predict file write. (protect broken bits)
+        std::shared_ptr<CryptContext> ctx;
 
-        std::shared_ptr<StorageV2_Header> fheader;
+        std::shared_ptr<StorageFullHeader> fheader;
 
     };
 
@@ -46,4 +47,4 @@ namespace thekey_v2 {
 
 }
 
-#endif //THEKEY_KEY_STORAGE_V2_H
+#endif //THEKEY_STORAGE_H
