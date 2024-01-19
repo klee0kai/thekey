@@ -3,6 +3,7 @@
 add_library(lib_tkcore
         ${CMAKE_CURRENT_LIST_DIR}/utils/pass_spliter_v1.cpp
         ${CMAKE_CURRENT_LIST_DIR}/utils/common.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/utils/encoding.cpp
         ${CMAKE_CURRENT_LIST_DIR}/salt_text/s_text.cpp
         ${CMAKE_CURRENT_LIST_DIR}/main/key_storage.cpp
         ${CMAKE_CURRENT_LIST_DIR}/main/key_storage_v1.cpp

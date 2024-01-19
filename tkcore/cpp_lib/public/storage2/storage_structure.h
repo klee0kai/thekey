@@ -7,6 +7,8 @@
 
 #include "thekey_core.h"
 
+#define SIGNATURE_LEN 7
+
 #define STORAGE_VER_SECOND 0x02
 #define FILE_TYPE_OWNER_LEN 256
 #define STORAGE_NAME_LEN 128

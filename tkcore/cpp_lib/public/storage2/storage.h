@@ -23,9 +23,9 @@ namespace thekey_v2 {
 
         virtual ~KeyStorageV2();
 
-        virtual int readAll();
+//        virtual int readAll();
 
-        virtual StorageFullHeader info();
+//        virtual StorageFullHeader info();
 
     private:
 
