@@ -18,6 +18,7 @@
 
 
 namespace tkey2_salt {
+
 #pragma pack(push, 1)
 
     struct SaltedTextPayload {
@@ -41,14 +42,6 @@ namespace tkey2_salt {
 
 #pragma pack(pop)
 
-    uint32_t findEncodingType(const std::string &str);
-
-    uint32_t findEncodingTypeByFlags(const uint32_t &flags);
-
-    uint32_t encodingLen(uint32_t type);
-
-    std::string encodingSymbols(uint32_t type);
-
     /**
      * @param typeEncoding tkey encode type
      * @param out_chars tkey encoded text
@@ -58,8 +51,8 @@ namespace tkey2_salt {
      * @return
      */
     int encoded(uint32_t typeEncoding,
-                unsigned char *out_chars,
-                const unsigned char *in_chars,
+                tkey_salt::wide_char out_chars,
+                const tkey_salt::wide_char *in_chars,
                 const uint &bufSize,
                 const int &salt
     );
@@ -73,8 +66,8 @@ namespace tkey2_salt {
      * @return
      */
     int decoded(uint32_t typeEncoding,
-                unsigned char *out,
-                const unsigned char *in,
+                tkey_salt::wide_char *out,
+                const tkey_salt::wide_char *in,
                 const int &len);
 
 }
