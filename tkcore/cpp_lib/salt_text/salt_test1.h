@@ -37,19 +37,10 @@
 #define ENC_LEN_PASSW 0 // кодирока длины [4..16]
 #define ENC_LEN_TEXT 1
 
-extern size_t SaltTextHeader_LEN;
-
-#pragma pack(push, 1)
-struct SaltTextHeader {
-    unsigned char coding; // в кольце 5 TODO сделать отдельное соление по кодирокам
-    unsigned char lenCoding; // в кольце 2 кодировка длины TODO сделать отдельное соление по кодирокам
-    uint32_t len; //  в кольце ожидаемого текста или по кодировке длины
-    unsigned char saltText[]; // засоленный текст
-};
-#pragma pack(pop)
-
 
 namespace tkey1_salt_text {
+
+    struct SaltTextHeader;
 
     /**
     * солит пароль с изменением кодировки

@@ -12,6 +12,7 @@
 #include <limits.h>
 #include <openssl/rand.h>
 
+using namespace tkey1_salt_text;
 
 #define SALT_IN_RING(x, max, ring) ( (x) + (ring) * rand((max) / (ring) ))
 #define TYPE_MAX(typeLen) ((1L << ( (typeLen) * 8L)) -1L)
@@ -26,7 +27,17 @@
 #define ENC_PASSW_NUM_EN_SPEC_SYM_SET 94 // 128 - 33 - 1 выкидывем управляющие символы
 #define ENC_PASSW_NUM_EN_SPEC_SPACE_SYM_SET 95 // 128 - 33 - 1 выкидывем управляющие символы
 
-size_t SaltTextHeader_LEN = sizeof(SaltTextHeader);
+
+#pragma pack(push, 1)
+struct tkey1_salt_text::SaltTextHeader {
+    unsigned char coding; // в кольце 5 TODO сделать отдельное соление по кодирокам
+    unsigned char lenCoding; // в кольце 2 кодировка длины TODO сделать отдельное соление по кодирокам
+    uint32_t len; //  в кольце ожидаемого текста или по кодировке длины
+    unsigned char saltText[]; // засоленный текст
+};
+#pragma pack(pop)
+
+size_t SaltTextHeader_LEN = sizeof(tkey1_salt_text::SaltTextHeader);
 
 
 static int acsii_to_num(unsigned char *out, const unsigned char *source, bool salt);
