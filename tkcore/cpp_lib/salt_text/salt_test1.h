@@ -38,7 +38,7 @@
 #define ENC_LEN_TEXT 1
 
 
-namespace tkey1_salt_text {
+namespace tkey1_salt {
 
     struct SaltTextHeader;
 

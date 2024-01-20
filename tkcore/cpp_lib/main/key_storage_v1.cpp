@@ -513,7 +513,7 @@ std::string KeyStorageV1::genPassw(int len, int genEncoding) {
     memset(passw, 0, PASSW_LEN);
 
     //gen passw
-    tkey1_salt_text::genpassw(passw, len, genEncoding);
+    tkey1_salt::genpassw(passw, len, genEncoding);
 
     //save passw
     unsigned char encodedPassw[PASSW_LEN];
@@ -560,7 +560,7 @@ static int encode(unsigned char *outText,
                   unsigned int buflen, const unsigned char *key) {
     unsigned char *saltedText = new unsigned char[buflen];
     RAND_bytes(saltedText, buflen);
-    tkey1_salt_text::salt_text(saltedText, originalText, buflen);
+    tkey1_salt::salt_text(saltedText, originalText, buflen);
 
     memset(outText, 0, buflen);
     EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
@@ -607,7 +607,7 @@ static int decode(unsigned char *outText, const unsigned char *inText, unsigned 
 
     EVP_CIPHER_CTX_free(ctx);
 
-    tkey1_salt_text::desalt_text(outText, saltedText, buflen);
+    tkey1_salt::desalt_text(outText, saltedText, buflen);
 
     memset(saltedText, 0, buflen);
     delete[]saltedText;

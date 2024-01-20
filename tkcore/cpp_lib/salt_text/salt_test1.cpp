@@ -7,12 +7,14 @@
 //
 
 #include "salt_test1.h"
+#include "salt_base.h"
 #include <string.h>
 #include <cstring>
 #include <limits.h>
 #include <openssl/rand.h>
 
-using namespace tkey1_salt_text;
+using namespace tkey1_salt;
+using namespace tkey_salt;
 
 #define SALT_IN_RING(x, max, ring) ( (x) + (ring) * rand((max) / (ring) ))
 #define TYPE_MAX(typeLen) ((1L << ( (typeLen) * 8L)) -1L)
@@ -29,7 +31,7 @@ using namespace tkey1_salt_text;
 
 
 #pragma pack(push, 1)
-struct tkey1_salt_text::SaltTextHeader {
+struct tkey1_salt::SaltTextHeader {
     unsigned char coding; // в кольце 5 TODO сделать отдельное соление по кодирокам
     unsigned char lenCoding; // в кольце 2 кодировка длины TODO сделать отдельное соление по кодирокам
     uint32_t len; //  в кольце ожидаемого текста или по кодировке длины
@@ -37,7 +39,7 @@ struct tkey1_salt_text::SaltTextHeader {
 };
 #pragma pack(pop)
 
-size_t SaltTextHeader_LEN = sizeof(tkey1_salt_text::SaltTextHeader);
+size_t SaltTextHeader_LEN = sizeof(tkey1_salt::SaltTextHeader);
 
 
 static int acsii_to_num(unsigned char *out, const unsigned char *source, bool salt);
@@ -56,18 +58,10 @@ static int ascii_to_num_en_spec_symbols_space(unsigned char *out, const unsigned
 
 static int num_en_spec_symbols_space_to_acsii(unsigned char *out, const unsigned char *source, unsigned int len);
 
-static void memsalt(unsigned char *in, int len, int blockSize);
-
-static void memdesalt(unsigned char *in, int len, int blockSize);
-
 void saltHeader(SaltTextHeader *header, size_t lenRing);// соление заголовка соления
 void desaltgHeader(SaltTextHeader *header, size_t lenRing);// соление заголовка соления
 
-static void randmem(unsigned char *in, int len);
-
-static long rand(long max);
-
-int tkey1_salt_text::salt_text(unsigned char *out, const unsigned char *source, unsigned int buflen) {
+int tkey1_salt::salt_text(unsigned char *out, const unsigned char *source, unsigned int buflen) {
     int sourcelen = strlen((const char *) source);
     size_t lenRing = buflen - SaltTextHeader_LEN - TEXT_DECODE_RESERVE_LEN;
     if (sourcelen > lenRing)
@@ -107,7 +101,7 @@ int tkey1_salt_text::salt_text(unsigned char *out, const unsigned char *source, 
     return buflen;
 }
 
-int tkey1_salt_text::desalt_text(unsigned char *out, const unsigned char *source, unsigned int buflen) {
+int tkey1_salt::desalt_text(unsigned char *out, const unsigned char *source, unsigned int buflen) {
     memcpy(out, source, buflen);
 
     SaltTextHeader salted = {};
@@ -139,7 +133,7 @@ int tkey1_salt_text::desalt_text(unsigned char *out, const unsigned char *source
     }
 }
 
-int tkey1_salt_text::genpassw(unsigned char *out, unsigned int len, unsigned int encoding) {
+int tkey1_salt::genpassw(unsigned char *out, unsigned int len, unsigned int encoding) {
     unsigned char *source = new unsigned char[len];
     randmem(source, len);
     switch (encoding) {
@@ -262,22 +256,6 @@ static int num_to_acsii(unsigned char *out, const unsigned char *source, unsigne
     return len;
 }
 
-static void memsalt(unsigned char *in, int len, int blockSize) {
-    for (int i = 0; i < len; i++) {
-        in[i] = (unsigned char) SALT_IN_RING(in[i], 0xff, blockSize);
-    }
-}
-
-
-static void memdesalt(unsigned char *in, int len, int blockSize) {
-    for (int i = 0; i < len; i++) {
-        unsigned char a = in[i];
-        a %= blockSize;
-        in[i] = a;
-    }
-}
-
-
 void saltHeader(SaltTextHeader *header, size_t lenRing) {
     long charMax = TYPE_MAX(sizeof(char));
     long uint32Max = TYPE_MAX(sizeof(uint32_t));
@@ -300,13 +278,4 @@ void desaltgHeader(SaltTextHeader *header, size_t lenRing) {
     if (header->lenCoding == ENC_LEN_PASSW)
         header->len = header->len % (PASSW_MAX_LEN - PASSW_MIN_LEN + 1) + PASSW_MIN_LEN;
     else header->len %= lenRing;
-}
-
-
-static void randmem(unsigned char *in, int len) {
-    RAND_bytes(in, len);
-}
-
-static long rand(long max) {
-    return random() % max;
 }
