@@ -2,7 +2,7 @@
 // Created by panda on 19.01.24.
 //
 
-#include "encoding.h"
+#include "salt_test2.h"
 #include <cstdarg>
 
 using namespace std;
@@ -155,7 +155,7 @@ static vector<EncodingSchema> encodingSchemas = {
 };
 
 
-uint32_t tkey_encoding::findEncodingType(const std::string &str) {
+uint32_t tkey2_salt_text::findEncodingType(const std::string &str) {
     for (int type = 0; type < encodingSchemas.size(); ++type) {
         if (encodingSchemas[type].all_contains(str))
             return type;
@@ -163,7 +163,7 @@ uint32_t tkey_encoding::findEncodingType(const std::string &str) {
     return -1;
 }
 
-uint32_t tkey_encoding::findEncodingTypeByFlags(const uint32_t &flags) {
+uint32_t tkey2_salt_text::findEncodingTypeByFlags(const uint32_t &flags) {
     for (int type = 0; type < encodingSchemas.size(); ++type) {
         if ((encodingSchemas[type].flags & flags) == flags)
             return type;
@@ -171,12 +171,12 @@ uint32_t tkey_encoding::findEncodingTypeByFlags(const uint32_t &flags) {
     return -1;
 }
 
-uint32_t tkey_encoding::encodingLen(uint32_t type) {
+uint32_t tkey2_salt_text::encodingLen(uint32_t type) {
     if (type == -1)return 0;
     return encodingSchemas[type].len();
 }
 
-std::string tkey_encoding::encodingSymbols(uint32_t type) {
+std::string tkey2_salt_text::encodingSymbols(uint32_t type) {
     if (type == -1)return "";
     return encodingSchemas[type].allSymbols();
 }

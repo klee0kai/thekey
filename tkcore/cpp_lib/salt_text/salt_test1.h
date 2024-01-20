@@ -6,8 +6,8 @@
 //  Copyright © 2020 panda. All rights reserved.
 //
 
-#ifndef salt_text_hpp
-#define salt_text_hpp
+#ifndef salt1_text_hpp
+#define salt1_text_hpp
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -49,7 +49,7 @@ struct SaltTextHeader {
 #pragma pack(pop)
 
 
-namespace s_text {
+namespace tkey1_salt_text {
 
     /**
     * солит пароль с изменением кодировки
@@ -75,5 +75,5 @@ namespace s_text {
 
 }
 
-#endif /* salt_text_hpp */
+#endif /* salt1_text_hpp */
 

@@ -29,7 +29,7 @@ namespace thekey_v2 {
         /**
          *  short map of Sections.
          */
-        FileMap,//
+        FileMap,
 
         /**
          * Decrypted note with log/ passw /description.

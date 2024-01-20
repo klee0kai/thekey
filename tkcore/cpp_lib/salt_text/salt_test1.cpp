@@ -6,7 +6,7 @@
 //  Copyright © 2020 panda. All rights reserved.
 //
 
-#include "s_text.h"
+#include "salt_test1.h"
 #include <string.h>
 #include <cstring>
 #include <limits.h>
@@ -16,7 +16,7 @@
 #define SALT_IN_RING(x, max, ring) ( (x) + (ring) * rand((max) / (ring) ))
 #define TYPE_MAX(typeLen) ((1L << ( (typeLen) * 8L)) -1L)
 
-#define TEXT_DECODE_RESERVE_LEN 6 // дополнительные неиспользуемые байты в тексе
+#define TEXT_DECODE_RESERVE_LEN 6 // дополнительные неиспользуемые байты в тексте
 
 /**
  *  кол-во вариантов в наборе для кодировки
@@ -56,7 +56,7 @@ static void randmem(unsigned char *in, int len);
 
 static long rand(long max);
 
-int s_text::salt_text(unsigned char *out, const unsigned char *source, unsigned int buflen) {
+int tkey1_salt_text::salt_text(unsigned char *out, const unsigned char *source, unsigned int buflen) {
     int sourcelen = strlen((const char *) source);
     size_t lenRing = buflen - SaltTextHeader_LEN - TEXT_DECODE_RESERVE_LEN;
     if (sourcelen > lenRing)
@@ -96,7 +96,7 @@ int s_text::salt_text(unsigned char *out, const unsigned char *source, unsigned 
     return buflen;
 }
 
-int s_text::desalt_text(unsigned char *out, const unsigned char *source, unsigned int buflen) {
+int tkey1_salt_text::desalt_text(unsigned char *out, const unsigned char *source, unsigned int buflen) {
     memcpy(out, source, buflen);
 
     SaltTextHeader salted = {};
@@ -128,7 +128,7 @@ int s_text::desalt_text(unsigned char *out, const unsigned char *source, unsigne
     }
 }
 
-int s_text::genpassw(unsigned char *out, unsigned int len, unsigned int encoding) {
+int tkey1_salt_text::genpassw(unsigned char *out, unsigned int len, unsigned int encoding) {
     unsigned char *source = new unsigned char[len];
     randmem(source, len);
     switch (encoding) {

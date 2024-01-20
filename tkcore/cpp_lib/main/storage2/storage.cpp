@@ -5,7 +5,7 @@
 #include "public/key_errors.h"
 #include "utils/pass_spliter_v1.h"
 #include "utils/common.h"
-#include "salt_text/s_text.h"
+#include "salt_text/salt_test1.h"
 #include <cstring>
 
 #include <openssl/evp.h>

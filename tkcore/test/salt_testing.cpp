@@ -5,7 +5,7 @@
 #include <gtest/gtest.h>
 #include "thekey.h"
 #include "thekey_core.h"
-#include "salt_text/s_text.h"
+#include "salt_text/salt_test1.h"
 #include "utils/common.h"
 
 using namespace std;

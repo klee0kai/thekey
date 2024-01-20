@@ -2,12 +2,12 @@
 // Created by panda on 19.01.24.
 //
 
-#ifndef THEKEY_ENCODING_H
-#define THEKEY_ENCODING_H
+#ifndef tkey2_salt_header
+#define tkey2_salt_header
 
 #include "thekey_core.h"
 
-namespace tkey_encoding {
+namespace tkey2_salt_text {
 
     uint32_t findEncodingType(const std::string &str);
 
@@ -19,4 +19,4 @@ namespace tkey_encoding {
 
 }
 
-#endif //THEKEY_ENCODING_H
+#endif //tkey2_salt_header
