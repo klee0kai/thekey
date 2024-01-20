@@ -18,7 +18,7 @@ namespace tkey2_salt {
 
         [[nodiscard]] int contains(const tkey_salt::wide_char &sym) const;
 
-        [[nodiscard]] tkey_salt::wide_string all_symbols() const;
+        void all_symbols(void (*callback)(const tkey_salt::wide_char &)) const;
 
     };
 
@@ -35,7 +35,8 @@ namespace tkey2_salt {
 
         [[nodiscard]] int all_contains(const tkey_salt::wide_string &wideString) const;
 
-        [[nodiscard]] tkey_salt::wide_string all_symbols() const;
+        void all_symbols(void (*callback)(const tkey_salt::wide_char &)) const;
+
     };
 
     const EncodingScheme *find_scheme(uint32_t type);

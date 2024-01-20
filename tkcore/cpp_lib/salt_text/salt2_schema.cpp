@@ -95,9 +95,17 @@ static vector<EncodingScheme> encodingSchemas = {
                 {U'А', U'Я'},
         }},
 
-        // full
-        {.type=(uint32_t) -1, .flags = 0, .ranges={
-                {0, (wide_char) (-1)},
+        // unicode last symbol
+        {.type=(uint32_t) 0xff00, .flags = 0, .ranges={
+                {0x20, 0xff}, //
+        }},
+        // unicode last symbol
+        {.type=(uint32_t) 0xff01, .flags = 0, .ranges={
+                {0x20, 0xfff}, //
+        }},
+        // unicode last symbol
+        {.type=(uint32_t) 0xff02, .flags = 0, .ranges={
+                {0x20, 0x32ff}, //
         }},
 };
 
@@ -111,14 +119,10 @@ static vector<EncodingScheme> encodingSchemas = {
     return sym >= start && sym <= end;
 }
 
-[[nodiscard]] wide_string tkey2_salt::SymbolRange::all_symbols() const {
-    wide_string wString = {};
-    wString.reserve(len());
-    for (wchar_t c = start; c <= end; c++) {
-        wString += c;
-
+void tkey2_salt::SymbolRange::all_symbols(void (*callback)(const wide_char &)) const {
+    for (wide_char c = start; c <= end; c++) {
+        callback(c);
     }
-    return wString;
 }
 
 
@@ -165,13 +169,10 @@ int tkey2_salt::EncodingScheme::all_contains(const wide_string &wideString) cons
     return 1;
 }
 
-[[nodiscard]] wide_string tkey2_salt::EncodingScheme::all_symbols() const {
-    wide_string wString = {};
-    wString.reserve(len());
+void tkey2_salt::EncodingScheme::all_symbols(void (*callback)(const wide_char &)) const {
     for (const auto &item: ranges) {
-        wString += item.all_symbols();
+        item.all_symbols(callback);
     }
-    return wString;
 }
 
 
@@ -193,7 +194,7 @@ uint32_t tkey2_salt::find_scheme_type(const wide_string &str) {
     if (it != encodingSchemas.end()) {
         return it->type;
     }
-    return -1;
+    return encodingSchemas.back().type;
 }
 
 uint32_t tkey2_salt::find_scheme_type_by_flags(const uint32_t &flags) {
@@ -202,5 +203,5 @@ uint32_t tkey2_salt::find_scheme_type_by_flags(const uint32_t &flags) {
     if (it != encodingSchemas.end()) {
         return it->type;
     }
-    return -1;
+    return encodingSchemas.back().type;
 }

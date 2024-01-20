@@ -15,40 +15,16 @@ using namespace tkey2_salt;
 using namespace tkey_salt;
 
 
-TEST(Salt2Test, SaltDesaltEquals) {
-    // GIVEN
-    SaltedText saltedText{};
-
-
-    // WHEN
-    saltedText.salted("some.site.com");
-    auto str = saltedText.desalted();
-
-    // THEN
-    ASSERT_EQ("some.site.com", str);
+TEST(Salt2Test, SchemeSymbols) {
+    auto scheme = find_scheme(0xff02);
+    cout << "scheme " << hex << scheme->type << dec << endl;
+    static int i;
+    i = 0;
+    scheme->all_symbols([](const wide_char &c) {
+        cout << hex << "sym " << i++ << " | '" << from(c) << "' " << endl;
+    });
+    cout << "' " << endl;
 }
-
-TEST(Salt2Test, EndNotHaveMark) {
-    // GIVEN
-    SaltedText saltedText{};
-
-    // WHEN
-    saltedText.salted("some.site.com");
-    int endIndex = -1;
-    for (int i = 0; i < SALTED_TEXT_LEN; ++i) {
-        if (saltedText.payload.raw[i] == 0) {
-            endIndex = i;
-            break;
-        }
-    }
-
-
-
-
-    // THEN
-    ASSERT_EQ(-1, endIndex);
-}
-
 
 TEST(Salt2Test, EncodeScheme) {
     // when  scheme a-z + .
@@ -73,3 +49,145 @@ TEST(Salt2Test, DencodeScheme) {
     ASSERT_EQ(U'.', scheme->decoded(26));
     ASSERT_EQ(U'a', scheme->decoded(27));
 }
+
+
+TEST(Salt2Test, WideSchemeEncode) {
+    // when  scheme a-z + .
+    auto scheme = find_scheme(0xff02);
+//    cout << "scheme  symbols '" << from(scheme->all_symbols()) << "'" << endl;
+
+    // then
+    ASSERT_EQ(0, scheme->encoded(U' '));
+    ASSERT_EQ(0x410 - 0x20, scheme->encoded(U'А'));
+    ASSERT_EQ(0x44F - 0x20, scheme->encoded(U'я'));
+    ASSERT_EQ(U' ', scheme->decoded(0));
+    ASSERT_EQ(U'А', scheme->decoded(0x410 - 0x20));
+    ASSERT_EQ(U'я', scheme->decoded(0x44F - 0x20));
+
+}
+
+
+TEST(Salt2Test, EncodeCropText) {
+    // GIVEN
+    const size_t len = 100L;
+    wide_char wideCharArray[len] = {};
+    wide_char wideStringEncoded[len] = {};
+    wide_char wideStringDecoded[len] = {};
+    wide_string wideString = from("dddПППfff");
+    memcpy((char *) wideCharArray, (char *) wideString.c_str(), wideString.size() * sizeof(wide_char));
+    auto scheme = find_scheme(1);
+
+
+    // WHEN
+    for (int i = 0; i < len; ++i) {
+        wideStringEncoded[i] = scheme->encoded(wideCharArray[i]);
+        wideStringDecoded[i] = scheme->decoded(wideStringEncoded[i]);
+    }
+
+    // THEN
+    ASSERT_EQ(U'd', wideStringDecoded[0]);
+    ASSERT_EQ(U'a', wideStringDecoded[3]); // cropped
+    ASSERT_EQ(U'f', wideStringDecoded[7]);
+}
+
+
+TEST(Salt2Test, EndNotHaveMark) {
+    // GIVEN
+    SaltedText saltedText{};
+
+    // WHEN
+    saltedText.salted("some.site.com");
+    int endIndex = -1;
+    for (int i = 0; i < SALTED_TEXT_LEN; ++i) {
+        if (saltedText.payload.raw[i] == 0) {
+            endIndex = i;
+            break;
+        }
+    }
+
+    // THEN
+    ASSERT_EQ(-1, endIndex);
+}
+
+
+TEST(Salt2Test, SaltDesaltEquals) {
+    // GIVEN
+    SaltedText saltedText{};
+
+    // WHEN
+    saltedText.salted("some.site.com");
+    auto str = saltedText.desalted();
+
+    // THEN
+    ASSERT_EQ("some.site.com", str);
+}
+
+TEST(Salt2Test, SaltDesaltTextEquals) {
+    // GIVEN
+    const string &text = "text";
+    SaltedText saltedText{};
+
+    // WHEN
+    saltedText.salted(text);
+    auto str = saltedText.desalted();
+
+    // THEN
+    ASSERT_EQ(text, str);
+}
+
+TEST(Salt2Test, SaltDesaltEmpty) {
+    // GIVEN
+    const string &text = "";
+    SaltedText saltedText{};
+
+    // WHEN
+    saltedText.salted(text);
+    auto str = saltedText.desalted();
+
+    // THEN
+    ASSERT_EQ(text, str);
+}
+
+
+TEST(Salt2Test, SaltDesaltRu) {
+    // GIVEN
+    const string &text = "приветы ;№ц";
+    SaltedText saltedText{};
+    // WHEN
+
+    saltedText.salted(text);
+    auto str = saltedText.desalted();
+
+    // THEN
+    ASSERT_EQ(text, str);
+}
+
+
+TEST(Salt2Test, SaltDesaltInListEquals) {
+    static string test_texts[] = {
+            "text",
+            "some.site.com",
+            "some.sSumeite.com",
+            "some.s12ite.com",
+            "12@!1q#",
+            "12@ ds",
+            "выа ;",
+            "приветы ;№ц",
+            "приветы ёЁ",
+    };
+
+
+    for (const auto &text: test_texts) {
+        cout << "text text '" << text << "' " << endl;
+        // GIVEN
+        SaltedText saltedText{};
+
+        // WHEN
+        saltedText.salted(text);
+        auto str = saltedText.desalted();
+
+        // THEN
+        ASSERT_EQ(text, str);
+    }
+}
+

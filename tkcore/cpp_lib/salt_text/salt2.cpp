@@ -73,7 +73,7 @@ int tkey2_salt::decoded(
     if (!scheme)return -1;
     for (int i = 0; i < bufLen; ++i) {
         auto desalted = in[i] % scheme->len();
-        out[i] = scheme->decoded(desalted);
+        out[i] = scheme->decoded(in[i]);
     }
     return bufLen;
 }
