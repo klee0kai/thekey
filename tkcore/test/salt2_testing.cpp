@@ -18,14 +18,35 @@ using namespace tkey_salt;
 TEST(Salt2Test, SaltDesaltEquals) {
     // GIVEN
     SaltedText saltedText{};
-    saltedText.salted("some.site.com");
 
 
     // WHEN
+    saltedText.salted("some.site.com");
     auto str = saltedText.desalted();
 
     // THEN
     ASSERT_EQ("some.site.com", str);
+}
+
+TEST(Salt2Test, EndNotHaveMark) {
+    // GIVEN
+    SaltedText saltedText{};
+
+    // WHEN
+    saltedText.salted("some.site.com");
+    int endIndex = -1;
+    for (int i = 0; i < SALTED_TEXT_LEN; ++i) {
+        if (saltedText.payload.raw[i] == 0) {
+            endIndex = i;
+            break;
+        }
+    }
+
+
+
+
+    // THEN
+    ASSERT_EQ(-1, endIndex);
 }
 
 
