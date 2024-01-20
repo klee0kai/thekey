@@ -11,6 +11,7 @@ include_directories(${GTEST_INCLUDE_DIR})
 
 add_executable(tkey_test
         salt_testing.cpp
+        salt2_testing.cpp
         )
 
 target_include_directories(tkey_test PUBLIC

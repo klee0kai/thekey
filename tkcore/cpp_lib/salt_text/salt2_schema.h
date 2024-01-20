@@ -38,7 +38,7 @@ namespace tkey2_salt {
         [[nodiscard]] tkey_salt::wide_string all_symbols() const;
     };
 
-    const EncodingScheme *scheme(uint32_t type);
+    const EncodingScheme *find_scheme(uint32_t type);
 
     uint32_t find_scheme_type(const tkey_salt::wide_string &str);
 

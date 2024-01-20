@@ -40,7 +40,14 @@
 
 namespace tkey1_salt {
 
-    struct SaltTextHeader;
+#pragma pack(push, 1)
+    struct SaltTextHeader {
+        unsigned char coding; // в кольце 5 TODO сделать отдельное соление по кодирокам
+        unsigned char lenCoding; // в кольце 2 кодировка длины TODO сделать отдельное соление по кодирокам
+        uint32_t len; //  в кольце ожидаемого текста или по кодировке длины
+        unsigned char saltText[]; // засоленный текст
+    };
+#pragma pack(pop)
 
     /**
     * солит пароль с изменением кодировки

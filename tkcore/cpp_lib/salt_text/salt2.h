@@ -9,22 +9,16 @@
 #include "salt_base.h"
 
 #define LEN_CORRECTION_RING 5
-#define SALTED_TEXT_LEN 4096
-
-#define UCHAR_SALT(name, ring) \
-    unsigned char raw##name;        \
-     [[nodiscard]] unsigned char name() const { return DESALT_IN_RING(raw##name, ring ); } \
-     void name(unsigned char name) { raw##name = SALT_IN_RING(name, ring ); }
-
+#define SALTED_TEXT_LEN 1024
 
 namespace tkey2_salt {
 
 #pragma pack(push, 1)
 
     struct SaltedTextPayload {
-        UCHAR_SALT(lenCorrection, LEN_CORRECTION_RING)
+        unsigned char lenCorrection;
 
-        unsigned char raw[SALTED_TEXT_LEN];
+        tkey_salt::wide_char raw[SALTED_TEXT_LEN];
     };
 
     struct SaltedText {
@@ -44,15 +38,15 @@ namespace tkey2_salt {
 
     /**
      * @param typeEncoding tkey encode type
-     * @param out_chars tkey encoded text
-     * @param in_chars simple unicode text
-     * @param bufSize in_chars and out_chars buffers size
-     * @param salt salt out_chars text
+     * @param out tkey encoded text
+     * @param in simple unicode text
+     * @param bufSize in and out buffers size
+     * @param salt salt out text
      * @return
      */
     int encoded(uint32_t typeEncoding,
-                tkey_salt::wide_char out_chars,
-                const tkey_salt::wide_char *in_chars,
+                tkey_salt::wide_char *out,
+                const tkey_salt::wide_char *in,
                 const uint &bufSize,
                 const int &salt
     );
@@ -62,13 +56,13 @@ namespace tkey2_salt {
      * @param typeEncoding   tkey encode type
      * @param out simple unicode text
      * @param in  tkey encoded text
-     * @param len encoded text len
+     * @param bufLen encoded text bufLen
      * @return
      */
     int decoded(uint32_t typeEncoding,
                 tkey_salt::wide_char *out,
                 const tkey_salt::wide_char *in,
-                const int &len);
+                const int &bufLen);
 
 }
 

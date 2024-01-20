@@ -8,7 +8,7 @@
 using namespace std;
 using namespace tkey_salt;
 
-wstring_convert<codecvt_utf8<wide_char>, wide_char>  tkey_salt::converter;
+static wstring_convert<codecvt_utf8<wide_char>, wide_char> converter;
 
 long tkey_salt::rand(ulong max) {
     return random() % max;
@@ -48,4 +48,17 @@ void tkey_salt::memdesalt(tkey_salt::wide_char *mem, uint len, uint ring) {
     for (int i = 0; i < len; i++) {
         mem[i] = mem[i] % ring;
     }
+}
+
+
+wide_string tkey_salt::from(const string &string) {
+    return converter.from_bytes(string);
+}
+
+std::string tkey_salt::from(const wide_string &wideString) {
+    return converter.to_bytes(wideString);
+}
+
+std::string tkey_salt::from(const tkey_salt::wide_char &wideChar) {
+    return converter.to_bytes(wideChar);
 }

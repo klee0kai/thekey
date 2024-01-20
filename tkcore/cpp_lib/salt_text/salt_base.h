@@ -17,9 +17,8 @@
 
 namespace tkey_salt {
 
-    typedef uint32_t wide_char;
+    typedef char16_t wide_char;
     typedef std::basic_string<wide_char> wide_string;
-    extern std::wstring_convert<std::codecvt_utf8<wide_char>, wide_char> converter;
 
     long rand(ulong max);
 
@@ -35,6 +34,12 @@ namespace tkey_salt {
     void memsalt(wide_char *mem, uint len, uint ring);
 
     void memdesalt(wide_char *mem, uint len, uint ring);
+
+    std::string from(const wide_string &wideString);
+
+    wide_string from(const std::string &string);
+
+    std::string from(const wide_char &wideChar);
 
 }
 

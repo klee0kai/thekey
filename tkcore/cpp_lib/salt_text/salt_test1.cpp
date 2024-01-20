@@ -30,15 +30,6 @@ using namespace tkey_salt;
 #define ENC_PASSW_NUM_EN_SPEC_SPACE_SYM_SET 95 // 128 - 33 - 1 выкидывем управляющие символы
 
 
-#pragma pack(push, 1)
-struct tkey1_salt::SaltTextHeader {
-    unsigned char coding; // в кольце 5 TODO сделать отдельное соление по кодирокам
-    unsigned char lenCoding; // в кольце 2 кодировка длины TODO сделать отдельное соление по кодирокам
-    uint32_t len; //  в кольце ожидаемого текста или по кодировке длины
-    unsigned char saltText[]; // засоленный текст
-};
-#pragma pack(pop)
-
 size_t SaltTextHeader_LEN = sizeof(tkey1_salt::SaltTextHeader);
 
 

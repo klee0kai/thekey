@@ -122,7 +122,7 @@ static vector<EncodingScheme> encodingSchemas = {
 }
 
 
-// ------------ encoding scheme --------------------
+// ------------ encoding find_scheme --------------------
 wide_char tkey2_salt::EncodingScheme::encoded(wide_char original) const {
     int offset = 0;
     for (int i = 0; i < ranges.size(); ++i) {
@@ -136,16 +136,15 @@ wide_char tkey2_salt::EncodingScheme::encoded(wide_char original) const {
 }
 
 wide_char tkey2_salt::EncodingScheme::decoded(wide_char encoded) const {
-    while (encoded > 0) {
+    while (true) {
         for (auto &range: ranges) {
-            if (encoded > range.len()) {
+            if (encoded > range.len() - 1) {
                 encoded -= range.len();
             } else {
                 return range.start + encoded;
             }
         }
     }
-    return 0;
 }
 
 uint tkey2_salt::EncodingScheme::len() const {
@@ -177,7 +176,7 @@ int tkey2_salt::EncodingScheme::all_contains(const wide_string &wideString) cons
 
 
 // ------------ public methods --------------------
-const EncodingScheme *tkey2_salt::scheme(uint32_t type) {
+const EncodingScheme *tkey2_salt::find_scheme(uint32_t type) {
     auto it = std::find_if(encodingSchemas.begin(), encodingSchemas.end(),
                            [type](const EncodingScheme &schema) { return schema.type == type; });
     if (it != encodingSchemas.end()) {
@@ -188,17 +187,20 @@ const EncodingScheme *tkey2_salt::scheme(uint32_t type) {
 
 
 uint32_t tkey2_salt::find_scheme_type(const wide_string &str) {
-    for (int type = 0; type < encodingSchemas.size(); ++type) {
-        if (encodingSchemas[type].all_contains(str))
-            return type;
+    auto it = std::find_if(encodingSchemas.begin(), encodingSchemas.end(),
+                           [str](const EncodingScheme &schema) { return schema.all_contains(str); });
+
+    if (it != encodingSchemas.end()) {
+        return it->type;
     }
     return -1;
 }
 
 uint32_t tkey2_salt::find_scheme_type_by_flags(const uint32_t &flags) {
-    for (int type = 0; type < encodingSchemas.size(); ++type) {
-        if ((encodingSchemas[type].flags & flags) == flags)
-            return type;
+    auto it = std::find_if(encodingSchemas.begin(), encodingSchemas.end(),
+                           [flags](const EncodingScheme &schema) { return (schema.flags & flags) == flags; });
+    if (it != encodingSchemas.end()) {
+        return it->type;
     }
-    return 0;
+    return -1;
 }
