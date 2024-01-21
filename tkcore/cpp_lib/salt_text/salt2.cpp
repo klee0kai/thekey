@@ -7,6 +7,7 @@
 #include "salt2_schema.h"
 #include <cstdarg>
 #include <cstring>
+#include <cmath>
 
 using namespace std;
 using namespace tkey2_salt;
@@ -76,4 +77,54 @@ int tkey2_salt::decoded(
         out[i] = scheme->decoded(in[i]);
     }
     return bufLen;
+}
+
+wide_string tkey2_salt::gen_password(const uint32_t &typeEncoding, const int &len) {
+    auto scheme = find_scheme(typeEncoding);
+    if (!scheme)return {};
+    wide_char randPassw[len + 1];
+    randmem(randPassw, len);
+    for (int i = 0; i < len; ++i) {
+        randPassw[i] = scheme->decoded(randPassw[i]);
+    }
+    randPassw[len] = 0;
+    return randPassw;
+}
+
+wide_string tkey2_salt::password_masked(
+        const uint32_t &typeEncoding,
+        const wide_string &in,
+        const float &passw_power) {
+
+    auto scheme = find_scheme(typeEncoding);
+    if (!scheme)return {};
+    auto ring = uint(round(scheme->len() * passw_power));
+    wide_string outPassw{};
+    outPassw.reserve(in.length());
+    for (int i = 0; i < in.length(); ++i) {
+        wide_char c = in.at(i);
+        c = scheme->encoded(c);
+        c = DESALT_IN_RING(c, ring);// additional password power trimming
+        outPassw += scheme->decoded(c);
+    }
+    return outPassw;
+}
+
+
+tkey_salt::wide_string tkey2_salt::password_masked_twin(
+        const uint32_t &typeEncoding,
+        const tkey_salt::wide_string &in,
+        const float &passw_power) {
+    auto scheme = find_scheme(typeEncoding);
+    if (!scheme)return {};
+    auto ring = uint(round(scheme->len() * passw_power));
+    wide_string outPassw{};
+    outPassw.reserve(in.length());
+    for (int i = 0; i < in.length(); ++i) {
+        wide_char c = in.at(i);
+        c = scheme->encoded(c);
+        c *= SALT_IN_RING(c, ring);// generate twins
+        outPassw += scheme->decoded(c);
+    }
+    return outPassw;
 }

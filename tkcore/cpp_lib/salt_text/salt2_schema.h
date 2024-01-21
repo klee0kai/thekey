@@ -8,6 +8,11 @@
 #include "thekey_core.h"
 #include "salt_base.h"
 
+#define SCHEME_NUMBERS 0x1
+#define SCHEME_SPEC_SYMBOLS 0x2
+#define SCHEME_ENGLISH 0x4
+#define SCHEME_RUSSIAN 0x8
+
 namespace tkey2_salt {
 
     struct SymbolRange {

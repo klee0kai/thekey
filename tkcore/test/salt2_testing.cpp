@@ -15,7 +15,7 @@ using namespace tkey2_salt;
 using namespace tkey_salt;
 
 
-TEST(Salt2Test, SchemeSymbols) {
+TEST(TKEY2, SchemeSymbols) {
     auto scheme = find_scheme(0xff02);
     cout << "scheme " << hex << scheme->type << dec << endl;
     static int i;
@@ -26,7 +26,7 @@ TEST(Salt2Test, SchemeSymbols) {
     cout << "' " << endl;
 }
 
-TEST(Salt2Test, EncodeScheme) {
+TEST(TKEY2, EncodeScheme) {
     // when  scheme a-z + .
     auto scheme = find_scheme(2);
 
@@ -38,7 +38,7 @@ TEST(Salt2Test, EncodeScheme) {
 }
 
 
-TEST(Salt2Test, DencodeScheme) {
+TEST(TKEY2, DencodeScheme) {
     // when  scheme a-z + .
     auto scheme = find_scheme(2);
 
@@ -51,7 +51,7 @@ TEST(Salt2Test, DencodeScheme) {
 }
 
 
-TEST(Salt2Test, WideSchemeEncode) {
+TEST(TKEY2, WideSchemeEncode) {
     // when  scheme a-z + .
     auto scheme = find_scheme(0xff02);
 //    cout << "scheme  symbols '" << from(scheme->all_symbols()) << "'" << endl;
@@ -67,7 +67,7 @@ TEST(Salt2Test, WideSchemeEncode) {
 }
 
 
-TEST(Salt2Test, EncodeCropText) {
+TEST(TKEY2, EncodeCropText) {
     // GIVEN
     const size_t len = 100L;
     wide_char wideCharArray[len] = {};
@@ -91,7 +91,7 @@ TEST(Salt2Test, EncodeCropText) {
 }
 
 
-TEST(Salt2Test, EndNotHaveMark) {
+TEST(TKEY2, EndNotHaveMark) {
     // GIVEN
     SaltedText saltedText{};
 
@@ -110,7 +110,7 @@ TEST(Salt2Test, EndNotHaveMark) {
 }
 
 
-TEST(Salt2Test, SaltDesaltEquals) {
+TEST(TKEY2, SaltDesaltEquals) {
     // GIVEN
     SaltedText saltedText{};
 
@@ -122,7 +122,7 @@ TEST(Salt2Test, SaltDesaltEquals) {
     ASSERT_EQ("some.site.com", str);
 }
 
-TEST(Salt2Test, SaltDesaltTextEquals) {
+TEST(TKEY2, SaltDesaltTextEquals) {
     // GIVEN
     const string &text = "text";
     SaltedText saltedText{};
@@ -135,7 +135,7 @@ TEST(Salt2Test, SaltDesaltTextEquals) {
     ASSERT_EQ(text, str);
 }
 
-TEST(Salt2Test, SaltDesaltEmpty) {
+TEST(TKEY2, SaltDesaltEmpty) {
     // GIVEN
     const string &text = "";
     SaltedText saltedText{};
@@ -149,7 +149,7 @@ TEST(Salt2Test, SaltDesaltEmpty) {
 }
 
 
-TEST(Salt2Test, SaltDesaltRu) {
+TEST(TKEY2, SaltDesaltRu) {
     // GIVEN
     const string &text = "приветы ;№ц";
     SaltedText saltedText{};
@@ -163,7 +163,7 @@ TEST(Salt2Test, SaltDesaltRu) {
 }
 
 
-TEST(Salt2Test, SaltDesaltInListEquals) {
+TEST(TKEY2, SaltDesaltInListEquals) {
     static string test_texts[] = {
             "text",
             "some.site.com",

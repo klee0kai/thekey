@@ -64,6 +64,39 @@ namespace tkey2_salt {
                 const tkey_salt::wide_char *in,
                 const int &bufLen);
 
+
+    /**
+     * Generate code by encoding
+     * @param typeEncoding
+     * @param len
+     * @return
+     */
+    tkey_salt::wide_string gen_password(const uint32_t &typeEncoding, const int &len);
+
+    /**
+     *
+     * @param typeEncoding
+     * @param in
+     * @param passw_power
+     * @return
+     */
+    tkey_salt::wide_string password_masked(
+            const uint32_t &typeEncoding,
+            const tkey_salt::wide_string &in,
+            const float &passw_power);
+
+    /**
+     *
+     * @param typeEncoding
+     * @param in
+     * @param passw_power
+     * @return
+     */
+    tkey_salt::wide_string password_masked_twin(
+            const uint32_t &typeEncoding,
+            const tkey_salt::wide_string &in,
+            const float &passw_power);
+
 }
 
 

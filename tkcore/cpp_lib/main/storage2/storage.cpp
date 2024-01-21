@@ -79,6 +79,19 @@ int thekey_v2::createStorage(const thekey::Storage &storage) {
     return 0;
 }
 
+std::shared_ptr<KeyStorageV2> thekey_v2::storage(const std::string& path,const std::string& passw){
+    int fd = open(path.c_str(), O_RDONLY | O_CLOEXEC);
+    if (fd == -1) return {};
+    auto header = storageHeader(fd);
+    if (!header) {
+        close(fd);
+        return {};
+    }
+
+
+}
+
+
 // ------------------- public --------------------------
 KeyStorageV2::KeyStorageV2(int fd, const std::string &path, const std::shared_ptr<CryptContext> &ctx)
         : fd(fd), storagePath(path), ctx(ctx) {

@@ -43,7 +43,7 @@ namespace thekey_v2 {
 
     int createStorage(const thekey::Storage &storage);
 
-    std::shared_ptr<KeyStorageV2> storage(std::string path, std::string passw);
+    std::shared_ptr<KeyStorageV2> storage(const std::string& path,const std::string& passw);
 
 }
 

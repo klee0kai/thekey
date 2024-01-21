@@ -13,7 +13,13 @@ using namespace std;
 using namespace tkey2_salt;
 using namespace tkey_salt;
 
+
 static vector<EncodingScheme> encodingSchemas = {
+        // numbers
+        {.type=0, .flags = SCHEME_NUMBERS, .ranges={
+                {U'0', U'9'},
+        }},
+
         // english
         {.type=1, .flags = 0, .ranges={
                 {U'a', U'z'},
@@ -23,12 +29,12 @@ static vector<EncodingScheme> encodingSchemas = {
                 {U'.'},
         }},
 
-        {.type=3, .flags = 0, .ranges={
+        {.type=3, .flags = SCHEME_ENGLISH, .ranges={
                 {U'a', U'z'},
                 {U'A', U'Z'},
         }},
 
-        {.type=4, .flags = 0, .ranges={
+        {.type=4, .flags = SCHEME_ENGLISH | SCHEME_NUMBERS, .ranges={
                 {U'a', U'z'},
                 {U'A', U'Z'},
                 {U'0', U'9'},
@@ -56,7 +62,7 @@ static vector<EncodingScheme> encodingSchemas = {
                 {U' '},
         }},
         // full latin list
-        {.type=8, .flags = 0, .ranges={
+        {.type=8, .flags = SCHEME_NUMBERS | SCHEME_SPEC_SYMBOLS | SCHEME_ENGLISH, .ranges={
                 {U' ', U'~'},
         }},
 
