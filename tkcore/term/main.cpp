@@ -4,6 +4,11 @@
 #include "cmd_processing.h"
 #include "def_header.h"
 
+using namespace thekey_term;
+
+extern void interactive();
+
+
 int main(int argc, char **argv) {
     const char *short_options = ":hf:l:";
     const struct option long_options[] = {
@@ -15,7 +20,7 @@ int main(int argc, char **argv) {
 
 
     if (argc <= 1) {
-        thekey_term::printHelp();
+        interactive();
         return 0;
     }
 
