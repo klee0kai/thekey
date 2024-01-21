@@ -17,7 +17,7 @@ extern void saltHeader(SaltTextHeader *header, size_t lenRing);
 
 extern void desaltgHeader(SaltTextHeader *header, size_t lenRing);
 
-TEST(SaltTest, SaltTesting1) {
+TEST(Salt1, SaltTesting1) {
     for (int i = PASSW_MIN_LEN; i <= PASSW_MAX_LEN; i++) {
         SaltTextHeader saltTextHeader;
         SaltTextHeader origTextHeader;

@@ -13,6 +13,9 @@ using namespace std;
 using namespace tkey2_salt;
 using namespace tkey_salt;
 
+static auto hashFunc = hash<uint32_t>();
+
+static int gen_offset(vector<uint32_t> args);
 
 void tkey2_salt::SaltedText::salted(const std::string &text) {
     auto wideString = from(text);
@@ -99,13 +102,15 @@ wide_string tkey2_salt::password_masked(
     auto scheme = find_scheme(typeEncoding);
     if (!scheme)return {};
     auto ring = uint(round(scheme->len() * passw_power));
+    auto maskOffset = gen_offset({(uint32_t) scheme->len(), (uint32_t) passw_power, (uint32_t) in.length()});
+
     wide_string outPassw{};
     outPassw.reserve(in.length());
     for (int i = 0; i < in.length(); ++i) {
         wide_char c = in.at(i);
-        c = scheme->encoded(c);
+        c = scheme->encoded(c, maskOffset);
         c = DESALT_IN_RING(c, ring);// additional password power trimming
-        outPassw += scheme->decoded(c);
+        outPassw += scheme->decoded(c, -maskOffset);
     }
     return outPassw;
 }
@@ -118,13 +123,25 @@ tkey_salt::wide_string tkey2_salt::password_masked_twin(
     auto scheme = find_scheme(typeEncoding);
     if (!scheme)return {};
     auto ring = uint(round(scheme->len() * passw_power));
+    auto maskOffset = gen_offset({(uint32_t) scheme->len(), (uint32_t) passw_power, (uint32_t) in.length()});
+
     wide_string outPassw{};
     outPassw.reserve(in.length());
     for (int i = 0; i < in.length(); ++i) {
         wide_char c = in.at(i);
-        c = scheme->encoded(c);
-        c *= SALT_IN_RING(c, ring);// generate twins
-        outPassw += scheme->decoded(c);
+        c = scheme->encoded(c, maskOffset);
+        c = SALT_IN_RING(c, ring);// generate twins
+        outPassw += scheme->decoded(c, -maskOffset);
     }
     return outPassw;
+}
+
+
+// -------------------- private ---------------------
+static int gen_offset(vector<uint32_t> args) {
+    int maskOffset = 0;
+    for (const auto &item: args) {
+        maskOffset ^= hashFunc(item);
+    }
+    return maskOffset % 200;
 }

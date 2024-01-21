@@ -32,9 +32,9 @@ namespace tkey2_salt {
         uint32_t flags;
         std::vector<SymbolRange> ranges;
 
-        [[nodiscard]] tkey_salt::wide_char encoded(tkey_salt::wide_char original) const;
+        [[nodiscard]] tkey_salt::wide_char encoded(tkey_salt::wide_char original, int offset = 0) const;
 
-        [[nodiscard]] tkey_salt::wide_char decoded(tkey_salt::wide_char original) const;
+        [[nodiscard]] tkey_salt::wide_char decoded(tkey_salt::wide_char original, int  offset = 0) const;
 
         [[nodiscard]] uint len() const;
 

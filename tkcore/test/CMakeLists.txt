@@ -10,7 +10,9 @@ FetchContent_MakeAvailable(googletest)
 include_directories(${GTEST_INCLUDE_DIR})
 
 add_executable(tkey_test
+        helpers.cpp
         salt_testing.cpp
+        salt2_schemas.cpp
         salt2_testing.cpp
         gen2_passw_testing.cpp
         )

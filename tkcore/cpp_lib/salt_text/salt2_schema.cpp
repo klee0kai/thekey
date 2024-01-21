@@ -133,11 +133,11 @@ void tkey2_salt::SymbolRange::all_symbols(void (*callback)(const wide_char &)) c
 
 
 // ------------ encoding find_scheme --------------------
-wide_char tkey2_salt::EncodingScheme::encoded(wide_char original) const {
-    int offset = 0;
+wide_char tkey2_salt::EncodingScheme::encoded(wide_char original, int offset) const {
+    while (offset < 0) offset += len();
     for (int i = 0; i < ranges.size(); ++i) {
         if (ranges[i].contains(original)) {
-            return original - ranges[i].start + offset;
+            return (original - ranges[i].start + offset) % len();
         } else {
             offset += ranges[i].len();
         }
@@ -145,13 +145,15 @@ wide_char tkey2_salt::EncodingScheme::encoded(wide_char original) const {
     return 0;
 }
 
-wide_char tkey2_salt::EncodingScheme::decoded(wide_char encoded) const {
+wide_char tkey2_salt::EncodingScheme::decoded(wide_char encoded, int offset) const {
+    offset += encoded;
+    while (offset < 0) offset += len();
     while (true) {
         for (auto &range: ranges) {
-            if (encoded > range.len() - 1) {
-                encoded -= range.len();
+            if (offset > range.len() - 1) {
+                offset -= range.len();
             } else {
-                return range.start + encoded;
+                return range.start + offset;
             }
         }
     }

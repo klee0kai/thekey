@@ -17,7 +17,7 @@ using namespace tkey_salt;
 
 const std::regex en_regex("[a-zA-Z0-9]+");
 
-TEST(TKEY2, Gen) {
+TEST(GenPassw2, Gen) {
     for (int i = 0; i < 10; ++i) {
         // Given
         auto type = find_scheme_type_by_flags(SCHEME_NUMBERS | SCHEME_ENGLISH);
@@ -32,8 +32,7 @@ TEST(TKEY2, Gen) {
     }
 }
 
-
-TEST(TKEY2, PasswMasked) {
+TEST(GenPassw2, PasswMasked) {
     // Given
     auto type = find_scheme_type_by_flags(SCHEME_NUMBERS | SCHEME_ENGLISH);
 
@@ -44,21 +43,24 @@ TEST(TKEY2, PasswMasked) {
     // then
     cout << "passw: '" << passw << "' " << endl;
     cout << "passwMasked: '" << passwMasked << "' " << endl;
-    ASSERT_EQ("owyhEejk", passwMasked);
+    ASSERT_TRUE(passwMasked != passw);
+    ASSERT_EQ("owyMEJjk", passwMasked);
     cout << "--------------------------------" << endl;
 }
 
 
-TEST(TKEY2, PasswTwins) {
+TEST(GenPassw2, PasswTwins) {
     for (int i = 0; i < 10; ++i) {
         // Given
-        auto type = find_scheme_type_by_flags(SCHEME_NUMBERS | SCHEME_ENGLISH);
+        const auto passwPower = 0.6f;
+        const auto type = find_scheme_type_by_flags(SCHEME_NUMBERS | SCHEME_ENGLISH);
 
         // when
+
         auto passw = from(gen_password(type, 8));
-        auto passwMasked = from(password_masked(type, from(passw), 0.5f));
-        auto passwTwin = from(password_masked_twin(type, from(passw), 0.5f));
-        auto passwTwinMasked = from(password_masked(type, from(passwMasked), 0.5f));
+        auto passwMasked = from(password_masked(type, from(passw), passwPower));
+        auto passwTwin = from(password_masked_twin(type, from(passw), passwPower));
+        auto passwTwinMasked = from(password_masked(type, from(passwMasked), passwPower));
 
 
         // then
