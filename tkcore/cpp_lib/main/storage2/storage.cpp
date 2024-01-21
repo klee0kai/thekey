@@ -2,10 +2,12 @@
 
 #include "thekey_core.h"
 #include "public/storage2/storage.h"
+#include "public/storage2/split_password.h"
 #include "public/key_errors.h"
 #include "utils/pass_spliter_v1.h"
 #include "utils/common.h"
-#include "salt_text/salt_test1.h"
+#include "salt_text/salt2.h"
+#include "salt_text/salt_base.h"
 #include <cstring>
 
 #include <openssl/evp.h>
@@ -22,24 +24,19 @@
 
 using namespace std;
 using namespace thekey;
+using namespace tkey2_salt;
+using namespace tkey_salt;
 using namespace thekey_v2;
 
 
 static char typeOwnerText[FILE_TYPE_OWNER_LEN] = "TheKey key storage. Designed by Andrei Kuzubov / Klee0kai. "
                                                  "Follow original app https://github.com/klee0kai/thekey";
 
-struct thekey_v2::SplitPasswords {
-    std::string passwForLogin;
-    std::string passwForPassw;
-    std::string passwForDescription;
-    std::string passwForHistPassw;
-};
-
 struct thekey_v2::CryptContext {
-    unsigned char keyForLogin[KEY_LEN];
     unsigned char keyForPassw[KEY_LEN];
+    unsigned char keyForLogin[KEY_LEN];
+    unsigned char keyForHistPassw[KEY_LEN];
     unsigned char keyForDescription[KEY_LEN];
-    unsigned char passwForHistPassw[KEY_LEN];
 };
 
 // -------------------- declarations ---------------------------
@@ -79,7 +76,7 @@ int thekey_v2::createStorage(const thekey::Storage &storage) {
     return 0;
 }
 
-std::shared_ptr<KeyStorageV2> thekey_v2::storage(const std::string& path,const std::string& passw){
+std::shared_ptr<KeyStorageV2> thekey_v2::storage(const std::string &path, const std::string &passw) {
     int fd = open(path.c_str(), O_RDONLY | O_CLOEXEC);
     if (fd == -1) return {};
     auto header = storageHeader(fd);
@@ -87,8 +84,30 @@ std::shared_ptr<KeyStorageV2> thekey_v2::storage(const std::string& path,const s
         close(fd);
         return {};
     }
+    auto splitPassw = split(passw);
+    auto passw_size = sizeof(wide_char) * splitPassw.passwForLogin.length();
+    auto ctx = std::make_shared<CryptContext>();
+    memset(&*ctx, 0, sizeof(CryptContext));
 
+    PKCS5_PBKDF2_HMAC((char *) splitPassw.passwForPassw.c_str(), int(passw_size),
+                      header->salt, SALT_LEN,
+                      int(header->interactionsCount()), EVP_sha512_256(),
+                      KEY_LEN, ctx->keyForPassw);
+    PKCS5_PBKDF2_HMAC((char *) splitPassw.passwForLogin.c_str(), int(passw_size),
+                      header->salt, SALT_LEN,
+                      int(header->interactionsCount()), EVP_sha512_256(),
+                      KEY_LEN, ctx->keyForLogin);
+    PKCS5_PBKDF2_HMAC((char *) splitPassw.passwForHistPassw.c_str(), int(passw_size),
+                      header->salt, SALT_LEN,
+                      int(header->interactionsCount()), EVP_sha512_256(),
+                      KEY_LEN, ctx->keyForHistPassw);
+    PKCS5_PBKDF2_HMAC((char *) splitPassw.passwForDescription.c_str(), int(passw_size),
+                      header->salt, SALT_LEN,
+                      int(header->interactionsCount()), EVP_sha512_256(),
+                      KEY_LEN, ctx->keyForDescription);
+    splitPassw = {};
 
+    return make_shared<KeyStorageV2>(fd, path, ctx);
 }
 
 
@@ -104,7 +123,6 @@ KeyStorageV2::~KeyStorageV2() {
     ctx.reset();
     fd = 0;
 }
-
 
 
 // -------------------- private ------------------------------

@@ -195,9 +195,11 @@ const EncodingScheme *tkey2_salt::find_scheme(uint32_t type) {
 }
 
 
-uint32_t tkey2_salt::find_scheme_type(const wide_string &str) {
+uint32_t tkey2_salt::find_scheme_type(const wide_string &str, const int &minLen) {
     auto it = std::find_if(encodingSchemas.begin(), encodingSchemas.end(),
-                           [str](const EncodingScheme &schema) { return schema.all_contains(str); });
+                           [str, minLen](const EncodingScheme &schema) {
+                               return schema.all_contains(str) && schema.len() > minLen;
+                           });
 
     if (it != encodingSchemas.end()) {
         return it->type;

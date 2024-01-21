@@ -34,7 +34,7 @@ namespace tkey2_salt {
 
         [[nodiscard]] tkey_salt::wide_char encoded(tkey_salt::wide_char original, int offset = 0) const;
 
-        [[nodiscard]] tkey_salt::wide_char decoded(tkey_salt::wide_char original, int  offset = 0) const;
+        [[nodiscard]] tkey_salt::wide_char decoded(tkey_salt::wide_char original, int offset = 0) const;
 
         [[nodiscard]] uint len() const;
 
@@ -46,7 +46,7 @@ namespace tkey2_salt {
 
     const EncodingScheme *find_scheme(uint32_t type);
 
-    uint32_t find_scheme_type(const tkey_salt::wide_string &str);
+    uint32_t find_scheme_type(const tkey_salt::wide_string &str, const int &minLen = 0);
 
     uint32_t find_scheme_type_by_flags(const uint32_t &flags);
 

@@ -13,7 +13,6 @@
 
 namespace thekey_v2 {
 
-    struct SplitPasswords;
     struct CryptContext;
 
     class KeyStorageV2 {
