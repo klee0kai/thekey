@@ -70,6 +70,10 @@ void print_help() {
     cout << std::left << "create";
     cout << "create storage" << endl;
 
+    cout << ident;
+    cout.width(COLUMN_WIDTH);
+    cout << std::left << "login";
+    cout << "login storage" << endl;
 }
 
 void find_storage() {

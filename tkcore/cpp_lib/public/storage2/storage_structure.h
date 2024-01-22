@@ -49,7 +49,7 @@ namespace thekey_v2 {
  */
 #pragma pack(push, 1)
 
-    struct StorageFullHeader {
+    struct StorageHeaderFlat {
         char signature[SIGNATURE_LEN]; // TKEY_SIGNATURE_V2;
         INT32_BIG_ENDIAN(storageVersion) // STORAGE_VER_SECOND
         char fileTypeOwner[FILE_TYPE_OWNER_LEN]; // typeOwnerText
@@ -63,14 +63,14 @@ namespace thekey_v2 {
         INT32_BIG_ENDIAN_ENUM(encryptionType, EncryptTypes) // crypt type
     };
 
-    struct FileSection {
-        INT32_BIG_ENDIAN(sectionType)
+    struct FileSectionFlat {
+        INT32_BIG_ENDIAN_ENUM(sectionType, FileSectionTypes)
 
         INT32_BIG_ENDIAN(sectionLen)
     };
 
 
-    struct CryptedText {
+    struct CryptedTextFlat {
         INT32_BIG_ENDIAN(approximateLength)
 
         unsigned char lengthCorrection;
@@ -86,19 +86,23 @@ namespace thekey_v2 {
         void encrypt(const std::string &text);
     };
 
-    struct CryptedPassword {
+    struct CryptedPasswordFlat {
         INT64_BIG_ENDIAN(genTime)
 
-        CryptedText password;
+        INT32_BIG_ENDIAN(color)
+
+        CryptedTextFlat password;
     };
 
-    struct CryptedNote {
+    struct CryptedNoteFlat {
         INT64_BIG_ENDIAN(genTime)
 
-        CryptedText site;
-        CryptedText login;
-        CryptedText password;
-        CryptedText description;
+        INT32_BIG_ENDIAN(color)
+
+        CryptedTextFlat site;
+        CryptedTextFlat login;
+        CryptedTextFlat password;
+        CryptedTextFlat description;
     };
 
 #pragma pack(pop)

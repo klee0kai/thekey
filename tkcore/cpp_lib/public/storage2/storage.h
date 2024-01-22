@@ -14,35 +14,51 @@
 namespace thekey_v2 {
 
     struct CryptContext;
+    struct CryptedNote;
+
+    struct StorageInfo {
+        std::string path;
+        std::string name;
+        unsigned int storageVersion;
+        std::string description;
+        //  --- additional fields ----
+        int invalidSectionsContains;
+    };
 
     class KeyStorageV2 {
-
-    public:
-        KeyStorageV2(int fd, const std::string &path,const std::shared_ptr<CryptContext>& ctx);
-
-        virtual ~KeyStorageV2();
-
-//        virtual int readAll();
-
-//        virtual StorageFullHeader info();
-
     private:
 
-
+        // ---- context ------
         int fd;
         std::string storagePath;
         std::string tempStoragePath; // predict file write. (protect broken bits)
         std::shared_ptr<CryptContext> ctx;
 
-        std::shared_ptr<StorageFullHeader> fheader;
+        // ---- info ------
+        std::shared_ptr<StorageHeaderFlat> fheader;
+        StorageInfo cachedInfo;
+        // ---- payload ----
+        std::list<CryptedNote> cryptedNotes;
+        std::list<CryptedPasswordFlat> cryptedGeneratedPassws;
+
+    public:
+        KeyStorageV2(int fd, const std::string &path, const std::shared_ptr<CryptContext> &ctx);
+
+        virtual ~KeyStorageV2();
+
+        virtual int readAll();
+
+        virtual StorageInfo info();
 
     };
 
     std::shared_ptr<thekey::Storage> storage(int fd, const std::string &file);
 
+    std::shared_ptr<StorageInfo> storageFullInfo(const std::string &file);
+
     int createStorage(const thekey::Storage &storage);
 
-    std::shared_ptr<KeyStorageV2> storage(const std::string& path,const std::string& passw);
+    std::shared_ptr<KeyStorageV2> storage(const std::string &path, const std::string &passw);
 
 }
 

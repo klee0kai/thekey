@@ -39,9 +39,19 @@ struct thekey_v2::CryptContext {
     unsigned char keyForDescription[KEY_LEN];
 };
 
+struct thekey_v2::CryptedNote {
+    CryptedNoteFlat note;
+    list<CryptedPasswordFlat> history;
+};
+
+
 // -------------------- declarations ---------------------------
 
-static std::shared_ptr<StorageFullHeader> storageHeader(int fd);
+static std::shared_ptr<StorageHeaderFlat> storageHeader(int fd);
+
+static list<CryptedPasswordFlat> readHist(char *buffer, int len);
+
+static shared_ptr<CryptedNote> readNote(char *buffer, int len);
 
 // -------------------- static ---------------------------------
 shared_ptr<thekey::Storage> thekey_v2::storage(int fd, const std::string &file) {
@@ -55,10 +65,23 @@ shared_ptr<thekey::Storage> thekey_v2::storage(int fd, const std::string &file) 
     return storage;
 }
 
+shared_ptr<StorageInfo> thekey_v2::storageFullInfo(const std::string &file) {
+    int fd = open(file.c_str(), O_RDONLY | O_CLOEXEC);
+    if (fd == -1) return {};
+    auto header = storageHeader(fd);
+    if (!header)return {};
+    auto storage = make_shared<StorageInfo>();
+    storage->path = file;
+    storage->storageVersion = header->storageVersion();
+    storage->name = header->name;
+    storage->description = header->description;
+    return storage;
+}
+
 int thekey_v2::createStorage(const thekey::Storage &storage) {
     int fd = open(storage.file.c_str(), O_RDONLY | O_WRONLY | O_CLOEXEC | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
     if (fd < 0) return KEY_OPEN_FILE_ERROR;
-    StorageFullHeader header = {};
+    StorageHeaderFlat header = {};
     memcpy(header.signature, storageSignature_V2, SIGNATURE_LEN);
     header.storageVersion(STORAGE_VER_SECOND);
     memcpy(header.fileTypeOwner, typeOwnerText, FILE_TYPE_OWNER_LEN);
@@ -115,6 +138,7 @@ std::shared_ptr<KeyStorageV2> thekey_v2::storage(const std::string &path, const 
 KeyStorageV2::KeyStorageV2(int fd, const std::string &path, const std::shared_ptr<CryptContext> &ctx)
         : fd(fd), storagePath(path), ctx(ctx) {
     tempStoragePath = path.substr(0, path.find_last_of('.')) + "-temp.ckey";
+    cachedInfo = {.path = storagePath,};
 }
 
 KeyStorageV2::~KeyStorageV2() {
@@ -124,11 +148,57 @@ KeyStorageV2::~KeyStorageV2() {
     fd = 0;
 }
 
+int KeyStorageV2::readAll() {
+    cryptedNotes.clear();
+    cryptedGeneratedPassws.clear();
+
+    fheader = storageHeader(fd);
+    cachedInfo.storageVersion = fheader->storageVersion();
+    cachedInfo.name = fheader->name;
+    cachedInfo.description = fheader->description;
+
+    while (true) {
+        FileSectionFlat section{};
+        int len = read(fd, &section, sizeof(section));
+        if (!len) break;
+        if (len != sizeof(section))return KEY_STORAGE_FILE_IS_BROKEN;
+        char buffer[section.sectionLen()];
+        len = read(fd, buffer, section.sectionLen());
+        if (len != section.sectionLen())return KEY_STORAGE_FILE_IS_BROKEN;
+
+        switch (section.sectionType()) {
+            case FileMap: {
+                break;
+            }
+            case NoteEntry: {
+                const auto note = readNote(buffer, len);
+                if (note) cryptedNotes.push_back(*note);
+                break;
+            }
+            case GenPasswHistory: {
+                const auto &hist = readHist(buffer, len);
+                std::for_each(hist.begin(), hist.end(), [&](const auto &item) {
+                    cryptedGeneratedPassws.push_back(item);
+                });
+                break;
+            }
+            default:
+                cachedInfo.invalidSectionsContains = 1;
+                break;
+        }
+    }
+
+    return 0;
+}
+
+StorageInfo KeyStorageV2::info() {
+    return cachedInfo;
+}
 
 // -------------------- private ------------------------------
-static std::shared_ptr<StorageFullHeader> storageHeader(int fd) {
+static std::shared_ptr<StorageHeaderFlat> storageHeader(int fd) {
     lseek(fd, 0, SEEK_SET);
-    StorageFullHeader header = {};
+    StorageHeaderFlat header = {};
     size_t readLen = read(fd, &header, sizeof(header));
     if (readLen != sizeof(header)) {
         return {};
@@ -136,5 +206,25 @@ static std::shared_ptr<StorageFullHeader> storageHeader(int fd) {
     if (memcmp(&header.signature, &thekey::storageSignature_V2, SIGNATURE_LEN) != 0
         || header.storageVersion() != STORAGE_VER_SECOND)
         return {};
-    return make_shared<StorageFullHeader>(header);
+    return make_shared<StorageHeaderFlat>(header);
 }
+
+
+static list<CryptedPasswordFlat> readHist(char *buffer, int len) {
+    list<CryptedPasswordFlat> passwords = {};
+    for (int offset = 0; offset <= len - sizeof(CryptedPasswordFlat); offset += sizeof(CryptedPasswordFlat)) {
+        auto *flat = (CryptedPasswordFlat *) (buffer + offset);
+        passwords.push_back(*flat);
+    }
+    return passwords;
+}
+
+static shared_ptr<CryptedNote> readNote(char *buffer, int len) {
+    if (len < sizeof(CryptedNoteFlat))return {};
+    auto note = CryptedNote{
+            .note = *(CryptedNoteFlat *) buffer,
+            .history = readHist(buffer + sizeof(CryptedNoteFlat), len - sizeof(CryptedNoteFlat))
+    };
+    return make_shared<CryptedNote>(note);
+}
+
