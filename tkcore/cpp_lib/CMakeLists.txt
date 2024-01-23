@@ -11,6 +11,7 @@ add_library(lib_tkcore
         ${CMAKE_CURRENT_LIST_DIR}/main/key_storage_v1.cpp
         ${CMAKE_CURRENT_LIST_DIR}/main/storage2/split_password.cpp
         ${CMAKE_CURRENT_LIST_DIR}/main/storage2/storage.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/main/storage2/storage_structure.cpp
 )
 
 set_target_properties(lib_tkcore PROPERTIES INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_LIST_DIR})

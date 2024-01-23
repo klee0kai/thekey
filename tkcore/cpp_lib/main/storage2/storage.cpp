@@ -87,7 +87,7 @@ int thekey_v2::createStorage(const thekey::Storage &storage) {
     memcpy(header.fileTypeOwner, typeOwnerText, FILE_TYPE_OWNER_LEN);
     strncpy(header.name, storage.name.c_str(), STORAGE_NAME_LEN);
     strncpy(header.description, storage.description.c_str(), STORAGE_DESCRIPTION_LEN);
-    header.encryptionType(Default);
+    header.cryptType(Default);
     header.interactionsCount(1000);
     RAND_bytes(header.salt, SALT_LEN);
     auto wroteLen = write(fd, &header, sizeof(header));
@@ -193,6 +193,208 @@ int KeyStorageV2::readAll() {
 
 StorageInfo KeyStorageV2::info() {
     return cachedInfo;
+}
+
+int KeyStorageV2::save() {
+    auto error = save(tempStoragePath);
+    if (error)return error;
+    error = save(storagePath);
+    if (error) return error;
+    // everything went fine, you can delete the backup file
+    remove(tempStoragePath.c_str());
+    return error;
+}
+
+int KeyStorageV2::save(const std::string &path) {
+    int fd = open(path.c_str(), O_CREAT | O_TRUNC | O_WRONLY | O_CLOEXEC, S_IRUSR | S_IWUSR);
+    if (fd < 0) return -1;
+    auto writeLen = write(fd, &*fheader, sizeof(StorageHeaderFlat));
+    if (writeLen != sizeof(StorageHeaderFlat)) goto write_file_error;
+
+    for (const auto &item: cryptedNotes) {
+        // TODO
+    }
+
+    for (const auto &item: cryptedGeneratedPassws) {
+        // TODO
+    }
+
+    close(fd);
+    return 0;
+
+    write_file_error:
+    close(fd);
+    return KEY_WRITE_FILE_ERROR;
+
+}
+
+
+int KeyStorageV2::saveToNewPassw(const std::string &path, const std::string &passw) {
+    //TODO
+    return -1;
+}
+
+
+// ---- notes api ----
+
+std::vector<long long> KeyStorageV2::notes() {
+    std::vector<long long> notes = {};
+    for (const auto &item: cryptedNotes) {
+        notes.push_back((long long) &item);
+    }
+    return notes;
+}
+
+
+std::shared_ptr<DecryptedNote> KeyStorageV2::note(long long notePtr, uint flags) {
+    auto cryptedNote = std::find_if(cryptedNotes.begin(), cryptedNotes.end(),
+                                    [notePtr](const CryptedNote &note) {
+                                        return (long long) &note == notePtr;
+                                    });
+    if (cryptedNote == cryptedNotes.end()) {
+        return {};
+    }
+
+    auto decryptedNote = std::make_shared<DecryptedNote>();
+    decryptedNote->genTime = cryptedNote->note.genTime();
+    decryptedNote->color = cryptedNote->note.color();
+    std::vector<long long> notes = {};
+    for (const auto &item: cryptedNote->history) {
+        decryptedNote->history.push_back((long long) &item);
+    }
+
+    decryptedNote->site = cryptedNote->note.site.decrypt(
+            fheader->cryptType(),
+            ctx->keyForLogin
+    );
+
+    decryptedNote->login = cryptedNote->note.site.decrypt(
+            fheader->cryptType(),
+            ctx->keyForLogin
+    );
+
+    decryptedNote->description = cryptedNote->note.site.decrypt(
+            fheader->cryptType(),
+            ctx->keyForDescription
+    );
+
+    if (flags & TK2_GET_NOTE_PASSWORD) {
+        decryptedNote->passw = cryptedNote->note.site.decrypt(
+                fheader->cryptType(),
+                ctx->keyForPassw
+        );
+    }
+
+    return decryptedNote;
+}
+
+long long KeyStorageV2::createNote() {
+    cryptedNotes.push_back({});
+    const CryptedNote &it = cryptedNotes.back();
+    return (long long) &it;
+}
+
+int KeyStorageV2::setNote(long long notePtr,
+                          const thekey_v2::DecryptedNote &dnote,
+                          uint flags) {
+    auto cryptedNote = std::find_if(cryptedNotes.begin(), cryptedNotes.end(),
+                                    [notePtr](const CryptedNote &note) {
+                                        return (long long) &note == notePtr;
+                                    });
+    if (cryptedNote == cryptedNotes.end()) {
+        return KEY_NOTE_NOT_FOUND;
+    }
+
+    auto notCmpOld = (flags & TK2_SET_NOTE_ONLY_CHANGES) == 0;
+    auto deepCopy = (flags & TK2_SET_NOTE_DEEP_COPY);
+    auto trackHist = (flags & TK2_SET_NOTE_TRACK_HISTORY);
+    auto old = note(notePtr, TK2_GET_NOTE_PASSWORD);
+
+    cryptedNote->note.color(dnote.color);
+
+    if (notCmpOld || old->site != dnote.site) {
+        cryptedNote->note.site.encrypt(dnote.site, fheader->cryptType(), ctx->keyForLogin);
+    }
+    if (notCmpOld || old->login != dnote.login) {
+        cryptedNote->note.login.encrypt(dnote.login, fheader->cryptType(), ctx->keyForLogin);
+    }
+
+    if (deepCopy) {
+        // TODO deep copy passw and hist
+    } else if (notCmpOld || old->passw != dnote.passw) {
+        cryptedNote->note.password.encrypt(dnote.passw, fheader->cryptType(), ctx->keyForPassw);
+        cryptedNote->note.genTime(time(NULL));
+
+        if (trackHist && !old->passw.empty() && old->passw != dnote.passw) {
+            // TODO save hist
+        }
+    }
+
+    auto error = save();
+    return error;
+}
+
+int KeyStorageV2::removeNote(long long notePtr) {
+    auto cryptedNote = std::find_if(cryptedNotes.begin(), cryptedNotes.end(),
+                                    [notePtr](const CryptedNote &note) {
+                                        return (long long) &note == notePtr;
+                                    });
+    if (cryptedNote == cryptedNotes.end()) {
+        return KEY_NOTE_NOT_FOUND;
+    }
+    cryptedNotes.erase(cryptedNote);
+
+    auto error = save();
+    return error;
+}
+
+// ---- gen passw and hist api ----
+std::string KeyStorageV2::genPassword(int encodingType, int len) {
+    auto passw = from(tkey2_salt::gen_password(encodingType, len));
+
+    CryptedPasswordFlat cryptedPasswordFlat{};
+    cryptedPasswordFlat.genTime(time(NULL));
+    cryptedPasswordFlat.password.encrypt(passw, fheader->cryptType(), ctx->keyForHistPassw);
+    cryptedGeneratedPassws.push_back(cryptedPasswordFlat);
+
+    save();
+    return passw;
+}
+
+std::vector<long long> KeyStorageV2::passwordsHistory() {
+    std::vector<long long> generatedPasswordHistory = {};
+    for (const auto &item: cryptedGeneratedPassws) {
+        generatedPasswordHistory.push_back((long long) &item);
+    }
+    return generatedPasswordHistory;
+}
+
+std::shared_ptr<DecryptedPassw> KeyStorageV2::passwordHistory(long long histPtr) {
+    shared_ptr<CryptedPasswordFlat> histPassw = {};
+
+    for (const auto &item: cryptedGeneratedPassws) {
+        if ((long long) &item == histPtr) {
+            histPassw = make_shared<CryptedPasswordFlat>(item);
+            break;
+        }
+    }
+    for (const auto &note: cryptedNotes) {
+        if (!histPassw)
+            for (const auto &item: note.history) {
+                if ((long long) &item == histPtr) {
+                    histPassw = make_shared<CryptedPasswordFlat>(item);
+                    break;
+                }
+            }
+    }
+    if (!histPassw) {
+        return {};
+    }
+    DecryptedPassw dPassw {};
+    dPassw.genTime  = histPassw->genTime();
+    dPassw.color  = histPassw->color();
+    dPassw.passw = histPassw->password.decrypt(fheader->cryptType(),ctx->keyForHistPassw);
+    return make_shared<DecryptedPassw>(dPassw);
 }
 
 // -------------------- private ------------------------------

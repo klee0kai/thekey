@@ -6,6 +6,7 @@
 #define THEKEY_STORAGE_STRUCTURE_H
 
 #include "thekey_core.h"
+#include "salt_text/salt2.h"
 
 #define SIGNATURE_LEN 7
 
@@ -20,7 +21,7 @@
 
 namespace thekey_v2 {
 
-    enum EncryptTypes {
+    enum EncryptType {
         Default,
         AES256,
     };
@@ -60,7 +61,7 @@ namespace thekey_v2 {
         unsigned char salt[SALT_LEN]; // crypt/decrypt salt
         INT32_BIG_ENDIAN(keyInteractionsCount)// key crypt/decrypt interaction count
         INT32_BIG_ENDIAN(interactionsCount)// crypt/decrypt interaction count
-        INT32_BIG_ENDIAN_ENUM(encryptionType, EncryptTypes) // crypt type
+        INT32_BIG_ENDIAN_ENUM(cryptType, EncryptType) // crypt type
     };
 
     struct FileSectionFlat {
@@ -71,19 +72,11 @@ namespace thekey_v2 {
 
 
     struct CryptedTextFlat {
-        INT32_BIG_ENDIAN(approximateLength)
+        tkey2_salt::SaltedText raw;
 
-        unsigned char lengthCorrection;
+        [[nodiscard]] std::string decrypt(const EncryptType &encryptType, const unsigned char *key) const;
 
-        unsigned char raw[ENCRYPTED_LEN];
-
-        [[nodiscard]] std::string decryptLen() const;
-
-        void encryptLen(const std::string &text);
-
-        [[nodiscard]] std::string decrypt() const;
-
-        void encrypt(const std::string &text);
+        void encrypt(const std::string &text, const EncryptType &encryptType, const unsigned char *key);
     };
 
     struct CryptedPasswordFlat {
