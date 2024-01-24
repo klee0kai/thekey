@@ -23,9 +23,11 @@ using namespace tkey2_salt;
 
 static unsigned char iv[] = "1234567887654321";
 
-std::string CryptedTextFlat::decrypt(const thekey_v2::EncryptType &encryptType,
-                                     const unsigned char *key) const {
-    SaltedText decrypted = raw;
+std::string CryptedTextFlat::decrypt(
+        const thekey_v2::EncryptType &encryptType,
+        const unsigned char *key
+) const {
+    SaltedText decrypted = {};
 
     EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
     EVP_CIPHER_CTX_init(ctx);
@@ -43,13 +45,13 @@ std::string CryptedTextFlat::decrypt(const thekey_v2::EncryptType &encryptType,
     return decrypted.desalted();
 }
 
-void
-CryptedTextFlat::encrypt(const std::string &text,
-                         const thekey_v2::EncryptType &encryptType,
-                         const unsigned char *key) {
-    SaltedText decrypted = raw;
+void CryptedTextFlat::encrypt(
+        const std::string &text,
+        const thekey_v2::EncryptType &encryptType,
+        const unsigned char *key
+) {
+    SaltedText decrypted = {};
     decrypted.salted(text);
-
 
     EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
     EVP_CIPHER_CTX_init(ctx);

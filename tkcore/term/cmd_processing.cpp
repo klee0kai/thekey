@@ -6,18 +6,25 @@
 #include <iomanip>
 #include "thekey.h"
 #include "storage_v1.h"
+#include "storage_v2.h"
 
 #define COLUMN_WIDTH 40
 
 using namespace std;
 using namespace thekey;
 
+#ifdef __ANDROID__
+namespace fs = std::__fs::filesystem;
+#else
+namespace fs = std::filesystem;
+#endif
+
 static char ident = '\t';
 
 static shared_ptr<thekey_v1::KeyStorageV1> storageV1 = {};
 
 void thekey_term::findStorages(const string &folder) {
-    cout << "Available crypted storages in folder: " << folder << endl;
+    cout << "Available crypted storages in folder: " << fs::absolute(folder) << endl;
     thekey::findStorages(folder, [](const Storage &storage) {
         cout << "-------------------------------------" << endl;
         cout << "storagePath: " << storage.file << endl;
@@ -60,6 +67,9 @@ void thekey_term::login(const std::string &filePath) {
     switch (storageInfo->storageVersion) {
         case 1:
             thekey_term_v1::login(filePath);
+            return;
+        case 2:
+            thekey_term_v2::login(filePath);
             return;
         default:
             cerr << "storage version " << storageInfo->storageVersion << " not supported " << filePath << endl;

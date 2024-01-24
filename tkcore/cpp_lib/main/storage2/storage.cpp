@@ -326,7 +326,7 @@ int KeyStorageV2::setNote(long long notePtr,
         return KEY_NOTE_NOT_FOUND;
     }
 
-    auto notCmpOld = (flags & TK2_SET_NOTE_ONLY_CHANGES) == 0;
+    auto notCmpOld = (flags & TK2_SET_NOTE_FORCE) ;
     auto deepCopy = (flags & TK2_SET_NOTE_DEEP_COPY);
     auto trackHist = (flags & TK2_SET_NOTE_TRACK_HISTORY);
     auto old = note(notePtr, TK2_GET_NOTE_PASSWORD);

@@ -13,7 +13,7 @@
 
 #define TK2_GET_NOTE_PASSWORD 0x1
 
-#define TK2_SET_NOTE_ONLY_CHANGES 0x1
+#define TK2_SET_NOTE_FORCE 0x1
 #define TK2_SET_NOTE_TRACK_HISTORY 0x2
 #define TK2_SET_NOTE_DEEP_COPY 0x4
 
@@ -89,7 +89,7 @@ namespace thekey_v2 {
          * @param flags TK2_GET_NOTE_PASSWORD
          * @return
          */
-        virtual std::shared_ptr<DecryptedNote> note(long long notePtr, uint flags);
+        virtual std::shared_ptr<DecryptedNote> note(long long notePtr, uint flags = 0);
 
         /**
          * @return notePtr note unic identifier
@@ -100,10 +100,10 @@ namespace thekey_v2 {
          *
          * @param notePtr dnote unic identifier
          * @param dnote new dnote
-         * @param flags TK2_SET_NOTE_ONLY_CHANGES / TK2_SET_NOTE_TRACK_HISTORY / TK2_SET_NOTE_DEEP_COPY
+         * @param flags TK2_SET_NOTE_FORCE / TK2_SET_NOTE_TRACK_HISTORY / TK2_SET_NOTE_DEEP_COPY
          * @return
          */
-        virtual int setNote(long long notePtr, const DecryptedNote &dnote, uint flags);
+        virtual int setNote(long long notePtr, const DecryptedNote &dnote, uint flags = 0);
 
         virtual int removeNote(long long notePtr);
 

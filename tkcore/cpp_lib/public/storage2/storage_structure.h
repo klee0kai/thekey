@@ -17,8 +17,6 @@
 #define SALT_LEN 2048
 #define KEY_LEN 2048
 
-#define ENCRYPTED_LEN 2048
-
 namespace thekey_v2 {
 
     enum EncryptType {

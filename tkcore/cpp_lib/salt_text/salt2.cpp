@@ -76,7 +76,6 @@ int tkey2_salt::decoded(
     auto scheme = find_scheme(typeEncoding);
     if (!scheme)return -1;
     for (int i = 0; i < bufLen; ++i) {
-        auto desalted = in[i] % scheme->len();
         out[i] = scheme->decoded(in[i]);
     }
     return bufLen;

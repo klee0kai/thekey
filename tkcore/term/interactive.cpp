@@ -15,11 +15,11 @@ using namespace std;
 #define COLUMN_WIDTH 40
 static char ident = '\t';
 
-static void print_help();
+static void printInteractiveModeHelp();
 
-static void find_storage();
+static void findStorage();
 
-static void create_storage();
+static void createStorage();
 
 void interactive() {
     cout << "TheKey interactive mode" << endl;
@@ -32,25 +32,32 @@ void interactive() {
             return;
 
         if (cmd == "h" || cmd == "help") {
-            print_help();
+            printInteractiveModeHelp();
             continue;
         }
 
         if (cmd == "find") {
-            find_storage();
+            findStorage();
             continue;
         }
 
         if (cmd == "create") {
-            create_storage();
+            createStorage();
             continue;
         }
 
+        if (cmd == "login") {
+            auto path = ask_from_term("input path : ");
+            login(path);
+            continue;
+        }
+
+        cerr << "cmd not support " << cmd << endl;
     }
 
 }
 
-void print_help() {
+static void printInteractiveModeHelp() {
     cout << "TheKey - (storageVersion. " << TERM_VERSION << ") cryp/encrypt your secure passwords storages" << endl;
     cout << endl;
     cout << ident << "Commands:" << endl;
@@ -76,12 +83,12 @@ void print_help() {
     cout << "login storage" << endl;
 }
 
-void find_storage() {
+void findStorage() {
     auto path = ask_from_term("input path: ");
     thekey_term::findStorages(path);
 }
 
-void create_storage() {
+void createStorage() {
     auto path = ask_from_term("input path: ");
     auto version = ask_int_from_term("input storage version: ");
     if (version > 2) {
@@ -110,6 +117,6 @@ void create_storage() {
     } else {
         cout << "storage created successfully" << endl;
     }
-
 }
+
 
