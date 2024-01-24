@@ -209,14 +209,35 @@ int KeyStorageV2::save(const std::string &path) {
     int fd = open(path.c_str(), O_CREAT | O_TRUNC | O_WRONLY | O_CLOEXEC, S_IRUSR | S_IWUSR);
     if (fd < 0) return -1;
     auto writeLen = write(fd, &*fheader, sizeof(StorageHeaderFlat));
+    FileSectionFlat fileSection{};
+
+
     if (writeLen != sizeof(StorageHeaderFlat)) goto write_file_error;
 
-    for (const auto &item: cryptedNotes) {
-        // TODO
+    for (const auto &note: cryptedNotes) {
+        fileSection = {};
+        fileSection.sectionType(NoteEntry);
+        fileSection.sectionLen(sizeof(CryptedNoteFlat) + note.history.size() * sizeof(CryptedPasswordFlat));
+        writeLen = write(fd, &fileSection, sizeof(fileSection));
+        if (writeLen != sizeof(fileSection)) goto write_file_error;
+
+        writeLen = write(fd, &note.note, sizeof(CryptedNoteFlat));
+        if (writeLen != sizeof(CryptedNoteFlat)) goto write_file_error;
+
+        for (const auto &hist: note.history) {
+            writeLen = write(fd, &hist, sizeof(hist));
+            if (writeLen != sizeof(hist)) goto write_file_error;
+        }
     }
 
-    for (const auto &item: cryptedGeneratedPassws) {
-        // TODO
+    fileSection = {};
+    fileSection.sectionType(GenPasswHistory);
+    fileSection.sectionLen(cryptedGeneratedPassws.size() * sizeof(CryptedPasswordFlat));
+    writeLen = write(fd, &fileSection, sizeof(fileSection));
+    if (writeLen != sizeof(fileSection)) goto write_file_error;
+    for (const auto &hist: cryptedGeneratedPassws) {
+        writeLen = write(fd, &hist, sizeof(hist));
+        if (writeLen != sizeof(hist)) goto write_file_error;
     }
 
     close(fd);
@@ -390,10 +411,10 @@ std::shared_ptr<DecryptedPassw> KeyStorageV2::passwordHistory(long long histPtr)
     if (!histPassw) {
         return {};
     }
-    DecryptedPassw dPassw {};
-    dPassw.genTime  = histPassw->genTime();
-    dPassw.color  = histPassw->color();
-    dPassw.passw = histPassw->password.decrypt(fheader->cryptType(),ctx->keyForHistPassw);
+    DecryptedPassw dPassw{};
+    dPassw.genTime = histPassw->genTime();
+    dPassw.color = histPassw->color();
+    dPassw.passw = histPassw->password.decrypt(fheader->cryptType(), ctx->keyForHistPassw);
     return make_shared<DecryptedPassw>(dPassw);
 }
 
