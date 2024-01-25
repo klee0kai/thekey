@@ -72,9 +72,16 @@ namespace thekey_v2 {
     struct CryptedTextFlat {
         tkey2_salt::SaltedText raw;
 
-        [[nodiscard]] std::string decrypt(const EncryptType &encryptType, const unsigned char *key) const;
+        [[nodiscard]] std::string decrypt(
+                const EncryptType &encryptType,
+                const unsigned char *key
+        ) const;
 
-        void encrypt(const std::string &text, const EncryptType &encryptType, const unsigned char *key);
+        void encrypt(
+                const std::string &text,
+                const EncryptType &encryptType,
+                const unsigned char *key
+        );
     };
 
     struct CryptedPasswordFlat {

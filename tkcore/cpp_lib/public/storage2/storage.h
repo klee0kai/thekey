@@ -15,7 +15,6 @@
 
 #define TK2_SET_NOTE_FORCE 0x1
 #define TK2_SET_NOTE_TRACK_HISTORY 0x2
-#define TK2_SET_NOTE_DEEP_COPY 0x4
 
 namespace thekey_v2 {
 
@@ -124,7 +123,7 @@ namespace thekey_v2 {
          * @param len  len of passport
          * @return generated password
          */
-        virtual std::string genPassword(int encodingType, int len);
+        virtual std::string genPassword(uint32_t encodingType, int len);
 
         /**
          * We get the history of generated passwords

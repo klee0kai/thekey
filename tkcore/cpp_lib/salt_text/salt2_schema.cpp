@@ -61,24 +61,28 @@ static vector<EncodingScheme> encodingSchemas = {
                 {U'!'},
                 {U' '},
         }},
-        // full latin list
         {.type=8, .flags = SCHEME_NUMBERS | SCHEME_SPEC_SYMBOLS | SCHEME_ENGLISH, .ranges={
+                {U'!', U'~'},
+        }},
+
+        // full latin list
+        {.type=9, .flags = SCHEME_NUMBERS | SCHEME_SPEC_SYMBOLS | SCHEME_ENGLISH | SCHEME_SPACE_SYMBOL, .ranges={
                 {U' ', U'~'},
         }},
 
         // rus
-        {.type=9, .flags = 0, .ranges={
-                {U'а', U'я'},
-        }},
         {.type=10, .flags = 0, .ranges={
                 {U'а', U'я'},
-                {U'.'},
         }},
         {.type=11, .flags = 0, .ranges={
                 {U'а', U'я'},
-                {U'А', U'Я'},
+                {U'.'},
         }},
         {.type=12, .flags = 0, .ranges={
+                {U'а', U'я'},
+                {U'А', U'Я'},
+        }},
+        {.type=13, .flags = 0, .ranges={
                 {U'а', U'я'},
                 {U'А', U'Я'},
                 {U'.'},
@@ -87,7 +91,7 @@ static vector<EncodingScheme> encodingSchemas = {
         }},
 
         // full latin + cyrillic list
-        {.type=13, .flags = 0, .ranges={
+        {.type=14, .flags = 0, .ranges={
                 {U' ', U'~'},
                 {U'а', U'я'},
                 {U'А', U'Я'},
@@ -95,7 +99,7 @@ static vector<EncodingScheme> encodingSchemas = {
 
 
         // full latin + cyrillic list
-        {.type=14, .flags = 0, .ranges={
+        {.type=15, .flags = 0, .ranges={
                 {U' ', U'~'},
                 {U'а', U'я'},
                 {U'А', U'Я'},

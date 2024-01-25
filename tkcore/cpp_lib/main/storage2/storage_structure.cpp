@@ -37,7 +37,7 @@ std::string CryptedTextFlat::decrypt(
     int outlen = 0;
     if (!EVP_DecryptUpdate(ctx,
                            (unsigned char *) &decrypted.payload, &outlen,
-                           (unsigned char *) &raw.payload, sizeof(raw.payload))) {
+                           (unsigned char *) &decrypted.payload, sizeof(raw.payload))) {
         EVP_CIPHER_CTX_free(ctx);
         return "";
     }

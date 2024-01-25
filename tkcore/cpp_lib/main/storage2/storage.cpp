@@ -328,7 +328,6 @@ int KeyStorageV2::setNote(long long notePtr,
     }
 
     auto notCmpOld = (flags & TK2_SET_NOTE_FORCE);
-    auto deepCopy = (flags & TK2_SET_NOTE_DEEP_COPY);
     auto trackHist = (flags & TK2_SET_NOTE_TRACK_HISTORY);
     auto old = note(notePtr, TK2_GET_NOTE_PASSWORD);
 
@@ -345,14 +344,15 @@ int KeyStorageV2::setNote(long long notePtr,
         cryptedNote->note.description.encrypt(dnote.description, fheader->cryptType(), ctx->keyForLogin);
     }
 
-    if (deepCopy) {
-        // TODO deep copy passw and hist
-    } else if (notCmpOld || old->passw != dnote.passw) {
+    if (notCmpOld || old->passw != dnote.passw) {
         cryptedNote->note.password.encrypt(dnote.passw, fheader->cryptType(), ctx->keyForPassw);
         cryptedNote->note.genTime(time(NULL));
 
         if (trackHist && !old->passw.empty() && old->passw != dnote.passw) {
-            // TODO save hist
+            CryptedPasswordFlat hist{};
+            hist.password.encrypt(old->passw, fheader->cryptType(), ctx->keyForHistPassw);
+            hist.genTime(old->genTime);
+            cryptedNote->history.push_back(hist);
         }
     }
 
@@ -375,7 +375,7 @@ int KeyStorageV2::removeNote(long long notePtr) {
 }
 
 // ---- gen passw and hist api ----
-std::string KeyStorageV2::genPassword(int encodingType, int len) {
+std::string KeyStorageV2::genPassword(uint32_t encodingType, int len) {
     auto passw = from(tkey2_salt::gen_password(encodingType, len));
 
     CryptedPasswordFlat cryptedPasswordFlat{};

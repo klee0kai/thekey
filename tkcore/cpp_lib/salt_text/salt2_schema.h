@@ -12,6 +12,7 @@
 #define SCHEME_SPEC_SYMBOLS 0x2
 #define SCHEME_ENGLISH 0x4
 #define SCHEME_RUSSIAN 0x8
+#define SCHEME_SPACE_SYMBOL 0x10
 
 namespace tkey2_salt {
 

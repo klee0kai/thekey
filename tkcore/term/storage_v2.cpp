@@ -5,6 +5,7 @@
 #include "storage_v2.h"
 #include "public/storage2/storage.h"
 #include "term_utils.h"
+#include "salt_text/salt2_schema.h"
 
 using namespace std;
 using namespace thekey_v2;
@@ -179,14 +180,16 @@ static void noteHist() {
         cerr << "incorrect index " << noteIndex << endl;
         return;
     }
-//    TODO
-//    for (const auto &item: storageV2->noteHist(notes[noteIndex - 1])) {
-//        cout << "password: " << item.passw << endl;
-//
-//        std::tm *changeTm = std::gmtime((time_t *) &item.genTime);
-//        cout << "change time : " << asctime(changeTm) << endl;
-//    }
-//    cout << endl;
+    auto note = storageV2->note(notes[noteIndex], 0);
+    for (const auto &item: note->history) {
+        auto hist = storageV2->passwordHistory(item);
+        cout << "-------------------------------------------" << endl;
+        cout << "passw: " << hist->passw << endl;
+        std::tm *changeTm = std::gmtime((time_t *) &hist->genTime);
+        cout << "change time : " << asctime(changeTm) << endl;
+    }
+
+    cout << endl;
 }
 
 static void createNote() {
@@ -201,7 +204,7 @@ static void createNote() {
             .login = login,
             .passw = passw,
             .description = desc,
-    });
+    }, TK2_SET_NOTE_TRACK_HISTORY);
     if (error) {
         cerr << "error to save note " << error << endl;
         return;
@@ -253,7 +256,7 @@ static void editNote() {
             cerr << "cmd incorrect '" << cmd << "' exit from edit mode" << endl;
             return;
         }
-        int error = storageV2->setNote(notePtr, *note);
+        int error = storageV2->setNote(notePtr, *note, TK2_SET_NOTE_TRACK_HISTORY);
         if (error) {
             cerr << "error to save note " << error << " exit from edit mode" << endl;
             return;
@@ -283,11 +286,11 @@ static void removeNote() {
 static void printPasswordHistory() {
     if (!storageV2)return;
     for (const auto &item: storageV2->passwordsHistory()) {
-//        TODO
-//        cout << "-------------------------------------------" << endl;
-//        cout << "passw: " << item.passw << endl;
-//        std::tm *changeTm = std::gmtime((time_t *) &item.genTime);
-//        cout << "change time : " << asctime(changeTm) << endl;
+        auto hist = storageV2->passwordHistory(item);
+        cout << "-------------------------------------------" << endl;
+        cout << "passw: " << hist->passw << endl;
+        std::tm *changeTm = std::gmtime((time_t *) &hist->genTime);
+        cout << "change time : " << asctime(changeTm) << endl;
     }
     cout << "-------------------------------------------" << endl;
 }
@@ -295,15 +298,31 @@ static void printPasswordHistory() {
 static void generateNewPassword() {
     if (!storageV2)return;
 
-    cout << "select password encoding: " << endl;
-    cout << ") numbers only " << endl;
+    cout << "select password encSelect: " << endl;
+    cout << "0) numbers only " << endl;
     cout << "1) english symbols and numbers " << endl;
     cout << "2) english symbols, numbers, spec symbols " << endl;
     cout << "3) english symbols, numbers, spec symbols, space " << endl;
-    // TODO find encoding
-    auto encoding = term_utils::ask_int_from_term();
+    auto schemeFlags = 0;
+    auto encSelect = term_utils::ask_int_from_term();
+    switch (encSelect) {
+        case 0:
+            schemeFlags = SCHEME_NUMBERS;
+            break;
+        case 1:
+            schemeFlags = SCHEME_ENGLISH | SCHEME_NUMBERS;
+            break;
+        case 2:
+            schemeFlags = SCHEME_ENGLISH | SCHEME_NUMBERS | SCHEME_SPEC_SYMBOLS;
+            break;
+        case 3:
+            schemeFlags = SCHEME_ENGLISH | SCHEME_NUMBERS | SCHEME_SPEC_SYMBOLS | SCHEME_SPACE_SYMBOL;
+            break;
+    }
+    auto schemeType = tkey2_salt::find_scheme_type_by_flags(schemeFlags);
+
     auto len = term_utils::ask_int_from_term("length of password: ");
-    auto passw = storageV2->genPassword(encoding, len);
+    auto passw = storageV2->genPassword(schemeType, len);
     cout << "generated password '" << passw << "' " << endl;
 }
 
@@ -327,4 +346,5 @@ static void printNote(const thekey_v2::DecryptedNote &note) {
     std::tm *changeTm = std::gmtime((time_t *) &note.genTime);
     cout << "gen time : " << asctime(changeTm) << endl;
     cout << "color : " << note.color << endl;
+    cout << "hist len : " << note.history.size() << endl;
 }
