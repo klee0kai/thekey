@@ -17,10 +17,10 @@ static auto hashFunc = hash<uint32_t>();
 
 static int gen_offset(vector<uint32_t> args);
 
-void tkey2_salt::SaltedText::salted(const std::string &text) {
+void tkey2_salt::SaltedText::salted(const std::string &text, const int &minEncodingLen) {
     auto wideString = from(text);
     auto wideStringRaw = wideString.c_str();
-    auto type = find_scheme_type(wideString);
+    auto type = find_scheme_type(wideString, minEncodingLen);
     wide_char source[SALTED_TEXT_LEN];
     randmem(source, SALTED_TEXT_LEN);
     randmem(payload.raw, SALTED_TEXT_LEN);

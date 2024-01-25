@@ -24,48 +24,58 @@ using namespace tkey2_salt;
 
 static unsigned char iv[] = "1234567887654321";
 
+void CryptedTextFlat::encrypt(
+        const std::string &text,
+        const unsigned char *key,
+        const EncryptType &crypType,
+        const uint iteractionCount,
+        const int minEncodingLen
+) {
+    raw.salted(text, minEncodingLen);
+
+    for (int i = 0; i < iteractionCount; ++i) {
+        EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
+        EVP_CIPHER_CTX_init(ctx);
+
+        EVP_EncryptInit(ctx, EVP_aes_256_cbc(), key, iv);
+        int outlen = 0;
+        if (!EVP_EncryptUpdate(ctx,
+                               (unsigned char *) &raw.payload, &outlen,
+                               (unsigned char *) &raw.payload, sizeof(raw.payload))) {
+            EVP_CIPHER_CTX_free(ctx);
+            return;
+        }
+        EVP_CIPHER_CTX_free(ctx);
+    }
+
+}
+
 std::string CryptedTextFlat::decrypt(
-        const thekey_v2::EncryptType &encryptType,
-        const unsigned char *key
+        const unsigned char *key,
+        const EncryptType &crypt,
+        const uint iteractionCount
 ) const {
     SaltedText decrypted = raw;
 
-    EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
-    EVP_CIPHER_CTX_init(ctx);
+    for (int i = 0; i < iteractionCount; ++i) {
+        EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
+        EVP_CIPHER_CTX_init(ctx);
 
-    EVP_DecryptInit(ctx, EVP_aes_256_cbc(), key, iv);
-    int outlen = 0;
-    if (!EVP_DecryptUpdate(ctx,
-                           (unsigned char *) &decrypted.payload, &outlen,
-                           (unsigned char *) &decrypted.payload, sizeof(raw.payload))) {
+        EVP_DecryptInit(ctx, EVP_aes_256_cbc(), key, iv);
+        int outlen = 0;
+        if (!EVP_DecryptUpdate(ctx,
+                               (unsigned char *) &decrypted.payload, &outlen,
+                               (unsigned char *) &decrypted.payload, sizeof(raw.payload))) {
+            EVP_CIPHER_CTX_free(ctx);
+            return "";
+        }
         EVP_CIPHER_CTX_free(ctx);
-        return "";
     }
-    EVP_CIPHER_CTX_free(ctx);
 
     return decrypted.desalted();
 }
 
-void CryptedTextFlat::encrypt(
-        const std::string &text,
-        const thekey_v2::EncryptType &encryptType,
-        const unsigned char *key
-) {
-    raw.salted(text);
 
-    EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
-    EVP_CIPHER_CTX_init(ctx);
-
-    EVP_EncryptInit(ctx, EVP_aes_256_cbc(), key, iv);
-    int outlen = 0;
-    if (!EVP_EncryptUpdate(ctx,
-                           (unsigned char *) &raw.payload, &outlen,
-                           (unsigned char *) &raw.payload, sizeof(raw.payload))) {
-        EVP_CIPHER_CTX_free(ctx);
-        return;
-    }
-    EVP_CIPHER_CTX_free(ctx);
-}
 
 
 

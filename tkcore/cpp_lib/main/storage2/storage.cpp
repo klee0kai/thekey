@@ -286,24 +286,28 @@ std::shared_ptr<DecryptedNote> KeyStorageV2::note(long long notePtr, uint flags)
     }
 
     decryptedNote->site = cryptedNote->note.site.decrypt(
+            ctx->keyForLogin,
             fheader->cryptType(),
-            ctx->keyForLogin
+            fheader->interactionsCount()
     );
 
     decryptedNote->login = cryptedNote->note.login.decrypt(
+            ctx->keyForLogin,
             fheader->cryptType(),
-            ctx->keyForLogin
+            fheader->interactionsCount()
     );
 
     decryptedNote->description = cryptedNote->note.description.decrypt(
+            ctx->keyForDescription,
             fheader->cryptType(),
-            ctx->keyForDescription
+            fheader->interactionsCount()
     );
 
     if (flags & TK2_GET_NOTE_PASSWORD) {
         decryptedNote->passw = cryptedNote->note.password.decrypt(
+                ctx->keyForPassw,
                 fheader->cryptType(),
-                ctx->keyForPassw
+                fheader->interactionsCount()
         );
     }
 
@@ -334,23 +338,48 @@ int KeyStorageV2::setNote(long long notePtr,
     cryptedNote->note.color(dnote.color);
 
     if (notCmpOld || old->site != dnote.site) {
-        cryptedNote->note.site.encrypt(dnote.site, fheader->cryptType(), ctx->keyForLogin);
+        cryptedNote->note.site.encrypt(
+                dnote.site,
+                ctx->keyForLogin,
+                fheader->cryptType(),
+                fheader->interactionsCount()
+        );
     }
     if (notCmpOld || old->login != dnote.login) {
-        cryptedNote->note.login.encrypt(dnote.login, fheader->cryptType(), ctx->keyForLogin);
+        cryptedNote->note.login.encrypt(
+                dnote.login,
+                ctx->keyForLogin,
+                fheader->cryptType(),
+                fheader->interactionsCount()
+        );
     }
 
     if (notCmpOld || old->description != dnote.description) {
-        cryptedNote->note.description.encrypt(dnote.description, fheader->cryptType(), ctx->keyForLogin);
+        cryptedNote->note.description.encrypt(
+                dnote.description,
+                ctx->keyForLogin,
+                fheader->cryptType(),
+                fheader->interactionsCount()
+        );
     }
 
     if (notCmpOld || old->passw != dnote.passw) {
-        cryptedNote->note.password.encrypt(dnote.passw, fheader->cryptType(), ctx->keyForPassw);
+        cryptedNote->note.password.encrypt(
+                dnote.passw,
+                ctx->keyForPassw,
+                fheader->cryptType(),
+                fheader->interactionsCount()
+        );
         cryptedNote->note.genTime(time(NULL));
 
         if (trackHist && !old->passw.empty() && old->passw != dnote.passw) {
             CryptedPasswordFlat hist{};
-            hist.password.encrypt(old->passw, fheader->cryptType(), ctx->keyForHistPassw);
+            hist.password.encrypt(
+                    old->passw,
+                    ctx->keyForHistPassw,
+                    fheader->cryptType(),
+                    fheader->interactionsCount()
+            );
             hist.genTime(old->genTime);
             cryptedNote->history.push_back(hist);
         }
@@ -380,7 +409,12 @@ std::string KeyStorageV2::genPassword(uint32_t encodingType, int len) {
 
     CryptedPasswordFlat cryptedPasswordFlat{};
     cryptedPasswordFlat.genTime(time(NULL));
-    cryptedPasswordFlat.password.encrypt(passw, fheader->cryptType(), ctx->keyForHistPassw);
+    cryptedPasswordFlat.password.encrypt(
+            passw,
+            ctx->keyForHistPassw,
+            fheader->cryptType(),
+            fheader->interactionsCount()
+    );
     cryptedGeneratedPassws.push_back(cryptedPasswordFlat);
 
     save();
@@ -419,7 +453,11 @@ std::shared_ptr<DecryptedPassw> KeyStorageV2::passwordHistory(long long histPtr)
     DecryptedPassw dPassw{};
     dPassw.genTime = histPassw->genTime();
     dPassw.color = histPassw->color();
-    dPassw.passw = histPassw->password.decrypt(fheader->cryptType(), ctx->keyForHistPassw);
+    dPassw.passw = histPassw->password.decrypt(
+            ctx->keyForHistPassw,
+            fheader->cryptType(),
+            fheader->interactionsCount()
+    );
     return make_shared<DecryptedPassw>(dPassw);
 }
 

@@ -31,13 +31,12 @@ TEST(GenPassw2, CryptDecrypt) {
     CryptedTextFlat crypted{};
 
     // When
-    crypted.encrypt("some_text", Default, ctx->keyForLogin);
-    auto decrypted = crypted.decrypt(Default, ctx->keyForLogin);
+    crypted.encrypt("some_text", ctx->keyForLogin);
+    auto decrypted = crypted.decrypt(ctx->keyForLogin);
 
     // Then
     ASSERT_EQ("some_text", decrypted);
 }
-
 
 
 TEST(GenPassw2, CryptDecryptLong) {
@@ -45,12 +44,21 @@ TEST(GenPassw2, CryptDecryptLong) {
     unsigned char salt[SALT_LEN];
     memset(salt, '3', SALT_LEN);
 
+
     auto ctx = cryptContext("test", 1000, salt);
     CryptedTextFlat crypted{};
 
     // When
-    crypted.encrypt("some long text text with numbers 123", Default, ctx->keyForLogin);
-    auto decrypted = crypted.decrypt(Default, ctx->keyForLogin);
+    crypted.encrypt("some long text text with numbers 123",
+                    ctx->keyForLogin,
+                    Default,
+                    1000000
+    );
+    auto decrypted = crypted.decrypt(
+            ctx->keyForLogin,
+            Default,
+            1000000
+    );
 
     // Then
     ASSERT_EQ("some long text text with numbers 123", decrypted);

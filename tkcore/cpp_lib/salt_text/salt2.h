@@ -31,7 +31,7 @@ namespace tkey2_salt {
 
         [[nodiscard]] std::string desalted() const;
 
-        void salted(const std::string &text);
+        void salted(const std::string &text, const int &minEncodingLen = 0);
     };
 
 #pragma pack(pop)
