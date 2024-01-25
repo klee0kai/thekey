@@ -15,6 +15,7 @@ add_executable(tkey_test
         salt2_schemas.cpp
         salt2_testing.cpp
         gen2_passw_testing.cpp
+        crypt2_tests.cpp
         )
 
 target_include_directories(tkey_test PUBLIC

@@ -19,8 +19,17 @@
 
 namespace thekey_v2 {
 
-    struct CryptContext;
-    struct CryptedNote;
+    struct CryptContext {
+        unsigned char keyForPassw[KEY_LEN + 1];
+        unsigned char keyForLogin[KEY_LEN + 1];
+        unsigned char keyForHistPassw[KEY_LEN + 1];
+        unsigned char keyForDescription[KEY_LEN + 1];
+    };
+
+    struct CryptedNote {
+        CryptedNoteFlat note;
+        std::list<CryptedPasswordFlat> history;
+    };
 
     struct StorageInfo {
         std::string path;
@@ -142,6 +151,12 @@ namespace thekey_v2 {
     int createStorage(const thekey::Storage &storage);
 
     std::shared_ptr<KeyStorageV2> storage(const std::string &path, const std::string &passw);
+
+    std::shared_ptr<CryptContext> cryptContext(
+            const std::string &passw,
+            const uint &interactionsCount,
+            const unsigned char *salt
+    );
 
 }
 

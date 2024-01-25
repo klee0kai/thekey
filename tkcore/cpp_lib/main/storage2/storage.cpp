@@ -32,18 +32,6 @@ using namespace thekey_v2;
 static char typeOwnerText[FILE_TYPE_OWNER_LEN] = "TheKey key storage. Designed by Andrei Kuzubov / Klee0kai. "
                                                  "Follow original app https://github.com/klee0kai/thekey";
 
-struct thekey_v2::CryptContext {
-    unsigned char keyForPassw[KEY_LEN];
-    unsigned char keyForLogin[KEY_LEN];
-    unsigned char keyForHistPassw[KEY_LEN];
-    unsigned char keyForDescription[KEY_LEN];
-};
-
-struct thekey_v2::CryptedNote {
-    CryptedNoteFlat note;
-    list<CryptedPasswordFlat> history;
-};
-
 
 // -------------------- declarations ---------------------------
 
@@ -107,32 +95,45 @@ std::shared_ptr<KeyStorageV2> thekey_v2::storage(const std::string &path, const 
         close(fd);
         return {};
     }
-    auto splitPassw = split(passw);
-    auto passw_size = sizeof(wide_char) * splitPassw.passwForLogin.length();
-    auto ctx = std::make_shared<CryptContext>();
-    memset(&*ctx, 0, sizeof(CryptContext));
-
-    PKCS5_PBKDF2_HMAC((char *) splitPassw.passwForPassw.c_str(), int(passw_size),
-                      header->salt, SALT_LEN,
-                      int(header->interactionsCount()), EVP_sha512_256(),
-                      KEY_LEN, ctx->keyForPassw);
-    PKCS5_PBKDF2_HMAC((char *) splitPassw.passwForLogin.c_str(), int(passw_size),
-                      header->salt, SALT_LEN,
-                      int(header->interactionsCount()), EVP_sha512_256(),
-                      KEY_LEN, ctx->keyForLogin);
-    PKCS5_PBKDF2_HMAC((char *) splitPassw.passwForHistPassw.c_str(), int(passw_size),
-                      header->salt, SALT_LEN,
-                      int(header->interactionsCount()), EVP_sha512_256(),
-                      KEY_LEN, ctx->keyForHistPassw);
-    PKCS5_PBKDF2_HMAC((char *) splitPassw.passwForDescription.c_str(), int(passw_size),
-                      header->salt, SALT_LEN,
-                      int(header->interactionsCount()), EVP_sha512_256(),
-                      KEY_LEN, ctx->keyForDescription);
-    splitPassw = {};
+    auto ctx = cryptContext(
+            passw,
+            header->interactionsCount(),
+            header->salt
+    );
 
     return make_shared<KeyStorageV2>(fd, path, ctx);
 }
 
+
+std::shared_ptr<CryptContext> thekey_v2::cryptContext(
+        const std::string &passw,
+        const uint &interactionsCount,
+        const unsigned char *salt
+) {
+    auto splitPassw = split(passw);
+    auto passwLen = int(splitPassw.passwForPassw.length());
+    auto ctx = std::make_shared<CryptContext>();
+    memset(&*ctx, 0, sizeof(CryptContext));
+
+    PKCS5_PBKDF2_HMAC((char *) splitPassw.passwForPassw.c_str(), passwLen,
+                      salt, SALT_LEN,
+                      interactionsCount, EVP_sha512_256(),
+                      KEY_LEN, ctx->keyForPassw);
+    PKCS5_PBKDF2_HMAC((char *) splitPassw.passwForLogin.c_str(), passwLen,
+                      salt, SALT_LEN,
+                      interactionsCount, EVP_sha512_256(),
+                      KEY_LEN, ctx->keyForLogin);
+    PKCS5_PBKDF2_HMAC((char *) splitPassw.passwForHistPassw.c_str(), passwLen,
+                      salt, SALT_LEN,
+                      interactionsCount, EVP_sha512_256(),
+                      KEY_LEN, ctx->keyForHistPassw);
+    PKCS5_PBKDF2_HMAC((char *) splitPassw.passwForDescription.c_str(), passwLen,
+                      salt, SALT_LEN,
+                      interactionsCount, EVP_sha512_256(),
+                      KEY_LEN, ctx->keyForDescription);
+    splitPassw = {};
+    return ctx;
+}
 
 // ------------------- public --------------------------
 KeyStorageV2::KeyStorageV2(int fd, const std::string &path, const std::shared_ptr<CryptContext> &ctx)
@@ -326,7 +327,7 @@ int KeyStorageV2::setNote(long long notePtr,
         return KEY_NOTE_NOT_FOUND;
     }
 
-    auto notCmpOld = (flags & TK2_SET_NOTE_FORCE) ;
+    auto notCmpOld = (flags & TK2_SET_NOTE_FORCE);
     auto deepCopy = (flags & TK2_SET_NOTE_DEEP_COPY);
     auto trackHist = (flags & TK2_SET_NOTE_TRACK_HISTORY);
     auto old = note(notePtr, TK2_GET_NOTE_PASSWORD);

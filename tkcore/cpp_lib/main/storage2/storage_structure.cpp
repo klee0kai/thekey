@@ -16,6 +16,7 @@
 #include <openssl/sha.h>
 #include <openssl/rand.h>
 #include <algorithm>
+#include <iostream>
 
 using namespace std;
 using namespace thekey_v2;
@@ -27,7 +28,7 @@ std::string CryptedTextFlat::decrypt(
         const thekey_v2::EncryptType &encryptType,
         const unsigned char *key
 ) const {
-    SaltedText decrypted = {};
+    SaltedText decrypted = raw;
 
     EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
     EVP_CIPHER_CTX_init(ctx);
@@ -50,23 +51,20 @@ void CryptedTextFlat::encrypt(
         const thekey_v2::EncryptType &encryptType,
         const unsigned char *key
 ) {
-    SaltedText decrypted = {};
-    decrypted.salted(text);
+    raw.salted(text);
 
     EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
     EVP_CIPHER_CTX_init(ctx);
 
-    EVP_DecryptInit(ctx, EVP_aes_256_cbc(), key, iv);
+    EVP_EncryptInit(ctx, EVP_aes_256_cbc(), key, iv);
     int outlen = 0;
-    if (!EVP_DecryptUpdate(ctx,
+    if (!EVP_EncryptUpdate(ctx,
                            (unsigned char *) &raw.payload, &outlen,
-                           (unsigned char *) &decrypted.payload, sizeof(raw.payload))) {
+                           (unsigned char *) &raw.payload, sizeof(raw.payload))) {
         EVP_CIPHER_CTX_free(ctx);
         return;
     }
     EVP_CIPHER_CTX_free(ctx);
-
-
 }
 
 
