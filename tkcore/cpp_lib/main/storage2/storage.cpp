@@ -290,18 +290,18 @@ std::shared_ptr<DecryptedNote> KeyStorageV2::note(long long notePtr, uint flags)
             ctx->keyForLogin
     );
 
-    decryptedNote->login = cryptedNote->note.site.decrypt(
+    decryptedNote->login = cryptedNote->note.login.decrypt(
             fheader->cryptType(),
             ctx->keyForLogin
     );
 
-    decryptedNote->description = cryptedNote->note.site.decrypt(
+    decryptedNote->description = cryptedNote->note.description.decrypt(
             fheader->cryptType(),
             ctx->keyForDescription
     );
 
     if (flags & TK2_GET_NOTE_PASSWORD) {
-        decryptedNote->passw = cryptedNote->note.site.decrypt(
+        decryptedNote->passw = cryptedNote->note.password.decrypt(
                 fheader->cryptType(),
                 ctx->keyForPassw
         );
@@ -339,6 +339,10 @@ int KeyStorageV2::setNote(long long notePtr,
     }
     if (notCmpOld || old->login != dnote.login) {
         cryptedNote->note.login.encrypt(dnote.login, fheader->cryptType(), ctx->keyForLogin);
+    }
+
+    if (notCmpOld || old->description != dnote.description) {
+        cryptedNote->note.description.encrypt(dnote.description, fheader->cryptType(), ctx->keyForLogin);
     }
 
     if (deepCopy) {
@@ -436,9 +440,11 @@ static std::shared_ptr<StorageHeaderFlat> storageHeader(int fd) {
 
 static list<CryptedPasswordFlat> readHist(char *buffer, int len) {
     list<CryptedPasswordFlat> passwords = {};
-    for (int offset = 0; offset <= len - sizeof(CryptedPasswordFlat); offset += sizeof(CryptedPasswordFlat)) {
-        auto *flat = (CryptedPasswordFlat *) (buffer + offset);
-        passwords.push_back(*flat);
+    if (len >= sizeof(CryptedPasswordFlat)) {
+        for (int offset = 0; offset <= len - sizeof(CryptedPasswordFlat); offset += sizeof(CryptedPasswordFlat)) {
+            auto *flat = (CryptedPasswordFlat *) (buffer + offset);
+            passwords.push_back(*flat);
+        }
     }
     return passwords;
 }
