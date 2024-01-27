@@ -12,7 +12,7 @@ struct CmdHandler {
     std::string cmdDesc;
     std::function<void()> invoke;
 
-    std::string variantsHelp() const;
+    [[nodiscard]] std::string variantsHelp() const;
 };
 
 class Interactive {
