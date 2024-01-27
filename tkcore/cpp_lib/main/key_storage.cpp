@@ -7,8 +7,8 @@
 #include "public/key_storage.h"
 #include "main/storage1/key_storage_v1.h"
 #include "main/storage2/storage.h"
-#include "thekey_core.h"
-#include "utils/common.h"
+#include "core/key_core.h"
+#include "core/common.h"
 
 #ifdef __ANDROID__
 namespace fs = std::__fs::filesystem;

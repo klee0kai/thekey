@@ -5,7 +5,7 @@
 #ifndef THEKEY_SPLIT_PASSWORD_H
 #define THEKEY_SPLIT_PASSWORD_H
 
-#include "thekey_core.h"
+#include "core/key_core.h"
 
 namespace thekey_v2 {
 

@@ -2,8 +2,8 @@
 // Created by panda on 11.05.2020.
 //
 
-#ifndef THEKEY_THEKEY_CORE_H
-#define THEKEY_THEKEY_CORE_H
+#ifndef THEKEY_KEY_CORE_H
+#define THEKEY_KEY_CORE_H
 
 #include <string>
 #include <fcntl.h>
@@ -17,6 +17,8 @@
 #include <netinet/in.h>
 #include <filesystem>
 
+#include "key_errors.h"
+#include "key_signatures.h"
 
 #define MAX(a, b) (a>b?a:b)
 #define MIN(a, b) (a<b?a:b)
@@ -37,4 +39,4 @@
     void name(enum name) { raw##name = htonl( uint32_t(name) ); }
 
 
-#endif //THEKEY_THEKEY_CORE_H
+#endif //THEKEY_KEY_CORE_H

@@ -3,7 +3,7 @@
 //
 
 #include "salt2.h"
-#include "thekey_core.h"
+#include "core/key_core.h"
 #include "salt2_schema.h"
 #include <cstdarg>
 #include <cstring>

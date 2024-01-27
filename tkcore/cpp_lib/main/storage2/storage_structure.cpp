@@ -4,7 +4,7 @@
 
 #include <cstring>
 #include "storage_structure.h"
-#include "thekey_core.h"
+#include "core/key_core.h"
 
 #include <openssl/evp.h>
 #include <openssl/objects.h>

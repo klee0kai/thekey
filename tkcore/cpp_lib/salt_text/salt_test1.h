@@ -15,7 +15,7 @@
 #include <cstdlib>
 #include <string>
 #include <math.h>
-#include "thekey_core.h"
+#include "core/key_core.h"
 
 
 #define PASSW_MIN_LEN 4L

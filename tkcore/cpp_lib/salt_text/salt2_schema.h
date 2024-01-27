@@ -5,7 +5,7 @@
 #ifndef THEKEY_SALT2_ENCODING_SCHEMA_H
 #define THEKEY_SALT2_ENCODING_SCHEMA_H
 
-#include "thekey_core.h"
+#include "core/key_core.h"
 #include "salt_base.h"
 
 #define SCHEME_NUMBERS 0x1

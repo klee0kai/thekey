@@ -5,7 +5,7 @@
 #ifndef THEKEY_STORAGE_H
 #define THEKEY_STORAGE_H
 
-#include "thekey_core.h"
+#include "core/key_core.h"
 #include "public/key_storage.h"
 #include "list"
 #include "salt_text/salt_test1.h"

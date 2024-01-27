@@ -1,11 +1,11 @@
 
 
-#include "thekey_core.h"
+#include "core/key_core.h"
 #include "storage.h"
 #include "split_password.h"
-#include "public/key_errors.h"
+#include "core/key_errors.h"
 #include "utils/pass_spliter_v1.h"
-#include "utils/common.h"
+#include "core/common.h"
 #include "salt_text/salt2.h"
 #include "salt_text/salt_base.h"
 #include <cstring>
