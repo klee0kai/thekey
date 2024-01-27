@@ -8,9 +8,9 @@ add_executable(tkey
 
 
 target_link_libraries(tkey
-        thekey_find
-        thekey_storage_v1
-        thekey_storage_v2
+        key_find_static
+        key_storage1_static
+        key_storage2_static
 
         openssl
         openssl_crypto

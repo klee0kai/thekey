@@ -1,7 +1,5 @@
 
-
-add_library(thekey_storage_v2
-       
+set(KEY2_SRC
         # storage 2
         ${CMAKE_CURRENT_LIST_DIR}/salt_text/salt2.cpp
         ${CMAKE_CURRENT_LIST_DIR}/salt_text/salt2_schema.cpp
@@ -11,8 +9,15 @@ add_library(thekey_storage_v2
         ${CMAKE_CURRENT_LIST_DIR}/key2.cpp
 )
 
-set_target_properties(thekey_storage_v2 PROPERTIES INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_LIST_DIR})
+add_library(key_storage2_static ${KEY2_SRC})
 
-include_directories(thekey_storage_v2 ${CMAKE_CURRENT_LIST_DIR})
+set_target_properties(key_storage2_static PROPERTIES INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_LIST_DIR})
 
-target_link_libraries(thekey_storage_v2 openssl_interface thekey_core)
+include_directories(key_storage2_static ${CMAKE_CURRENT_LIST_DIR})
+
+target_link_libraries(key_storage2_static openssl_interface thekey_core_static)
+
+#  ------------- SHARED -----------------
+add_library(key_storage2 SHARED ${KEY2_SRC})
+include_directories(key_storage2 ${CMAKE_CURRENT_LIST_DIR})
+target_link_libraries(key_storage2 openssl_interface thekey_core_static)

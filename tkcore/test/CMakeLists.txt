@@ -23,9 +23,10 @@ target_include_directories(tkey_test PUBLIC
         )
 
 target_link_libraries(tkey_test
-        thekey_find
-        thekey_storage_v1
-        thekey_storage_v2
+        key_find_static
+        key_storage1_static
+        key_storage2_static
+
 
         gtest_main
         openssl
