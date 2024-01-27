@@ -5,9 +5,9 @@
 #ifndef THEKEY_TERM_UTILS_H
 #define THEKEY_TERM_UTILS_H
 
-#include "def_header.h"
+#include "../def_header.h"
 
-namespace term_utils {
+namespace term {
 
     std::string ask_from_term(std::string message = "");
 

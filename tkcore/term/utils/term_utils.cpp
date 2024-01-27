@@ -7,7 +7,7 @@
 
 using namespace std;
 
-string term_utils::ask_from_term(string message) {
+string term::ask_from_term(string message) {
     if (!message.empty())cout << message;
 
     std::string response;
@@ -15,7 +15,7 @@ string term_utils::ask_from_term(string message) {
     return response;
 }
 
-int term_utils::ask_int_from_term(string message) {
+int term::ask_int_from_term(string message) {
     if (!message.empty())cout << message;
 
     int response;
@@ -23,11 +23,11 @@ int term_utils::ask_int_from_term(string message) {
     return response;
 }
 
-std::string term_utils::ask_password_from_term(std::string message) {
+std::string term::ask_password_from_term(std::string message) {
     if (!message.empty())cout << message;
 
-    static struct termios old_terminal;
-    static struct termios new_terminal;
+    ::termios old_terminal;
+    ::termios new_terminal;
 
     //get settings of the actual terminal
     tcgetattr(STDIN_FILENO, &old_terminal);
@@ -49,7 +49,7 @@ std::string term_utils::ask_password_from_term(std::string message) {
 }
 
 
-size_t term_utils::argsCount(const char *sourceText) {
+size_t term::argsCount(const char *sourceText) {
     size_t count = 0;
     if (sourceText[0] != ' ' && sourceText[0] != '\n')
         count++;
@@ -65,7 +65,7 @@ size_t term_utils::argsCount(const char *sourceText) {
 }
 
 
-void term_utils::splitArgs(char *sourceText, char **&argsOut, size_t &len) {
+void term::splitArgs(char *sourceText, char **&argsOut, size_t &len) {
     len = argsCount(sourceText);
     size_t argIndex = 0;
 
@@ -82,7 +82,7 @@ void term_utils::splitArgs(char *sourceText, char **&argsOut, size_t &len) {
 }
 
 
-void term_utils::clear_opt() {
+void term::clear_opt() {
     optind = 0;
     opterr = 0;
     optopt = 0;

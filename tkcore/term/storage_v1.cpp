@@ -3,7 +3,7 @@
 //
 
 #include "storage_v1.h"
-#include "term_utils.h"
+#include "utils/term_utils.h"
 #include "utils/common.h"
 
 using namespace std;
@@ -49,7 +49,7 @@ void thekey_term_v1::login(const std::string &filePath) {
 
     for (int tryPasswInput = 0; tryPasswInput < 3; tryPasswInput++) {
         auto message = "Input password. Max length " + to_string(storageInfo->passwLen) + " : ";
-        auto passw = term_utils::ask_password_from_term(message);
+        auto passw = term::ask_password_from_term(message);
         storageV1 = thekey_v1::storage(filePath, passw);
 
         if (!storageV1) {
@@ -69,14 +69,14 @@ void thekey_term_v1::login(const std::string &filePath) {
     char cmdBuf[100];
     int exitFlag = 0;
     while (!exitFlag) {
-        term_utils::clear_opt();
+        term::clear_opt();
         cout << ">";
         memset(cmdBuf, 0, 0);
         cin.getline(cmdBuf, sizeof(cmdBuf) - 1, '\n');
 
-        size_t argc = term_utils::argsCount(cmdBuf);
+        size_t argc = term::argsCount(cmdBuf);
         char **argv = new char *[argc];
-        term_utils::splitArgs(cmdBuf, argv, argc);
+        term::splitArgs(cmdBuf, argv, argc);
 
         exitFlag = processCmdsStTerm(argc, argv);
         delete[]argv;
@@ -237,7 +237,7 @@ static void notePassword() {
         auto note = storageV1->note(item, 0);
         cout << ++index << ") '" << note->site << "' / '" << note->login << "' / '" << note->description << "'" << endl;
     }
-    auto noteIndex = term_utils::ask_int_from_term("Select note. Write index: ");
+    auto noteIndex = term::ask_int_from_term("Select note. Write index: ");
     if (noteIndex < 1 || noteIndex > notes.size()) {
         cerr << "incorrect index " << noteIndex << endl;
         return;
@@ -256,7 +256,7 @@ static void noteHist() {
         auto note = storageV1->note(item, 0);
         cout << ++index << ") '" << note->site << "' / '" << note->login << "' hist length " << note->histLen << endl;
     }
-    auto noteIndex = term_utils::ask_int_from_term("Select note. Write index: ");
+    auto noteIndex = term::ask_int_from_term("Select note. Write index: ");
     if (noteIndex < 1 || noteIndex > notes.size()) {
         cerr << "incorrect index " << noteIndex << endl;
         return;
@@ -273,10 +273,10 @@ static void noteHist() {
 static void createNote() {
     if (!storageV1)return;
     auto info = storageV1->info();
-    auto site = term_utils::ask_from_term("site. max len " + to_string(info.siteLen) + " : ");
-    auto login = term_utils::ask_from_term("login max len " + to_string(info.loginLen) + " : ");
-    auto passw = term_utils::ask_password_from_term("password max len " + to_string(info.passwLen) + " : ");
-    auto desc = term_utils::ask_from_term("description max len " + to_string(info.descLen) + " : ");
+    auto site = term::ask_from_term("site. max len " + to_string(info.siteLen) + " : ");
+    auto login = term::ask_from_term("login max len " + to_string(info.loginLen) + " : ");
+    auto passw = term::ask_password_from_term("password max len " + to_string(info.passwLen) + " : ");
+    auto desc = term::ask_from_term("description max len " + to_string(info.descLen) + " : ");
     auto notePtr = storageV1->createNote();
     int error = storageV1->setNote(notePtr, {
             .site =site,
@@ -299,7 +299,7 @@ static void editNote() {
         auto note = storageV1->note(item, 0);
         cout << ++index << ") '" << note->site << "' / '" << note->login << "' hist length " << note->histLen << endl;
     }
-    auto noteIndex = term_utils::ask_int_from_term("Select note. Write index: ");
+    auto noteIndex = term::ask_int_from_term("Select note. Write index: ");
     if (noteIndex < 1 || noteIndex > notes.size()) {
         cerr << "incorrect index " << noteIndex << endl;
         return;
@@ -317,20 +317,20 @@ static void editNote() {
         cout << "input 'passw' - edit passw" << endl;
         cout << "input 'desc' - edit description" << endl;
 
-        auto cmd = term_utils::ask_from_term();
+        auto cmd = term::ask_from_term();
 
         if (cmd == "back") {
             cout << "exit from edit mode" << endl;
             return;
         }
         if (cmd == "site") {
-            note->site = term_utils::ask_from_term("site. max len " + to_string(info.siteLen) + " : ");
+            note->site = term::ask_from_term("site. max len " + to_string(info.siteLen) + " : ");
         } else if (cmd == "login") {
-            note->login = term_utils::ask_from_term("login max len " + to_string(info.loginLen) + " : ");
+            note->login = term::ask_from_term("login max len " + to_string(info.loginLen) + " : ");
         } else if (cmd == "passw") {
-            note->passw = term_utils::ask_password_from_term("password max len " + to_string(info.passwLen) + " : ");
+            note->passw = term::ask_password_from_term("password max len " + to_string(info.passwLen) + " : ");
         } else if (cmd == "desc") {
-            note->description = term_utils::ask_from_term("description max len " + to_string(info.descLen) + " : ");
+            note->description = term::ask_from_term("description max len " + to_string(info.descLen) + " : ");
         } else {
             cerr << "cmd incorrect '" << cmd << "' exit from edit mode" << endl;
             return;
@@ -351,7 +351,7 @@ static void removeNote() {
         auto note = storageV1->note(item, 0);
         cout << ++index << ") '" << note->site << "' / '" << note->login << "' hist length " << note->histLen << endl;
     }
-    auto noteIndex = term_utils::ask_int_from_term("Select note. Write index: ");
+    auto noteIndex = term::ask_int_from_term("Select note. Write index: ");
     if (noteIndex < 1 || noteIndex > notes.size()) {
         cerr << "incorrect index " << noteIndex << endl;
         return;
@@ -381,8 +381,8 @@ static void generateNewPassword() {
     cout << "1) english symbols and numbers " << endl;
     cout << "2) english symbols, numbers, spec symbols " << endl;
     cout << "3) english symbols, numbers, spec symbols, space " << endl;
-    auto encoding = term_utils::ask_int_from_term();
-    auto len = term_utils::ask_int_from_term("length of password: ");
+    auto encoding = term::ask_int_from_term();
+    auto len = term::ask_int_from_term("length of password: ");
     auto passw = storageV1->genPassw(len, encoding);
     cout << "generated password '" << passw << "' " << endl;
 }
@@ -411,8 +411,8 @@ static void showInfo() {
 static void changeStoragePassword() {
     if (!storageV1)return;
 
-    auto newPath = term_utils::ask_from_term("write new path to save storage: ");
-    auto passw = term_utils::ask_password_from_term("write new storage master passw: ");
+    auto newPath = term::ask_from_term("write new path to save storage: ");
+    auto passw = term::ask_password_from_term("write new storage master passw: ");
     if (!ends_with(newPath, ".ckey")) newPath += ".ckey";
 
     cout << "changing password for storage..." << endl;

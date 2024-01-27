@@ -4,12 +4,12 @@
 
 #include "storage_v2.h"
 #include "public/storage2/storage.h"
-#include "term_utils.h"
+#include "utils/term_utils.h"
 #include "salt_text/salt2_schema.h"
 
 using namespace std;
 using namespace thekey_v2;
-using namespace term_utils;
+using namespace term;
 
 #define COLUMN_WIDTH 40
 static char ident = '\t';
@@ -155,7 +155,7 @@ static void notePassword() {
         auto note = storageV2->note(item, 0);
         cout << ++index << ") '" << note->site << "' / '" << note->login << "' / '" << note->description << "'" << endl;
     }
-    auto noteIndex = term_utils::ask_int_from_term("Select note. Write index: ");
+    auto noteIndex = term::ask_int_from_term("Select note. Write index: ");
     if (noteIndex < 1 || noteIndex > notes.size()) {
         cerr << "incorrect index " << noteIndex << endl;
         return;
@@ -175,7 +175,7 @@ static void noteHist() {
         auto note = storageV2->note(item, 0);
         cout << ++index << ") '" << note->site << "' / '" << note->login << "' " << endl;
     }
-    auto noteIndex = term_utils::ask_int_from_term("Select note. Write index: ");
+    auto noteIndex = term::ask_int_from_term("Select note. Write index: ");
     if (noteIndex < 1 || noteIndex > notes.size()) {
         cerr << "incorrect index " << noteIndex << endl;
         return;
@@ -194,10 +194,10 @@ static void noteHist() {
 
 static void createNote() {
     if (!storageV2)return;
-    auto site = term_utils::ask_from_term("site : ");
-    auto login = term_utils::ask_from_term("login : ");
-    auto passw = term_utils::ask_password_from_term("password : ");
-    auto desc = term_utils::ask_from_term("description : ");
+    auto site = term::ask_from_term("site : ");
+    auto login = term::ask_from_term("login : ");
+    auto passw = term::ask_password_from_term("password : ");
+    auto desc = term::ask_from_term("description : ");
     auto notePtr = storageV2->createNote();
     int error = storageV2->setNote(notePtr, {
             .site =site,
@@ -221,7 +221,7 @@ static void editNote() {
         auto note = storageV2->note(item, 0);
         cout << ++index << ") '" << note->site << "' / '" << note->login << "' " << endl;
     }
-    auto noteIndex = term_utils::ask_int_from_term("Select note. Write index: ");
+    auto noteIndex = term::ask_int_from_term("Select note. Write index: ");
     if (noteIndex < 1 || noteIndex > notes.size()) {
         cerr << "incorrect index " << noteIndex << endl;
         return;
@@ -238,20 +238,20 @@ static void editNote() {
         cout << "input 'passw' - edit passw" << endl;
         cout << "input 'desc' - edit description" << endl;
 
-        auto cmd = term_utils::ask_from_term();
+        auto cmd = term::ask_from_term();
 
         if (cmd == "back") {
             cout << "exit from edit mode" << endl;
             return;
         }
         if (cmd == "site") {
-            note->site = term_utils::ask_from_term("site : ");
+            note->site = term::ask_from_term("site : ");
         } else if (cmd == "login") {
-            note->login = term_utils::ask_from_term("login : ");
+            note->login = term::ask_from_term("login : ");
         } else if (cmd == "passw") {
-            note->passw = term_utils::ask_password_from_term("password : ");
+            note->passw = term::ask_password_from_term("password : ");
         } else if (cmd == "desc") {
-            note->description = term_utils::ask_from_term("description : ");
+            note->description = term::ask_from_term("description : ");
         } else {
             cerr << "cmd incorrect '" << cmd << "' exit from edit mode" << endl;
             return;
@@ -273,7 +273,7 @@ static void removeNote() {
         auto note = storageV2->note(item, 0);
         cout << ++index << ") '" << note->site << "' / '" << note->login << "' " << endl;
     }
-    auto noteIndex = term_utils::ask_int_from_term("Select note. Write index: ");
+    auto noteIndex = term::ask_int_from_term("Select note. Write index: ");
     if (noteIndex < 1 || noteIndex > notes.size()) {
         cerr << "incorrect index " << noteIndex << endl;
         return;
@@ -304,7 +304,7 @@ static void generateNewPassword() {
     cout << "2) english symbols, numbers, spec symbols " << endl;
     cout << "3) english symbols, numbers, spec symbols, space " << endl;
     auto schemeFlags = 0;
-    auto encSelect = term_utils::ask_int_from_term();
+    auto encSelect = term::ask_int_from_term();
     switch (encSelect) {
         case 0:
             schemeFlags = SCHEME_NUMBERS;
@@ -321,7 +321,7 @@ static void generateNewPassword() {
     }
     auto schemeType = tkey2_salt::find_scheme_type_by_flags(schemeFlags);
 
-    auto len = term_utils::ask_int_from_term("length of password: ");
+    auto len = term::ask_int_from_term("length of password: ");
     auto passw = storageV2->genPassword(schemeType, len);
     cout << "generated password '" << passw << "' " << endl;
 }

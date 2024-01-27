@@ -6,10 +6,10 @@
 #include "public/storage2/storage.h"
 #include "public/key_storage_v1.h"
 #include "def_header.h"
-#include "term_utils.h"
+#include "utils/term_utils.h"
 
 using namespace thekey_term;
-using namespace term_utils;
+using namespace term;
 using namespace std;
 
 #define COLUMN_WIDTH 40
