@@ -9,10 +9,6 @@
 
 namespace thekey {
 
-    extern const char *const storageFormat;
-    extern const char storageSignature_V1[SIGNATURE_LEN];
-    extern const char storageSignature_V2[SIGNATURE_LEN];
-
     struct Storage {
         std::string file;
         unsigned int storageVersion;

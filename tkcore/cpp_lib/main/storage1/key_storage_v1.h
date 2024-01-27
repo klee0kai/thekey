@@ -6,7 +6,7 @@
 #define THEKEY_KEY_STORAGE_V1_H
 
 #include "core/key_core.h"
-#include "public/key_storage.h"
+#include "find/key_storage.h"
 #include "list"
 #include "salt_text/salt_test1.h"
 
@@ -95,8 +95,6 @@ namespace thekey_v1 {
         std::list<CryptedPassw> cryptedGeneratedPassws;
 
     };
-
-    std::shared_ptr<thekey::Storage> storage(int fd, const std::string &file);
 
     std::shared_ptr<StorageV1Info> storageV1Info(const std::string &file);
 

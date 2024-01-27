@@ -42,16 +42,6 @@ static list<CryptedPasswordFlat> readHist(char *buffer, int len);
 static shared_ptr<CryptedNote> readNote(char *buffer, int len);
 
 // -------------------- static ---------------------------------
-shared_ptr<thekey::Storage> thekey_v2::storage(int fd, const std::string &file) {
-    auto header = storageHeader(fd);
-    if (!header)return {};
-    auto storage = make_shared<Storage>();
-    storage->file = file;
-    storage->storageVersion = header->storageVersion();
-    storage->name = header->name;
-    storage->description = header->description;
-    return storage;
-}
 
 shared_ptr<StorageInfo> thekey_v2::storageFullInfo(const std::string &file) {
     int fd = open(file.c_str(), O_RDONLY | O_CLOEXEC);

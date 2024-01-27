@@ -6,7 +6,7 @@
 #define THEKEY_STORAGE_H
 
 #include "core/key_core.h"
-#include "public/key_storage.h"
+#include "find/key_storage.h"
 #include "list"
 #include "salt_text/salt_test1.h"
 #include "storage_structure.h"
@@ -142,8 +142,6 @@ namespace thekey_v2 {
         virtual std::shared_ptr<DecryptedPassw> passwordHistory(long long histPtr);
 
     };
-
-    std::shared_ptr<thekey::Storage> storage(int fd, const std::string &file);
 
     std::shared_ptr<StorageInfo> storageFullInfo(const std::string &file);
 

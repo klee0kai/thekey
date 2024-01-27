@@ -2,13 +2,11 @@
 // Created by panda on 13.01.24.
 //
 
-#include <cstring>
 #include <list>
-#include "public/key_storage.h"
-#include "main/storage1/key_storage_v1.h"
-#include "main/storage2/storage.h"
+#include "key_storage.h"
+#include "key_storage_v1.h"
+#include "key_storage_v2.h"
 #include "core/key_core.h"
-#include "core/common.h"
 
 #ifdef __ANDROID__
 namespace fs = std::__fs::filesystem;
@@ -16,54 +14,23 @@ namespace fs = std::__fs::filesystem;
 namespace fs = std::filesystem;
 #endif
 
+using namespace std;
 using namespace thekey;
 using namespace thekey_v1;
-using namespace std;
-
-namespace thekey {
-
-#pragma pack(push, 1)
-
-    struct StorageV1HeaderShort {
-        char signature[SIGNATURE_LEN]; // TKEY_SIGNATURE_V1
-        unsigned char storageVersion;
-
-        [[nodiscard]] int checkSignature() const {
-            return memcmp(signature, &storageSignature_V1, SIGNATURE_LEN) == 0;
-        }
-
-    };
-
-    struct StorageV2HeaderShort {
-        char signature[SIGNATURE_LEN]; // TKEY_SIGNATURE_V2
-        INT32_BIG_ENDIAN(storageVersion)
-
-        [[nodiscard]] int checkSignature() const {
-            return memcmp(signature, &storageSignature_V2, SIGNATURE_LEN) == 0;
-        }
-
-    };
-
-#pragma pack(pop)
-
-    const char *const storageFormat = ".ckey";
-    const char storageSignature_V1[SIGNATURE_LEN] = TKEY_SIGNATURE_V1;
-    const char storageSignature_V2[SIGNATURE_LEN] = TKEY_SIGNATURE_V2;
-
-}
+using namespace thekey_v2;
 
 std::shared_ptr<Storage> thekey::storage(const std::string &path) {
     int fd = open(path.c_str(), O_RDONLY | O_CLOEXEC);
     if (fd == -1) return {};
 
-    char headerRaw[MAX(sizeof(StorageV1HeaderShort), sizeof(StorageV2HeaderShort))];
+    char headerRaw[MAX(sizeof(thekey_v1::StorageHeaderShort), sizeof(thekey_v2::StorageHeaderShort))];
     size_t readLen = read(fd, headerRaw, sizeof(headerRaw));
     if (readLen != sizeof(headerRaw)) {
         close(fd);
         return {};
     }
-    auto *headerV1 = (StorageV1HeaderShort *) headerRaw;
-    auto *headerV2 = (StorageV2HeaderShort *) headerRaw;
+    auto *headerV1 = (thekey_v1::StorageHeaderShort *) headerRaw;
+    auto *headerV2 = (thekey_v2::StorageHeaderShort *) headerRaw;
     unsigned int version = 0;
     if (headerV1->checkSignature()) {
         version = headerV1->storageVersion;

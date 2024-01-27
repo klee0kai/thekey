@@ -28,7 +28,6 @@ using namespace thekey_v1;
 
 static unsigned char iv[] = "1234567887654321";
 
-#define STORAGE_VER_FIRST 0x01
 #define STORAGE_NAME_LEN 128
 #define STORAGE_DESCRIPTION_LEN 512
 #define SALT_LEN 2048
@@ -110,16 +109,7 @@ static int decode(
         const unsigned char *key);
 
 
-std::shared_ptr<thekey::Storage> thekey_v1::storage(int fd, const string &path) {
-    auto header = storageHeader(fd);
-    if (!header)return {};
-    auto storage = make_shared<Storage>();
-    storage->file = path;
-    storage->storageVersion = header->storageVersion;
-    storage->name = header->name;
-    storage->description = header->description;
-    return storage;
-}
+
 
 std::shared_ptr<StorageV1Info> thekey_v1::storageV1Info(const std::string &file) {
     int fd = open(file.c_str(), O_RDONLY | O_CLOEXEC);
