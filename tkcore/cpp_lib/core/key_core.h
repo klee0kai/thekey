@@ -19,6 +19,7 @@
 
 #include "key_errors.h"
 #include "key_signatures.h"
+#include "common.h"
 
 #define MAX(a, b) (a>b?a:b)
 #define MIN(a, b) (a<b?a:b)

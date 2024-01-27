@@ -6,7 +6,6 @@
 #define THEKEY_KEY_STORAGE_V1_H
 
 #include "core/key_core.h"
-#include "find/key_storage.h"
 #include "list"
 #include "salt_text/salt_test1.h"
 

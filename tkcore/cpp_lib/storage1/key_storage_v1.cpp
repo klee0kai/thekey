@@ -5,7 +5,7 @@
 #include "core/key_core.h"
 #include "key_storage_v1.h"
 #include "core/key_errors.h"
-#include "utils/pass_spliter_v1.h"
+#include "pass_spliter_v1.h"
 #include "core/common.h"
 #include "salt_text/salt_test1.h"
 #include <cstring>

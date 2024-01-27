@@ -9,13 +9,6 @@
 
 namespace thekey {
 
-    struct Storage {
-        std::string file;
-        unsigned int storageVersion;
-        std::string name;
-        std::string description;
-    };
-
     std::list<Storage> findStorages(const std::string &filePath);
 
     void findStorages(const std::string &filePath, void (*foundStorageCallback)(const Storage &));

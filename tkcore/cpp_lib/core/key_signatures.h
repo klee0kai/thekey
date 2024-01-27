@@ -5,6 +5,8 @@
 #ifndef THEKEY_KEY_SIGNATURES_H
 #define THEKEY_KEY_SIGNATURES_H
 
+#include <string>
+
 #define SIGNATURE_LEN 7
 
 #define STORAGE_VER_FIRST 0x01
@@ -37,6 +39,13 @@
 
 
 namespace thekey {
+
+    struct Storage {
+        std::string file;
+        unsigned int storageVersion;
+        std::string name;
+        std::string description;
+    };
 
     extern const char *const storageFormat;
     extern const char storageSignature_V1[SIGNATURE_LEN];
