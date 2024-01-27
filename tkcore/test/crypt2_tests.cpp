@@ -4,18 +4,9 @@
 
 
 #include <gtest/gtest.h>
-#include "thekey.h"
-#include "core/key_core.h"
-#include "salt_text/salt2.h"
-#include "salt_text/salt_base.h"
-#include "core/common.h"
-#include "salt_text/salt2_schema.h"
-#include "main/storage2/storage.h"
-#include "main/storage2/split_password.h"
+#include "key2.h"
 #include <regex>
 #include <memory>
-#include <openssl/evp.h>
-#include <openssl/rand.h>
 
 using namespace std;
 using namespace thekey_v2;

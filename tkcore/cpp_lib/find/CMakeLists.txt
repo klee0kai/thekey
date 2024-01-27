@@ -4,7 +4,7 @@ add_library(thekey_find
         # find
         ${CMAKE_CURRENT_LIST_DIR}/key_storage_v1.cpp
         ${CMAKE_CURRENT_LIST_DIR}/key_storage_v2.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/find.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/key_find.cpp
 
 )
 

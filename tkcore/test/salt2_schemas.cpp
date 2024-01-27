@@ -3,11 +3,10 @@
 //
 
 #include <gtest/gtest.h>
-#include "thekey.h"
-#include "core/key_core.h"
+#include "key_core.h"
 #include "salt_text/salt2.h"
 #include "salt_text/salt_base.h"
-#include "core/common.h"
+#include "common.h"
 #include "salt_text/salt2_schema.h"
 #include "helpers.h"
 #include <regex>

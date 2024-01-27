@@ -3,15 +3,12 @@
 //
 
 #include <gtest/gtest.h>
-#include "thekey.h"
-#include "core/key_core.h"
-#include "storage1/salt_test1.h"
-#include "salt_text/salt_base.h"
-#include "core/common.h"
+#include "key_core.h"
+#include "salt_test1.h"
+#include "common.h"
 
 using namespace std;
 using namespace tkey1_salt;
-using namespace thekey_salt;
 
 extern void saltHeader(SaltTextHeader *header, size_t lenRing);
 

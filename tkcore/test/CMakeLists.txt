@@ -23,8 +23,11 @@ target_include_directories(tkey_test PUBLIC
         )
 
 target_link_libraries(tkey_test
+        thekey_find
+        thekey_storage_v1
+        thekey_storage_v2
+
         gtest_main
-        lib_tkcore
         openssl
         openssl_crypto
         dl

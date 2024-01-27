@@ -8,7 +8,7 @@
 #include "termk2.h"
 #include "key2.h"
 #include "key1.h"
-#include "find.h"
+#include "key_find.h"
 
 #ifdef __ANDROID__
 namespace fs = std::__fs::filesystem;
