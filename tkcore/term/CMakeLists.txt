@@ -1,8 +1,8 @@
 add_executable(tkey
         utils/term_utils.cpp
         utils/interactive.cpp
-        termk1/storage_v1.cpp
-        termk2/storage_v2.cpp
+        termk1.cpp
+        termk2.cpp
         main.cpp
 )
 

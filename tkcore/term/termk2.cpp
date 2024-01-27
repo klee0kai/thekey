@@ -2,10 +2,10 @@
 // Created by panda on 21.01.24.
 //
 
-#include "storage_v2.h"
+#include "termk2.h"
 #include "main/storage2/storage.h"
-#include "../utils/term_utils.h"
-#include "../utils/Interactive.h"
+#include "utils/term_utils.h"
+#include "utils/Interactive.h"
 #include "salt_text/salt2_schema.h"
 
 using namespace std;

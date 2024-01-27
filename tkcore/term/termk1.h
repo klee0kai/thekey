@@ -2,11 +2,11 @@
 // Created by panda on 14.01.24.
 //
 
-#ifndef THEKEY_STORAGE_V1_H
-#define THEKEY_STORAGE_V1_H
+#ifndef THEKEY_TERMK1_H
+#define THEKEY_TERMK1_H
 
 
-#include "../def_header.h"
+#include "def_header.h"
 
 namespace thekey_v1_term {
 
@@ -14,6 +14,6 @@ namespace thekey_v1_term {
 
 }
 
-#endif //THEKEY_STORAGE_V1_H
+#endif //THEKEY_TERMK1_H
 
 

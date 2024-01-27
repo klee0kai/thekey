@@ -2,9 +2,9 @@
 // Created by panda on 14.01.24.
 //
 
-#include "storage_v1.h"
-#include "../utils/term_utils.h"
-#include "../utils/Interactive.h"
+#include "termk1.h"
+#include "utils/term_utils.h"
+#include "utils/Interactive.h"
 #include "core/common.h"
 #include "storage1/key_storage_v1.h"
 

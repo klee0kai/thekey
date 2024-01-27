@@ -4,10 +4,10 @@
 #include "def_header.h"
 #include "utils/Interactive.h"
 #include "utils/term_utils.h"
-#include "storage_v1/storage_v1.h"
-#include "storage1/key_storage_v1.h"
-#include "storage_v2/storage_v2.h"
+#include "termk1.h"
+#include "termk2.h"
 #include "main/storage2/storage.h"
+#include "storage1/key_storage_v1.h"
 
 #ifdef __ANDROID__
 namespace fs = std::__fs::filesystem;
