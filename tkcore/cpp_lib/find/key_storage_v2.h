@@ -7,7 +7,7 @@
 
 #include <cstring>
 #include "core/key_core.h"
-#include "key_storage.h"
+#include "find.h"
 
 #define FILE_TYPE_OWNER_LEN 256
 #define STORAGE_NAME_LEN 128

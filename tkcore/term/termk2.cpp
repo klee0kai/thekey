@@ -3,7 +3,7 @@
 //
 
 #include "termk2.h"
-#include "storage2/storage.h"
+#include "storage2/key2.h"
 #include "utils/term_utils.h"
 #include "utils/Interactive.h"
 #include "storage2/salt_text/salt2_schema.h"
