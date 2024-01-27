@@ -6,7 +6,7 @@
 #include "utils/term_utils.h"
 #include "utils/Interactive.h"
 #include "core/common.h"
-#include "storage1/key_storage_v1.h"
+#include "storage1/storage.h"
 
 using namespace std;
 using namespace thekey;

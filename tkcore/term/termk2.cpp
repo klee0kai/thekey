@@ -3,10 +3,10 @@
 //
 
 #include "termk2.h"
-#include "main/storage2/storage.h"
+#include "storage2/storage.h"
 #include "utils/term_utils.h"
 #include "utils/Interactive.h"
-#include "salt_text/salt2_schema.h"
+#include "storage2/salt_text/salt2_schema.h"
 
 using namespace std;
 using namespace thekey_v2;

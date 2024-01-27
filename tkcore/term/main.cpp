@@ -6,8 +6,9 @@
 #include "utils/term_utils.h"
 #include "termk1.h"
 #include "termk2.h"
-#include "main/storage2/storage.h"
-#include "storage1/key_storage_v1.h"
+#include "storage2/storage.h"
+#include "storage1/storage.h"
+#include "find/key_storage.h"
 
 #ifdef __ANDROID__
 namespace fs = std::__fs::filesystem;

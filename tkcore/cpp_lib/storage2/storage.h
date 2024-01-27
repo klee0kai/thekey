@@ -6,7 +6,6 @@
 #define THEKEY_STORAGE_H
 
 #include "core/key_core.h"
-#include "find/key_storage.h"
 #include "list"
 #include "storage_structure.h"
 

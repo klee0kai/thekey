@@ -7,7 +7,7 @@
 //
 
 #include "salt_test1.h"
-#include "salt_text/salt_base.h"
+#include "storage2/salt_text/salt_base.h"
 #include <string.h>
 #include <cstring>
 #include <limits.h>
