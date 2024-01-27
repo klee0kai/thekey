@@ -40,11 +40,30 @@ void thekey_v1_term::login(const std::string &filePath) {
 
     auto it = Interactive();
 
-    it.welcomeText = string("Welcome to storage '") + storageInfo->name
-                     + "' version " + to_string(storageInfo->storageVersion);
-    it.helpTitle = "Storage '" + storageInfo->name + "' interactive mode";
+    it.welcomeText = string("Welcome to storage '") + storageInfo->name + "'";
+    it.helpTitle = "Storage '" + storageInfo->name + "' interactive mode. "
+                   + "Storage version is " + to_string(storageInfo->storageVersion);
     it.byeText = "Storage '" + storageInfo->name + "' closed.";
 
+    it.cmd({"info"}, "print storage info", []() {
+        if (!storageV1)return;
+        auto info = storageV1->info();
+        cout << "storage: " << info.path << endl;
+        cout << "storageVersion: " << info.storageVersion << endl;
+        cout << "name: " << info.name << endl;
+        cout << "desc: " << info.description << endl;
+        cout << "notesCount: " << info.notesCount << endl;
+        cout << "histCount: " << info.genPasswCount << endl;
+        cout << "technical limitations" << endl;
+        cout << "storage name max length: " << info.storageNameLen << endl;
+        cout << "storage description max length: " << info.storageDescriptionLen << endl;
+        cout << "site max length: " << info.siteLen << endl;
+        cout << "password max length: " << info.passwLen << endl;
+        cout << "description max length: " << info.descLen << endl;
+        cout << "note max history: " << info.noteMaxHist << endl;
+
+        cout << endl;
+    });
 
     it.cmd({"l", "list"}, "list storage notes", [=]() {
         if (!storageV1)return;
@@ -228,26 +247,6 @@ void thekey_v1_term::login(const std::string &filePath) {
             cout << "change time : " << asctime(changeTm) << endl;
         }
         cout << "-------------------------------------------" << endl;
-    });
-
-    it.cmd({"info"}, "print storage info", []() {
-        if (!storageV1)return;
-        auto info = storageV1->info();
-        cout << "storage: " << info.path << endl;
-        cout << "storageVersion: " << info.storageVersion << endl;
-        cout << "name: " << info.name << endl;
-        cout << "desc: " << info.description << endl;
-        cout << "notesCount: " << info.notesCount << endl;
-        cout << "histCount: " << info.genPasswCount << endl;
-        cout << "technical limitations" << endl;
-        cout << "storage name max length: " << info.storageNameLen << endl;
-        cout << "storage description max length: " << info.storageDescriptionLen << endl;
-        cout << "site max length: " << info.siteLen << endl;
-        cout << "password max length: " << info.passwLen << endl;
-        cout << "description max length: " << info.descLen << endl;
-        cout << "note max history: " << info.noteMaxHist << endl;
-
-        cout << endl;
     });
 
 
