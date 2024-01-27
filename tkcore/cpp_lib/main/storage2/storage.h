@@ -8,7 +8,6 @@
 #include "core/key_core.h"
 #include "find/key_storage.h"
 #include "list"
-#include "salt_text/salt_test1.h"
 #include "storage_structure.h"
 
 #define TK2_GET_NOTE_PASSWORD 0x1

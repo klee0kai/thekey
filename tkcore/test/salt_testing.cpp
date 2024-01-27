@@ -5,7 +5,7 @@
 #include <gtest/gtest.h>
 #include "thekey.h"
 #include "core/key_core.h"
-#include "salt_text/salt_test1.h"
+#include "storage1/salt_test1.h"
 #include "salt_text/salt_base.h"
 #include "core/common.h"
 

@@ -7,7 +7,7 @@
 #include "core/key_errors.h"
 #include "pass_spliter_v1.h"
 #include "core/common.h"
-#include "salt_text/salt_test1.h"
+#include "salt_test1.h"
 #include <cstring>
 
 #include <openssl/evp.h>
