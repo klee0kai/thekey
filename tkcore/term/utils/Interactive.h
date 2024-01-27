@@ -22,8 +22,6 @@ public:
 
     virtual ~Interactive() = default;
 
-    std::string welcomeText;
-    std::string byeText;
     std::string helpTitle;
 
     void cmd(

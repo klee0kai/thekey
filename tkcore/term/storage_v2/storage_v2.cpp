@@ -12,11 +12,11 @@ using namespace std;
 using namespace thekey_v2;
 using namespace term;
 
-static shared_ptr<thekey_v2::KeyStorageV2> storageV2 = {};
-
 static void printNote(const thekey_v2::DecryptedNote &note);
 
 void thekey_term_v2::login(const std::string &filePath) {
+    shared_ptr<thekey_v2::KeyStorageV2> storageV2 = {};
+
     auto storageInfo = thekey_v2::storageFullInfo(filePath);
     if (!storageInfo) {
         cerr << "can't open file " << filePath << endl;
@@ -35,14 +35,13 @@ void thekey_term_v2::login(const std::string &filePath) {
 
     cout << "Reading storage..." << endl;
     storageV2->readAll();
+    cout << string("Welcome to storage '") << storageInfo->name << "'" << endl;
 
     auto it = Interactive();
-    it.welcomeText = string("Welcome to storage '") + storageInfo->name + "'";
     it.helpTitle = "Storage '" + storageInfo->name + "' interactive mode. "
                    + "Storage version is " + to_string(storageInfo->storageVersion);
-    it.byeText = "Storage '" + storageInfo->name + "' closed.";
 
-    it.cmd({"info"}, "print storage info", []() {
+    it.cmd({"info"}, "print storage info", [&]() {
         if (!storageV2)return;
         auto info = storageV2->info();
         cout << "storage: " << info.path << endl;
@@ -53,7 +52,7 @@ void thekey_term_v2::login(const std::string &filePath) {
         cout << endl;
     });
 
-    it.cmd({"l", "list"}, "list storage notes", [=]() {
+    it.cmd({"l", "list"}, "list storage notes", [&]() {
         if (!storageV2)return;
         for (const auto &item: storageV2->notes()) {
             auto note = storageV2->note(item);
@@ -63,7 +62,7 @@ void thekey_term_v2::login(const std::string &filePath) {
         cout << "-------------------------------------------" << endl;
     });
 
-    it.cmd({"p", "passw"}, "print note password", []() {
+    it.cmd({"p", "passw"}, "print note password", [&]() {
         if (!storageV2)return;
         auto index = 0;
         auto notes = storageV2->notes();
@@ -82,7 +81,7 @@ void thekey_term_v2::login(const std::string &filePath) {
         cout << endl;
     });
 
-    it.cmd({"noteHist"}, "note passwords history", []() {
+    it.cmd({"noteHist"}, "note passwords history", [&]() {
         if (!storageV2)return;
         auto index = 0;
         auto notes = storageV2->notes();
@@ -106,7 +105,7 @@ void thekey_term_v2::login(const std::string &filePath) {
         cout << endl;
     });
 
-    it.cmd({"create"}, "create new note", []() {
+    it.cmd({"create"}, "create new note", [&]() {
         if (!storageV2)return;
         auto site = ask_from_term("site : ");
         auto login = ask_from_term("login : ");
@@ -126,7 +125,7 @@ void thekey_term_v2::login(const std::string &filePath) {
         cout << "note saved " << notePtr << endl;
     });
 
-    it.cmd({"edit"}, "edit note", []() {
+    it.cmd({"edit"}, "edit note", [&]() {
         if (!storageV2)return;
         auto index = 0;
         auto notes = storageV2->notes();
@@ -144,27 +143,27 @@ void thekey_term_v2::login(const std::string &filePath) {
         auto info = storageV2->info();
 
         auto editIt = Interactive();
-        editIt.welcomeText = "Note " + to_string(notePtr) + " edit mode";
+        cout << "Note " << to_string(notePtr) << " edit mode";
         editIt.helpTitle = "Note " + to_string(notePtr) + " edit mode";
 
-        editIt.cmd({"p", "print"}, "print note", [=]() {
+        editIt.cmd({"p", "print"}, "print note", [&]() {
             cout << "current note is: " << endl;
             printNote(*note);
         });
 
-        editIt.cmd({"s", "site"}, "edit site", [=]() {
+        editIt.cmd({"s", "site"}, "edit site", [&]() {
             note->site = term::ask_from_term("site : ");
         });
 
-        editIt.cmd({"l", "login"}, "edit login", [=]() {
+        editIt.cmd({"l", "login"}, "edit login", [&]() {
             note->login = term::ask_from_term("login : ");
         });
 
-        editIt.cmd({"passw"}, "edit password", [=]() {
+        editIt.cmd({"passw"}, "edit password", [&]() {
             note->passw = term::ask_password_from_term("password : ");
         });
 
-        editIt.cmd({"d", "desc"}, "edit description", [=]() {
+        editIt.cmd({"d", "desc"}, "edit description", [&]() {
             note->description = term::ask_from_term("description : ");
         });
 
@@ -179,7 +178,7 @@ void thekey_term_v2::login(const std::string &filePath) {
         }
     });
 
-    it.cmd({"remove"}, "remove note", []() {
+    it.cmd({"remove"}, "remove note", [&]() {
         if (!storageV2)return;
         auto index = 0;
         auto notes = storageV2->notes();
@@ -197,7 +196,7 @@ void thekey_term_v2::login(const std::string &filePath) {
         cout << "note removed" << endl;
     });
 
-    it.cmd({"gen"}, "generate new password", []() {
+    it.cmd({"gen"}, "generate new password", [&]() {
         if (!storageV2)return;
 
         cout << "select password encSelect: " << endl;
@@ -228,7 +227,7 @@ void thekey_term_v2::login(const std::string &filePath) {
         cout << "generated password '" << passw << "' " << endl;
     });
 
-    it.cmd({"hist"}, "print gen password history", []() {
+    it.cmd({"hist"}, "print gen password history", [&]() {
         if (!storageV2)return;
         for (const auto &item: storageV2->passwordsHistory()) {
             auto hist = storageV2->passwordHistory(item);
@@ -241,6 +240,9 @@ void thekey_term_v2::login(const std::string &filePath) {
     });
 
     it.loop();
+    storageV2.reset();
+
+    cout << "Storage '" << storageInfo->name << "' closed." << endl;
 
 }
 

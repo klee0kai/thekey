@@ -19,11 +19,12 @@ using namespace std;
 using namespace thekey;
 
 int main(int argc, char **argv) {
+    cout << string("TheKey - ")
+         << "cryp/encrypt your secure passwords storages\n"
+         << "Designed by Andrey Kuzubov / klee0kai"
+         << endl;
+
     auto it = Interactive();
-    it.welcomeText = string("TheKey - ")
-                     + "cryp/encrypt your secure passwords storages\n"
-                     + "Designed by Andrey Kuzubov / klee0kai";
-    it.byeText = "bye";
     it.helpTitle = string("TheKey Main interactive mode ")
                    + "(app version " + TERM_VERSION + ") ";
 
@@ -104,6 +105,8 @@ int main(int argc, char **argv) {
     });
 
     it.loop();
+    cout << "bye" << endl;
+
 
     return 0;
 }

@@ -13,9 +13,9 @@ using namespace term;
 
 static void printNote(const thekey_v1::DecryptedNote &note);
 
-static shared_ptr<thekey_v1::KeyStorageV1> storageV1 = {};
-
 void thekey_v1_term::login(const std::string &filePath) {
+    shared_ptr<thekey_v1::KeyStorageV1> storageV1 = {};
+
     auto storageInfo = thekey_v1::storageV1Info(filePath);
     if (!storageInfo) {
         cerr << "can't open file " << filePath << endl;
@@ -37,15 +37,13 @@ void thekey_v1_term::login(const std::string &filePath) {
 
     cout << "Reading storage..." << endl;
     storageV1->readAll();
+    cout << string("Welcome to storage '") << storageInfo->name << "'" << endl;
 
     auto it = Interactive();
-
-    it.welcomeText = string("Welcome to storage '") + storageInfo->name + "'";
     it.helpTitle = "Storage '" + storageInfo->name + "' interactive mode. "
                    + "Storage version is " + to_string(storageInfo->storageVersion);
-    it.byeText = "Storage '" + storageInfo->name + "' closed.";
 
-    it.cmd({"info"}, "print storage info", []() {
+    it.cmd({"info"}, "print storage info", [&]() {
         if (!storageV1)return;
         auto info = storageV1->info();
         cout << "storage: " << info.path << endl;
@@ -65,7 +63,7 @@ void thekey_v1_term::login(const std::string &filePath) {
         cout << endl;
     });
 
-    it.cmd({"l", "list"}, "list storage notes", [=]() {
+    it.cmd({"l", "list"}, "list storage notes", [&]() {
         if (!storageV1)return;
         for (const auto &item: storageV1->notes()) {
             auto note = storageV1->note(item);
@@ -75,7 +73,7 @@ void thekey_v1_term::login(const std::string &filePath) {
         cout << "-------------------------------------------" << endl;
     });
 
-    it.cmd({"p", "passw"}, "print note password", []() {
+    it.cmd({"p", "passw"}, "print note password", [&]() {
         if (!storageV1)return;
         auto index = 0;
         auto notes = storageV1->notes();
@@ -97,7 +95,7 @@ void thekey_v1_term::login(const std::string &filePath) {
         cout << endl;
     });
 
-    it.cmd({"noteHist"}, "note passwords history", []() {
+    it.cmd({"noteHist"}, "note passwords history", [&]() {
         if (!storageV1)return;
         auto index = 0;
         auto notes = storageV1->notes();
@@ -122,7 +120,7 @@ void thekey_v1_term::login(const std::string &filePath) {
         cout << endl;
     });
 
-    it.cmd({"create"}, "create new note", []() {
+    it.cmd({"create"}, "create new note", [&]() {
         if (!storageV1)return;
         auto info = storageV1->info();
         auto site = ask_from_term("site. max len " + to_string(info.siteLen) + " : ");
@@ -143,7 +141,7 @@ void thekey_v1_term::login(const std::string &filePath) {
         cout << "note saved " << notePtr << endl;
     });
 
-    it.cmd({"edit"}, "edit note", []() {
+    it.cmd({"edit"}, "edit note", [&]() {
         if (!storageV1)return;
         auto index = 0;
         auto notes = storageV1->notes();
@@ -163,28 +161,28 @@ void thekey_v1_term::login(const std::string &filePath) {
         auto note = storageV1->note(notePtr, 1);
         auto info = storageV1->info();
 
+        cout << "Note " + to_string(notePtr) + " edit mode";
         auto editIt = Interactive();
-        editIt.welcomeText = "Note " + to_string(notePtr) + " edit mode";
         editIt.helpTitle = "Note " + to_string(notePtr) + " edit mode";
 
-        editIt.cmd({"p", "print"}, "print note", [=]() {
+        editIt.cmd({"p", "print"}, "print note", [&]() {
             cout << "current note is: " << endl;
             printNote(*note);
         });
 
-        editIt.cmd({"s", "site"}, "edit site", [=]() {
+        editIt.cmd({"s", "site"}, "edit site", [&]() {
             note->site = ask_from_term("site. max len " + to_string(info.siteLen) + " : ");
         });
 
-        editIt.cmd({"l", "login"}, "edit login", [=]() {
+        editIt.cmd({"l", "login"}, "edit login", [&]() {
             note->login = ask_from_term("login max len " + to_string(info.loginLen) + " : ");
         });
 
-        editIt.cmd({"passw"}, "edit password", [=]() {
+        editIt.cmd({"passw"}, "edit password", [&]() {
             note->passw = ask_password_from_term("password max len " + to_string(info.passwLen) + " : ");
         });
 
-        editIt.cmd({"d", "desc"}, "edit description", [=]() {
+        editIt.cmd({"d", "desc"}, "edit description", [&]() {
             note->description = ask_from_term("description max len " + to_string(info.descLen) + " : ");
         });
 
@@ -199,7 +197,7 @@ void thekey_v1_term::login(const std::string &filePath) {
         }
     });
 
-    it.cmd({"remove"}, "remove note", []() {
+    it.cmd({"remove"}, "remove note", [&]() {
         if (!storageV1)return;
         auto index = 0;
         auto notes = storageV1->notes();
@@ -218,7 +216,7 @@ void thekey_v1_term::login(const std::string &filePath) {
         cout << "note removed" << endl;
     });
 
-    it.cmd({"gen"}, "generate new password", []() {
+    it.cmd({"gen"}, "generate new password", [&]() {
         if (!storageV1)return;
         auto info = storageV1->info();
         cout << "storage: " << info.path << endl;
@@ -238,7 +236,7 @@ void thekey_v1_term::login(const std::string &filePath) {
         cout << endl;
     });
 
-    it.cmd({"hist"}, "print gen password history", []() {
+    it.cmd({"hist"}, "print gen password history", [&]() {
         if (!storageV1)return;
         for (const auto &item: storageV1->genPasswHist()) {
             cout << "-------------------------------------------" << endl;
@@ -250,7 +248,7 @@ void thekey_v1_term::login(const std::string &filePath) {
     });
 
 
-    it.cmd({"changePassw"}, "change storage master password", []() {
+    it.cmd({"changePassw"}, "change storage master password", [&]() {
         if (!storageV1)return;
 
         auto newPath = term::ask_from_term("write new path to save storage: ");
@@ -268,6 +266,10 @@ void thekey_v1_term::login(const std::string &filePath) {
 
 
     it.loop();
+    storageV1.reset();
+
+    cout << "Storage '" + storageInfo->name + "' closed." << endl;
+
 }
 
 

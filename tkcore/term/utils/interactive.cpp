@@ -41,8 +41,6 @@ void Interactive::loop() {
 
     cmd({"q", "exit", "quit"}, "exit from interactive subprogram", []() {});
 
-    cout << welcomeText << endl;
-
     while (true) {
         auto input = term::ask_from_term("> ");
 
@@ -66,8 +64,6 @@ void Interactive::loop() {
             cerr << "cmd not found " << input << " use 'help' to see all variants" << endl;
         }
     }
-
-    cout << byeText << endl;
 }
 
 
