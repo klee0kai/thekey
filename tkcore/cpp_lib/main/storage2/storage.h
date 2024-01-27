@@ -9,7 +9,7 @@
 #include "public/key_storage.h"
 #include "list"
 #include "salt_text/salt_test1.h"
-#include "public/storage2/storage_structure.h"
+#include "storage_structure.h"
 
 #define TK2_GET_NOTE_PASSWORD 0x1
 
@@ -119,7 +119,7 @@ namespace thekey_v2 {
         /**
          * generates a password and immediately saves it to the storage history
          *
-         * @param encodingType tkey2_salt::find_scheme_type_by_flags result or similar
+         * @param encodingType thekey_v2::find_scheme_type_by_flags result or similar
          * @param len  len of passport
          * @return generated password
          */

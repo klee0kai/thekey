@@ -3,7 +3,7 @@
 //
 
 #include "storage_v2.h"
-#include "public/storage2/storage.h"
+#include "main/storage2/storage.h"
 #include "../utils/term_utils.h"
 #include "../utils/Interactive.h"
 #include "salt_text/salt2_schema.h"
@@ -216,7 +216,7 @@ void thekey_term_v2::login(const std::string &filePath) {
                 schemeFlags = SCHEME_ENGLISH | SCHEME_NUMBERS | SCHEME_SPEC_SYMBOLS | SCHEME_SPACE_SYMBOL;
                 break;
         }
-        auto schemeType = tkey2_salt::find_scheme_type_by_flags(schemeFlags);
+        auto schemeType = thekey_v2::find_scheme_type_by_flags(schemeFlags);
 
         auto len = term::ask_int_from_term("length of password: ");
         auto passw = storageV2->genPassword(schemeType, len);

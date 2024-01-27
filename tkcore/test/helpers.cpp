@@ -13,10 +13,10 @@
 #include "salt_text/salt2_schema.h"
 
 using namespace std;
-using namespace tkey2_salt;
-using namespace tkey_salt;
+using namespace thekey_v2;
+using namespace thekey_salt;
 
-void tkey2_salt::print_scheme(const tkey2_salt::EncodingScheme *scheme) {
+void thekey_v2::print_scheme(const thekey_v2::EncodingScheme *scheme) {
     if (!scheme)return;
 
     cout << "scheme " << hex << scheme->type << dec << endl;

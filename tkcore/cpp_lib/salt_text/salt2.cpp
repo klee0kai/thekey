@@ -10,14 +10,14 @@
 #include <cmath>
 
 using namespace std;
-using namespace tkey2_salt;
-using namespace tkey_salt;
+using namespace thekey_v2;
+using namespace thekey_salt;
 
 static auto hashFunc = hash<uint32_t>();
 
 static int gen_offset(vector<uint32_t> args);
 
-void tkey2_salt::SaltedText::salted(const std::string &text, const int &minEncodingLen) {
+void thekey_v2::SaltedText::salted(const std::string &text, const int &minEncodingLen) {
     auto wideString = from(text);
     auto wideStringRaw = wideString.c_str();
     auto type = find_scheme_type(wideString, minEncodingLen);
@@ -36,7 +36,7 @@ void tkey2_salt::SaltedText::salted(const std::string &text, const int &minEncod
     payload.lenCorrection = SALT_IN_RING(lenCorrection, LEN_CORRECTION_RING);
 }
 
-std::string tkey2_salt::SaltedText::desalted() const {
+std::string thekey_v2::SaltedText::desalted() const {
     auto type = encodingType();
     wide_char out[SALTED_TEXT_LEN + 1];
     memset(out, 0, size(out));
@@ -47,10 +47,10 @@ std::string tkey2_salt::SaltedText::desalted() const {
     return from(wide_string(out));
 }
 
-int tkey2_salt::encoded(
+int thekey_v2::encoded(
         uint32_t typeEncoding,
-        tkey_salt::wide_char *out,
-        const tkey_salt::wide_char *in,
+        thekey_salt::wide_char *out,
+        const thekey_salt::wide_char *in,
         const uint &bufSize,
         const int &salt) {
     auto scheme = find_scheme(typeEncoding);
@@ -67,10 +67,10 @@ int tkey2_salt::encoded(
     return len;
 }
 
-int tkey2_salt::decoded(
+int thekey_v2::decoded(
         uint32_t typeEncoding,
-        tkey_salt::wide_char *out,
-        const tkey_salt::wide_char *in,
+        thekey_salt::wide_char *out,
+        const thekey_salt::wide_char *in,
         const int &bufLen) {
     memset(out, 0, bufLen);
     auto scheme = find_scheme(typeEncoding);
@@ -81,7 +81,7 @@ int tkey2_salt::decoded(
     return bufLen;
 }
 
-wide_string tkey2_salt::gen_password(const uint32_t &typeEncoding, const int &len) {
+wide_string thekey_v2::gen_password(const uint32_t &typeEncoding, const int &len) {
     auto scheme = find_scheme(typeEncoding);
     if (!scheme)return {};
     wide_char randPassw[len + 1];
@@ -93,7 +93,7 @@ wide_string tkey2_salt::gen_password(const uint32_t &typeEncoding, const int &le
     return randPassw;
 }
 
-wide_string tkey2_salt::password_masked(
+wide_string thekey_v2::password_masked(
         const uint32_t &typeEncoding,
         const wide_string &in,
         const float &passw_power) {
@@ -115,9 +115,9 @@ wide_string tkey2_salt::password_masked(
 }
 
 
-tkey_salt::wide_string tkey2_salt::password_masked_twin(
+thekey_salt::wide_string thekey_v2::password_masked_twin(
         const uint32_t &typeEncoding,
-        const tkey_salt::wide_string &in,
+        const thekey_salt::wide_string &in,
         const float &passw_power) {
     auto scheme = find_scheme(typeEncoding);
     if (!scheme)return {};

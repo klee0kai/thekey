@@ -11,14 +11,14 @@
 #define LEN_CORRECTION_RING 5
 #define SALTED_TEXT_LEN 1024
 
-namespace tkey2_salt {
+namespace thekey_v2 {
 
 #pragma pack(push, 1)
 
     struct SaltedTextPayload {
         unsigned char lenCorrection;
 
-        tkey_salt::wide_char raw[SALTED_TEXT_LEN];
+        thekey_salt::wide_char raw[SALTED_TEXT_LEN];
     };
 
     struct SaltedText {
@@ -45,8 +45,8 @@ namespace tkey2_salt {
      * @return
      */
     int encoded(uint32_t typeEncoding,
-                tkey_salt::wide_char *out,
-                const tkey_salt::wide_char *in,
+                thekey_salt::wide_char *out,
+                const thekey_salt::wide_char *in,
                 const uint &bufSize,
                 const int &salt
     );
@@ -60,8 +60,8 @@ namespace tkey2_salt {
      * @return
      */
     int decoded(uint32_t typeEncoding,
-                tkey_salt::wide_char *out,
-                const tkey_salt::wide_char *in,
+                thekey_salt::wide_char *out,
+                const thekey_salt::wide_char *in,
                 const int &bufLen);
 
 
@@ -71,7 +71,7 @@ namespace tkey2_salt {
      * @param len
      * @return
      */
-    tkey_salt::wide_string gen_password(const uint32_t &typeEncoding, const int &len);
+    thekey_salt::wide_string gen_password(const uint32_t &typeEncoding, const int &len);
 
     /**
      *
@@ -80,9 +80,9 @@ namespace tkey2_salt {
      * @param passw_power
      * @return
      */
-    tkey_salt::wide_string password_masked(
+    thekey_salt::wide_string password_masked(
             const uint32_t &typeEncoding,
-            const tkey_salt::wide_string &in,
+            const thekey_salt::wide_string &in,
             const float &passw_power);
 
     /**
@@ -92,9 +92,9 @@ namespace tkey2_salt {
      * @param passw_power
      * @return
      */
-    tkey_salt::wide_string password_masked_twin(
+    thekey_salt::wide_string password_masked_twin(
             const uint32_t &typeEncoding,
-            const tkey_salt::wide_string &in,
+            const thekey_salt::wide_string &in,
             const float &passw_power);
 
 }

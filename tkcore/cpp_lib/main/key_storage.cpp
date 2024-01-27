@@ -5,8 +5,8 @@
 #include <cstring>
 #include <list>
 #include "public/key_storage.h"
-#include "public/key_storage_v1.h"
-#include "public/storage2/storage.h"
+#include "main/storage1/key_storage_v1.h"
+#include "main/storage2/storage.h"
 #include "thekey_core.h"
 #include "utils/common.h"
 

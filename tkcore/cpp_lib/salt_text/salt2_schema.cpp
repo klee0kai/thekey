@@ -10,8 +10,8 @@
 #include <algorithm>
 
 using namespace std;
-using namespace tkey2_salt;
-using namespace tkey_salt;
+using namespace thekey_v2;
+using namespace thekey_salt;
 
 
 static vector<EncodingScheme> encodingSchemas = {
@@ -121,15 +121,15 @@ static vector<EncodingScheme> encodingSchemas = {
 
 
 // ------------ range  --------------------
-[[nodiscard]] int tkey2_salt::SymbolRange::len() const {
+[[nodiscard]] int thekey_v2::SymbolRange::len() const {
     return end - start + 1;
 }
 
-[[nodiscard]] int tkey2_salt::SymbolRange::contains(const wide_char &sym) const {
+[[nodiscard]] int thekey_v2::SymbolRange::contains(const wide_char &sym) const {
     return sym >= start && sym <= end;
 }
 
-void tkey2_salt::SymbolRange::all_symbols(void (*callback)(const wide_char &)) const {
+void thekey_v2::SymbolRange::all_symbols(void (*callback)(const wide_char &)) const {
     for (wide_char c = start; c <= end; c++) {
         callback(c);
     }
@@ -137,7 +137,7 @@ void tkey2_salt::SymbolRange::all_symbols(void (*callback)(const wide_char &)) c
 
 
 // ------------ encoding find_scheme --------------------
-wide_char tkey2_salt::EncodingScheme::encoded(wide_char original, int offset) const {
+wide_char thekey_v2::EncodingScheme::encoded(wide_char original, int offset) const {
     while (offset < 0) offset += len();
     for (int i = 0; i < ranges.size(); ++i) {
         if (ranges[i].contains(original)) {
@@ -149,7 +149,7 @@ wide_char tkey2_salt::EncodingScheme::encoded(wide_char original, int offset) co
     return 0;
 }
 
-wide_char tkey2_salt::EncodingScheme::decoded(wide_char encoded, int offset) const {
+wide_char thekey_v2::EncodingScheme::decoded(wide_char encoded, int offset) const {
     offset += encoded;
     while (offset < 0) offset += len();
     while (true) {
@@ -163,13 +163,13 @@ wide_char tkey2_salt::EncodingScheme::decoded(wide_char encoded, int offset) con
     }
 }
 
-uint tkey2_salt::EncodingScheme::len() const {
+uint thekey_v2::EncodingScheme::len() const {
     int len = 0;
     for (const auto &item: ranges) len += item.len();
     return len;
 }
 
-int tkey2_salt::EncodingScheme::all_contains(const wide_string &wideString) const {
+int thekey_v2::EncodingScheme::all_contains(const wide_string &wideString) const {
     for (const auto &c: wideString) {
         int found = 0;
         for (const auto &range: ranges) {
@@ -181,7 +181,7 @@ int tkey2_salt::EncodingScheme::all_contains(const wide_string &wideString) cons
     return 1;
 }
 
-void tkey2_salt::EncodingScheme::all_symbols(void (*callback)(const wide_char &)) const {
+void thekey_v2::EncodingScheme::all_symbols(void (*callback)(const wide_char &)) const {
     for (const auto &item: ranges) {
         item.all_symbols(callback);
     }
@@ -189,7 +189,7 @@ void tkey2_salt::EncodingScheme::all_symbols(void (*callback)(const wide_char &)
 
 
 // ------------ public methods --------------------
-const EncodingScheme *tkey2_salt::find_scheme(uint32_t type) {
+const EncodingScheme *thekey_v2::find_scheme(uint32_t type) {
     auto it = std::find_if(encodingSchemas.begin(), encodingSchemas.end(),
                            [type](const EncodingScheme &schema) { return schema.type == type; });
     if (it != encodingSchemas.end()) {
@@ -199,7 +199,7 @@ const EncodingScheme *tkey2_salt::find_scheme(uint32_t type) {
 }
 
 
-uint32_t tkey2_salt::find_scheme_type(const wide_string &str, const int &minLen) {
+uint32_t thekey_v2::find_scheme_type(const wide_string &str, const int &minLen) {
     auto it = std::find_if(encodingSchemas.begin(), encodingSchemas.end(),
                            [str, minLen](const EncodingScheme &schema) {
                                return schema.all_contains(str) && schema.len() > minLen;
@@ -211,7 +211,7 @@ uint32_t tkey2_salt::find_scheme_type(const wide_string &str, const int &minLen)
     return encodingSchemas.back().type;
 }
 
-uint32_t tkey2_salt::find_scheme_type_by_flags(const uint32_t &flags) {
+uint32_t thekey_v2::find_scheme_type_by_flags(const uint32_t &flags) {
     auto it = std::find_if(encodingSchemas.begin(), encodingSchemas.end(),
                            [flags](const EncodingScheme &schema) { return (schema.flags & flags) == flags; });
     if (it != encodingSchemas.end()) {

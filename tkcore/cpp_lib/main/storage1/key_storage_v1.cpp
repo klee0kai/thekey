@@ -3,7 +3,7 @@
 //
 
 #include "thekey_core.h"
-#include "public/key_storage_v1.h"
+#include "key_storage_v1.h"
 #include "public/key_errors.h"
 #include "utils/pass_spliter_v1.h"
 #include "utils/common.h"

@@ -3,7 +3,7 @@
 //
 
 #include <cstring>
-#include "public/storage2/storage_structure.h"
+#include "storage_structure.h"
 #include "thekey_core.h"
 
 #include <openssl/evp.h>
@@ -20,7 +20,7 @@
 
 using namespace std;
 using namespace thekey_v2;
-using namespace tkey2_salt;
+using namespace thekey_v2;
 
 static unsigned char iv[] = "1234567887654321";
 

@@ -14,7 +14,7 @@
 #include <openssl/rand.h>
 
 using namespace tkey1_salt;
-using namespace tkey_salt;
+using namespace thekey_salt;
 
 #define SALT_IN_RING(x, max, ring) ( (x) + (ring) * rand((max) / (ring) ))
 #define TYPE_MAX(typeLen) ((1L << ( (typeLen) * 8L)) -1L)

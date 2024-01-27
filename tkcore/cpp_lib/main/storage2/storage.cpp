@@ -1,8 +1,8 @@
 
 
 #include "thekey_core.h"
-#include "public/storage2/storage.h"
-#include "public/storage2/split_password.h"
+#include "storage.h"
+#include "split_password.h"
 #include "public/key_errors.h"
 #include "utils/pass_spliter_v1.h"
 #include "utils/common.h"
@@ -24,8 +24,8 @@
 
 using namespace std;
 using namespace thekey;
-using namespace tkey2_salt;
-using namespace tkey_salt;
+using namespace thekey_v2;
+using namespace thekey_salt;
 using namespace thekey_v2;
 
 
@@ -405,7 +405,7 @@ int KeyStorageV2::removeNote(long long notePtr) {
 
 // ---- gen passw and hist api ----
 std::string KeyStorageV2::genPassword(uint32_t encodingType, int len) {
-    auto passw = from(tkey2_salt::gen_password(encodingType, len));
+    auto passw = from(thekey_v2::gen_password(encodingType, len));
 
     CryptedPasswordFlat cryptedPasswordFlat{};
     cryptedPasswordFlat.genTime(time(NULL));

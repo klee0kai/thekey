@@ -2,14 +2,14 @@
 // Created by panda on 21.01.24.
 //
 
-#include "public/storage2/split_password.h"
+#include "split_password.h"
 #include "salt_text/salt2.h"
 #include "salt_text/salt2_schema.h"
 
 using namespace std;
 using namespace thekey_v2;
-using namespace tkey2_salt;
-using namespace tkey_salt;
+using namespace thekey_v2;
+using namespace thekey_salt;
 
 SplitPasswords thekey_v2::split(const std::string &passw) {
     auto passw_wide = from(passw);

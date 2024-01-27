@@ -12,8 +12,8 @@
 #include "helpers.h"
 
 using namespace std;
-using namespace tkey2_salt;
-using namespace tkey_salt;
+using namespace thekey_v2;
+using namespace thekey_salt;
 
 
 TEST(Salt2, SchemeSymbols) {

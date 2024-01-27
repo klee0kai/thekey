@@ -11,11 +11,11 @@
 #include <locale>
 
 #define TYPE_MAX(typeLen) ((1L << ( (typeLen) * 8L)) -1L)
-#define SALT_IN_RING(x, ring) ( (x) + (ring) * tkey_salt::rand( TYPE_MAX( sizeof(x) ) / (ring) ))
+#define SALT_IN_RING(x, ring) ( (x) + (ring) * thekey_salt::rand( TYPE_MAX( sizeof(x) ) / (ring) ))
 #define DESALT_IN_RING(x, ring) ( x % ring )
 
 
-namespace tkey_salt {
+namespace thekey_salt {
 
     typedef char16_t wide_char;
     typedef std::basic_string<wide_char> wide_string;

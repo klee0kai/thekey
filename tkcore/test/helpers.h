@@ -7,7 +7,7 @@
 
 #include "salt_text/salt2_schema.h"
 
-namespace tkey2_salt {
+namespace thekey_v2 {
 
     void print_scheme(const EncodingScheme *scheme);
 

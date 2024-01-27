@@ -8,7 +8,7 @@ add_library(lib_tkcore
         ${CMAKE_CURRENT_LIST_DIR}/salt_text/salt_test1.cpp
         ${CMAKE_CURRENT_LIST_DIR}/salt_text/salt_base.cpp
         ${CMAKE_CURRENT_LIST_DIR}/main/key_storage.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/main/key_storage_v1.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/main/storage1/key_storage_v1.cpp
         ${CMAKE_CURRENT_LIST_DIR}/main/storage2/split_password.cpp
         ${CMAKE_CURRENT_LIST_DIR}/main/storage2/storage.cpp
         ${CMAKE_CURRENT_LIST_DIR}/main/storage2/storage_structure.cpp

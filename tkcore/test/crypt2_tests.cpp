@@ -10,17 +10,17 @@
 #include "salt_text/salt_base.h"
 #include "utils/common.h"
 #include "salt_text/salt2_schema.h"
-#include "public/storage2/storage.h"
-#include "public/storage2/split_password.h"
+#include "main/storage2/storage.h"
+#include "main/storage2/split_password.h"
 #include <regex>
 #include <memory>
 #include <openssl/evp.h>
 #include <openssl/rand.h>
 
 using namespace std;
-using namespace tkey2_salt;
 using namespace thekey_v2;
-using namespace tkey_salt;
+using namespace thekey_v2;
+using namespace thekey_salt;
 
 TEST(GenPassw2, CryptDecrypt) {
     // Given

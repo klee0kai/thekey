@@ -12,8 +12,8 @@
 #include <regex>
 
 using namespace std;
-using namespace tkey2_salt;
-using namespace tkey_salt;
+using namespace thekey_v2;
+using namespace thekey_salt;
 
 const std::regex en_regex("[a-zA-Z0-9]+");
 

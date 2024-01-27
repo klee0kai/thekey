@@ -6,7 +6,7 @@
 #include "utils/term_utils.h"
 #include "storage_v1/storage_v1.h"
 #include "storage_v2/storage_v2.h"
-#include "public/storage2/storage.h"
+#include "main/storage2/storage.h"
 
 #ifdef __ANDROID__
 namespace fs = std::__fs::filesystem;

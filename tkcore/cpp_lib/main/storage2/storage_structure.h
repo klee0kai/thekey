@@ -70,7 +70,7 @@ namespace thekey_v2 {
 
 
     struct CryptedTextFlat {
-        tkey2_salt::SaltedText raw;
+        thekey_v2::SaltedText raw;
 
         void encrypt(
                 const std::string &text,
