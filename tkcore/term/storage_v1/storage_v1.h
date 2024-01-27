@@ -6,12 +6,14 @@
 #define THEKEY_STORAGE_V1_H
 
 
-#include "def_header.h"
+#include "../def_header.h"
 
-namespace thekey_term_v1 {
+namespace thekey_v1_term {
 
     void login(const std::string &filePath);
 
 }
 
 #endif //THEKEY_STORAGE_V1_H
+
+

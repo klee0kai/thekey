@@ -7,7 +7,13 @@
 
 using namespace std;
 
-string term::ask_from_term(string message) {
+void term::flush_await() {
+    sync();
+    usleep(100000);
+}
+
+string term::ask_from_term(const string &message) {
+    flush_await();
     if (!message.empty())cout << message;
 
     std::string response;
@@ -15,7 +21,9 @@ string term::ask_from_term(string message) {
     return response;
 }
 
-int term::ask_int_from_term(string message) {
+int term::ask_int_from_term(const string &message) {
+    flush_await();
+
     if (!message.empty())cout << message;
 
     int response;
@@ -23,7 +31,9 @@ int term::ask_int_from_term(string message) {
     return response;
 }
 
-std::string term::ask_password_from_term(std::string message) {
+std::string term::ask_password_from_term(const string &message) {
+    flush_await();
+
     if (!message.empty())cout << message;
 
     ::termios old_terminal;
@@ -48,42 +58,3 @@ std::string term::ask_password_from_term(std::string message) {
     return password;
 }
 
-
-size_t term::argsCount(const char *sourceText) {
-    size_t count = 0;
-    if (sourceText[0] != ' ' && sourceText[0] != '\n')
-        count++;
-    for (int i = 0; sourceText[i] != 0; i++) {
-        if (sourceText[i] == ' ' || sourceText[i] == '\n') {
-            while (sourceText[i] == ' ' || sourceText[i] == '\n')
-                i++;
-            if (sourceText[i] != 0)
-                count++;
-        }
-    }
-    return count;
-}
-
-
-void term::splitArgs(char *sourceText, char **&argsOut, size_t &len) {
-    len = argsCount(sourceText);
-    size_t argIndex = 0;
-
-    if (sourceText[0] != ' ' && sourceText[0] != '\n')
-        argsOut[argIndex++] = sourceText;
-    for (int i = 0; sourceText[i] != 0; i++) {
-        if (sourceText[i] == ' ' || sourceText[i] == '\n') {
-            while (sourceText[i] == ' ' || sourceText[i] == '\n')
-                sourceText[i++] = 0;
-            if (sourceText[i] != 0)
-                argsOut[argIndex++] = sourceText + i;
-        }
-    }
-}
-
-
-void term::clear_opt() {
-    optind = 0;
-    opterr = 0;
-    optopt = 0;
-}

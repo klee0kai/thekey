@@ -4,8 +4,8 @@
 #include "def_header.h"
 #include "utils/Interactive.h"
 #include "utils/term_utils.h"
-#include "storage_v1.h"
-#include "storage_v2.h"
+#include "storage_v1/storage_v1.h"
+#include "storage_v2/storage_v2.h"
 #include "public/storage2/storage.h"
 
 #ifdef __ANDROID__
@@ -91,13 +91,14 @@ int main(int argc, char **argv) {
         }
         switch (storageInfo->storageVersion) {
             case 1:
-                thekey_term_v1::login(filePath);
+                thekey_v1_term::login(filePath);
                 return;
             case 2:
                 thekey_term_v2::login(filePath);
                 return;
             default:
-                cerr << "storage version " << storageInfo->storageVersion << " not supported " << filePath << endl;
+                cerr << "storage version " << storageInfo->storageVersion << " not supported " << filePath
+                     << endl;
                 return;
         }
     });

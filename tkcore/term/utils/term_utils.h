@@ -9,26 +9,14 @@
 
 namespace term {
 
-    std::string ask_from_term(std::string message = "");
+    void flush_await();
 
-    int ask_int_from_term(std::string message = "");
+    std::string ask_from_term(const std::string &message = "");
 
-    std::string ask_password_from_term(std::string message = "");
+    int ask_int_from_term(const std::string &message = "");
 
-    /**
-    *
-    * @param sourceText изменяет исходный текст
-    * @param argsOut
-    * @param len
-    */
-    void splitArgs(char *sourceText, char **&argsOut, size_t &len);
+    std::string ask_password_from_term(const std::string &message = "");
 
-    size_t argsCount(const char *sourceText);
-
-    /**
-     * очистить константы getopt
-     */
-    void clear_opt();
 }
 
 #endif //THEKEY_TERM_UTILS_H

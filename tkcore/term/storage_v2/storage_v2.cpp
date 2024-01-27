@@ -4,7 +4,7 @@
 
 #include "storage_v2.h"
 #include "public/storage2/storage.h"
-#include "utils/term_utils.h"
+#include "../utils/term_utils.h"
 #include "salt_text/salt2_schema.h"
 
 using namespace std;
