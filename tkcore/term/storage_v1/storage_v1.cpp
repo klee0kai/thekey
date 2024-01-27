@@ -22,17 +22,12 @@ void thekey_v1_term::login(const std::string &filePath) {
         return;
     }
 
-    for (int tryPasswInput = 0; tryPasswInput < 3; tryPasswInput++) {
-        auto message = "Input password. Max length " + to_string(storageInfo->passwLen) + " : ";
-        auto passw = term::ask_password_from_term(message);
-        storageV1 = thekey_v1::storage(filePath, passw);
-
-        if (!storageV1) {
-            cerr << "error login to " << filePath << endl;
-            cout << endl;
-            continue;
-        }
-        break;
+    auto message = "Input password. Max length " + to_string(storageInfo->passwLen) + " : ";
+    auto passw = term::ask_password_from_term(message);
+    storageV1 = thekey_v1::storage(filePath, passw);
+    if (!storageV1) {
+        cerr << "error login to " << filePath << endl;
+        return;
     }
 
     cout << "Reading storage..." << endl;

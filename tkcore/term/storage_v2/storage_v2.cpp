@@ -22,15 +22,11 @@ void thekey_term_v2::login(const std::string &filePath) {
         cerr << "can't open file " << filePath << endl;
         return;
     }
-
-    for (int tryPasswInput = 0; tryPasswInput < 3; tryPasswInput++) {
-        auto passw = ask_password_from_term("Input password: ");
-        storageV2 = storage(filePath, passw);
-        if (!storageV2) {
-            cerr << "error login to " << filePath << endl;
-            continue;
-        }
-        break;
+    auto passw = ask_password_from_term("Input password: ");
+    storageV2 = storage(filePath, passw);
+    if (!storageV2) {
+        cerr << "error login to " << filePath << endl;
+        return;
     }
 
     cout << "Reading storage..." << endl;
