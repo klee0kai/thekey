@@ -5,8 +5,8 @@
 #include "termk1.h"
 #include "utils/term_utils.h"
 #include "utils/Interactive.h"
-#include "core/common.h"
-#include "storage1/key1.h"
+#include "common.h"
+#include "key1.h"
 
 using namespace std;
 using namespace thekey;

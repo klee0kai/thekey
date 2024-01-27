@@ -2,11 +2,9 @@
 // Created by panda on 13.01.24.
 //
 
-#include "core/key_core.h"
+#include "key_core.h"
 #include "key1.h"
-#include "core/key_errors.h"
 #include "pass_spliter_v1.h"
-#include "core/common.h"
 #include "salt_test1.h"
 #include <cstring>
 

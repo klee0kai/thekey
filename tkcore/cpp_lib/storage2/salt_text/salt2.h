@@ -5,7 +5,7 @@
 #ifndef tkey2_salt_header
 #define tkey2_salt_header
 
-#include "core/key_core.h"
+#include "key_core.h"
 #include "salt_base.h"
 
 #define LEN_CORRECTION_RING 5

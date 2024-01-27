@@ -5,7 +5,7 @@
 #ifndef THEKEY_STORAGE_STRUCTURE_H
 #define THEKEY_STORAGE_STRUCTURE_H
 
-#include "core/key_core.h"
+#include "key_core.h"
 #include "salt_text/salt2.h"
 
 #define SIGNATURE_LEN 7

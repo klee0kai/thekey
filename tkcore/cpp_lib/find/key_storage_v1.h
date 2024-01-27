@@ -6,7 +6,7 @@
 #define THEKEY_KEY_STORAGE_V1_H
 
 #include <cstring>
-#include "core/key_core.h"
+#include "key_core.h"
 #include "find.h"
 
 #define STORAGE_NAME_LEN 128

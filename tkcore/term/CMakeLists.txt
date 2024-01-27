@@ -8,7 +8,10 @@ add_executable(tkey
 
 
 target_link_libraries(tkey
-        lib_tkcore
+        thekey_find
+        thekey_storage_v1
+        thekey_storage_v2
+
         openssl
         openssl_crypto
         dl

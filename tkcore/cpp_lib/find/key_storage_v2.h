@@ -6,7 +6,7 @@
 #define THEKEY_KEY_STORAGE_V2_H
 
 #include <cstring>
-#include "core/key_core.h"
+#include "key_core.h"
 #include "find.h"
 
 #define FILE_TYPE_OWNER_LEN 256

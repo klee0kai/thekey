@@ -5,7 +5,7 @@
 #ifndef THEKEY_FIND_H
 #define THEKEY_FIND_H
 
-#include "core/key_core.h"
+#include "key_core.h"
 
 namespace thekey {
 

@@ -16,6 +16,6 @@
 #include <list>
 #include <functional>
 
-#include <thekey.h>
+#include "key_core.h"
 
 #endif //TKCORE_DEF_HEADER_H

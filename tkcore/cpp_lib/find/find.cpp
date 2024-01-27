@@ -6,7 +6,7 @@
 #include "find.h"
 #include "key_storage_v1.h"
 #include "key_storage_v2.h"
-#include "core/key_core.h"
+#include "key_core.h"
 
 #ifdef __ANDROID__
 namespace fs = std::__fs::filesystem;

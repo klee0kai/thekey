@@ -5,7 +5,7 @@
 #ifndef THEKEY_KEY2_H
 #define THEKEY_KEY2_H
 
-#include "core/key_core.h"
+#include "key_core.h"
 #include "list"
 #include "storage_structure.h"
 
