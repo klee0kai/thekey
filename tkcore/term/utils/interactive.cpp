@@ -3,7 +3,7 @@
 //
 
 #include <functional>
-#include "interactive.h"
+#include "Interactive.h"
 #include "term_utils.h"
 
 #define COLUMN_WIDTH 40
@@ -13,13 +13,7 @@ using namespace std;
 static char ident = '\t';
 
 
-struct CmdHandler {
-    std::vector<std::string> variants;
-    std::string cmdDesc;
-    function<void()> invoke;
-};
-
-void interactive::cmd(
+void Interactive::cmd(
         const std::vector<std::string> &cmds,
         const std::string &cmdDesc,
         const function<void()> &invoke
@@ -31,10 +25,9 @@ void interactive::cmd(
     });
 }
 
-
-void interactive::loop() {
+void Interactive::loop() {
     cmd({"h", "help"}, "print help", [this]() {
-        cout << welcomeText << endl;
+        cout << helpTitle << endl;
 
         cout << endl;
         cout << ident << "Options:" << endl;
@@ -42,13 +35,7 @@ void interactive::loop() {
         for (const auto &cmd: allCmds) {
             cout << ident;
             cout.width(COLUMN_WIDTH);
-            cout << std::left;
-            int i = 0;
-            for (const auto &variant: cmd.variants) {
-                if (i++ > 0) cout << " or ";
-                cout << variant;
-            }
-            cout << cmd.cmdDesc << endl;
+            cout << std::left << cmd.variantsHelp() << cmd.cmdDesc << endl;
         }
     });
 
@@ -81,4 +68,15 @@ void interactive::loop() {
     }
 
     cout << byeText << endl;
+}
+
+
+std::string CmdHandler::variantsHelp() const {
+    string str{};
+    int i = 0;
+    for (const auto &variant: variants) {
+        if (i++ > 0) str += " or ";
+        str += variant;
+    }
+    return str;
 }

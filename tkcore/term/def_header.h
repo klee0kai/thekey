@@ -13,7 +13,8 @@
 #include <unistd.h>
 #include <cstring>
 #include <memory>
-#include "list"
+#include <list>
+#include <functional>
 
 #include <thekey.h>
 

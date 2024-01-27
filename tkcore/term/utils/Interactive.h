@@ -7,14 +7,20 @@
 
 #include "../def_header.h"
 
-struct CmdHandler;
+struct CmdHandler {
+    std::vector<std::string> variants;
+    std::string cmdDesc;
+    std::function<void()> invoke;
 
-class interactive {
+    std::string variantsHelp() const;
+};
+
+class Interactive {
 
 public:
-    interactive() = default;
+    Interactive() = default;
 
-    virtual ~interactive() = default;
+    virtual ~Interactive() = default;
 
     std::string welcomeText;
     std::string byeText;
