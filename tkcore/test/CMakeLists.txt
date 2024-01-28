@@ -27,12 +27,7 @@ target_link_libraries(tkey_test
         key_storage1_static
         key_storage2_static
 
-
         gtest_main
-        openssl
-        openssl_crypto
-        dl
-        pthread
         )
 
 set_target_properties(tkey_test PROPERTIES COMPILE_FLAGS -DDEBUG_TEST)
