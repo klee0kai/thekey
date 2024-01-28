@@ -10,7 +10,6 @@
 
 using namespace std;
 using namespace thekey_v2;
-using namespace thekey_v2;
 using namespace thekey_salt;
 
 TEST(GenPassw2, CryptDecrypt) {
@@ -29,6 +28,21 @@ TEST(GenPassw2, CryptDecrypt) {
     ASSERT_EQ("some_text", decrypted);
 }
 
+TEST(GenPassw2, CryptDecryptRandomSalt) {
+    // Given
+    unsigned char salt[SALT_LEN];
+    randmem(salt, SALT_LEN);
+
+    auto ctx = cryptContext("test", 1000, salt);
+    CryptedTextFlat crypted{};
+
+    // When
+    crypted.encrypt("some_text", ctx->keyForLogin);
+    auto decrypted = crypted.decrypt(ctx->keyForLogin);
+
+    // Then
+    ASSERT_EQ("some_text", decrypted);
+}
 
 TEST(GenPassw2, CryptDecryptLong) {
     // Given
