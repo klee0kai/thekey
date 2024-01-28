@@ -10,6 +10,10 @@ using namespace std;
 
 static std::shared_ptr<StorageHeaderShort> storageHeader(int fd);
 
+[[nodiscard]] int thekey_v1::StorageHeaderShort::checkSignature() const {
+    return memcmp(signature, &thekey::storageSignature_V1, SIGNATURE_LEN) == 0;
+}
+
 shared_ptr<thekey::Storage> thekey_v1::storage(int fd, const string &path) {
     auto header = storageHeader(fd);
     if (!header)return {};

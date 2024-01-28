@@ -20,14 +20,13 @@ namespace thekey_v2 {
     struct StorageHeaderShort {
         char signature[SIGNATURE_LEN]; // TKEY_SIGNATURE_V2
         INT32_BIG_ENDIAN(storageVersion)
+
         char fileTypeOwner[FILE_TYPE_OWNER_LEN]; // typeOwnerText
 
         char name[STORAGE_NAME_LEN];
         char description[STORAGE_DESCRIPTION_LEN];
 
-        [[nodiscard]] int checkSignature() const {
-            return memcmp(signature, &thekey::storageSignature_V2, SIGNATURE_LEN) == 0;
-        }
+        [[nodiscard]] int checkSignature() const;
     };
 
 #pragma pack(pop)

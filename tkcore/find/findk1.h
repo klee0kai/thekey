@@ -22,9 +22,7 @@ namespace thekey_v1 {
         char name[STORAGE_NAME_LEN];
         char description[STORAGE_DESCRIPTION_LEN];
 
-        [[nodiscard]] int checkSignature() const {
-            return memcmp(signature, &thekey::storageSignature_V1, SIGNATURE_LEN) == 0;
-        }
+        [[nodiscard]] int checkSignature() const;
 
     };
 
