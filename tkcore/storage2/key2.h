@@ -83,9 +83,6 @@ namespace thekey_v2 {
 
         virtual int save(const std::string &path);
 
-        virtual int saveToNewPassw(const std::string &path, const std::string &passw);
-
-
         // ---- notes api -----
         virtual std::vector<long long> notes();
 

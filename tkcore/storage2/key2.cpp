@@ -240,13 +240,6 @@ int KeyStorageV2::save(const std::string &path) {
 
 }
 
-
-int KeyStorageV2::saveToNewPassw(const std::string &path, const std::string &passw) {
-    //TODO
-    return -1;
-}
-
-
 // ---- notes api ----
 
 std::vector<long long> KeyStorageV2::notes() {
