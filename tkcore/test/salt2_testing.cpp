@@ -12,7 +12,7 @@
 
 using namespace std;
 using namespace thekey_v2;
-using namespace thekey_salt;
+using namespace key_salt;
 
 
 TEST(Salt2, SchemeSymbols) {

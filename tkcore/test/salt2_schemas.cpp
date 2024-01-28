@@ -13,7 +13,7 @@
 
 using namespace std;
 using namespace thekey_v2;
-using namespace thekey_salt;
+using namespace key_salt;
 
 TEST(Salt2Schemas, SimpleDecoded) {
     // Given
@@ -135,7 +135,7 @@ TEST(Salt2Schemas, ShortOffset) {
     auto scheme = find_scheme(type);
     ASSERT_TRUE(scheme);
     wide_char original = u'6';
-    int offset = int(thekey_salt::rand(100));
+    int offset = int(key_salt::rand(100));
 
     //when
     auto c_offseted = scheme->encoded(original, offset);

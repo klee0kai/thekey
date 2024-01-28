@@ -1,8 +1,8 @@
 
 set(KEY1_SRC
         # storage 1
-        ${CMAKE_CURRENT_LIST_DIR}/pass_spliter_v1.cpp
         ${CMAKE_CURRENT_LIST_DIR}/salt/salt1.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/salt/pass_spliter_v1.cpp
         ${CMAKE_CURRENT_LIST_DIR}/key1.cpp
 )
 

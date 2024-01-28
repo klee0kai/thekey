@@ -12,7 +12,7 @@
 
 using namespace std;
 using namespace thekey_v2;
-using namespace thekey_salt;
+using namespace key_salt;
 
 const std::regex en_regex("[a-zA-Z0-9]+");
 

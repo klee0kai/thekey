@@ -8,7 +8,7 @@
 #include "common.h"
 
 using namespace std;
-using namespace tkey1_salt;
+using namespace key_salt;
 
 extern void saltHeader(SaltTextHeader *header, size_t lenRing);
 

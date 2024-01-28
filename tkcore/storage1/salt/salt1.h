@@ -38,7 +38,7 @@
 #define ENC_LEN_TEXT 1
 
 
-namespace tkey1_salt {
+namespace key_salt {
 
 #pragma pack(push, 1)
     struct SaltTextHeader {

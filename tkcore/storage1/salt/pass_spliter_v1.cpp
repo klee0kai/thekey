@@ -11,7 +11,7 @@
 #define NOTE_HIST_MASK 0x65 //TODO выборка из оригинального пароля для создания пароля для дешифровки истории паролей в записи
 #define GEN_PASSW_MASK 0x65 //TODO выборка из оригинального пароля для создания пароля для дешифровки сгенерированных паролей
 
-namespace thekey_v1 {
+namespace key_salt {
 
     void splitPasswForPasswords(unsigned char *outPassw, const unsigned char *passw) {
         for (int i = 0; passw[i] != 0; i++) {

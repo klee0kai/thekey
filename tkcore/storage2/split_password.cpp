@@ -9,7 +9,7 @@
 using namespace std;
 using namespace thekey_v2;
 using namespace thekey_v2;
-using namespace thekey_salt;
+using namespace key_salt;
 
 SplitPasswords thekey_v2::split(const std::string &passw) {
     auto passw_wide = from(passw);

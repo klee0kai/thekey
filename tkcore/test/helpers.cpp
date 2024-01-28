@@ -13,7 +13,7 @@
 
 using namespace std;
 using namespace thekey_v2;
-using namespace thekey_salt;
+using namespace key_salt;
 
 void thekey_v2::print_scheme(const thekey_v2::EncodingScheme *scheme) {
     if (!scheme)return;
