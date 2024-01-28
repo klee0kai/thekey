@@ -5,13 +5,14 @@
 #include <string>
 #include <android/log.h>
 #include "brooklyn.h"
-#include "thekey.h"
 #include "memory"
+#include "key_core.h"
+#include "key1.h"
 
 using namespace brooklyn;
+using namespace std;
 using namespace thekey;
 using namespace thekey_v1;
-using namespace std;
 
 static shared_ptr<KeyStorageV1> storageV1 = {};
 
@@ -57,6 +58,7 @@ EngineModelDecryptedNote EngineCryptStorageEngine::note(const int64_t &notePtr) 
             .chTime = (int64_t) dnote->genTime,
     };
     return result;
+
 }
 
 int EngineCryptStorageEngine::saveNote(const brooklyn::EngineModelDecryptedNote &decryptedNote) {
@@ -71,12 +73,12 @@ int EngineCryptStorageEngine::saveNote(const brooklyn::EngineModelDecryptedNote 
     };
     storageV1->setNote(ptNote, dnote);
     return 0;
+
 }
 
 int EngineCryptStorageEngine::removeNote(const int64_t &notePt) {
     if (!notePt || !storageV1)return -1;
     storageV1->removeNote(notePt);
-    return 0;
 }
 
 EngineModelDecryptedPassw EngineCryptStorageEngine::getGenPassw(const int64_t &ptNote) {

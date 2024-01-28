@@ -20,7 +20,7 @@ namespace thekey_salt {
     typedef char16_t wide_char;
     typedef std::basic_string<wide_char> wide_string;
 
-    long rand(ulong max);
+    long rand(unsigned long max);
 
     void randmem(unsigned char *mem, uint len);
 

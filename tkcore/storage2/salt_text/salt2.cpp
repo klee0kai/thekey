@@ -39,7 +39,7 @@ void thekey_v2::SaltedText::salted(const std::string &text, const int &minEncodi
 std::string thekey_v2::SaltedText::desalted() const {
     auto type = encodingType();
     wide_char out[SALTED_TEXT_LEN + 1];
-    memset(out, 0, size(out));
+    memset(out, 0, sizeof(out));
     decoded(type, out, payload.raw, SALTED_TEXT_LEN);
     uint32_t lenCorrection = DESALT_IN_RING(payload.lenCorrection, LEN_CORRECTION_RING);
     uint32_t len = approximateLength() * LEN_CORRECTION_RING + lenCorrection;

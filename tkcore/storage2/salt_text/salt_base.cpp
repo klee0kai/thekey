@@ -10,7 +10,7 @@ using namespace thekey_salt;
 
 static wstring_convert<codecvt_utf8<wide_char>, wide_char> converter;
 
-long thekey_salt::rand(ulong max) {
+long thekey_salt::rand(unsigned long max) {
     return random() % max;
 }
 

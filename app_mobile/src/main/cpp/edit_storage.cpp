@@ -5,11 +5,13 @@
 #include <string>
 #include <android/log.h>
 #include "brooklyn.h"
-#include "thekey.h"
+#include "key_find.h"
+#include "key1.h"
 
-using namespace thekey;
 using namespace brooklyn;
 using namespace std;
+using namespace thekey;
+using namespace thekey_v1;
 
 std::shared_ptr<ModelStorage> EngineEditStorageEngine::findStorageInfo(const std::string &path) {
     auto storage = shared_ptr<ModelStorage>{
