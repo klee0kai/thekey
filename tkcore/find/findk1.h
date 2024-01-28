@@ -2,8 +2,8 @@
 // Created by panda on 27.01.24.
 //
 
-#ifndef THEKEY_KEY_STORAGE_V1_H
-#define THEKEY_KEY_STORAGE_V1_H
+#ifndef THEKEY_FINDK1_H
+#define THEKEY_FINDK1_H
 
 #include <cstring>
 #include "key_core.h"
@@ -35,4 +35,4 @@ namespace thekey_v1 {
 
 }
 
-#endif //THEKEY_KEY_STORAGE_V1_H
+#endif //THEKEY_FINDK1_H

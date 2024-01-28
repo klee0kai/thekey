@@ -11,7 +11,7 @@ namespace thekey {
 
     std::list<Storage> findStorages(const std::string &filePath);
 
-    void findStorages(const std::string &filePath, void (*foundStorageCallback)(const Storage &));
+    void findStorages(const std::string &filePath, std::function<void(const Storage &)> foundStorageCallback);
 
     std::shared_ptr<Storage> storage(const std::string &path);
 

@@ -103,4 +103,4 @@ namespace thekey_v1 {
 
 }
 
-#endif //THEKEY_KEY2_H
+#endif //THEKEY_KEY_STORAGE_V1_H

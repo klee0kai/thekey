@@ -3,9 +3,10 @@
 //
 
 #include <list>
+
 #include "key_find.h"
-#include "key_storage_v1.h"
-#include "key_storage_v2.h"
+#include "findk1.h"
+#include "findk2.h"
 #include "key_core.h"
 
 #ifdef __ANDROID__
@@ -25,19 +26,16 @@ std::shared_ptr<Storage> thekey::storage(const std::string &path) {
 
     char headerRaw[MAX(sizeof(thekey_v1::StorageHeaderShort), sizeof(thekey_v2::StorageHeaderShort))];
     size_t readLen = read(fd, headerRaw, sizeof(headerRaw));
-    if (readLen != sizeof(headerRaw)) {
-        close(fd);
-        return {};
-    }
-    auto *headerV1 = (thekey_v1::StorageHeaderShort *) headerRaw;
-    auto *headerV2 = (thekey_v2::StorageHeaderShort *) headerRaw;
+    auto *headerV1 = readLen >= sizeof(thekey_v1::StorageHeaderShort)
+                     ? (thekey_v1::StorageHeaderShort *) headerRaw : NULL;
+    auto *headerV2 = readLen >= sizeof(thekey_v2::StorageHeaderShort)
+                     ? (thekey_v2::StorageHeaderShort *) headerRaw : NULL;
     unsigned int version = 0;
-    if (headerV1->checkSignature()) {
+    if (headerV1 && headerV1->checkSignature()) {
         version = headerV1->storageVersion;
-    } else if (headerV2->checkSignature()) {
+    } else if (headerV2 && headerV2->checkSignature()) {
         version = headerV2->storageVersion();
     }
-
 
     switch (version) {
         case 1: {
@@ -74,7 +72,7 @@ std::list<Storage> thekey::findStorages(const std::string &filePath) {
     return foundStorages;
 }
 
-void thekey::findStorages(const std::string &filePath, void (*foundStorageCallback)(const Storage &)) {
+void thekey::findStorages(const std::string &filePath, std::function<void(const Storage &)> foundStorageCallback) {
     if (!fs::is_directory(filePath)) {
         auto storageInfo = storage(filePath);
         if (storageInfo) foundStorageCallback(*storageInfo);

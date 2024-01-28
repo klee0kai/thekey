@@ -79,6 +79,7 @@ int EngineCryptStorageEngine::saveNote(const brooklyn::EngineModelDecryptedNote 
 int EngineCryptStorageEngine::removeNote(const int64_t &notePt) {
     if (!notePt || !storageV1)return -1;
     storageV1->removeNote(notePt);
+    return 0;
 }
 
 EngineModelDecryptedPassw EngineCryptStorageEngine::getGenPassw(const int64_t &ptNote) {
