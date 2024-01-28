@@ -6,8 +6,8 @@
 //  Copyright © 2020 panda. All rights reserved.
 //
 
-#include "salt_test1.h"
-#include "salt_text/salt_base.h"
+#include "salt1.h"
+#include "salt/salt_base.h"
 #include <string.h>
 #include <cstring>
 #include <limits.h>

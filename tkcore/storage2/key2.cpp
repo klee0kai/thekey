@@ -7,7 +7,7 @@
 #include "pass_spliter_v1.h"
 #include "common.h"
 #include "salt_text/salt2.h"
-#include "salt_text/salt_base.h"
+#include "salt/salt_base.h"
 #include <cstring>
 
 #include <openssl/evp.h>

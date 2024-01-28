@@ -5,7 +5,7 @@
 #include "key_core.h"
 #include "key1.h"
 #include "pass_spliter_v1.h"
-#include "salt_test1.h"
+#include "salt/salt1.h"
 #include <cstring>
 
 #include <openssl/evp.h>

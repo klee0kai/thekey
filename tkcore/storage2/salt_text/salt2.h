@@ -6,7 +6,7 @@
 #define tkey2_salt_header
 
 #include "key_core.h"
-#include "salt_base.h"
+#include "salt/salt_base.h"
 
 #define LEN_CORRECTION_RING 5
 #define SALTED_TEXT_LEN 1024

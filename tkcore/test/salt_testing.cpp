@@ -4,7 +4,7 @@
 
 #include <gtest/gtest.h>
 #include "key_core.h"
-#include "salt_test1.h"
+#include "salt/salt1.h"
 #include "common.h"
 
 using namespace std;
