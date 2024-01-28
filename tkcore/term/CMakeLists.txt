@@ -1,17 +1,21 @@
 add_executable(tkey
-        storage_v1.cpp
-        cmd_processing.cpp
-        term_utils.cpp
+        utils/term_utils.cpp
+        utils/interactive.cpp
+        termk1.cpp
+        termk2.cpp
         main.cpp
-        )
+)
 
 
 target_link_libraries(tkey
-        lib_tkcore
+        key_find_static
+        key_storage1_static
+        key_storage2_static
+
         openssl
         openssl_crypto
         dl
         pthread
-        )
+)
 
 install(TARGETS tkey DESTINATION ${PROJECT_SOURCE_DIR}/build/${CMAKE_SYSTEM_NAME}/${CMAKE_SYSTEM_PROCESSOR})

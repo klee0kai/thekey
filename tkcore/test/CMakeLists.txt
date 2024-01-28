@@ -10,7 +10,12 @@ FetchContent_MakeAvailable(googletest)
 include_directories(${GTEST_INCLUDE_DIR})
 
 add_executable(tkey_test
+        helpers.cpp
         salt_testing.cpp
+        salt2_schemas.cpp
+        salt2_testing.cpp
+        gen2_passw_testing.cpp
+        crypt2_tests.cpp
         )
 
 target_include_directories(tkey_test PUBLIC
@@ -18,8 +23,12 @@ target_include_directories(tkey_test PUBLIC
         )
 
 target_link_libraries(tkey_test
+        key_find_static
+        key_storage1_static
+        key_storage2_static
+
+
         gtest_main
-        lib_tkcore
         openssl
         openssl_crypto
         dl

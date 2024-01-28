@@ -25,7 +25,11 @@ target_include_directories(crypt-storage-lib
 
 target_link_libraries(crypt-storage-lib
         ${log-lib}
-        lib_tkcore
+
+        key_find_static
+        key_storage1_static
+        key_storage2_static
+
         openssl_android
         openssl_android_crypto
         )

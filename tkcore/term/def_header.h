@@ -13,8 +13,9 @@
 #include <unistd.h>
 #include <cstring>
 #include <memory>
-#include "list"
+#include <list>
+#include <functional>
 
-#include <thekey.h>
+#include "key_core.h"
 
 #endif //TKCORE_DEF_HEADER_H
