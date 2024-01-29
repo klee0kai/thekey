@@ -11,7 +11,7 @@
 
 using namespace std;
 using namespace thekey_v2;
-using namespace thekey_salt;
+using namespace key_salt;
 
 
 static vector<EncodingScheme> encodingSchemas = {
@@ -116,7 +116,7 @@ static vector<EncodingScheme> encodingSchemas = {
         // unicode last symbol
         {.type=(uint32_t) 0xff02, .flags = 0, .ranges={
                 {0x20, 0x32ff}, //
-        }},
+        }}
 };
 
 

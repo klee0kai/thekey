@@ -3,30 +3,26 @@
 //
 
 #include <gtest/gtest.h>
-#include "key_core.h"
-#include "salt_text/salt2.h"
-#include "salt_text/salt_base.h"
+#include "salt/salt_base.h"
 #include "common.h"
 #include "salt_text/salt2_schema.h"
 #include "helpers.h"
-#include <regex>
 
 using namespace std;
 using namespace thekey_v2;
-using namespace thekey_salt;
+using namespace key_salt;
 
-TEST(Salt2Schemas, SimpleDecoded) {
+TEST(FindSchemasTests, SimpleDecoded) {
     // Given
     auto type = find_scheme_type_by_flags(SCHEME_NUMBERS);
     auto scheme = find_scheme(type);
     ASSERT_TRUE(scheme);
-    print_scheme(scheme);
 
     //then
     ASSERT_EQ(U'2', scheme->decoded(2));
 }
 
-TEST(Salt2Schemas, SimpleEncode) {
+TEST(FindSchemasTests, SimpleEncode) {
     // Given
     auto type = find_scheme_type_by_flags(SCHEME_NUMBERS);
     auto scheme = find_scheme(type);
@@ -36,7 +32,7 @@ TEST(Salt2Schemas, SimpleEncode) {
 }
 
 
-TEST(Salt2Schemas, EncodeOffset) {
+TEST(FindSchemasTests, EncodeOffset) {
     // Given
     auto type = find_scheme_type_by_flags(SCHEME_NUMBERS);
     auto scheme = find_scheme(type);
@@ -45,7 +41,7 @@ TEST(Salt2Schemas, EncodeOffset) {
     ASSERT_EQ(4, scheme->encoded(U'2', 2));
 }
 
-TEST(Salt2Schemas, EncodeBigOffset) {
+TEST(FindSchemasTests, EncodeBigOffset) {
     // Given
     auto type = find_scheme_type_by_flags(SCHEME_NUMBERS);
     auto scheme = find_scheme(type);
@@ -54,7 +50,7 @@ TEST(Salt2Schemas, EncodeBigOffset) {
     ASSERT_EQ(4, scheme->encoded(U'2', 22));
 }
 
-TEST(Salt2Schemas, EncodeMinusOffset) {
+TEST(FindSchemasTests, EncodeMinusOffset) {
     // Given
     auto type = find_scheme_type_by_flags(SCHEME_NUMBERS);
     auto scheme = find_scheme(type);
@@ -63,7 +59,7 @@ TEST(Salt2Schemas, EncodeMinusOffset) {
     ASSERT_EQ(1, scheme->encoded(U'2', -1));
 }
 
-TEST(Salt2Schemas, EncodeMinusBigOffset) {
+TEST(FindSchemasTests, EncodeMinusBigOffset) {
     // Given
     auto type = find_scheme_type_by_flags(SCHEME_NUMBERS);
     auto scheme = find_scheme(type);
@@ -73,7 +69,7 @@ TEST(Salt2Schemas, EncodeMinusBigOffset) {
 }
 
 
-TEST(Salt2Schemas, DecodeOffset) {
+TEST(FindSchemasTests, DecodeOffset) {
     // Given
     auto type = find_scheme_type_by_flags(SCHEME_NUMBERS);
     auto scheme = find_scheme(type);
@@ -83,7 +79,7 @@ TEST(Salt2Schemas, DecodeOffset) {
 }
 
 
-TEST(Salt2Schemas, DecodeBigOffset) {
+TEST(FindSchemasTests, DecodeBigOffset) {
     // Given
     auto type = find_scheme_type_by_flags(SCHEME_NUMBERS);
     auto scheme = find_scheme(type);
@@ -93,7 +89,7 @@ TEST(Salt2Schemas, DecodeBigOffset) {
 }
 
 
-TEST(Salt2Schemas, DecodeMinusOffset) {
+TEST(FindSchemasTests, DecodeMinusOffset) {
     // Given
     auto type = find_scheme_type_by_flags(SCHEME_NUMBERS);
     auto scheme = find_scheme(type);
@@ -103,7 +99,7 @@ TEST(Salt2Schemas, DecodeMinusOffset) {
 }
 
 
-TEST(Salt2Schemas, DecodeMinusBigOffset) {
+TEST(FindSchemasTests, DecodeMinusBigOffset) {
     // Given
     auto type = find_scheme_type_by_flags(SCHEME_NUMBERS);
     auto scheme = find_scheme(type);
@@ -113,12 +109,11 @@ TEST(Salt2Schemas, DecodeMinusBigOffset) {
 }
 
 
-TEST(Salt2Schemas, EncodingDecoded) {
+TEST(FindSchemasTests, EncodingDecoded) {
     // Given
     auto type = find_scheme_type_by_flags(SCHEME_NUMBERS);
     auto scheme = find_scheme(type);
     ASSERT_TRUE(scheme);
-    print_scheme(scheme);
 
     //when
     auto c = scheme->encoded(u'1');
@@ -129,13 +124,13 @@ TEST(Salt2Schemas, EncodingDecoded) {
 }
 
 
-TEST(Salt2Schemas, ShortOffset) {
+TEST(FindSchemasTests, ShortOffset) {
     // Given
     auto type = find_scheme_type_by_flags(SCHEME_NUMBERS);
     auto scheme = find_scheme(type);
     ASSERT_TRUE(scheme);
     wide_char original = u'6';
-    int offset = int(thekey_salt::rand(100));
+    int offset = int(key_salt::rand(100));
 
     //when
     auto c_offseted = scheme->encoded(original, offset);

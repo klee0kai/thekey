@@ -7,13 +7,13 @@
 #include <gtest/gtest.h>
 #include "key_core.h"
 #include "salt_text/salt2.h"
-#include "salt_text/salt_base.h"
+#include "salt/salt_base.h"
 #include "common.h"
 #include "salt_text/salt2_schema.h"
 
 using namespace std;
 using namespace thekey_v2;
-using namespace thekey_salt;
+using namespace key_salt;
 
 void thekey_v2::print_scheme(const thekey_v2::EncodingScheme *scheme) {
     if (!scheme)return;

@@ -5,7 +5,7 @@
 #ifndef THEKEY_PASS_SPLITER_V1_H
 #define THEKEY_PASS_SPLITER_V1_H
 
-namespace thekey_v1 {
+namespace key_salt {
 
     void splitPasswForPasswords(unsigned char *outPassw, const unsigned char *passw);
 

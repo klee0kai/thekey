@@ -13,10 +13,10 @@ set_target_properties(key_find_static PROPERTIES INTERFACE_INCLUDE_DIRECTORIES $
 
 include_directories(key_find_static ${CMAKE_CURRENT_LIST_DIR})
 
-target_link_libraries(key_find_static openssl_interface thekey_core_static)
+target_link_libraries(key_find_static key_core)
 
 
 # -----  SHARED -----
 add_library(key_find SHARED ${KEYFIND_SRC})
 include_directories(key_find ${CMAKE_CURRENT_LIST_DIR})
-target_link_libraries(key_find thekey_core_static)
+target_link_libraries(key_find key_core)

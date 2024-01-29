@@ -4,17 +4,17 @@
 
 #include <gtest/gtest.h>
 #include "key_core.h"
-#include "salt_test1.h"
+#include "salt/salt1.h"
 #include "common.h"
 
 using namespace std;
-using namespace tkey1_salt;
+using namespace key_salt;
 
 extern void saltHeader(SaltTextHeader *header, size_t lenRing);
 
 extern void desaltgHeader(SaltTextHeader *header, size_t lenRing);
 
-TEST(Salt1, SaltTesting1) {
+TEST(SaltTests, SalteDesalt) {
     for (int i = PASSW_MIN_LEN; i <= PASSW_MAX_LEN; i++) {
         SaltTextHeader saltTextHeader;
         SaltTextHeader origTextHeader;

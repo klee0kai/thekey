@@ -10,9 +10,9 @@
 
 using namespace std;
 using namespace thekey_v2;
-using namespace thekey_salt;
+using namespace key_salt;
 
-TEST(GenPassw2, CryptDecrypt) {
+TEST(CryptTests, CryptDecrypt) {
     // Given
     unsigned char salt[SALT_LEN];
     memset(salt, '3', SALT_LEN);
@@ -28,7 +28,7 @@ TEST(GenPassw2, CryptDecrypt) {
     ASSERT_EQ("some_text", decrypted);
 }
 
-TEST(GenPassw2, CryptDecryptRandomSalt) {
+TEST(CryptTests, CryptDecryptRandomSalt) {
     // Given
     unsigned char salt[SALT_LEN];
     randmem(salt, SALT_LEN);
@@ -44,7 +44,7 @@ TEST(GenPassw2, CryptDecryptRandomSalt) {
     ASSERT_EQ("some_text", decrypted);
 }
 
-TEST(GenPassw2, CryptDecryptLong) {
+TEST(CryptTests, CryptDecryptLong) {
     // Given
     unsigned char salt[SALT_LEN];
     memset(salt, '3', SALT_LEN);

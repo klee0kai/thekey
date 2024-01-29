@@ -4,8 +4,8 @@
 
 #include "key_core.h"
 #include "key1.h"
-#include "pass_spliter_v1.h"
-#include "salt_test1.h"
+#include "salt/pass_spliter_v1.h"
+#include "salt/salt1.h"
 #include <cstring>
 
 #include <openssl/evp.h>
@@ -22,6 +22,7 @@
 using namespace std;
 using namespace thekey;
 using namespace thekey_v1;
+using namespace key_salt;
 
 
 static unsigned char iv[] = "1234567887654321";
@@ -105,8 +106,6 @@ static int decode(
         unsigned char *outText, const unsigned char *inText,
         unsigned int buflen,
         const unsigned char *key);
-
-
 
 
 std::shared_ptr<StorageV1Info> thekey_v1::storageV1Info(const std::string &file) {
@@ -501,7 +500,7 @@ std::string KeyStorageV1::genPassw(int len, int genEncoding) {
     memset(passw, 0, PASSW_LEN);
 
     //gen passw
-    tkey1_salt::genpassw(passw, len, genEncoding);
+    key_salt::genpassw(passw, len, genEncoding);
 
     //save passw
     unsigned char encodedPassw[PASSW_LEN];
@@ -548,7 +547,7 @@ static int encode(unsigned char *outText,
                   unsigned int buflen, const unsigned char *key) {
     unsigned char *saltedText = new unsigned char[buflen];
     RAND_bytes(saltedText, buflen);
-    tkey1_salt::salt_text(saltedText, originalText, buflen);
+    key_salt::salt_text(saltedText, originalText, buflen);
 
     memset(outText, 0, buflen);
     EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
@@ -595,7 +594,7 @@ static int decode(unsigned char *outText, const unsigned char *inText, unsigned 
 
     EVP_CIPHER_CTX_free(ctx);
 
-    tkey1_salt::desalt_text(outText, saltedText, buflen);
+    key_salt::desalt_text(outText, saltedText, buflen);
 
     memset(saltedText, 0, buflen);
     delete[]saltedText;

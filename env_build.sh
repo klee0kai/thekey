@@ -94,11 +94,13 @@ function build_term_app() {
 
    cd "$WORKSPACE"
 
-   cp tkcore/build/test/tkey_test builds/${CUR_OS_UNAME}/tkey_test
+   cp tkcore/build/test/testk1/testk1 builds/${CUR_OS_UNAME}/testk1
+   cp tkcore/build/test/testk2/testk2 builds/${CUR_OS_UNAME}/testk2
    cp tkcore/build/term/tkey builds/${CUR_OS_UNAME}/tkey
 
    #run tests
-   "./builds/${CUR_OS_UNAME}/tkey_test"
+   "./builds/${CUR_OS_UNAME}/testk1"
+   "./builds/${CUR_OS_UNAME}/testk2"
 
    cd "$WORKSPACE"
 }

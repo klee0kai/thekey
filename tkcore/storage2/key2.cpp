@@ -4,10 +4,10 @@
 #include "key2.h"
 #include "split_password.h"
 #include "key_errors.h"
-#include "pass_spliter_v1.h"
+#include "salt/pass_spliter_v1.h"
 #include "common.h"
 #include "salt_text/salt2.h"
-#include "salt_text/salt_base.h"
+#include "salt/salt_base.h"
 #include <cstring>
 
 #include <openssl/evp.h>
@@ -25,7 +25,7 @@
 using namespace std;
 using namespace thekey;
 using namespace thekey_v2;
-using namespace thekey_salt;
+using namespace key_salt;
 using namespace thekey_v2;
 
 

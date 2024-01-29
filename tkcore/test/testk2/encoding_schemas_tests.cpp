@@ -5,22 +5,22 @@
 #include <gtest/gtest.h>
 #include "key_core.h"
 #include "salt_text/salt2.h"
-#include "salt_text/salt_base.h"
+#include "salt/salt_base.h"
 #include "common.h"
 #include "salt_text/salt2_schema.h"
 #include "helpers.h"
 
 using namespace std;
 using namespace thekey_v2;
-using namespace thekey_salt;
+using namespace key_salt;
 
 
-TEST(Salt2, SchemeSymbols) {
-    auto scheme = find_scheme(0xff02);
-    print_scheme(scheme);
-}
+//TEST(EncodingSchemasTests, SchemeSymbols) {
+//    auto scheme = find_scheme(0xff02);
+//    print_scheme(scheme);
+//}
 
-TEST(Salt2, EncodeScheme) {
+TEST(EncodingSchemasTests, EncodeScheme) {
     // when  scheme a-z + .
     auto scheme = find_scheme(2);
 
@@ -32,7 +32,7 @@ TEST(Salt2, EncodeScheme) {
 }
 
 
-TEST(Salt2, DencodeScheme) {
+TEST(EncodingSchemasTests, DencodeScheme) {
     // when  scheme a-z + .
     auto scheme = find_scheme(2);
 
@@ -45,8 +45,7 @@ TEST(Salt2, DencodeScheme) {
 }
 
 
-TEST(Salt2, WideSchemeEncode) {
-    // when  scheme a-z + .
+TEST(EncodingSchemasTests, WideSchemeEncode) {
     auto scheme = find_scheme(0xff02);
 //    cout << "scheme  symbols '" << from(scheme->all_symbols()) << "'" << endl;
 
@@ -61,7 +60,7 @@ TEST(Salt2, WideSchemeEncode) {
 }
 
 
-TEST(Salt2, EncodeCropText) {
+TEST(EncodingSchemasTests, EncodeCropText) {
     // GIVEN
     const size_t len = 100L;
     wide_char wideCharArray[len] = {};
@@ -85,7 +84,7 @@ TEST(Salt2, EncodeCropText) {
 }
 
 
-TEST(Salt2, EndNotHaveMark) {
+TEST(EncodingSchemasTests, EndNotHaveMark) {
     // GIVEN
     SaltedText saltedText{};
 
@@ -104,7 +103,7 @@ TEST(Salt2, EndNotHaveMark) {
 }
 
 
-TEST(Salt2, SaltDesaltEquals) {
+TEST(EncodingSchemasTests, SaltDesaltEquals) {
     // GIVEN
     SaltedText saltedText{};
 
@@ -116,7 +115,7 @@ TEST(Salt2, SaltDesaltEquals) {
     ASSERT_EQ("some.site.com", str);
 }
 
-TEST(Salt2, SaltDesaltTextEquals) {
+TEST(EncodingSchemasTests, SaltDesaltTextEquals) {
     // GIVEN
     const string &text = "text";
     SaltedText saltedText{};
@@ -129,7 +128,7 @@ TEST(Salt2, SaltDesaltTextEquals) {
     ASSERT_EQ(text, str);
 }
 
-TEST(Salt2, SaltDesaltEmpty) {
+TEST(EncodingSchemasTests, SaltDesaltEmpty) {
     // GIVEN
     const string &text = "";
     SaltedText saltedText{};
@@ -143,7 +142,7 @@ TEST(Salt2, SaltDesaltEmpty) {
 }
 
 
-TEST(Salt2, SaltDesaltRu) {
+TEST(EncodingSchemasTests, SaltDesaltRu) {
     // GIVEN
     const string &text = "приветы ;№ц";
     SaltedText saltedText{};
@@ -157,7 +156,7 @@ TEST(Salt2, SaltDesaltRu) {
 }
 
 
-TEST(Salt2, SaltDesaltInListEquals) {
+TEST(EncodingSchemasTests, SaltDesaltInListEquals) {
     static string test_texts[] = {
             "text",
             "some.site.com",
@@ -172,7 +171,6 @@ TEST(Salt2, SaltDesaltInListEquals) {
 
 
     for (const auto &text: test_texts) {
-        cout << "text text '" << text << "' " << endl;
         // GIVEN
         SaltedText saltedText{};
 

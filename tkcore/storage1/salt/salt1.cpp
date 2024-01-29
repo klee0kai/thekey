@@ -6,15 +6,15 @@
 //  Copyright © 2020 panda. All rights reserved.
 //
 
-#include "salt_test1.h"
-#include "salt_text/salt_base.h"
+#include "salt1.h"
+#include "salt/salt_base.h"
 #include <string.h>
 #include <cstring>
 #include <limits.h>
 #include <openssl/rand.h>
 
-using namespace tkey1_salt;
-using namespace thekey_salt;
+using namespace key_salt;
+using namespace key_salt;
 
 #define SALT_IN_RING(x, max, ring) ( (x) + (ring) * rand((max) / (ring) ))
 #define TYPE_MAX(typeLen) ((1L << ( (typeLen) * 8L)) -1L)
@@ -30,7 +30,7 @@ using namespace thekey_salt;
 #define ENC_PASSW_NUM_EN_SPEC_SPACE_SYM_SET 95 // 128 - 33 - 1 выкидывем управляющие символы
 
 
-size_t SaltTextHeader_LEN = sizeof(tkey1_salt::SaltTextHeader);
+size_t SaltTextHeader_LEN = sizeof(key_salt::SaltTextHeader);
 
 
 static int acsii_to_num(unsigned char *out, const unsigned char *source, bool salt);
@@ -52,7 +52,7 @@ static int num_en_spec_symbols_space_to_acsii(unsigned char *out, const unsigned
 void saltHeader(SaltTextHeader *header, size_t lenRing);// соление заголовка соления
 void desaltgHeader(SaltTextHeader *header, size_t lenRing);// соление заголовка соления
 
-int tkey1_salt::salt_text(unsigned char *out, const unsigned char *source, unsigned int buflen) {
+int key_salt::salt_text(unsigned char *out, const unsigned char *source, unsigned int buflen) {
     int sourcelen = strlen((const char *) source);
     size_t lenRing = buflen - SaltTextHeader_LEN - TEXT_DECODE_RESERVE_LEN;
     if (sourcelen > lenRing)
@@ -92,7 +92,7 @@ int tkey1_salt::salt_text(unsigned char *out, const unsigned char *source, unsig
     return buflen;
 }
 
-int tkey1_salt::desalt_text(unsigned char *out, const unsigned char *source, unsigned int buflen) {
+int key_salt::desalt_text(unsigned char *out, const unsigned char *source, unsigned int buflen) {
     memcpy(out, source, buflen);
 
     SaltTextHeader salted = {};
@@ -124,7 +124,7 @@ int tkey1_salt::desalt_text(unsigned char *out, const unsigned char *source, uns
     }
 }
 
-int tkey1_salt::genpassw(unsigned char *out, unsigned int len, unsigned int encoding) {
+int key_salt::genpassw(unsigned char *out, unsigned int len, unsigned int encoding) {
     unsigned char *source = new unsigned char[len];
     randmem(source, len);
     switch (encoding) {

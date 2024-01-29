@@ -1,41 +1,5 @@
-enable_testing()
-include(FetchContent)
-FetchContent_Declare(
-        googletest
-        URL https://github.com/google/googletest/archive/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip
-)
-# For Windows: Prevent overriding the parent project's compiler/linker settings
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-FetchContent_MakeAvailable(googletest)
-include_directories(${GTEST_INCLUDE_DIR})
 
-add_executable(tkey_test
-        helpers.cpp
-        salt_testing.cpp
-        salt2_schemas.cpp
-        salt2_testing.cpp
-        gen2_passw_testing.cpp
-        crypt2_tests.cpp
-        )
+include(${CMAKE_CURRENT_LIST_DIR}/ktest_core/CMakeLists.txt)
 
-target_include_directories(tkey_test PUBLIC
-        ${GTEST_INCLUDE_DIR}
-        )
-
-target_link_libraries(tkey_test
-        key_find_static
-        key_storage1_static
-        key_storage2_static
-
-
-        gtest_main
-        openssl
-        openssl_crypto
-        dl
-        pthread
-        )
-
-set_target_properties(tkey_test PROPERTIES COMPILE_FLAGS -DDEBUG_TEST)
-
-include(GoogleTest)
-gtest_discover_tests(tkey_test)
+add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/testk1)
+add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/testk2)

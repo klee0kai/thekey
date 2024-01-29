@@ -11,7 +11,7 @@
 
 using namespace std;
 using namespace thekey_v2;
-using namespace thekey_salt;
+using namespace key_salt;
 
 static auto hashFunc = hash<uint32_t>();
 
@@ -49,8 +49,8 @@ std::string thekey_v2::SaltedText::desalted() const {
 
 int thekey_v2::encoded(
         uint32_t typeEncoding,
-        thekey_salt::wide_char *out,
-        const thekey_salt::wide_char *in,
+        key_salt::wide_char *out,
+        const key_salt::wide_char *in,
         const uint &bufSize,
         const int &salt) {
     auto scheme = find_scheme(typeEncoding);
@@ -69,8 +69,8 @@ int thekey_v2::encoded(
 
 int thekey_v2::decoded(
         uint32_t typeEncoding,
-        thekey_salt::wide_char *out,
-        const thekey_salt::wide_char *in,
+        key_salt::wide_char *out,
+        const key_salt::wide_char *in,
         const int &bufLen) {
     memset(out, 0, bufLen);
     auto scheme = find_scheme(typeEncoding);
@@ -115,9 +115,9 @@ wide_string thekey_v2::password_masked(
 }
 
 
-thekey_salt::wide_string thekey_v2::password_masked_twin(
+key_salt::wide_string thekey_v2::password_masked_twin(
         const uint32_t &typeEncoding,
-        const thekey_salt::wide_string &in,
+        const key_salt::wide_string &in,
         const float &passw_power) {
     auto scheme = find_scheme(typeEncoding);
     if (!scheme)return {};
