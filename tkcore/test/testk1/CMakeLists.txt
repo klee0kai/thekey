@@ -1,0 +1,16 @@
+
+add_executable(testk1
+        ${CMAKE_CURRENT_LIST_DIR}/salt_testing.cpp
+)
+
+target_link_libraries(testk1
+        key_find_static
+        key_storage1_static
+        key_storage2_static
+
+        ktest_core
+)
+
+set_target_properties(testk1 PROPERTIES COMPILE_FLAGS -DDEBUG_TEST)
+
+gtest_discover_tests(testk1)

@@ -1,10 +1,9 @@
 
-include(
-        ${CMAKE_CURRENT_LIST_DIR}/ktest_core/CMakeLists.txt
-)
+include(${CMAKE_CURRENT_LIST_DIR}/ktest_core/CMakeLists.txt)
+
+add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/testk1)
 
 add_executable(tkey_test
-        salt_testing.cpp
         salt2_schemas.cpp
         salt2_testing.cpp
         gen2_passw_testing.cpp
