@@ -2,6 +2,11 @@ cmake_minimum_required(VERSION 3.10)
 
 project("thekey")
 
+set(CMAKE_CXX_STANDARD 17)
+
+SET(CMAKE_CXX_FLAGS "-g -Wall  -std=c++17 -pthread -fPIC")
+SET(CMAKE_C_FLAGS "-g -Wall  -pthread -fPIC")
+
 get_filename_component(BROOKLYN_FILE ../../../build/generated/sources/${BROOKLYN_FOLDER}/brooklyn/FindBrooklynBridge.cmake ABSOLUTE)
 message(BROOKLYN_FILE = ${BROOKLYN_FILE})
 include(${BROOKLYN_FILE})

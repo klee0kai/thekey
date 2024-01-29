@@ -15,10 +15,10 @@ using namespace thekey_v2;
 using namespace key_salt;
 
 
-TEST(EncodingSchemasTests, SchemeSymbols) {
-    auto scheme = find_scheme(0xff02);
-    print_scheme(scheme);
-}
+//TEST(EncodingSchemasTests, SchemeSymbols) {
+//    auto scheme = find_scheme(0xff02);
+//    print_scheme(scheme);
+//}
 
 TEST(EncodingSchemasTests, EncodeScheme) {
     // when  scheme a-z + .
@@ -171,7 +171,6 @@ TEST(EncodingSchemasTests, SaltDesaltInListEquals) {
 
 
     for (const auto &text: test_texts) {
-        cout << "text text '" << text << "' " << endl;
         // GIVEN
         SaltedText saltedText{};
 

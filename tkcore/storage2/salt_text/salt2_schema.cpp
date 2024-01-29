@@ -116,7 +116,7 @@ static vector<EncodingScheme> encodingSchemas = {
         // unicode last symbol
         {.type=(uint32_t) 0xff02, .flags = 0, .ranges={
                 {0x20, 0x32ff}, //
-        }},
+        }}
 };
 
 

@@ -9,11 +9,7 @@
 #include "findk2.h"
 #include "key_core.h"
 
-#ifdef __ANDROID__
-namespace fs = std::__fs::filesystem;
-#else
 namespace fs = std::filesystem;
-#endif
 
 using namespace std;
 using namespace thekey;
@@ -77,7 +73,7 @@ void thekey::findStorages(const std::string &filePath, std::function<void(const 
         auto storageInfo = storage(filePath);
         if (storageInfo) foundStorageCallback(*storageInfo);
     } else {
-        for (const auto &entry: fs::directory_iterator(filePath)) {
+        for (const auto &entry:fs::directory_iterator(filePath)) {
             findStorages(entry.path().string(), foundStorageCallback);
         }
     }

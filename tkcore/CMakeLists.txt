@@ -3,8 +3,8 @@ project(TheKey)
 
 set(CMAKE_CXX_STANDARD 17)
 
-SET(CMAKE_CXX_FLAGS "-g -Wall  -std=c++11 -pthread -fPIC")
-SET(CMAKE_C_FLAGS "-g -Wall  -std=c++11 -pthread -fPIC")
+SET(CMAKE_CXX_FLAGS "-g -Wall  -std=c++17 -pthread -fPIC")
+SET(CMAKE_C_FLAGS "-g -Wall  -pthread -fPIC")
 
 ## prepate ASan (AddressSanitizer)
 #set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=address")

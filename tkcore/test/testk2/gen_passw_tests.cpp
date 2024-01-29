@@ -25,9 +25,7 @@ TEST(GenPasswords, Gen) {
         auto passw = from(gen_password(type, 8));
 
         // then
-        cout << "passw: '" << passw << "' " << endl;
-        ASSERT_TRUE(regex_match(passw, en_regex));
-        cout << "--------------------------------" << endl;
+        ASSERT_TRUE(regex_match(passw, en_regex)) << "passw: '" << passw << "' " << endl;
     }
 }
 
@@ -40,11 +38,10 @@ TEST(GenPasswords, PasswMasked) {
     auto passwMasked = from(password_masked(type, from(passw), 0.5f));
 
     // then
-    cout << "passw: '" << passw << "' " << endl;
-    cout << "passwMasked: '" << passwMasked << "' " << endl;
-    ASSERT_TRUE(passwMasked != passw);
+    ASSERT_TRUE(passwMasked != passw)
+                                << "passw: '" << passw << "' " << endl
+                                << "passwMasked: '" << passwMasked << "' " << endl;
     ASSERT_EQ("owyMEJjk", passwMasked);
-    cout << "--------------------------------" << endl;
 }
 
 
@@ -63,15 +60,15 @@ TEST(GenPasswords, PasswTwins) {
 
 
         // then
-        cout << "passw: '" << passw << "' " << endl;
-        cout << "passwMasked: '" << passwMasked << "' " << endl;
-        cout << "passwTwin: '" << passwTwin << "' " << endl;
-        cout << "passwTwinMasked: '" << passwTwinMasked << "' " << endl;
-        ASSERT_EQ(passwMasked, passwTwinMasked);
-        ASSERT_TRUE(regex_match(passw, en_regex));
-        ASSERT_TRUE(regex_match(passwMasked, en_regex));
-        ASSERT_TRUE(regex_match(passwTwin, en_regex));
-        ASSERT_TRUE(regex_match(passwTwinMasked, en_regex));
-        cout << "--------------------------------" << endl;
+        stringstream errorMessage;
+        errorMessage << "passw: '" << passw << "' " << endl;
+        errorMessage << "passwMasked: '" << passwMasked << "' " << endl;
+        errorMessage << "passwTwin: '" << passwTwin << "' " << endl;
+        errorMessage << "passwTwinMasked: '" << passwTwinMasked << "' " << endl;
+        ASSERT_EQ(passwMasked, passwTwinMasked) << errorMessage.str();
+        ASSERT_TRUE(regex_match(passw, en_regex)) << errorMessage.str();
+        ASSERT_TRUE(regex_match(passwMasked, en_regex)) << errorMessage.str();
+        ASSERT_TRUE(regex_match(passwTwin, en_regex)) << errorMessage.str();
+        ASSERT_TRUE(regex_match(passwTwinMasked, en_regex)) << errorMessage.str();
     }
 }

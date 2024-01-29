@@ -17,7 +17,6 @@ TEST(FindSchemasTests, SimpleDecoded) {
     auto type = find_scheme_type_by_flags(SCHEME_NUMBERS);
     auto scheme = find_scheme(type);
     ASSERT_TRUE(scheme);
-    print_scheme(scheme);
 
     //then
     ASSERT_EQ(U'2', scheme->decoded(2));
@@ -115,7 +114,6 @@ TEST(FindSchemasTests, EncodingDecoded) {
     auto type = find_scheme_type_by_flags(SCHEME_NUMBERS);
     auto scheme = find_scheme(type);
     ASSERT_TRUE(scheme);
-    print_scheme(scheme);
 
     //when
     auto c = scheme->encoded(u'1');
