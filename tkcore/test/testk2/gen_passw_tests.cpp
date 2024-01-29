@@ -16,7 +16,7 @@ using namespace key_salt;
 
 const std::regex en_regex("[a-zA-Z0-9]+");
 
-TEST(GenPassw2, Gen) {
+TEST(GenPasswords, Gen) {
     for (int i = 0; i < 10; ++i) {
         // Given
         auto type = find_scheme_type_by_flags(SCHEME_NUMBERS | SCHEME_ENGLISH);
@@ -31,7 +31,7 @@ TEST(GenPassw2, Gen) {
     }
 }
 
-TEST(GenPassw2, PasswMasked) {
+TEST(GenPasswords, PasswMasked) {
     // Given
     auto type = find_scheme_type_by_flags(SCHEME_NUMBERS | SCHEME_ENGLISH);
 
@@ -48,7 +48,7 @@ TEST(GenPassw2, PasswMasked) {
 }
 
 
-TEST(GenPassw2, PasswTwins) {
+TEST(GenPasswords, PasswTwins) {
     for (int i = 0; i < 10; ++i) {
         // Given
         const auto passwPower = 0.6f;

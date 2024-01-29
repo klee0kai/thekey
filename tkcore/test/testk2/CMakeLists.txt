@@ -1,9 +1,9 @@
 
 add_executable(testk2
-        ${CMAKE_CURRENT_LIST_DIR}/salt2_schemas.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/salt2_testing.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/gen2_passw_testing.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/crypt2_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/find_schemas_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/encoding_schemas_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/gen_passw_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/crypt_tests.cpp
 )
 
 target_link_libraries(testk2

@@ -1,6 +1,6 @@
 
 add_executable(testk1
-        ${CMAKE_CURRENT_LIST_DIR}/salt_testing.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/salt_tests.cpp
 )
 
 target_link_libraries(testk1
