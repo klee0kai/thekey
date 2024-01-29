@@ -7,8 +7,6 @@ add_executable(testk2
 )
 
 target_link_libraries(testk2
-        key_find_static
-        key_storage1_static
         key_storage2_static
 
         ktest_core
