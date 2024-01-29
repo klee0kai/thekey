@@ -1,8 +1,9 @@
 
-include(${CMAKE_CURRENT_LIST_DIR}/FindGTestLibs.cmake)
+include(
+        ${CMAKE_CURRENT_LIST_DIR}/ktest_core/CMakeLists.txt
+)
 
 add_executable(tkey_test
-        helpers.cpp
         salt_testing.cpp
         salt2_schemas.cpp
         salt2_testing.cpp
@@ -10,16 +11,13 @@ add_executable(tkey_test
         crypt2_tests.cpp
 )
 
-target_include_directories(tkey_test PUBLIC
-        ${GTEST_INCLUDE_DIR}
-)
-
 target_link_libraries(tkey_test
         key_find_static
         key_storage1_static
         key_storage2_static
 
-        gtest_main
+
+        ktest_core
 )
 
 set_target_properties(tkey_test PROPERTIES COMPILE_FLAGS -DDEBUG_TEST)

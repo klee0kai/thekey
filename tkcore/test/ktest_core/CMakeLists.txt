@@ -8,7 +8,19 @@ FetchContent_Declare(
 # For Windows: Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
-include_directories(${GTEST_INCLUDE_DIR})
 
 include(GoogleTest)
 
+
+add_library(ktest_core
+        # Core
+        ${CMAKE_CURRENT_LIST_DIR}/helpers.cpp
+)
+
+set_target_properties(ktest_core PROPERTIES INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_LIST_DIR} ${GTEST_INCLUDE_DIR})
+
+include_directories(ktest_core ${CMAKE_CURRENT_LIST_DIR})
+
+target_link_libraries(ktest_core
+        gtest_main
+)
