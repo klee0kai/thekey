@@ -371,6 +371,7 @@ std::shared_ptr<DecryptedNote> KeyStorageV1::note(long long notePtr, int decrypt
                                         return (long long) &note == notePtr;
                                     });
     if (cryptedNote == cryptedNotes.end()) {
+        keyError = KEY_NOTE_NOT_FOUND;
         return {};
     }
     auto decryptedNote = std::make_shared<DecryptedNote>();
@@ -413,6 +414,7 @@ std::list<DecryptedPassw> KeyStorageV1::noteHist(long long notePtr) {
                                         return (long long) &note == notePtr;
                                     });
     if (cryptedNote == cryptedNotes.end()) {
+        keyError = KEY_HIST_NOT_FOUND;
         return {};
     }
     auto hist = std::list<DecryptedPassw>{};
@@ -444,6 +446,7 @@ int KeyStorageV1::setNote(
                                         return (long long) &note == notePtr;
                                     });
     if (cryptedNote == cryptedNotes.end()) {
+        keyError = KEY_NOTE_NOT_FOUND;
         return KEY_NOTE_NOT_FOUND;
     }
     auto old = note(notePtr, 1);
@@ -491,6 +494,7 @@ int KeyStorageV1::removeNote(long long notePtr) {
                                         return (long long) &note == notePtr;
                                     });
     if (cryptedNote == cryptedNotes.end()) {
+        keyError = KEY_NOTE_NOT_FOUND;
         return KEY_NOTE_NOT_FOUND;
     }
     cryptedNotes.erase(cryptedNote);
