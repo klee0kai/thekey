@@ -188,6 +188,7 @@ int thekey_v1::createStorage(const thekey::Storage &storage) {
     auto wroteLen = write(fd, &header, sizeof(header));
     if (wroteLen != sizeof(header)) {
         close(fd);
+        keyError = KEY_WRITE_FILE_ERROR;
         return KEY_WRITE_FILE_ERROR;
     }
     close(fd);
@@ -260,7 +261,10 @@ int KeyStorageV1::save() {
 
 int KeyStorageV1::save(const std::string &path) {
     int fd = open(path.c_str(), O_CREAT | O_TRUNC | O_WRONLY | O_CLOEXEC, S_IRUSR | S_IWUSR);
-    if (fd < 0) return -1;
+    if (fd < 0) {
+        keyError = KEY_OPEN_FILE_ERROR;
+        return KEY_OPEN_FILE_ERROR;
+    }
     fheader->notesCount = cryptedNotes.size();
     fheader->genPasswCount = cryptedGeneratedPassws.size();
     auto writeLen = write(fd, &*fheader, sizeof(StorageV1_Header));
@@ -281,6 +285,7 @@ int KeyStorageV1::save(const std::string &path) {
 
     write_file_error:
     close(fd);
+    keyError = KEY_OPEN_FILE_ERROR;
     return KEY_WRITE_FILE_ERROR;
 }
 
@@ -366,6 +371,7 @@ std::shared_ptr<DecryptedNote> KeyStorageV1::note(long long notePtr, int decrypt
                                         return (long long) &note == notePtr;
                                     });
     if (cryptedNote == cryptedNotes.end()) {
+        keyError = KEY_NOTE_NOT_FOUND;
         return {};
     }
     auto decryptedNote = std::make_shared<DecryptedNote>();
@@ -408,6 +414,7 @@ std::list<DecryptedPassw> KeyStorageV1::noteHist(long long notePtr) {
                                         return (long long) &note == notePtr;
                                     });
     if (cryptedNote == cryptedNotes.end()) {
+        keyError = KEY_HIST_NOT_FOUND;
         return {};
     }
     auto hist = std::list<DecryptedPassw>{};
@@ -439,6 +446,7 @@ int KeyStorageV1::setNote(
                                         return (long long) &note == notePtr;
                                     });
     if (cryptedNote == cryptedNotes.end()) {
+        keyError = KEY_NOTE_NOT_FOUND;
         return KEY_NOTE_NOT_FOUND;
     }
     auto old = note(notePtr, 1);
@@ -486,6 +494,7 @@ int KeyStorageV1::removeNote(long long notePtr) {
                                         return (long long) &note == notePtr;
                                     });
     if (cryptedNote == cryptedNotes.end()) {
+        keyError = KEY_NOTE_NOT_FOUND;
         return KEY_NOTE_NOT_FOUND;
     }
     cryptedNotes.erase(cryptedNote);
@@ -533,11 +542,14 @@ static std::shared_ptr<StorageV1_Header> storageHeader(int fd) {
     StorageV1_Header header = {};
     size_t readLen = read(fd, &header, sizeof(header));
     if (readLen != sizeof(header)) {
+        keyError = KEY_STORAGE_FILE_IS_BROKEN;
         return {};
     }
     if (memcmp(&header.signature, &thekey::storageSignature_V1, SIGNATURE_LEN) != 0
-        || header.storageVersion != STORAGE_VER_FIRST)
+        || header.storageVersion != STORAGE_VER_FIRST) {
+        keyError = KEY_STORAGE_FILE_IS_BROKEN;
         return {};
+    }
     return make_shared<thekey_v1::StorageV1_Header>(header);
 }
 
@@ -559,6 +571,7 @@ static int encode(unsigned char *outText,
         EVP_CIPHER_CTX_free(ctx);
         memset(saltedText, 0, buflen);
         delete[] saltedText;
+        keyError = KEY_CRYPT_ERROR;
         return -1;
     }
     outText[0] = saltedText[0];
@@ -586,7 +599,8 @@ static int decode(unsigned char *outText, const unsigned char *inText, unsigned 
     if (!EVP_DecryptUpdate(ctx, saltedText + 1, &outlen, inText + 1, buflen - 1)) {
         EVP_CIPHER_CTX_free(ctx);
         memset(saltedText, 0, buflen);
-        delete[]saltedText;
+        delete[] saltedText;
+        keyError = KEY_CRYPT_ERROR;
         return -1;
     }
     saltedText[0] = inText[0];

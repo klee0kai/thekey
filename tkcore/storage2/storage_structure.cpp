@@ -19,7 +19,7 @@
 #include <iostream>
 
 using namespace std;
-using namespace thekey_v2;
+using namespace thekey;
 using namespace thekey_v2;
 
 static unsigned char iv[] = "1234567887654321";
@@ -43,6 +43,7 @@ void CryptedTextFlat::encrypt(
                                (unsigned char *) &raw.payload, &outlen,
                                (unsigned char *) &raw.payload, sizeof(raw.payload))) {
             EVP_CIPHER_CTX_free(ctx);
+            keyError = KEY_CRYPT_ERROR;
             return;
         }
         EVP_CIPHER_CTX_free(ctx);

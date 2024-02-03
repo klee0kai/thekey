@@ -54,10 +54,10 @@ int main(int argc, char **argv) {
         auto name = ask_from_term("input name: ");
         auto dest = ask_from_term("input dest: ");
 
-        int error = 0;
+        keyError = 0;
         switch (version) {
             case 1: {
-                error = thekey_v1::createStorage(
+                thekey_v1::createStorage(
                         {
                                 .file = path,
                                 .storageVersion = uint(version),
@@ -67,7 +67,7 @@ int main(int argc, char **argv) {
                 break;
             }
             case 2: {
-                error = thekey_v2::createStorage(
+                thekey_v2::createStorage(
                         {
                                 .file = path,
                                 .storageVersion = uint(version),
@@ -78,8 +78,8 @@ int main(int argc, char **argv) {
             }
         }
 
-        if (error) {
-            cout << "error to create storage " << error << endl;
+        if (keyError) {
+            cout << "error to create storage " << errorToString(keyError) << endl;
         } else {
             cout << "storage created successfully" << endl;
         }

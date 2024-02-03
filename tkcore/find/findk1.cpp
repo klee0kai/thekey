@@ -16,7 +16,7 @@ static std::shared_ptr<StorageHeaderShort> storageHeader(int fd);
 
 shared_ptr<thekey::Storage> thekey_v1::storage(int fd, const string &path) {
     auto header = storageHeader(fd);
-    if (!header)return {};
+    if (!header) return {};
     auto storage = make_shared<Storage>();
     storage->file = path;
     storage->storageVersion = header->storageVersion;
@@ -31,10 +31,13 @@ static std::shared_ptr<StorageHeaderShort> storageHeader(int fd) {
     StorageHeaderShort header = {};
     size_t readLen = read(fd, &header, sizeof(header));
     if (readLen != sizeof(header)) {
+        keyError = KEY_STORAGE_FILE_IS_BROKEN;
         return {};
     }
     if (memcmp(&header.signature, &thekey::storageSignature_V1, SIGNATURE_LEN) != 0
-        || header.storageVersion != STORAGE_VER_FIRST)
+        || header.storageVersion != STORAGE_VER_FIRST) {
+        keyError = KEY_STORAGE_FILE_IS_BROKEN;
         return {};
+    }
     return make_shared<StorageHeaderShort>(header);
 }

@@ -45,6 +45,7 @@ std::shared_ptr<Storage> thekey::storage(const std::string &path) {
             return storage;
         }
         default:
+            keyError = KEY_STORAGE_VERSION_NOT_SUPPORT;
             close(fd);
             return {};
     }
@@ -73,7 +74,7 @@ void thekey::findStorages(const std::string &filePath, std::function<void(const 
         auto storageInfo = storage(filePath);
         if (storageInfo) foundStorageCallback(*storageInfo);
     } else {
-        for (const auto &entry:fs::directory_iterator(filePath)) {
+        for (const auto &entry: fs::directory_iterator(filePath)) {
             findStorages(entry.path().string(), foundStorageCallback);
         }
     }
