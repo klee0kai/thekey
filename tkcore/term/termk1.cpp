@@ -16,10 +16,11 @@ static void printNote(const thekey_v1::DecryptedNote &note);
 
 void thekey_v1_term::login(const std::string &filePath) {
     shared_ptr<thekey_v1::KeyStorageV1> storageV1 = {};
+    keyError = 0;
 
     auto storageInfo = thekey_v1::storageV1Info(filePath);
     if (!storageInfo) {
-        cerr << "can't open file " << filePath << endl;
+        cerr << "can't open file " << errorToString(keyError) << endl;
         return;
     }
 
@@ -27,7 +28,7 @@ void thekey_v1_term::login(const std::string &filePath) {
     auto passw = term::ask_password_from_term(message);
     storageV1 = thekey_v1::storage(filePath, passw);
     if (!storageV1) {
-        cerr << "error login to " << filePath << endl;
+        cerr << "error login to " << filePath << " " << errorToString(keyError) << endl;
         return;
     }
 
@@ -131,7 +132,7 @@ void thekey_v1_term::login(const std::string &filePath) {
                 .description = desc,
         });
         if (error) {
-            cerr << "error to save note " << error << endl;
+            cerr << "error to save note " << errorToString(error) << endl;
             return;
         }
         cout << "note saved " << notePtr << endl;
@@ -186,7 +187,7 @@ void thekey_v1_term::login(const std::string &filePath) {
 
         int error = storageV1->setNote(notePtr, *note);
         if (error) {
-            cerr << "error to save note " << error << endl;
+            cerr << "error to save note " << errorToString(error) << endl;
             return;
         } else {
             cout << "note saved " << notePtr << endl;
@@ -254,7 +255,7 @@ void thekey_v1_term::login(const std::string &filePath) {
         cout << "changing password for storage..." << endl;
         int error = storageV1->saveToNewPassw(newPath, passw);
         if (error) {
-            cerr << "error to change storage password : " << error << endl;
+            cerr << "error to change storage password : " << errorToString(error) << endl;
             return;
         }
         cout << "storage password changed to new file : " << newPath << endl;

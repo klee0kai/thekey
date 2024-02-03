@@ -58,7 +58,10 @@ shared_ptr<StorageInfo> thekey_v2::storageFullInfo(const std::string &file) {
 
 int thekey_v2::createStorage(const thekey::Storage &storage) {
     int fd = open(storage.file.c_str(), O_RDONLY | O_WRONLY | O_CLOEXEC | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
-    if (fd < 0) return KEY_OPEN_FILE_ERROR;
+    if (fd < 0) {
+        keyError = KEY_OPEN_FILE_ERROR;
+        return KEY_OPEN_FILE_ERROR;
+    }
     StorageHeaderFlat header = {};
     memcpy(header.signature, storageSignature_V2, SIGNATURE_LEN);
     header.storageVersion(STORAGE_VER_SECOND);
@@ -71,6 +74,7 @@ int thekey_v2::createStorage(const thekey::Storage &storage) {
     auto wroteLen = write(fd, &header, sizeof(header));
     if (wroteLen != sizeof(header)) {
         close(fd);
+        keyError = KEY_WRITE_FILE_ERROR;
         return KEY_WRITE_FILE_ERROR;
     }
     close(fd);
@@ -79,7 +83,10 @@ int thekey_v2::createStorage(const thekey::Storage &storage) {
 
 std::shared_ptr<KeyStorageV2> thekey_v2::storage(const std::string &path, const std::string &passw) {
     int fd = open(path.c_str(), O_RDONLY | O_CLOEXEC);
-    if (fd == -1) return {};
+    if (fd == -1) {
+        keyError = KEY_OPEN_FILE_ERROR;
+        return {};
+    }
     auto header = storageHeader(fd);
     if (!header) {
         close(fd);
@@ -152,10 +159,16 @@ int KeyStorageV2::readAll() {
         FileSectionFlat section{};
         int len = read(fd, &section, sizeof(section));
         if (!len) break;
-        if (len != sizeof(section))return KEY_STORAGE_FILE_IS_BROKEN;
+        if (len != sizeof(section)) {
+            keyError = KEY_STORAGE_FILE_IS_BROKEN;
+            return KEY_STORAGE_FILE_IS_BROKEN;
+        }
         char buffer[section.sectionLen()];
         len = read(fd, buffer, section.sectionLen());
-        if (len != section.sectionLen())return KEY_STORAGE_FILE_IS_BROKEN;
+        if (len != section.sectionLen()) {
+            keyError = KEY_STORAGE_FILE_IS_BROKEN;
+            return KEY_STORAGE_FILE_IS_BROKEN;
+        }
 
         switch (section.sectionType()) {
             case FileMap: {
@@ -198,10 +211,12 @@ int KeyStorageV2::save() {
 
 int KeyStorageV2::save(const std::string &path) {
     int fd = open(path.c_str(), O_CREAT | O_TRUNC | O_WRONLY | O_CLOEXEC, S_IRUSR | S_IWUSR);
-    if (fd < 0) return -1;
+    if (fd < 0) {
+        keyError = KEY_OPEN_FILE_ERROR;
+        return KEY_OPEN_FILE_ERROR;
+    }
     auto writeLen = write(fd, &*fheader, sizeof(StorageHeaderFlat));
     FileSectionFlat fileSection{};
-
 
     if (writeLen != sizeof(StorageHeaderFlat)) goto write_file_error;
 
@@ -236,6 +251,7 @@ int KeyStorageV2::save(const std::string &path) {
 
     write_file_error:
     close(fd);
+    keyError = KEY_WRITE_FILE_ERROR;
     return KEY_WRITE_FILE_ERROR;
 
 }
@@ -257,6 +273,7 @@ std::shared_ptr<DecryptedNote> KeyStorageV2::note(long long notePtr, uint flags)
                                         return (long long) &note == notePtr;
                                     });
     if (cryptedNote == cryptedNotes.end()) {
+        keyError = KEY_NOTE_NOT_FOUND;
         return {};
     }
 
@@ -311,6 +328,7 @@ int KeyStorageV2::setNote(long long notePtr,
                                         return (long long) &note == notePtr;
                                     });
     if (cryptedNote == cryptedNotes.end()) {
+        keyError = KEY_NOTE_NOT_FOUND;
         return KEY_NOTE_NOT_FOUND;
     }
 
@@ -378,6 +396,7 @@ int KeyStorageV2::removeNote(long long notePtr) {
                                         return (long long) &note == notePtr;
                                     });
     if (cryptedNote == cryptedNotes.end()) {
+        keyError = KEY_NOTE_NOT_FOUND;
         return KEY_NOTE_NOT_FOUND;
     }
     cryptedNotes.erase(cryptedNote);
@@ -431,6 +450,7 @@ std::shared_ptr<DecryptedPassw> KeyStorageV2::passwordHistory(long long histPtr)
             }
     }
     if (!histPassw) {
+        keyError = KEY_HIST_NOT_FOUND;
         return {};
     }
     DecryptedPassw dPassw{};
@@ -450,11 +470,14 @@ static std::shared_ptr<StorageHeaderFlat> storageHeader(int fd) {
     StorageHeaderFlat header = {};
     size_t readLen = read(fd, &header, sizeof(header));
     if (readLen != sizeof(header)) {
+        keyError = KEY_STORAGE_FILE_IS_BROKEN;
         return {};
     }
     if (memcmp(&header.signature, &thekey::storageSignature_V2, SIGNATURE_LEN) != 0
-        || header.storageVersion() != STORAGE_VER_SECOND)
+        || header.storageVersion() != STORAGE_VER_SECOND) {
+        keyError = KEY_STORAGE_FILE_IS_BROKEN;
         return {};
+    }
     return make_shared<StorageHeaderFlat>(header);
 }
 

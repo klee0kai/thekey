@@ -6,6 +6,7 @@ add_library(key_core
         # Core
         ${CMAKE_CURRENT_LIST_DIR}/common.cpp
         ${CMAKE_CURRENT_LIST_DIR}/key_signatures.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/key_errors.cpp
         ${CMAKE_CURRENT_LIST_DIR}/salt/salt_base.cpp
 )
 

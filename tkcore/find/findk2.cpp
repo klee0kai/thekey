@@ -30,10 +30,13 @@ static std::shared_ptr<thekey_v2::StorageHeaderShort> storageHeader(int fd) {
     thekey_v2::StorageHeaderShort header = {};
     size_t readLen = read(fd, &header, sizeof(header));
     if (readLen != sizeof(header)) {
+        keyError = KEY_STORAGE_FILE_IS_BROKEN;
         return {};
     }
     if (memcmp(&header.signature, &thekey::storageSignature_V2, SIGNATURE_LEN) != 0
-        || header.storageVersion() != STORAGE_VER_SECOND)
+        || header.storageVersion() != STORAGE_VER_SECOND) {
+        keyError = KEY_STORAGE_FILE_IS_BROKEN;
         return {};
+    }
     return make_shared<thekey_v2::StorageHeaderShort>(header);
 }

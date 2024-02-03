@@ -11,5 +11,17 @@
 #define KEY_WRITE_FILE_ERROR -3
 #define KEY_STORAGE_FILE_IS_BROKEN -4
 #define KEY_NOTE_NOT_FOUND -5
+#define KEY_STORAGE_VERSION_NOT_SUPPORT -6
+#define KEY_CRYPT_ERROR -7
+#define KEY_HIST_NOT_FOUND -8
+
+
+namespace thekey {
+
+    extern int keyError;
+
+    std::string errorToString(const int &keyError);
+
+}
 
 #endif //THEKEY_KEY_ERRORS_H

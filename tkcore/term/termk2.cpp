@@ -10,6 +10,7 @@
 
 using namespace std;
 using namespace thekey_v2;
+using namespace thekey;
 using namespace term;
 
 static void printNote(const thekey_v2::DecryptedNote &note);
@@ -17,15 +18,16 @@ static void printNote(const thekey_v2::DecryptedNote &note);
 void thekey_term_v2::login(const std::string &filePath) {
     shared_ptr<thekey_v2::KeyStorageV2> storageV2 = {};
 
+    keyError = 0;
     auto storageInfo = thekey_v2::storageFullInfo(filePath);
     if (!storageInfo) {
-        cerr << "can't open file " << filePath << endl;
+        cerr << "can't open file " << filePath << " " << errorToString(keyError) << endl;
         return;
     }
     auto passw = ask_password_from_term("Input password: ");
     storageV2 = storage(filePath, passw);
     if (!storageV2) {
-        cerr << "error login to " << filePath << endl;
+        cerr << "error login to " << filePath << " " << errorToString(keyError) << endl;
         return;
     }
 
@@ -115,7 +117,7 @@ void thekey_term_v2::login(const std::string &filePath) {
                 .description = desc,
         }, TK2_SET_NOTE_TRACK_HISTORY);
         if (error) {
-            cerr << "error to save note " << error << endl;
+            cerr << "error to save note " << errorToString(error) << endl;
             return;
         }
         cout << "note saved " << notePtr << endl;
@@ -167,7 +169,7 @@ void thekey_term_v2::login(const std::string &filePath) {
 
         int error = storageV2->setNote(notePtr, *note, TK2_SET_NOTE_TRACK_HISTORY);
         if (error) {
-            cerr << "error to save note " << error << endl;
+            cerr << "error to save note " << errorToString(error) << endl;
             return;
         } else {
             cout << "note saved " << notePtr << endl;
