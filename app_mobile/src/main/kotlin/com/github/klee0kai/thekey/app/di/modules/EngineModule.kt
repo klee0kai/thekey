@@ -17,7 +17,7 @@ abstract class EngineModule {
     open fun cryptStorageEngine(id: StorageIdentifier): CryptStorageEngine = CryptStorageEngine(id.path ?: "")
 
     @Provide(cache = Provide.CacheType.Soft)
-    open fun editStorageEngine(): EditStorageEngine = EditStorageEngine()
+    abstract fun editStorageEngine(): EditStorageEngine
 
 
 }
