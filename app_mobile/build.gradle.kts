@@ -142,16 +142,16 @@ dependencies {
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3-android:1.2.0-beta02")
+    implementation("androidx.compose.material3:material3-android:1.2.0-rc01")
     implementation("androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha13")
 
     // coroutine
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 
     // stone
-    implementation("com.github.klee0kai.stone:android_lib:1.0.3")
-    implementation("com.github.klee0kai.stone:kotlin_lib:1.0.3")
-    kapt("com.github.klee0kai.stone:stone_processor:1.0.3")
+    implementation("com.github.klee0kai.stone:android_lib:1.0.4")
+    implementation("com.github.klee0kai.stone:kotlin_lib:1.0.4")
+    kapt("com.github.klee0kai.stone:stone_processor:1.0.4")
 
     // room
     implementation("androidx.room:room-runtime:2.6.1")
