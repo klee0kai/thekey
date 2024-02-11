@@ -5,8 +5,8 @@
 #include <regex>
 
 using namespace std;
-
 static string encodingTable = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+
 
 std::string base32::encode(
         const std::vector<uint8_t> &data,
@@ -71,11 +71,9 @@ std::string base32::decode(const std::vector<uint8_t> &data) {
     uint32_t buffer = 0;
     size_t bits = 0;
     for (auto datum: data) {
-        auto entry = std::find(encodingTable.begin(), encodingTable.end(), (char) datum);
+        const auto entry = encodingTable.find(datum);
         uint32_t group = 0;
-        if (entry != encodingTable.end()) {
-            group = uint32_t(*entry);
-        }
+        group = entry;
         buffer <<= 5;
         bits += 5;
         buffer += group;

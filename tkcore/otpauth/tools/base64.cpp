@@ -3,17 +3,17 @@
 #include <map>
 #include <sstream>
 #include <vector>
-#include <regex>
+
 
 using namespace std;
-
 const string encodingTable = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
 const string urlEncodingTable = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
 
+
 static std::string encode(
         const std::vector<uint8_t> &data,
-        const string urlEncodingTable,
+        const string &encodingTable,
         bool includePadding
 ) {
     std::ostringstream output;
@@ -46,18 +46,14 @@ static std::string encode(
 }
 
 static std::string decode(
-        const vector<uint8_t> &data,
+        const std::vector<uint8_t> &data,
         const string &encodingTable
 ) {
     std::ostringstream output;
     uint32_t buffer = 0;
     size_t bits = 0;
     for (auto datum: data) {
-        const auto entry = find(encodingTable.begin(), encodingTable.end(), datum);
-        uint32_t group = 0;
-        if (entry != encodingTable.end()) {
-            group = uint32_t(*entry);
-        }
+        uint32_t group = encodingTable.find(datum);
         buffer <<= 6;
         bits += 6;
         buffer += group;

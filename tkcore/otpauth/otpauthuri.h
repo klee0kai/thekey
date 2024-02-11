@@ -24,12 +24,12 @@ namespace key_otp {
     struct OtpInfo {
         OtpScheme scheme;
         OtpMethod method;
+        OtpAlgo algorithm;
         std::string issuer;
         std::string name; // email
 
         std::string secret; // base32 secret
 
-        OtpAlgo algorithm;
         uint digits;
         uint interval;
         uint count;
