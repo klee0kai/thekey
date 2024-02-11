@@ -2,45 +2,11 @@
 #include <map>
 #include <sstream>
 #include <vector>
+#include <regex>
 
+using namespace std;
 
-static const char EncodingTable[33] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
-
-static const std::map<char, uint32_t> DecodingTable{
-        {'A', 0},
-        {'B', 1},
-        {'C', 2},
-        {'D', 3},
-        {'E', 4},
-        {'F', 5},
-        {'G', 6},
-        {'H', 7},
-        {'I', 8},
-        {'J', 9},
-        {'K', 10},
-        {'L', 11},
-        {'M', 12},
-        {'N', 13},
-        {'O', 14},
-        {'P', 15},
-        {'Q', 16},
-        {'R', 17},
-        {'S', 18},
-        {'T', 19},
-        {'U', 20},
-        {'V', 21},
-        {'W', 22},
-        {'X', 23},
-        {'Y', 24},
-        {'Z', 25},
-        {'2', 26},
-        {'3', 27},
-        {'4', 28},
-        {'5', 29},
-        {'6', 30},
-        {'7', 31},
-};
-
+static string encodingTable = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 
 std::string base32::encode(
         const std::vector<uint8_t> &data,
@@ -54,32 +20,32 @@ std::string base32::encode(
         buffer += (uint32_t) datum;
         bits += 8;
         while (bits >= 5) {
-            output << EncodingTable[(buffer >> (bits - 5)) & 0x3f];
+            output << encodingTable[(buffer >> (bits - 5)) & 0x3f];
             buffer &= ~(0x1f << (bits - 5));
             bits -= 5;
         }
     }
     if ((data.size() % 5) == 1) {
         buffer <<= 2;
-        output << EncodingTable[buffer & 0x1f];
+        output << encodingTable[buffer & 0x1f];
         if (!omitPadding) {
             output << "======";
         }
     } else if ((data.size() % 5) == 2) {
         buffer <<= 4;
-        output << EncodingTable[buffer & 0x1f];
+        output << encodingTable[buffer & 0x1f];
         if (!omitPadding) {
             output << "====";
         }
     } else if ((data.size() % 5) == 3) {
         buffer <<= 1;
-        output << EncodingTable[buffer & 0x1f];
+        output << encodingTable[buffer & 0x1f];
         if (!omitPadding) {
             output << "===";
         }
     } else if ((data.size() % 5) == 4) {
         buffer <<= 3;
-        output << EncodingTable[buffer & 0x1f];
+        output << encodingTable[buffer & 0x1f];
         if (!omitPadding) {
             output << '=';
         }
@@ -105,10 +71,10 @@ std::string base32::decode(const std::vector<uint8_t> &data) {
     uint32_t buffer = 0;
     size_t bits = 0;
     for (auto datum: data) {
-        const auto entry = DecodingTable.find(datum);
+        auto entry = std::find(encodingTable.begin(), encodingTable.end(), (char) datum);
         uint32_t group = 0;
-        if (entry != DecodingTable.end()) {
-            group = entry->second;
+        if (entry != encodingTable.end()) {
+            group = uint32_t(*entry);
         }
         buffer <<= 5;
         bits += 5;

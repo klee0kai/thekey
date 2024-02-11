@@ -3,149 +3,17 @@
 #include <map>
 #include <sstream>
 #include <vector>
+#include <regex>
 
-const char EncodingTable[65] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+using namespace std;
 
-const std::map<char, uint32_t> DecodingTable{
-        {'A', 0},
-        {'B', 1},
-        {'C', 2},
-        {'D', 3},
-        {'E', 4},
-        {'F', 5},
-        {'G', 6},
-        {'H', 7},
-        {'I', 8},
-        {'J', 9},
-        {'K', 10},
-        {'L', 11},
-        {'M', 12},
-        {'N', 13},
-        {'O', 14},
-        {'P', 15},
-        {'Q', 16},
-        {'R', 17},
-        {'S', 18},
-        {'T', 19},
-        {'U', 20},
-        {'V', 21},
-        {'W', 22},
-        {'X', 23},
-        {'Y', 24},
-        {'Z', 25},
-        {'a', 26},
-        {'b', 27},
-        {'c', 28},
-        {'d', 29},
-        {'e', 30},
-        {'f', 31},
-        {'g', 32},
-        {'h', 33},
-        {'i', 34},
-        {'j', 35},
-        {'k', 36},
-        {'l', 37},
-        {'m', 38},
-        {'n', 39},
-        {'o', 40},
-        {'p', 41},
-        {'q', 42},
-        {'r', 43},
-        {'s', 44},
-        {'t', 45},
-        {'u', 46},
-        {'v', 47},
-        {'w', 48},
-        {'x', 49},
-        {'y', 50},
-        {'z', 51},
-        {'0', 52},
-        {'1', 53},
-        {'2', 54},
-        {'3', 55},
-        {'4', 56},
-        {'5', 57},
-        {'6', 58},
-        {'7', 59},
-        {'8', 60},
-        {'9', 61},
-        {'+', 62},
-        {'/', 63},
-};
+const string encodingTable = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-const char UrlEncodingTable[65] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
-
-const std::map<char, uint32_t> UrlDecodingTable{
-        {'A', 0},
-        {'B', 1},
-        {'C', 2},
-        {'D', 3},
-        {'E', 4},
-        {'F', 5},
-        {'G', 6},
-        {'H', 7},
-        {'I', 8},
-        {'J', 9},
-        {'K', 10},
-        {'L', 11},
-        {'M', 12},
-        {'N', 13},
-        {'O', 14},
-        {'P', 15},
-        {'Q', 16},
-        {'R', 17},
-        {'S', 18},
-        {'T', 19},
-        {'U', 20},
-        {'V', 21},
-        {'W', 22},
-        {'X', 23},
-        {'Y', 24},
-        {'Z', 25},
-        {'a', 26},
-        {'b', 27},
-        {'c', 28},
-        {'d', 29},
-        {'e', 30},
-        {'f', 31},
-        {'g', 32},
-        {'h', 33},
-        {'i', 34},
-        {'j', 35},
-        {'k', 36},
-        {'l', 37},
-        {'m', 38},
-        {'n', 39},
-        {'o', 40},
-        {'p', 41},
-        {'q', 42},
-        {'r', 43},
-        {'s', 44},
-        {'t', 45},
-        {'u', 46},
-        {'v', 47},
-        {'w', 48},
-        {'x', 49},
-        {'y', 50},
-        {'z', 51},
-        {'0', 52},
-        {'1', 53},
-        {'2', 54},
-        {'3', 55},
-        {'4', 56},
-        {'5', 57},
-        {'6', 58},
-        {'7', 59},
-        {'8', 60},
-        {'9', 61},
-        {'-', 62},
-        {'_', 63},
-};
-
+const string urlEncodingTable = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
 
 static std::string encode(
         const std::vector<uint8_t> &data,
-        const char encodingTable[65],
+        const string urlEncodingTable,
         bool includePadding
 ) {
     std::ostringstream output;
@@ -178,17 +46,17 @@ static std::string encode(
 }
 
 static std::string decode(
-        const std::vector<uint8_t> &data,
-        const std::map<char, uint32_t> &decodingTable
+        const vector<uint8_t> &data,
+        const string &encodingTable
 ) {
     std::ostringstream output;
     uint32_t buffer = 0;
     size_t bits = 0;
     for (auto datum: data) {
-        const auto entry = decodingTable.find(datum);
+        const auto entry = find(encodingTable.begin(), encodingTable.end(), datum);
         uint32_t group = 0;
-        if (entry != decodingTable.end()) {
-            group = entry->second;
+        if (entry != encodingTable.end()) {
+            group = uint32_t(*entry);
         }
         buffer <<= 6;
         bits += 6;
@@ -206,7 +74,7 @@ static std::string decode(
 
 
 std::string base64::encode(const std::vector<uint8_t> &data) {
-    return ::encode(data, EncodingTable, true);
+    return ::encode(data, encodingTable, true);
 }
 
 std::string base64::encode(const std::string &data) {
@@ -219,7 +87,7 @@ std::string base64::encode(const std::string &data) {
 }
 
 std::string base64::decode(const std::vector<uint8_t> &data) {
-    return ::decode(data, DecodingTable);
+    return ::decode(data, encodingTable);
 }
 
 std::string base64::decode(const std::string &data) {
@@ -232,7 +100,7 @@ std::string base64::decode(const std::string &data) {
 }
 
 std::string base64::urlEncode(const std::vector<uint8_t> &data) {
-    return ::encode(data, UrlEncodingTable, false);
+    return ::encode(data, urlEncodingTable, false);
 }
 
 std::string base64::urlEncode(const std::string &data) {
@@ -245,7 +113,7 @@ std::string base64::urlEncode(const std::string &data) {
 }
 
 std::string base64::urlDecode(const std::vector<uint8_t> &data) {
-    return ::decode(data, UrlDecodingTable);
+    return ::decode(data, urlEncodingTable);
 }
 
 std::string base64::urlDecode(const std::string &data) {
