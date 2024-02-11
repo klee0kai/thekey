@@ -3,6 +3,7 @@ add_executable(tkey
         utils/interactive.cpp
         termk1.cpp
         termk2.cpp
+        termotp.cpp
         main.cpp
 )
 

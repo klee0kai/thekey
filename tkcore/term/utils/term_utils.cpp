@@ -4,12 +4,24 @@
 
 #include "term_utils.h"
 #include <termios.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <iostream>
 
 using namespace std;
 
 void term::flush_await() {
     sync();
     usleep(100000);
+}
+
+int term::checkInput() {
+    int flags = fcntl(STDIN_FILENO, F_GETFL, 0);
+    fcntl(STDIN_FILENO, F_SETFL, flags | O_NONBLOCK);
+    char buf[100];
+    int len = read(STDIN_FILENO, buf, sizeof(buf));
+    fcntl(STDIN_FILENO, F_SETFL, flags & !O_NONBLOCK);
+    return len > 0;
 }
 
 string term::ask_from_term(const string &message) {

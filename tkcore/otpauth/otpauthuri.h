@@ -7,7 +7,7 @@
 
 #include "key_core.h"
 
-#define GOOGLE_AUTH_MIGRATION_SCHEME "`otpauth-migration`"
+#define GOOGLE_AUTH_MIGRATION_SCHEME "otpauth-migration"
 #define OTP_URI_SCHEME "otpuri"
 #define GOOGLE_AUTH_SCHEME "otpauth"
 

@@ -11,6 +11,8 @@ namespace term {
 
     void flush_await();
 
+    int checkInput();
+
     std::string ask_from_term(const std::string &message = "");
 
     int ask_int_from_term(const std::string &message = "");
