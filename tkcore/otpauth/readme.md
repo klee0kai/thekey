@@ -9,7 +9,8 @@ URI:
 
 # Refs
 
+- [RFC2104: HMAC: Keyed-Hashing for Message Authentication](https://datatracker.ietf.org/doc/html/rfc2104)
+- [RFC4226: HMAC-Based One-time Password (HOTP)](https://datatracker.ietf.org/doc/html/rfc4226)
+- [RFC6238: Time-Based One-Time Password Algorithm (TOTP)](https://datatracker.ietf.org/doc/html/rfc6238)
 - [google-authenticator uri format](https://github.com/google/google-authenticator/wiki/Key-Uri-Format)
-- [HMAC-Based One-time Password (HOTP) rfc4226 ](https://datatracker.ietf.org/doc/html/rfc4226)
-- [Time-Based One-Time Password Algorithm (TOTP)](https://datatracker.ietf.org/doc/html/rfc6238)
 - [TOTP tests](https://github.com/google/google-authenticator-android/blob/master/javatests/com/google/android/apps/authenticator/otp/OtpProviderTest.java)

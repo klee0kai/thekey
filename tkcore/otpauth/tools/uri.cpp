@@ -7,40 +7,85 @@
 
 using namespace std;
 
-url::url(const std::string &url_s) {
-    const string protEnd("://");
-    auto protLast = search(url_s.begin(), url_s.end(), protEnd.begin(), protEnd.end());
-    if (protLast == url_s.end())
-        return;
-    scheme.assign(url_s.begin(), protLast);
-    protLast += protEnd.length();
+template<typename ITERATOR>
+struct FoundSymbol {
+    ITERATOR it;
+    string symbol;
+    int length;
+};
 
-    auto pathFirst = find(protLast, url_s.end(), '/');
-    auto queryFirst = find(protLast, url_s.end(), '?');
+template<typename ITERATOR>
+static FoundSymbol<ITERATOR> findSymbol(ITERATOR first, ITERATOR last, vector<string> variants) {
+    for (const auto &symbol: variants) {
+        auto index = search(first, last, symbol.begin(), symbol.end());
+        if (index != last) {
+            return {
+                    .it = index,
+                    .symbol = symbol,
+                    .length = int(symbol.length())
+            };
+        }
+    }
+    return {.it = last};
+}
+
+uri::uri(const std::string &url_s) {
+    auto prot = findSymbol(url_s.begin(), url_s.end(), {"://"});
+    if (prot.it == url_s.end()) return;
+    auto index = prot.it;
+    scheme.assign(url_s.begin(), index);
+    index += prot.symbol.length();
+
+    auto atSign = findSymbol(index, url_s.end(), {"@", "%40"});
+    if (atSign.it != url_s.end()) {
+        auto typeLast = find(index, atSign.it, '/');
+        auto issuerLast = findSymbol(typeLast, atSign.it, {":", "%3A"});
+        if (typeLast > index) {
+            type.assign(index, typeLast);
+            type = decodeURIComponent(type);
+        }
+        if (issuerLast.it > typeLast + 1) {
+            issuer.assign(typeLast + 1, issuerLast.it);
+            issuer = decodeURIComponent(issuer);
+        }
+        if (atSign.it > issuerLast.it + issuerLast.length) {
+            accountName.assign(issuerLast.it + issuerLast.length, atSign.it);
+            accountName = decodeURIComponent(accountName);
+        }
+        index = atSign.it + atSign.length;
+    }
+
+    auto pathFirst = find(index, url_s.end(), '/');
+    auto queryFirst = find(index, url_s.end(), '?');
     auto domainLast = min({pathFirst, queryFirst, url_s.end()});
-    host.assign(protLast, domainLast);
+    host.assign(index, domainLast);
+    host = decodeURIComponent(host);
 
 
     auto pathLast = min({queryFirst, url_s.end()});
     if (domainLast == url_s.end()) return;
-    domainLast += 1;
-    if (domainLast == url_s.end()) return;
-    if (domainLast < pathLast) path.assign(domainLast, pathLast);
+    index = domainLast + 1;
+    if (index == url_s.end()) return;
+    if (index < pathLast) {
+        path.assign(index, pathLast);
+        path = decodeURIComponent(path);
+    }
 
-    while (queryFirst != url_s.end()) {
-        queryFirst += 1;
-        auto queryLast = find(queryFirst, url_s.end(), '&');
+    index = queryFirst;
+    while (index != url_s.end()) {
+        index += 1;
+        auto queryLast = find(index, url_s.end(), '&');
 
-        auto queryEqIndex = find(queryFirst, queryLast, '=');
+        auto queryEqIndex = find(index, queryLast, '=');
         string key;
         string value;
-        key.assign(queryFirst, queryEqIndex);
+        key.assign(index, queryEqIndex);
         value.assign(queryEqIndex + 1, queryLast);
         query.insert({
                              decodeURIComponent(key),
                              decodeURIComponent(value)
                      });
-        queryFirst = queryLast;
+        index = queryLast;
     }
 
 }

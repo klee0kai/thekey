@@ -9,7 +9,6 @@
 
 namespace key_otp {
 
-
     typedef enum OtpScheme {
         otpuri, authuri
     } OtpScheme;
@@ -35,7 +34,7 @@ namespace key_otp {
         uint interval;
         uint count;
 
-        static OtpInfo fromUri(const std::string &uri);
+        static OtpInfo fromUri(const std::string &uriString);
 
         std::string toUri();
     };

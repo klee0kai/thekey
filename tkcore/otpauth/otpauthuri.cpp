@@ -71,3 +71,57 @@ std::string OtpInfo::toUri() {
 
     return builder.str();
 }
+
+
+OtpInfo OtpInfo::fromUri(const std::string &uriString) {
+    OtpInfo info{};
+    struct uri u(uriString);
+    if (u.scheme == "otpuri") {
+        info.scheme = otpuri;
+    } else if (u.scheme == "otpauth") {
+        info.scheme = authuri;
+    }
+
+    if (u.type == "totp") {
+        info.method = TOTP;
+    } else if (u.type == "hotp") {
+        info.method = HOTP;
+    } else if (u.type == "otp") {
+        info.method = OTP;
+    }
+
+    info.issuer = u.issuer.empty() ? u.query["issuer"] : u.issuer;
+    info.name = u.accountName + "@" + u.host;
+    info.secret = u.query["secret"];
+
+    auto algo = u.query["algorithm"];
+    transform(algo.begin(), algo.end(), algo.begin(), [](unsigned char c) { return tolower(c); });
+    if (algo == "sha1") {
+        info.algorithm = SHA1;
+    } else if (algo == "sha256") {
+        info.algorithm = SHA256;
+    } else if (algo == "sha512") {
+        info.algorithm = SHA512;
+    }
+
+    auto digits = u.query["digits"];
+    info.digits = !digits.empty() ? std::strtol(digits.c_str(), NULL, 10) : 4;
+
+    switch (info.method) {
+        case OTP:
+            break;
+        case TOTP: {
+            auto period = u.query["period"];
+            info.interval = !period.empty() ? std::strtol(period.c_str(), NULL, 10) : 30;
+            break;
+        }
+        case HOTP: {
+            auto counter = u.query["count"];
+            if (counter.empty()) counter = u.query["counter"];
+            info.count = std::strtol(counter.c_str(), NULL, 10);
+            break;
+        }
+    }
+
+    return info;
+}

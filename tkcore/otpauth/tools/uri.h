@@ -8,11 +8,11 @@
 #include <string>
 #include <map>
 
-struct url {
+struct uri {
 public:
-    url(const std::string &url_s);
+    uri(const std::string &url_s);
 
-    std::string scheme, host, path;
+    std::string scheme, type, issuer, accountName, host, path;
     std::map<std::string, std::string> query;
 };
 

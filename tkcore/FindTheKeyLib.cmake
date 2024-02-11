@@ -1,5 +1,4 @@
 
-include(${CMAKE_CURRENT_LIST_DIR}/copt/CMakeLists.txt)
 include(${CMAKE_CURRENT_LIST_DIR}/otpauth/CMakeLists.txt)
 include(${CMAKE_CURRENT_LIST_DIR}/core/CMakeLists.txt)
 include(${CMAKE_CURRENT_LIST_DIR}/find/CMakeLists.txt)
