@@ -13,7 +13,7 @@ public:
     uri(const std::string &url_s);
 
     std::string scheme, type, issuer, accountName, host, path;
-    std::map<std::string, std::string> query;
+    std::map<std::string,  std::string> query;
 };
 
 

@@ -27,7 +27,7 @@ static map<OtpAlgo, const OtpAlgoDetails> algoMap = {
 };
 
 string key_otp::generateByCounter(const OtpInfo &otp, uint64_t counter) {
-    auto secret = base32::decode(otp.secret);
+    auto secret = base32::decode(otp.secretBase32);
     auto algo = algoMap[otp.algorithm];
 
     //rfc4226 5.1
@@ -61,5 +61,21 @@ string key_otp::generateByCounter(const OtpInfo &otp, uint64_t counter) {
     for (int i = 0; i < otp.digits; ++i) module *= 10;
     binCode %= module;
 
-    return to_string(binCode);
+    string result;
+    result.reserve(otp.digits);
+    result = to_string(binCode);
+    while (result.length() < otp.digits) result = "0" + result;
+    return result;
+}
+
+std::string key_otp::generate(key_otp::OtpInfo &otp, time_t now) {
+    switch (otp.method) {
+        case OTP:
+            return generateByCounter(otp, otp.count);
+        case TOTP:
+            return generateByCounter(otp, otp.interval ? now / otp.interval : 0);
+        case HOTP:
+            return generateByCounter(otp, otp.count++);
+    }
+    return "";
 }

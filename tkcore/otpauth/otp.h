@@ -9,6 +9,8 @@
 
 namespace key_otp {
 
+    std::string generate(OtpInfo &otp, time_t now = time(NULL));
+
     std::string generateByCounter(const OtpInfo &otp, uint64_t counter);
 
 }

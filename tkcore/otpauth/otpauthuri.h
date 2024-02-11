@@ -7,6 +7,13 @@
 
 #include "key_core.h"
 
+#define GOOGLE_AUTH_MIGRATION_SCHEME "`otpauth-migration`"
+#define OTP_URI_SCHEME "otpuri"
+#define GOOGLE_AUTH_SCHEME "otpauth"
+
+#define DEFAULT_INTERVAL 30
+#define DEFAULT_DIGITS 6
+
 namespace key_otp {
 
     typedef enum OtpScheme {
@@ -28,17 +35,18 @@ namespace key_otp {
         std::string issuer;
         std::string name; // email
 
-        std::string secret; // base32 secret
+        std::string secretBase32; // base32 secretBase32
 
         uint digits;
-        uint interval;
-        uint count;
+        uint64_t interval;
+        uint64_t count;
 
         static OtpInfo fromUri(const std::string &uriString);
 
         std::string toUri();
     };
 
+    std::list<OtpInfo> parseFullUri(const std::string &uriString);
 
 }
 
