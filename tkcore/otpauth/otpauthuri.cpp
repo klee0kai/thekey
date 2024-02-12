@@ -11,7 +11,7 @@ using namespace key_otp;
 
 extern std::list<OtpInfo> fromGoogleAuthMigration(const uri &uri);
 
-std::string OtpInfo::toUri() {
+std::string OtpInfo::toUri() const {
     stringstream builder;
     switch (scheme) {
         case otpuri:

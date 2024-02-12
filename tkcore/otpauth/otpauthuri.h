@@ -43,7 +43,7 @@ namespace key_otp {
 
         static OtpInfo fromUri(const std::string &uriString);
 
-        std::string toUri();
+        std::string toUri() const;
     };
 
     std::list<OtpInfo> parseFullUri(const std::string &uriString);

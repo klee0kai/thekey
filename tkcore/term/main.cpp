@@ -108,7 +108,7 @@ int main(int argc, char **argv) {
     });
 
 
-    it.cmd({"otpLight"}, "otp light tools. Generate and verify one-time passwords without storage use", []() {
+    it.cmd({"otp"}, "otp light tools. Generate and verify one-time passwords without storage use", []() {
         thekey_otp::interactive();
     });
 

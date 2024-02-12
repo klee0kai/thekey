@@ -20,9 +20,24 @@ TEST(OtpUri, ParseGoogleExample) {
     ASSERT_EQ("Example", otp.issuer);
     ASSERT_EQ("alice@google.com", otp.name);
     ASSERT_EQ("JBSWY3DPEHPK3PXP", otp.secretBase32);
-    ASSERT_EQ("Example", otp.issuer);
 }
 
+TEST(OtpUri, ExportImportTest) {
+    // Given
+    string originUri = "otpauth://totp/Example:alice@google.com?secret=JBSWY3DPEHPK3PXP&issuer=Example";
+    OtpInfo otpOrigin = OtpInfo::fromUri(originUri);
+
+    // When
+    auto exportUri = otpOrigin.toUri();
+    OtpInfo otp = OtpInfo::fromUri(exportUri);
+
+    // Then
+    ASSERT_EQ(otpOrigin.scheme, otp.scheme);
+    ASSERT_EQ(otpOrigin.method, otp.method);
+    ASSERT_EQ(otpOrigin.issuer, otp.issuer);
+    ASSERT_EQ(otpOrigin.name, otp.name);
+    ASSERT_EQ(otpOrigin.secretBase32, otp.secretBase32);
+}
 
 TEST(OtpUri, HotpEncodedTest) {
     // When

@@ -44,8 +44,8 @@ void thekey_otp::interactive() {
         for (const auto &otp: otpList) {
             cout << index++ << ") ";
             printOtp(otp);
-
         }
+
         auto otpIndex = ask_int_from_term("select otp. Write index: ");
         if (otpIndex < 1 || otpIndex > otpList.size()) {
             cerr << "incorrect index " << otpIndex << endl;
@@ -96,6 +96,38 @@ void thekey_otp::interactive() {
             }
 
         }
+    });
+
+    it.cmd({"export"}, "Export otp config.", [&]() {
+        cout << "0) Export all otp configs " << endl;
+
+        int index = 1;
+        for (const auto &otp: otpList) {
+            cout << index++ << ") ";
+            printOtp(otp);
+        }
+
+        auto otpIndex = ask_int_from_term("select otp. Write index: ");
+        if (otpIndex == 0) {
+            index = 1;
+            for (const auto &otp: otpList) {
+                cout << index++ << ") ";
+                printOtp(otp);
+                cout << otp.toUri() << endl << endl;
+            }
+            return;
+        }
+        if (otpIndex < 1 || otpIndex > otpList.size()) {
+            cerr << "incorrect index " << otpIndex << endl;
+            return;
+        }
+        auto it = otpList.begin();
+        advance(it, otpIndex - 1);
+        auto otp = *it;
+
+        cout << otpIndex << ") ";
+        printOtp(otp);
+        cout << otp.toUri() << endl;
     });
 
 
