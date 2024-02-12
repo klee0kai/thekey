@@ -107,7 +107,7 @@ TEST(URITests, InvalidQuery) {
 
 TEST(URITests, otpauthExampe) {
     // When
-    uri u("otpauth://totp/Example:alice@google.com?secretBase32=JBSWY3DPEHPK3PXP&issuer=Example");
+    uri u("otpauth://totp/Example:alice@google.com?secret=JBSWY3DPEHPK3PXP&issuer=Example");
 
     // Then
     ASSERT_EQ("otpauth", u.scheme);
@@ -117,14 +117,14 @@ TEST(URITests, otpauthExampe) {
     ASSERT_EQ("google.com", u.host);
     ASSERT_EQ("", u.path);
     ASSERT_EQ(2, u.query.size());
-    ASSERT_EQ("JBSWY3DPEHPK3PXP", u.query["secretBase32"]);
+    ASSERT_EQ("JBSWY3DPEHPK3PXP", u.query["secret"]);
     ASSERT_EQ("Example", u.query["issuer"]);
 }
 
 
 TEST(URITests, htopTest) {
     // When
-    uri u("otpauth://totp/someIssuers%3Asome%40mail.rd?secretBase32=AWL27BVMCJRD6CF5H6NLC7EAGH52TZKCZU6QCYG7UZQPVL3C3FOY5R7NIXIXVA6CRQCZXC3XMWVW7A3X36LDYWG2WME7HVKSVFYD6PI&issuer=someIssuers&period=40");
+    uri u("otpauth://totp/someIssuers%3Asome%40mail.rd?secret=AWL27BVMCJRD6CF5H6NLC7EAGH52TZKCZU6QCYG7UZQPVL3C3FOY5R7NIXIXVA6CRQCZXC3XMWVW7A3X36LDYWG2WME7HVKSVFYD6PI&issuer=someIssuers&period=40");
 
     // Then
     ASSERT_EQ("otpauth", u.scheme);
@@ -134,7 +134,7 @@ TEST(URITests, htopTest) {
     ASSERT_EQ("mail.rd", u.host);
     ASSERT_EQ("", u.path);
     ASSERT_EQ(3, u.query.size());
-    ASSERT_EQ("AWL27BVMCJRD6CF5H6NLC7EAGH52TZKCZU6QCYG7UZQPVL3C3FOY5R7NIXIXVA6CRQCZXC3XMWVW7A3X36LDYWG2WME7HVKSVFYD6PI", u.query["secretBase32"]);
+    ASSERT_EQ("AWL27BVMCJRD6CF5H6NLC7EAGH52TZKCZU6QCYG7UZQPVL3C3FOY5R7NIXIXVA6CRQCZXC3XMWVW7A3X36LDYWG2WME7HVKSVFYD6PI", u.query["secret"]);
     ASSERT_EQ("someIssuers", u.query["issuer"]);
     ASSERT_EQ("40", u.query["period"]);
 }

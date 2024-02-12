@@ -54,7 +54,7 @@ TEST(GoogleAuthMigration, ParseGoogleMigration) {
 
 TEST(GoogleAuthMigration, GoogleAuthGenTest) {
     // Given
-    string gUri = "otpauth://totp/employee%40company.com?secretBase32=QTSC7ZCECAN7OHFGGJCJM62JXGZ4CIRBR4MTEZTT32LB"
+    string gUri = "otpauth://totp/employee%40company.com?secret=QTSC7ZCECAN7OHFGGJCJM62JXGZ4CIRBR4MTEZTT32LB"
                   "S25SJMKI4NTYN3S2FXMGC5EBTKEMFYCPFGZM6VNDUKXHRX25RWEVUB7N2MY";
     list<OtpInfo> otpNotes = parseFullUri(gUri);
     auto otp = *otpNotes.begin();

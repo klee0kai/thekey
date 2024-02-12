@@ -103,7 +103,7 @@ OtpInfo OtpInfo::fromUri(const std::string &uriString) {
 
     info.issuer = u.issuer.empty() ? u.query["issuer"] : u.issuer;
     info.name = u.accountName + "@" + u.host;
-    info.secretBase32 = u.query["secretBase32"];
+    info.secretBase32 = u.query["secret"];
 
     auto algo = u.query["algorithm"];
     transform(algo.begin(), algo.end(), algo.begin(), [](unsigned char c) { return tolower(c); });

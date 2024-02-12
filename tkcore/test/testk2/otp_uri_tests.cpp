@@ -11,7 +11,7 @@ using namespace key_otp;
 
 TEST(OtpUri, ParseGoogleExample) {
     // When
-    string gUri = "otpauth://totp/Example:alice@google.com?secretBase32=JBSWY3DPEHPK3PXP&issuer=Example";
+    string gUri = "otpauth://totp/Example:alice@google.com?secret=JBSWY3DPEHPK3PXP&issuer=Example";
     OtpInfo otp = OtpInfo::fromUri(gUri);
 
     // Then
@@ -26,7 +26,7 @@ TEST(OtpUri, ParseGoogleExample) {
 
 TEST(OtpUri, HotpEncodedTest) {
     // When
-    string gUri = "otpauth://hotp/someIssuers%3Asome%40mail.rd?secretBase32=OIS7EQ3JU3OY2NSEZ3GQIXIMR6XB3MKDWCMZPER44RZIFVE6PXRKT4KFN66VZGAXQE2J7Q45IY6YAXVK3S7GBW2PMNTDAJQMKNMH35Y&issuer=someIssuers&digits=6&counter=10";
+    string gUri = "otpauth://hotp/someIssuers%3Asome%40mail.rd?secret=OIS7EQ3JU3OY2NSEZ3GQIXIMR6XB3MKDWCMZPER44RZIFVE6PXRKT4KFN66VZGAXQE2J7Q45IY6YAXVK3S7GBW2PMNTDAJQMKNMH35Y&issuer=someIssuers&digits=6&counter=10";
     OtpInfo otp = OtpInfo::fromUri(gUri);
 
     // Then
@@ -44,7 +44,7 @@ TEST(OtpUri, HotpEncodedTest) {
 
 TEST(OtpUri, HotpDecodedTest) {
     // When
-    string gUri = "otpauth://hotp/someIssuers:user@addres.com?secretBase32=UJ3G7B6662EESSP5DHGAY25MAPJG5SSEFGULWLQYP6WKFFNQXC5NESFOYOHZJRZRXAALPCF63CIYCYP4ACYIJX7TEHYNMBRY7HOLFZQ&issuer=someIssuers&algorithm=sha512&counter=10";
+    string gUri = "otpauth://hotp/someIssuers:user@addres.com?secret=UJ3G7B6662EESSP5DHGAY25MAPJG5SSEFGULWLQYP6WKFFNQXC5NESFOYOHZJRZRXAALPCF63CIYCYP4ACYIJX7TEHYNMBRY7HOLFZQ&issuer=someIssuers&algorithm=sha512&counter=10";
     OtpInfo otp = OtpInfo::fromUri(gUri);
 
     // Then
