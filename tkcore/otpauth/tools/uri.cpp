@@ -61,7 +61,6 @@ uri::uri(const std::string &url_s) {
     host.assign(index, domainLast);
     host = decodeURIComponent(host);
 
-
     auto pathLast = min({queryFirst, url_s.end()});
     if (domainLast == url_s.end()) return;
     index = domainLast + 1;
@@ -81,18 +80,13 @@ uri::uri(const std::string &url_s) {
         string value;
         key.assign(index, queryEqIndex);
         value.assign(queryEqIndex + 1, queryLast);
-        query.insert({
-                             decodeURIComponent(key),
-                             decodeURIComponent(value)
-                     });
+        query.insert({decodeURIComponent(key), decodeURIComponent(value)});
         index = queryLast;
     }
-
 }
 
 
 std::string decodeURIComponent(const string &encoded) {
-
     string decoded = encoded;
     smatch sm;
     string haystack;
@@ -115,7 +109,6 @@ std::string decodeURIComponent(const string &encoded) {
 }
 
 std::string encodeURIComponent(const string &decoded) {
-
     ostringstream oss;
     regex r("[!'\\(\\)*-.0-9A-Za-z_~]");
 

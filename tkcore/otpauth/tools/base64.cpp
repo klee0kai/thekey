@@ -1,15 +1,12 @@
 
 #include "base64.h"
-#include <map>
 #include <sstream>
 #include <vector>
 
-
 using namespace std;
+
 const string encodingTable = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-
 const string urlEncodingTable = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
-
 
 static std::string encode(
         const std::vector<uint8_t> &data,

@@ -42,15 +42,6 @@ extern std::list<OtpInfo> fromGoogleAuthMigration(const uri &uri) {
             info.name.assign(sepIt + 1, info.name.end());
         }
 
-        switch (otpParam.digits()) {
-            case MigrationPayload_DigitCount_DIGIT_COUNT_EIGHT:
-                info.digits = 8;
-                break;
-            case MigrationPayload_DigitCount_DIGIT_COUNT_SIX:
-                info.digits = 6;
-                break;
-        }
-
         switch (otpParam.type()) {
             case MigrationPayload_OtpType_OTP_TYPE_HOTP:
                 info.method = HOTP;
@@ -70,8 +61,14 @@ extern std::list<OtpInfo> fromGoogleAuthMigration(const uri &uri) {
             case MigrationPayload_Algorithm_ALGORITHM_SHA512:
                 info.algorithm = SHA512;
                 break;
-            case MigrationPayload_Algorithm_ALGORITHM_MD5:
-                //TODO support
+        }
+
+        switch (otpParam.digits()) {
+            case MigrationPayload_DigitCount_DIGIT_COUNT_EIGHT:
+                info.digits = 8;
+                break;
+            case MigrationPayload_DigitCount_DIGIT_COUNT_SIX:
+                info.digits = 6;
                 break;
         }
 

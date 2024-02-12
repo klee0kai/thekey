@@ -1,12 +1,10 @@
 #include "base32.h"
-#include <map>
 #include <sstream>
 #include <vector>
-#include <regex>
 
 using namespace std;
-static string encodingTable = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 
+static string encodingTable = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 
 std::string base32::encode(
         const std::vector<uint8_t> &data,

@@ -39,7 +39,7 @@ std::string OtpInfo::toUri() {
     }
 
     builder << "/" << encodeURIComponent(issuer) << ":" << name;
-    builder << "?secretBase32=" << encodeURIComponent(secretBase32);
+    builder << "?secret=" << encodeURIComponent(secretBase32);
     builder << "&issuer=" << encodeURIComponent(issuer);
 
     builder << "&algorithm=";
