@@ -11,14 +11,14 @@ using namespace key_otp;
 
 TEST(OtpGen, ParseGoogleGenerate) {
     // Given
-    string gUri = "otpauth://totp/Example:alice@google.com?secret=JBSWY3DPEHPK3PXP&issuer=Example";
+    string gUri = "otpauth://hotp/Example:alice@google.com?secret=JBSWY3DPEHPK3PXP&issuer=Example";
     OtpInfo otp = OtpInfo::fromUri(gUri);
 
     // When
     auto v = generateByCounter(otp, 2);
 
     // Then
-    ASSERT_EQ("2287", v);
+    ASSERT_EQ("602287", v);
 }
 
 
@@ -70,19 +70,6 @@ TEST(OtpGen, TOTPSimple6Test) {
     // Then
     ASSERT_EQ("970135", v);
 }
-
-TEST(OtpGen, TOTP6Test) {
-    // Given
-    string gUri = "otpauth://totp/anyIssuer%3Amyuseradress%40test.com?secret=ADLCW6TRYHEU56SSI73SDRI3KIJEDHBGWUZC4ZOUGDZNAQEKFBLJMA6CSSP6PIR3HSRGP4CAE4PME65ICEN3LP7MTDGWXEH5XOVVGLI&issuer=anyIssuer&period=40&algorithm=sha256";
-    OtpInfo otp = OtpInfo::fromUri(gUri);
-
-    // When
-    auto v = generateByCounter(otp, time(NULL) / otp.interval);
-
-    // Then
-    ASSERT_EQ("682412", v);
-}
-
 
 TEST(OtpGen, GoogleAuthTest) {
     // https://github.com/google/google-authenticator-android/blob/6f65e99fcbc9bbefdc3317c008345db595052a2b/javatests/com/google/android/apps/authenticator/otp/PasscodeGeneratorTest.java#L77

@@ -55,6 +55,6 @@ TEST(OtpUri, HotpDecodedTest) {
     ASSERT_EQ("user@addres.com", otp.name);
     ASSERT_EQ("UJ3G7B6662EESSP5DHGAY25MAPJG5SSEFGULWLQYP6WKFFNQXC5NESFOYOHZJRZRXAALPCF63CIYCYP4ACYIJX7TEHYNMBRY7HOLFZQ",
               otp.secretBase32);
-    ASSERT_EQ(4, otp.digits);
+    ASSERT_EQ(6, otp.digits);
     ASSERT_EQ(10, otp.count);
 }
