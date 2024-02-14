@@ -55,13 +55,7 @@ std::string base32::encode(
         const std::string &data,
         bool omitPadding
 ) {
-    return encode(
-            std::vector<uint8_t>(
-                    data.begin(),
-                    data.end()
-            ),
-            omitPadding
-    );
+    return encode(std::vector<uint8_t>(data.begin(), data.end()), omitPadding);
 }
 
 std::string base32::decode(const std::vector<uint8_t> &data) {
@@ -87,11 +81,6 @@ std::string base32::decode(const std::vector<uint8_t> &data) {
 }
 
 std::string base32::decode(const std::string &data) {
-    return decode(
-            std::vector<uint8_t>(
-                    data.begin(),
-                    data.end()
-            )
-    );
+    return decode(std::vector<uint8_t>(data.begin(), data.end()));
 }
 

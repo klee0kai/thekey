@@ -3,7 +3,6 @@ find_package(Protobuf REQUIRED)
 protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS ${CMAKE_CURRENT_LIST_DIR}/proto/OtpMigration.proto)
 
 add_library(otpauth
-        # Core
         ${PROTO_SRCS}
         ${CMAKE_CURRENT_LIST_DIR}/tools/uri.cpp
         ${CMAKE_CURRENT_LIST_DIR}/tools/base64.cpp

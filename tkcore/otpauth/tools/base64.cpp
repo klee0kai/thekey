@@ -42,10 +42,7 @@ static std::string encode(
     return output.str();
 }
 
-static std::string decode(
-        const std::vector<uint8_t> &data,
-        const string &encodingTable
-) {
+static std::string decode(const std::vector<uint8_t> &data, const string &encodingTable) {
     std::ostringstream output;
     uint32_t buffer = 0;
     size_t bits = 0;
@@ -71,12 +68,7 @@ std::string base64::encode(const std::vector<uint8_t> &data) {
 }
 
 std::string base64::encode(const std::string &data) {
-    return encode(
-            std::vector<uint8_t>(
-                    data.begin(),
-                    data.end()
-            )
-    );
+    return encode(std::vector<uint8_t>(data.begin(), data.end()));
 }
 
 std::string base64::decode(const std::vector<uint8_t> &data) {
@@ -84,12 +76,7 @@ std::string base64::decode(const std::vector<uint8_t> &data) {
 }
 
 std::string base64::decode(const std::string &data) {
-    return decode(
-            std::vector<uint8_t>(
-                    data.begin(),
-                    data.end()
-            )
-    );
+    return decode(std::vector<uint8_t>(data.begin(), data.end()));
 }
 
 std::string base64::urlEncode(const std::vector<uint8_t> &data) {
@@ -97,12 +84,7 @@ std::string base64::urlEncode(const std::vector<uint8_t> &data) {
 }
 
 std::string base64::urlEncode(const std::string &data) {
-    return urlEncode(
-            std::vector<uint8_t>(
-                    data.begin(),
-                    data.end()
-            )
-    );
+    return urlEncode(std::vector<uint8_t>(data.begin(), data.end()));
 }
 
 std::string base64::urlDecode(const std::vector<uint8_t> &data) {
@@ -110,11 +92,6 @@ std::string base64::urlDecode(const std::vector<uint8_t> &data) {
 }
 
 std::string base64::urlDecode(const std::string &data) {
-    return urlDecode(
-            std::vector<uint8_t>(
-                    data.begin(),
-                    data.end()
-            )
-    );
+    return urlDecode(std::vector<uint8_t>(data.begin(), data.end()));
 }
 
