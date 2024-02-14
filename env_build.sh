@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 function read_properties_file() {
   file=$1

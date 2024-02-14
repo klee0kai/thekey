@@ -9,6 +9,7 @@
 #include "key2.h"
 #include "key1.h"
 #include "key_find.h"
+#include "termotp.h"
 
 #ifdef __ANDROID__
 namespace fs = std::__fs::filesystem;
@@ -104,6 +105,11 @@ int main(int argc, char **argv) {
                      << endl;
                 return;
         }
+    });
+
+
+    it.cmd({"otp"}, "otp light tools. Generate and verify one-time passwords without storage use", []() {
+        thekey_otp::interactive();
     });
 
     it.loop();

@@ -14,10 +14,16 @@ set_target_properties(key_storage2_static PROPERTIES INTERFACE_INCLUDE_DIRECTORI
 
 include_directories(key_storage2_static ${CMAKE_CURRENT_LIST_DIR})
 
-target_link_libraries(key_storage2_static key_core)
+target_link_libraries(key_storage2_static
+        key_core
+        otpauth
+)
 
 #  ------------- SHARED -----------------
 add_library(key_storage2 SHARED ${KEY2_SRC})
 include_directories(key_storage2 ${CMAKE_CURRENT_LIST_DIR})
 
-target_link_libraries(key_storage2 key_core)
+target_link_libraries(key_storage2
+        key_core
+        otpauth
+)
