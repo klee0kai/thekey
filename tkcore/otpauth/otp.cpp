@@ -7,10 +7,7 @@
 #include <cstring>
 #include <openssl/hmac.h>
 #include "otp.h"
-#include <inttypes.h>
-#include <valarray>
 #include "tools/base32.h"
-#include "tools/endian.h"
 
 using namespace std;
 using namespace key_otp;

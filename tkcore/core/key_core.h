@@ -14,10 +14,10 @@
 #include <cstdio>
 #include <memory>
 #include <unistd.h>
-#include <netinet/in.h>
 #include <filesystem>
 #include <functional>
 
+#include "key_endian.h"
 #include "key_errors.h"
 #include "key_signatures.h"
 #include "common.h"
