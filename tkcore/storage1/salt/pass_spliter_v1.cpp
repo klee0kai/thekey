@@ -4,12 +4,11 @@
 
 #include "pass_spliter_v1.h"
 
-// TODO  сделать непересекающиеся биты пароля
-#define PASSW_MASK 0xFF // выборка из оригинального пароля для создания пароля для дешифровки паролей
-#define LOGIN_MASK 0xA6 // выборка из оригинального пароля для создания пароля для дешифровки логинов
-#define DESC_MASK 0x68 // выборка из оригинального пароля для создания пароля для дешифровки описания
-#define NOTE_HIST_MASK 0x65 //TODO выборка из оригинального пароля для создания пароля для дешифровки истории паролей в записи
-#define GEN_PASSW_MASK 0x65 //TODO выборка из оригинального пароля для создания пароля для дешифровки сгенерированных паролей
+#define PASSW_MASK 0xFF // sampling from the original password to create a password for decrypting passwords
+#define LOGIN_MASK 0xA6 // sampling from the original password to create a password for decrypting logins
+#define DESC_MASK 0x68 //sampling from the original password to create a password for decrypting descriptions
+#define NOTE_HIST_MASK 0x65 //sampling from the original password to create a password for decrypting history
+#define GEN_PASSW_MASK 0x65 // sampling from the original password to create a password for decrypting generated passwords
 
 namespace key_salt {
 

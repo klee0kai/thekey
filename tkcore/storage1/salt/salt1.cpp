@@ -19,15 +19,15 @@ using namespace key_salt;
 #define SALT_IN_RING(x, max, ring) ( (x) + (ring) * rand((max) / (ring) ))
 #define TYPE_MAX(typeLen) ((1L << ( (typeLen) * 8L)) -1L)
 
-#define TEXT_DECODE_RESERVE_LEN 6 // дополнительные неиспользуемые байты в тексте
+#define TEXT_DECODE_RESERVE_LEN 6 // extra unused bytes in the text
 
 /**
  *  кол-во вариантов в наборе для кодировки
  */
 #define ENC_PASSW_NUM_ONLY_SYM_SET 10
 #define ENC_PASSW_NUM_EN_SYM_SET 62  // 10 + 26 + 26
-#define ENC_PASSW_NUM_EN_SPEC_SYM_SET 94 // 128 - 33 - 1 выкидывем управляющие символы
-#define ENC_PASSW_NUM_EN_SPEC_SPACE_SYM_SET 95 // 128 - 33 - 1 выкидывем управляющие символы
+#define ENC_PASSW_NUM_EN_SPEC_SYM_SET 94 // 128 - 33 - 1 remove control characters
+#define ENC_PASSW_NUM_EN_SPEC_SPACE_SYM_SET 95 // 128 - 33 - 1 remove control characters
 
 
 size_t SaltTextHeader_LEN = sizeof(key_salt::SaltTextHeader);
@@ -49,8 +49,9 @@ static int ascii_to_num_en_spec_symbols_space(unsigned char *out, const unsigned
 
 static int num_en_spec_symbols_space_to_acsii(unsigned char *out, const unsigned char *source, unsigned int len);
 
-void saltHeader(SaltTextHeader *header, size_t lenRing);// соление заголовка соления
-void desaltgHeader(SaltTextHeader *header, size_t lenRing);// соление заголовка соления
+void saltHeader(SaltTextHeader *header, size_t lenRing);
+
+void desaltgHeader(SaltTextHeader *header, size_t lenRing);
 
 int key_salt::salt_text(unsigned char *out, const unsigned char *source, unsigned int buflen) {
     int sourcelen = strlen((const char *) source);
@@ -251,11 +252,11 @@ void saltHeader(SaltTextHeader *header, size_t lenRing) {
     long charMax = TYPE_MAX(sizeof(char));
     long uint32Max = TYPE_MAX(sizeof(uint32_t));
 
-    //TODO добавить часотное смещение
-    header->lenCoding = (unsigned char) ((header->len <= PASSW_MAX_LEN && header->len >= PASSW_MIN_LEN) ? ENC_LEN_PASSW
-                                                                                                        : ENC_LEN_TEXT);
+    header->lenCoding = (unsigned char) ((header->len <= PASSW_MAX_LEN && header->len >= PASSW_MIN_LEN)
+                                         ? ENC_LEN_PASSW : ENC_LEN_TEXT);
+
     header->coding = (unsigned char) SALT_IN_RING(header->coding, charMax, 5L);
-    if (header->lenCoding == ENC_LEN_PASSW) // TODO сделать дополнительное определение по внешней логике
+    if (header->lenCoding == ENC_LEN_PASSW)
         header->len = (size_t) SALT_IN_RING(header->len - PASSW_MIN_LEN, uint32Max, PASSW_MAX_LEN - PASSW_MIN_LEN + 1);
     else
         header->len = (size_t) SALT_IN_RING(header->len, uint32Max, lenRing);
