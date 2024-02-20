@@ -58,9 +58,9 @@ struct thekey_v1::StorageV1_Header {
     unsigned char storageVersion;
     char name[STORAGE_NAME_LEN];
     char description[STORAGE_DESCRIPTION_LEN];
-    unsigned int notesCount; // TODO htons(), htonl(), ntohs(), ntohl()
-    unsigned int genPasswCount;// TODO htons(), htonl(), ntohs(), ntohl()
-    unsigned char salt[SALT_LEN];// используемая соль при шифровании
+    unsigned int notesCount;
+    unsigned int genPasswCount;
+    unsigned char salt[SALT_LEN];// salt used during encryption
 };
 
 struct thekey_v1::CryptedPassw {
@@ -73,10 +73,10 @@ struct thekey_v1::CryptedNote {
     unsigned char login[LOGIN_LEN];
     unsigned char passw[PASSW_LEN];
     unsigned char description[DESC_LEN];
-    CryptedPassw hist[NOTE_PASSW_HIST_LEN]; // шифруется как обычный genHist
+    CryptedPassw hist[NOTE_PASSW_HIST_LEN]; // encrypted like regular genHist
 
-    uint64_t genTime; // не шифруется
-    int histLen = 0; // не шифруется
+    uint64_t genTime; // not encrypted
+    int histLen = 0; // not encrypted
 };
 #pragma pack(pop)
 
