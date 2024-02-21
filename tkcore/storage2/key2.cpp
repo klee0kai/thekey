@@ -466,7 +466,7 @@ std::list<DecryptedOtpNote> KeyStorageV2::createOtpNotes(const std::string &uri,
         );
 
         cryped.secret.encrypt(
-                base32::decodeRaw(otp.secretBase32),
+                otp.secret,
                 ctx->keyForOtpPassw,
                 fheader->cryptType(),
                 fheader->interactionsCount()
@@ -535,14 +535,8 @@ std::shared_ptr<DecryptedOtpNote> KeyStorageV2::otpNote(long long notePtr, uint 
                 fheader->interactionsCount()
         );
 
-        decryptedNote->otpPassw = key_otp::generateRaw(
-                secret,
-                cryptedNote->method(),
-                cryptedNote->algorithm(),
-                cryptedNote->counter(),
-                cryptedNote->interval(),
-                cryptedNote->digits()
-        );
+        auto otpInfo = exportOtpNote(notePtr);
+        decryptedNote->otpPassw = key_otp::generate(otpInfo);
 
         if (cryptedNote->method() == HOTP) {
             cryptedNote->counter(cryptedNote->counter() + 1);
@@ -553,7 +547,7 @@ std::shared_ptr<DecryptedOtpNote> KeyStorageV2::otpNote(long long notePtr, uint 
     return decryptedNote;
 }
 
-std::string KeyStorageV2::exportOtpNote(long long notePtr) {
+OtpInfo KeyStorageV2::exportOtpNote(long long notePtr) {
     auto cryptedNote = std::find_if(cryptedOtpNotes.begin(), cryptedOtpNotes.end(),
                                     [notePtr](const CryptedOtpInfoFlat &note) {
                                         return (long long) &note == notePtr;
@@ -584,13 +578,12 @@ std::string KeyStorageV2::exportOtpNote(long long notePtr) {
             fheader->interactionsCount()
     );
 
-    const auto &secret = cryptedNote->secret.decrypt(
+    otp.secret = cryptedNote->secret.decrypt(
             ctx->keyForOtpPassw,
             fheader->cryptType(),
             fheader->interactionsCount()
     );
-    otp.secretBase32 = base32::encode(secret, true);
-    return otp.toUri();
+    return otp;
 }
 
 int KeyStorageV2::removeOtpNote(long long notePtr) {

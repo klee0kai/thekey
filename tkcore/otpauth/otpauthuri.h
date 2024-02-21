@@ -35,7 +35,7 @@ namespace key_otp {
         std::string issuer;
         std::string name; // email
 
-        std::string secretBase32; // base32 secretBase32
+        std::vector<uint8_t> secret;
 
         uint digits;
         uint64_t interval;

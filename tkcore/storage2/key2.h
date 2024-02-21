@@ -164,7 +164,7 @@ namespace thekey_v2 {
          * @param notePtr  otp note ptr
          * @return uri like this otpauth://totp/Example:alice@google.com?secret=JBSWY3DPEHPK3PXP&issuer=Example
          */
-        virtual std::string exportOtpNote(long long notePtr);
+        virtual key_otp::OtpInfo exportOtpNote(long long notePtr);
 
         /**
          * Remove otp note by ptr

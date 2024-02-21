@@ -71,7 +71,7 @@ std::string key_otp::generateByCounterRaw(
 
 string key_otp::generateByCounter(const OtpInfo &otp, uint64_t counter) {
     return generateByCounterRaw(
-            base32::decodeRaw(otp.secretBase32),
+            otp.secret,
             otp.algorithm,
             counter,
             otp.digits
@@ -86,41 +86,6 @@ std::string key_otp::generate(key_otp::OtpInfo &otp, time_t now) {
             return generateByCounter(otp, otp.interval ? now / otp.interval : 0);
         case HOTP:
             return generateByCounter(otp, otp.counter++);
-    }
-    return "";
-}
-
-std::string key_otp::generateRaw(
-        const std::vector<uint8_t> &secret,
-        const OtpMethod &method,
-        const key_otp::OtpAlgo &algorithm,
-        const uint64_t &counter,
-        const uint64_t &interval,
-        const uint &digits,
-        const time_t &now
-) {
-    switch (method) {
-        case OTP:
-            return generateByCounterRaw(
-                    secret,
-                    algorithm,
-                    counter,
-                    digits
-            );
-        case TOTP:
-            return generateByCounterRaw(
-                    secret,
-                    algorithm,
-                    interval ? now / interval : 0,
-                    digits
-            );
-        case HOTP:
-            return generateByCounterRaw(
-                    secret,
-                    algorithm,
-                    counter,
-                    digits
-            );
     }
     return "";
 }

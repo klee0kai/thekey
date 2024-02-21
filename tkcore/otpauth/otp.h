@@ -20,16 +20,6 @@ namespace key_otp {
 
     std::string generate(OtpInfo &otp, time_t now = time(NULL));
 
-    std::string generateRaw(
-            const std::vector<uint8_t> &secret,
-            const OtpMethod &method,
-            const OtpAlgo &algorithm,
-            const uint64_t &counter,
-            const uint64_t &interval,
-            const uint &digits,
-            const time_t &now = time(NULL)
-    );
-
 }
 
 #endif //THEKEY_OTP_H
