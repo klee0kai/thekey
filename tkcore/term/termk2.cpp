@@ -15,6 +15,8 @@ using namespace term;
 
 static void printNote(const thekey_v2::DecryptedNote &note);
 
+static void printNote(const thekey_v2::DecryptedOtpNote &note);
+
 void thekey_term_v2::login(const std::string &filePath) {
     shared_ptr<thekey_v2::KeyStorageV2> storageV2 = {};
 
@@ -57,26 +59,48 @@ void thekey_term_v2::login(const std::string &filePath) {
             cout << "-------------------------------------------" << endl;
             printNote(*note);
         }
+        if (!storageV2->otpNotes().empty()) {
+            cout << " ----------- otp -----------" << endl;
+            for (const auto &note: storageV2->otpNotes(TK2_GET_NOTE_INFO)) {
+                cout << "-------------------------------------------" << endl;
+                printNote(note);
+            }
+        }
         cout << "-------------------------------------------" << endl;
     });
 
-    it.cmd({"p", "passw"}, "print note password", [&]() {
+    it.cmd({"p", "passw"}, "print note password or OTP codes", [&]() {
         if (!storageV2)return;
         auto index = 0;
         auto notes = storageV2->notes();
+        auto otpNotes = storageV2->otpNotes(TK2_GET_NOTE_INFO);
         for (const auto &item: notes) {
-            auto note = storageV2->note(item, 0);
+            auto note = storageV2->note(item);
             cout << ++index << ") '" << note->site << "' / '" << note->login << "' / '" << note->description << "'"
                  << endl;
         }
+        for (const auto &note: otpNotes) {
+            cout << ++index << ") '" << note.issuer << "' / '" << note.name << endl;
+        }
         auto noteIndex = term::ask_int_from_term("Select note. Write index: ");
-        if (noteIndex < 1 || noteIndex > notes.size()) {
+        if (noteIndex < 1 || noteIndex > notes.size() + otpNotes.size()) {
             cerr << "incorrect index " << noteIndex << endl;
             return;
         }
-        auto noteFull = storageV2->note(notes[noteIndex - 1], 1);
-        printNote(*noteFull);
-        cout << endl;
+        noteIndex--;
+        if (noteIndex < notes.size()) {
+            auto noteFull = storageV2->note(notes[noteIndex], TK2_GET_NOTE_PASSWORD);
+            printNote(*noteFull);
+            cout << endl;
+        } else {
+            noteIndex -= notes.size();
+            const auto &otp = otpNotes[noteIndex];
+            const auto &noteFull = *storageV2->otpNote(otp.notePtr, TK2_GET_NOTE_FULL);
+            if (!noteFull.interval) {
+                cerr << "error: interval is 0" << endl;
+            }
+            //TODO finish here
+        }
     });
 
     it.cmd({"noteHist"}, "note passwords history", [&]() {
@@ -121,6 +145,13 @@ void thekey_term_v2::login(const std::string &filePath) {
             return;
         }
         cout << "note saved " << notePtr << endl;
+    });
+
+    it.cmd({"createOtp"}, "create new otp note", [&]() {
+        if (!storageV2)return;
+        auto uri = ask_from_term("input uri (otpauth or otpauth-migration schemas): ");
+        const auto &otpNotes = storageV2->createOtpNotes(uri);
+        cout << "added " << otpNotes.size() << " otp notes " << endl;
     });
 
     it.cmd({"edit"}, "edit note", [&]() {
@@ -180,18 +211,30 @@ void thekey_term_v2::login(const std::string &filePath) {
         if (!storageV2)return;
         auto index = 0;
         auto notes = storageV2->notes();
+        auto otpNotes = storageV2->otpNotes(TK2_GET_NOTE_INFO);
         for (const auto &item: notes) {
             auto note = storageV2->note(item, 0);
             cout << ++index << ") '" << note->site << "' / '" << note->login << "' " << endl;
         }
+        for (const auto &note: otpNotes) {
+            cout << ++index << ") '" << note.issuer << "' / '" << note.name << "' " << endl;
+        }
         auto noteIndex = term::ask_int_from_term("Select note. Write index: ");
-        if (noteIndex < 1 || noteIndex > notes.size()) {
+        if (noteIndex < 1 || noteIndex > notes.size() + otpNotes.size()) {
             cerr << "incorrect index " << noteIndex << endl;
             return;
         }
-        auto notePtr = notes[noteIndex - 1];
-        storageV2->removeNote(notePtr);
-        cout << "note removed" << endl;
+        noteIndex--;
+        if (noteIndex < notes.size()) {
+            auto notePtr = notes[noteIndex];
+            storageV2->removeNote(notePtr);
+            cout << "note removed" << endl;
+        } else {
+            noteIndex -= notes.size();
+            auto notePtr = otpNotes[noteIndex].notePtr;
+            storageV2->removeOtpNote(notePtr);
+            cout << "otp note removed" << endl;
+        }
     });
 
     it.cmd({"gen"}, "generate new password", [&]() {
@@ -254,4 +297,14 @@ static void printNote(const thekey_v2::DecryptedNote &note) {
     cout << "gen time : " << asctime(changeTm) << endl;
     cout << "color : " << note.color << endl;
     cout << "hist len : " << note.history.size() << endl;
+}
+
+
+static void printNote(const thekey_v2::DecryptedOtpNote &note) {
+    cout << "issuer: '" << note.issuer << "'" << endl;
+    cout << "name: '" << note.name << "'" << endl;
+    if (!note.otpPassw.empty()) cout << "code: '" << note.otpPassw << "'" << endl;
+    std::tm *changeTm = std::gmtime((time_t *) &note.createTime);
+    cout << "create time : " << asctime(changeTm) << endl;
+    cout << "color : " << note.color << endl;
 }

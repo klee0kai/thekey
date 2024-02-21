@@ -33,8 +33,8 @@ void thekey_otp::interactive() {
         }
     });
     it.cmd({"add"}, "add otp note to in-memory cache.", [&]() {
-        auto url = ask_from_term("input uri (otpauth or otpauth-migration schemas): ");
-        auto newOtpList = parseFullUri(url);
+        auto uri = ask_from_term("input uri (otpauth or otpauth-migration schemas): ");
+        auto newOtpList = parseFullUri(uri);
         otpList.insert(otpList.end(), newOtpList.begin(), newOtpList.end());
         cout << "added " << newOtpList.size() << " otp notes " << endl;
     });
