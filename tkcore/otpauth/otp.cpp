@@ -23,15 +23,19 @@ static map<OtpAlgo, const OtpAlgoDetails> algoMap = {
         {OtpAlgo::SHA512, {.method = EVP_sha512(), .hmacLen= 512 / 8 /* 64 */ }}
 };
 
-string key_otp::generateByCounter(const OtpInfo &otp, uint64_t counter) {
-    auto secret = base32::decode(otp.secretBase32);
-    auto algo = algoMap[otp.algorithm];
+std::string key_otp::generateByCounterRaw(
+        const std::vector<uint8_t> &secret,
+        const OtpAlgo &algorithm,
+        const uint64_t &counterOrig,
+        const uint &digits
+) {
+    auto algo = algoMap[algorithm];
 
     //rfc4226 5.1
     //C       8-byte counter value, the moving factor.  This counter
     //        MUST be synchronized between the HOTP generator (client)
     //        and the HOTP validator (server).
-    counter = swap(counter, bigEndian);
+    uint64_t counter = swap(counterOrig, bigEndian);
 
     // rfc4226 5.3
     // Step 1: Generate an HMAC-SHA-1 value Let HS = HMAC-SHA-1(K,C)
@@ -41,7 +45,7 @@ string key_otp::generateByCounter(const OtpInfo &otp, uint64_t counter) {
     unsigned int hmacLen = algo.hmacLen;
     HMAC(
             algo.method,                                                // algorithm
-            (unsigned char *) secret.c_str(), secret.length(),          // key
+            (unsigned char *) secret.data(), secret.size(),          // key
             (unsigned char *) &counter, sizeof(counter),                // data
             (unsigned char *) hmacResult,                               // output
             &hmacLen                                                    // output length
@@ -55,24 +59,68 @@ string key_otp::generateByCounter(const OtpInfo &otp, uint64_t counter) {
                        | (hmacResult[offset + 3] & 0xff);
 
     uint64_t module = 1;
-    for (int i = 0; i < otp.digits; ++i) module *= 10;
+    for (int i = 0; i < digits; ++i) module *= 10;
     binCode %= module;
 
     string result;
-    result.reserve(otp.digits);
+    result.reserve(digits);
     result = to_string(binCode);
-    while (result.length() < otp.digits) result = "0" + result;
+    while (result.length() < digits) result = "0" + result;
     return result;
+}
+
+string key_otp::generateByCounter(const OtpInfo &otp, uint64_t counter) {
+    return generateByCounterRaw(
+            base32::decodeRaw(otp.secretBase32),
+            otp.algorithm,
+            counter,
+            otp.digits
+    );
 }
 
 std::string key_otp::generate(key_otp::OtpInfo &otp, time_t now) {
     switch (otp.method) {
         case OTP:
-            return generateByCounter(otp, otp.count);
+            return generateByCounter(otp, otp.counter);
         case TOTP:
             return generateByCounter(otp, otp.interval ? now / otp.interval : 0);
         case HOTP:
-            return generateByCounter(otp, otp.count++);
+            return generateByCounter(otp, otp.counter++);
+    }
+    return "";
+}
+
+std::string key_otp::generateRaw(
+        const std::vector<uint8_t> &secret,
+        const OtpMethod &method,
+        const key_otp::OtpAlgo &algorithm,
+        const uint64_t &counter,
+        const uint64_t &interval,
+        const uint &digits,
+        const time_t &now
+) {
+    switch (method) {
+        case OTP:
+            return generateByCounterRaw(
+                    secret,
+                    algorithm,
+                    counter,
+                    digits
+            );
+        case TOTP:
+            return generateByCounterRaw(
+                    secret,
+                    algorithm,
+                    interval ? now / interval : 0,
+                    digits
+            );
+        case HOTP:
+            return generateByCounterRaw(
+                    secret,
+                    algorithm,
+                    counter,
+                    digits
+            );
     }
     return "";
 }

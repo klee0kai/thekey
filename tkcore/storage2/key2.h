@@ -9,15 +9,20 @@
 #include "list"
 #include "storage_structure.h"
 
-#define TK2_GET_NOTE_PASSWORD 0x1
+// get flags 0x00FF
+#define TK2_GET_NOTE_PTR_ONLY 0x00
+#define TK2_GET_NOTE_INFO 0x01
+#define TK2_GET_NOTE_PASSWORD 0x02
 
-#define TK2_SET_NOTE_FORCE 0x1
-#define TK2_SET_NOTE_TRACK_HISTORY 0x2
+// set flags 0xFF00
+#define TK2_SET_NOTE_FORCE 0x100
+#define TK2_SET_NOTE_TRACK_HISTORY 0x200
 
 namespace thekey_v2 {
 
     struct CryptContext {
         unsigned char keyForPassw[KEY_LEN + 1];
+        unsigned char keyForOtpPassw[KEY_LEN + 1];
         unsigned char keyForLogin[KEY_LEN + 1];
         unsigned char keyForHistPassw[KEY_LEN + 1];
         unsigned char keyForDescription[KEY_LEN + 1];
@@ -47,6 +52,20 @@ namespace thekey_v2 {
         std::vector<long long> history;
     };
 
+    struct DecryptedOtpNote {
+        long long notePtr;
+        std::string issuer;
+        std::string name;
+        std::string otpPassw;
+
+        key_otp::OtpMethod method;
+        uint32_t interval;
+
+
+        uint64_t createTime;
+        uint32_t color;
+    };
+
     struct DecryptedPassw {
         std::string passw;
         uint64_t genTime;
@@ -68,6 +87,7 @@ namespace thekey_v2 {
         StorageInfo cachedInfo;
         // ---- payload ----
         std::list<CryptedNote> cryptedNotes;
+        std::list<CryptedOtpInfoFlat> cryptedOtpNotes;
         std::list<CryptedPasswordFlat> cryptedGeneratedPassws;
 
     public:
@@ -92,7 +112,7 @@ namespace thekey_v2 {
          * @param flags TK2_GET_NOTE_PASSWORD
          * @return
          */
-        virtual std::shared_ptr<DecryptedNote> note(long long notePtr, uint flags = 0);
+        virtual std::shared_ptr<DecryptedNote> note(long long notePtr, uint flags = TK2_GET_NOTE_PTR_ONLY);
 
         /**
          * @return notePtr note unic identifier
@@ -106,9 +126,52 @@ namespace thekey_v2 {
          * @param flags TK2_SET_NOTE_FORCE / TK2_SET_NOTE_TRACK_HISTORY / TK2_SET_NOTE_DEEP_COPY
          * @return
          */
-        virtual int setNote(long long notePtr, const DecryptedNote &dnote, uint flags = 0);
+        virtual int setNote(long long notePtr, const DecryptedNote &dnote, uint flags = TK2_GET_NOTE_PTR_ONLY);
 
         virtual int removeNote(long long notePtr);
+
+        // ---- otp api -----
+        /**
+         * Create OTP note from uri
+         *
+         * @param uri otp uri. For example otpauth://totp/Example:alice@google.com?secret=JBSWY3DPEHPK3PXP&issuer=Example
+         * @param flags decrypt otp flags
+         * @return
+         */
+        virtual std::list<DecryptedOtpNote> createOtpNotes(const std::string &uri, uint flags = TK2_GET_NOTE_PTR_ONLY);
+
+        /**
+         * Get all available otp notes
+         *
+         * @param flags
+         * @return
+         */
+        virtual std::vector<DecryptedOtpNote> otpNotes(uint flags = TK2_GET_NOTE_PTR_ONLY);
+
+        /**
+         * Get Otp note by ptr
+         *
+         * @param notePtr otp note ptr
+         * @param flags
+         * @return
+         */
+        virtual std::shared_ptr<DecryptedOtpNote> otpNote(long long notePtr, uint flags = TK2_GET_NOTE_PTR_ONLY);
+
+        /**
+         * export Otp note to uri
+         *
+         * @param notePtr  otp note ptr
+         * @return uri like this otpauth://totp/Example:alice@google.com?secret=JBSWY3DPEHPK3PXP&issuer=Example
+         */
+        virtual std::string exportOtpNote(long long notePtr);
+
+        /**
+         * Remove otp note by ptr
+         *
+         * @param notePtr otp note ptr
+         * @return
+         */
+        virtual int removeOtpNote(long long notePtr);
 
         // ---- gen password and history api ----
         /**

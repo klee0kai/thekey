@@ -149,7 +149,7 @@ namespace thekey_v2 {
 
         INT32_BIG_ENDIAN(interval)
 
-        INT32_BIG_ENDIAN(count)
+        INT32_BIG_ENDIAN(counter)
 
         CryptedTextFlat issuer;
         CryptedTextFlat name;

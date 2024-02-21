@@ -39,7 +39,7 @@ namespace key_otp {
 
         uint digits;
         uint64_t interval;
-        uint64_t count;
+        uint64_t counter;
 
         static OtpInfo fromUri(const std::string &uriString);
 

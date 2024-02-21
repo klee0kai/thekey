@@ -34,7 +34,7 @@ extern std::list<OtpInfo> fromGoogleAuthMigration(const uri &uri) {
                 .secretBase32 = base32::encode(otpParam.secret(), true),
                 .digits = DEFAULT_DIGITS,
                 .interval = DEFAULT_INTERVAL,
-                .count = uint64_t(otpParam.counter()),
+                .counter = uint64_t(otpParam.counter()),
         };
 
         auto sepIt = find(info.name.begin(), info.name.end(), ':');

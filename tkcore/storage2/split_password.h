@@ -11,6 +11,7 @@ namespace thekey_v2 {
 
     struct SplitPasswords {
         std::string passwForPassw; // passw power 1f
+        std::string passwForOtp; // passw power 0.9f
         std::string passwForLogin; // passw power 0.8f
         std::string passwForHistPassw; // passw power 0.7f
         std::string passwForDescription; // passw power 0.5f

@@ -16,14 +16,16 @@ SplitPasswords thekey_v2::split(const std::string &passw) {
     auto type = find_scheme_type(passw_wide, 30);
     SplitPasswords passwords{};
 
+    auto passwordForOtp = password_masked(type, passw_wide, 0.9f);
     auto passwForLogin = password_masked(type, passw_wide, 0.8f);
     auto passwForHistPassw = password_masked(type, passw_wide, 0.7f);
     auto passwForDescription = password_masked(type, passw_wide, 0.5f);
 
     return {
-        .passwForPassw = passw,
-        .passwForLogin = from(passwForLogin),
-        .passwForHistPassw = from(passwForHistPassw),
-        .passwForDescription = from(passwForDescription),
+            .passwForPassw = passw,
+            .passwForOtp = from(passwordForOtp),
+            .passwForLogin = from(passwForLogin),
+            .passwForHistPassw = from(passwForHistPassw),
+            .passwForDescription = from(passwForDescription),
     };
 }

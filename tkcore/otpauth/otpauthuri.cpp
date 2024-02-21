@@ -66,7 +66,7 @@ std::string OtpInfo::toUri() const {
             builder << "&period=" << interval;
             break;
         case HOTP:
-            builder << "&count=" << count;
+            builder << "&count=" << counter;
             break;
     }
 
@@ -129,7 +129,7 @@ OtpInfo OtpInfo::fromUri(const std::string &uriString) {
         case HOTP: {
             auto counter = u.query["count"];
             if (counter.empty()) counter = u.query["counter"];
-            info.count = std::strtol(counter.c_str(), NULL, 10);
+            info.counter = std::strtol(counter.c_str(), NULL, 10);
             break;
         }
     }
