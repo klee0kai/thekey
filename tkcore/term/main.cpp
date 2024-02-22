@@ -82,7 +82,7 @@ int main(int argc, char **argv) {
         if (keyError) {
             cout << "error to create storage " << errorToString(keyError) << endl;
         } else {
-            cout << "storage created successfully" << endl;
+            cout << "storage created successfully : " << fs::absolute(path) << endl;
         }
     });
 
@@ -90,7 +90,7 @@ int main(int argc, char **argv) {
         auto filePath = ask_from_term("input path : ");
         auto storageInfo = thekey::storage(filePath);
         if (!storageInfo) {
-            cerr << "can't open file " << filePath << endl;
+            cerr << "can't open file " << fs::absolute(filePath) << " error " << errorToString(keyError)<< endl;
             return;
         }
         switch (storageInfo->storageVersion) {

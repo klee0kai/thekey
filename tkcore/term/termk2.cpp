@@ -3,6 +3,7 @@
 //
 
 #include "termk2.h"
+#include "termotp.h"
 #include "key2.h"
 #include "utils/term_utils.h"
 #include "utils/Interactive.h"
@@ -95,11 +96,11 @@ void thekey_term_v2::login(const std::string &filePath) {
         } else {
             noteIndex -= notes.size();
             const auto &otp = otpNotes[noteIndex];
-            const auto &noteFull = *storageV2->otpNote(otp.notePtr, TK2_GET_NOTE_FULL);
-            if (!noteFull.interval) {
+            auto otpInfo = storageV2->exportOtpNote(otp.notePtr);
+            if (!otpInfo.interval) {
                 cerr << "error: interval is 0" << endl;
             }
-            //TODO finish here
+            thekey_otp::interactiveOtpCode(otpInfo);
         }
     });
 
@@ -205,6 +206,23 @@ void thekey_term_v2::login(const std::string &filePath) {
         } else {
             cout << "note saved " << notePtr << endl;
         }
+    });
+
+    it.cmd({"export"}, "Export OTP note", [&]() {
+        if (!storageV2)return;
+        auto index = 0;
+        auto otpNotes = storageV2->otpNotes(TK2_GET_NOTE_INFO);
+        for (const auto &note: otpNotes) {
+            cout << ++index << ") '" << note.issuer << "' / '" << note.name << "' " << endl;
+        }
+        auto noteIndex = term::ask_int_from_term("Select note. Write index: ");
+        if (noteIndex < 1 || noteIndex > otpNotes.size()) {
+            cerr << "incorrect index " << noteIndex << endl;
+            return;
+        }
+        noteIndex--;
+        auto notePtr = otpNotes[noteIndex].notePtr;
+        cout << "otp note uri: " << storageV2->exportOtpNote(notePtr).toUri() << endl;
     });
 
     it.cmd({"remove"}, "remove note", [&]() {
