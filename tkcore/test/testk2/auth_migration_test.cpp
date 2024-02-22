@@ -6,6 +6,7 @@
 #include <gtest/gtest.h>
 #include <regex>
 #include "otp.h"
+#include "tools/base32.h"
 
 using namespace std;
 using namespace key_otp;
@@ -88,6 +89,6 @@ TEST(GoogleAuthMigration, GoogleMigrationGenTest) {
     ASSERT_EQ("503903", generate(otp, now3));
     ASSERT_EQ(
             "QTSC7ZCECAN7OHFGGJCJM62JXGZ4CIRBR4MTEZTT32LBS25SJMKI4NTYN3S2FXMGC5EBTKEMFYCPFGZM6VNDUKXHRX25RWEVUB7N2MY",
-            otp.secretBase32
+            base32::encode(otp.secret, true)
     );
 }
