@@ -528,13 +528,7 @@ std::shared_ptr<DecryptedOtpNote> KeyStorageV2::otpNote(long long notePtr, uint 
         );
     }
 
-    if ((flags & TK2_GET_NOTE_INFO) != 0) {
-        const auto &secret = cryptedNote->secret.decrypt(
-                ctx->keyForOtpPassw,
-                fheader->cryptType(),
-                fheader->interactionsCount()
-        );
-
+    if ((flags & TK2_GET_NOTE_PASSWORD) != 0) {
         auto otpInfo = exportOtpNote(notePtr);
         decryptedNote->otpPassw = key_otp::generate(otpInfo);
 

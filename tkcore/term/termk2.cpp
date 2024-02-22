@@ -60,9 +60,10 @@ void thekey_term_v2::login(const std::string &filePath) {
             cout << "-------------------------------------------" << endl;
             printNote(*note);
         }
-        if (!storageV2->otpNotes().empty()) {
+        auto otpNotes = storageV2->otpNotes(TK2_GET_NOTE_INFO);
+        if (!otpNotes.empty()) {
             cout << " ----------- otp -----------" << endl;
-            for (const auto &note: storageV2->otpNotes(TK2_GET_NOTE_INFO)) {
+            for (const auto &note: otpNotes) {
                 cout << "-------------------------------------------" << endl;
                 printNote(note);
             }
