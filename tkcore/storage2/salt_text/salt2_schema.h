@@ -29,7 +29,7 @@ namespace thekey_v2 {
     };
 
     struct EncodingScheme {
-        uint32_t type;
+        uint32_t id;
         uint32_t flags;
         std::vector<SymbolRange> ranges;
 
@@ -45,9 +45,9 @@ namespace thekey_v2 {
 
     };
 
-    const EncodingScheme *find_scheme(uint32_t type);
+    const EncodingScheme *schema(uint32_t id);
 
-    uint32_t find_scheme_type(const key_salt::wide_string &str, const int &minLen = 0);
+    uint32_t find_scheme_id(const key_salt::wide_string &str, const int &minLen = 0);
 
     uint32_t find_scheme_type_by_flags(const uint32_t &flags);
 

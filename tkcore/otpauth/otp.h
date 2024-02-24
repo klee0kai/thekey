@@ -9,9 +9,16 @@
 
 namespace key_otp {
 
-    std::string generate(OtpInfo &otp, time_t now = time(NULL));
+    std::string generateByCounterRaw(
+            const std::vector<uint8_t> &secret,
+            const OtpAlgo &algorithm,
+            const uint64_t &counter,
+            const uint &digits
+    );
 
     std::string generateByCounter(const OtpInfo &otp, uint64_t counter);
+
+    std::string generate(OtpInfo &otp, time_t now = time(NULL));
 
 }
 

@@ -25,16 +25,17 @@ extern std::list<OtpInfo> fromGoogleAuthMigration(const uri &uri) {
 
     list<OtpInfo> otpList;
     for (const auto &otpParam: payload.otp_parameters()) {
+        const auto &secret = otpParam.secret();
         OtpInfo info = {
                 .scheme = authuri,
                 .method = OtpMethod::TOTP,
                 .algorithm = OtpAlgo::SHA1,
                 .issuer = otpParam.issuer(),
                 .name = otpParam.name(),
-                .secretBase32 = base32::encode(otpParam.secret(), true),
+                .secret = vector<uint8_t>(secret.begin(), secret.end()),
                 .digits = DEFAULT_DIGITS,
                 .interval = DEFAULT_INTERVAL,
-                .count = uint64_t(otpParam.counter()),
+                .counter = uint64_t(otpParam.counter()),
         };
 
         auto sepIt = find(info.name.begin(), info.name.end(), ':');

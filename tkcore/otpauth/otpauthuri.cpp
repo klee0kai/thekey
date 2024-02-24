@@ -4,6 +4,7 @@
 
 #include "otpauthuri.h"
 #include "tools/uri.h"
+#include "tools/base32.h"
 
 
 using namespace std;
@@ -39,7 +40,7 @@ std::string OtpInfo::toUri() const {
     }
 
     builder << "/" << encodeURIComponent(issuer) << ":" << name;
-    builder << "?secret=" << encodeURIComponent(secretBase32);
+    builder << "?secret=" << encodeURIComponent(base32::encode(secret, true));
     builder << "&issuer=" << encodeURIComponent(issuer);
 
     builder << "&algorithm=";
@@ -66,7 +67,7 @@ std::string OtpInfo::toUri() const {
             builder << "&period=" << interval;
             break;
         case HOTP:
-            builder << "&count=" << count;
+            builder << "&count=" << counter;
             break;
     }
 
@@ -103,7 +104,7 @@ OtpInfo OtpInfo::fromUri(const std::string &uriString) {
 
     info.issuer = u.issuer.empty() ? u.query["issuer"] : u.issuer;
     info.name = u.accountName + "@" + u.host;
-    info.secretBase32 = u.query["secret"];
+    info.secret = base32::decodeRaw(u.query["secret"]);
 
     auto algo = u.query["algorithm"];
     transform(algo.begin(), algo.end(), algo.begin(), [](unsigned char c) { return tolower(c); });
@@ -129,7 +130,7 @@ OtpInfo OtpInfo::fromUri(const std::string &uriString) {
         case HOTP: {
             auto counter = u.query["count"];
             if (counter.empty()) counter = u.query["counter"];
-            info.count = std::strtol(counter.c_str(), NULL, 10);
+            info.counter = std::strtol(counter.c_str(), NULL, 10);
             break;
         }
     }

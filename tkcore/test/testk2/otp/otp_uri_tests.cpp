@@ -5,6 +5,7 @@
 #include <gtest/gtest.h>
 #include <regex>
 #include "otp.h"
+#include "tools/base32.h"
 
 using namespace std;
 using namespace key_otp;
@@ -19,7 +20,7 @@ TEST(OtpUri, ParseGoogleExample) {
     ASSERT_EQ(OtpType::TOTP, otp.method);
     ASSERT_EQ("Example", otp.issuer);
     ASSERT_EQ("alice@google.com", otp.name);
-    ASSERT_EQ("JBSWY3DPEHPK3PXP", otp.secretBase32);
+    ASSERT_EQ("JBSWY3DPEHPK3PXP", base32::encode(otp.secret, true));
 }
 
 TEST(OtpUri, ExportImportTest) {
@@ -36,7 +37,7 @@ TEST(OtpUri, ExportImportTest) {
     ASSERT_EQ(otpOrigin.method, otp.method);
     ASSERT_EQ(otpOrigin.issuer, otp.issuer);
     ASSERT_EQ(otpOrigin.name, otp.name);
-    ASSERT_EQ(otpOrigin.secretBase32, otp.secretBase32);
+    ASSERT_EQ(otpOrigin.secret, otp.secret);
 }
 
 TEST(OtpUri, HotpEncodedTest) {
@@ -51,9 +52,9 @@ TEST(OtpUri, HotpEncodedTest) {
     ASSERT_EQ("someIssuers", otp.issuer);
     ASSERT_EQ("some@mail.rd", otp.name);
     ASSERT_EQ("OIS7EQ3JU3OY2NSEZ3GQIXIMR6XB3MKDWCMZPER44RZIFVE6PXRKT4KFN66VZGAXQE2J7Q45IY6YAXVK3S7GBW2PMNTDAJQMKNMH35Y",
-              otp.secretBase32);
+              base32::encode(otp.secret, true));
     ASSERT_EQ(6, otp.digits);
-    ASSERT_EQ(10, otp.count);
+    ASSERT_EQ(10, otp.counter);
 }
 
 
@@ -69,7 +70,7 @@ TEST(OtpUri, HotpDecodedTest) {
     ASSERT_EQ("someIssuers", otp.issuer);
     ASSERT_EQ("user@addres.com", otp.name);
     ASSERT_EQ("UJ3G7B6662EESSP5DHGAY25MAPJG5SSEFGULWLQYP6WKFFNQXC5NESFOYOHZJRZRXAALPCF63CIYCYP4ACYIJX7TEHYNMBRY7HOLFZQ",
-              otp.secretBase32);
+              base32::encode(otp.secret, true));
     ASSERT_EQ(6, otp.digits);
-    ASSERT_EQ(10, otp.count);
+    ASSERT_EQ(10, otp.counter);
 }

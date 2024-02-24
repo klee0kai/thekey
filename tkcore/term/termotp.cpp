@@ -33,8 +33,8 @@ void thekey_otp::interactive() {
         }
     });
     it.cmd({"add"}, "add otp note to in-memory cache.", [&]() {
-        auto url = ask_from_term("input uri (otpauth or otpauth-migration schemas): ");
-        auto newOtpList = parseFullUri(url);
+        auto uri = ask_from_term("input uri (otpauth or otpauth-migration schemas): ");
+        auto newOtpList = parseFullUri(uri);
         otpList.insert(otpList.end(), newOtpList.begin(), newOtpList.end());
         cout << "added " << newOtpList.size() << " otp notes " << endl;
     });
@@ -58,44 +58,7 @@ void thekey_otp::interactive() {
         cout << otpIndex << ") ";
         printOtp(otp);
 
-        if (!otp.interval) {
-            cerr << "error: interval is 0" << endl;
-        }
-        switch (otp.method) {
-            case HOTP:
-            case OTP:
-                cout << "one-time passw: " << generate(otp) << endl;
-                break;
-            case TOTP: {
-                cout << "click ENTER to exit from TOTP mode" << endl;
-                checkInput();
-                int active = 1;
-                int lastInterval = 0;
-                int lastPointInterval = 0;
-                while (active) {
-                    auto now = time(NULL);
-                    if (now / otp.interval != lastInterval) {
-                        cout << endl;
-                        cout << "one-time passw: " << generate(otp, now) << "  " << flush;
-                        lastInterval = now / otp.interval;
-                        lastPointInterval = now / pointInterval;
-                        auto pointCount = (now % otp.interval) / pointInterval;
-                        for (int i = 0; i < pointCount; ++i) cout << "." << flush;
-                    }
-                    if (now / pointInterval != lastPointInterval) {
-                        cout << "." << flush;
-                        lastPointInterval = now / pointInterval;
-                    }
-                    if (checkInput()) {
-                        active = 0;
-                    } else {
-                        usleep(100);
-                    }
-                }
-                cout << endl;
-            }
-
-        }
+        interactiveOtpCode(otp);
     });
 
     it.cmd({"export"}, "Export otp config.", [&]() {
@@ -133,6 +96,48 @@ void thekey_otp::interactive() {
 
     it.loop();
     cout << string("bye from OTP interactive. Cache cleaned") << endl;
+}
+
+
+void thekey_otp::interactiveOtpCode(key_otp::OtpInfo &otp) {
+    if (!otp.interval) {
+        cerr << "error: interval is 0" << endl;
+    }
+    switch (otp.method) {
+        case HOTP:
+        case OTP:
+            cout << "one-time passw: " << generate(otp) << endl;
+            break;
+        case TOTP: {
+            cout << "click ENTER to exit from TOTP mode" << endl;
+            checkInput();
+            int active = 1;
+            int lastInterval = 0;
+            int lastPointInterval = 0;
+            while (active) {
+                auto now = time(NULL);
+                if (now / otp.interval != lastInterval) {
+                    cout << endl;
+                    cout << "one-time passw: " << generate(otp, now) << "  " << flush;
+                    lastInterval = now / otp.interval;
+                    lastPointInterval = now / pointInterval;
+                    auto pointCount = (now % otp.interval) / pointInterval;
+                    for (int i = 0; i < pointCount; ++i) cout << "." << flush;
+                }
+                if (now / pointInterval != lastPointInterval) {
+                    cout << "." << flush;
+                    lastPointInterval = now / pointInterval;
+                }
+                if (checkInput()) {
+                    active = 0;
+                } else {
+                    usleep(100);
+                }
+            }
+            cout << endl;
+        }
+
+    }
 }
 
 

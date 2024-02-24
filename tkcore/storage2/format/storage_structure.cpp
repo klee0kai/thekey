@@ -77,6 +77,52 @@ std::string CryptedTextFlat::decrypt(
 }
 
 
+void CryptedBufferFlat::encrypt(const std::vector<uint8_t> &buffer, const unsigned char *key,
+                                const thekey_v2::EncryptType &crypType, const uint iteractionCount) {
+    size = MIN(buffer.size(), sizeof(raw));
+    memcpy(raw, buffer.data(), size);
+    for (int i = 0; i < iteractionCount; ++i) {
+        EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
+        EVP_CIPHER_CTX_init(ctx);
+
+        EVP_EncryptInit(ctx, EVP_aes_256_cbc(), key, iv);
+        int outlen = 0;
+        if (!EVP_EncryptUpdate(ctx,
+                               (unsigned char *) &raw, &outlen,
+                               (unsigned char *) &raw, sizeof(raw))) {
+            EVP_CIPHER_CTX_free(ctx);
+            keyError = KEY_CRYPT_ERROR;
+            return;
+        }
+        EVP_CIPHER_CTX_free(ctx);
+    }
+}
+
+
+std::vector<uint8_t> CryptedBufferFlat::decrypt(const unsigned char *key, const thekey_v2::EncryptType &crypt,
+                                                const uint iteractionCount) const {
+    char decryptRaw[sizeof(raw)];
+    memcpy(decryptRaw, raw, sizeof(raw));
+
+    for (int i = 0; i < iteractionCount; ++i) {
+        EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
+        EVP_CIPHER_CTX_init(ctx);
+
+        EVP_DecryptInit(ctx, EVP_aes_256_cbc(), key, iv);
+        int outlen = 0;
+        if (!EVP_DecryptUpdate(ctx,
+                               (unsigned char *) decryptRaw, &outlen,
+                               (unsigned char *) decryptRaw, sizeof(raw))) {
+            EVP_CIPHER_CTX_free(ctx);
+            return {};
+        }
+        EVP_CIPHER_CTX_free(ctx);
+    }
+
+    auto buffer = std::vector<uint8_t>(size);
+    buffer.assign(decryptRaw, decryptRaw + size);
+    return buffer;
+}
 
 
 

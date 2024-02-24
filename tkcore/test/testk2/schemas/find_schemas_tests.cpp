@@ -14,8 +14,8 @@ using namespace key_salt;
 
 TEST(FindSchemasTests, SimpleDecoded) {
     // Given
-    auto type = find_scheme_type_by_flags(SCHEME_NUMBERS);
-    auto scheme = find_scheme(type);
+    auto id = find_scheme_type_by_flags(SCHEME_NUMBERS);
+    auto scheme = schema(id);
     ASSERT_TRUE(scheme);
 
     //then
@@ -25,7 +25,7 @@ TEST(FindSchemasTests, SimpleDecoded) {
 TEST(FindSchemasTests, SimpleEncode) {
     // Given
     auto type = find_scheme_type_by_flags(SCHEME_NUMBERS);
-    auto scheme = find_scheme(type);
+    auto scheme = schema(type);
 
     //then
     ASSERT_EQ(2, scheme->encoded(U'2'));
@@ -34,8 +34,8 @@ TEST(FindSchemasTests, SimpleEncode) {
 
 TEST(FindSchemasTests, EncodeOffset) {
     // Given
-    auto type = find_scheme_type_by_flags(SCHEME_NUMBERS);
-    auto scheme = find_scheme(type);
+    auto id = find_scheme_type_by_flags(SCHEME_NUMBERS);
+    auto scheme = schema(id);
 
     //then
     ASSERT_EQ(4, scheme->encoded(U'2', 2));
@@ -43,8 +43,8 @@ TEST(FindSchemasTests, EncodeOffset) {
 
 TEST(FindSchemasTests, EncodeBigOffset) {
     // Given
-    auto type = find_scheme_type_by_flags(SCHEME_NUMBERS);
-    auto scheme = find_scheme(type);
+    auto id = find_scheme_type_by_flags(SCHEME_NUMBERS);
+    auto scheme = schema(id);
 
     //then
     ASSERT_EQ(4, scheme->encoded(U'2', 22));
@@ -52,8 +52,8 @@ TEST(FindSchemasTests, EncodeBigOffset) {
 
 TEST(FindSchemasTests, EncodeMinusOffset) {
     // Given
-    auto type = find_scheme_type_by_flags(SCHEME_NUMBERS);
-    auto scheme = find_scheme(type);
+    auto id = find_scheme_type_by_flags(SCHEME_NUMBERS);
+    auto scheme = schema(id);
 
     //then
     ASSERT_EQ(1, scheme->encoded(U'2', -1));
@@ -61,8 +61,8 @@ TEST(FindSchemasTests, EncodeMinusOffset) {
 
 TEST(FindSchemasTests, EncodeMinusBigOffset) {
     // Given
-    auto type = find_scheme_type_by_flags(SCHEME_NUMBERS);
-    auto scheme = find_scheme(type);
+    auto id = find_scheme_type_by_flags(SCHEME_NUMBERS);
+    auto scheme = schema(id);
 
     //then
     ASSERT_EQ(1, scheme->encoded(U'2', -21));
@@ -71,8 +71,8 @@ TEST(FindSchemasTests, EncodeMinusBigOffset) {
 
 TEST(FindSchemasTests, DecodeOffset) {
     // Given
-    auto type = find_scheme_type_by_flags(SCHEME_NUMBERS);
-    auto scheme = find_scheme(type);
+    auto id = find_scheme_type_by_flags(SCHEME_NUMBERS);
+    auto scheme = schema(id);
 
     //then
     ASSERT_EQ(U'4', scheme->decoded(2, 2));
@@ -81,8 +81,8 @@ TEST(FindSchemasTests, DecodeOffset) {
 
 TEST(FindSchemasTests, DecodeBigOffset) {
     // Given
-    auto type = find_scheme_type_by_flags(SCHEME_NUMBERS);
-    auto scheme = find_scheme(type);
+    auto id = find_scheme_type_by_flags(SCHEME_NUMBERS);
+    auto scheme = schema(id);
 
     //then
     ASSERT_EQ(U'4', scheme->decoded(2, 22));
@@ -91,8 +91,8 @@ TEST(FindSchemasTests, DecodeBigOffset) {
 
 TEST(FindSchemasTests, DecodeMinusOffset) {
     // Given
-    auto type = find_scheme_type_by_flags(SCHEME_NUMBERS);
-    auto scheme = find_scheme(type);
+    auto id = find_scheme_type_by_flags(SCHEME_NUMBERS);
+    auto scheme = schema(id);
 
     //then
     ASSERT_EQ(U'1', scheme->decoded(2, -1));
@@ -101,8 +101,8 @@ TEST(FindSchemasTests, DecodeMinusOffset) {
 
 TEST(FindSchemasTests, DecodeMinusBigOffset) {
     // Given
-    auto type = find_scheme_type_by_flags(SCHEME_NUMBERS);
-    auto scheme = find_scheme(type);
+    auto id = find_scheme_type_by_flags(SCHEME_NUMBERS);
+    auto scheme = schema(id);
 
     //then
     ASSERT_EQ(U'1', scheme->decoded(2, -21));
@@ -111,8 +111,8 @@ TEST(FindSchemasTests, DecodeMinusBigOffset) {
 
 TEST(FindSchemasTests, EncodingDecoded) {
     // Given
-    auto type = find_scheme_type_by_flags(SCHEME_NUMBERS);
-    auto scheme = find_scheme(type);
+    auto id = find_scheme_type_by_flags(SCHEME_NUMBERS);
+    auto scheme = schema(id);
     ASSERT_TRUE(scheme);
 
     //when
@@ -126,8 +126,8 @@ TEST(FindSchemasTests, EncodingDecoded) {
 
 TEST(FindSchemasTests, ShortOffset) {
     // Given
-    auto type = find_scheme_type_by_flags(SCHEME_NUMBERS);
-    auto scheme = find_scheme(type);
+    auto id = find_scheme_type_by_flags(SCHEME_NUMBERS);
+    auto scheme = schema(id);
     ASSERT_TRUE(scheme);
     wide_char original = u'6';
     int offset = int(key_salt::rand(100));

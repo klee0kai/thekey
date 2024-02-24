@@ -84,3 +84,8 @@ std::string base32::decode(const std::string &data) {
     return decode(std::vector<uint8_t>(data.begin(), data.end()));
 }
 
+std::vector<uint8_t> base32::decodeRaw(const std::string &data) {
+    const auto &rawStr = decode(data);
+    return {rawStr.begin(), rawStr.end()};
+}
+

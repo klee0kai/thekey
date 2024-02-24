@@ -6,7 +6,9 @@
 #define THEKEY_STORAGE_STRUCTURE_H
 
 #include "key_core.h"
+#include "key_color.h"
 #include "salt_text/salt2.h"
+#include "otpauthuri.h"
 
 #define SIGNATURE_LEN 7
 
@@ -16,6 +18,7 @@
 #define STORAGE_DESCRIPTION_LEN 512
 #define SALT_LEN 2048
 #define KEY_LEN 2048
+#define CRYPTED_BUFFER_LEN 2048
 
 namespace thekey_v2 {
 
@@ -37,9 +40,14 @@ namespace thekey_v2 {
         NoteEntry,
 
         /**
-         *  Generated password history
+         * Generated password history
          */
         GenPasswHistory,
+
+        /**
+         * Otp info note
+         */
+        OtpNote,
     };
 
 
@@ -86,13 +94,31 @@ namespace thekey_v2 {
                 const uint iteractionCount = 1
         ) const;
 
+    };
+
+    struct CryptedBufferFlat {
+        int size;
+        char raw[CRYPTED_BUFFER_LEN];
+
+        void encrypt(
+                const std::vector<uint8_t> &buffer,
+                const unsigned char *key,
+                const EncryptType &crypType = Default,
+                const uint iteractionCount = 1
+        );
+
+        [[nodiscard]] std::vector<uint8_t> decrypt(
+                const unsigned char *key,
+                const EncryptType &crypt = Default,
+                const uint iteractionCount = 1
+        ) const;
 
     };
 
     struct CryptedPasswordFlat {
         INT64_BIG_ENDIAN(genTime)
 
-        INT32_BIG_ENDIAN(color)
+        INT32_BIG_ENDIAN_ENUM(color, KeyColor)
 
         CryptedTextFlat password;
     };
@@ -100,12 +126,37 @@ namespace thekey_v2 {
     struct CryptedNoteFlat {
         INT64_BIG_ENDIAN(genTime)
 
-        INT32_BIG_ENDIAN(color)
+        INT32_BIG_ENDIAN_ENUM(color, KeyColor)
 
         CryptedTextFlat site;
         CryptedTextFlat login;
         CryptedTextFlat password;
         CryptedTextFlat description;
+    };
+
+    struct CryptedOtpInfoFlat {
+
+        INT64_BIG_ENDIAN(createTime)
+
+        INT32_BIG_ENDIAN_ENUM(color, KeyColor)
+
+        INT32_BIG_ENDIAN_ENUM(scheme, key_otp::OtpScheme)
+
+        INT32_BIG_ENDIAN_ENUM(method, key_otp::OtpMethod)
+
+        INT32_BIG_ENDIAN_ENUM(algorithm, key_otp::OtpAlgo)
+
+        INT32_BIG_ENDIAN(digits)
+
+        INT32_BIG_ENDIAN(interval)
+
+        INT32_BIG_ENDIAN(counter)
+
+        CryptedTextFlat issuer;
+        CryptedTextFlat name;
+
+        CryptedBufferFlat secret;
+
     };
 
 #pragma pack(pop)

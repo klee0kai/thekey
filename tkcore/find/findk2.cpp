@@ -11,7 +11,7 @@ using namespace std;
 static std::shared_ptr<thekey_v2::StorageHeaderShort> storageHeader(int fd);
 
 int thekey_v2::StorageHeaderShort::checkSignature() const {
-    return memcmp(signature, &thekey::storageSignature_V1, SIGNATURE_LEN) == 0;
+    return memcmp(signature, &thekey::storageSignature_V2, SIGNATURE_LEN) == 0;
 }
 
 shared_ptr<thekey::Storage> thekey_v2::storage(int fd, const std::string &file) {

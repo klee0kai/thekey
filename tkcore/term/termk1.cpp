@@ -10,11 +10,12 @@
 
 using namespace std;
 using namespace thekey;
+using namespace thekey_v1;
 using namespace term;
 
 static void printNote(const thekey_v1::DecryptedNote &note);
 
-void thekey_v1_term::login(const std::string &filePath) {
+void thekey_v1::login(const std::string &filePath) {
     shared_ptr<thekey_v1::KeyStorageV1> storageV1 = {};
     keyError = 0;
 

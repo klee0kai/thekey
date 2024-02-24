@@ -5,7 +5,7 @@
 #include "utils/Interactive.h"
 #include "utils/term_utils.h"
 #include "termk1.h"
-#include "termk2.h"
+#include "k2/termk2.h"
 #include "key2.h"
 #include "key1.h"
 #include "key_find.h"
@@ -82,7 +82,7 @@ int main(int argc, char **argv) {
         if (keyError) {
             cout << "error to create storage " << errorToString(keyError) << endl;
         } else {
-            cout << "storage created successfully" << endl;
+            cout << "storage created successfully : " << fs::absolute(path) << endl;
         }
     });
 
@@ -90,15 +90,15 @@ int main(int argc, char **argv) {
         auto filePath = ask_from_term("input path : ");
         auto storageInfo = thekey::storage(filePath);
         if (!storageInfo) {
-            cerr << "can't open file " << filePath << endl;
+            cerr << "can't open file " << fs::absolute(filePath) << " error " << errorToString(keyError)<< endl;
             return;
         }
         switch (storageInfo->storageVersion) {
             case 1:
-                thekey_v1_term::login(filePath);
+                thekey_v1::login(filePath);
                 return;
             case 2:
-                thekey_term_v2::login(filePath);
+                thekey_v2::login(filePath);
                 return;
             default:
                 cerr << "storage version " << storageInfo->storageVersion << " not supported " << filePath

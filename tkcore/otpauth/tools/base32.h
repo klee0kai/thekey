@@ -13,4 +13,6 @@ namespace base32 {
 
     std::string decode(const std::string &data);
 
+    std::vector<uint8_t> decodeRaw(const std::string &data);
+
 }

@@ -2,7 +2,10 @@ add_executable(tkey
         utils/term_utils.cpp
         utils/interactive.cpp
         termk1.cpp
-        termk2.cpp
+        k2/termk2.cpp
+        k2/termk2_common.cpp
+        k2/termk2_select_note.cpp
+        k2/termk2_interactive_edit.cpp
         termotp.cpp
         main.cpp
 )

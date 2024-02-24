@@ -15,45 +15,48 @@ using namespace key_salt;
 
 
 static vector<EncodingScheme> encodingSchemas = {
+        // not inited text. decode to null text
+        {.id=0, .flags = 0, .ranges={{0}}},
+
         // numbers
-        {.type=0, .flags = SCHEME_NUMBERS, .ranges={
+        {.id=1, .flags = SCHEME_NUMBERS, .ranges={
                 {U'0', U'9'},
         }},
 
         // english
-        {.type=1, .flags = 0, .ranges={
+        {.id=2, .flags = 0, .ranges={
                 {U'a', U'z'},
         }},
-        {.type=2, .flags = 0, .ranges={
+        {.id=3, .flags = 0, .ranges={
                 {U'a', U'z'},
                 {U'.'},
         }},
 
-        {.type=3, .flags = SCHEME_ENGLISH, .ranges={
+        {.id=4, .flags = SCHEME_ENGLISH, .ranges={
                 {U'a', U'z'},
                 {U'A', U'Z'},
         }},
 
-        {.type=4, .flags = SCHEME_ENGLISH | SCHEME_NUMBERS, .ranges={
+        {.id=5, .flags = SCHEME_ENGLISH | SCHEME_NUMBERS, .ranges={
                 {U'a', U'z'},
                 {U'A', U'Z'},
                 {U'0', U'9'},
         }},
 
-        {.type=5, .flags = 0, .ranges={
+        {.id=6, .flags = 0, .ranges={
                 {U'a', U'z'},
                 {U'A', U'Z'},
                 {U'.'},
         }},
 
-        {.type=6, .flags = 0, .ranges={
+        {.id=7, .flags = 0, .ranges={
                 {U'a', U'z'},
                 {U'A', U'Z'},
                 {U'0', U'9'},
                 {U'.'},
         }},
 
-        {.type=7, .flags = 0, .ranges={
+        {.id=8, .flags = 0, .ranges={
                 {U'a', U'z'},
                 {U'A', U'Z'},
                 {U'0', U'9'},
@@ -61,28 +64,28 @@ static vector<EncodingScheme> encodingSchemas = {
                 {U'!'},
                 {U' '},
         }},
-        {.type=8, .flags = SCHEME_NUMBERS | SCHEME_SPEC_SYMBOLS | SCHEME_ENGLISH, .ranges={
+        {.id=9, .flags = SCHEME_NUMBERS | SCHEME_SPEC_SYMBOLS | SCHEME_ENGLISH, .ranges={
                 {U'!', U'~'},
         }},
 
         // full latin list
-        {.type=9, .flags = SCHEME_NUMBERS | SCHEME_SPEC_SYMBOLS | SCHEME_ENGLISH | SCHEME_SPACE_SYMBOL, .ranges={
+        {.id=10, .flags = SCHEME_NUMBERS | SCHEME_SPEC_SYMBOLS | SCHEME_ENGLISH | SCHEME_SPACE_SYMBOL, .ranges={
                 {U' ', U'~'},
         }},
 
         // rus
-        {.type=10, .flags = 0, .ranges={
+        {.id=11, .flags = 0, .ranges={
                 {U'а', U'я'},
         }},
-        {.type=11, .flags = 0, .ranges={
+        {.id=12, .flags = 0, .ranges={
                 {U'а', U'я'},
                 {U'.'},
         }},
-        {.type=12, .flags = 0, .ranges={
+        {.id=13, .flags = 0, .ranges={
                 {U'а', U'я'},
                 {U'А', U'Я'},
         }},
-        {.type=13, .flags = 0, .ranges={
+        {.id=14, .flags = 0, .ranges={
                 {U'а', U'я'},
                 {U'А', U'Я'},
                 {U'.'},
@@ -91,7 +94,7 @@ static vector<EncodingScheme> encodingSchemas = {
         }},
 
         // full latin + cyrillic list
-        {.type=14, .flags = 0, .ranges={
+        {.id=15, .flags = 0, .ranges={
                 {U' ', U'~'},
                 {U'а', U'я'},
                 {U'А', U'Я'},
@@ -99,22 +102,22 @@ static vector<EncodingScheme> encodingSchemas = {
 
 
         // full latin + cyrillic list
-        {.type=15, .flags = 0, .ranges={
+        {.id=16, .flags = 0, .ranges={
                 {U' ', U'~'},
                 {U'а', U'я'},
                 {U'А', U'Я'},
         }},
 
         // unicode last symbol
-        {.type=(uint32_t) 0xff00, .flags = 0, .ranges={
+        {.id=(uint32_t) 0xff00, .flags = 0, .ranges={
                 {0x20, 0xff}, //
         }},
         // unicode last symbol
-        {.type=(uint32_t) 0xff01, .flags = 0, .ranges={
+        {.id=(uint32_t) 0xff01, .flags = 0, .ranges={
                 {0x20, 0xfff}, //
         }},
         // unicode last symbol
-        {.type=(uint32_t) 0xff02, .flags = 0, .ranges={
+        {.id=(uint32_t) 0xff02, .flags = 0, .ranges={
                 {0x20, 0x32ff}, //
         }}
 };
@@ -136,7 +139,7 @@ void thekey_v2::SymbolRange::all_symbols(void (*callback)(const wide_char &)) co
 }
 
 
-// ------------ encoding find_scheme --------------------
+// ------------ encoding schema --------------------
 wide_char thekey_v2::EncodingScheme::encoded(wide_char original, int offset) const {
     while (offset < 0) offset += len();
     for (int i = 0; i < ranges.size(); ++i) {
@@ -189,9 +192,9 @@ void thekey_v2::EncodingScheme::all_symbols(void (*callback)(const wide_char &))
 
 
 // ------------ public methods --------------------
-const EncodingScheme *thekey_v2::find_scheme(uint32_t type) {
+const EncodingScheme *thekey_v2::schema(uint32_t id) {
     auto it = std::find_if(encodingSchemas.begin(), encodingSchemas.end(),
-                           [type](const EncodingScheme &schema) { return schema.type == type; });
+                           [id](const EncodingScheme &schema) { return schema.id == id; });
     if (it != encodingSchemas.end()) {
         return &*it;
     }
@@ -199,23 +202,23 @@ const EncodingScheme *thekey_v2::find_scheme(uint32_t type) {
 }
 
 
-uint32_t thekey_v2::find_scheme_type(const wide_string &str, const int &minLen) {
+uint32_t thekey_v2::find_scheme_id(const key_salt::wide_string &str, const int &minLen) {
     auto it = std::find_if(encodingSchemas.begin(), encodingSchemas.end(),
                            [str, minLen](const EncodingScheme &schema) {
                                return schema.all_contains(str) && schema.len() > minLen;
                            });
 
     if (it != encodingSchemas.end()) {
-        return it->type;
+        return it->id;
     }
-    return encodingSchemas.back().type;
+    return encodingSchemas.back().id;
 }
 
 uint32_t thekey_v2::find_scheme_type_by_flags(const uint32_t &flags) {
     auto it = std::find_if(encodingSchemas.begin(), encodingSchemas.end(),
                            [flags](const EncodingScheme &schema) { return (schema.flags & flags) == flags; });
     if (it != encodingSchemas.end()) {
-        return it->type;
+        return it->id;
     }
-    return encodingSchemas.back().type;
+    return encodingSchemas.back().id;
 }

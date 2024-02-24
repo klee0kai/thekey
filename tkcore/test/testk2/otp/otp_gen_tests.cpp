@@ -5,6 +5,7 @@
 #include <gtest/gtest.h>
 #include <regex>
 #include "otp.h"
+#include "tools/base32.h"
 
 using namespace std;
 using namespace key_otp;
@@ -77,7 +78,7 @@ TEST(OtpGen, GoogleAuthTest) {
     OtpInfo otp = {
             .method = HOTP,
             .algorithm = OtpAlgo::SHA1,
-            .secretBase32 = "7777777777777777",
+            .secret = base32::decodeRaw("7777777777777777"),
             .digits = 6
     };
 
@@ -95,7 +96,7 @@ TEST(OtpGen, GoogleAuth2Test) {
     OtpInfo otp = {
             .method = HOTP,
             .algorithm = OtpAlgo::SHA1,
-            .secretBase32 = "7777777777777777",
+            .secret = base32::decodeRaw("7777777777777777"),
             .digits = 6
     };
 
