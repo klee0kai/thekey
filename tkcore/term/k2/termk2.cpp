@@ -3,40 +3,20 @@
 //
 
 #include "termk2.h"
-#include "termotp.h"
+#include "../termotp.h"
 #include "key2.h"
-#include "utils/term_utils.h"
-#include "utils/Interactive.h"
+#include "../utils/term_utils.h"
+#include "../utils/Interactive.h"
 #include "salt_text/salt2_schema.h"
 
 using namespace std;
-using namespace thekey_v2;
 using namespace thekey;
+using namespace thekey_v2;
 using namespace term;
 
-#define NOTE_SELECT_SIMPLE 0x1
-#define NOTE_SELECT_OTP 0x2
+shared_ptr<thekey_v2::KeyStorageV2> thekey_v2::storageV2 = {};
 
-enum SelectedNoteType {
-    NoSelect,
-    Simple,
-    Otp,
-};
-
-struct SelectedNote {
-    SelectedNoteType type;
-    long long notePtr;
-};
-
-static SelectedNote ask_select_note(int flags = NOTE_SELECT_SIMPLE | NOTE_SELECT_OTP);
-
-static void printNote(const thekey_v2::DecryptedNote &note);
-
-static void printNote(const thekey_v2::DecryptedOtpNote &note);
-
-shared_ptr<thekey_v2::KeyStorageV2> storageV2 = {};
-
-void thekey_term_v2::login(const std::string &filePath) {
+void thekey_v2::login(const std::string &filePath) {
     keyError = 0;
     auto storageInfo = thekey_v2::storageFullInfo(filePath);
     if (!storageInfo) {
@@ -56,7 +36,7 @@ void thekey_term_v2::login(const std::string &filePath) {
 
     auto it = Interactive();
     it.helpTitle = "Storage '" + storageInfo->name + "' interactive mode. "
-                   + "Storage version is " + to_string(storageInfo->storageVersion);
+                   + "Storage version is " + std::to_string(storageInfo->storageVersion);
 
     it.cmd({"info"}, "print storage info", [&]() {
         if (!storageV2)return;
@@ -78,13 +58,14 @@ void thekey_term_v2::login(const std::string &filePath) {
         }
         auto otpNotes = storageV2->otpNotes(TK2_GET_NOTE_INFO);
         if (!otpNotes.empty()) {
-            cout << " ----------- otp -----------" << endl;
+            cout << "------------------- otp -------------------" << endl;
             for (const auto &note: otpNotes) {
-                cout << "-------------------------------------------" << endl;
                 printNote(note);
+                cout << "-------------------------------------------" << endl;
             }
+        }else {
+            cout << "-------------------------------------------" << endl;
         }
-        cout << "-------------------------------------------" << endl;
     });
 
     it.cmd({"p", "passw"}, "print note password or OTP codes", [&]() {
@@ -238,147 +219,4 @@ void thekey_term_v2::login(const std::string &filePath) {
     storageV2.reset();
 
     cout << "Storage '" << storageInfo->name << "' closed." << endl;
-}
-
-
-void thekey_term_v2::interactiveEditNote(const long long &notePtr) {
-    auto note = storageV2->note(notePtr, TK2_GET_NOTE_FULL);
-
-    auto editIt = Interactive();
-    cout << "Note " << to_string(notePtr) << " edit mode";
-    editIt.helpTitle = "Note " + to_string(notePtr) + " edit mode";
-
-    editIt.cmd({"p", "print"}, "print note", [&]() {
-        cout << "current note is: " << endl;
-        printNote(*note);
-    });
-
-    editIt.cmd({"s", "site"}, "edit site", [&]() {
-        note->site = term::ask_from_term("site : ");
-    });
-
-    editIt.cmd({"l", "login"}, "edit login", [&]() {
-        note->login = term::ask_from_term("login : ");
-    });
-
-    editIt.cmd({"passw"}, "edit password", [&]() {
-        note->passw = term::ask_password_from_term("password : ");
-    });
-
-    editIt.cmd({"d", "desc"}, "edit description", [&]() {
-        note->description = term::ask_from_term("description : ");
-    });
-
-    editIt.cmd({"color"}, "edit color", [&]() {
-        for (int i = 0; i < KEY_COLOR_LEN; ++i) {
-            cout << i << ") " << to_string(KeyColor(i)) << endl;
-        }
-        note->color = KeyColor(term::ask_int_from_term("color : "));
-    });
-
-    editIt.loop();
-
-    int error = storageV2->setNote(notePtr, *note, TK2_SET_NOTE_TRACK_HISTORY);
-    if (error) {
-        cerr << "error to save note " << errorToString(error) << endl;
-        return;
-    } else {
-        cout << "note saved " << notePtr << endl;
-    }
-}
-
-void thekey_term_v2::interactiveEditOtpNote(const long long &notePtr) {
-    auto note = storageV2->otpNote(notePtr, TK2_GET_NOTE_INFO);
-
-    auto editIt = Interactive();
-    cout << "OTP note " << to_string(notePtr) << " edit mode";
-    editIt.helpTitle = "OTP note " + to_string(notePtr) + " edit mode";
-
-    editIt.cmd({"p", "print"}, "print note", [&]() {
-        cout << "current note is: " << endl;
-        printNote(*note);
-    });
-
-    editIt.cmd({"name"}, "edit name", [&]() {
-        note->name = term::ask_from_term("name : ");
-    });
-
-    editIt.cmd({"issuer"}, "edit issuer", [&]() {
-        note->issuer = term::ask_from_term("issuer : ");
-    });
-
-    editIt.cmd({"color"}, "edit color", [&]() {
-        for (int i = 0; i < KEY_COLOR_LEN; ++i) {
-            cout << i << ") " << to_string(KeyColor(i)) << endl;
-        }
-        note->color = KeyColor(term::ask_int_from_term("color : "));
-    });
-
-    editIt.loop();
-
-    int error = storageV2->setOtpNote(*note, 0);
-    if (error) {
-        cerr << "error to save otp note " << errorToString(error) << endl;
-        return;
-    } else {
-        cout << "otp note saved " << notePtr << endl;
-    }
-}
-
-static SelectedNote ask_select_note(int flags) {
-    auto index = 0;
-    auto selectSimpleNotes = (flags & NOTE_SELECT_SIMPLE) != 0;
-    auto selectOtpNotes = (flags & NOTE_SELECT_OTP) != 0;
-
-    auto notes = selectSimpleNotes ? storageV2->notes() : vector<long long>{};
-    auto otpNotes = selectOtpNotes ? storageV2->otpNotes(TK2_GET_NOTE_INFO) : vector<DecryptedOtpNote>{};
-    for (const auto &item: notes) {
-        auto note = storageV2->note(item, 0);
-        cout << ++index << ") '" << note->site << "' / '" << note->login << "' " << endl;
-    }
-    for (const auto &note: otpNotes) {
-        cout << ++index << ") '" << note.issuer << "' / '" << note.name << "' " << endl;
-    }
-    auto noteIndex = term::ask_int_from_term("Select note. Write index: ");
-    if (noteIndex < 1 || noteIndex > notes.size() + otpNotes.size()) {
-        cerr << "incorrect index " << noteIndex << endl;
-        return {};
-    }
-    noteIndex--;
-    if (noteIndex < notes.size()) {
-        auto notePtr = notes[noteIndex];
-        return {
-                .type = Simple,
-                .notePtr = notePtr
-        };
-    } else {
-        noteIndex -= notes.size();
-        auto notePtr = otpNotes[noteIndex].notePtr;
-        return {
-                .type = Otp,
-                .notePtr = notePtr
-        };
-    }
-}
-
-
-static void printNote(const thekey_v2::DecryptedNote &note) {
-    cout << "site: '" << note.site << "'" << endl;
-    cout << "login: '" << note.login << "'" << endl;
-    if (!note.passw.empty()) cout << "passw: '" << note.passw << "'" << endl;
-    cout << "desc: '" << note.description << "'" << endl;
-    std::tm *changeTm = std::gmtime((time_t *) &note.genTime);
-    cout << "gen time : " << asctime(changeTm) << endl;
-    cout << "color : " << to_string(note.color) << endl;
-    cout << "hist len : " << note.history.size() << endl;
-}
-
-
-static void printNote(const thekey_v2::DecryptedOtpNote &note) {
-    cout << "issuer: '" << note.issuer << "'" << endl;
-    cout << "name: '" << note.name << "'" << endl;
-    if (!note.otpPassw.empty()) cout << "code: '" << note.otpPassw << "'" << endl;
-    std::tm *changeTm = std::gmtime((time_t *) &note.createTime);
-    cout << "create time : " << asctime(changeTm) << endl;
-    cout << "color : " << to_string(note.color) << endl;
 }
