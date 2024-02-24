@@ -36,31 +36,33 @@ TEST(Storage2_Issue44, CreateStorage) {
 
     auto now = time(NULL);
     auto createNote = storage->createNote();
-    storage->setNote(createNote, {
-            .site = "somesite.com",
-            .login = "some_user_login",
-            .passw = "simpplepassw",
-            .description = "somesite_desc",
-            .color = ORANGE,
+    storage->setNote(
+            {
+                    .notePtr =createNote->notePtr,
+                    .site = "somesite.com",
+                    .login = "some_user_login",
+                    .passw = "simpplepassw",
+                    .description = "somesite_desc",
+                    .color = ORANGE,
 
-    }, TK2_SET_NOTE_TRACK_HISTORY);
+            }, TK2_SET_NOTE_TRACK_HISTORY);
 
-    createNote = storage->createNote();
-    storage->setNote(createNote, {
-            .site = "testget.cv",
-            .login = "person@email.su",
-            .passw = "12@21QW",
-            .description = "desc",
-            .color = VIOLET,
-    }, TK2_SET_NOTE_TRACK_HISTORY);
+    storage->createNote(
+            {
+                    .site = "testget.cv",
+                    .login = "person@email.su",
+                    .passw = "12@21QW",
+                    .description = "desc",
+                    .color = VIOLET,
+            });
 
-    createNote = storage->createNote();
-    storage->setNote(createNote, {
-            .site = "rty",
-            .login = "secret@dev.com",
-            .passw = "$345!@$%",
-            .description = "_"
-    }, TK2_SET_NOTE_TRACK_HISTORY);
+    storage->createNote(
+            {
+                    .site = "rty",
+                    .login = "secret@dev.com",
+                    .passw = "$345!@$%",
+                    .description = "_"
+            });
 
     storage->createOtpNotes("otpauth://hotp/Example:alice@google.com?secret=JBSWY3DPEHPK3PXP&issuer=Example");
     storage->createOtpNotes("otpauth://totp/sha1Issuer%3Asimple%40test.com?"
@@ -73,7 +75,7 @@ TEST(Storage2_Issue44, CreateStorage) {
     const auto &notes = storage->notes();
     ASSERT_EQ(3, notes.size());
 
-    auto note = storage->note(notes[0], TK2_GET_NOTE_INFO);
+    auto note = storage->note(notes[0].notePtr, TK2_GET_NOTE_INFO);
     ASSERT_EQ("somesite.com", note->site);
     ASSERT_EQ("some_user_login", note->login);
     ASSERT_EQ("somesite_desc", note->description);
@@ -84,7 +86,7 @@ TEST(Storage2_Issue44, CreateStorage) {
                                 << " gen time " << note->genTime << endl;
     ASSERT_TRUE(note->passw.empty()) << "read without passw ";
 
-    note = storage->note(notes[1], TK2_GET_NOTE_INFO);
+    note = storage->note(notes[1].notePtr, TK2_GET_NOTE_INFO);
     ASSERT_EQ("testget.cv", note->site);
     ASSERT_EQ("person@email.su", note->login);
     ASSERT_EQ("desc", note->description);
@@ -124,7 +126,7 @@ TEST(Storage2_Issue44, ReadStorage) {
     const auto &notes = storage->notes();
     ASSERT_EQ(3, notes.size());
 
-    auto note = storage->note(notes[0], TK2_GET_NOTE_INFO);
+    auto note = storage->note(notes[0].notePtr, TK2_GET_NOTE_INFO);
     ASSERT_EQ("somesite.com", note->site);
     ASSERT_EQ("some_user_login", note->login);
     ASSERT_EQ("somesite_desc", note->description);
@@ -132,7 +134,7 @@ TEST(Storage2_Issue44, ReadStorage) {
     ASSERT_EQ(ORANGE, note->color);
     ASSERT_TRUE(note->passw.empty()) << "read without passw";
 
-    note = storage->note(notes[1], TK2_GET_NOTE_INFO);
+    note = storage->note(notes[1].notePtr, TK2_GET_NOTE_INFO);
     ASSERT_EQ("testget.cv", note->site);
     ASSERT_EQ("person@email.su", note->login);
     ASSERT_EQ("desc", note->description);

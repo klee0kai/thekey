@@ -19,11 +19,10 @@ SelectedNote thekey_v2::ask_select_note(int flags) {
     auto selectSimpleNotes = (flags & NOTE_SELECT_SIMPLE) != 0;
     auto selectOtpNotes = (flags & NOTE_SELECT_OTP) != 0;
 
-    auto notes = selectSimpleNotes ? storageV2->notes() : vector<long long>{};
+    auto notes = selectSimpleNotes ? storageV2->notes(TK2_GET_NOTE_INFO) : vector<DecryptedNote>{};
     auto otpNotes = selectOtpNotes ? storageV2->otpNotes(TK2_GET_NOTE_INFO) : vector<DecryptedOtpNote>{};
-    for (const auto &item: notes) {
-        auto note = storageV2->note(item, 0);
-        cout << ++index << ") '" << note->site << "' / '" << note->login << "' " << endl;
+    for (const auto &note: notes) {
+        cout << ++index << ") '" << note.site << "' / '" << note.login << "' " << endl;
     }
     for (const auto &note: otpNotes) {
         cout << ++index << ") '" << note.issuer << "' / '" << note.name << "' " << endl;
@@ -35,17 +34,15 @@ SelectedNote thekey_v2::ask_select_note(int flags) {
     }
     noteIndex--;
     if (noteIndex < notes.size()) {
-        auto notePtr = notes[noteIndex];
         return {
                 .type = Simple,
-                .notePtr = notePtr
+                .notePtr =  notes[noteIndex].notePtr
         };
     } else {
         noteIndex -= notes.size();
-        auto notePtr = otpNotes[noteIndex].notePtr;
         return {
                 .type = Otp,
-                .notePtr = notePtr
+                .notePtr = otpNotes[noteIndex].notePtr
         };
     }
 }

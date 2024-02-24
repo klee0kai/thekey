@@ -51,7 +51,7 @@ void thekey_v2::interactiveEditNote(const long long &notePtr) {
 
     editIt.loop();
 
-    int error = storageV2->setNote(notePtr, *note, TK2_SET_NOTE_TRACK_HISTORY);
+    int error = storageV2->setNote(*note, TK2_SET_NOTE_TRACK_HISTORY);
     if (error) {
         cerr << "error to save note " << errorToString(error) << endl;
         return;

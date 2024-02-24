@@ -43,7 +43,7 @@ TEST(ReadStorageV2, ReadIssue44Storage) {
     const auto &notes = storage->notes();
     ASSERT_EQ(3, notes.size());
 
-    auto note = storage->note(notes[0], TK2_GET_NOTE_INFO);
+    auto note = storage->note(notes[0].notePtr, TK2_GET_NOTE_INFO);
     ASSERT_EQ("somesite.com", note->site);
     ASSERT_EQ("some_user_login", note->login);
     ASSERT_EQ("somesite_desc", note->description);
@@ -51,7 +51,7 @@ TEST(ReadStorageV2, ReadIssue44Storage) {
     ASSERT_EQ(ORANGE, note->color);
     ASSERT_TRUE(note->passw.empty()) << "read without passw";
 
-    note = storage->note(notes[1], TK2_GET_NOTE_INFO);
+    note = storage->note(notes[1].notePtr, TK2_GET_NOTE_INFO);
     ASSERT_EQ("testget.cv", note->site);
     ASSERT_EQ("person@email.su", note->login);
     ASSERT_EQ("desc", note->description);

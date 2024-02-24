@@ -51,10 +51,9 @@ void thekey_v2::login(const std::string &filePath) {
 
     it.cmd({"l", "list"}, "list storage notes", [&]() {
         if (!storageV2)return;
-        for (const auto &item: storageV2->notes()) {
-            auto note = storageV2->note(item);
+        for (const auto &note: storageV2->notes(TK2_GET_NOTE_INFO)) {
             cout << "-------------------------------------------" << endl;
-            printNote(*note);
+            printNote(note);
         }
         auto otpNotes = storageV2->otpNotes(TK2_GET_NOTE_INFO);
         if (!otpNotes.empty()) {
@@ -63,7 +62,7 @@ void thekey_v2::login(const std::string &filePath) {
                 printNote(note);
                 cout << "-------------------------------------------" << endl;
             }
-        }else {
+        } else {
             cout << "-------------------------------------------" << endl;
         }
     });
@@ -113,17 +112,14 @@ void thekey_v2::login(const std::string &filePath) {
         auto login = ask_from_term("login : ");
         auto passw = ask_password_from_term("password : ");
         auto desc = ask_from_term("description : ");
-        auto notePtr = storageV2->createNote();
-        int error = storageV2->setNote(notePtr, {
-                .site =site,
-                .login = login,
-                .passw = passw,
-                .description = desc,
-        }, TK2_SET_NOTE_TRACK_HISTORY);
-        if (error) {
-            cerr << "error to save note " << errorToString(error) << endl;
-            return;
-        }
+        auto notePtr = storageV2->createNote(
+                {
+                        .site =site,
+                        .login = login,
+                        .passw = passw,
+                        .description = desc,
+                }
+        );
         cout << "note saved " << notePtr << endl;
     });
 
