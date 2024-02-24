@@ -44,6 +44,9 @@ namespace thekey_v2 {
     };
 
     struct DecryptedNote {
+        // note unic id
+        long long notePtr;
+
         std::string site;
         std::string login;
         std::string passw;
@@ -109,7 +112,13 @@ namespace thekey_v2 {
         virtual int save(const std::string &path);
 
         // ---- notes api -----
-        virtual std::vector<long long> notes();
+        /**
+         * read all notes
+         *
+         * @param flags read detail flags TK2_GET_NOTE_*
+         * @return
+         */
+        virtual std::vector<DecryptedNote> notes(uint flags = TK2_GET_NOTE_PTR_ONLY);
 
         /**
          *
@@ -122,16 +131,15 @@ namespace thekey_v2 {
         /**
          * @return notePtr note unic identifier
          */
-        virtual long long createNote();
+        virtual std::shared_ptr<DecryptedNote> createNote(const DecryptedNote &note = {});
 
         /**
          *
-         * @param notePtr dnote unic identifier
          * @param dnote new dnote
          * @param flags TK2_SET_NOTE_FORCE / TK2_SET_NOTE_TRACK_HISTORY
          * @return
          */
-        virtual int setNote(long long notePtr, const DecryptedNote &dnote, uint flags = 0);
+        virtual int setNote(const DecryptedNote &dnote, uint flags = 0);
 
         virtual int removeNote(long long notePtr);
 

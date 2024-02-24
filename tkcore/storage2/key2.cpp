@@ -295,10 +295,10 @@ int KeyStorageV2::save(const std::string &path) {
 
 // ---- notes api ----
 
-std::vector<long long> KeyStorageV2::notes() {
-    std::vector<long long> notes = {};
+std::vector<DecryptedNote> KeyStorageV2::notes(uint flags) {
+    std::vector<DecryptedNote> notes = {};
     for (const auto &item: cryptedNotes) {
-        notes.push_back((long long) &item);
+        notes.push_back(*note((long long) &item, flags));
     }
     return notes;
 }
@@ -312,30 +312,33 @@ std::shared_ptr<DecryptedNote> KeyStorageV2::note(long long notePtr, uint flags)
     }
 
     auto decryptedNote = std::make_shared<DecryptedNote>();
+    decryptedNote->notePtr = notePtr;
     decryptedNote->genTime = cryptedNote->note.genTime();
     decryptedNote->color = cryptedNote->note.color();
-    std::vector<long long> notes = {};
+
     for (const auto &item: cryptedNote->history) {
         decryptedNote->history.push_back((long long) &item);
     }
 
-    decryptedNote->site = cryptedNote->note.site.decrypt(
-            ctx->keyForLogin,
-            fheader->cryptType(),
-            fheader->interactionsCount()
-    );
+    if ((flags & TK2_GET_NOTE_INFO) != 0) {
+        decryptedNote->site = cryptedNote->note.site.decrypt(
+                ctx->keyForLogin,
+                fheader->cryptType(),
+                fheader->interactionsCount()
+        );
 
-    decryptedNote->login = cryptedNote->note.login.decrypt(
-            ctx->keyForLogin,
-            fheader->cryptType(),
-            fheader->interactionsCount()
-    );
+        decryptedNote->login = cryptedNote->note.login.decrypt(
+                ctx->keyForLogin,
+                fheader->cryptType(),
+                fheader->interactionsCount()
+        );
 
-    decryptedNote->description = cryptedNote->note.description.decrypt(
-            ctx->keyForDescription,
-            fheader->cryptType(),
-            fheader->interactionsCount()
-    );
+        decryptedNote->description = cryptedNote->note.description.decrypt(
+                ctx->keyForDescription,
+                fheader->cryptType(),
+                fheader->interactionsCount()
+        );
+    }
 
     if (flags & TK2_GET_NOTE_PASSWORD) {
         decryptedNote->passw = cryptedNote->note.password.decrypt(
@@ -348,16 +351,18 @@ std::shared_ptr<DecryptedNote> KeyStorageV2::note(long long notePtr, uint flags)
     return decryptedNote;
 }
 
-long long KeyStorageV2::createNote() {
+shared_ptr<DecryptedNote> KeyStorageV2::createNote(const DecryptedNote &note) {
     cryptedNotes.push_back({});
     const CryptedNote &it = cryptedNotes.back();
-    return (long long) &it;
+    auto dNote = make_shared<DecryptedNote>(note);
+    dNote->notePtr = (long long) &it;
+    setNote(*dNote);
+    return dNote;
 }
 
-int KeyStorageV2::setNote(long long notePtr,
-                          const thekey_v2::DecryptedNote &dnote,
+int KeyStorageV2::setNote(const thekey_v2::DecryptedNote &dnote,
                           uint flags) {
-    auto cryptedNote = findByPtr(cryptedNotes, notePtr);
+    auto cryptedNote = findByPtr(cryptedNotes, dnote.notePtr);
     if (cryptedNote == cryptedNotes.end()) {
         keyError = KEY_NOTE_NOT_FOUND;
         return KEY_NOTE_NOT_FOUND;
@@ -365,7 +370,7 @@ int KeyStorageV2::setNote(long long notePtr,
 
     auto notCmpOld = (flags & TK2_SET_NOTE_FORCE);
     auto trackHist = (flags & TK2_SET_NOTE_TRACK_HISTORY);
-    auto old = note(notePtr, TK2_GET_NOTE_FULL);
+    auto old = note(dnote.notePtr, TK2_GET_NOTE_FULL);
 
     cryptedNote->note.color(dnote.color);
 
