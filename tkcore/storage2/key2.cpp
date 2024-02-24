@@ -51,6 +51,11 @@ list<T> readSimpleList(char *buffer, int len) {
     return passwords;
 }
 
+template<typename T>
+typename list<T>::iterator findByPtr(list<T> &sList, const long long &ptr) {
+    return std::find_if(sList.begin(), sList.end(), [&](const T &it) { return (long long) &it == ptr; });;
+}
+
 // -------------------- static ---------------------------------
 shared_ptr<StorageInfo> thekey_v2::storageFullInfo(const std::string &file) {
     int fd = open(file.c_str(), O_RDONLY | O_CLOEXEC);
@@ -300,10 +305,7 @@ std::vector<long long> KeyStorageV2::notes() {
 
 
 std::shared_ptr<DecryptedNote> KeyStorageV2::note(long long notePtr, uint flags) {
-    auto cryptedNote = std::find_if(cryptedNotes.begin(), cryptedNotes.end(),
-                                    [notePtr](const CryptedNote &note) {
-                                        return (long long) &note == notePtr;
-                                    });
+    auto cryptedNote = findByPtr(cryptedNotes, notePtr);
     if (cryptedNote == cryptedNotes.end()) {
         keyError = KEY_NOTE_NOT_FOUND;
         return {};
@@ -355,10 +357,7 @@ long long KeyStorageV2::createNote() {
 int KeyStorageV2::setNote(long long notePtr,
                           const thekey_v2::DecryptedNote &dnote,
                           uint flags) {
-    auto cryptedNote = std::find_if(cryptedNotes.begin(), cryptedNotes.end(),
-                                    [notePtr](const CryptedNote &note) {
-                                        return (long long) &note == notePtr;
-                                    });
+    auto cryptedNote = findByPtr(cryptedNotes, notePtr);
     if (cryptedNote == cryptedNotes.end()) {
         keyError = KEY_NOTE_NOT_FOUND;
         return KEY_NOTE_NOT_FOUND;
@@ -423,10 +422,7 @@ int KeyStorageV2::setNote(long long notePtr,
 }
 
 int KeyStorageV2::removeNote(long long notePtr) {
-    auto cryptedNote = std::find_if(cryptedNotes.begin(), cryptedNotes.end(),
-                                    [notePtr](const CryptedNote &note) {
-                                        return (long long) &note == notePtr;
-                                    });
+    auto cryptedNote = findByPtr(cryptedNotes, notePtr);
     if (cryptedNote == cryptedNotes.end()) {
         keyError = KEY_NOTE_NOT_FOUND;
         return KEY_NOTE_NOT_FOUND;
@@ -487,10 +483,7 @@ std::list<DecryptedOtpNote> KeyStorageV2::createOtpNotes(const std::string &uri,
 }
 
 int KeyStorageV2::setOtpNote(const thekey_v2::DecryptedOtpNote &dnote, uint flags) {
-    auto cryptedNote = std::find_if(cryptedOtpNotes.begin(), cryptedOtpNotes.end(),
-                                    [&](const CryptedOtpInfoFlat &it) {
-                                        return (long long) &it == dnote.notePtr;
-                                    });
+    auto cryptedNote = findByPtr(cryptedOtpNotes, dnote.notePtr);
     if (cryptedNote == cryptedOtpNotes.end()) {
         keyError = KEY_NOTE_NOT_FOUND;
         return KEY_NOTE_NOT_FOUND;
@@ -537,10 +530,7 @@ std::vector<DecryptedOtpNote> KeyStorageV2::otpNotes(uint flags) {
 }
 
 std::shared_ptr<DecryptedOtpNote> KeyStorageV2::otpNote(long long notePtr, uint flags, time_t now) {
-    auto cryptedNote = std::find_if(cryptedOtpNotes.begin(), cryptedOtpNotes.end(),
-                                    [notePtr](const CryptedOtpInfoFlat &note) {
-                                        return (long long) &note == notePtr;
-                                    });
+    auto cryptedNote = findByPtr(cryptedOtpNotes, notePtr);
     if (cryptedNote == cryptedOtpNotes.end()) {
         keyError = KEY_NOTE_NOT_FOUND;
         return {};
@@ -581,10 +571,7 @@ std::shared_ptr<DecryptedOtpNote> KeyStorageV2::otpNote(long long notePtr, uint 
 }
 
 OtpInfo KeyStorageV2::exportOtpNote(long long notePtr) {
-    auto cryptedNote = std::find_if(cryptedOtpNotes.begin(), cryptedOtpNotes.end(),
-                                    [notePtr](const CryptedOtpInfoFlat &note) {
-                                        return (long long) &note == notePtr;
-                                    });
+    auto cryptedNote = findByPtr(cryptedOtpNotes, notePtr);
     if (cryptedNote == cryptedOtpNotes.end()) {
         keyError = KEY_NOTE_NOT_FOUND;
         return {};
@@ -620,10 +607,7 @@ OtpInfo KeyStorageV2::exportOtpNote(long long notePtr) {
 }
 
 int KeyStorageV2::removeOtpNote(long long notePtr) {
-    auto cryptedNote = std::find_if(cryptedOtpNotes.begin(), cryptedOtpNotes.end(),
-                                    [notePtr](const CryptedOtpInfoFlat &note) {
-                                        return (long long) &note == notePtr;
-                                    });
+    auto cryptedNote = findByPtr(cryptedOtpNotes, notePtr);
     if (cryptedNote == cryptedOtpNotes.end()) {
         keyError = KEY_NOTE_NOT_FOUND;
         return KEY_NOTE_NOT_FOUND;
