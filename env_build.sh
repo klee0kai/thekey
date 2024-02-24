@@ -79,36 +79,30 @@ function build_apk() {
   mkdir -p builds
   cp app/build/outputs/apk/release/app-release.apk builds/app-release.apk
 
-   cd "$WORKSPACE"
+  cd "$WORKSPACE"
 }
 
 function build_term_app() {
   mkdir -p builds/${CUR_OS_UNAME}
 
-   cd tkcore
-   rm -rf build
-   mkdir -p build
-   cd build
+  cd tkcore
+  rm -rf build
+  mkdir -p build
+  cd build
 
-   cmake ..
-   make
+  cmake ..
+  make
 
-   cd "$WORKSPACE"
+  cd "$WORKSPACE"
 
-   cp $WORKSPACE/tkcore/build/test/testk1/testk1 builds/${CUR_OS_UNAME}/testk1
-   cp $WORKSPACE/tkcore/build/test/testk2/testk2 builds/${CUR_OS_UNAME}/testk2
-   cp $WORKSPACE/tkcore/build/term/tkey builds/${CUR_OS_UNAME}/tkey
+  cp $WORKSPACE/tkcore/build/term/tkey builds/${CUR_OS_UNAME}/tkey
 
-   #run tests
-  cd $WORKSPACE/tkcore/build/test/testk1/testk1
-  "./testk1"
+  #run tests
+  cd $WORKSPACE/tkcore/build/test/testk1 && "./testk1"
+  cd $WORKSPACE/tkcore/build/test/testk2 && "./testk2"
 
-   cd $WORKSPACE/tkcore/build/test/testk2/testk2
-  "./testk2"
-
-   cd "$WORKSPACE"
+  cd "$WORKSPACE"
 }
-
 
 read_properties_file ./local.properties
 
@@ -137,8 +131,6 @@ if [ -z "${GLOBAL_PATH}" ]; then
   export GLOBAL_PATH="$PATH"
 fi
 
-
-
 export TR_LIBS=$(realpath ./third_party_libraries)
 export TR_LIBS_BUILD=${TR_LIBS}/build
 export ANDROID_SDK_ROOT=${ANDROID_SDK}
@@ -150,7 +142,6 @@ export ANDROID_API="21"
 export PROTOBUF_VERSION="3.9.0"
 export WORKSPACE=$(pwd)
 export CUR_OS_UNAME=$(uname -sm | sed 's/ /_/g')
-
 
 mkdir -p ${TR_LIBS}
 mkdir -p ${TR_LIBS_BUILD}
