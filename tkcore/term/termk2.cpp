@@ -14,6 +14,22 @@ using namespace thekey_v2;
 using namespace thekey;
 using namespace term;
 
+#define NOTE_SELECT_SIMPLE 0x1
+#define NOTE_SELECT_OTP 0x2
+
+enum SelectedNoteType {
+    NoSelect,
+    Simple,
+    Otp,
+};
+
+struct SelectedNote {
+    SelectedNoteType type;
+    long long notePtr;
+};
+
+static SelectedNote ask_select_note(int flags = NOTE_SELECT_SIMPLE | NOTE_SELECT_OTP);
+
 static void printNote(const thekey_v2::DecryptedNote &note);
 
 static void printNote(const thekey_v2::DecryptedOtpNote &note);
@@ -73,60 +89,41 @@ void thekey_term_v2::login(const std::string &filePath) {
 
     it.cmd({"p", "passw"}, "print note password or OTP codes", [&]() {
         if (!storageV2)return;
-        auto index = 0;
-        auto notes = storageV2->notes();
-        auto otpNotes = storageV2->otpNotes(TK2_GET_NOTE_INFO);
-        for (const auto &item: notes) {
-            auto note = storageV2->note(item);
-            cout << ++index << ") '" << note->site << "' / '" << note->login << "' / '" << note->description << "'"
-                 << endl;
-        }
-        for (const auto &note: otpNotes) {
-            cout << ++index << ") '" << note.issuer << "' / '" << note.name << endl;
-        }
-        auto noteIndex = term::ask_int_from_term("Select note. Write index: ");
-        if (noteIndex < 1 || noteIndex > notes.size() + otpNotes.size()) {
-            cerr << "incorrect index " << noteIndex << endl;
-            return;
-        }
-        noteIndex--;
-        if (noteIndex < notes.size()) {
-            auto noteFull = storageV2->note(notes[noteIndex], TK2_GET_NOTE_PASSWORD);
-            printNote(*noteFull);
-            cout << endl;
-        } else {
-            noteIndex -= notes.size();
-            const auto &otp = otpNotes[noteIndex];
-            auto otpInfo = storageV2->exportOtpNote(otp.notePtr);
-            if (!otpInfo.interval) {
-                cerr << "error: interval is 0" << endl;
+        const auto &select = ask_select_note();
+        switch (select.type) {
+            case Simple: {
+                auto noteFull = storageV2->note(select.notePtr, TK2_GET_NOTE_FULL);
+                printNote(*noteFull);
+                break;
             }
-            thekey_otp::interactiveOtpCode(otpInfo);
+            case Otp: {
+                auto otpInfo = storageV2->exportOtpNote(select.notePtr);
+                if (!otpInfo.interval) {
+                    cerr << "error: interval is 0" << endl;
+                }
+                thekey_otp::interactiveOtpCode(otpInfo);
+            }
+                break;
+            case NoSelect:
+                break;
         }
     });
 
     it.cmd({"noteHist"}, "note passwords history", [&]() {
         if (!storageV2)return;
-        auto index = 0;
-        auto notes = storageV2->notes();
-        for (const auto &item: notes) {
-            auto note = storageV2->note(item, 0);
-            cout << ++index << ") '" << note->site << "' / '" << note->login << "' " << endl;
+        const auto &select = ask_select_note(NOTE_SELECT_SIMPLE);
+
+        if (select.type == Simple) {
+            auto note = storageV2->note(select.notePtr, 0);
+            for (const auto &item: note->history) {
+                auto hist = storageV2->passwordHistory(item);
+                cout << "-------------------------------------------" << endl;
+                cout << "passw: " << hist->passw << endl;
+                std::tm *changeTm = std::gmtime((time_t *) &hist->genTime);
+                cout << "change time : " << asctime(changeTm) << endl;
+            }
+            cout << endl;
         }
-        auto noteIndex = term::ask_int_from_term("Select note. Write index: ");
-        if (noteIndex < 1 || noteIndex > notes.size()) {
-            cerr << "incorrect index " << noteIndex << endl;
-            return;
-        }
-        auto note = storageV2->note(notes[noteIndex], 0);
-        for (const auto &item: note->history) {
-            auto hist = storageV2->passwordHistory(item);
-            cout << "-------------------------------------------" << endl;
-            cout << "passw: " << hist->passw << endl;
-            std::tm *changeTm = std::gmtime((time_t *) &hist->genTime);
-            cout << "change time : " << asctime(changeTm) << endl;
-        }
-        cout << endl;
     });
 
     it.cmd({"create"}, "create new note", [&]() {
@@ -158,76 +155,38 @@ void thekey_term_v2::login(const std::string &filePath) {
 
     it.cmd({"edit"}, "edit note", [&]() {
         if (!storageV2)return;
-        auto index = 0;
-        auto notes = storageV2->notes();
-        auto otpNotes = storageV2->otpNotes(TK2_GET_NOTE_INFO);
-        for (const auto &item: notes) {
-            auto note = storageV2->note(item, 0);
-            cout << ++index << ") '" << note->site << "' / '" << note->login << "' " << endl;
-        }
-        for (const auto &note: otpNotes) {
-            cout << ++index << ") '" << note.issuer << "' / '" << note.name << "' " << endl;
-        }
-        auto noteIndex = term::ask_int_from_term("Select note. Write index: ");
-        if (noteIndex < 1 || noteIndex > notes.size() + otpNotes.size()) {
-            cerr << "incorrect index " << noteIndex << endl;
-            return;
-        }
-        noteIndex--;
-        if (noteIndex < notes.size()) {
-            auto notePtr = notes[noteIndex];
-            interactiveEditNote(notePtr);
-        } else {
-            noteIndex -= notes.size();
 
-            auto notePtr = otpNotes[noteIndex].notePtr;
-            interactiveEditOtpNote(notePtr);
+        const auto &selectOtp = ask_select_note();
+
+        switch (selectOtp.type) {
+            case Simple:
+                interactiveEditNote(selectOtp.notePtr);
+                break;
+            case Otp:
+                interactiveEditOtpNote(selectOtp.notePtr);
+                break;
+            case NoSelect:
+                break;
         }
     });
 
     it.cmd({"export"}, "Export OTP note", [&]() {
         if (!storageV2)return;
-        auto index = 0;
-        auto otpNotes = storageV2->otpNotes(TK2_GET_NOTE_INFO);
-        for (const auto &note: otpNotes) {
-            cout << ++index << ") '" << note.issuer << "' / '" << note.name << "' " << endl;
+        const auto &selectOtp = ask_select_note(NOTE_SELECT_OTP);
+        if (selectOtp.type == Otp) {
+            cout << "otp note uri: " << storageV2->exportOtpNote(selectOtp.notePtr).toUri() << endl;
         }
-        auto noteIndex = term::ask_int_from_term("Select note. Write index: ");
-        if (noteIndex < 1 || noteIndex > otpNotes.size()) {
-            cerr << "incorrect index " << noteIndex << endl;
-            return;
-        }
-        noteIndex--;
-        auto notePtr = otpNotes[noteIndex].notePtr;
-        cout << "otp note uri: " << storageV2->exportOtpNote(notePtr).toUri() << endl;
     });
 
     it.cmd({"remove"}, "remove note", [&]() {
         if (!storageV2)return;
-        auto index = 0;
-        auto notes = storageV2->notes();
-        auto otpNotes = storageV2->otpNotes(TK2_GET_NOTE_INFO);
-        for (const auto &item: notes) {
-            auto note = storageV2->note(item, 0);
-            cout << ++index << ") '" << note->site << "' / '" << note->login << "' " << endl;
-        }
-        for (const auto &note: otpNotes) {
-            cout << ++index << ") '" << note.issuer << "' / '" << note.name << "' " << endl;
-        }
-        auto noteIndex = term::ask_int_from_term("Select note. Write index: ");
-        if (noteIndex < 1 || noteIndex > notes.size() + otpNotes.size()) {
-            cerr << "incorrect index " << noteIndex << endl;
-            return;
-        }
-        noteIndex--;
-        if (noteIndex < notes.size()) {
-            auto notePtr = notes[noteIndex];
-            storageV2->removeNote(notePtr);
+        const auto &selectNote = ask_select_note();
+
+        if (selectNote.type == Simple) {
+            storageV2->removeNote(selectNote.notePtr);
             cout << "note removed" << endl;
-        } else {
-            noteIndex -= notes.size();
-            auto notePtr = otpNotes[noteIndex].notePtr;
-            storageV2->removeOtpNote(notePtr);
+        } else if (selectNote.type == Otp) {
+            storageV2->removeOtpNote(selectNote.notePtr);
             cout << "otp note removed" << endl;
         }
     });
@@ -329,7 +288,7 @@ void thekey_term_v2::interactiveEditNote(const long long &notePtr) {
 }
 
 void thekey_term_v2::interactiveEditOtpNote(const long long &notePtr) {
-    auto note = storageV2->otpNote(notePtr, TK2_GET_NOTE_FULL);
+    auto note = storageV2->otpNote(notePtr, TK2_GET_NOTE_INFO);
 
     auto editIt = Interactive();
     cout << "OTP note " << to_string(notePtr) << " edit mode";
@@ -363,6 +322,42 @@ void thekey_term_v2::interactiveEditOtpNote(const long long &notePtr) {
         return;
     } else {
         cout << "otp note saved " << notePtr << endl;
+    }
+}
+
+static SelectedNote ask_select_note(int flags) {
+    auto index = 0;
+    auto selectSimpleNotes = (flags & NOTE_SELECT_SIMPLE) != 0;
+    auto selectOtpNotes = (flags & NOTE_SELECT_OTP) != 0;
+
+    auto notes = selectSimpleNotes ? storageV2->notes() : vector<long long>{};
+    auto otpNotes = selectOtpNotes ? storageV2->otpNotes(TK2_GET_NOTE_INFO) : vector<DecryptedOtpNote>{};
+    for (const auto &item: notes) {
+        auto note = storageV2->note(item, 0);
+        cout << ++index << ") '" << note->site << "' / '" << note->login << "' " << endl;
+    }
+    for (const auto &note: otpNotes) {
+        cout << ++index << ") '" << note.issuer << "' / '" << note.name << "' " << endl;
+    }
+    auto noteIndex = term::ask_int_from_term("Select note. Write index: ");
+    if (noteIndex < 1 || noteIndex > notes.size() + otpNotes.size()) {
+        cerr << "incorrect index " << noteIndex << endl;
+        return {};
+    }
+    noteIndex--;
+    if (noteIndex < notes.size()) {
+        auto notePtr = notes[noteIndex];
+        return {
+                .type = Simple,
+                .notePtr = notePtr
+        };
+    } else {
+        noteIndex -= notes.size();
+        auto notePtr = otpNotes[noteIndex].notePtr;
+        return {
+                .type = Otp,
+                .notePtr = notePtr
+        };
     }
 }
 
