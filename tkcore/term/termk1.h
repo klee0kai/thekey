@@ -8,7 +8,7 @@
 
 #include "def_header.h"
 
-namespace thekey_v1_term {
+namespace thekey_v1 {
 
     void login(const std::string &filePath);
 

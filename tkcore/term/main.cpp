@@ -95,7 +95,7 @@ int main(int argc, char **argv) {
         }
         switch (storageInfo->storageVersion) {
             case 1:
-                thekey_v1_term::login(filePath);
+                thekey_v1::login(filePath);
                 return;
             case 2:
                 thekey_v2::login(filePath);
