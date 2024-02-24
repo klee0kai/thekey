@@ -68,7 +68,7 @@ TEST(EncodingSchemasTests, EncodeCropText) {
     wide_char wideStringDecoded[len] = {};
     wide_string wideString = from("dddПППfff");
     memcpy((char *) wideCharArray, (char *) wideString.c_str(), wideString.size() * sizeof(wide_char));
-    auto scheme = schema(2);
+    auto scheme = schema(3);
 
 
     // WHEN
