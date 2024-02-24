@@ -18,7 +18,7 @@ using namespace std;
 using namespace thekey_v2;
 using namespace key_salt;
 
-static string storageV2CollectionFolder =
+static fs::path storageV2CollectionFolder =
         fs::current_path()
                 .parent_path()
                 .parent_path()
@@ -33,19 +33,29 @@ TEST(ReadStorageV2, CheckFolder) {
                                 << storageV2CollectionFolder << endl;
 }
 
-TEST(ReadStorageV2, ReadTs4CorrectPassw) {
+TEST(ReadStorageV2, ReadIssue44Storage) {
     // Given
-    cout << "cwd " << storageV2CollectionFolder << endl;
-//    unsigned char salt[SALT_LEN];
-//    memset(salt, '3', SALT_LEN);
-//
-//    auto ctx = cryptContext("test", 1000, salt);
-//    CryptedTextFlat crypted{};
-//
-//    When
-//    crypted.encrypt("some_text", ctx->keyForLogin);
-//    auto decrypted = crypted.decrypt(ctx->keyForLogin);
-//
-//    Then
-//    ASSERT_EQ("some_text", decrypted);
+    auto storage = thekey_v2::storage(storageV2CollectionFolder / "ts_issue44.ckey", "supertest");
+    ASSERT_TRUE(storage);
+    auto error = storage->readAll();
+    ASSERT_FALSE(error);
+
+    const auto &notes = storage->notes();
+    ASSERT_EQ(3, notes.size());
+
+    auto note = storage->note(notes[0], TK2_GET_NOTE_INFO);
+    ASSERT_EQ("somesite.com", note->site);
+    ASSERT_EQ("some_user_login", note->login);
+    ASSERT_EQ("somesite_desc", note->description);
+    ASSERT_EQ(0, note->history.size());
+    ASSERT_EQ(ORANGE, note->color);
+    ASSERT_TRUE(note->passw.empty()) << "read without passw";
+
+    note = storage->note(notes[1], TK2_GET_NOTE_INFO);
+    ASSERT_EQ("testget.cv", note->site);
+    ASSERT_EQ("person@email.su", note->login);
+    ASSERT_EQ("desc", note->description);
+    ASSERT_EQ(0, note->history.size());
+    ASSERT_EQ(VIOLET, note->color);
+    ASSERT_TRUE(note->passw.empty()) << "read without passw";
 }
