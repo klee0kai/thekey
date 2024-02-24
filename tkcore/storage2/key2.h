@@ -154,9 +154,14 @@ namespace thekey_v2 {
          *
          * @param notePtr otp note ptr
          * @param flags
+         * @param now now time for tests
          * @return
          */
-        virtual std::shared_ptr<DecryptedOtpNote> otpNote(long long notePtr, uint flags = TK2_GET_NOTE_PTR_ONLY);
+        virtual std::shared_ptr<DecryptedOtpNote> otpNote(
+                long long notePtr,
+                uint flags = TK2_GET_NOTE_PTR_ONLY,
+                time_t now = time(NULL)
+        );
 
         /**
          * export Otp note to uri

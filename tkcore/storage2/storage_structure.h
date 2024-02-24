@@ -97,7 +97,7 @@ namespace thekey_v2 {
 
     struct CryptedBufferFlat {
         int size;
-        int raw[CRYPTED_BUFFER_LEN];
+        char raw[CRYPTED_BUFFER_LEN];
 
         void encrypt(
                 const std::vector<uint8_t> &buffer,

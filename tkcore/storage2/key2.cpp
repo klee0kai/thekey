@@ -390,7 +390,7 @@ int KeyStorageV2::setNote(long long notePtr,
     if (notCmpOld || old->description != dnote.description) {
         cryptedNote->note.description.encrypt(
                 dnote.description,
-                ctx->keyForLogin,
+                ctx->keyForDescription,
                 fheader->cryptType(),
                 fheader->interactionsCount()
         );
@@ -497,7 +497,7 @@ std::vector<DecryptedOtpNote> KeyStorageV2::otpNotes(uint flags) {
     return notes;
 }
 
-std::shared_ptr<DecryptedOtpNote> KeyStorageV2::otpNote(long long notePtr, uint flags) {
+std::shared_ptr<DecryptedOtpNote> KeyStorageV2::otpNote(long long notePtr, uint flags, time_t now) {
     auto cryptedNote = std::find_if(cryptedOtpNotes.begin(), cryptedOtpNotes.end(),
                                     [notePtr](const CryptedOtpInfoFlat &note) {
                                         return (long long) &note == notePtr;
@@ -530,7 +530,7 @@ std::shared_ptr<DecryptedOtpNote> KeyStorageV2::otpNote(long long notePtr, uint 
 
     if ((flags & TK2_GET_NOTE_PASSWORD) != 0) {
         auto otpInfo = exportOtpNote(notePtr);
-        decryptedNote->otpPassw = key_otp::generate(otpInfo);
+        decryptedNote->otpPassw = key_otp::generate(otpInfo, now);
 
         if (cryptedNote->method() == HOTP) {
             cryptedNote->counter(cryptedNote->counter() + 1);

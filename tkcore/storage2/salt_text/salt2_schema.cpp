@@ -15,41 +15,37 @@ using namespace key_salt;
 
 
 static vector<EncodingScheme> encodingSchemas = {
+        // not inited text. decode to null text
+        {.type=0, .flags = SCHEME_NUMBERS, .ranges={{0}}},
+
         // numbers
-        {.type=0, .flags = SCHEME_NUMBERS, .ranges={
+        {.type=1, .flags = SCHEME_NUMBERS, .ranges={
                 {U'0', U'9'},
         }},
 
         // english
-        {.type=1, .flags = 0, .ranges={
+        {.type=2, .flags = 0, .ranges={
                 {U'a', U'z'},
         }},
-        {.type=2, .flags = 0, .ranges={
+        {.type=3, .flags = 0, .ranges={
                 {U'a', U'z'},
                 {U'.'},
         }},
 
-        {.type=3, .flags = SCHEME_ENGLISH, .ranges={
+        {.type=4, .flags = SCHEME_ENGLISH, .ranges={
                 {U'a', U'z'},
                 {U'A', U'Z'},
         }},
 
-        {.type=4, .flags = SCHEME_ENGLISH | SCHEME_NUMBERS, .ranges={
+        {.type=5, .flags = SCHEME_ENGLISH | SCHEME_NUMBERS, .ranges={
                 {U'a', U'z'},
                 {U'A', U'Z'},
                 {U'0', U'9'},
-        }},
-
-        {.type=5, .flags = 0, .ranges={
-                {U'a', U'z'},
-                {U'A', U'Z'},
-                {U'.'},
         }},
 
         {.type=6, .flags = 0, .ranges={
                 {U'a', U'z'},
                 {U'A', U'Z'},
-                {U'0', U'9'},
                 {U'.'},
         }},
 
@@ -58,31 +54,38 @@ static vector<EncodingScheme> encodingSchemas = {
                 {U'A', U'Z'},
                 {U'0', U'9'},
                 {U'.'},
+        }},
+
+        {.type=8, .flags = 0, .ranges={
+                {U'a', U'z'},
+                {U'A', U'Z'},
+                {U'0', U'9'},
+                {U'.'},
                 {U'!'},
                 {U' '},
         }},
-        {.type=8, .flags = SCHEME_NUMBERS | SCHEME_SPEC_SYMBOLS | SCHEME_ENGLISH, .ranges={
+        {.type=9, .flags = SCHEME_NUMBERS | SCHEME_SPEC_SYMBOLS | SCHEME_ENGLISH, .ranges={
                 {U'!', U'~'},
         }},
 
         // full latin list
-        {.type=9, .flags = SCHEME_NUMBERS | SCHEME_SPEC_SYMBOLS | SCHEME_ENGLISH | SCHEME_SPACE_SYMBOL, .ranges={
+        {.type=10, .flags = SCHEME_NUMBERS | SCHEME_SPEC_SYMBOLS | SCHEME_ENGLISH | SCHEME_SPACE_SYMBOL, .ranges={
                 {U' ', U'~'},
         }},
 
         // rus
-        {.type=10, .flags = 0, .ranges={
-                {U'а', U'я'},
-        }},
         {.type=11, .flags = 0, .ranges={
                 {U'а', U'я'},
-                {U'.'},
         }},
         {.type=12, .flags = 0, .ranges={
                 {U'а', U'я'},
-                {U'А', U'Я'},
+                {U'.'},
         }},
         {.type=13, .flags = 0, .ranges={
+                {U'а', U'я'},
+                {U'А', U'Я'},
+        }},
+        {.type=14, .flags = 0, .ranges={
                 {U'а', U'я'},
                 {U'А', U'Я'},
                 {U'.'},
@@ -91,7 +94,7 @@ static vector<EncodingScheme> encodingSchemas = {
         }},
 
         // full latin + cyrillic list
-        {.type=14, .flags = 0, .ranges={
+        {.type=15, .flags = 0, .ranges={
                 {U' ', U'~'},
                 {U'а', U'я'},
                 {U'А', U'Я'},
@@ -99,7 +102,7 @@ static vector<EncodingScheme> encodingSchemas = {
 
 
         // full latin + cyrillic list
-        {.type=15, .flags = 0, .ranges={
+        {.type=16, .flags = 0, .ranges={
                 {U' ', U'~'},
                 {U'а', U'я'},
                 {U'А', U'Я'},
