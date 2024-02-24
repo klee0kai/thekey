@@ -18,7 +18,7 @@ using namespace key_salt;
 void thekey_v2::print_scheme(const thekey_v2::EncodingScheme *scheme) {
     if (!scheme)return;
 
-    cout << "scheme " << hex << scheme->type << dec << endl;
+    cout << "scheme " << hex << scheme->id << dec << endl;
     static int i;
     i = 0;
     scheme->all_symbols([](const wide_char &c) {

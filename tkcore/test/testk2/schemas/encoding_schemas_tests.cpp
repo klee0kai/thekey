@@ -16,13 +16,13 @@ using namespace key_salt;
 
 
 //TEST(EncodingSchemasTests, SchemeSymbols) {
-//    auto scheme = find_scheme(0xff02);
+//    auto scheme = schema(0xff02);
 //    print_scheme(scheme);
 //}
 
 TEST(EncodingSchemasTests, EncodeScheme) {
     // when  scheme a-z + .
-    auto scheme = find_scheme(2);
+    auto scheme = schema(3);
 
     // then
     ASSERT_EQ(0, scheme->encoded(U'a'));
@@ -34,7 +34,7 @@ TEST(EncodingSchemasTests, EncodeScheme) {
 
 TEST(EncodingSchemasTests, DencodeScheme) {
     // when  scheme a-z + .
-    auto scheme = find_scheme(2);
+    auto scheme = schema(3);
 
     // then
     ASSERT_EQ(U'a', scheme->decoded(0));
@@ -46,7 +46,7 @@ TEST(EncodingSchemasTests, DencodeScheme) {
 
 
 TEST(EncodingSchemasTests, WideSchemeEncode) {
-    auto scheme = find_scheme(0xff02);
+    auto scheme = schema(0xff02);
 //    cout << "scheme  symbols '" << from(scheme->all_symbols()) << "'" << endl;
 
     // then
@@ -68,7 +68,7 @@ TEST(EncodingSchemasTests, EncodeCropText) {
     wide_char wideStringDecoded[len] = {};
     wide_string wideString = from("dddПППfff");
     memcpy((char *) wideCharArray, (char *) wideString.c_str(), wideString.size() * sizeof(wide_char));
-    auto scheme = find_scheme(1);
+    auto scheme = schema(2);
 
 
     // WHEN

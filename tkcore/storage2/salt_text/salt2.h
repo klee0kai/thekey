@@ -37,14 +37,14 @@ namespace thekey_v2 {
 #pragma pack(pop)
 
     /**
-     * @param typeEncoding tkey encode type
+     * @param schemeId  key encoding scheme id
      * @param out tkey encoded text
      * @param in simple unicode text
      * @param bufSize in and out buffers size
      * @param salt salt out text
      * @return
      */
-    int encoded(uint32_t typeEncoding,
+    int encoded(uint32_t schemeId,
                 key_salt::wide_char *out,
                 const key_salt::wide_char *in,
                 const uint &bufSize,
@@ -53,13 +53,13 @@ namespace thekey_v2 {
 
     /**
      *
-     * @param typeEncoding   tkey encode type
+     * @param schemeId   key encoding scheme id
      * @param out simple unicode text
      * @param in  tkey encoded text
      * @param bufLen encoded text bufLen
      * @return
      */
-    int decoded(uint32_t typeEncoding,
+    int decoded(uint32_t schemeId,
                 key_salt::wide_char *out,
                 const key_salt::wide_char *in,
                 const int &bufLen);
@@ -67,33 +67,33 @@ namespace thekey_v2 {
 
     /**
      * Generate code by encoding
-     * @param typeEncoding
+     * @param schemeId
      * @param len
      * @return
      */
-    key_salt::wide_string gen_password(const uint32_t &typeEncoding, const int &len);
+    key_salt::wide_string gen_password(const uint32_t &schemeId, const int &len);
 
     /**
      *
-     * @param typeEncoding
+     * @param schemeId
      * @param in
      * @param passw_power
      * @return
      */
     key_salt::wide_string password_masked(
-            const uint32_t &typeEncoding,
+            const uint32_t &schemeId,
             const key_salt::wide_string &in,
             const float &passw_power);
 
     /**
      *
-     * @param typeEncoding
+     * @param schemeId
      * @param in
      * @param passw_power
      * @return
      */
     key_salt::wide_string password_masked_twin(
-            const uint32_t &typeEncoding,
+            const uint32_t &schemeId,
             const key_salt::wide_string &in,
             const float &passw_power);
 

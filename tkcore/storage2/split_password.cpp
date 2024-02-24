@@ -13,7 +13,7 @@ using namespace key_salt;
 
 SplitPasswords thekey_v2::split(const std::string &passw) {
     auto passw_wide = from(passw);
-    auto type = find_scheme_type(passw_wide, 30);
+    auto type = find_scheme_id(passw_wide, 30);
     SplitPasswords passwords{};
 
     auto passwordForOtp = password_masked(type, passw_wide, 0.9f);
