@@ -48,23 +48,27 @@ namespace thekey_v2 {
         std::string login;
         std::string passw;
         std::string description;
-        uint64_t genTime;
         uint32_t color;
+
+        // not editable
+        uint64_t genTime;
         std::vector<long long> history;
     };
 
     struct DecryptedOtpNote {
+        // note unic id
         long long notePtr;
+
+        // editable
         std::string issuer;
         std::string name;
-        std::string otpPassw;
+        uint32_t color;
 
+        // not editable
+        std::string otpPassw;
         key_otp::OtpMethod method;
         uint32_t interval;
-
-
         uint64_t createTime;
-        uint32_t color;
     };
 
     struct DecryptedPassw {
@@ -124,10 +128,10 @@ namespace thekey_v2 {
          *
          * @param notePtr dnote unic identifier
          * @param dnote new dnote
-         * @param flags TK2_SET_NOTE_FORCE / TK2_SET_NOTE_TRACK_HISTORY / TK2_SET_NOTE_DEEP_COPY
+         * @param flags TK2_SET_NOTE_FORCE / TK2_SET_NOTE_TRACK_HISTORY
          * @return
          */
-        virtual int setNote(long long notePtr, const DecryptedNote &dnote, uint flags = TK2_GET_NOTE_PTR_ONLY);
+        virtual int setNote(long long notePtr, const DecryptedNote &dnote, uint flags = 0);
 
         virtual int removeNote(long long notePtr);
 
@@ -140,6 +144,15 @@ namespace thekey_v2 {
          * @return
          */
         virtual std::list<DecryptedOtpNote> createOtpNotes(const std::string &uri, uint flags = TK2_GET_NOTE_PTR_ONLY);
+
+        /**
+         * Edit OTP dnote OTP dnote from uri
+         *
+         * @param dnote
+         * @param flags
+         * @return
+         */
+        virtual int setOtpNote(const DecryptedOtpNote &dnote, uint flags = 0);
 
         /**
          * Get all available otp notes

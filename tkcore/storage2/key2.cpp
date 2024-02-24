@@ -366,7 +366,7 @@ int KeyStorageV2::setNote(long long notePtr,
 
     auto notCmpOld = (flags & TK2_SET_NOTE_FORCE);
     auto trackHist = (flags & TK2_SET_NOTE_TRACK_HISTORY);
-    auto old = note(notePtr, TK2_GET_NOTE_PASSWORD);
+    auto old = note(notePtr, TK2_GET_NOTE_FULL);
 
     cryptedNote->note.color(dnote.color);
 
@@ -479,11 +479,50 @@ std::list<DecryptedOtpNote> KeyStorageV2::createOtpNotes(const std::string &uri,
     list<DecryptedOtpNote> addedOtpNotes{};
     for (const auto &otpPtr: addedOtpPtrsList) {
         const auto &otp = otpNote(otpPtr, flags);
-        if (otp)addedOtpNotes.push_back(*otp);
+        if (otp) addedOtpNotes.push_back(*otp);
     }
 
     save();
     return addedOtpNotes;
+}
+
+int KeyStorageV2::setOtpNote(const thekey_v2::DecryptedOtpNote &dnote, uint flags) {
+    auto cryptedNote = std::find_if(cryptedOtpNotes.begin(), cryptedOtpNotes.end(),
+                                    [&](const CryptedOtpInfoFlat &it) {
+                                        return (long long) &it == dnote.notePtr;
+                                    });
+    if (cryptedNote == cryptedOtpNotes.end()) {
+        keyError = KEY_NOTE_NOT_FOUND;
+        return KEY_NOTE_NOT_FOUND;
+    }
+
+    auto notCmpOld = (flags & TK2_SET_NOTE_FORCE);
+    auto trackHist = (flags & TK2_SET_NOTE_TRACK_HISTORY);
+    auto old = otpNote(dnote.notePtr, TK2_GET_NOTE_FULL);
+
+    cryptedNote->color(dnote.color);
+
+    if (notCmpOld || old->issuer != dnote.issuer) {
+        cryptedNote->issuer.encrypt(
+                dnote.issuer,
+                ctx->keyForLogin,
+                fheader->cryptType(),
+                fheader->interactionsCount()
+        );
+    }
+
+    if (notCmpOld || old->name != dnote.name) {
+        cryptedNote->name.encrypt(
+                dnote.name,
+                ctx->keyForLogin,
+                fheader->cryptType(),
+                fheader->interactionsCount()
+        );
+    }
+
+
+    auto error = save();
+    return error;
 }
 
 std::vector<DecryptedOtpNote> KeyStorageV2::otpNotes(uint flags) {
