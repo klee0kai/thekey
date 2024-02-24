@@ -10,8 +10,6 @@
 using namespace std;
 using namespace key_otp;
 
-extern std::list<OtpInfo> fromGoogleAuthMigration(const uri &uri);
-
 std::string OtpInfo::toUri() const {
     stringstream builder;
     switch (scheme) {
