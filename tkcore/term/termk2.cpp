@@ -18,9 +18,9 @@ static void printNote(const thekey_v2::DecryptedNote &note);
 
 static void printNote(const thekey_v2::DecryptedOtpNote &note);
 
-void thekey_term_v2::login(const std::string &filePath) {
-    shared_ptr<thekey_v2::KeyStorageV2> storageV2 = {};
+shared_ptr<thekey_v2::KeyStorageV2> storageV2 = {};
 
+void thekey_term_v2::login(const std::string &filePath) {
     keyError = 0;
     auto storageInfo = thekey_v2::storageFullInfo(filePath);
     if (!storageInfo) {
@@ -160,52 +160,28 @@ void thekey_term_v2::login(const std::string &filePath) {
         if (!storageV2)return;
         auto index = 0;
         auto notes = storageV2->notes();
+        auto otpNotes = storageV2->otpNotes(TK2_GET_NOTE_INFO);
         for (const auto &item: notes) {
             auto note = storageV2->note(item, 0);
             cout << ++index << ") '" << note->site << "' / '" << note->login << "' " << endl;
         }
-        auto noteIndex = ask_int_from_term("Select note. Write index: ");
-        if (noteIndex < 1 || noteIndex > notes.size()) {
+        for (const auto &note: otpNotes) {
+            cout << ++index << ") '" << note.issuer << "' / '" << note.name << "' " << endl;
+        }
+        auto noteIndex = term::ask_int_from_term("Select note. Write index: ");
+        if (noteIndex < 1 || noteIndex > notes.size() + otpNotes.size()) {
             cerr << "incorrect index " << noteIndex << endl;
             return;
         }
-        auto notePtr = notes[noteIndex - 1];
-        auto note = storageV2->note(notePtr, 1);
-        auto info = storageV2->info();
-
-        auto editIt = Interactive();
-        cout << "Note " << to_string(notePtr) << " edit mode";
-        editIt.helpTitle = "Note " + to_string(notePtr) + " edit mode";
-
-        editIt.cmd({"p", "print"}, "print note", [&]() {
-            cout << "current note is: " << endl;
-            printNote(*note);
-        });
-
-        editIt.cmd({"s", "site"}, "edit site", [&]() {
-            note->site = term::ask_from_term("site : ");
-        });
-
-        editIt.cmd({"l", "login"}, "edit login", [&]() {
-            note->login = term::ask_from_term("login : ");
-        });
-
-        editIt.cmd({"passw"}, "edit password", [&]() {
-            note->passw = term::ask_password_from_term("password : ");
-        });
-
-        editIt.cmd({"d", "desc"}, "edit description", [&]() {
-            note->description = term::ask_from_term("description : ");
-        });
-
-        editIt.loop();
-
-        int error = storageV2->setNote(notePtr, *note, TK2_SET_NOTE_TRACK_HISTORY);
-        if (error) {
-            cerr << "error to save note " << errorToString(error) << endl;
-            return;
+        noteIndex--;
+        if (noteIndex < notes.size()) {
+            auto notePtr = notes[noteIndex];
+            interactiveEditNote(notePtr);
         } else {
-            cout << "note saved " << notePtr << endl;
+            noteIndex -= notes.size();
+
+            auto notePtr = otpNotes[noteIndex].notePtr;
+            interactiveEditOtpNote(notePtr);
         }
     });
 
@@ -303,7 +279,91 @@ void thekey_term_v2::login(const std::string &filePath) {
     storageV2.reset();
 
     cout << "Storage '" << storageInfo->name << "' closed." << endl;
+}
 
+
+void thekey_term_v2::interactiveEditNote(const long long &notePtr) {
+    auto note = storageV2->note(notePtr, TK2_GET_NOTE_FULL);
+
+    auto editIt = Interactive();
+    cout << "Note " << to_string(notePtr) << " edit mode";
+    editIt.helpTitle = "Note " + to_string(notePtr) + " edit mode";
+
+    editIt.cmd({"p", "print"}, "print note", [&]() {
+        cout << "current note is: " << endl;
+        printNote(*note);
+    });
+
+    editIt.cmd({"s", "site"}, "edit site", [&]() {
+        note->site = term::ask_from_term("site : ");
+    });
+
+    editIt.cmd({"l", "login"}, "edit login", [&]() {
+        note->login = term::ask_from_term("login : ");
+    });
+
+    editIt.cmd({"passw"}, "edit password", [&]() {
+        note->passw = term::ask_password_from_term("password : ");
+    });
+
+    editIt.cmd({"d", "desc"}, "edit description", [&]() {
+        note->description = term::ask_from_term("description : ");
+    });
+
+    editIt.cmd({"color"}, "edit color", [&]() {
+        for (int i = 0; i < KEY_COLOR_LEN; ++i) {
+            cout << i << ") " << to_string(KeyColor(i)) << endl;
+        }
+        note->color = KeyColor(term::ask_int_from_term("color : "));
+    });
+
+    editIt.loop();
+
+    int error = storageV2->setNote(notePtr, *note, TK2_SET_NOTE_TRACK_HISTORY);
+    if (error) {
+        cerr << "error to save note " << errorToString(error) << endl;
+        return;
+    } else {
+        cout << "note saved " << notePtr << endl;
+    }
+}
+
+void thekey_term_v2::interactiveEditOtpNote(const long long &notePtr) {
+    auto note = storageV2->otpNote(notePtr, TK2_GET_NOTE_FULL);
+
+    auto editIt = Interactive();
+    cout << "OTP note " << to_string(notePtr) << " edit mode";
+    editIt.helpTitle = "OTP note " + to_string(notePtr) + " edit mode";
+
+    editIt.cmd({"p", "print"}, "print note", [&]() {
+        cout << "current note is: " << endl;
+        printNote(*note);
+    });
+
+    editIt.cmd({"name"}, "edit name", [&]() {
+        note->name = term::ask_from_term("name : ");
+    });
+
+    editIt.cmd({"issuer"}, "edit issuer", [&]() {
+        note->issuer = term::ask_from_term("issuer : ");
+    });
+
+    editIt.cmd({"color"}, "edit color", [&]() {
+        for (int i = 0; i < KEY_COLOR_LEN; ++i) {
+            cout << i << ") " << to_string(KeyColor(i)) << endl;
+        }
+        note->color = KeyColor(term::ask_int_from_term("color : "));
+    });
+
+    editIt.loop();
+
+    int error = storageV2->setOtpNote(*note, 0);
+    if (error) {
+        cerr << "error to save otp note " << errorToString(error) << endl;
+        return;
+    } else {
+        cout << "otp note saved " << notePtr << endl;
+    }
 }
 
 

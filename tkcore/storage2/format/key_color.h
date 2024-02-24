@@ -7,6 +7,8 @@
 
 #include <iostream>
 
+#define KEY_COLOR_LEN 6
+
 namespace thekey_v2 {
 
     enum KeyColor {
