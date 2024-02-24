@@ -7,7 +7,7 @@
 
 #include "key_core.h"
 #include "list"
-#include "storage_structure.h"
+#include "format/storage_structure.h"
 
 // get flags 0x00FF
 #define TK2_GET_NOTE_PTR_ONLY 0x00
@@ -48,7 +48,7 @@ namespace thekey_v2 {
         std::string login;
         std::string passw;
         std::string description;
-        uint32_t color;
+        KeyColor color;
 
         // not editable
         uint64_t genTime;
@@ -62,7 +62,7 @@ namespace thekey_v2 {
         // editable
         std::string issuer;
         std::string name;
-        uint32_t color;
+        KeyColor color;
 
         // not editable
         std::string otpPassw;
@@ -74,7 +74,7 @@ namespace thekey_v2 {
     struct DecryptedPassw {
         std::string passw;
         uint64_t genTime;
-        uint32_t color;
+        KeyColor color;
     };
 
 

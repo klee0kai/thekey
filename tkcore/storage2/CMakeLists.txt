@@ -4,7 +4,8 @@ set(KEY2_SRC
         ${CMAKE_CURRENT_LIST_DIR}/salt_text/salt2.cpp
         ${CMAKE_CURRENT_LIST_DIR}/salt_text/salt2_schema.cpp
         ${CMAKE_CURRENT_LIST_DIR}/split_password.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/storage_structure.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/format/storage_structure.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/format/key_color.cpp
         ${CMAKE_CURRENT_LIST_DIR}/key2.cpp
 )
 

@@ -314,7 +314,7 @@ static void printNote(const thekey_v2::DecryptedNote &note) {
     cout << "desc: '" << note.description << "'" << endl;
     std::tm *changeTm = std::gmtime((time_t *) &note.genTime);
     cout << "gen time : " << asctime(changeTm) << endl;
-    cout << "color : " << note.color << endl;
+    cout << "color : " << to_string(note.color) << endl;
     cout << "hist len : " << note.history.size() << endl;
 }
 
@@ -325,5 +325,5 @@ static void printNote(const thekey_v2::DecryptedOtpNote &note) {
     if (!note.otpPassw.empty()) cout << "code: '" << note.otpPassw << "'" << endl;
     std::tm *changeTm = std::gmtime((time_t *) &note.createTime);
     cout << "create time : " << asctime(changeTm) << endl;
-    cout << "color : " << note.color << endl;
+    cout << "color : " << to_string(note.color) << endl;
 }

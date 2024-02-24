@@ -6,6 +6,7 @@
 #define THEKEY_STORAGE_STRUCTURE_H
 
 #include "key_core.h"
+#include "key_color.h"
 #include "salt_text/salt2.h"
 #include "otpauthuri.h"
 
@@ -117,7 +118,7 @@ namespace thekey_v2 {
     struct CryptedPasswordFlat {
         INT64_BIG_ENDIAN(genTime)
 
-        INT32_BIG_ENDIAN(color)
+        INT32_BIG_ENDIAN_ENUM(color, KeyColor)
 
         CryptedTextFlat password;
     };
@@ -125,7 +126,7 @@ namespace thekey_v2 {
     struct CryptedNoteFlat {
         INT64_BIG_ENDIAN(genTime)
 
-        INT32_BIG_ENDIAN(color)
+        INT32_BIG_ENDIAN_ENUM(color, KeyColor)
 
         CryptedTextFlat site;
         CryptedTextFlat login;
@@ -137,7 +138,7 @@ namespace thekey_v2 {
 
         INT64_BIG_ENDIAN(createTime)
 
-        INT32_BIG_ENDIAN(color)
+        INT32_BIG_ENDIAN_ENUM(color, KeyColor)
 
         INT32_BIG_ENDIAN_ENUM(scheme, key_otp::OtpScheme)
 
