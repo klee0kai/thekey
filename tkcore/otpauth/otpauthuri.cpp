@@ -10,8 +10,6 @@
 using namespace std;
 using namespace key_otp;
 
-#define YAOTP_SECRET_LENGTH 16
-
 std::string OtpInfo::toUri() const {
     stringstream builder;
     switch (scheme) {
@@ -127,8 +125,6 @@ shared_ptr<OtpInfo> parseSingleOtp(
         info.algorithm = SHA256;
     } else if (algo == "sha512") {
         info.algorithm = SHA512;
-    } else {
-        return {};
     }
 
     auto digits = u.query["digits"];
@@ -150,7 +146,7 @@ shared_ptr<OtpInfo> parseSingleOtp(
         }
         case YAOTP:
             info.algorithm = SHA256;
-            info.digits = TOTP_DEFAULT_DIGITS;
+            info.digits = YAOTP_DEFAULT_DIGITS;
             info.interval = TOTP_DEFAULT_INTERVAL;
 
             auto pinResult = otpPin(info);
@@ -180,7 +176,7 @@ std::list<OtpInfo> key_otp::parseOtpUri(
         return fromGoogleAuthMigration(u);
     } else {
         auto otp = parseSingleOtp(uriString, otpPin);
-        if (otp)return {*otp};
+        if (otp) return {*otp};
         return {};
     }
 }

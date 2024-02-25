@@ -15,6 +15,9 @@
 #define TOTP_DEFAULT_INTERVAL 30
 #define TOTP_DEFAULT_DIGITS 6
 
+#define YAOTP_SECRET_LENGTH 16
+#define YAOTP_DEFAULT_DIGITS 8
+
 namespace key_otp {
 
     typedef enum OtpScheme {

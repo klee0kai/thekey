@@ -140,8 +140,12 @@ std::string key_otp::generate(key_otp::OtpInfo &otp, time_t now) {
         case HOTP:
             return generateOtpRaw(otp, otp.counter++);
         case YAOTP:
-            //TODO
-            break;
+            return generateYaOtpRaw(
+                    otp.secret,
+                    otp.algorithm,
+                    otp.interval ? now / otp.interval : 0,
+                    otp.digits
+            );
     }
     return "";
 }
