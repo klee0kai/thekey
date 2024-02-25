@@ -77,10 +77,10 @@ function build_openssl_android_all() {
   cd "$WORKSPACE"
 }
 
-function build_apk() {
-  bash ./gradlew assembleRelease
+function build_apks() {
+  bash ./gradlew assemble
   mkdir -p builds
-  cp app/build/outputs/apk/release/app-release.apk builds/app-release.apk
+  find ./app_mobile/build/outputs/apk -name *.apk -exec cp {} ./builds/ \;
 
   cd "$WORKSPACE"
 }

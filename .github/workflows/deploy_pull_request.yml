@@ -27,7 +27,13 @@ jobs:
           decrypt_key: ${{ secrets.ENCRYPT_KEY }}
 
       - name: Build with Gradle
-        run: ./gradlew assemble
+        run: ./env_build.sh build_apks
+      - name: Upload Android Apks artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: android-app
+          path: |
+            ./builds
 
   app_tests:
     name: Run App Unit Tests
