@@ -90,7 +90,7 @@ int main(int argc, char **argv) {
         auto filePath = ask_from_term("input path : ");
         auto storageInfo = thekey::storage(filePath);
         if (!storageInfo) {
-            cerr << "can't open file " << fs::absolute(filePath) << " error " << errorToString(keyError)<< endl;
+            cerr << "can't open file " << fs::absolute(filePath) << " error " << errorToString(keyError) << endl;
             return;
         }
         switch (storageInfo->storageVersion) {
@@ -110,6 +110,17 @@ int main(int argc, char **argv) {
 
     it.cmd({"otp"}, "otp light tools. Generate and verify one-time passwords without storage use", []() {
         thekey_otp::interactive();
+    });
+
+
+    it.cmd({"info"}, "print info about build", []() {
+        cout << string("TheKey - ")
+             << "cryp/encrypt your secure passwords storages" << endl
+             << "Designed by Andrey Kuzubov / klee0kai" << endl
+             << "app version: " << TERM_VERSION << endl
+             << "Support Features: " << endl
+             << "google auth migration: " << key_otp::isGoogleAuthMigrationSupport() << endl
+             << endl;
     });
 
     it.loop();

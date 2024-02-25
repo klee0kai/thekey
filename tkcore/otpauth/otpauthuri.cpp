@@ -2,15 +2,13 @@
 // Created by panda on 08.02.24.
 //
 
+#include "key_core.h"
 #include "otpauthuri.h"
 #include "tools/uri.h"
 #include "tools/base32.h"
 
-
 using namespace std;
 using namespace key_otp;
-
-extern std::list<OtpInfo> fromGoogleAuthMigration(const uri &uri);
 
 std::string OtpInfo::toUri() const {
     stringstream builder;

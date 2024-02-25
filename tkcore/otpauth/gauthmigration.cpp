@@ -6,13 +6,25 @@
 #include "tools/uri.h"
 #include "tools/base64.h"
 #include "tools/base32.h"
-#include "OtpMigration.pb.h"
 #include <regex>
 
 using namespace std;
 using namespace key_otp;
 
-extern std::list<OtpInfo> fromGoogleAuthMigration(const uri &uri) {
+#if Protobuf_FOUND
+#include "OtpMigration.pb.h"
+#endif
+
+int key_otp::isGoogleAuthMigrationSupport() {
+#if Protobuf_FOUND
+    return 1;
+#else
+    return 0;
+#endif
+}
+
+std::list<OtpInfo> key_otp::fromGoogleAuthMigration(const uri &uri) {
+#if Protobuf_FOUND
     if (uri.scheme != GOOGLE_AUTH_MIGRATION_SCHEME || uri.host != "offline") {
         return {};
     }
@@ -77,5 +89,8 @@ extern std::list<OtpInfo> fromGoogleAuthMigration(const uri &uri) {
     }
 
     return otpList;
+#else
+    return {};
+#endif
 }
 

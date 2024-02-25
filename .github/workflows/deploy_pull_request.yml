@@ -17,6 +17,24 @@ jobs:
       - name: Build and test
         run: ./env_build.sh build_term_app
 
+  app_build:
+    name: Build Android App
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/prepare
+        with:
+          decrypt_key: ${{ secrets.ENCRYPT_KEY }}
+
+      - name: Build with Gradle
+        run: ./env_build.sh build_apks
+      - name: Upload Android Apks artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: android-app
+          path: |
+            ./builds
+
   app_tests:
     name: Run App Unit Tests
     runs-on: ubuntu-latest

@@ -6,6 +6,7 @@
 #define THEKEY_OTPAUTHURI_H
 
 #include "key_core.h"
+#include "tools/uri.h"
 
 #define GOOGLE_AUTH_MIGRATION_SCHEME "otpauth-migration"
 #define OTP_URI_SCHEME "otpuri"
@@ -47,6 +48,10 @@ namespace key_otp {
     };
 
     std::list<OtpInfo> parseFullUri(const std::string &uriString);
+
+    int isGoogleAuthMigrationSupport();
+
+    std::list<OtpInfo> fromGoogleAuthMigration(const uri &uri);
 
 }
 
