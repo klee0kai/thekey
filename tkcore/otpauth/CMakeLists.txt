@@ -18,6 +18,10 @@ add_library(otpauth
 set_target_properties(otpauth PROPERTIES INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_LIST_DIR})
 if (Protobuf_FOUND)
     set_target_properties(otpauth PROPERTIES COMPILE_FLAGS "-DProtobuf_FOUND=true ")
+
+    target_link_libraries(otpauth PUBLIC
+            protobuf
+            )
 endif ()
 
 target_include_directories(otpauth PUBLIC
@@ -28,5 +32,4 @@ target_include_directories(otpauth PUBLIC
 
 target_link_libraries(otpauth PUBLIC
         key_core
-        protobuf
 )

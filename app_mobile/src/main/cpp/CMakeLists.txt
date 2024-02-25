@@ -35,8 +35,6 @@ target_link_libraries(crypt-storage-lib
         key_storage1_static
         key_storage2_static
 
-        openssl_android
-        openssl_android_crypto
         )
 
 

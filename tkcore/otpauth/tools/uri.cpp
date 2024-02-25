@@ -2,6 +2,7 @@
 // Created by panda on 10.02.24.
 //
 
+#include "key_core.h"
 #include "uri.h"
 #include <regex>
 

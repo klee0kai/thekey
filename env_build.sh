@@ -1,5 +1,8 @@
 #!/bin/bash
-#set -e
+if [ "${CI}" ]; then
+  echo "ci config"
+  set -e
+fi
 
 function read_properties_file() {
   file=$1

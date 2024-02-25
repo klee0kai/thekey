@@ -6,6 +6,7 @@
 #define THEKEY_KEY_CORE_H
 
 #include <string>
+#include <sstream>
 #include <fcntl.h>
 #include <unistd.h>
 #include <vector>
