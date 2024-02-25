@@ -6,6 +6,7 @@ add_executable(testk2
         ${CMAKE_CURRENT_LIST_DIR}/schemas/encoding_schemas_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/otp/uri_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/otp/otp_gen_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/otp/yaotp_gen_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/otp/otp_uri_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/otp/auth_migration_test.cpp
         ${CMAKE_CURRENT_LIST_DIR}/storage/read_storage2_tests.cpp

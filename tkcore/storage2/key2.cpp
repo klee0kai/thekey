@@ -441,7 +441,7 @@ int KeyStorageV2::removeNote(long long notePtr) {
 // ---- otp note api ----
 std::list<DecryptedOtpNote> KeyStorageV2::createOtpNotes(const std::string &uri, uint flags) {
     list<long long> addedOtpPtrsList{};
-    const auto &otpList = key_otp::parseFullUri(uri);
+    const auto &otpList = key_otp::parseOtpUri(uri);
     for (const auto &otp: otpList) {
         CryptedOtpInfoFlat cryped{};
         cryped.createTime(time(NULL));
