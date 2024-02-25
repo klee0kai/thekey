@@ -23,7 +23,7 @@ jobs:
         run: ./env_build.sh build_term_app
 
   app_build:
-    name: Run App Unit Tests
+    name: Build Android App
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
