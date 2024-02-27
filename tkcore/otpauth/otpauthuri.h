@@ -12,8 +12,11 @@
 #define OTP_URI_SCHEME "otpuri"
 #define GOOGLE_AUTH_SCHEME "otpauth"
 
-#define DEFAULT_INTERVAL 30
-#define DEFAULT_DIGITS 6
+#define TOTP_DEFAULT_INTERVAL 30
+#define TOTP_DEFAULT_DIGITS 6
+
+#define YAOTP_SECRET_LENGTH 16
+#define YAOTP_DEFAULT_DIGITS 8
 
 namespace key_otp {
 
@@ -22,7 +25,7 @@ namespace key_otp {
     } OtpScheme;
 
     typedef enum OtpType {
-        OTP, TOTP, HOTP
+        OTP, HOTP, TOTP, YAOTP,
     } OtpMethod;
 
     typedef enum OtpAlgo {
@@ -37,17 +40,19 @@ namespace key_otp {
         std::string name; // email
 
         std::vector<uint8_t> secret;
+        std::string pin;
 
         uint digits;
         uint64_t interval;
         uint64_t counter;
 
-        static OtpInfo fromUri(const std::string &uriString);
-
         std::string toUri() const;
     };
 
-    std::list<OtpInfo> parseFullUri(const std::string &uriString);
+    std::list<OtpInfo> parseOtpUri(
+            const std::string &uriString,
+            const std::function<Result<std::string>(const OtpInfo &)> &otpPin = {}
+    );
 
     int isGoogleAuthMigrationSupport();
 

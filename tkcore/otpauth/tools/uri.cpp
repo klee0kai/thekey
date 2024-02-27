@@ -45,11 +45,15 @@ uri::uri(const std::string &url_s) {
             type.assign(index, typeLast);
             type = decodeURIComponent(type);
         }
-        if (issuerLast.it > typeLast + 1) {
+        if (issuerLast.it != atSign.it && issuerLast.it > typeLast + 1) {
             issuer.assign(typeLast + 1, issuerLast.it);
             issuer = decodeURIComponent(issuer);
         }
-        if (atSign.it > issuerLast.it + issuerLast.length) {
+
+        if (issuerLast.it == atSign.it) {
+            accountName.assign(typeLast + 1, atSign.it);
+            accountName = decodeURIComponent(accountName);
+        } else if (atSign.it > issuerLast.it + issuerLast.length) {
             accountName.assign(issuerLast.it + issuerLast.length, atSign.it);
             accountName = decodeURIComponent(accountName);
         }

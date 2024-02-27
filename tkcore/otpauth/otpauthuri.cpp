@@ -25,19 +25,27 @@ std::string OtpInfo::toUri() const {
 
     switch (method) {
         case TOTP:
-            builder << "totp";
+            builder << "totp" << "/";
             break;
         case HOTP:
-            builder << "hotp";
+            builder << "hotp" << "/";
             break;
         case OTP:
-            builder << "otp";
+            builder << "otp" << "/";
+            break;
+        case YAOTP:
+            builder << "yaotp" << "/";
             break;
         default:
             return "";
     }
 
-    builder << "/" << encodeURIComponent(issuer) << ":" << name;
+    if (method != YAOTP) {
+        builder << encodeURIComponent(issuer) << ":";
+    }
+
+    builder << encodeURIComponent(name);
+
     builder << "?secret=" << encodeURIComponent(base32::encode(secret, true));
     builder << "&issuer=" << encodeURIComponent(issuer);
 
@@ -83,9 +91,14 @@ std::string OtpInfo::toUri() const {
  * https://github.com/tilkinsc/COTP/blob/2c15a20bf5a914f9fd1312b7305ffec0fa685ac8/otpuri.c#L84
  *
  */
-OtpInfo OtpInfo::fromUri(const std::string &uriString) {
+shared_ptr<OtpInfo> parseSingleOtp(
+        const std::string &uriString,
+        const std::function<Result<std::string>(const OtpInfo &)> &otpPin
+) {
     OtpInfo info{};
     struct uri u(uriString);
+
+    info.scheme = otpuri;
     if (u.scheme == OTP_URI_SCHEME) {
         info.scheme = otpuri;
     } else if (u.scheme == GOOGLE_AUTH_SCHEME) {
@@ -98,12 +111,19 @@ OtpInfo OtpInfo::fromUri(const std::string &uriString) {
         info.method = HOTP;
     } else if (u.type == "otp") {
         info.method = OTP;
+    } else if (u.type == "yaotp") {
+        info.method = YAOTP;
+    } else {
+        return {};
     }
 
-    info.issuer = u.issuer.empty() ? u.query["issuer"] : u.issuer;
+    info.issuer = u.issuer;
+    if (info.issuer.empty()) info.issuer = u.query["issuer"];
+    if (info.issuer.empty()) info.issuer = u.host;
     info.name = u.accountName + "@" + u.host;
     info.secret = base32::decodeRaw(u.query["secret"]);
 
+    info.algorithm = SHA1;
     auto algo = u.query["algorithm"];
     transform(algo.begin(), algo.end(), algo.begin(), [](unsigned char c) { return tolower(c); });
     if (algo == "sha1") {
@@ -115,32 +135,49 @@ OtpInfo OtpInfo::fromUri(const std::string &uriString) {
     }
 
     auto digits = u.query["digits"];
-    info.digits = !digits.empty() ? std::strtol(digits.c_str(), NULL, 10) : DEFAULT_DIGITS;
+    info.digits = !digits.empty() ? std::strtol(digits.c_str(), NULL, 10) : TOTP_DEFAULT_DIGITS;
 
     switch (info.method) {
         case OTP:
             break;
-        case TOTP: {
-            auto period = u.query["period"];
-            info.interval = !period.empty() ? std::strtol(period.c_str(), NULL, 10) : DEFAULT_INTERVAL;
-            break;
-        }
         case HOTP: {
             auto counter = u.query["count"];
             if (counter.empty()) counter = u.query["counter"];
             info.counter = std::strtol(counter.c_str(), NULL, 10);
             break;
         }
+        case TOTP: {
+            auto period = u.query["period"];
+            info.interval = !period.empty() ? std::strtol(period.c_str(), NULL, 10) : TOTP_DEFAULT_INTERVAL;
+            break;
+        }
+        case YAOTP:
+            info.algorithm = SHA256;
+            info.digits = YAOTP_DEFAULT_DIGITS;
+            info.interval = TOTP_DEFAULT_INTERVAL;
+
+            if (info.secret.size() > YAOTP_SECRET_LENGTH) {
+                // ignore yaotp validate
+                // https://github.com/norblik/KeeYaOtp/blob/188a1a99f13f82e4ef8df8a1b9b9351ba236e2a1/KeeYaOtp/Core/Secret.cs#L97
+                info.secret.resize(YAOTP_SECRET_LENGTH);
+            }
+
+            break;
     }
 
-    return info;
+    return make_shared<OtpInfo>(info);
 }
 
-std::list<OtpInfo> key_otp::parseFullUri(const std::string &uriString) {
+std::list<OtpInfo> key_otp::parseOtpUri(
+        const std::string &uriString,
+        const std::function<Result<std::string>(const OtpInfo &)> &otpPin
+) {
     struct uri u(uriString);
     if (u.scheme == GOOGLE_AUTH_MIGRATION_SCHEME) {
         return fromGoogleAuthMigration(u);
     } else {
-        return {OtpInfo::fromUri(uriString)};
+        auto otp = parseSingleOtp(uriString, otpPin);
+        if (otp) return {*otp};
+        return {};
     }
 }

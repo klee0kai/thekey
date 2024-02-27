@@ -45,8 +45,8 @@ std::list<OtpInfo> key_otp::fromGoogleAuthMigration(const uri &uri) {
                 .issuer = otpParam.issuer(),
                 .name = otpParam.name(),
                 .secret = vector<uint8_t>(secret.begin(), secret.end()),
-                .digits = DEFAULT_DIGITS,
-                .interval = DEFAULT_INTERVAL,
+                .digits = TOTP_DEFAULT_DIGITS,
+                .interval = TOTP_DEFAULT_INTERVAL,
                 .counter = uint64_t(otpParam.counter()),
         };
 

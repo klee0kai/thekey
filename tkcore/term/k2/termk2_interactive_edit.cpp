@@ -61,7 +61,7 @@ void thekey_v2::interactiveEditNote(const long long &notePtr) {
 }
 
 void thekey_v2::interactiveEditOtpNote(const long long &notePtr) {
-    auto note = storageV2->otpNote(notePtr, TK2_GET_NOTE_INFO);
+    auto note = storageV2->otpNote(notePtr, TK2_GET_NOTE_FULL);
 
     auto editIt = Interactive();
     cout << "OTP note " << std::to_string(notePtr) << " edit mode";
@@ -87,13 +87,20 @@ void thekey_v2::interactiveEditOtpNote(const long long &notePtr) {
         note->color = KeyColor(term::ask_int_from_term("color : "));
     });
 
+    if (note->method == key_otp::YAOTP) {
+        editIt.cmd({"resetPin"}, "Reset Pin", [&]() {
+            note->pin = "";
+        });
+
+        editIt.cmd({"pin"}, "Edit pin", [&]() {
+            note->pin = term::ask_from_term("pin : ");
+        });
+    }
+
     editIt.loop();
 
     int error = storageV2->setOtpNote(*note, 0);
-    if (error) {
-        cerr << "error to save otp note " << errorToString(error) << endl;
-        return;
-    } else {
-        cout << "otp note saved " << notePtr << endl;
-    }
+    if (error) cerr << "error to save otp note " << errorToString(error) << endl;
+    else cout << "otp note saved " << notePtr << endl;
+
 }

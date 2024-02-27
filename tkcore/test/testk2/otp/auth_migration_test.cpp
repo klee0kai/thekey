@@ -21,7 +21,7 @@ TEST(GoogleAuthMigration, ParseGoogleMigration) {
                   "DHNoYTUxMklzc3VlciABKAEwAhABGAEgACj8hvKV%2F%2F%2F%2F%2F%2F8B";
 
     // When
-    list<OtpInfo> otpNotes = parseFullUri(gUri);
+    list<OtpInfo> otpNotes = parseOtpUri(gUri);
     auto it = otpNotes.begin();
 
     // Then
@@ -52,30 +52,13 @@ TEST(GoogleAuthMigration, ParseGoogleMigration) {
     ASSERT_EQ(6, otp.digits);
 }
 
-
-TEST(GoogleAuthMigration, GoogleAuthGenTest) {
-    // Given
-    string gUri = "otpauth://totp/employee%40company.com?secret=QTSC7ZCECAN7OHFGGJCJM62JXGZ4CIRBR4MTEZTT32LB"
-                  "S25SJMKI4NTYN3S2FXMGC5EBTKEMFYCPFGZM6VNDUKXHRX25RWEVUB7N2MY";
-    list<OtpInfo> otpNotes = parseFullUri(gUri);
-    auto otp = *otpNotes.begin();
-
-    // When
-    auto now = time(NULL);
-    cout << "acc " << otp.name << endl;
-    cout << "now " << now << endl;
-    cout << "passw " << generate(otp, now) << endl;
-
-}
-
-
 TEST(GoogleAuthMigration, GoogleMigrationGenTest) {
     // Given
     string gUri = "otpauth-migration://offline?data=Cl4KQITkL%2BREEBv3HKYyRJZ7SbmzwSIhjxkyZnPelhlrsksUjjZ4buWi3YYX"
                   "SBmojC4E8pss9Vo6KueN9djYlaB%2B3TMSFGVtcGxveWVlQGNvbXBhbnkuY29tIAEoATACCnAKQNBWsFbqalcmeYcNPbUzd"
                   "Q4%2BQgdPoy67EaRDeucojYGD9a6KpY7CDZHPFjHy%2B%2FHFYyXDgmZTYl4rl4Q3UN8qJmgSGnNoYTFJc3N1ZXI6c2ltcG"
                   "xlQHRlc3QuY29tGgpzaGExSXNzdWVyIAEoATACEAEYASAAKN7XvdAB";
-    list<OtpInfo> otpNotes = parseFullUri(gUri);
+    list<OtpInfo> otpNotes = parseOtpUri(gUri);
     auto otp = *otpNotes.begin();
 
     // When
