@@ -40,6 +40,7 @@ namespace key_otp {
         std::string name; // email
 
         std::vector<uint8_t> secret;
+        std::string pin;
 
         uint digits;
         uint64_t interval;

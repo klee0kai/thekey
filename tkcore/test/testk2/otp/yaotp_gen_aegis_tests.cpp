@@ -26,11 +26,13 @@ TEST(YaOtpGenAegis, Get1Test) {
     // Given
     auto yaotpUri = "otpauth://yaotp/user@yandex.ru?secret=6SB2IKNM6OBZPAVBVTOHDKS4FAAAAAAADFUTQMBTRY&name=user";
     auto yaotpList = parseOtpUri(yaotpUri);
-
     auto yaotp = yaotpList.front();
 
-    auto code = generate(yaotp, 1641559648L, "5239");
+    //when
+    yaotp.pin = "5239";
+    auto code = generate(yaotp, 1641559648L);
 
+    // then
     ASSERT_EQ("umozdicq", code);
 }
 
@@ -39,11 +41,13 @@ TEST(YaOtpGenAegis, Get2Test) {
     // Given
     auto yaotpUri = "otpauth://yaotp/user@yandex.ru?secret=LA2V6KMCGYMWWVEW64RNP3JA3IAAAAAAHTSG4HRZPI&name=user";
     auto yaotpList = parseOtpUri(yaotpUri);
-
     auto yaotp = yaotpList.front();
 
-    auto code = generate(yaotp, 1581064020L, "7586");
+    // when
+    yaotp.pin = "7586";
+    auto code = generate(yaotp, 1581064020L);
 
+    // then
     ASSERT_EQ("oactmacq", code);
 }
 
@@ -52,11 +56,13 @@ TEST(YaOtpGenAegis, Get3Test) {
     // Given
     auto yaotpUri = "otpauth://yaotp/user@yandex.ru?secret=LA2V6KMCGYMWWVEW64RNP3JA3IAAAAAAHTSG4HRZPI&name=user";
     auto yaotpList = parseOtpUri(yaotpUri);
-
     auto yaotp = yaotpList.front();
 
-    auto code = generate(yaotp, 1581090810L, "7586");
+    // when
+    yaotp.pin = "7586";
+    auto code = generate(yaotp, 1581090810L);
 
+    //then
     ASSERT_EQ("wemdwrix", code);
 }
 
@@ -65,11 +71,13 @@ TEST(YaOtpGenAegis, Get4Test) {
     // Given
     auto yaotpUri = "otpauth://yaotp/user@yandex.ru?secret=JBGSAU4G7IEZG6OY4UAXX62JU4AAAAAAHTSG4HXU3M&name=user";
     auto yaotpList = parseOtpUri(yaotpUri);
-
     auto yaotp = yaotpList.front();
 
-    auto code = generate(yaotp, 1581091469L, "5210481216086702");
+    //when
+    yaotp.pin = "5210481216086702";
+    auto code = generate(yaotp, 1581091469L);
 
+    // then
     ASSERT_EQ("dfrpywob", code);
 }
 
@@ -78,12 +86,13 @@ TEST(YaOtpGenAegis, Get5Test) {
     // Given
     auto yaotpUri = "otpauth://yaotp/user@yandex.ru?secret=JBGSAU4G7IEZG6OY4UAXX62JU4AAAAAAHTSG4HXU3M&name=user";
     auto yaotpList = parseOtpUri(yaotpUri);
-
     auto yaotp = yaotpList.front();
 
-    auto code = generate(yaotp, 1581093059L, "5210481216086702");
+    // When
+    yaotp.pin = "5210481216086702";
+    auto code = generate(yaotp, 1581093059L);
 
+    // then
     ASSERT_EQ("vunyprpd", code);
 }
-
 

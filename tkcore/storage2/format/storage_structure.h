@@ -154,6 +154,7 @@ namespace thekey_v2 {
 
         CryptedTextFlat issuer;
         CryptedTextFlat name;
+        CryptedTextFlat pin;
 
         CryptedBufferFlat secret;
 

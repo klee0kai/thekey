@@ -141,20 +141,18 @@ string key_otp::generateOtpRaw(const OtpInfo &otp, uint64_t counter) {
 
 std::string key_otp::generate(
         key_otp::OtpInfo &otp,
-        const time_t &now,
-        const std::string &pin
+        const time_t &now
 ) {
     switch (otp.method) {
         case OTP:
+        case HOTP:
             return generateOtpRaw(otp, otp.counter);
         case TOTP:
             return generateOtpRaw(otp, otp.interval ? now / otp.interval : 0);
-        case HOTP:
-            return generateOtpRaw(otp, otp.counter++);
         case YAOTP:
             return generateYaOtpRaw(
                     otp.secret,
-                    pin,
+                    otp.pin,
                     otp.algorithm,
                     otp.interval ? now / otp.interval : 0,
                     otp.digits

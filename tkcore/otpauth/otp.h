@@ -28,8 +28,7 @@ namespace key_otp {
 
     std::string generate(
             OtpInfo &otp,
-            const time_t &now = time(NULL),
-            const std::string &pin = ""
+            const time_t &now = time(NULL)
     );
 
 }
