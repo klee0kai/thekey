@@ -74,3 +74,35 @@ TEST(OtpUri, HotpDecodedTest) {
     ASSERT_EQ(6, otp.digits);
     ASSERT_EQ(10, otp.counter);
 }
+
+
+TEST(OtpUri, GoogleAuthTest) {
+    // When
+    string gUri = "otpauth://totp/employee%40company.com?secret=QTSC7ZCECAN7OHFGGJCJM62JXGZ4CIRBR4MTEZTT32LB"
+                  "S25SJMKI4NTYN3S2FXMGC5EBTKEMFYCPFGZM6VNDUKXHRX25RWEVUB7N2MY";
+    list<OtpInfo> otpNotes = parseOtpUri(gUri);
+    auto otp = *otpNotes.begin();
+
+    // Then
+    ASSERT_EQ(OtpMethod::TOTP, otp.method);
+    ASSERT_EQ(OtpScheme::authuri, otp.scheme);
+    ASSERT_EQ("employee@company.com", otp.name);
+    ASSERT_EQ("company.com", otp.issuer);
+    ASSERT_EQ("QTSC7ZCECAN7OHFGGJCJM62JXGZ4CIRBR4MTEZTT32LB"
+              "S25SJMKI4NTYN3S2FXMGC5EBTKEMFYCPFGZM6VNDUKXHRX25RWEVUB7N2MY",
+              base32::encode(otp.secret, true));
+}
+
+
+TEST(OtpUri, YaotpUriTest) {
+    // When
+    auto yaotpUri = "otpauth://yaotp/user@yandex.ru?secret=6SB2IKNM6OBZPAVBVTOHDKS4FAAAAAAADFUTQMBTRY&name=user";
+    auto yaotpList = parseOtpUri(yaotpUri);
+    auto yaotp = yaotpList.front();
+
+    //then
+    ASSERT_EQ("6SB2IKNM6OBZPAVBVTOHDKS4FA", base32::encode(yaotp.secret, true));
+    ASSERT_EQ("yandex.ru", yaotp.issuer);
+    ASSERT_EQ("user@yandex.ru", yaotp.name);
+
+}

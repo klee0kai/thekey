@@ -22,7 +22,6 @@ TEST(YaOtpGenAegis, TruncateYaOtpSecretTest) {
     ASSERT_EQ("6SB2IKNM6OBZPAVBVTOHDKS4FA", base32::encode(yaotp.secret, true));
 }
 
-
 TEST(YaOtpGenAegis, Get1Test) {
     // Given
     auto yaotpUri = "otpauth://yaotp/user@yandex.ru?secret=6SB2IKNM6OBZPAVBVTOHDKS4FAAAAAAADFUTQMBTRY&name=user";

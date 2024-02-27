@@ -25,22 +25,27 @@ std::string OtpInfo::toUri() const {
 
     switch (method) {
         case TOTP:
-            builder << "totp";
+            builder << "totp" << "/";
             break;
         case HOTP:
-            builder << "hotp";
+            builder << "hotp" << "/";
             break;
         case OTP:
-            builder << "otp";
+            builder << "otp" << "/";
             break;
         case YAOTP:
-            builder << "yaotp";
+            builder << "yaotp" << "/";
             break;
         default:
             return "";
     }
 
-    builder << "/" << encodeURIComponent(issuer) << ":" << name;
+    if (method != YAOTP) {
+        builder << encodeURIComponent(issuer) << ":";
+    }
+
+    builder << encodeURIComponent(name);
+
     builder << "?secret=" << encodeURIComponent(base32::encode(secret, true));
     builder << "&issuer=" << encodeURIComponent(issuer);
 
@@ -112,7 +117,9 @@ shared_ptr<OtpInfo> parseSingleOtp(
         return {};
     }
 
-    info.issuer = u.issuer.empty() ? u.query["issuer"] : u.issuer;
+    info.issuer = u.issuer;
+    if (info.issuer.empty()) info.issuer = u.query["issuer"];
+    if (info.issuer.empty()) info.issuer = u.host;
     info.name = u.accountName + "@" + u.host;
     info.secret = base32::decodeRaw(u.query["secret"]);
 
