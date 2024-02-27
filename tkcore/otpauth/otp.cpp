@@ -76,10 +76,18 @@ std::string key_otp::generateOtpRaw(
 // based on
 std::string key_otp::generateYaOtpRaw(
         const std::vector<uint8_t> &secret,
+        const std::string &pin,
         const key_otp::OtpAlgo &algorithm,
         const uint64_t &counter,
         const uint &digits
 ) {
+    // generate yaotp secret
+    auto pinVector = to_vector(pin);
+    auto pinWithHash = std::vector<uint8_t>();
+    pinWithHash.insert(pinWithHash.end(), pinVector.begin(), pinVector.end());
+    pinWithHash.insert(pinWithHash.end(), secret.begin(), secret.end());
+    auto yaotpSecret = sha256(pinWithHash);
+
     auto algo = algoMap[algorithm];
 
     //rfc4226 5.1
@@ -97,7 +105,7 @@ std::string key_otp::generateYaOtpRaw(
     unsigned int hmacLen = algo.hmacLen;
     HMAC(
             algo.method,                                                // algorithm
-            (unsigned char *) secret.data(), secret.size(),             // key
+            (unsigned char *) yaotpSecret.data(), yaotpSecret.size(),             // key
             (unsigned char *) &count, sizeof(count),                    // data
             (unsigned char *) hmacResult,                               // output
             &hmacLen                                                    // output length
@@ -131,7 +139,11 @@ string key_otp::generateOtpRaw(const OtpInfo &otp, uint64_t counter) {
     );
 }
 
-std::string key_otp::generate(key_otp::OtpInfo &otp, time_t now) {
+std::string key_otp::generate(
+        key_otp::OtpInfo &otp,
+        const time_t &now,
+        const std::string &pin
+) {
     switch (otp.method) {
         case OTP:
             return generateOtpRaw(otp, otp.counter);
@@ -142,6 +154,7 @@ std::string key_otp::generate(key_otp::OtpInfo &otp, time_t now) {
         case YAOTP:
             return generateYaOtpRaw(
                     otp.secret,
+                    pin,
                     otp.algorithm,
                     otp.interval ? now / otp.interval : 0,
                     otp.digits

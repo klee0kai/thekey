@@ -149,17 +149,11 @@ shared_ptr<OtpInfo> parseSingleOtp(
             info.digits = YAOTP_DEFAULT_DIGITS;
             info.interval = TOTP_DEFAULT_INTERVAL;
 
-            auto pinResult = otpPin(info);
-            if (pinResult.error)return {};
-
-            if (info.secret.size() > YAOTP_SECRET_LENGTH) info.secret.resize(YAOTP_SECRET_LENGTH);
-            auto pin = to_vector(pinResult.result);
-
-            auto pinWithHash = std::vector<uint8_t>();
-            pinWithHash.insert(pinWithHash.end(), pin.begin(), pin.end());
-            pinWithHash.insert(pinWithHash.end(), info.secret.begin(), info.secret.end());
-
-            info.secret = sha256(pinWithHash);
+            if (info.secret.size() > YAOTP_SECRET_LENGTH) {
+                // ignore yaotp validate
+                // https://github.com/norblik/KeeYaOtp/blob/188a1a99f13f82e4ef8df8a1b9b9351ba236e2a1/KeeYaOtp/Core/Secret.cs#L97
+                info.secret.resize(YAOTP_SECRET_LENGTH);
+            }
 
             break;
     }
