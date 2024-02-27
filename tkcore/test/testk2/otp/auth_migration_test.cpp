@@ -52,25 +52,6 @@ TEST(GoogleAuthMigration, ParseGoogleMigration) {
     ASSERT_EQ(6, otp.digits);
 }
 
-
-TEST(GoogleAuthMigration, GoogleAuthGenTest) {
-    //TODO finish test
-
-    // Given
-    string gUri = "otpauth://totp/employee%40company.com?secret=QTSC7ZCECAN7OHFGGJCJM62JXGZ4CIRBR4MTEZTT32LB"
-                  "S25SJMKI4NTYN3S2FXMGC5EBTKEMFYCPFGZM6VNDUKXHRX25RWEVUB7N2MY";
-    list<OtpInfo> otpNotes = parseOtpUri(gUri);
-    auto otp = *otpNotes.begin();
-
-    // When
-    auto now = time(NULL);
-    cout << "acc " << otp.name << endl;
-    cout << "now " << now << endl;
-    cout << "passw " << generate(otp, now) << endl;
-
-}
-
-
 TEST(GoogleAuthMigration, GoogleMigrationGenTest) {
     // Given
     string gUri = "otpauth-migration://offline?data=Cl4KQITkL%2BREEBv3HKYyRJZ7SbmzwSIhjxkyZnPelhlrsksUjjZ4buWi3YYX"
