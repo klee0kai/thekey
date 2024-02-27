@@ -65,6 +65,7 @@ namespace thekey_v2 {
         // editable
         std::string issuer;
         std::string name;
+        std::string pin;
         KeyColor color;
 
         // not editable
@@ -152,6 +153,7 @@ namespace thekey_v2 {
          * @return
          */
         virtual std::list<DecryptedOtpNote> createOtpNotes(const std::string &uri, uint flags = TK2_GET_NOTE_PTR_ONLY);
+
 
         /**
          * Edit OTP dnote OTP dnote from uri

@@ -495,7 +495,6 @@ int KeyStorageV2::setOtpNote(const thekey_v2::DecryptedOtpNote &dnote, uint flag
     }
 
     auto notCmpOld = (flags & TK2_SET_NOTE_FORCE);
-    auto trackHist = (flags & TK2_SET_NOTE_TRACK_HISTORY);
     auto old = otpNote(dnote.notePtr, TK2_GET_NOTE_FULL);
 
     cryptedNote->color(dnote.color);
@@ -513,6 +512,15 @@ int KeyStorageV2::setOtpNote(const thekey_v2::DecryptedOtpNote &dnote, uint flag
         cryptedNote->name.encrypt(
                 dnote.name,
                 ctx->keyForLogin,
+                fheader->cryptType(),
+                fheader->interactionsCount()
+        );
+    }
+
+    if (notCmpOld || old->pin != dnote.pin) {
+        cryptedNote->pin.encrypt(
+                dnote.pin,
+                ctx->keyForPassw,
                 fheader->cryptType(),
                 fheader->interactionsCount()
         );
@@ -563,6 +571,12 @@ std::shared_ptr<DecryptedOtpNote> KeyStorageV2::otpNote(long long notePtr, uint 
     }
 
     if ((flags & TK2_GET_NOTE_PASSWORD) != 0) {
+        decryptedNote->pin = cryptedNote->pin.decrypt(
+                ctx->keyForPassw,
+                fheader->cryptType(),
+                fheader->interactionsCount()
+        );
+
         auto otpInfo = exportOtpNote(notePtr);
         decryptedNote->otpPassw = key_otp::generate(otpInfo, now);
 
@@ -605,6 +619,12 @@ OtpInfo KeyStorageV2::exportOtpNote(long long notePtr) {
 
     otp.secret = cryptedNote->secret.decrypt(
             ctx->keyForOtpPassw,
+            fheader->cryptType(),
+            fheader->interactionsCount()
+    );
+
+    otp.pin = cryptedNote->pin.decrypt(
+            ctx->keyForPassw,
             fheader->cryptType(),
             fheader->interactionsCount()
     );
