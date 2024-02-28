@@ -10,7 +10,7 @@ function read_properties_file() {
     echo "$file found."
 
     while IFS='=' read -r key value; do
-      # игнорируем закомментированные строки
+      # ignore commented lines
       if [[ $key == "#"* ]]; then
         continue
       fi
@@ -35,7 +35,7 @@ function create_local_properties_ifneed() {
 }
 
 function download_openssl() {
-  #glone by tag name
+  # clone by tag name
   git clone --depth 1 --branch OpenSSL_1_1_1-stable https://github.com/openssl/openssl.git -o origin ${TR_LIBS}/openssl
 
 }
@@ -100,7 +100,7 @@ function build_term_app() {
 
   cp $WORKSPACE/tkcore/build/term/tkey builds/${CUR_OS_UNAME}/tkey
 
-  #run tests
+  # run tests
   cd $WORKSPACE/tkcore/build/test/testk1 && "./testk1"
   cd $WORKSPACE/tkcore/build/test/testk2 && "./testk2"
 
@@ -149,5 +149,5 @@ export CUR_OS_UNAME=$(uname -sm | sed 's/ /_/g')
 mkdir -p ${TR_LIBS}
 mkdir -p ${TR_LIBS_BUILD}
 
-# стартуем если сразу указан метод
+# we start immediately if the method is specified
 $1
