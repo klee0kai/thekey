@@ -59,6 +59,9 @@ TEST(Storage1, CreateStorage) {
     generatedPassws.push_back(storage->genPassw(4));
 
     // THEN
+    ASSERT_EQ("ts_v1", storage->info().name);
+    ASSERT_EQ("test_storage_version_1", storage->info().description);
+
     auto notesPtrs = storage->notes();
     ASSERT_EQ(2, notesPtrs.size());
 
@@ -167,6 +170,9 @@ TEST(Storage1, ReadStorage) {
     ASSERT_FALSE(error);
 
     // THEN
+    ASSERT_EQ("ts_v1", storage->info().name);
+    ASSERT_EQ("test_storage_version_1", storage->info().description);
+
     auto notesPtrs = storage->notes();
     ASSERT_EQ(2, notesPtrs.size());
 

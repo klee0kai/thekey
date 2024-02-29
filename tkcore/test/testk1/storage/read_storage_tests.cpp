@@ -40,6 +40,9 @@ TEST(ReadStorage1, ReadStorage) {
     ASSERT_FALSE(error);
 
     // THEN
+    ASSERT_EQ("ts_v1", storage->info().name);
+    ASSERT_EQ("test_storage_version_1", storage->info().description);
+
     auto notesPtrs = storage->notes();
     ASSERT_EQ(3, notesPtrs.size());
 
@@ -89,6 +92,9 @@ TEST(ReadStorage1, ReadStorageIcorrectPassw) {
 
 
     // THEN
+    ASSERT_EQ("ts_v1", storage->info().name);
+    ASSERT_EQ("test_storage_version_1", storage->info().description);
+
     auto notesPtrs = storage->notes();
     ASSERT_EQ(3, notesPtrs.size());
 
