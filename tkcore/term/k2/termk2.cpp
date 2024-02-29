@@ -3,7 +3,7 @@
 //
 
 #include "termk2.h"
-#include "../termotp.h"
+#include "../otp/termotp.h"
 #include "key2.h"
 #include "../utils/term_utils.h"
 #include "../utils/Interactive.h"

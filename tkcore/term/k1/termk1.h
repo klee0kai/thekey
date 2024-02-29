@@ -6,7 +6,7 @@
 #define THEKEY_TERMK1_H
 
 
-#include "def_header.h"
+#include "../def_header.h"
 
 namespace thekey_v1 {
 

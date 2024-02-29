@@ -4,12 +4,12 @@
 #include "def_header.h"
 #include "utils/Interactive.h"
 #include "utils/term_utils.h"
-#include "termk1.h"
+#include "k1/termk1.h"
 #include "k2/termk2.h"
 #include "key2.h"
 #include "key1.h"
 #include "key_find.h"
-#include "termotp.h"
+#include "otp/termotp.h"
 
 #ifdef __ANDROID__
 namespace fs = std::__fs::filesystem;
