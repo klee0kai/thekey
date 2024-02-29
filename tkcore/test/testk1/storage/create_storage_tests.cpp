@@ -12,6 +12,7 @@ namespace fs = std::__fs::filesystem;
 #else
 namespace fs = std::filesystem;
 #endif
+#define TIME_TOLERANCE 30
 
 using namespace std;
 using namespace thekey_v1;
@@ -66,6 +67,7 @@ TEST(Storage1, CreateStorage) {
     ASSERT_EQ("some_user_login", note->login);
     ASSERT_EQ("simpplepassw", note->passw);
     ASSERT_EQ("somesite_desc", note->description);
+    ASSERT_TRUE(note->genTime - now < TIME_TOLERANCE);
     ASSERT_EQ(0, note->histLen);
 
 
@@ -74,9 +76,26 @@ TEST(Storage1, CreateStorage) {
     ASSERT_EQ("user_super_login", note->login);
     ASSERT_EQ("@31!!12@", note->passw);
     ASSERT_EQ("is a description @ about site", note->description);
+    ASSERT_TRUE(note->genTime - now < TIME_TOLERANCE);
     ASSERT_EQ(0, note->histLen);
 
-    ASSERT_EQ(3, storage->genPasswHist().size());
+    auto genHist = storage->genPasswHist();
+    ASSERT_EQ(3, genHist.size());
+
+    auto genHistIt = genHist.begin();
+    auto expectGenPasswIt = generatedPassws.begin();
+    ASSERT_EQ(*expectGenPasswIt, genHistIt->passw);
+    ASSERT_TRUE(genHistIt->genTime - now < TIME_TOLERANCE);
+
+    genHistIt++;
+    expectGenPasswIt++;
+    ASSERT_EQ(*expectGenPasswIt, genHistIt->passw);
+    ASSERT_TRUE(genHistIt->genTime - now < TIME_TOLERANCE);
+
+    genHistIt++;
+    expectGenPasswIt++;
+    ASSERT_EQ(*expectGenPasswIt, genHistIt->passw);
+    ASSERT_TRUE(genHistIt->genTime - now < TIME_TOLERANCE);
 }
 
 // RUN AFTER Storage1::CreateStorage
@@ -105,9 +124,10 @@ TEST(Storage1, EditPassw) {
     ASSERT_EQ("some_user_login", note->login);
     ASSERT_EQ("new_passw", note->passw);
     ASSERT_EQ("somesite_desc", note->description);
+    ASSERT_TRUE(note->genTime - now < TIME_TOLERANCE);
     ASSERT_EQ(1, note->histLen);
     ASSERT_EQ("simpplepassw", noteHist.front().passw);
-    ASSERT_TRUE(noteHist.front().genTime - now < 30);
+    ASSERT_TRUE(noteHist.front().genTime - now < TIME_TOLERANCE);
 
 
     note = storage->note(notesPtrs[1], 1);
@@ -115,9 +135,26 @@ TEST(Storage1, EditPassw) {
     ASSERT_EQ("user_super_login", note->login);
     ASSERT_EQ("@31!!12@", note->passw);
     ASSERT_EQ("is a description @ about site", note->description);
+    ASSERT_TRUE(note->genTime - now < TIME_TOLERANCE);
     ASSERT_EQ(0, note->histLen);
 
-    ASSERT_EQ(3, storage->genPasswHist().size());
+    auto genHist = storage->genPasswHist();
+    ASSERT_EQ(3, genHist.size());
+
+    auto genHistIt = genHist.begin();
+    auto expectGenPasswIt = generatedPassws.begin();
+    ASSERT_EQ(*expectGenPasswIt, genHistIt->passw);
+    ASSERT_TRUE(genHistIt->genTime - now < TIME_TOLERANCE);
+
+    genHistIt++;
+    expectGenPasswIt++;
+    ASSERT_EQ(*expectGenPasswIt, genHistIt->passw);
+    ASSERT_TRUE(genHistIt->genTime - now < TIME_TOLERANCE);
+
+    genHistIt++;
+    expectGenPasswIt++;
+    ASSERT_EQ(*expectGenPasswIt, genHistIt->passw);
+    ASSERT_TRUE(genHistIt->genTime - now < TIME_TOLERANCE);
 }
 
 
@@ -139,9 +176,10 @@ TEST(Storage1, ReadStorage) {
     ASSERT_EQ("some_user_login", note->login);
     ASSERT_EQ("new_passw", note->passw);
     ASSERT_EQ("somesite_desc", note->description);
+    ASSERT_TRUE(note->genTime - now < TIME_TOLERANCE);
     ASSERT_EQ(1, note->histLen);
     ASSERT_EQ("simpplepassw", noteHist.front().passw);
-    ASSERT_TRUE(noteHist.front().genTime - now < 30);
+    ASSERT_TRUE(noteHist.front().genTime - now < TIME_TOLERANCE);
 
 
     note = storage->note(notesPtrs[1], 1);
@@ -149,6 +187,7 @@ TEST(Storage1, ReadStorage) {
     ASSERT_EQ("user_super_login", note->login);
     ASSERT_EQ("@31!!12@", note->passw);
     ASSERT_EQ("is a description @ about site", note->description);
+    ASSERT_TRUE(note->genTime - now < TIME_TOLERANCE);
     ASSERT_EQ(0, note->histLen);
 
     ASSERT_EQ(3, storage->genPasswHist().size());
@@ -174,9 +213,10 @@ TEST(Storage1, ReadStorageIcorrectPassw) {
     ASSERT_NE("some_user_login", note->login);
     ASSERT_NE("new_passw", note->passw);
     ASSERT_NE("somesite_desc", note->description);
+    ASSERT_TRUE(note->genTime - now < TIME_TOLERANCE);
     ASSERT_EQ(1, note->histLen);
     ASSERT_NE("simpplepassw", noteHist.front().passw);
-    ASSERT_TRUE(noteHist.front().genTime - now < 30);
+    ASSERT_TRUE(noteHist.front().genTime - now < TIME_TOLERANCE);
 
 
     note = storage->note(notesPtrs[1], 1);
@@ -184,9 +224,26 @@ TEST(Storage1, ReadStorageIcorrectPassw) {
     ASSERT_NE("user_super_login", note->login);
     ASSERT_NE("@31!!12@", note->passw);
     ASSERT_NE("is a description @ about site", note->description);
+    ASSERT_TRUE(note->genTime - now < TIME_TOLERANCE);
     ASSERT_EQ(0, note->histLen);
 
-    ASSERT_EQ(3, storage->genPasswHist().size());
+    auto genHist = storage->genPasswHist();
+    ASSERT_EQ(3, genHist.size());
+
+    auto genHistIt = genHist.begin();
+    auto expectGenPasswIt = generatedPassws.begin();
+    ASSERT_NE(*expectGenPasswIt, genHistIt->passw);
+    ASSERT_TRUE(genHistIt->genTime - now < TIME_TOLERANCE);
+
+    genHistIt++;
+    expectGenPasswIt++;
+    ASSERT_NE(*expectGenPasswIt, genHistIt->passw);
+    ASSERT_TRUE(genHistIt->genTime - now < TIME_TOLERANCE);
+
+    genHistIt++;
+    expectGenPasswIt++;
+    ASSERT_NE(*expectGenPasswIt, genHistIt->passw);
+    ASSERT_TRUE(genHistIt->genTime - now < TIME_TOLERANCE);
 }
 
 
@@ -221,15 +278,17 @@ TEST(Storage1, EditStorage) {
     ASSERT_EQ("some_user_login", note->login);
     ASSERT_EQ("new_passw", note->passw);
     ASSERT_EQ("somesite_desc", note->description);
+    ASSERT_TRUE(note->genTime - now < TIME_TOLERANCE);
     ASSERT_EQ(1, note->histLen);
     ASSERT_EQ("simpplepassw", noteHist.front().passw);
-    ASSERT_TRUE(noteHist.front().genTime - now < 30);
+    ASSERT_TRUE(noteHist.front().genTime - now < TIME_TOLERANCE);
 
     note = storage->note(notesPtrs[1], 1);
     ASSERT_EQ("site_2.vd.rv", note->site);
     ASSERT_EQ("user_super_login", note->login);
     ASSERT_EQ("@31!!12@", note->passw);
     ASSERT_EQ("is a description @ about site", note->description);
+    ASSERT_TRUE(note->genTime - now < TIME_TOLERANCE);
     ASSERT_EQ(0, note->histLen);
 
     note = storage->note(notesPtrs[2], 1);
@@ -237,6 +296,7 @@ TEST(Storage1, EditStorage) {
     ASSERT_EQ("l@g1n", note->login);
     ASSERT_EQ("12#Q21!", note->passw);
     ASSERT_EQ("unic spec user", note->description);
+    ASSERT_TRUE(note->genTime - now < TIME_TOLERANCE);
     ASSERT_EQ(0, note->histLen);
 
     ASSERT_EQ(3, storage->genPasswHist().size());
