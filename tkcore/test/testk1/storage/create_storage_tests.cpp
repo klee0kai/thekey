@@ -17,6 +17,8 @@ using namespace std;
 using namespace thekey_v1;
 using namespace key_salt;
 
+static std::list<string> generatedPassws{};
+static auto now = time(NULL);
 
 TEST(Storage1, CreateStorage) {
     // GIVEN
@@ -33,7 +35,6 @@ TEST(Storage1, CreateStorage) {
     ASSERT_FALSE(error);
 
     // WHEN
-    auto now = time(NULL);
     auto notePtr = storage->createNote();
     storage->setNote(notePtr,
                      {
@@ -52,14 +53,14 @@ TEST(Storage1, CreateStorage) {
                              .description = "is a description @ about site",
                      });
 
-
-    storage->genPassw(4);
-    storage->genPassw(4);
-    storage->genPassw(4);
+    generatedPassws.push_back(storage->genPassw(4));
+    generatedPassws.push_back(storage->genPassw(4));
+    generatedPassws.push_back(storage->genPassw(4));
 
     // THEN
     auto notesPtrs = storage->notes();
     ASSERT_EQ(2, notesPtrs.size());
+
     auto note = storage->note(notesPtrs[0], 1);
     ASSERT_EQ("somesite.com", note->site);
     ASSERT_EQ("some_user_login", note->login);
@@ -78,8 +79,49 @@ TEST(Storage1, CreateStorage) {
     ASSERT_EQ(3, storage->genPasswHist().size());
 }
 
-
 // RUN AFTER Storage1::CreateStorage
+TEST(Storage1, EditPassw) {
+    // GIVEN
+    auto storage = thekey_v1::storage("ts_v1.ckey", "somepsws");
+    ASSERT_TRUE(storage);
+    auto error = storage->readAll();
+    ASSERT_FALSE(error);
+
+    // WHEN
+    {
+        auto notesPtrs = storage->notes();
+        auto note = storage->note(notesPtrs[0], 1);
+        note->passw = "new_passw";
+        storage->setNote(notesPtrs[0], *note);
+    }
+
+    // THEN
+    auto notesPtrs = storage->notes();
+    ASSERT_EQ(2, notesPtrs.size());
+
+    auto note = storage->note(notesPtrs[0], 1);
+    auto noteHist = storage->noteHist(notesPtrs[0]);
+    ASSERT_EQ("somesite.com", note->site);
+    ASSERT_EQ("some_user_login", note->login);
+    ASSERT_EQ("new_passw", note->passw);
+    ASSERT_EQ("somesite_desc", note->description);
+    ASSERT_EQ(1, note->histLen);
+    ASSERT_EQ("simpplepassw", noteHist.front().passw);
+    ASSERT_TRUE(noteHist.front().genTime - now < 30);
+
+
+    note = storage->note(notesPtrs[1], 1);
+    ASSERT_EQ("site_2.vd.rv", note->site);
+    ASSERT_EQ("user_super_login", note->login);
+    ASSERT_EQ("@31!!12@", note->passw);
+    ASSERT_EQ("is a description @ about site", note->description);
+    ASSERT_EQ(0, note->histLen);
+
+    ASSERT_EQ(3, storage->genPasswHist().size());
+}
+
+
+// RUN AFTER Storage1::EditPassw
 TEST(Storage1, ReadStorage) {
     // WHEN
     auto storage = thekey_v1::storage("ts_v1.ckey", "somepsws");
@@ -90,12 +132,16 @@ TEST(Storage1, ReadStorage) {
     // THEN
     auto notesPtrs = storage->notes();
     ASSERT_EQ(2, notesPtrs.size());
+
     auto note = storage->note(notesPtrs[0], 1);
+    auto noteHist = storage->noteHist(notesPtrs[0]);
     ASSERT_EQ("somesite.com", note->site);
     ASSERT_EQ("some_user_login", note->login);
-    ASSERT_EQ("simpplepassw", note->passw);
+    ASSERT_EQ("new_passw", note->passw);
     ASSERT_EQ("somesite_desc", note->description);
-    ASSERT_EQ(0, note->histLen);
+    ASSERT_EQ(1, note->histLen);
+    ASSERT_EQ("simpplepassw", noteHist.front().passw);
+    ASSERT_TRUE(noteHist.front().genTime - now < 30);
 
 
     note = storage->note(notesPtrs[1], 1);
@@ -109,7 +155,7 @@ TEST(Storage1, ReadStorage) {
 }
 
 
-// RUN AFTER Storage1::CreateStorage
+// RUN AFTER Storage1::EditPassw
 TEST(Storage1, ReadStorageIcorrectPassw) {
     // WHEN
     auto storage = thekey_v1::storage("ts_v1.ckey", "wrongpassw");
@@ -121,12 +167,16 @@ TEST(Storage1, ReadStorageIcorrectPassw) {
     // THEN
     auto notesPtrs = storage->notes();
     ASSERT_EQ(2, notesPtrs.size());
+
     auto note = storage->note(notesPtrs[0], 1);
+    auto noteHist = storage->noteHist(notesPtrs[0]);
     ASSERT_NE("somesite.com", note->site);
     ASSERT_NE("some_user_login", note->login);
-    ASSERT_NE("simpplepassw", note->passw);
+    ASSERT_NE("new_passw", note->passw);
     ASSERT_NE("somesite_desc", note->description);
-    ASSERT_EQ(0, note->histLen);
+    ASSERT_EQ(1, note->histLen);
+    ASSERT_NE("simpplepassw", noteHist.front().passw);
+    ASSERT_TRUE(noteHist.front().genTime - now < 30);
 
 
     note = storage->note(notesPtrs[1], 1);
@@ -141,7 +191,7 @@ TEST(Storage1, ReadStorageIcorrectPassw) {
 
 
 
-// RUN AFTER Storage1::CreateStorage
+// RUN AFTER Storage1::EditPassw
 TEST(Storage1, EditStorage) {
     // WHEN
     auto storage = thekey_v1::storage("ts_v1.ckey", "somepsws");
@@ -151,7 +201,6 @@ TEST(Storage1, EditStorage) {
 
 
     // WHEN
-    auto now = time(NULL);
     auto notePtr = storage->createNote();
     storage->setNote(notePtr,
                      {
@@ -165,13 +214,16 @@ TEST(Storage1, EditStorage) {
     // THEN
     auto notesPtrs = storage->notes();
     ASSERT_EQ(3, notesPtrs.size());
+
     auto note = storage->note(notesPtrs[0], 1);
+    auto noteHist = storage->noteHist(notesPtrs[0]);
     ASSERT_EQ("somesite.com", note->site);
     ASSERT_EQ("some_user_login", note->login);
-    ASSERT_EQ("simpplepassw", note->passw);
+    ASSERT_EQ("new_passw", note->passw);
     ASSERT_EQ("somesite_desc", note->description);
-    ASSERT_EQ(0, note->histLen);
-
+    ASSERT_EQ(1, note->histLen);
+    ASSERT_EQ("simpplepassw", noteHist.front().passw);
+    ASSERT_TRUE(noteHist.front().genTime - now < 30);
 
     note = storage->note(notesPtrs[1], 1);
     ASSERT_EQ("site_2.vd.rv", note->site);
