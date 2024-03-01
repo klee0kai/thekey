@@ -317,7 +317,7 @@ std::shared_ptr<DecryptedNote> KeyStorageV2::note(long long notePtr, uint flags)
     decryptedNote->color = cryptedNote->note.color();
 
     for (const auto &item: cryptedNote->history) {
-        decryptedNote->history.push_back((long long) &item);
+        decryptedNote->history.push_back(*passwordHistory((long long) &item, flags));
     }
 
     if ((flags & TK2_GET_NOTE_INFO) != 0) {
@@ -356,7 +356,7 @@ shared_ptr<DecryptedNote> KeyStorageV2::createNote(const DecryptedNote &note) {
     const CryptedNote &it = cryptedNotes.back();
     auto dNote = make_shared<DecryptedNote>(note);
     dNote->notePtr = (long long) &it;
-    setNote(*dNote);
+    setNote(*dNote, TK2_SET_NOTE_FORCE | TK2_SET_NOTE_FULL_HISTORY);
     return dNote;
 }
 
@@ -370,6 +370,7 @@ int KeyStorageV2::setNote(const thekey_v2::DecryptedNote &dnote,
 
     auto notCmpOld = (flags & TK2_SET_NOTE_FORCE);
     auto trackHist = (flags & TK2_SET_NOTE_TRACK_HISTORY);
+    auto setFullHistory = (flags & TK2_SET_NOTE_FULL_HISTORY);
     auto old = note(dnote.notePtr, TK2_GET_NOTE_FULL);
 
     cryptedNote->note.color(dnote.color);
@@ -421,6 +422,25 @@ int KeyStorageV2::setNote(const thekey_v2::DecryptedNote &dnote,
             cryptedNote->history.push_back(hist);
         }
     }
+
+    if (setFullHistory) {
+        cryptedNote->history.clear();
+        for (const auto &item: dnote.history) {
+            CryptedPasswordFlat hist{};
+            hist.password.encrypt(
+                    item.passw,
+                    ctx->keyForHistPassw,
+                    fheader->cryptType(),
+                    fheader->interactionsCount()
+            );
+            hist.genTime(item.genTime);
+            hist.color(item.color);
+
+            cryptedNote->history.push_back(hist);
+        }
+
+    }
+
 
     auto error = save();
     return error;
@@ -661,15 +681,15 @@ std::string KeyStorageV2::genPassword(uint32_t encodingType, int len) {
     return passw;
 }
 
-std::vector<long long> KeyStorageV2::passwordsHistory() {
-    std::vector<long long> generatedPasswordHistory = {};
+std::vector<DecryptedPassw> KeyStorageV2::passwordsHistory(const uint &flags) {
+    std::vector<DecryptedPassw> generatedPasswordHistory = {};
     for (const auto &item: cryptedGeneratedPassws) {
-        generatedPasswordHistory.push_back((long long) &item);
+        generatedPasswordHistory.push_back(*passwordHistory((long long) &item, flags));
     }
     return generatedPasswordHistory;
 }
 
-std::shared_ptr<DecryptedPassw> KeyStorageV2::passwordHistory(long long histPtr) {
+std::shared_ptr<DecryptedPassw> KeyStorageV2::passwordHistory(long long histPtr, const uint &flags) {
     shared_ptr<CryptedPasswordFlat> histPassw = {};
 
     for (const auto &item: cryptedGeneratedPassws) {
@@ -692,14 +712,35 @@ std::shared_ptr<DecryptedPassw> KeyStorageV2::passwordHistory(long long histPtr)
         return {};
     }
     DecryptedPassw dPassw{};
+    dPassw.histPtr = histPtr;
     dPassw.genTime = histPassw->genTime();
     dPassw.color = histPassw->color();
-    dPassw.passw = histPassw->password.decrypt(
-            ctx->keyForHistPassw,
-            fheader->cryptType(),
-            fheader->interactionsCount()
-    );
+
+    if (flags & TK2_GET_NOTE_HISTORY_FULL) {
+        dPassw.passw = histPassw->password.decrypt(
+                ctx->keyForHistPassw,
+                fheader->cryptType(),
+                fheader->interactionsCount()
+        );
+    }
     return make_shared<DecryptedPassw>(dPassw);
+}
+
+int KeyStorageV2::appendPasswHistory(const std::vector<DecryptedPassw> &hist) {
+    for (const auto &histItem: hist) {
+        CryptedPasswordFlat cryptedPasswordFlat{};
+        cryptedPasswordFlat.genTime(histItem.genTime);
+        cryptedPasswordFlat.password.encrypt(
+                histItem.passw,
+                ctx->keyForHistPassw,
+                fheader->cryptType(),
+                fheader->interactionsCount()
+        );
+        cryptedGeneratedPassws.push_back(cryptedPasswordFlat);
+    }
+
+    auto error = save();
+    return error;
 }
 
 // -------------------- private ------------------------------
