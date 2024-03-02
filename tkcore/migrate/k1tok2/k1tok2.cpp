@@ -15,12 +15,12 @@ int thekey_v1::migrateK1toK2(
         const string &passw
 ) {
     int error = 0;
-    auto storageV1 = thekey_v1::storage(inPath, passw);
-    if (!storageV1) return keyError;
-    error = storageV1->readAll();
+    auto srcStorage = thekey_v1::storage(inPath, passw);
+    if (!srcStorage) return keyError;
+    error = srcStorage->readAll();
     if (error)return error;
 
-    auto info = storageV1->info();
+    auto info = srcStorage->info();
 
     error = thekey_v2::createStorage(
             {
@@ -29,14 +29,18 @@ int thekey_v1::migrateK1toK2(
                     .description = info.description
             });
     if (error)return error;
-    auto storageV2 = thekey_v2::storage(outPath, passw);
-    if (!storageV2) return keyError;
-    error = storageV2->readAll();
+    auto dstStorage = thekey_v2::storage(outPath, passw);
+    if (!dstStorage) return keyError;
+    error = dstStorage->readAll();
     if (error)return error;
 
-    auto notesPtrs = storageV1->notes();
+    return migrateK1toK2(*srcStorage, *dstStorage);
+}
+
+int thekey_v1::migrateK1toK2(thekey_v1::KeyStorageV1 &source, thekey_v2::KeyStorageV2 &dest) {
+    auto notesPtrs = source.notes();
     for (const auto &notePtr: notesPtrs) {
-        auto noteOrig = storageV1->note(notePtr, 1);
+        auto noteOrig = source.note(notePtr, 1);
         if (!noteOrig)continue;
 
         auto newNote = thekey_v2::DecryptedNote{
@@ -45,7 +49,7 @@ int thekey_v1::migrateK1toK2(
                 .passw = noteOrig->passw,
                 .description = noteOrig->description
         };
-        for (const auto &orHist: storageV1->noteHist(notePtr)) {
+        for (const auto &orHist: source.noteHist(notePtr)) {
             newNote.history.push_back(
                     {
                             .passw = orHist.passw,
@@ -53,20 +57,20 @@ int thekey_v1::migrateK1toK2(
                     });
         }
 
-        storageV2->createNote(newNote);
+        dest.createNote(newNote);
     }
 
-    auto histPtr = storageV1->genPasswHist();
-    auto newHistList = vector<thekey_v2::DecryptedPassw>(histPtr.size());
-    for (const auto &item: storageV1->genPasswHist()) {
+    auto histPtr = source.genPasswHist();
+    auto newHistList = vector<thekey_v2::DecryptedPassw>();
+    for (const auto &item: source.genPasswHist()) {
         newHistList.push_back(
                 {
                         .passw = item.passw,
                         .genTime = item.genTime
                 });
     }
-    storageV2->appendPasswHistory(newHistList);
+    dest.appendPasswHistory(newHistList);
 
-    error = storageV2->save();
+    auto error = dest.save();
     return error;
 }
