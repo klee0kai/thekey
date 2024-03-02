@@ -18,7 +18,7 @@ using namespace std;
 using namespace thekey_v1;
 using namespace key_salt;
 
-static std::list<string> generatedPassws{};
+static std::list<string> expectedPasswHist{};
 static auto now = time(NULL);
 
 TEST(Storage1, CreateStorage) {
@@ -54,9 +54,11 @@ TEST(Storage1, CreateStorage) {
                              .description = "is a description @ about site",
                      });
 
-    generatedPassws.push_back(storage->genPassw(4));
-    generatedPassws.push_back(storage->genPassw(4));
-    generatedPassws.push_back(storage->genPassw(4));
+    expectedPasswHist.push_back(storage->genPassw(4));
+    expectedPasswHist.push_back(storage->genPassw(6, ENC_EN_NUM_SPEC_SYMBOLS));
+    expectedPasswHist.push_back(storage->genPassw(16, ENC_EN_NUM_SPEC_SYMBOLS_SPACE));
+    expectedPasswHist.push_back(storage->genPassw(16, ENC_EN_NUM_SPEC_SYMBOLS_SPACE));
+    expectedPasswHist.push_back(storage->genPassw(16, ENC_EN_NUM_SPEC_SYMBOLS_SPACE));
 
     // THEN
     ASSERT_EQ("ts_v1", storage->info().name);
@@ -83,22 +85,17 @@ TEST(Storage1, CreateStorage) {
     ASSERT_EQ(0, note->histLen);
 
     auto genHist = storage->genPasswHist();
-    ASSERT_EQ(3, genHist.size());
-
+    ASSERT_EQ(expectedPasswHist.size(), genHist.size());
     auto genHistIt = genHist.begin();
-    auto expectGenPasswIt = generatedPassws.begin();
-    ASSERT_EQ(*expectGenPasswIt, genHistIt->passw);
-    ASSERT_TRUE(genHistIt->genTime - now < TIME_TOLERANCE);
+    auto expectGenPasswIt = expectedPasswHist.begin();
+    for (int i = 0; i < expectedPasswHist.size(); ++i) {
+        ASSERT_EQ(*expectGenPasswIt, genHistIt->passw);
+        ASSERT_TRUE(genHistIt->genTime - now < TIME_TOLERANCE);
 
-    genHistIt++;
-    expectGenPasswIt++;
-    ASSERT_EQ(*expectGenPasswIt, genHistIt->passw);
-    ASSERT_TRUE(genHistIt->genTime - now < TIME_TOLERANCE);
+        genHistIt++;
+        expectGenPasswIt++;
+    }
 
-    genHistIt++;
-    expectGenPasswIt++;
-    ASSERT_EQ(*expectGenPasswIt, genHistIt->passw);
-    ASSERT_TRUE(genHistIt->genTime - now < TIME_TOLERANCE);
 }
 
 // RUN AFTER Storage1::CreateStorage
@@ -142,22 +139,17 @@ TEST(Storage1, EditPassw) {
     ASSERT_EQ(0, note->histLen);
 
     auto genHist = storage->genPasswHist();
-    ASSERT_EQ(3, genHist.size());
-
+    ASSERT_EQ(expectedPasswHist.size(), genHist.size());
     auto genHistIt = genHist.begin();
-    auto expectGenPasswIt = generatedPassws.begin();
-    ASSERT_EQ(*expectGenPasswIt, genHistIt->passw);
-    ASSERT_TRUE(genHistIt->genTime - now < TIME_TOLERANCE);
+    auto expectGenPasswIt = expectedPasswHist.begin();
+    for (int i = 0; i < expectedPasswHist.size(); ++i) {
+        ASSERT_EQ(*expectGenPasswIt, genHistIt->passw);
+        ASSERT_TRUE(genHistIt->genTime - now < TIME_TOLERANCE);
 
-    genHistIt++;
-    expectGenPasswIt++;
-    ASSERT_EQ(*expectGenPasswIt, genHistIt->passw);
-    ASSERT_TRUE(genHistIt->genTime - now < TIME_TOLERANCE);
+        genHistIt++;
+        expectGenPasswIt++;
+    }
 
-    genHistIt++;
-    expectGenPasswIt++;
-    ASSERT_EQ(*expectGenPasswIt, genHistIt->passw);
-    ASSERT_TRUE(genHistIt->genTime - now < TIME_TOLERANCE);
 }
 
 
@@ -196,7 +188,7 @@ TEST(Storage1, ReadStorage) {
     ASSERT_TRUE(note->genTime - now < TIME_TOLERANCE);
     ASSERT_EQ(0, note->histLen);
 
-    ASSERT_EQ(3, storage->genPasswHist().size());
+    ASSERT_EQ(expectedPasswHist.size(), storage->genPasswHist().size());
 }
 
 
@@ -224,7 +216,6 @@ TEST(Storage1, ReadStorageIcorrectPassw) {
     ASSERT_NE("simpplepassw", noteHist.front().passw);
     ASSERT_TRUE(noteHist.front().genTime - now < TIME_TOLERANCE);
 
-
     note = storage->note(notesPtrs[1], 1);
     ASSERT_NE("site_2.vd.rv", note->site);
     ASSERT_NE("user_super_login", note->login);
@@ -234,22 +225,17 @@ TEST(Storage1, ReadStorageIcorrectPassw) {
     ASSERT_EQ(0, note->histLen);
 
     auto genHist = storage->genPasswHist();
-    ASSERT_EQ(3, genHist.size());
-
+    ASSERT_EQ(expectedPasswHist.size(), genHist.size());
     auto genHistIt = genHist.begin();
-    auto expectGenPasswIt = generatedPassws.begin();
-    ASSERT_NE(*expectGenPasswIt, genHistIt->passw);
-    ASSERT_TRUE(genHistIt->genTime - now < TIME_TOLERANCE);
+    auto expectGenPasswIt = expectedPasswHist.begin();
+    for (int i = 0; i < expectedPasswHist.size(); ++i) {
+        ASSERT_NE(*expectGenPasswIt, genHistIt->passw);
+        ASSERT_TRUE(genHistIt->genTime - now < TIME_TOLERANCE);
 
-    genHistIt++;
-    expectGenPasswIt++;
-    ASSERT_NE(*expectGenPasswIt, genHistIt->passw);
-    ASSERT_TRUE(genHistIt->genTime - now < TIME_TOLERANCE);
+        genHistIt++;
+        expectGenPasswIt++;
+    }
 
-    genHistIt++;
-    expectGenPasswIt++;
-    ASSERT_NE(*expectGenPasswIt, genHistIt->passw);
-    ASSERT_TRUE(genHistIt->genTime - now < TIME_TOLERANCE);
 }
 
 
@@ -305,5 +291,5 @@ TEST(Storage1, EditStorage) {
     ASSERT_TRUE(note->genTime - now < TIME_TOLERANCE);
     ASSERT_EQ(0, note->histLen);
 
-    ASSERT_EQ(3, storage->genPasswHist().size());
+    ASSERT_EQ(expectedPasswHist.size(), storage->genPasswHist().size());
 }

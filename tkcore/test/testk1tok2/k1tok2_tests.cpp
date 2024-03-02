@@ -16,11 +16,12 @@ using namespace std;
 using namespace thekey_v2;
 using namespace key_salt;
 
-static std::list<string> generatedPassws{};
-static auto now = time(NULL);
 
 TEST(MigrateK1toK2, SimpleMigrate) {
     // Given
+    std::list<string> generatedPassws{};
+    auto now = time(NULL);
+
     auto error = thekey_v1::createStorage(
             {
                     .file = "ts_migrate_v1.ckey",
@@ -62,7 +63,7 @@ TEST(MigrateK1toK2, SimpleMigrate) {
     generatedPassws.push_back(srcStorage->genPassw(8));
     generatedPassws.push_back(srcStorage->genPassw(10));
     generatedPassws.push_back(srcStorage->genPassw(6, ENC_EN_NUM_SPEC_SYMBOLS));
-    generatedPassws.push_back(srcStorage->genPassw(12, ENC_EN_NUM_SPEC_SYMBOLS));
+    generatedPassws.push_back(srcStorage->genPassw(12, ENC_EN_NUM_SPEC_SYMBOLS_SPACE));
     srcStorage->save();
 
     // When
@@ -128,6 +129,8 @@ TEST(MigrateK1toK2, SimpleMigrate) {
 
 TEST(MigrateK1toK2, MigrateStoragesDirectly) {
     // Given
+    std::list<string> generatedPassws{};
+    auto now = time(NULL);
     auto error = thekey_v1::createStorage(
             {
                     .file = "ts2_migrate_v1.ckey",
@@ -169,7 +172,7 @@ TEST(MigrateK1toK2, MigrateStoragesDirectly) {
     generatedPassws.push_back(srcStorage->genPassw(8));
     generatedPassws.push_back(srcStorage->genPassw(10));
     generatedPassws.push_back(srcStorage->genPassw(6, ENC_EN_NUM_SPEC_SYMBOLS));
-    generatedPassws.push_back(srcStorage->genPassw(12, ENC_EN_NUM_SPEC_SYMBOLS));
+    generatedPassws.push_back(srcStorage->genPassw(12, ENC_EN_NUM_SPEC_SYMBOLS_SPACE));
     srcStorage->save();
 
     thekey_v2::createStorage(

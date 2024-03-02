@@ -144,6 +144,11 @@ int key_salt::genpassw(unsigned char *out, unsigned int len, unsigned int encodi
             delete[] source;
             return i;
         }
+        case ENC_EN_NUM_SPEC_SYMBOLS_SPACE: {
+            int i = num_en_spec_symbols_space_to_acsii(out, source, (unsigned int) len);
+            delete[] source;
+            return i;
+        }
         default://ENC_EN_NON
         {
             memcpy(out, source, len);
