@@ -218,8 +218,9 @@ void thekey_v2::login(const std::string &filePath) {
         auto passw = term::ask_password_from_term("write new storage master passw: ");
         if (!ends_with(newPath, ".ckey")) newPath += ".ckey";
 
-        cout << "changing password for storage..." << endl;
-        int error = storageV2->saveNewPassw(newPath, passw);
+        cout << "changing password for storage..." << flush;
+        int error = storageV2->saveNewPassw(newPath, passw, [](const float &) { cout << "." << flush; });
+        cout << endl;
         if (error) {
             cerr << "error to change storage password : " << errorToString(error) << endl;
             return;

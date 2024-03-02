@@ -121,7 +121,11 @@ namespace thekey_v2 {
 
         virtual int save(const std::string &path);
 
-        virtual int saveNewPassw(const std::string &path, const std::string &passw);
+        virtual int saveNewPassw(
+                const std::string &path,
+                const std::string &passw,
+                const std::function<void(const float &)> &progress = {}
+        );
 
         // ---- notes api -----
         /**

@@ -292,7 +292,11 @@ int KeyStorageV2::save(const std::string &path) {
     return KEY_WRITE_FILE_ERROR;
 }
 
-int KeyStorageV2::saveNewPassw(const std::string &path, const std::string &passw) {
+int KeyStorageV2::saveNewPassw(
+        const std::string &path,
+        const std::string &passw,
+        const std::function<void(const float &)> &progress
+) {
 
     auto storageInfo = info();
     auto error = createStorage(
@@ -307,8 +311,14 @@ int KeyStorageV2::saveNewPassw(const std::string &path, const std::string &passw
     destStorage->readAll();
     auto newCryptCtx = destStorage->ctx;
 
+    auto allItemsCount =
+            float(notes().size() + otpNotes(0).size());
+    int progressCount = 0;
+
     for (const auto &note: notes(TK2_GET_NOTE_FULL)) {
         destStorage->createNote(note);
+
+        progress(MIN(1, progressCount++ / allItemsCount));
     }
 
     for (const auto &srcNote: otpNotes(TK2_GET_NOTE_FULL)) {
@@ -324,6 +334,8 @@ int KeyStorageV2::saveNewPassw(const std::string &path, const std::string &passw
         destNote.pin = srcNote.pin;
 
         destStorage->setOtpNote(destNote);
+
+        progress(MIN(1, progressCount++ / allItemsCount));
     }
 
     destStorage->appendPasswHistory(genPasswHistoryList(TK2_GET_NOTE_FULL));
