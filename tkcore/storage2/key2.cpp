@@ -311,14 +311,13 @@ int KeyStorageV2::saveNewPassw(
     destStorage->readAll();
     auto newCryptCtx = destStorage->ctx;
 
-    auto allItemsCount =
-            float(notes().size() + otpNotes(0).size());
+    auto allItemsCount = float(notes().size() + otpNotes(0).size());
     int progressCount = 0;
 
     for (const auto &note: notes(TK2_GET_NOTE_FULL)) {
         destStorage->createNote(note);
 
-        progress(MIN(1, progressCount++ / allItemsCount));
+        if (progress) progress(MIN(1, progressCount++ / allItemsCount));
     }
 
     for (const auto &srcNote: otpNotes(TK2_GET_NOTE_FULL)) {
@@ -335,7 +334,7 @@ int KeyStorageV2::saveNewPassw(
 
         destStorage->setOtpNote(destNote);
 
-        progress(MIN(1, progressCount++ / allItemsCount));
+        if (progress) progress(MIN(1, progressCount++ / allItemsCount));
     }
 
     destStorage->appendPasswHistory(genPasswHistoryList(TK2_GET_NOTE_FULL));

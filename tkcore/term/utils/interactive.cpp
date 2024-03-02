@@ -54,7 +54,7 @@ void Interactive::loop() {
             for (const auto &cmd: cmdHandler.variants) {
                 if (cmd == input) {
                     found = 1;
-                    cmdHandler.invoke();
+                    if (cmdHandler.invoke) cmdHandler.invoke();
                     break;
                 }
             }

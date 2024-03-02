@@ -90,7 +90,7 @@ int thekey_v1::migrateK1toK2(
         }
 
         dest.createNote(newNote);
-        progress(MIN(1, ++progressCount / allItemsCount));
+        if (progress) progress(MIN(1, ++progressCount / allItemsCount));
     }
 
     for (const auto &liteHist: liteGenHist) {
@@ -103,7 +103,7 @@ int thekey_v1::migrateK1toK2(
                 });
 
         dest.appendPasswHistory(newHistList);
-        progress(MIN(1, ++progressCount / allItemsCount));
+        if (progress)progress(MIN(1, ++progressCount / allItemsCount));
     }
 
     auto error = dest.save();
