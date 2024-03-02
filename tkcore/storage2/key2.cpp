@@ -290,7 +290,34 @@ int KeyStorageV2::save(const std::string &path) {
     close(fd);
     keyError = KEY_WRITE_FILE_ERROR;
     return KEY_WRITE_FILE_ERROR;
+}
 
+int KeyStorageV2::saveToNewPassw(const std::string &path, const std::string &passw) {
+
+    auto storageInfo = info();
+    auto error = createStorage(
+            {
+                    .file = path,
+                    .storageVersion = storageInfo.storageVersion,
+                    .name = storageInfo.name,
+                    .description = storageInfo.description
+            });
+    if (error)return error;
+    auto destStorage = storage(path, passw);
+    destStorage->readAll();
+    auto newCryptCtx = destStorage->ctx;
+
+    for (const auto &note: notes(TK2_GET_NOTE_FULL)) {
+        destStorage->createNote(note);
+    }
+
+    for (const auto &note: otpNotes()) {
+        destStorage->createOtpNotes(exportOtpNote(note.notePtr).toUri());
+    }
+
+    destStorage->appendPasswHistory(genPasswHistoryList(TK2_GET_NOTE_HISTORY_FULL));
+
+    return destStorage->save();
 }
 
 // ---- notes api ----
