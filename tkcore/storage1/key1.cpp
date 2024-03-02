@@ -511,6 +511,7 @@ int KeyStorageV1::removeNote(long long notePtr) {
     return error;
 }
 
+// ---- gen passw and hist api ----
 std::string KeyStorageV1::genPassw(int len, int genEncoding) {
     unsigned char passw[PASSW_LEN];
     memset(passw, 0, PASSW_LEN);
@@ -528,20 +529,36 @@ std::string KeyStorageV1::genPassw(int len, int genEncoding) {
 
     cryptedGeneratedPassws.push_back(gen);
     fheader->genPasswCount = cryptedGeneratedPassws.size();
-    auto error = save();
+
+    keyError = save();
     return (char *) passw;
 }
 
-std::list<DecryptedPassw> KeyStorageV1::genPasswHist() {
-    auto hist = list<DecryptedPassw>();
+std::vector<DecryptedPassw> KeyStorageV1::genPasswHistoryList(const uint &flags) {
+    std::vector<DecryptedPassw> generatedPasswordHistory = {};
     for (const auto &item: cryptedGeneratedPassws) {
-        unsigned char passwBuffer[PASSW_LEN];
-        memset(passwBuffer, 0, PASSW_LEN);
-        decode(passwBuffer, item.passw, PASSW_LEN, ctx->keyForGenPassw);
-        hist.push_back({.passw = (char *) passwBuffer, .genTime = item.genTime});
-        memset(passwBuffer, 0, PASSW_LEN);
+        generatedPasswordHistory.push_back(*genPasswHistory((long long) &item, flags));
     }
-    return hist;
+    return generatedPasswordHistory;
+}
+
+
+std::shared_ptr<DecryptedPassw> KeyStorageV1::genPasswHistory(long long histPtr, const uint &flags) {
+    auto hist = findByPtr(cryptedGeneratedPassws, histPtr);
+    if (hist == cryptedGeneratedPassws.end()) {
+        keyError = KEY_HIST_NOT_FOUND;
+        return {};
+    }
+    DecryptedPassw dPassw{};
+    dPassw.histPtr = histPtr;
+    dPassw.genTime = hist->genTime;
+
+    unsigned char passwBuffer[PASSW_LEN];
+    memset(passwBuffer, 0, PASSW_LEN);
+    decode(passwBuffer, hist->passw, PASSW_LEN, ctx->keyForGenPassw);
+    dPassw.passw = (char *) passwBuffer;
+
+    return make_shared<DecryptedPassw>(dPassw);
 }
 
 static std::shared_ptr<StorageV1_Header> storageHeader(int fd) {

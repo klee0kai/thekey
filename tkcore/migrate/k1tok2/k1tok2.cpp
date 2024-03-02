@@ -56,13 +56,12 @@ int thekey_v1::migrateK1toK2(thekey_v1::KeyStorageV1 &source, thekey_v2::KeyStor
         dest.createNote(newNote);
     }
 
-    auto histPtr = source.genPasswHist();
     auto newHistList = vector<thekey_v2::DecryptedPassw>();
-    for (const auto &item: source.genPasswHist()) {
+    for (const auto &orHist: source.genPasswHistoryList(TK1_GET_NOTE_HISTORY_FULL)) {
         newHistList.push_back(
                 {
-                        .passw = item.passw,
-                        .genTime = item.genTime
+                        .passw = orHist.passw,
+                        .genTime = orHist.genTime
                 });
     }
     dest.appendPasswHistory(newHistList);

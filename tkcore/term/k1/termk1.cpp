@@ -230,10 +230,10 @@ void thekey_v1::login(const std::string &filePath) {
 
     it.cmd({"hist"}, "print gen password history", [&]() {
         if (!storageV1)return;
-        for (const auto &item: storageV1->genPasswHist()) {
+        for (const auto &hist: storageV1->genPasswHistoryList(TK1_GET_NOTE_HISTORY_FULL)) {
             cout << "-------------------------------------------" << endl;
-            cout << "passw: " << item.passw << endl;
-            std::tm *changeTm = std::gmtime((time_t *) &item.genTime);
+            cout << "passw: " << hist.passw << endl;
+            std::tm *changeTm = std::gmtime((time_t *) &hist.genTime);
             cout << "change time : " << asctime(changeTm) << endl;
         }
         cout << "-------------------------------------------" << endl;

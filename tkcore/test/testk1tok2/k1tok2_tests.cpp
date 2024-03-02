@@ -110,7 +110,7 @@ TEST(MigrateK1toK2, SimpleMigrate) {
     ASSERT_TRUE(histIt->genTime - now < TIME_TOLERANCE);
 
 
-    auto passwHist = dstStorage->passwordsHistory(TK2_GET_NOTE_HISTORY_FULL);
+    auto passwHist = dstStorage->genPasswHistoryList(TK2_GET_NOTE_HISTORY_FULL);
     auto actualHistIt = passwHist.begin();
     auto expectHistIt = expectPassws.begin();
     ASSERT_EQ(expectPassws.size(), passwHist.size());
@@ -226,7 +226,7 @@ TEST(MigrateK1toK2, MigrateStoragesDirectly) {
     ASSERT_TRUE(histIt->genTime - now < TIME_TOLERANCE);
 
 
-    auto passwHist = dstStorage->passwordsHistory(TK2_GET_NOTE_HISTORY_FULL);
+    auto passwHist = dstStorage->genPasswHistoryList(TK2_GET_NOTE_HISTORY_FULL);
     auto actualHistIt = passwHist.begin();
     auto expectHistIt = expectPassws.begin();
     ASSERT_EQ(expectPassws.size(), passwHist.size());

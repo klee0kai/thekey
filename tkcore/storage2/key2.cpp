@@ -317,7 +317,7 @@ std::shared_ptr<DecryptedNote> KeyStorageV2::note(long long notePtr, uint flags)
     decryptedNote->color = cryptedNote->note.color();
 
     for (const auto &item: cryptedNote->history) {
-        decryptedNote->history.push_back(*passwordHistory((long long) &item, flags));
+        decryptedNote->history.push_back(*genPasswHistory((long long) &item, flags));
     }
 
     if ((flags & TK2_GET_NOTE_INFO) != 0) {
@@ -681,15 +681,15 @@ std::string KeyStorageV2::genPassword(uint32_t encodingType, int len) {
     return passw;
 }
 
-std::vector<DecryptedPassw> KeyStorageV2::passwordsHistory(const uint &flags) {
+std::vector<DecryptedPassw> KeyStorageV2::genPasswHistoryList(const uint &flags) {
     std::vector<DecryptedPassw> generatedPasswordHistory = {};
     for (const auto &item: cryptedGeneratedPassws) {
-        generatedPasswordHistory.push_back(*passwordHistory((long long) &item, flags));
+        generatedPasswordHistory.push_back(*genPasswHistory((long long) &item, flags));
     }
     return generatedPasswordHistory;
 }
 
-std::shared_ptr<DecryptedPassw> KeyStorageV2::passwordHistory(long long histPtr, const uint &flags) {
+std::shared_ptr<DecryptedPassw> KeyStorageV2::genPasswHistory(long long histPtr, const uint &flags) {
     shared_ptr<CryptedPasswordFlat> histPassw = {};
 
     for (const auto &item: cryptedGeneratedPassws) {

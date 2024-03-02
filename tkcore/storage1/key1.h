@@ -102,7 +102,12 @@ namespace thekey_v1 {
         // ---- gen password and history api ----
         virtual std::string genPassw(int len, int genEncoding = ENC_NUM_ONLY);
 
-        virtual std::list<DecryptedPassw> genPasswHist();
+        virtual std::vector<DecryptedPassw> genPasswHistoryList(const uint &flags = 0);
+
+        virtual std::shared_ptr<DecryptedPassw> genPasswHistory(
+                long long histPtr,
+                const uint &flags = TK1_GET_NOTE_HISTORY_FULL
+        );
 
     private:
 

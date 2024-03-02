@@ -57,7 +57,7 @@ TEST(ReadStorage1, ReadStorage) {
     ASSERT_EQ(1709227406, note->history.front().genTime);
 
 
-    note = storage->note(notesPtrs[1].notePtr, TK1_GET_NOTE_PASSWORD|TK1_GET_NOTE_INFO);
+    note = storage->note(notesPtrs[1].notePtr, TK1_GET_NOTE_PASSWORD | TK1_GET_NOTE_INFO);
     ASSERT_EQ("site_2.vd.rv", note->site);
     ASSERT_EQ("user_super_login", note->login);
     ASSERT_EQ("@31!!12@", note->passw);
@@ -65,7 +65,7 @@ TEST(ReadStorage1, ReadStorage) {
     ASSERT_EQ(1709227406, note->genTime);
     ASSERT_EQ(0, note->history.size());
 
-    auto genHist = storage->genPasswHist();
+    auto genHist = storage->genPasswHistoryList(TK1_GET_NOTE_HISTORY_FULL);
     ASSERT_EQ(3, genHist.size());
 
     auto genHistIt = genHist.begin();
@@ -116,7 +116,7 @@ TEST(ReadStorage1, ReadStorageIcorrectPassw) {
     ASSERT_EQ(1709227406, note->genTime);
     ASSERT_EQ(0, note->history.size());
 
-    auto genHist = storage->genPasswHist();
+    auto genHist = storage->genPasswHistoryList(TK1_GET_NOTE_HISTORY_FULL);
     ASSERT_EQ(3, genHist.size());
 
     auto genHistIt = genHist.begin();

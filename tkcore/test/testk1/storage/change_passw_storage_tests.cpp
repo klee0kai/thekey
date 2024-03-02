@@ -87,7 +87,7 @@ TEST(ChangePasswStorage1, ChangePassw) {
     ASSERT_TRUE(note->genTime - now < TIME_TOLERANCE);
     ASSERT_EQ(0, note->history.size());
 
-    auto genHist = storage->genPasswHist();
+    auto genHist = storage->genPasswHistoryList(TK1_GET_NOTE_HISTORY_FULL);
     ASSERT_EQ(expectedPassw.size(), genHist.size());
 
     auto genHistIt = genHist.begin();
@@ -130,7 +130,7 @@ TEST(ChangePasswStorage1, NewPassw) {
     ASSERT_TRUE(note->genTime - now < TIME_TOLERANCE);
     ASSERT_EQ(0, note->history.size());
 
-    auto genHist = storage->genPasswHist();
+    auto genHist = storage->genPasswHistoryList(TK1_GET_NOTE_HISTORY_FULL);
     ASSERT_EQ(expectedPassw.size(), genHist.size());
 
     auto genHistIt = genHist.begin();
@@ -172,7 +172,7 @@ TEST(ChangePasswStorage1, OldPassw) {
     ASSERT_TRUE(note->genTime - now < TIME_TOLERANCE);
     ASSERT_EQ(0, note->history.size());
 
-    auto genHist = storage->genPasswHist();
+    auto genHist = storage->genPasswHistoryList(TK1_GET_NOTE_HISTORY_FULL);
     ASSERT_EQ(expectedPassw.size(), genHist.size());
 
     auto genHistIt = genHist.begin();

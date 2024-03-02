@@ -225,7 +225,7 @@ namespace thekey_v2 {
          * @param flags TK2_GET_NOTE_HISTORY_FULL
          * @return
          */
-        virtual std::vector<DecryptedPassw> passwordsHistory(const uint &flags = 0);
+        virtual std::vector<DecryptedPassw> genPasswHistoryList(const uint &flags = 0);
 
         /**
          * get password from history.
@@ -235,7 +235,7 @@ namespace thekey_v2 {
          * @param flags TK2_GET_NOTE_HISTORY_FULL
          * @return
          */
-        virtual std::shared_ptr<DecryptedPassw> passwordHistory(
+        virtual std::shared_ptr<DecryptedPassw> genPasswHistory(
                 long long histPtr,
                 const uint &flags = TK2_GET_NOTE_HISTORY_FULL
         );

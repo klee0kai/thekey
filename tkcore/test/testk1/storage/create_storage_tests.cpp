@@ -85,7 +85,7 @@ TEST(Storage1, CreateStorage) {
     ASSERT_TRUE(note->genTime - now < TIME_TOLERANCE);
     ASSERT_EQ(0, note->history.size());
 
-    auto genHist = storage->genPasswHist();
+    auto genHist = storage->genPasswHistoryList(TK1_GET_NOTE_HISTORY_FULL);
     ASSERT_EQ(expectedPasswHist.size(), genHist.size());
     auto genHistIt = genHist.begin();
     auto expectGenPasswIt = expectedPasswHist.begin();
@@ -138,7 +138,7 @@ TEST(Storage1, EditPassw) {
     ASSERT_TRUE(note->genTime - now < TIME_TOLERANCE);
     ASSERT_EQ(0, note->history.size());
 
-    auto genHist = storage->genPasswHist();
+    auto genHist = storage->genPasswHistoryList(TK1_GET_NOTE_HISTORY_FULL);
     ASSERT_EQ(expectedPasswHist.size(), genHist.size());
     auto genHistIt = genHist.begin();
     auto expectGenPasswIt = expectedPasswHist.begin();
@@ -187,7 +187,7 @@ TEST(Storage1, ReadStorage) {
     ASSERT_TRUE(note->genTime - now < TIME_TOLERANCE);
     ASSERT_EQ(0, note->history.size());
 
-    auto genHist = storage->genPasswHist();
+    auto genHist = storage->genPasswHistoryList(TK1_GET_NOTE_HISTORY_FULL);
     ASSERT_EQ(expectedPasswHist.size(), genHist.size());
     auto genHistIt = genHist.begin();
     auto expectGenPasswIt = expectedPasswHist.begin();
@@ -232,7 +232,7 @@ TEST(Storage1, ReadStorageIcorrectPassw) {
     ASSERT_TRUE(note->genTime - now < TIME_TOLERANCE);
     ASSERT_EQ(0, note->history.size());
 
-    auto genHist = storage->genPasswHist();
+    auto genHist = storage->genPasswHistoryList(TK1_GET_NOTE_HISTORY_FULL);
     ASSERT_EQ(expectedPasswHist.size(), genHist.size());
     auto genHistIt = genHist.begin();
     auto expectGenPasswIt = expectedPasswHist.begin();
@@ -297,7 +297,7 @@ TEST(Storage1, EditStorage) {
     ASSERT_TRUE(note->genTime - now < TIME_TOLERANCE);
     ASSERT_EQ(0, note->history.size());
 
-    auto genHist = storage->genPasswHist();
+    auto genHist = storage->genPasswHistoryList(TK1_GET_NOTE_HISTORY_FULL);
     ASSERT_EQ(expectedPasswHist.size(), genHist.size());
     auto genHistIt = genHist.begin();
     auto expectGenPasswIt = expectedPasswHist.begin();
