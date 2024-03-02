@@ -12,8 +12,8 @@ add_library(k1tok2_static
 
 target_include_directories(k1tok2_static PUBLIC ${CMAKE_CURRENT_LIST_DIR})
 target_link_libraries(k1tok2_static PUBLIC
-        key_storage1
-        key_storage2
+        key_storage1_static
+        key_storage2_static
 )
 
 set_target_properties(k1tok2_static PROPERTIES INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_LIST_DIR})

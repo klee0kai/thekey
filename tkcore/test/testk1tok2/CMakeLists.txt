@@ -4,9 +4,7 @@ add_executable(testk1tok2
 )
 
 target_link_libraries(testk1tok2
-        key_storage1_static
-        key_storage2_static
-        k1tok2_static
+        k1tok2
 
         ktest_core
 )
