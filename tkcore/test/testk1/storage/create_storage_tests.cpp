@@ -89,8 +89,8 @@ TEST(Storage1, CreateStorage) {
     auto genHistIt = genHist.begin();
     auto expectGenPasswIt = expectedPasswHist.begin();
     for (int i = 0; i < expectedPasswHist.size(); ++i) {
-        ASSERT_EQ(*expectGenPasswIt, genHistIt->passw);
-        ASSERT_TRUE(genHistIt->genTime - now < TIME_TOLERANCE);
+        ASSERT_EQ(*expectGenPasswIt, genHistIt->passw) << "index" << i << endl;;
+        ASSERT_TRUE(genHistIt->genTime - now < TIME_TOLERANCE) << "index" << i << endl;
 
         genHistIt++;
         expectGenPasswIt++;
@@ -143,8 +143,8 @@ TEST(Storage1, EditPassw) {
     auto genHistIt = genHist.begin();
     auto expectGenPasswIt = expectedPasswHist.begin();
     for (int i = 0; i < expectedPasswHist.size(); ++i) {
-        ASSERT_EQ(*expectGenPasswIt, genHistIt->passw);
-        ASSERT_TRUE(genHistIt->genTime - now < TIME_TOLERANCE);
+        ASSERT_EQ(*expectGenPasswIt, genHistIt->passw) << "index" << i << endl;;
+        ASSERT_TRUE(genHistIt->genTime - now < TIME_TOLERANCE) << "index" << i << endl;
 
         genHistIt++;
         expectGenPasswIt++;
@@ -188,7 +188,17 @@ TEST(Storage1, ReadStorage) {
     ASSERT_TRUE(note->genTime - now < TIME_TOLERANCE);
     ASSERT_EQ(0, note->histLen);
 
-    ASSERT_EQ(expectedPasswHist.size(), storage->genPasswHist().size());
+    auto genHist = storage->genPasswHist();
+    ASSERT_EQ(expectedPasswHist.size(), genHist.size());
+    auto genHistIt = genHist.begin();
+    auto expectGenPasswIt = expectedPasswHist.begin();
+    for (int i = 0; i < expectedPasswHist.size(); ++i) {
+        ASSERT_EQ(*expectGenPasswIt, genHistIt->passw) << "index" << i << endl;;
+        ASSERT_TRUE(genHistIt->genTime - now < TIME_TOLERANCE) << "index" << i << endl;
+
+        genHistIt++;
+        expectGenPasswIt++;
+    }
 }
 
 
@@ -229,8 +239,8 @@ TEST(Storage1, ReadStorageIcorrectPassw) {
     auto genHistIt = genHist.begin();
     auto expectGenPasswIt = expectedPasswHist.begin();
     for (int i = 0; i < expectedPasswHist.size(); ++i) {
-        ASSERT_NE(*expectGenPasswIt, genHistIt->passw);
-        ASSERT_TRUE(genHistIt->genTime - now < TIME_TOLERANCE);
+        ASSERT_NE(*expectGenPasswIt, genHistIt->passw) << "index" << i << endl;;
+        ASSERT_TRUE(genHistIt->genTime - now < TIME_TOLERANCE) << "index" << i << endl;
 
         genHistIt++;
         expectGenPasswIt++;
@@ -291,5 +301,15 @@ TEST(Storage1, EditStorage) {
     ASSERT_TRUE(note->genTime - now < TIME_TOLERANCE);
     ASSERT_EQ(0, note->histLen);
 
-    ASSERT_EQ(expectedPasswHist.size(), storage->genPasswHist().size());
+    auto genHist = storage->genPasswHist();
+    ASSERT_EQ(expectedPasswHist.size(), genHist.size());
+    auto genHistIt = genHist.begin();
+    auto expectGenPasswIt = expectedPasswHist.begin();
+    for (int i = 0; i < expectedPasswHist.size(); ++i) {
+        ASSERT_EQ(*expectGenPasswIt, genHistIt->passw) << "index" << i << endl;;
+        ASSERT_TRUE(genHistIt->genTime - now < TIME_TOLERANCE) << "index" << i << endl;
+
+        genHistIt++;
+        expectGenPasswIt++;
+    }
 }

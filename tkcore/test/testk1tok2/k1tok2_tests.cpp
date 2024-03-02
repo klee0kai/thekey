@@ -19,7 +19,7 @@ using namespace key_salt;
 
 TEST(MigrateK1toK2, SimpleMigrate) {
     // Given
-    std::list<string> generatedPassws{};
+    std::list<string> expectPassws{};
     auto now = time(NULL);
 
     auto error = thekey_v1::createStorage(
@@ -60,10 +60,10 @@ TEST(MigrateK1toK2, SimpleMigrate) {
     srcStorage->setNote(createNotePtr, createNote);
 
 
-    generatedPassws.push_back(srcStorage->genPassw(8));
-    generatedPassws.push_back(srcStorage->genPassw(10));
-    generatedPassws.push_back(srcStorage->genPassw(6, ENC_EN_NUM_SPEC_SYMBOLS));
-    generatedPassws.push_back(srcStorage->genPassw(12, ENC_EN_NUM_SPEC_SYMBOLS_SPACE));
+    expectPassws.push_back(srcStorage->genPassw(8));
+    expectPassws.push_back(srcStorage->genPassw(10));
+    expectPassws.push_back(srcStorage->genPassw(6, ENC_EN_NUM_SPEC_SYMBOLS));
+    expectPassws.push_back(srcStorage->genPassw(12, ENC_EN_NUM_SPEC_SYMBOLS_SPACE));
     srcStorage->save();
 
     // When
@@ -114,10 +114,10 @@ TEST(MigrateK1toK2, SimpleMigrate) {
 
     auto passwHist = dstStorage->passwordsHistory(TK2_GET_NOTE_HISTORY_FULL);
     auto actualHistIt = passwHist.begin();
-    auto expectHistIt = generatedPassws.begin();
-    ASSERT_EQ(4, passwHist.size());
+    auto expectHistIt = expectPassws.begin();
+    ASSERT_EQ(expectPassws.size(), passwHist.size());
 
-    for (int i = 0; i < 4; ++i) {
+    for (int i = 0; i < expectPassws.size(); ++i) {
         ASSERT_EQ(*expectHistIt, actualHistIt->passw) << "index = " << i << endl;
         ASSERT_TRUE(histIt->genTime - now < TIME_TOLERANCE) << "index = " << i << endl;
         actualHistIt++;
@@ -129,7 +129,7 @@ TEST(MigrateK1toK2, SimpleMigrate) {
 
 TEST(MigrateK1toK2, MigrateStoragesDirectly) {
     // Given
-    std::list<string> generatedPassws{};
+    std::list<string> expectPassws{};
     auto now = time(NULL);
     auto error = thekey_v1::createStorage(
             {
@@ -169,10 +169,10 @@ TEST(MigrateK1toK2, MigrateStoragesDirectly) {
     srcStorage->setNote(createNotePtr, createNote);
 
 
-    generatedPassws.push_back(srcStorage->genPassw(8));
-    generatedPassws.push_back(srcStorage->genPassw(10));
-    generatedPassws.push_back(srcStorage->genPassw(6, ENC_EN_NUM_SPEC_SYMBOLS));
-    generatedPassws.push_back(srcStorage->genPassw(12, ENC_EN_NUM_SPEC_SYMBOLS_SPACE));
+    expectPassws.push_back(srcStorage->genPassw(8));
+    expectPassws.push_back(srcStorage->genPassw(10));
+    expectPassws.push_back(srcStorage->genPassw(6, ENC_EN_NUM_SPEC_SYMBOLS));
+    expectPassws.push_back(srcStorage->genPassw(12, ENC_EN_NUM_SPEC_SYMBOLS_SPACE));
     srcStorage->save();
 
     thekey_v2::createStorage(
@@ -232,10 +232,10 @@ TEST(MigrateK1toK2, MigrateStoragesDirectly) {
 
     auto passwHist = dstStorage->passwordsHistory(TK2_GET_NOTE_HISTORY_FULL);
     auto actualHistIt = passwHist.begin();
-    auto expectHistIt = generatedPassws.begin();
-    ASSERT_EQ(4, passwHist.size());
+    auto expectHistIt = expectPassws.begin();
+    ASSERT_EQ(expectPassws.size(), passwHist.size());
 
-    for (int i = 0; i < 4; ++i) {
+    for (int i = 0; i < expectPassws.size(); ++i) {
         ASSERT_EQ(*expectHistIt, actualHistIt->passw) << "index = " << i << endl;
         ASSERT_TRUE(histIt->genTime - now < TIME_TOLERANCE) << "index = " << i << endl;
         actualHistIt++;

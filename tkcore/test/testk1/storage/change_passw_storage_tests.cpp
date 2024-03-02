@@ -18,7 +18,7 @@ using namespace std;
 using namespace thekey_v1;
 using namespace key_salt;
 
-static std::list<string> generatedPassws{};
+static std::list<string> expectedPassw{};
 static auto now = time(NULL);
 
 TEST(ChangePasswStorage1, ChangePassw) {
@@ -53,9 +53,9 @@ TEST(ChangePasswStorage1, ChangePassw) {
                              .description = "is a description @ about site",
                      });
 
-    generatedPassws.push_back(storage->genPassw(4));
-    generatedPassws.push_back(storage->genPassw(4));
-    generatedPassws.push_back(storage->genPassw(4));
+    expectedPassw.push_back(storage->genPassw(4));
+    expectedPassw.push_back(storage->genPassw(4));
+    expectedPassw.push_back(storage->genPassw(4));
 
     storage.reset();
 
@@ -90,24 +90,18 @@ TEST(ChangePasswStorage1, ChangePassw) {
     ASSERT_EQ(0, note->histLen);
 
     auto genHist = storage->genPasswHist();
-    ASSERT_EQ(3, genHist.size());
+    ASSERT_EQ(expectedPassw.size(), genHist.size());
 
     auto genHistIt = genHist.begin();
-    auto expectGenPasswIt = generatedPassws.begin();
-    ASSERT_EQ(*expectGenPasswIt, genHistIt->passw);
-    ASSERT_TRUE(genHistIt->genTime - now < TIME_TOLERANCE);
+    auto expectGenPasswIt = expectedPassw.begin();
+    for (int i = 0; i < expectedPassw.size(); ++i) {
+        ASSERT_EQ(*expectGenPasswIt, genHistIt->passw) << "index " << i << endl;;
+        ASSERT_TRUE(genHistIt->genTime - now < TIME_TOLERANCE) << "index " << i << endl;
 
-    genHistIt++;
-    expectGenPasswIt++;
-    ASSERT_EQ(*expectGenPasswIt, genHistIt->passw);
-    ASSERT_TRUE(genHistIt->genTime - now < TIME_TOLERANCE);
-
-    genHistIt++;
-    expectGenPasswIt++;
-    ASSERT_EQ(*expectGenPasswIt, genHistIt->passw);
-    ASSERT_TRUE(genHistIt->genTime - now < TIME_TOLERANCE);
+        genHistIt++;
+        expectGenPasswIt++;
+    }
 }
-
 
 
 // RUN AFTER ChangePasswStorage1, ChangePassw
@@ -139,22 +133,17 @@ TEST(ChangePasswStorage1, NewPassw) {
     ASSERT_EQ(0, note->histLen);
 
     auto genHist = storage->genPasswHist();
-    ASSERT_EQ(3, genHist.size());
+    ASSERT_EQ(expectedPassw.size(), genHist.size());
 
     auto genHistIt = genHist.begin();
-    auto expectGenPasswIt = generatedPassws.begin();
-    ASSERT_EQ(*expectGenPasswIt, genHistIt->passw);
-    ASSERT_TRUE(genHistIt->genTime - now < TIME_TOLERANCE);
+    auto expectGenPasswIt = expectedPassw.begin();
+    for (int i = 0; i < expectedPassw.size(); ++i) {
+        ASSERT_EQ(*expectGenPasswIt, genHistIt->passw) << "index " << i << endl;;
+        ASSERT_TRUE(genHistIt->genTime - now < TIME_TOLERANCE) << "index " << i << endl;
 
-    genHistIt++;
-    expectGenPasswIt++;
-    ASSERT_EQ(*expectGenPasswIt, genHistIt->passw);
-    ASSERT_TRUE(genHistIt->genTime - now < TIME_TOLERANCE);
-
-    genHistIt++;
-    expectGenPasswIt++;
-    ASSERT_EQ(*expectGenPasswIt, genHistIt->passw);
-    ASSERT_TRUE(genHistIt->genTime - now < TIME_TOLERANCE);
+        genHistIt++;
+        expectGenPasswIt++;
+    }
 }
 
 // RUN AFTER ChangePasswStorage1, ChangePassw
@@ -186,20 +175,15 @@ TEST(ChangePasswStorage1, OldPassw) {
     ASSERT_EQ(0, note->histLen);
 
     auto genHist = storage->genPasswHist();
-    ASSERT_EQ(3, genHist.size());
+    ASSERT_EQ(expectedPassw.size(), genHist.size());
 
     auto genHistIt = genHist.begin();
-    auto expectGenPasswIt = generatedPassws.begin();
-    ASSERT_NE(*expectGenPasswIt, genHistIt->passw);
-    ASSERT_TRUE(genHistIt->genTime - now < TIME_TOLERANCE);
+    auto expectGenPasswIt = expectedPassw.begin();
+    for (int i = 0; i < expectedPassw.size(); ++i) {
+        ASSERT_NE(*expectGenPasswIt, genHistIt->passw) << "index " << i << endl;;
+        ASSERT_TRUE(genHistIt->genTime - now < TIME_TOLERANCE) << "index " << i << endl;
 
-    genHistIt++;
-    expectGenPasswIt++;
-    ASSERT_NE(*expectGenPasswIt, genHistIt->passw);
-    ASSERT_TRUE(genHistIt->genTime - now < TIME_TOLERANCE);
-
-    genHistIt++;
-    expectGenPasswIt++;
-    ASSERT_NE(*expectGenPasswIt, genHistIt->passw);
-    ASSERT_TRUE(genHistIt->genTime - now < TIME_TOLERANCE);
+        genHistIt++;
+        expectGenPasswIt++;
+    }
 }
