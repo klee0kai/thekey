@@ -1,3 +1,9 @@
-# Test storages 
+# Test storages
 
- - ts3.ckey - passw "test"
+# ts_v1.ckey
+
+Generated Storage in test
+
+```c++
+TEST(Storage1, CreateStorage)
+```

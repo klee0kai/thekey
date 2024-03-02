@@ -3,8 +3,8 @@
 //
 
 #include "termotp.h"
-#include "utils/Interactive.h"
-#include "utils/term_utils.h"
+#include "../utils/Interactive.h"
+#include "../utils/term_utils.h"
 #include "otp.h"
 
 using namespace term;

@@ -13,11 +13,13 @@
 #define TK2_GET_NOTE_PTR_ONLY 0x00
 #define TK2_GET_NOTE_INFO 0x01
 #define TK2_GET_NOTE_PASSWORD 0x02
-#define TK2_GET_NOTE_FULL TK2_GET_NOTE_INFO|TK2_GET_NOTE_PASSWORD
+#define TK2_GET_NOTE_HISTORY_FULL 0x04
+#define TK2_GET_NOTE_FULL TK2_GET_NOTE_INFO|TK2_GET_NOTE_PASSWORD|TK2_GET_NOTE_HISTORY_FULL
 
 // set flags 0xFF00
 #define TK2_SET_NOTE_FORCE 0x100
 #define TK2_SET_NOTE_TRACK_HISTORY 0x200
+#define TK2_SET_NOTE_FULL_HISTORY 0x400
 
 namespace thekey_v2 {
 
@@ -43,6 +45,15 @@ namespace thekey_v2 {
         int invalidSectionsContains;
     };
 
+    struct DecryptedPassw {
+        // note unic id
+        long long histPtr;
+
+        std::string passw;
+        uint64_t genTime;
+        KeyColor color;
+    };
+
     struct DecryptedNote {
         // note unic id
         long long notePtr;
@@ -55,7 +66,7 @@ namespace thekey_v2 {
 
         // not editable
         uint64_t genTime;
-        std::vector<long long> history;
+        std::vector<DecryptedPassw> history;
     };
 
     struct DecryptedOtpNote {
@@ -73,12 +84,6 @@ namespace thekey_v2 {
         key_otp::OtpMethod method;
         uint32_t interval;
         uint64_t createTime;
-    };
-
-    struct DecryptedPassw {
-        std::string passw;
-        uint64_t genTime;
-        KeyColor color;
     };
 
 
@@ -130,7 +135,7 @@ namespace thekey_v2 {
         virtual std::shared_ptr<DecryptedNote> note(long long notePtr, uint flags = TK2_GET_NOTE_PTR_ONLY);
 
         /**
-         * @return notePtr note unic identifier
+         * @return histPtr note unic identifier
          */
         virtual std::shared_ptr<DecryptedNote> createNote(const DecryptedNote &note = {});
 
@@ -215,18 +220,32 @@ namespace thekey_v2 {
         /**
          * We get the history of generated passwords
          *
+         * @param flags TK2_GET_NOTE_HISTORY_FULL
          * @return
          */
-        virtual std::vector<long long> passwordsHistory();
+        virtual std::vector<DecryptedPassw> passwordsHistory(const uint &flags = 0);
 
         /**
          * get password from history.
          * The identifier can be either from the history of generated passwords or from the history of notes.
          *
          * @param histPtr
+         * @param flags TK2_GET_NOTE_HISTORY_FULL
          * @return
          */
-        virtual std::shared_ptr<DecryptedPassw> passwordHistory(long long histPtr);
+        virtual std::shared_ptr<DecryptedPassw> passwordHistory(
+                long long histPtr,
+                const uint &flags = TK2_GET_NOTE_HISTORY_FULL
+        );
+
+        /**
+         * Append generated password history
+         *
+         * @param hist
+         * @return
+         */
+        virtual int appendPasswHistory(const std::vector<DecryptedPassw> &hist);
+
 
     };
 

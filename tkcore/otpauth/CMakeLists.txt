@@ -19,9 +19,7 @@ set_target_properties(otpauth PROPERTIES INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_C
 if (Protobuf_FOUND)
     set_target_properties(otpauth PROPERTIES COMPILE_FLAGS "-DProtobuf_FOUND=true ")
 
-    target_link_libraries(otpauth PUBLIC
-            protobuf
-            )
+    target_link_libraries(otpauth PUBLIC ${Protobuf_LIBRARIES})
 endif ()
 
 target_include_directories(otpauth PUBLIC

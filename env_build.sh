@@ -90,11 +90,9 @@ function build_term_app() {
 
   cd tkcore
   rm -rf build
-  mkdir -p build
-  cd build
 
-  cmake ..
-  make
+  cmake -S . -B build
+  cmake --build build --target all -- -j 10
 
   cd "$WORKSPACE"
 
@@ -103,6 +101,7 @@ function build_term_app() {
   # run tests
   cd $WORKSPACE/tkcore/build/test/testk1 && "./testk1"
   cd $WORKSPACE/tkcore/build/test/testk2 && "./testk2"
+  cd $WORKSPACE/tkcore/build/test/testk1tok2 && "./testk1tok2"
 
   cd "$WORKSPACE"
 }
@@ -142,7 +141,6 @@ export ANDROID_NDK_ROOT="${NDK_ROOT}"
 export ANDROID_NDK_HOME="${NDK_ROOT}"
 export ANDROID_NDK_VERSION=$(realpath $NDK_ROOT)
 export ANDROID_API="21"
-export PROTOBUF_VERSION="3.9.0"
 export WORKSPACE=$(pwd)
 export CUR_OS_UNAME=$(uname -sm | sed 's/ /_/g')
 

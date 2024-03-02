@@ -3,8 +3,8 @@
 //
 
 #include "termk1.h"
-#include "utils/term_utils.h"
-#include "utils/Interactive.h"
+#include "../utils/term_utils.h"
+#include "../utils/Interactive.h"
 #include "common.h"
 #include "key1.h"
 
