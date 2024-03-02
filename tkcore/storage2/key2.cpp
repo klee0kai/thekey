@@ -292,7 +292,7 @@ int KeyStorageV2::save(const std::string &path) {
     return KEY_WRITE_FILE_ERROR;
 }
 
-int KeyStorageV2::saveToNewPassw(const std::string &path, const std::string &passw) {
+int KeyStorageV2::saveNewPassw(const std::string &path, const std::string &passw) {
 
     auto storageInfo = info();
     auto error = createStorage(
@@ -311,11 +311,22 @@ int KeyStorageV2::saveToNewPassw(const std::string &path, const std::string &pas
         destStorage->createNote(note);
     }
 
-    for (const auto &note: otpNotes()) {
-        destStorage->createOtpNotes(exportOtpNote(note.notePtr).toUri());
+    for (const auto &srcNote: otpNotes(TK2_GET_NOTE_FULL)) {
+        auto destNoteList = destStorage->createOtpNotes(
+                exportOtpNote(srcNote.notePtr).toUri(),
+                TK2_GET_NOTE_FULL
+        );
+        if (destNoteList.empty())continue;
+        auto destNote = destNoteList.front();
+
+        // not export meta
+        destNote.color = srcNote.color;
+        destNote.pin = srcNote.pin;
+
+        destStorage->setOtpNote(destNote);
     }
 
-    destStorage->appendPasswHistory(genPasswHistoryList(TK2_GET_NOTE_HISTORY_FULL));
+    destStorage->appendPasswHistory(genPasswHistoryList(TK2_GET_NOTE_FULL));
 
     return destStorage->save();
 }
@@ -447,7 +458,7 @@ int KeyStorageV2::setNote(const thekey_v2::DecryptedNote &dnote,
                     fheader->interactionsCount()
             );
             hist.genTime(old->genTime);
-            cryptedNote->history.push_back(hist);
+            cryptedNote->history.push_front(hist);
         }
     }
 
@@ -693,8 +704,8 @@ int KeyStorageV2::removeOtpNote(long long notePtr) {
 }
 
 // ---- gen passw and hist api ----
-std::string KeyStorageV2::genPassword(uint32_t encodingType, int len) {
-    auto passw = from(thekey_v2::gen_password(encodingType, len));
+std::string KeyStorageV2::genPassword(uint32_t schemeId, int len) {
+    auto passw = from(thekey_v2::gen_password(schemeId, len));
 
     CryptedPasswordFlat cryptedPasswordFlat{};
     cryptedPasswordFlat.genTime(time(NULL));

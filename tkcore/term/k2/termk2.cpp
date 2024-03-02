@@ -192,7 +192,7 @@ void thekey_v2::login(const std::string &filePath) {
                 schemeFlags = SCHEME_ENGLISH | SCHEME_NUMBERS | SCHEME_SPEC_SYMBOLS | SCHEME_SPACE_SYMBOL;
                 break;
         }
-        auto schemeType = thekey_v2::find_scheme_type_by_flags(schemeFlags);
+        auto schemeType = thekey_v2::findSchemeByFlags(schemeFlags);
 
         auto len = term::ask_int_from_term("length of password: ");
         auto passw = storageV2->genPassword(schemeType, len);

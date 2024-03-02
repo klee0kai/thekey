@@ -214,7 +214,7 @@ uint32_t thekey_v2::find_scheme_id(const key_salt::wide_string &str, const int &
     return encodingSchemas.back().id;
 }
 
-uint32_t thekey_v2::find_scheme_type_by_flags(const uint32_t &flags) {
+uint32_t thekey_v2::findSchemeByFlags(const uint32_t &flags) {
     auto it = std::find_if(encodingSchemas.begin(), encodingSchemas.end(),
                            [flags](const EncodingScheme &schema) { return (schema.flags & flags) == flags; });
     if (it != encodingSchemas.end()) {
