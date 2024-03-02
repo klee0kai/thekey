@@ -59,7 +59,7 @@ TEST(ChangePasswStorage1, ChangePassw) {
 
     storage = thekey_v1::storage("ts_ch_v1.ckey", "somepsws");
     storage->readAll();
-    storage->saveToNewPassw("ts_ch_v1.ckey", "new_passw");
+    storage->saveNewPassw("ts_ch_v1.ckey", "new_passw");
     storage.reset();
 
     storage = thekey_v1::storage("ts_ch_v1.ckey", "new_passw");

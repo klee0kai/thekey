@@ -7,6 +7,7 @@
 #include "../utils/Interactive.h"
 #include "common.h"
 #include "key1.h"
+#include "k1tok2.h"
 
 using namespace std;
 using namespace thekey;
@@ -248,12 +249,30 @@ void thekey_v1::login(const std::string &filePath) {
         if (!ends_with(newPath, ".ckey")) newPath += ".ckey";
 
         cout << "changing password for storage..." << endl;
-        int error = storageV1->saveToNewPassw(newPath, passw);
+        int error = storageV1->saveNewPassw(newPath, passw);
         if (error) {
             cerr << "error to change storage password : " << errorToString(error) << endl;
             return;
         }
-        cout << "storage password changed to new file : " << newPath << endl;
+        cout << "storage password has been changed to new file : " << newPath << endl;
+    });
+
+    it.cmd({"migrate"}, "migrate storage to v2", [&]() {
+        if (!storageV1)return;
+
+        auto newPath = term::ask_from_term("write new path to save storage: ");
+        auto passw = term::ask_password_from_term("write new storage master passw: ");
+        if (!ends_with(newPath, ".ckey")) newPath += ".ckey";
+
+        cout << "migrating storage to version 2..." << endl;
+
+        int error = migrateK1toK2(*storageV1, newPath, passw);
+
+        if (error) {
+            cerr << "error to migrate storage : " << errorToString(error) << endl;
+            return;
+        }
+        cout << "storage has been migrated to version 2 : " << newPath << endl;
     });
 
 

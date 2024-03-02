@@ -37,6 +37,29 @@ int thekey_v1::migrateK1toK2(
     return migrateK1toK2(*srcStorage, *dstStorage);
 }
 
+int thekey_v1::migrateK1toK2(
+        thekey_v1::KeyStorageV1 &source,
+        const std::string &outPath,
+        const std::string &passw
+) {
+    int error = 0;
+    auto info = source.info();
+
+    error = thekey_v2::createStorage(
+            {
+                    .file = outPath,
+                    .name = info.name,
+                    .description = info.description
+            });
+    if (error)return error;
+    auto dstStorage = thekey_v2::storage(outPath, passw);
+    if (!dstStorage) return keyError;
+    error = dstStorage->readAll();
+    if (error)return error;
+
+    return migrateK1toK2(source, *dstStorage);
+}
+
 int thekey_v1::migrateK1toK2(thekey_v1::KeyStorageV1 &source, thekey_v2::KeyStorageV2 &dest) {
     for (const auto &noteOrig: source.notes(TK1_GET_NOTE_FULL)) {
         auto newNote = thekey_v2::DecryptedNote{

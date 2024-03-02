@@ -19,6 +19,12 @@ namespace thekey_v1 {
 
     int migrateK1toK2(
             thekey_v1::KeyStorageV1 &source,
+            const std::string &outPath,
+            const std::string &passw
+    );
+
+    int migrateK1toK2(
+            thekey_v1::KeyStorageV1 &source,
             thekey_v2::KeyStorageV2 &dest
     );
 
