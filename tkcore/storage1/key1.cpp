@@ -365,6 +365,7 @@ int KeyStorageV1::saveToNewPassw(const std::string &path, const std::string &pas
 // ---- notes api ----
 std::vector<DecryptedNote> KeyStorageV1::notes(uint flags) {
     std::vector<DecryptedNote> notes = {};
+    notes.reserve(cryptedNotes.size());
     for (const auto &item: cryptedNotes) {
         notes.push_back(*note((long long) &item, flags));
     }
@@ -536,6 +537,7 @@ std::string KeyStorageV1::genPassw(int len, int genEncoding) {
 
 std::vector<DecryptedPassw> KeyStorageV1::genPasswHistoryList(const uint &flags) {
     std::vector<DecryptedPassw> generatedPasswordHistory = {};
+    generatedPasswordHistory.reserve(generatedPasswordHistory.size());
     for (const auto &item: cryptedGeneratedPassws) {
         generatedPasswordHistory.push_back(*genPasswHistory((long long) &item, flags));
     }
