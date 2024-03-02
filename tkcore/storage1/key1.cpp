@@ -96,6 +96,11 @@ struct thekey_v1::CryptContext {
     unsigned char keyForGenPassw[KEY_LEN];
 };
 
+template<typename T>
+typename list<T>::iterator findByPtr(list<T> &sList, const long long &ptr) {
+    return std::find_if(sList.begin(), sList.end(), [&](const T &it) { return (long long) &it == ptr; });;
+}
+
 static std::shared_ptr<StorageV1_Header> storageHeader(int fd);
 
 static int encode(unsigned char *outText,
@@ -357,38 +362,68 @@ int KeyStorageV1::saveToNewPassw(const std::string &path, const std::string &pas
     return error;
 }
 
-std::vector<long long> KeyStorageV1::notes() {
-    std::vector<long long> notes = {};
+// ---- notes api ----
+std::vector<DecryptedNote> KeyStorageV1::notes(uint flags) {
+    std::vector<DecryptedNote> notes = {};
+    notes.reserve(cryptedNotes.size());
     for (const auto &item: cryptedNotes) {
-        notes.push_back((long long) &item);
+        notes.push_back(*note((long long) &item, flags));
     }
     return notes;
 }
 
-std::shared_ptr<DecryptedNote> KeyStorageV1::note(long long notePtr, int decryptPassw) {
-    auto cryptedNote = std::find_if(cryptedNotes.begin(), cryptedNotes.end(),
-                                    [notePtr](const CryptedNote &note) {
-                                        return (long long) &note == notePtr;
-                                    });
+std::shared_ptr<DecryptedNote> KeyStorageV1::note(long long notePtr, uint flags) {
+    auto cryptedNote = findByPtr(cryptedNotes, notePtr);
     if (cryptedNote == cryptedNotes.end()) {
         keyError = KEY_NOTE_NOT_FOUND;
         return {};
     }
+
+    auto decryptInfo = flags & TK1_GET_NOTE_INFO;
+    auto decryptPassw = flags & TK1_GET_NOTE_PASSWORD;
+    auto decryptHist = flags & TK1_GET_NOTE_HISTORY_FULL;
+
     auto decryptedNote = std::make_shared<DecryptedNote>();
+    decryptedNote->notePtr = notePtr;
     decryptedNote->genTime = cryptedNote->genTime;
-    decryptedNote->histLen = cryptedNote->histLen % NOTE_PASSW_HIST_LEN;
 
-    unsigned char siteBuffer[SITE_LEN];
-    memset(siteBuffer, 0, SITE_LEN);
-    if (memcmpr((void *) cryptedNote->site, 0, SITE_LEN) != NULL)
-        decode(siteBuffer, cryptedNote->site, SITE_LEN, ctx->keyForLogin);
-    decryptedNote->site = (char *) siteBuffer;
+    if (decryptInfo) {
+        unsigned char siteBuffer[SITE_LEN];
+        memset(siteBuffer, 0, SITE_LEN);
+        if (memcmpr((void *) cryptedNote->site, 0, SITE_LEN) != NULL)
+            decode(siteBuffer, cryptedNote->site, SITE_LEN, ctx->keyForLogin);
+        decryptedNote->site = (char *) siteBuffer;
 
-    unsigned char loginBuffer[LOGIN_LEN];
-    memset(loginBuffer, 0, LOGIN_LEN);
-    if (memcmpr((void *) cryptedNote->login, 0, LOGIN_LEN) != NULL)
-        decode(loginBuffer, cryptedNote->login, LOGIN_LEN, ctx->keyForLogin);
-    decryptedNote->login = (char *) loginBuffer;
+        unsigned char loginBuffer[LOGIN_LEN];
+        memset(loginBuffer, 0, LOGIN_LEN);
+        if (memcmpr((void *) cryptedNote->login, 0, LOGIN_LEN) != NULL)
+            decode(loginBuffer, cryptedNote->login, LOGIN_LEN, ctx->keyForLogin);
+        decryptedNote->login = (char *) loginBuffer;
+
+        unsigned char descriptionBuffer[DESC_LEN];
+        memset(descriptionBuffer, 0, DESC_LEN);
+        if (memcmpr((void *) cryptedNote->description, 0, DESC_LEN) != NULL)
+            decode(descriptionBuffer, cryptedNote->description, DESC_LEN, ctx->keyForDescription);
+        decryptedNote->description = (char *) descriptionBuffer;
+    }
+
+    if (decryptHist) {
+        for (int i = 0; i < cryptedNote->histLen; ++i) {
+            unsigned char passwBuffer[PASSW_LEN];
+            memset(passwBuffer, 0, PASSW_LEN);
+            decode(passwBuffer, cryptedNote->hist[i].passw, PASSW_LEN, ctx->keyForNoteHistPassw);
+            decryptedNote->history.push_back(
+                    {
+                            .histPtr = i,
+                            .passw =(char *) passwBuffer,
+                            .genTime = cryptedNote->genTime
+                    });
+        }
+    } else {
+        for (int i = 0; i < cryptedNote->histLen; ++i) {
+            decryptedNote->history.push_back({.histPtr = i, .genTime = cryptedNote->genTime});
+        }
+    }
 
     if (decryptPassw) {
         unsigned char passwBuffer[PASSW_LEN];
@@ -399,57 +434,31 @@ std::shared_ptr<DecryptedNote> KeyStorageV1::note(long long notePtr, int decrypt
         memset(passwBuffer, 0, PASSW_LEN);
     }
 
-    unsigned char descriptionBuffer[DESC_LEN];
-    memset(descriptionBuffer, 0, DESC_LEN);
-    if (memcmpr((void *) cryptedNote->description, 0, DESC_LEN) != NULL)
-        decode(descriptionBuffer, cryptedNote->description, DESC_LEN, ctx->keyForDescription);
-    decryptedNote->description = (char *) descriptionBuffer;
 
     return decryptedNote;
 }
 
-std::list<DecryptedPassw> KeyStorageV1::noteHist(long long notePtr) {
-    auto cryptedNote = std::find_if(cryptedNotes.begin(), cryptedNotes.end(),
-                                    [notePtr](const CryptedNote &note) {
-                                        return (long long) &note == notePtr;
-                                    });
-    if (cryptedNote == cryptedNotes.end()) {
-        keyError = KEY_HIST_NOT_FOUND;
-        return {};
-    }
-    auto hist = std::list<DecryptedPassw>{};
-
-    for (int i = 0; i < cryptedNote->histLen; ++i) {
-        unsigned char passwBuffer[PASSW_LEN];
-        memset(passwBuffer, 0, PASSW_LEN);
-        decode(passwBuffer, cryptedNote->hist[i].passw, PASSW_LEN, ctx->keyForNoteHistPassw);
-        hist.push_back({.passw =(char *) passwBuffer, .genTime = cryptedNote->genTime});
-    }
-
-    return hist;
-}
-
-long long KeyStorageV1::createNote() {
+std::shared_ptr<DecryptedNote> KeyStorageV1::createNote(const DecryptedNote &note) {
     cryptedNotes.push_back({});
     const CryptedNote &it = cryptedNotes.back();
-    fheader->notesCount = cryptedNotes.size();
-    return (long long) &it;
+    auto dNote = make_shared<DecryptedNote>(note);
+    dNote->notePtr = (long long) &it;
+    setNote(*dNote, TK1_SET_NOTE_FORCE);
+    return dNote;
 }
 
 int KeyStorageV1::setNote(
-        long long notePtr,
-        const thekey_v1::DecryptedNote &dnote,
-        int notCmpOld
+        const DecryptedNote &dnote,
+        uint flags
 ) {
-    auto cryptedNote = std::find_if(cryptedNotes.begin(), cryptedNotes.end(),
-                                    [notePtr](const CryptedNote &note) {
-                                        return (long long) &note == notePtr;
-                                    });
+    auto cryptedNote = findByPtr(cryptedNotes, dnote.notePtr);
     if (cryptedNote == cryptedNotes.end()) {
         keyError = KEY_NOTE_NOT_FOUND;
         return KEY_NOTE_NOT_FOUND;
     }
-    auto old = note(notePtr, 1);
+
+    auto notCmpOld = (flags & TK1_SET_NOTE_FORCE);
+    auto old = note(dnote.notePtr, TK1_GET_NOTE_FULL);
 
     if (notCmpOld || old->site != dnote.site) {
         memset(cryptedNote->site, 0, SITE_LEN);
@@ -467,9 +476,8 @@ int KeyStorageV1::setNote(
         cryptedNote->genTime = time(NULL);
 
         if (!old->passw.empty()) {
-            unsigned char cryptedPasswBuffer[PASSW_LEN];
             //encrypt passwHist
-            cryptedNote->histLen = MIN(old->histLen + 1, NOTE_PASSW_HIST_LEN);
+            cryptedNote->histLen = MIN(old->history.size() + 1, NOTE_PASSW_HIST_LEN);
             memmove(cryptedNote->hist + 1, cryptedNote->hist, (NOTE_PASSW_HIST_LEN - 1) * sizeof(DecryptedPassw));
 
             memset(cryptedNote->hist[0].passw, 0, PASSW_LEN);
@@ -504,6 +512,7 @@ int KeyStorageV1::removeNote(long long notePtr) {
     return error;
 }
 
+// ---- gen passw and hist api ----
 std::string KeyStorageV1::genPassw(int len, int genEncoding) {
     unsigned char passw[PASSW_LEN];
     memset(passw, 0, PASSW_LEN);
@@ -521,20 +530,37 @@ std::string KeyStorageV1::genPassw(int len, int genEncoding) {
 
     cryptedGeneratedPassws.push_back(gen);
     fheader->genPasswCount = cryptedGeneratedPassws.size();
-    auto error = save();
+
+    keyError = save();
     return (char *) passw;
 }
 
-std::list<DecryptedPassw> KeyStorageV1::genPasswHist() {
-    auto hist = list<DecryptedPassw>();
+std::vector<DecryptedPassw> KeyStorageV1::genPasswHistoryList(const uint &flags) {
+    std::vector<DecryptedPassw> generatedPasswordHistory = {};
+    generatedPasswordHistory.reserve(generatedPasswordHistory.size());
     for (const auto &item: cryptedGeneratedPassws) {
-        unsigned char passwBuffer[PASSW_LEN];
-        memset(passwBuffer, 0, PASSW_LEN);
-        decode(passwBuffer, item.passw, PASSW_LEN, ctx->keyForGenPassw);
-        hist.push_back({.passw = (char *) passwBuffer, .genTime = item.genTime});
-        memset(passwBuffer, 0, PASSW_LEN);
+        generatedPasswordHistory.push_back(*genPasswHistory((long long) &item, flags));
     }
-    return hist;
+    return generatedPasswordHistory;
+}
+
+
+std::shared_ptr<DecryptedPassw> KeyStorageV1::genPasswHistory(long long histPtr, const uint &flags) {
+    auto hist = findByPtr(cryptedGeneratedPassws, histPtr);
+    if (hist == cryptedGeneratedPassws.end()) {
+        keyError = KEY_HIST_NOT_FOUND;
+        return {};
+    }
+    DecryptedPassw dPassw{};
+    dPassw.histPtr = histPtr;
+    dPassw.genTime = hist->genTime;
+
+    unsigned char passwBuffer[PASSW_LEN];
+    memset(passwBuffer, 0, PASSW_LEN);
+    decode(passwBuffer, hist->passw, PASSW_LEN, ctx->keyForGenPassw);
+    dPassw.passw = (char *) passwBuffer;
+
+    return make_shared<DecryptedPassw>(dPassw);
 }
 
 static std::shared_ptr<StorageV1_Header> storageHeader(int fd) {

@@ -63,10 +63,9 @@ void thekey_v1::login(const std::string &filePath) {
 
     it.cmd({"l", "list"}, "list storage notes", [&]() {
         if (!storageV1)return;
-        for (const auto &item: storageV1->notes()) {
-            auto note = storageV1->note(item);
+        for (const auto &note: storageV1->notes(TK1_GET_NOTE_INFO)) {
             cout << "-------------------------------------------" << endl;
-            printNote(*note);
+            printNote(note);
         }
         cout << "-------------------------------------------" << endl;
     });
@@ -74,12 +73,11 @@ void thekey_v1::login(const std::string &filePath) {
     it.cmd({"p", "passw"}, "print note password", [&]() {
         if (!storageV1)return;
         auto index = 0;
-        auto notes = storageV1->notes();
-        for (const auto &item: notes) {
-            auto note = storageV1->note(item, 0);
-            cout << ++index << ") '" << note->site
-                 << "' / '" << note->login
-                 << "' / '" << note->description
+        auto notes = storageV1->notes(TK1_GET_NOTE_INFO);
+        for (const auto &note: notes) {
+            cout << ++index << ") '" << note.site
+                 << "' / '" << note.login
+                 << "' / '" << note.description
                  << "'" << endl;
         }
         auto noteIndex = ask_int_from_term("Select note. Write index: ");
@@ -88,7 +86,7 @@ void thekey_v1::login(const std::string &filePath) {
             return;
         }
 
-        auto noteFull = storageV1->note(notes[noteIndex - 1], 1);
+        auto noteFull = storageV1->note(notes[noteIndex - 1].notePtr, TK1_GET_NOTE_INFO | TK1_GET_NOTE_PASSWORD);
         printNote(*noteFull);
         cout << endl;
     });
@@ -96,12 +94,11 @@ void thekey_v1::login(const std::string &filePath) {
     it.cmd({"noteHist"}, "note passwords history", [&]() {
         if (!storageV1)return;
         auto index = 0;
-        auto notes = storageV1->notes();
-        for (const auto &item: notes) {
-            auto note = storageV1->note(item, 0);
-            cout << ++index << ") '" << note->site
-                 << "' / '" << note->login
-                 << "' hist length " << note->histLen
+        auto notes = storageV1->notes(TK1_GET_NOTE_INFO);
+        for (const auto &note: notes) {
+            cout << ++index << ") '" << note.site
+                 << "' / '" << note.login
+                 << "' hist length " << note.history.size()
                  << endl;
         }
         auto noteIndex = ask_int_from_term("Select note. Write index: ");
@@ -109,7 +106,7 @@ void thekey_v1::login(const std::string &filePath) {
             cerr << "incorrect index " << noteIndex << endl;
             return;
         }
-        for (const auto &item: storageV1->noteHist(notes[noteIndex - 1])) {
+        for (const auto &item: storageV1->note(notes[noteIndex - 1].notePtr, TK1_GET_NOTE_HISTORY_FULL)->history) {
             cout << "password: " << item.passw << endl;
 
             std::tm *changeTm = gmtime((time_t *) &item.genTime);
@@ -125,15 +122,16 @@ void thekey_v1::login(const std::string &filePath) {
         auto login = ask_from_term("login max len " + to_string(info.loginLen) + " : ");
         auto passw = ask_password_from_term("password max len " + to_string(info.passwLen) + " : ");
         auto desc = ask_from_term("description max len " + to_string(info.descLen) + " : ");
-        auto notePtr = storageV1->createNote();
-        int error = storageV1->setNote(notePtr, {
-                .site =site,
-                .login = login,
-                .passw =passw,
-                .description = desc,
-        });
-        if (error) {
-            cerr << "error to save note " << errorToString(error) << endl;
+        auto notePtr = storageV1->createNote(
+                {
+                        .site =site,
+                        .login = login,
+                        .passw =passw,
+                        .description = desc,
+                }
+        );
+        if (!notePtr) {
+            cerr << "error to save note " << errorToString(keyError) << endl;
             return;
         }
         cout << "note saved " << notePtr << endl;
@@ -142,12 +140,11 @@ void thekey_v1::login(const std::string &filePath) {
     it.cmd({"edit"}, "edit note", [&]() {
         if (!storageV1)return;
         auto index = 0;
-        auto notes = storageV1->notes();
-        for (const auto &item: notes) {
-            auto note = storageV1->note(item, 0);
-            cout << ++index << ") '" << note->site
-                 << "' / '" << note->login
-                 << "' hist length " << note->histLen
+        auto notes = storageV1->notes(TK1_GET_NOTE_INFO);
+        for (const auto &note: notes) {
+            cout << ++index << ") '" << note.site
+                 << "' / '" << note.login
+                 << "' hist length " << note.history.size()
                  << endl;
         }
         auto noteIndex = ask_int_from_term("Select note. Write index: ");
@@ -155,13 +152,12 @@ void thekey_v1::login(const std::string &filePath) {
             cerr << "incorrect index " << noteIndex << endl;
             return;
         }
-        auto notePtr = notes[noteIndex - 1];
-        auto note = storageV1->note(notePtr, 1);
+        auto note = storageV1->note(notes[noteIndex - 1].notePtr, TK1_GET_NOTE_FULL);
         auto info = storageV1->info();
 
-        cout << "Note " + to_string(notePtr) + " edit mode";
+        cout << "Note " + to_string(note->notePtr) + " edit mode";
         auto editIt = Interactive();
-        editIt.helpTitle = "Note " + to_string(notePtr) + " edit mode";
+        editIt.helpTitle = "Note " + to_string(note->notePtr) + " edit mode";
 
         editIt.cmd({"p", "print"}, "print note", [&]() {
             cout << "current note is: " << endl;
@@ -186,22 +182,21 @@ void thekey_v1::login(const std::string &filePath) {
 
         editIt.loop();
 
-        int error = storageV1->setNote(notePtr, *note);
+        int error = storageV1->setNote(*note);
         if (error) {
             cerr << "error to save note " << errorToString(error) << endl;
             return;
         } else {
-            cout << "note saved " << notePtr << endl;
+            cout << "note saved " << note->notePtr << endl;
         }
     });
 
     it.cmd({"remove"}, "remove note", [&]() {
         if (!storageV1)return;
         auto index = 0;
-        auto notes = storageV1->notes();
-        for (const auto &item: notes) {
-            auto note = storageV1->note(item, 0);
-            cout << ++index << ") '" << note->site << "' / '" << note->login << "' hist length " << note->histLen
+        auto notes = storageV1->notes(TK1_GET_NOTE_INFO);
+        for (const auto &note: notes) {
+            cout << ++index << ") '" << note.site << "' / '" << note.login << "' hist length " << note.history.size()
                  << endl;
         }
         auto noteIndex = ask_int_from_term("Select note. Write index: ");
@@ -209,8 +204,7 @@ void thekey_v1::login(const std::string &filePath) {
             cerr << "incorrect index " << noteIndex << endl;
             return;
         }
-        auto notePtr = notes[noteIndex - 1];
-        storageV1->removeNote(notePtr);
+        storageV1->removeNote(notes[noteIndex - 1].notePtr);
         cout << "note removed" << endl;
     });
 
@@ -236,10 +230,10 @@ void thekey_v1::login(const std::string &filePath) {
 
     it.cmd({"hist"}, "print gen password history", [&]() {
         if (!storageV1)return;
-        for (const auto &item: storageV1->genPasswHist()) {
+        for (const auto &hist: storageV1->genPasswHistoryList(TK1_GET_NOTE_HISTORY_FULL)) {
             cout << "-------------------------------------------" << endl;
-            cout << "passw: " << item.passw << endl;
-            std::tm *changeTm = std::gmtime((time_t *) &item.genTime);
+            cout << "passw: " << hist.passw << endl;
+            std::tm *changeTm = std::gmtime((time_t *) &hist.genTime);
             cout << "change time : " << asctime(changeTm) << endl;
         }
         cout << "-------------------------------------------" << endl;
@@ -278,5 +272,5 @@ static void printNote(const thekey_v1::DecryptedNote &note) {
     cout << "desc: '" << note.description << "'" << endl;
     std::tm *changeTm = std::gmtime((time_t *) &note.genTime);
     cout << "change time : " << asctime(changeTm) << endl;
-    cout << "hist len: " << note.histLen << endl;
+    cout << "hist len: " << note.history.size() << endl;
 }

@@ -38,18 +38,14 @@ int thekey_v1::migrateK1toK2(
 }
 
 int thekey_v1::migrateK1toK2(thekey_v1::KeyStorageV1 &source, thekey_v2::KeyStorageV2 &dest) {
-    auto notesPtrs = source.notes();
-    for (const auto &notePtr: notesPtrs) {
-        auto noteOrig = source.note(notePtr, 1);
-        if (!noteOrig)continue;
-
+    for (const auto &noteOrig: source.notes(TK1_GET_NOTE_FULL)) {
         auto newNote = thekey_v2::DecryptedNote{
-                .site = noteOrig->site,
-                .login = noteOrig->login,
-                .passw = noteOrig->passw,
-                .description = noteOrig->description
+                .site = noteOrig.site,
+                .login = noteOrig.login,
+                .passw = noteOrig.passw,
+                .description = noteOrig.description
         };
-        for (const auto &orHist: source.noteHist(notePtr)) {
+        for (const auto &orHist: noteOrig.history) {
             newNote.history.push_back(
                     {
                             .passw = orHist.passw,
@@ -60,13 +56,12 @@ int thekey_v1::migrateK1toK2(thekey_v1::KeyStorageV1 &source, thekey_v2::KeyStor
         dest.createNote(newNote);
     }
 
-    auto histPtr = source.genPasswHist();
     auto newHistList = vector<thekey_v2::DecryptedPassw>();
-    for (const auto &item: source.genPasswHist()) {
+    for (const auto &orHist: source.genPasswHistoryList(TK1_GET_NOTE_HISTORY_FULL)) {
         newHistList.push_back(
                 {
-                        .passw = item.passw,
-                        .genTime = item.genTime
+                        .passw = orHist.passw,
+                        .genTime = orHist.genTime
                 });
     }
     dest.appendPasswHistory(newHistList);

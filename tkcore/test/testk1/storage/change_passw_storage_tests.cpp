@@ -35,23 +35,21 @@ TEST(ChangePasswStorage1, ChangePassw) {
     ASSERT_FALSE(error);
 
     // WHEN
-    auto notePtr = storage->createNote();
-    storage->setNote(notePtr,
-                     {
-                             .site = "somesite.com",
-                             .login = "some_user_login",
-                             .passw = "simpplepassw",
-                             .description = "somesite_desc",
-                     });
+    storage->createNote(
+            {
+                    .site = "somesite.com",
+                    .login = "some_user_login",
+                    .passw = "simpplepassw",
+                    .description = "somesite_desc",
+            });
 
-    notePtr = storage->createNote();
-    storage->setNote(notePtr,
-                     {
-                             .site = "site_2.vd.rv",
-                             .login = "user_super_login",
-                             .passw = "@31!!12@",
-                             .description = "is a description @ about site",
-                     });
+    storage->createNote(
+            {
+                    .site = "site_2.vd.rv",
+                    .login = "user_super_login",
+                    .passw = "@31!!12@",
+                    .description = "is a description @ about site",
+            });
 
     expectedPassw.push_back(storage->genPassw(4));
     expectedPassw.push_back(storage->genPassw(4));
@@ -72,24 +70,24 @@ TEST(ChangePasswStorage1, ChangePassw) {
     auto notesPtrs = storage->notes();
     ASSERT_EQ(2, notesPtrs.size());
 
-    auto note = storage->note(notesPtrs[0], 1);
+    auto note = storage->note(notesPtrs[0].notePtr, TK1_GET_NOTE_FULL);
     ASSERT_EQ("somesite.com", note->site);
     ASSERT_EQ("some_user_login", note->login);
     ASSERT_EQ("simpplepassw", note->passw);
     ASSERT_EQ("somesite_desc", note->description);
     ASSERT_TRUE(note->genTime - now < TIME_TOLERANCE);
-    ASSERT_EQ(0, note->histLen);
+    ASSERT_EQ(0, note->history.size());
 
 
-    note = storage->note(notesPtrs[1], 1);
+    note = storage->note(notesPtrs[1].notePtr, TK1_GET_NOTE_FULL);
     ASSERT_EQ("site_2.vd.rv", note->site);
     ASSERT_EQ("user_super_login", note->login);
     ASSERT_EQ("@31!!12@", note->passw);
     ASSERT_EQ("is a description @ about site", note->description);
     ASSERT_TRUE(note->genTime - now < TIME_TOLERANCE);
-    ASSERT_EQ(0, note->histLen);
+    ASSERT_EQ(0, note->history.size());
 
-    auto genHist = storage->genPasswHist();
+    auto genHist = storage->genPasswHistoryList(TK1_GET_NOTE_HISTORY_FULL);
     ASSERT_EQ(expectedPassw.size(), genHist.size());
 
     auto genHistIt = genHist.begin();
@@ -115,24 +113,24 @@ TEST(ChangePasswStorage1, NewPassw) {
     auto notesPtrs = storage->notes();
     ASSERT_EQ(2, notesPtrs.size());
 
-    auto note = storage->note(notesPtrs[0], 1);
+    auto note = storage->note(notesPtrs[0].notePtr, TK1_GET_NOTE_FULL);
     ASSERT_EQ("somesite.com", note->site);
     ASSERT_EQ("some_user_login", note->login);
     ASSERT_EQ("simpplepassw", note->passw);
     ASSERT_EQ("somesite_desc", note->description);
     ASSERT_TRUE(note->genTime - now < TIME_TOLERANCE);
-    ASSERT_EQ(0, note->histLen);
+    ASSERT_EQ(0, note->history.size());
 
 
-    note = storage->note(notesPtrs[1], 1);
+    note = storage->note(notesPtrs[1].notePtr, TK1_GET_NOTE_FULL);
     ASSERT_EQ("site_2.vd.rv", note->site);
     ASSERT_EQ("user_super_login", note->login);
     ASSERT_EQ("@31!!12@", note->passw);
     ASSERT_EQ("is a description @ about site", note->description);
     ASSERT_TRUE(note->genTime - now < TIME_TOLERANCE);
-    ASSERT_EQ(0, note->histLen);
+    ASSERT_EQ(0, note->history.size());
 
-    auto genHist = storage->genPasswHist();
+    auto genHist = storage->genPasswHistoryList(TK1_GET_NOTE_HISTORY_FULL);
     ASSERT_EQ(expectedPassw.size(), genHist.size());
 
     auto genHistIt = genHist.begin();
@@ -157,24 +155,24 @@ TEST(ChangePasswStorage1, OldPassw) {
     auto notesPtrs = storage->notes();
     ASSERT_EQ(2, notesPtrs.size());
 
-    auto note = storage->note(notesPtrs[0], 1);
+    auto note = storage->note(notesPtrs[0].notePtr, TK1_GET_NOTE_FULL);
     ASSERT_NE("somesite.com", note->site);
     ASSERT_NE("some_user_login", note->login);
     ASSERT_NE("simpplepassw", note->passw);
     ASSERT_NE("somesite_desc", note->description);
     ASSERT_TRUE(note->genTime - now < TIME_TOLERANCE);
-    ASSERT_EQ(0, note->histLen);
+    ASSERT_EQ(0, note->history.size());
 
 
-    note = storage->note(notesPtrs[1], 1);
+    note = storage->note(notesPtrs[1].notePtr, TK1_GET_NOTE_FULL);
     ASSERT_NE("site_2.vd.rv", note->site);
     ASSERT_NE("user_super_login", note->login);
     ASSERT_NE("@31!!12@", note->passw);
     ASSERT_NE("is a description @ about site", note->description);
     ASSERT_TRUE(note->genTime - now < TIME_TOLERANCE);
-    ASSERT_EQ(0, note->histLen);
+    ASSERT_EQ(0, note->history.size());
 
-    auto genHist = storage->genPasswHist();
+    auto genHist = storage->genPasswHistoryList(TK1_GET_NOTE_HISTORY_FULL);
     ASSERT_EQ(expectedPassw.size(), genHist.size());
 
     auto genHistIt = genHist.begin();

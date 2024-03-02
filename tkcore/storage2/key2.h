@@ -49,6 +49,7 @@ namespace thekey_v2 {
         // note unic id
         long long histPtr;
 
+        // editable
         std::string passw;
         uint64_t genTime;
         KeyColor color;
@@ -58,6 +59,7 @@ namespace thekey_v2 {
         // note unic id
         long long notePtr;
 
+        // editable
         std::string site;
         std::string login;
         std::string passw;
@@ -145,7 +147,7 @@ namespace thekey_v2 {
          * @param flags TK2_SET_NOTE_FORCE / TK2_SET_NOTE_TRACK_HISTORY
          * @return
          */
-        virtual int setNote(const DecryptedNote &dnote, uint flags = 0);
+        virtual int setNote(const DecryptedNote &dnote, uint flags = TK2_SET_NOTE_TRACK_HISTORY);
 
         virtual int removeNote(long long notePtr);
 
@@ -223,7 +225,7 @@ namespace thekey_v2 {
          * @param flags TK2_GET_NOTE_HISTORY_FULL
          * @return
          */
-        virtual std::vector<DecryptedPassw> passwordsHistory(const uint &flags = 0);
+        virtual std::vector<DecryptedPassw> genPasswHistoryList(const uint &flags = 0);
 
         /**
          * get password from history.
@@ -233,7 +235,7 @@ namespace thekey_v2 {
          * @param flags TK2_GET_NOTE_HISTORY_FULL
          * @return
          */
-        virtual std::shared_ptr<DecryptedPassw> passwordHistory(
+        virtual std::shared_ptr<DecryptedPassw> genPasswHistory(
                 long long histPtr,
                 const uint &flags = TK2_GET_NOTE_HISTORY_FULL
         );

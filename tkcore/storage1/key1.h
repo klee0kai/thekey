@@ -9,6 +9,17 @@
 #include "list"
 #include "salt/salt1.h"
 
+
+// get flags 0x00FF
+#define TK1_GET_NOTE_PTR_ONLY 0x00
+#define TK1_GET_NOTE_INFO 0x01
+#define TK1_GET_NOTE_PASSWORD 0x02
+#define TK1_GET_NOTE_HISTORY_FULL 0x04
+#define TK1_GET_NOTE_FULL TK1_GET_NOTE_INFO | TK1_GET_NOTE_PASSWORD | TK1_GET_NOTE_HISTORY_FULL
+
+// set flags 0xFF00
+#define TK1_SET_NOTE_FORCE 0x100
+
 namespace thekey_v1 {
 
     struct StorageV1_Header;
@@ -34,19 +45,30 @@ namespace thekey_v1 {
         unsigned int noteMaxHist;
     };
 
+    struct DecryptedPassw {
+        // note unic id
+        long long histPtr;
+
+        // editable
+        std::string passw;
+        uint64_t genTime;
+    };
+
     struct DecryptedNote {
+        // note unic id
+        long long notePtr;
+
+        // editable
         std::string site;
         std::string login;
         std::string passw;
         std::string description;
+
+        // not editable
         uint64_t genTime;
-        int histLen = 0;
+        std::vector<DecryptedPassw> history;
     };
 
-    struct DecryptedPassw {
-        std::string passw;
-        uint64_t genTime;
-    };
 
     class KeyStorageV1 {
 
@@ -61,25 +83,31 @@ namespace thekey_v1 {
 
         virtual int save();
 
-        virtual int save(const std::string& path);
+        virtual int save(const std::string &path);
 
-        virtual int saveToNewPassw(const std::string& path, const std::string& passw);
+        virtual int saveToNewPassw(const std::string &path, const std::string &passw);
 
-        virtual std::vector<long long> notes();
+        // ---- notes api -----
 
-        virtual std::shared_ptr<DecryptedNote> note(long long notePtr, int decryptPassw = 0);
+        virtual std::vector<DecryptedNote> notes(uint flags = TK1_GET_NOTE_PTR_ONLY);
 
-        virtual std::list<DecryptedPassw> noteHist(long long notePtr);
+        virtual std::shared_ptr<DecryptedNote> note(long long notePtr, uint flags = TK1_GET_NOTE_PTR_ONLY);
 
-        virtual long long createNote();
+        virtual std::shared_ptr<DecryptedNote> createNote(const DecryptedNote &note = {});
 
-        virtual int setNote(long long notePtr, const DecryptedNote &note, int notCmpOld = 0);
+        virtual int setNote(const DecryptedNote &note, uint flags = 0);
 
         virtual int removeNote(long long notePtr);
 
+        // ---- gen password and history api ----
         virtual std::string genPassw(int len, int genEncoding = ENC_NUM_ONLY);
 
-        virtual std::list<DecryptedPassw> genPasswHist();
+        virtual std::vector<DecryptedPassw> genPasswHistoryList(const uint &flags = 0);
+
+        virtual std::shared_ptr<DecryptedPassw> genPasswHistory(
+                long long histPtr,
+                const uint &flags = TK1_GET_NOTE_HISTORY_FULL
+        );
 
     private:
 
