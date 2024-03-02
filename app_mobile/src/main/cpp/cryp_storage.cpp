@@ -32,15 +32,15 @@ void EngineCryptStorageEngine::unlogin() {
 std::vector<EngineModelDecryptedNote> EngineCryptStorageEngine::notes() {
     if (!storageV1)return {};
     auto notes = std::vector<EngineModelDecryptedNote>();
-    for (const auto &ptnote: storageV1->notes()) {
-        auto dnote = storageV1->note(ptnote);
-        notes.push_back({
-                                .ptnote = ptnote,
-                                .site =  dnote->site,
-                                .login =  dnote->login,
-                                .desc =  dnote->description,
-                                .chTime = (int64_t) dnote->genTime,
-                        });
+    for (const auto &dnote: storageV1->notes(TK1_GET_NOTE_INFO)) {
+        notes.push_back(
+                {
+                        .ptnote = dnote.notePtr,
+                        .site =  dnote.site,
+                        .login =  dnote.login,
+                        .desc =  dnote.description,
+                        .chTime = (int64_t) dnote.genTime,
+                });
     }
     return notes;
 }
@@ -63,15 +63,15 @@ EngineModelDecryptedNote EngineCryptStorageEngine::note(const int64_t &notePtr) 
 
 int EngineCryptStorageEngine::saveNote(const brooklyn::EngineModelDecryptedNote &decryptedNote) {
     if (!storageV1)return -1;
-    auto ptNote = decryptedNote.ptnote;
-    if (!ptNote) ptNote = storageV1->createNote();
-    DecryptedNote dnote = {
+    thekey_v1::DecryptedNote dnote = {
+            .notePtr = decryptedNote.ptnote,
             .site = decryptedNote.site,
             .login = decryptedNote.login,
             .passw = decryptedNote.passw,
             .description = decryptedNote.desc
     };
-    storageV1->setNote(ptNote, dnote);
+    if (!dnote.notePtr) storageV1->createNote(dnote);
+    storageV1->setNote(dnote);
     return 0;
 
 }
