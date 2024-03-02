@@ -35,29 +35,27 @@ TEST(MigrateK1toK2, SimpleMigrate) {
     error = srcStorage->readAll();
     ASSERT_FALSE(error);
 
-    auto createNotePtr = srcStorage->createNote();
-    srcStorage->setNote(createNotePtr,
-                        {
-                                .site = "my.old.site.rd",
-                                .login = "loginUn1c",
-                                .passw = "@31!@3R2",
-                                .description = "first note description",
-                        });
+    srcStorage->createNote(
+            {
+                    .site = "my.old.site.rd",
+                    .login = "loginUn1c",
+                    .passw = "@31!@3R2",
+                    .description = "first note description",
+            });
 
-    createNotePtr = srcStorage->createNote();
-    auto createNote = thekey_v1::DecryptedNote{
-            .site = "my.second.site",
-            .login = "secLogR",
-            .passw = "1234",
-            .description = "This is @Desc",
-    };
-    srcStorage->setNote(createNotePtr, createNote);
+    auto createNote = srcStorage->createNote(
+            {
+                    .site = "my.second.site",
+                    .login = "secLogR",
+                    .passw = "1234",
+                    .description = "This is @Desc",
+            });
 
-    createNote.passw = "QWERTY";
-    srcStorage->setNote(createNotePtr, createNote);
+    createNote->passw = "QWERTY";
+    srcStorage->setNote(*createNote);
 
-    createNote.passw = "!@#$QWERASDFZCXV";
-    srcStorage->setNote(createNotePtr, createNote);
+    createNote->passw = "!@#$QWERASDFZCXV";
+    srcStorage->setNote(*createNote);
 
 
     expectPassws.push_back(srcStorage->genPassw(8));
@@ -144,29 +142,27 @@ TEST(MigrateK1toK2, MigrateStoragesDirectly) {
     error = srcStorage->readAll();
     ASSERT_FALSE(error);
 
-    auto createNotePtr = srcStorage->createNote();
-    srcStorage->setNote(createNotePtr,
-                        {
-                                .site = "my.old.site.rd",
-                                .login = "loginUn1c",
-                                .passw = "@31!@3R2",
-                                .description = "first note description",
-                        });
+    srcStorage->createNote(
+            {
+                    .site = "my.old.site.rd",
+                    .login = "loginUn1c",
+                    .passw = "@31!@3R2",
+                    .description = "first note description",
+            });
 
-    createNotePtr = srcStorage->createNote();
-    auto createNote = thekey_v1::DecryptedNote{
-            .site = "my.second.site",
-            .login = "secLogR",
-            .passw = "1234",
-            .description = "This is @Desc",
-    };
-    srcStorage->setNote(createNotePtr, createNote);
+    auto createNote = srcStorage->createNote(
+            {
+                    .site = "my.second.site",
+                    .login = "secLogR",
+                    .passw = "1234",
+                    .description = "This is @Desc",
+            });
 
-    createNote.passw = "QWERTY";
-    srcStorage->setNote(createNotePtr, createNote);
+    createNote->passw = "QWERTY";
+    srcStorage->setNote(*createNote);
 
-    createNote.passw = "!@#$QWERASDFZCXV";
-    srcStorage->setNote(createNotePtr, createNote);
+    createNote->passw = "!@#$QWERASDFZCXV";
+    srcStorage->setNote(*createNote);
 
 
     expectPassws.push_back(srcStorage->genPassw(8));
