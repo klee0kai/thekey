@@ -28,6 +28,8 @@ static std::list<string> expectedPasswHist{};
 
 
 TEST(CreateStorage2, CreateStorage) {
+    now = time(NULL);
+
     auto error = thekey_v2::createStorage(
             {
                     .file = "ts_v2.ckey",
