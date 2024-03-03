@@ -26,14 +26,15 @@ static fs::path storageV2CollectionFolder =
                 .parent_path()
         / "somedata/storage_v2";
 
-TEST(ReadStorageV2, CheckFolder) {
+
+TEST(ReadIssue44, CheckFolder) {
     cout << "storageV2CollectionFolder = " << storageV2CollectionFolder << endl;
     ASSERT_FALSE(fs::is_empty(storageV2CollectionFolder))
                                 << "storageV2CollectionFolder is empty "
                                 << storageV2CollectionFolder << endl;
 }
 
-TEST(ReadStorageV2, ReadIssue44Storage) {
+TEST(ReadIssue44, ReadIssue44Storage) {
     // Given
     auto storage = thekey_v2::storage(storageV2CollectionFolder / "ts_issue44.ckey", "supertest");
     ASSERT_TRUE(storage);

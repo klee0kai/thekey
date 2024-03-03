@@ -23,7 +23,7 @@ using namespace std;
 using namespace thekey_v2;
 using namespace key_salt;
 
-auto now = time(NULL);
+static auto now = time(NULL);
 static std::list<string> expectedPasswHist{};
 
 
@@ -169,6 +169,7 @@ TEST(CreateStorage2, ReadOtpNotes) {
                                 << " createTime time " << otpNote.createTime << endl;
 }
 
+// run after TEST(CreateStorage2, CreateStorage)
 TEST(CreateStorage2, ReadGenHistory) {
     // WHEN
     auto storage = thekey_v2::storage("ts_v2.ckey", "simpletest");
