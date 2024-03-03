@@ -17,7 +17,7 @@ namespace fs = std::__fs::filesystem;
 namespace fs = std::filesystem;
 #endif
 
-#define TIME_TOLERANCE 30
+#define TIME_TOLERANCE 60
 
 using namespace std;
 using namespace thekey_v2;
