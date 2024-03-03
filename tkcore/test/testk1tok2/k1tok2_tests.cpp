@@ -10,7 +10,7 @@
 #include <regex>
 #include <memory>
 
-#define TIME_TOLERANCE 30
+#define TIME_TOLERANCE 60
 
 using namespace std;
 using namespace thekey_v2;

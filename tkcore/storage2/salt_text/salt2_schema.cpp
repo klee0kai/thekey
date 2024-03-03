@@ -14,7 +14,7 @@ using namespace thekey_v2;
 using namespace key_salt;
 
 
-static vector<EncodingScheme> encodingSchemas = {
+vector<EncodingScheme> thekey_v2::encodingSchemas = {
         // not inited text. decode to null text
         {.id=0, .flags = 0, .ranges={{0}}},
 
@@ -99,7 +99,6 @@ static vector<EncodingScheme> encodingSchemas = {
                 {U'а', U'я'},
                 {U'А', U'Я'},
         }},
-
 
         // full latin + cyrillic list
         {.id=16, .flags = 0, .ranges={
