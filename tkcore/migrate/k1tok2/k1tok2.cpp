@@ -12,7 +12,8 @@ using namespace thekey;
 int thekey_v1::migrateK1toK2(
         const string &inPath,
         const string &outPath,
-        const string &passw
+        const string &passw,
+        const std::function<void(const float &)> &progress
 ) {
     int error = 0;
     auto srcStorage = thekey_v1::storage(inPath, passw);
@@ -34,11 +35,46 @@ int thekey_v1::migrateK1toK2(
     error = dstStorage->readAll();
     if (error)return error;
 
-    return migrateK1toK2(*srcStorage, *dstStorage);
+    return migrateK1toK2(*srcStorage, *dstStorage, progress);
 }
 
-int thekey_v1::migrateK1toK2(thekey_v1::KeyStorageV1 &source, thekey_v2::KeyStorageV2 &dest) {
-    for (const auto &noteOrig: source.notes(TK1_GET_NOTE_FULL)) {
+int thekey_v1::migrateK1toK2(
+        thekey_v1::KeyStorageV1 &source,
+        const std::string &outPath,
+        const std::string &passw,
+        const std::function<void(const float &)> &progress
+) {
+    int error = 0;
+    auto info = source.info();
+
+    error = thekey_v2::createStorage(
+            {
+                    .file = outPath,
+                    .name = info.name,
+                    .description = info.description
+            });
+    if (error)return error;
+    auto dstStorage = thekey_v2::storage(outPath, passw);
+    if (!dstStorage) return keyError;
+    error = dstStorage->readAll();
+    if (error)return error;
+
+    return migrateK1toK2(source, *dstStorage, progress);
+}
+
+int thekey_v1::migrateK1toK2(
+        thekey_v1::KeyStorageV1 &source,
+        thekey_v2::KeyStorageV2 &dest,
+        const std::function<void(const float &)> &progress
+) {
+    const auto &liteNotes = source.notes();
+    const auto &liteGenHist = source.genPasswHistoryList();
+
+    auto allItemsCount = float(liteNotes.size() + liteGenHist.size());
+    int progressCount = 0;
+
+    for (const auto &orNotePtr: liteNotes) {
+        auto noteOrig = *source.note(orNotePtr.notePtr, TK2_GET_NOTE_FULL);
         auto newNote = thekey_v2::DecryptedNote{
                 .site = noteOrig.site,
                 .login = noteOrig.login,
@@ -54,17 +90,21 @@ int thekey_v1::migrateK1toK2(thekey_v1::KeyStorageV1 &source, thekey_v2::KeyStor
         }
 
         dest.createNote(newNote);
+        if (progress) progress(MIN(1, ++progressCount / allItemsCount));
     }
 
-    auto newHistList = vector<thekey_v2::DecryptedPassw>();
-    for (const auto &orHist: source.genPasswHistoryList(TK1_GET_NOTE_HISTORY_FULL)) {
+    for (const auto &liteHist: liteGenHist) {
+        auto orHist = *source.genPasswHistory(liteHist.histPtr, TK1_GET_NOTE_FULL);
+        auto newHistList = vector<thekey_v2::DecryptedPassw>();
         newHistList.push_back(
                 {
                         .passw = orHist.passw,
                         .genTime = orHist.genTime
                 });
+
+        dest.appendPasswHistory(newHistList);
+        if (progress)progress(MIN(1, ++progressCount / allItemsCount));
     }
-    dest.appendPasswHistory(newHistList);
 
     auto error = dest.save();
     return error;

@@ -290,7 +290,56 @@ int KeyStorageV2::save(const std::string &path) {
     close(fd);
     keyError = KEY_WRITE_FILE_ERROR;
     return KEY_WRITE_FILE_ERROR;
+}
 
+int KeyStorageV2::saveNewPassw(
+        const std::string &path,
+        const std::string &passw,
+        const std::function<void(const float &)> &progress
+) {
+
+    auto storageInfo = info();
+    auto error = createStorage(
+            {
+                    .file = path,
+                    .storageVersion = storageInfo.storageVersion,
+                    .name = storageInfo.name,
+                    .description = storageInfo.description
+            });
+    if (error)return error;
+    auto destStorage = storage(path, passw);
+    destStorage->readAll();
+    auto newCryptCtx = destStorage->ctx;
+
+    auto allItemsCount = float(notes().size() + otpNotes(0).size());
+    int progressCount = 0;
+
+    for (const auto &note: notes(TK2_GET_NOTE_FULL)) {
+        destStorage->createNote(note);
+
+        if (progress) progress(MIN(1, progressCount++ / allItemsCount));
+    }
+
+    for (const auto &srcNote: otpNotes(TK2_GET_NOTE_FULL)) {
+        auto destNoteList = destStorage->createOtpNotes(
+                exportOtpNote(srcNote.notePtr).toUri(),
+                TK2_GET_NOTE_FULL
+        );
+        if (destNoteList.empty())continue;
+        auto destNote = destNoteList.front();
+
+        // not export meta
+        destNote.color = srcNote.color;
+        destNote.pin = srcNote.pin;
+
+        destStorage->setOtpNote(destNote);
+
+        if (progress) progress(MIN(1, progressCount++ / allItemsCount));
+    }
+
+    destStorage->appendPasswHistory(genPasswHistoryList(TK2_GET_NOTE_FULL));
+
+    return destStorage->save();
 }
 
 // ---- notes api ----
@@ -420,7 +469,7 @@ int KeyStorageV2::setNote(const thekey_v2::DecryptedNote &dnote,
                     fheader->interactionsCount()
             );
             hist.genTime(old->genTime);
-            cryptedNote->history.push_back(hist);
+            cryptedNote->history.push_front(hist);
         }
     }
 
@@ -666,8 +715,8 @@ int KeyStorageV2::removeOtpNote(long long notePtr) {
 }
 
 // ---- gen passw and hist api ----
-std::string KeyStorageV2::genPassword(uint32_t encodingType, int len) {
-    auto passw = from(thekey_v2::gen_password(encodingType, len));
+std::string KeyStorageV2::genPassword(uint32_t schemeId, int len) {
+    auto passw = from(thekey_v2::gen_password(schemeId, len));
 
     CryptedPasswordFlat cryptedPasswordFlat{};
     cryptedPasswordFlat.genTime(time(NULL));

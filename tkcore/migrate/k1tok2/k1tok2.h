@@ -14,12 +14,21 @@ namespace thekey_v1 {
     int migrateK1toK2(
             const std::string &inPath,
             const std::string &outPath,
-            const std::string &passw
+            const std::string &passw,
+            const std::function<void(const float &)> &progress = {}
     );
 
     int migrateK1toK2(
             thekey_v1::KeyStorageV1 &source,
-            thekey_v2::KeyStorageV2 &dest
+            const std::string &outPath,
+            const std::string &passw,
+            const std::function<void(const float &)> &progress = {}
+    );
+
+    int migrateK1toK2(
+            thekey_v1::KeyStorageV1 &source,
+            thekey_v2::KeyStorageV2 &dest,
+            const std::function<void(const float &)> &progress = {}
     );
 
 }

@@ -294,7 +294,7 @@ int KeyStorageV1::save(const std::string &path) {
     return KEY_WRITE_FILE_ERROR;
 }
 
-int KeyStorageV1::saveToNewPassw(const std::string &path, const std::string &passw) {
+int KeyStorageV1::saveNewPassw(const std::string &path, const std::string &passw) {
     auto storageInfo = info();
     auto error = createStorage({.file = path, .storageVersion = storageInfo.storageVersion,
                                        .name = storageInfo.name, .description = storageInfo.description});

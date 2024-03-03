@@ -192,7 +192,7 @@ void thekey_v2::login(const std::string &filePath) {
                 schemeFlags = SCHEME_ENGLISH | SCHEME_NUMBERS | SCHEME_SPEC_SYMBOLS | SCHEME_SPACE_SYMBOL;
                 break;
         }
-        auto schemeType = thekey_v2::find_scheme_type_by_flags(schemeFlags);
+        auto schemeType = thekey_v2::findSchemeByFlags(schemeFlags);
 
         auto len = term::ask_int_from_term("length of password: ");
         auto passw = storageV2->genPassword(schemeType, len);
@@ -209,6 +209,23 @@ void thekey_v2::login(const std::string &filePath) {
             cout << "change time : " << asctime(changeTm) << endl;
         }
         cout << "-------------------------------------------" << endl;
+    });
+
+    it.cmd({"changePassw"}, "change storage master password", [&]() {
+        if (!storageV2)return;
+
+        auto newPath = term::ask_from_term("write new path to save storage: ");
+        auto passw = term::ask_password_from_term("write new storage master passw: ");
+        if (!ends_with(newPath, ".ckey")) newPath += ".ckey";
+
+        cout << "changing password for storage..." << flush;
+        int error = storageV2->saveNewPassw(newPath, passw, [](const float &) { cout << "." << flush; });
+        cout << endl;
+        if (error) {
+            cerr << "error to change storage password : " << errorToString(error) << endl;
+            return;
+        }
+        cout << "storage password has been changed to new file : " << newPath << endl;
     });
 
     it.loop();

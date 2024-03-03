@@ -19,7 +19,7 @@ const std::regex en_regex("[a-zA-Z0-9]+");
 TEST(GenPasswords, Gen) {
     for (int i = 0; i < 10; ++i) {
         // Given
-        auto type = find_scheme_type_by_flags(SCHEME_NUMBERS | SCHEME_ENGLISH);
+        auto type = findSchemeByFlags(SCHEME_NUMBERS | SCHEME_ENGLISH);
 
         // when
         auto passw = from(gen_password(type, 8));
@@ -31,7 +31,7 @@ TEST(GenPasswords, Gen) {
 
 TEST(GenPasswords, PasswMasked) {
     // Given
-    auto type = find_scheme_type_by_flags(SCHEME_NUMBERS | SCHEME_ENGLISH);
+    auto type = findSchemeByFlags(SCHEME_NUMBERS | SCHEME_ENGLISH);
 
     // when
     auto passw = "o13hEeOP";
@@ -49,7 +49,7 @@ TEST(GenPasswords, PasswTwins) {
     for (int i = 0; i < 10; ++i) {
         // Given
         const auto passwPower = 0.6f;
-        const auto type = find_scheme_type_by_flags(SCHEME_NUMBERS | SCHEME_ENGLISH);
+        const auto type = findSchemeByFlags(SCHEME_NUMBERS | SCHEME_ENGLISH);
 
         // when
 

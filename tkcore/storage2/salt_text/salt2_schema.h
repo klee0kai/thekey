@@ -49,7 +49,7 @@ namespace thekey_v2 {
 
     uint32_t find_scheme_id(const key_salt::wide_string &str, const int &minLen = 0);
 
-    uint32_t find_scheme_type_by_flags(const uint32_t &flags);
+    uint32_t findSchemeByFlags(const uint32_t &flags);
 
 }
 

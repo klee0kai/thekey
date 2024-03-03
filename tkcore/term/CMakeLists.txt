@@ -14,6 +14,7 @@ add_executable(tkey
 target_link_libraries(tkey
         key_find_static
         key_storage1_static
+        k1tok2_static
         key_storage2_static
 )
 

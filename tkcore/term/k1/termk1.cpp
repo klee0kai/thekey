@@ -7,6 +7,7 @@
 #include "../utils/Interactive.h"
 #include "common.h"
 #include "key1.h"
+#include "k1tok2.h"
 
 using namespace std;
 using namespace thekey;
@@ -210,22 +211,32 @@ void thekey_v1::login(const std::string &filePath) {
 
     it.cmd({"gen"}, "generate new password", [&]() {
         if (!storageV1)return;
-        auto info = storageV1->info();
-        cout << "storage: " << info.path << endl;
-        cout << "storageVersion: " << info.storageVersion << endl;
-        cout << "name: " << info.name << endl;
-        cout << "desc: " << info.description << endl;
-        cout << "notesCount: " << info.notesCount << endl;
-        cout << "histCount: " << info.genPasswCount << endl;
-        cout << "technical limitations" << endl;
-        cout << "storage name max length: " << info.storageNameLen << endl;
-        cout << "storage description max length: " << info.storageDescriptionLen << endl;
-        cout << "site max length: " << info.siteLen << endl;
-        cout << "password max length: " << info.passwLen << endl;
-        cout << "description max length: " << info.descLen << endl;
-        cout << "note max history: " << info.noteMaxHist << endl;
+        cout << "select password encSelect: " << endl;
+        cout << "0) numbers only " << endl;
+        cout << "1) english symbols and numbers " << endl;
+        cout << "2) english symbols, numbers, spec symbols " << endl;
+        cout << "3) english symbols, numbers, spec symbols, space " << endl;
 
-        cout << endl;
+        auto encoding = 0;
+        auto encSelect = term::ask_int_from_term();
+        switch (encSelect) {
+            case 0:
+                encoding = ENC_NUM_ONLY;
+                break;
+            case 1:
+                encoding = ENC_EN_NUM;
+                break;
+            case 2:
+                encoding = ENC_EN_NUM_SPEC_SYMBOLS;
+                break;
+            case 3:
+                encoding = ENC_EN_NUM_SPEC_SYMBOLS_SPACE;
+                break;
+        }
+
+        auto len = term::ask_int_from_term("length of password: ");
+        auto passw = storageV1->genPassw(len, encoding);
+        cout << "generated password '" << passw << "' " << endl;
     });
 
     it.cmd({"hist"}, "print gen password history", [&]() {
@@ -248,12 +259,30 @@ void thekey_v1::login(const std::string &filePath) {
         if (!ends_with(newPath, ".ckey")) newPath += ".ckey";
 
         cout << "changing password for storage..." << endl;
-        int error = storageV1->saveToNewPassw(newPath, passw);
+        int error = storageV1->saveNewPassw(newPath, passw);
         if (error) {
             cerr << "error to change storage password : " << errorToString(error) << endl;
             return;
         }
-        cout << "storage password changed to new file : " << newPath << endl;
+        cout << "storage password has been changed to new file : " << newPath << endl;
+    });
+
+    it.cmd({"migrate"}, "migrate storage to v2", [&]() {
+        if (!storageV1)return;
+
+        auto newPath = term::ask_from_term("write new path to save storage: ");
+        auto passw = term::ask_password_from_term("write new storage master passw: ");
+        if (!ends_with(newPath, ".ckey")) newPath += ".ckey";
+
+        cout << "migrating storage to version 2..." << flush;
+
+        int error = migrateK1toK2(*storageV1, newPath, passw, [](const float &) { cout << "." << flush; });
+        cout << endl;
+        if (error) {
+            cerr << "error to migrate storage : " << errorToString(error) << endl;
+            return;
+        }
+        cout << "storage has been migrated to version 2 : " << newPath << endl;
     });
 
 

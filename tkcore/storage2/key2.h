@@ -78,6 +78,8 @@ namespace thekey_v2 {
         // editable
         std::string issuer;
         std::string name;
+
+        // no have in export
         std::string pin;
         KeyColor color;
 
@@ -118,6 +120,12 @@ namespace thekey_v2 {
         virtual int save();
 
         virtual int save(const std::string &path);
+
+        virtual int saveNewPassw(
+                const std::string &path,
+                const std::string &passw,
+                const std::function<void(const float &)> &progress = {}
+        );
 
         // ---- notes api -----
         /**
@@ -213,11 +221,11 @@ namespace thekey_v2 {
         /**
          * generates a password and immediately saves it to the storage history
          *
-         * @param encodingType thekey_v2::find_scheme_type_by_flags result or similar
+         * @param schemeId thekey_v2::findSchemeByFlags result or similar
          * @param len  len of passport
          * @return generated password
          */
-        virtual std::string genPassword(uint32_t encodingType, int len);
+        virtual std::string genPassword(uint32_t schemeId, int len);
 
         /**
          * We get the history of generated passwords
