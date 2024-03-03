@@ -9,6 +9,7 @@
 #include <memory>
 #include "tools/uri.h"
 #include "salt_text/salt2_schema.h"
+#include "tools/base32.h"
 
 #ifdef __ANDROID__
 namespace fs = std::__fs::filesystem;
@@ -75,6 +76,14 @@ TEST(CreateStorage2, CreateStorage) {
     otpNote.color = PINK;
     storage->setOtpNote(otpNote);
 
+    auto createOtpNote = storage->createOtpNotes("otpauth://yaotp/user@yandex.ru"
+                                                 "?secret=6SB2IKNM6OBZPAVBVTOHDKS4FAAAAAAADFUTQMBTRY&name=user",
+                                                 TK2_GET_NOTE_INFO)
+            .front();
+    createOtpNote.color = ORANGE;
+    createOtpNote.pin = "5239";
+    storage->setOtpNote(createOtpNote);
+
     expectedPasswHist.push_back(
             storage->genPassword(findSchemeByFlags(SCHEME_NUMBERS | SCHEME_ENGLISH), 6)
     );
@@ -87,7 +96,6 @@ TEST(CreateStorage2, CreateStorage) {
 
 
     storage->save();
-
 }
 
 
@@ -137,17 +145,28 @@ TEST(CreateStorage2, ReadOtpNotes) {
 
     // THEN
     auto otpNotes = storage->otpNotes(TK2_GET_NOTE_INFO);
-    ASSERT_EQ(2, otpNotes.size());
+    ASSERT_EQ(3, otpNotes.size());
 
     auto otpNote = otpNotes[0];
+    auto otpInfo = storage->exportOtpNote(otpNote.notePtr);
     ASSERT_EQ("alice@google.com", otpNote.name);
     ASSERT_EQ("Example", otpNote.issuer);
+    ASSERT_EQ("JBSWY3DPEHPK3PXP", base32::encode(otpInfo.secret, true));
     ASSERT_EQ(0, otpNote.color);
+    ASSERT_TRUE(otpNote.createTime - now < 30)
+                                << "gen time incorrect now = " << now
+                                << " createTime time " << otpNote.createTime << endl;
 
     otpNote = otpNotes[1];
+    otpInfo = storage->exportOtpNote(otpNote.notePtr);
     ASSERT_EQ("simple@test.com", otpNote.name);
     ASSERT_EQ("sha1Issuer", otpNote.issuer);
+    ASSERT_EQ("WDW2ZCDQYHFXYV4G7WB6FG2WNBXKEGUJRW3QLE634JP43J4TCGTCPCKAAVISY6A7BNKYULEUXQ5YC2JPG7QXFFMDRIRJMESQNYWZ72A",
+              base32::encode(otpInfo.secret, true));
     ASSERT_EQ(PINK, otpNote.color);
+    ASSERT_TRUE(otpNote.createTime - now < 30)
+                                << "gen time incorrect now = " << now
+                                << " createTime time " << otpNote.createTime << endl;
 }
 
 TEST(CreateStorage2, ReadGenHistory) {
@@ -171,4 +190,40 @@ TEST(CreateStorage2, ReadGenHistory) {
         expectGenPasswIt++;
     }
 
+}
+
+
+
+// run after TEST(CreateStorage2, CreateStorage)
+TEST(CreateStorage2, YaotpGenTest) {
+    // GIVEN
+    auto storage = thekey_v2::storage("ts_v2.ckey", "simpletest");
+    ASSERT_TRUE(storage);
+    auto error = storage->readAll();
+    ASSERT_FALSE(error);
+
+    // WHEN
+    auto otpNotes = storage->otpNotes();
+    ASSERT_EQ(3, otpNotes.size());
+    auto yaotNote = storage->otpNote(otpNotes[2].notePtr, TK2_GET_NOTE_FULL, 1641559648L);
+
+    //THEN
+    ASSERT_EQ("umozdicq", yaotNote->otpPassw);
+}
+
+// run after TEST(CreateStorage2, CreateStorage)
+TEST(CreateStorage2, totpGenTest) {
+    // GIVEN
+    auto storage = thekey_v2::storage("ts_v2.ckey", "simpletest");
+    ASSERT_TRUE(storage);
+    auto error = storage->readAll();
+    ASSERT_FALSE(error);
+
+    // WHEN
+    auto otpNotes = storage->otpNotes();
+    ASSERT_EQ(3, otpNotes.size());
+    auto yaotNote = storage->otpNote(otpNotes[1].notePtr, TK2_GET_NOTE_FULL, 1707657186);
+
+    //THEN
+    ASSERT_EQ("970135", yaotNote->otpPassw);
 }
