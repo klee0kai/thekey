@@ -45,6 +45,8 @@ namespace thekey_v2 {
 
     };
 
+    extern std::vector<EncodingScheme> encodingSchemas ;
+
     const EncodingScheme *schema(uint32_t id);
 
     uint32_t find_scheme_id(const key_salt::wide_string &str, const int &minLen = 0);

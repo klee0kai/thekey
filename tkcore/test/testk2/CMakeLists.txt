@@ -4,6 +4,7 @@ add_executable(testk2
         ${CMAKE_CURRENT_LIST_DIR}/crypt_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/schemas/find_schemas_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/schemas/encoding_schemas_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/schemas/unic_schemas_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/otp/uri_parse_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/otp/uri_export_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/otp/otp_gen_tests.cpp
