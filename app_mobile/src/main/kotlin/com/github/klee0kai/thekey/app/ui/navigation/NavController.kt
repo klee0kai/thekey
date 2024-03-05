@@ -9,6 +9,7 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import com.github.klee0kai.thekey.app.BuildConfig
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.designkit.EmptyScreen
@@ -27,8 +28,11 @@ import dev.olshevski.navigation.reimagined.navController
 
 @Composable
 fun MainNavContainer() {
-    val navController = remember {
-        DI.navigator(navController(startDestination = LoginDestination))
+    val navController = rememberSaveable {
+        DI.navigator(
+            runCatching { DI.navigator() }.getOrNull()
+                ?: navController(startDestination = LoginDestination)
+        )
     }
     val backPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
 

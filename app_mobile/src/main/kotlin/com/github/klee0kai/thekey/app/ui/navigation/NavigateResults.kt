@@ -2,6 +2,7 @@ package com.github.klee0kai.thekey.app.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.NonRestartableComposable
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.navigation.NavigateResults.navChanges
 import com.github.klee0kai.thekey.app.ui.navigation.NavigateResults.resultsScope
@@ -50,6 +51,7 @@ suspend fun <T> NavController<T>.awaitScreenEvent(destination: T) {
 
 
 @Composable
+@NonRestartableComposable
 fun <T> NavController<T>.cleanNotUselessResultFlows() {
     LaunchedEffect(backstack.entries.map { it.id }.hashCode()) {
         delay(10)
