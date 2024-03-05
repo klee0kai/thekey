@@ -24,6 +24,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleBottomSheetS
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberMainTitleVisibleFlow
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberSimpleBottomSheetScaffoldState
 import com.github.klee0kai.thekey.app.ui.navigation.EditStorageDestination
+import com.github.klee0kai.thekey.app.ui.navigation.LocalNav
 import com.github.klee0kai.thekey.app.ui.navigation.back
 import com.github.klee0kai.thekey.app.ui.storages.components.GroupsSelectContent
 import com.github.klee0kai.thekey.app.ui.storages.components.StoragesListContent
@@ -39,7 +40,7 @@ private const val SecondTittleId = 1
 @OptIn(ExperimentalMaterial3Api::class)
 fun StoragesScreen() {
     val presenter = remember { DI.storagesPresenter() }
-    val navigator = remember { DI.navigator() }
+    val navigator = LocalNav.current
     val scaffoldState = rememberSimpleBottomSheetScaffoldState(
         topContentSize = TOP_CONTENT_SIZE,
         appBarSize = AppBarConst.appBarSize

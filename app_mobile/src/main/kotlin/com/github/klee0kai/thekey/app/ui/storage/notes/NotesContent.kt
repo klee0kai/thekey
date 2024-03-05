@@ -23,6 +23,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.SecondaryTabsConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleBottomSheetScaffold
 import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleBottomSheetScaffoldState
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberSimpleBottomSheetScaffoldState
+import com.github.klee0kai.thekey.app.ui.navigation.LocalNav
 import com.github.klee0kai.thekey.app.ui.navigation.NoteDestination
 import com.github.klee0kai.thekey.app.ui.storages.components.GroupsSelectContent
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
@@ -40,7 +41,7 @@ fun NotesContent(
             appBarSize = AppBarConst.appBarSize
         )
 ) {
-    val navigator = remember { DI.navigator() }
+    val navigator = LocalNav.current
     val addButtonAlpha by animateAlphaAsState(isPageFullyAvailable)
 
     SimpleBottomSheetScaffold(

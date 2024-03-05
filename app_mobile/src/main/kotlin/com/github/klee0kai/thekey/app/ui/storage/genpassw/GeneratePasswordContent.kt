@@ -31,6 +31,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.ui.navigation.LocalNav
 
 @Preview
 @Composable
@@ -39,7 +40,7 @@ fun GeneratePasswordContent(
 ) {
     val scope = rememberCoroutineScope()
     val presenter = remember { DI.loginPresenter() }
-    val navigator = remember { DI.navigator() }
+    val navigator = LocalNav.current
     val sliderValues = (4..12)
     var lenSliderPosition by remember { mutableIntStateOf(sliderValues.first) }
     var symbolsChecked by remember { mutableStateOf(false) }

@@ -29,6 +29,7 @@ import com.github.klee0kai.thekey.app.di.identifier.NoteIdentifier
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarStates
+import com.github.klee0kai.thekey.app.ui.navigation.LocalNav
 import com.github.klee0kai.thekey.app.ui.navigation.NoteDestination
 import com.github.klee0kai.thekey.app.ui.navigation.back
 
@@ -37,7 +38,7 @@ import com.github.klee0kai.thekey.app.ui.navigation.back
 fun NoteScreen(
     args: NoteDestination = NoteDestination(),
 ) {
-    val navigator = remember { DI.navigator() }
+    val navigator = LocalNav.current
     val presenter = remember { DI.notePresenter(NoteIdentifier(args.path, args.notePtr)) }
     val isEditNote = args.notePtr != 0L
     var isSkeleton by remember { mutableStateOf(isEditNote) }
