@@ -15,6 +15,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import com.github.klee0kai.thekey.app.R
+import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.navigation.MainNavContainer
 import com.github.klee0kai.thekey.app.ui.navigation.contracts.SimpleActivityContract
@@ -48,9 +49,11 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun checkPermissions() {
+        // ignore if view in Edit mode
+        if (DI.config().isViewEditMode) return
+
         writeStoragesPermissions.forEach { perm ->
-            val notGranted =
-                ActivityCompat.checkSelfPermission(this, perm) != PackageManager.PERMISSION_GRANTED
+            val notGranted = ActivityCompat.checkSelfPermission(this, perm) != PackageManager.PERMISSION_GRANTED
             if (notGranted) {
                 val showRationale = shouldShowRequestPermissionRationale(perm)
                 if (permRegDone && !showRationale) {

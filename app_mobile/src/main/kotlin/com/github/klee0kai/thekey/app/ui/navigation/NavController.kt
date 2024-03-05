@@ -11,8 +11,12 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.platform.isDebugInspectorInfoEnabled
 import com.github.klee0kai.thekey.app.BuildConfig
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.di.updateConfig
 import com.github.klee0kai.thekey.app.ui.designkit.EmptyScreen
 import com.github.klee0kai.thekey.app.ui.editstorage.EditStorageScreen
 import com.github.klee0kai.thekey.app.ui.login.LoginScreen
@@ -40,9 +44,14 @@ fun MainNavContainer() {
         )
     }
     val backPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+    val isEditMode = LocalView.current.isInEditMode || LocalInspectionMode.current || isDebugInspectorInfoEnabled
 
     LaunchedEffect(Unit) {
         DI.backDispatcher(backPressedDispatcher)
+
+        DI.updateConfig {
+            copy(isViewEditMode = isEditMode)
+        }
     }
 
     NavBackHandler(navController)

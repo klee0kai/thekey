@@ -21,6 +21,7 @@ import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.di.modules.RepositoriesModule
 import com.github.klee0kai.thekey.app.di.modules.ThemeModule
 import com.github.klee0kai.thekey.app.di.wrap.AppWrappersStone
+import com.github.klee0kai.thekey.app.model.AppConfig
 import com.github.klee0kai.thekey.app.ui.navigation.Destination
 import dev.olshevski.navigation.reimagined.NavController
 
@@ -78,4 +79,9 @@ interface AppComponent : AppComponentProviders {
     fun snackbarHostState(snackbarHostState: SnackbarHostState? = null): SnackbarHostState
 
 
+    @BindInstance(cache = BindInstance.CacheType.Strong)
+    fun config(snackbarHostState: AppConfig? = null): AppConfig
+
 }
+
+
