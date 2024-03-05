@@ -1,5 +1,6 @@
 package com.github.klee0kai.thekey.app.di
 
+import android.app.Activity
 import androidx.activity.OnBackPressedDispatcher
 import androidx.compose.material3.SnackbarHostState
 import com.github.klee0kai.stone.KotlinWrappersStone
@@ -19,6 +20,7 @@ import com.github.klee0kai.thekey.app.di.modules.HelpersModule
 import com.github.klee0kai.thekey.app.di.modules.InteractorsModule
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.di.modules.RepositoriesModule
+import com.github.klee0kai.thekey.app.di.modules.AndroidHelpersModule
 import com.github.klee0kai.thekey.app.di.modules.ThemeModule
 import com.github.klee0kai.thekey.app.di.wrap.AppWrappersStone
 import com.github.klee0kai.thekey.app.model.AppConfig
@@ -48,6 +50,8 @@ interface AppComponent : AppComponentProviders {
 
     open fun presenters(): PresentersModule
 
+    open fun androidHelpers(): AndroidHelpersModule
+
     open fun helpers(): HelpersModule
 
     open fun interactors(): InteractorsModule
@@ -68,6 +72,9 @@ interface AppComponent : AppComponentProviders {
 
     @BindInstance(cache = BindInstance.CacheType.Weak)
     fun app(app: App? = null): App
+
+    @BindInstance(cache = BindInstance.CacheType.Weak)
+    fun activity(app: Activity? = null): Activity?
 
     @BindInstance
     fun navigator(navController: NavController<Destination>? = null): NavController<Destination>

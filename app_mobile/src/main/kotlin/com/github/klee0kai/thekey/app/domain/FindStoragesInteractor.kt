@@ -3,6 +3,7 @@ package com.github.klee0kai.thekey.app.domain
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.engine.findStoragesFlow
 import com.github.klee0kai.thekey.app.model.ColoredStorage
+import com.github.klee0kai.thekey.app.perm.model.ApproveResult
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -22,6 +23,7 @@ class FindStoragesInteractor {
     }.distinctUntilChanged()
 
     private val scope = DI.ioThreadScope()
+    private val permissions = DI.permissions()
     private val engine = DI.findStorageEngineLazy()
     private val rep = DI.foundStoragesRepositoryLazy()
     private val settingsRep = DI.settingsRepositoryLazy()
@@ -29,7 +31,10 @@ class FindStoragesInteractor {
     private var lastStartTime: Long = 0
 
     fun findStorages(force: Boolean = false) = scope.launch {
-        if (!checkForceFind(force = force)) return@launch
+        val needToScan = checkForceFind(force = force)
+        val canToScan = permissions().checkPermissions(permissions().writeStoragePermissions()) == ApproveResult.APPROVED
+        if (!needToScan || !canToScan) return@launch
+
         DI.userShortPaths().rootAbsolutePaths
             .map { root ->
                 engine().findStoragesFlow(root)
