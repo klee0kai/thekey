@@ -29,10 +29,9 @@ import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
-import com.github.klee0kai.thekey.app.ui.navigation.LocalNav
+import com.github.klee0kai.thekey.app.ui.navigation.LocalRouter
 import com.github.klee0kai.thekey.app.ui.navigation.NoteDestination
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
-import dev.olshevski.navigation.reimagined.navigate
 
 @Preview
 @Composable
@@ -42,7 +41,7 @@ fun NotesListContent(
     showStoragesTitle: Boolean = true,
 ) {
     val presenter = remember { DI.storagePresenter(StorageIdentifier(storagePath)) }
-    val navigator = LocalNav.current
+    val navigator = LocalRouter.current
     val notes = presenter.notes().collectAsState(initial = listOf())
     val titleAnimatedAlpha by animateAlphaAsState(showStoragesTitle)
 

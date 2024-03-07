@@ -4,7 +4,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
@@ -12,8 +11,9 @@ import kotlinx.coroutines.flow.runningFold
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.withTimeout
+import kotlin.reflect.KClass
 
-inline fun <reified T> Flow<T>.shareLatest(scope: CoroutineScope): Flow<T> {
+fun <T : Any> Flow<T>.shareLatest(scope: CoroutineScope, clazz: KClass<T>): Flow<T> {
     val endl = object {}
     val orFlow = this
     val withEnd = flow {
@@ -22,8 +22,11 @@ inline fun <reified T> Flow<T>.shareLatest(scope: CoroutineScope): Flow<T> {
     }
     return withEnd.shareIn(scope, SharingStarted.Lazily, 2)
         .takeWhile { it !== endl }
-        .filterIsInstance<T>()
+        .filter { clazz.isInstance(it) } as Flow<T>
 }
+
+inline fun <reified T : Any> Flow<T>.shareLatest(scope: CoroutineScope): Flow<T> = shareLatest(scope, T::class)
+
 
 inline fun <reified T> Flow<T>.changeFilter(
     crossinline filter: suspend (old: T?, new: T) -> Boolean

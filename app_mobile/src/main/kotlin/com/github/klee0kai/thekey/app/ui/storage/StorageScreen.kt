@@ -32,9 +32,8 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.SecondaryTabs
 import com.github.klee0kai.thekey.app.ui.designkit.components.SecondaryTabsConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberMainTitleVisibleFlow
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberSimpleBottomSheetScaffoldState
-import com.github.klee0kai.thekey.app.ui.navigation.LocalNav
+import com.github.klee0kai.thekey.app.ui.navigation.LocalRouter
 import com.github.klee0kai.thekey.app.ui.navigation.StorageDestination
-import com.github.klee0kai.thekey.app.ui.navigation.back
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.GeneratePasswordContent
 import com.github.klee0kai.thekey.app.ui.storage.notes.NotesContent
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
@@ -49,7 +48,7 @@ fun StorageScreen(
     args: StorageDestination = StorageDestination()
 ) {
     val presenter = remember { DI.storagePresenter(StorageIdentifier(args.path)) }
-    val navigator = LocalNav.current
+    val navigator = LocalRouter.current
     val titles = listOf(
         stringResource(id = R.string.accounts),
         stringResource(id = R.string.passw_generate)

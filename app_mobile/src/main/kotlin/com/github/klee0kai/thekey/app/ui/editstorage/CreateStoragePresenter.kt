@@ -4,14 +4,12 @@ import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.engine.EditStorageEngine
 import com.github.klee0kai.thekey.app.model.Storage
-import com.github.klee0kai.thekey.app.ui.navigation.backWithResult
-import com.github.klee0kai.thekey.app.ui.navigation.snack
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 
 open class CreateStoragePresenter {
 
-    protected val navigator = DI.navigator()
+    protected val router = DI.router()
     protected val scope = DI.mainThreadScope()
     protected val engine = DI.editStorageEngineLazy()
     protected val rep = DI.foundStoragesRepositoryLazy()
@@ -31,10 +29,10 @@ open class CreateStoragePresenter {
             }
             if (error == EditStorageEngine.Error.OK) {
                 rep().addStorage(storage)
-                navigator.backWithResult(Unit)
+                router.backWithResult(Unit)
             }
 
-            navigator.snack(message = message)
+            router.snack(message = message)
         }
     }
 

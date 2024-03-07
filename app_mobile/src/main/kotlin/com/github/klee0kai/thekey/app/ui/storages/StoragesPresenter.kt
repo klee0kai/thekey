@@ -17,7 +17,7 @@ class StoragesPresenter {
 
     private val interactor = DI.findStoragesInteractorLazy()
     private val rep = DI.foundStoragesRepositoryLazy()
-    private val navigator = DI.navigator()
+    private val navigator = DI.router()
     private val scope = DI.mainThreadScope()
 
     private var searchingJob: Job? = null
