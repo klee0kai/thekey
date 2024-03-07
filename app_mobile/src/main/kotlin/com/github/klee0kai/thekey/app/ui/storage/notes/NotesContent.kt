@@ -22,7 +22,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleBottomSheetS
 import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleBottomSheetScaffoldState
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberSimpleBottomSheetScaffoldState
 import com.github.klee0kai.thekey.app.ui.navigation.LocalRouter
-import com.github.klee0kai.thekey.app.ui.navigation.NoteDestination
+import com.github.klee0kai.thekey.app.ui.navigation.model.NoteDestination
 import com.github.klee0kai.thekey.app.ui.storages.components.GroupsSelectContent
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
 

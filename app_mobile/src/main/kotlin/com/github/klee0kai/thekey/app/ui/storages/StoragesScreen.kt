@@ -23,8 +23,8 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.FabSimpleInContain
 import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleBottomSheetScaffold
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberMainTitleVisibleFlow
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberSimpleBottomSheetScaffoldState
-import com.github.klee0kai.thekey.app.ui.navigation.EditStorageDestination
 import com.github.klee0kai.thekey.app.ui.navigation.LocalRouter
+import com.github.klee0kai.thekey.app.ui.navigation.model.EditStorageDestination
 import com.github.klee0kai.thekey.app.ui.storages.components.GroupsSelectContent
 import com.github.klee0kai.thekey.app.ui.storages.components.StoragesListContent
 

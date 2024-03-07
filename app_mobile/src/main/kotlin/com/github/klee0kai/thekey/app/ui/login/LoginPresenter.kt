@@ -1,10 +1,11 @@
 package com.github.klee0kai.thekey.app.ui.login
 
+import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.model.ColoredStorage
-import com.github.klee0kai.thekey.app.ui.navigation.StorageDestination
-import com.github.klee0kai.thekey.app.ui.navigation.StoragesDestination
+import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
+import com.github.klee0kai.thekey.app.ui.navigation.model.StoragesDestination
 import com.github.klee0kai.thekey.app.ui.navigation.navigate
 import com.github.klee0kai.thekey.app.utils.coroutine.asyncResult
 import kotlinx.coroutines.flow.first
@@ -40,7 +41,7 @@ class LoginPresenter {
 
     fun login(passw: String) = scope.asyncResult {
         if (passw.isBlank()) {
-//            router.snack(R.string.passw_is_null)
+            router.snack(R.string.passw_is_null)
             return@asyncResult
         }
         val storage = currentStorageFlow().first()

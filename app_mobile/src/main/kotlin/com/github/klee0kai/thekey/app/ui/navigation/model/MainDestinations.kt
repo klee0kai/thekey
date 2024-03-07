@@ -1,10 +1,9 @@
-package com.github.klee0kai.thekey.app.ui.navigation
+package com.github.klee0kai.thekey.app.ui.navigation.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 interface Destination : Parcelable
-
 
 @Parcelize
 data object LoginDestination : Destination

@@ -1,22 +1,19 @@
-package com.github.klee0kai.thekey.app.ui.navigation
+package com.github.klee0kai.thekey.app.ui.navigation.impl
 
-import android.content.Intent
-import androidx.activity.ComponentActivity
-import androidx.activity.OnBackPressedDispatcher
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.NonRestartableComposable
-import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.utils.common.WeakDelegate
+import com.github.klee0kai.thekey.app.ui.navigation.ComposeRouter
+import com.github.klee0kai.thekey.app.ui.navigation.RouterContext
+import com.github.klee0kai.thekey.app.ui.navigation.model.Destination
+import com.github.klee0kai.thekey.app.ui.navigation.model.NavigateBackstackChange
 import com.github.klee0kai.thekey.app.utils.coroutine.awaitSec
 import com.github.klee0kai.thekey.app.utils.coroutine.shareLatest
 import dev.olshevski.navigation.reimagined.NavAction
-import dev.olshevski.navigation.reimagined.NavController
 import dev.olshevski.navigation.reimagined.navEntry
 import dev.olshevski.navigation.reimagined.pop
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
@@ -27,14 +24,7 @@ import kotlinx.coroutines.withTimeoutOrNull
 import timber.log.Timber
 import kotlin.reflect.KClass
 
-open class AppRouterImp : AppRouter {
-
-    var composeController: NavController<Destination>? = null
-    var activity by WeakDelegate<ComponentActivity>()
-    var backDispatcher by WeakDelegate<OnBackPressedDispatcher>()
-
-    val navChanges = MutableSharedFlow<NavigateBackstackChange>(replay = 1)
-    val scope = DI.mainThreadScope()
+class ComposeRouterImpl(context: RouterContext) : ComposeRouter, RouterContext by context {
 
     override fun navigate(destination: Destination): Flow<Any?> = navigate(destination, Any::class)
 
@@ -89,6 +79,29 @@ open class AppRouterImp : AppRouter {
         backDispatcher?.onBackPressed()
     }
 
+    @Composable
+    @NonRestartableComposable
+    override fun cleanNotUselessResultFlows() {
+        composeController?.apply {
+            LaunchedEffect(backstack.entries.map { it.id }.hashCode()) {
+                delay(10)
+                navChanges.emit(
+                    NavigateBackstackChange(
+                        currentNavStack = backstack.entries
+                    )
+                )
+            }
+            LaunchedEffect(Unit) {
+                navChanges
+                    .map { change -> change.currentNavStack.lastOrNull() }
+                    .distinctUntilChanged { old, new -> old?.id == new?.id }
+                    .collect { dest ->
+                        Timber.d("open screen ${dest?.destination} id = ${dest?.id}")
+                    }
+            }
+        }
+    }
+
     override suspend fun awaitScreenEvent(destination: Destination) {
         // wait screen open
         navChanges.filter { change ->
@@ -99,36 +112,4 @@ open class AppRouterImp : AppRouter {
             change.currentNavStack.all { it.destination != destination }
         }
     }
-
-    override fun navigate(intent: Intent): Flow<Intent> {
-        TODO()
-    }
-
-    override fun askPermissions(perms: Array<String>): Flow<Boolean> {
-        TODO()
-    }
-
-    @Composable
-    @NonRestartableComposable
-    fun cleanNotUselessResultFlows() = composeController?.apply {
-        LaunchedEffect(backstack.entries.map { it.id }.hashCode()) {
-            delay(10)
-            navChanges.emit(
-                NavigateBackstackChange(
-                    currentNavStack = backstack.entries
-                )
-            )
-        }
-        LaunchedEffect(Unit) {
-            navChanges
-                .map { change -> change.currentNavStack.lastOrNull() }
-                .distinctUntilChanged { old, new -> old?.id == new?.id }
-                .collect { dest ->
-                    Timber.d("open screen ${dest?.destination} id = ${dest?.id}")
-                }
-        }
-    }
-
 }
-
-

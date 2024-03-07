@@ -33,7 +33,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.SecondaryTabsConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberMainTitleVisibleFlow
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberSimpleBottomSheetScaffoldState
 import com.github.klee0kai.thekey.app.ui.navigation.LocalRouter
-import com.github.klee0kai.thekey.app.ui.navigation.StorageDestination
+import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.GeneratePasswordContent
 import com.github.klee0kai.thekey.app.ui.storage.notes.NotesContent
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState

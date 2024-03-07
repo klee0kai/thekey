@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.ui.navigation
+package com.github.klee0kai.thekey.app.ui.navigation.model
 
 import dev.olshevski.navigation.reimagined.NavEntry
 import dev.olshevski.navigation.reimagined.NavId

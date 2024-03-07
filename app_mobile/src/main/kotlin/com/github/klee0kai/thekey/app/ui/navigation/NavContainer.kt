@@ -20,6 +20,13 @@ import com.github.klee0kai.thekey.app.di.updateConfig
 import com.github.klee0kai.thekey.app.ui.designkit.EmptyScreen
 import com.github.klee0kai.thekey.app.ui.editstorage.EditStorageScreen
 import com.github.klee0kai.thekey.app.ui.login.LoginScreen
+import com.github.klee0kai.thekey.app.ui.navigation.model.DesignDestination
+import com.github.klee0kai.thekey.app.ui.navigation.model.Destination
+import com.github.klee0kai.thekey.app.ui.navigation.model.EditStorageDestination
+import com.github.klee0kai.thekey.app.ui.navigation.model.LoginDestination
+import com.github.klee0kai.thekey.app.ui.navigation.model.NoteDestination
+import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
+import com.github.klee0kai.thekey.app.ui.navigation.model.StoragesDestination
 import com.github.klee0kai.thekey.app.ui.note.NoteScreen
 import com.github.klee0kai.thekey.app.ui.storage.StorageScreen
 import com.github.klee0kai.thekey.app.ui.storages.StoragesScreen
@@ -29,38 +36,31 @@ import dev.olshevski.navigation.reimagined.NavBackHandler
 import dev.olshevski.navigation.reimagined.NavTransitionQueueing
 import dev.olshevski.navigation.reimagined.NavTransitionScope
 import dev.olshevski.navigation.reimagined.NavTransitionSpec
-import dev.olshevski.navigation.reimagined.navController
 
 
 val LocalRouter = compositionLocalOf<AppRouter> { error("no local provided NavLocal") }
 
 @Composable
 fun MainNavContainer() {
-    val router = remember {
-        (DI.router() as? AppRouterImp)?.apply {
-            if (composeController == null) {
-                composeController = navController(startDestination = LoginDestination)
-            }
-        }
-    }
+    val router = remember { DI.router() }
     val backPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     val isEditMode = LocalView.current.isInEditMode || LocalInspectionMode.current || isDebugInspectorInfoEnabled
 
     LaunchedEffect(Unit) {
-        router?.backDispatcher = backPressedDispatcher
+        router.backDispatcher = backPressedDispatcher
 
         DI.updateConfig {
             copy(isViewEditMode = isEditMode)
         }
     }
 
-    NavBackHandler(router!!.composeController!!)
+    NavBackHandler(router.composeController)
 
     router.cleanNotUselessResultFlows()
 
     CompositionLocalProvider(LocalRouter provides DI.router()) {
         AnimatedNavHost(
-            controller = router.composeController!!,
+            controller = router.composeController,
             transitionQueueing = NavTransitionQueueing.QueueAll,
             transitionSpec = customTransitionSpec,
             emptyBackstackPlaceholder = { EmptyScreen() }

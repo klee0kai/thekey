@@ -30,7 +30,7 @@ import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarStates
 import com.github.klee0kai.thekey.app.ui.navigation.LocalRouter
-import com.github.klee0kai.thekey.app.ui.navigation.NoteDestination
+import com.github.klee0kai.thekey.app.ui.navigation.model.NoteDestination
 
 @Preview(showBackground = true)
 @Composable

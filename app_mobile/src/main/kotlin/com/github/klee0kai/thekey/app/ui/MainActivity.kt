@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
-import com.github.klee0kai.thekey.app.ui.navigation.AppRouterImp
 import com.github.klee0kai.thekey.app.ui.navigation.MainNavContainer
 
 class MainActivity : ComponentActivity() {
@@ -22,7 +21,7 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
         DI.activity(this)
-        (DI.router() as? AppRouterImp)?.activity = this
+        DI.router().activity = this
     }
 
 }

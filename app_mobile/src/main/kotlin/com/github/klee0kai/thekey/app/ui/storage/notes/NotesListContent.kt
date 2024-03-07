@@ -30,7 +30,7 @@ import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.ui.navigation.LocalRouter
-import com.github.klee0kai.thekey.app.ui.navigation.NoteDestination
+import com.github.klee0kai.thekey.app.ui.navigation.model.NoteDestination
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
 
 @Preview
