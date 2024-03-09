@@ -11,6 +11,7 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.NavigateBackstackChang
 import dev.olshevski.navigation.reimagined.NavController
 import dev.olshevski.navigation.reimagined.navController
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlin.random.Random
 
 class RouterContextImpl : RouterContext {
 
@@ -24,6 +25,9 @@ class RouterContextImpl : RouterContext {
 
     override val navChanges = MutableSharedFlow<NavigateBackstackChange>(replay = 1)
     override val scope = DI.mainThreadScope()
+
+    private var _reqCodeCounter = Random.nextInt(1000) + 1
+    override fun genRequestCode(): Int = _reqCodeCounter++
 
     companion object {
         private val startDestination = LoginDestination

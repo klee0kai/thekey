@@ -1,33 +1,32 @@
 package com.github.klee0kai.thekey.app.ui.navigation.impl
 
 import android.content.Intent
-import androidx.activity.result.ActivityResultLauncher
 import com.github.klee0kai.thekey.app.ui.navigation.ActivityRouter
 import com.github.klee0kai.thekey.app.ui.navigation.RouterContext
-import com.github.klee0kai.thekey.app.ui.navigation.contracts.SimpleActivityContract
+import com.github.klee0kai.thekey.app.ui.navigation.model.ActivityResult
+import com.github.klee0kai.thekey.app.utils.common.singleEventFlow
 import com.github.klee0kai.thekey.app.utils.coroutine.shareLatest
-import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class ActivityRouterImpl(
     context: RouterContext
 ) : ActivityRouter, RouterContext by context {
 
-    override fun navigate(intent: Intent): Flow<Intent?> = callbackFlow {
-        var launcher: ActivityResultLauncher<Intent>? = null
-        launcher = activity?.registerForActivityResult(SimpleActivityContract()) {
-            scope.launch { send(it) }
-            launcher?.unregister()
-        }
+    private val results = MutableSharedFlow<ActivityResult>(replay = 3)
 
-        launcher?.launch(intent)
+    override fun navigate(intent: Intent): Flow<ActivityResult> = singleEventFlow {
+        val reqCode = genRequestCode()
+        activity?.startActivityForResult(intent, reqCode)
 
-        awaitClose()
+        results.first { it.requestCode == reqCode }
     }.shareLatest(scope)
-        .take(1)
+
+    override fun onResult(result: ActivityResult) {
+        scope.launch { results.emit(result) }
+    }
 
 
 }

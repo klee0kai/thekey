@@ -1,13 +1,11 @@
 package com.github.klee0kai.thekey.app.ui
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.navigation.MainNavContainer
 
-class MainActivity : ComponentActivity() {
+class MainActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -16,11 +14,6 @@ class MainActivity : ComponentActivity() {
                 MainNavContainer()
             }
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        DI.activity(this)
     }
 
 }

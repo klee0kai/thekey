@@ -45,6 +45,8 @@ open class AppRouterImp(
     override val scope: CoroutineScope
         get() = ctx.scope
 
+    override fun genRequestCode(): Int = ctx.genRequestCode()
+
 }    
         
     

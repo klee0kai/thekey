@@ -8,8 +8,10 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
+import com.github.klee0kai.thekey.app.ui.navigation.model.ActivityResult
 import com.github.klee0kai.thekey.app.ui.navigation.model.Destination
 import com.github.klee0kai.thekey.app.ui.navigation.model.NavigateBackstackChange
+import com.github.klee0kai.thekey.app.ui.navigation.model.RequestPermResult
 import dev.olshevski.navigation.reimagined.NavController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -45,7 +47,9 @@ interface SnackRouter {
 
 interface ActivityRouter {
 
-    fun navigate(intent: Intent): Flow<Intent?>
+    fun navigate(intent: Intent): Flow<ActivityResult>
+
+    fun onResult(result: ActivityResult)
 
 }
 
@@ -53,21 +57,24 @@ interface PermissionsRouter {
 
     fun askPermissions(perms: Array<String>): Flow<Boolean>
 
+    fun onResult(result: RequestPermResult)
+
 }
 
 interface RouterContext {
 
     val snackbarHostState: SnackbarHostState
-
     val navFullController: NavController<Destination>
     val navScreensController: NavController<Destination>
     val navDialogsController: NavController<Destination>
-
     val activity: ComponentActivity?
-    val backDispatcher: OnBackPressedDispatcher?
 
+    val backDispatcher: OnBackPressedDispatcher?
     val navChanges: MutableSharedFlow<NavigateBackstackChange>
+
     val scope: CoroutineScope
+
+    fun genRequestCode(): Int
 
 }
 

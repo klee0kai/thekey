@@ -6,7 +6,7 @@ import com.github.klee0kai.thekey.app.ui.navigation.AppRouter
 
 interface AndroidHelpersDependencies {
 
-    fun permissions(): AsyncCoroutineProvide<PermissionsHelper>
+    fun permissionsHelperLazy(): AsyncCoroutineProvide<PermissionsHelper>
 
     fun router(): AppRouter
 

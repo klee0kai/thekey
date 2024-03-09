@@ -1,8 +1,10 @@
 package com.github.klee0kai.thekey.app.ui.storages
 
+import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.model.ColorGroup
 import com.github.klee0kai.thekey.app.model.ColoredStorage
+import com.github.klee0kai.thekey.app.ui.navigation.model.TextProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,23 +19,16 @@ class StoragesPresenter {
 
     private val interactor = DI.findStoragesInteractorLazy()
     private val rep = DI.foundStoragesRepositoryLazy()
-    private val navigator = DI.router()
+    private val router = DI.router()
+    private val perm = DI.permissionsHelperLazy()
     private val scope = DI.mainThreadScope()
 
     private var searchingJob: Job? = null
+    private var permissionAsked = false
 
-
-    init {
-        searchingJob = scope.launch {
-            interactor()
-                .findStorages()
-                .join()
-        }.also { job ->
-            searchingStoragesStatus.value = job.isCompleted == false
-            job.invokeOnCompletion {
-                searchingStoragesStatus.value = false
-            }
-        }
+    fun startup() = scope.launch {
+        askPermissionsIfNeed().join()
+        findStoragesIfNeed()
     }
 
     fun coloredGroups() = flow<List<ColorGroup>> {
@@ -49,6 +44,26 @@ class StoragesPresenter {
                 }
             }
             .collect(this)
+    }
+
+
+    private fun askPermissionsIfNeed() = scope.launch {
+        if (permissionAsked || DI.config().isViewEditMode) return@launch
+        permissionAsked = true
+
+        perm().askPermissionsIfNeed(perm().writeStoragePermissions(), TextProvider(R.string.find_external_storage_purpose))
+    }
+
+    private fun findStoragesIfNeed() = scope.launch {
+        interactor()
+            .findStorages()
+            .join()
+    }.also { job ->
+        searchingJob = job
+        searchingStoragesStatus.value = job.isCompleted == false
+        job.invokeOnCompletion {
+            searchingStoragesStatus.value = false
+        }
     }
 
 

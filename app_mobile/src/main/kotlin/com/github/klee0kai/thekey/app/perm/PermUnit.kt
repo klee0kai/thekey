@@ -1,6 +1,6 @@
 package com.github.klee0kai.thekey.app.perm
 
-import androidx.annotation.StringRes
+import com.github.klee0kai.thekey.app.ui.navigation.model.TextProvider
 import kotlinx.coroutines.flow.Flow
 
 interface PermUnit {
@@ -13,7 +13,7 @@ interface PermUnit {
     /**
      * run routing flow to ask permission
      */
-    fun ask(@StringRes purposeRes: Int): Flow<Boolean>
+    fun ask(purpose: TextProvider): Flow<Boolean>
 
     /**
      * merge with other permissions
