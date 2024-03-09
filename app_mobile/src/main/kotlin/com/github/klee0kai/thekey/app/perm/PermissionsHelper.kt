@@ -14,11 +14,13 @@ class PermissionsHelper {
      * we get a list of required permissions to read and use storage directly
      */
     fun writeStoragePermissions() = buildList {
-        add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-
+        // higher rights at first.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             add(Manifest.permission.MANAGE_EXTERNAL_STORAGE)
         }
+
+        add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+
     }.toImmutableList()
 
 

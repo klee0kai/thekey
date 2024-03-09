@@ -11,21 +11,20 @@ import kotlinx.coroutines.flow.runningFold
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.withTimeout
-import kotlin.reflect.KClass
 
-fun <T : Any> Flow<T>.shareLatest(scope: CoroutineScope, clazz: KClass<T>): Flow<T> {
+fun <T> Flow<T>.shareLatest(scope: CoroutineScope, clazz: Class<T>): Flow<T> {
     val endl = object {}
     val orFlow = this
     val withEnd = flow {
         orFlow.collect { emit(it) }
         emit(endl)
     }
-    return withEnd.shareIn(scope, SharingStarted.Lazily, 2)
+    return withEnd.shareIn(scope, SharingStarted.Eagerly, 2)
         .takeWhile { it !== endl }
         .filter { clazz.isInstance(it) } as Flow<T>
 }
 
-inline fun <reified T : Any> Flow<T>.shareLatest(scope: CoroutineScope): Flow<T> = shareLatest(scope, T::class)
+inline fun <reified T> Flow<T>.shareLatest(scope: CoroutineScope): Flow<T> = shareLatest(scope, T::class.java)
 
 
 inline fun <reified T> Flow<T>.changeFilter(

@@ -21,7 +21,6 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
         DI.activity(this)
-        DI.router().activity = this
     }
 
 }

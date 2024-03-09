@@ -14,7 +14,6 @@ import dev.olshevski.navigation.reimagined.NavController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlin.reflect.KClass
 
 interface AppRouter : RouterContext, ComposeRouter, SnackRouter, ActivityRouter, PermissionsRouter
 
@@ -22,9 +21,9 @@ interface ComposeRouter {
 
     fun navigate(destination: Destination): Flow<Any?>
 
-    fun <R : Any> navigate(destination: Destination, clazz: KClass<R>): Flow<R?>
+    fun <R> navigate(destination: Destination, clazz: Class<R>): Flow<R?>
 
-    fun <R : Any> backWithResult(result: R, exitFromApp: Boolean = false): Boolean
+    fun <R> backWithResult(result: R, exitFromApp: Boolean = false): Boolean
 
     suspend fun awaitScreenEvent(destination: Destination)
 
@@ -46,7 +45,7 @@ interface SnackRouter {
 
 interface ActivityRouter {
 
-    fun navigate(intent: Intent): Flow<Intent>
+    fun navigate(intent: Intent): Flow<Intent?>
 
 }
 
@@ -60,14 +59,14 @@ interface RouterContext {
 
     val snackbarHostState: SnackbarHostState
     val composeController: NavController<Destination>
-    var activity: ComponentActivity?
-    var backDispatcher: OnBackPressedDispatcher?
+    val activity: ComponentActivity?
+    val backDispatcher: OnBackPressedDispatcher?
 
     val navChanges: MutableSharedFlow<NavigateBackstackChange>
     val scope: CoroutineScope
 
 }
 
-inline fun <reified R : Any> ComposeRouter.navigate(destination: Destination): Flow<R?> =
-    navigate(destination, R::class)
+inline fun <reified R> ComposeRouter.navigate(destination: Destination): Flow<R?> =
+    navigate(destination, R::class.java)
 

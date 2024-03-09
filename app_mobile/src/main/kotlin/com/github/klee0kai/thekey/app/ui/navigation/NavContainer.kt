@@ -1,6 +1,5 @@
 package com.github.klee0kai.thekey.app.ui.navigation
 
-import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -43,12 +42,9 @@ val LocalRouter = compositionLocalOf<AppRouter> { error("no local provided NavLo
 @Composable
 fun MainNavContainer() {
     val router = remember { DI.router() }
-    val backPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     val isEditMode = LocalView.current.isInEditMode || LocalInspectionMode.current || isDebugInspectorInfoEnabled
 
     LaunchedEffect(Unit) {
-        router.backDispatcher = backPressedDispatcher
-
         DI.updateConfig {
             copy(isViewEditMode = isEditMode)
         }

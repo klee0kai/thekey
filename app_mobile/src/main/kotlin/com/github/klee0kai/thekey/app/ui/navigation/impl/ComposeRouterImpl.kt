@@ -22,13 +22,12 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
 import timber.log.Timber
-import kotlin.reflect.KClass
 
 class ComposeRouterImpl(context: RouterContext) : ComposeRouter, RouterContext by context {
 
-    override fun navigate(destination: Destination): Flow<Any?> = navigate(destination, Any::class)
+    override fun navigate(destination: Destination): Flow<Any?> = navigate(destination, Any::class.java)
 
-    override fun <R : Any> navigate(destination: Destination, clazz: KClass<R>): Flow<R?> = composeController!!.run {
+    override fun <R> navigate(destination: Destination, clazz: Class<R>): Flow<R?> = composeController.run {
         val navEntry = navEntry(destination)
         setNewBackstack(
             entries = backstack.entries + navEntry,
@@ -57,7 +56,7 @@ class ComposeRouterImpl(context: RouterContext) : ComposeRouter, RouterContext b
         }
     }.shareLatest(scope, clazz)
 
-    override fun <R : Any> backWithResult(result: R, exitFromApp: Boolean): Boolean = composeController!!.run {
+    override fun <R> backWithResult(result: R, exitFromApp: Boolean): Boolean = composeController.run {
         val navId = backstack.entries.last().id
         val popResult = pop()
         scope.launch {

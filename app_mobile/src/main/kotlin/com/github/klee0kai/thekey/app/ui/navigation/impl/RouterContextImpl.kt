@@ -8,15 +8,14 @@ import com.github.klee0kai.thekey.app.ui.navigation.RouterContext
 import com.github.klee0kai.thekey.app.ui.navigation.model.Destination
 import com.github.klee0kai.thekey.app.ui.navigation.model.LoginDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.NavigateBackstackChange
-import com.github.klee0kai.thekey.app.utils.common.WeakDelegate
 import dev.olshevski.navigation.reimagined.NavController
 import dev.olshevski.navigation.reimagined.navController
 import kotlinx.coroutines.flow.MutableSharedFlow
 
 class RouterContextImpl : RouterContext {
 
-    override var activity: ComponentActivity? by WeakDelegate()
-    override var backDispatcher: OnBackPressedDispatcher? by WeakDelegate()
+    override val activity: ComponentActivity? get() = DI.activity()
+    override val backDispatcher: OnBackPressedDispatcher? get() = DI.activity()?.onBackPressedDispatcher
 
     override val snackbarHostState: SnackbarHostState = SnackbarHostState()
     override val composeController: NavController<Destination> = navController(startDestination = LoginDestination)

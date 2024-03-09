@@ -29,17 +29,11 @@ open class AppRouterImp(
     override val composeController: NavController<Destination>
         get() = ctx.composeController
 
-    override var activity: ComponentActivity?
+    override val activity: ComponentActivity?
         get() = ctx.activity
-        set(value) {
-            ctx.activity = value
-        }
 
-    override var backDispatcher: OnBackPressedDispatcher?
+    override val backDispatcher: OnBackPressedDispatcher?
         get() = ctx.backDispatcher
-        set(value) {
-            ctx.backDispatcher = value
-        }
 
     override val navChanges: MutableSharedFlow<NavigateBackstackChange>
         get() = ctx.navChanges

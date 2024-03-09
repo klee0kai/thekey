@@ -1,6 +1,6 @@
 package com.github.klee0kai.thekey.app.di
 
-import android.app.Activity
+import androidx.activity.ComponentActivity
 import androidx.compose.material3.SnackbarHostState
 import com.github.klee0kai.stone.KotlinWrappersStone
 import com.github.klee0kai.stone.Stone
@@ -71,7 +71,7 @@ interface AppComponent : AppComponentProviders {
     fun app(app: App? = null): App
 
     @BindInstance(cache = BindInstance.CacheType.Weak)
-    fun activity(app: Activity? = null): Activity?
+    fun activity(app: ComponentActivity? = null): ComponentActivity?
 
     @BindInstance(cache = BindInstance.CacheType.Strong)
     fun snackbarHostState(snackbarHostState: SnackbarHostState? = null): SnackbarHostState
