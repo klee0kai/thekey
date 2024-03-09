@@ -11,6 +11,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.tooling.preview.Preview
@@ -25,6 +26,7 @@ import com.github.klee0kai.thekey.app.ui.navigation.LocalRouter
 import com.github.klee0kai.thekey.app.ui.navigation.model.NoteDestination
 import com.github.klee0kai.thekey.app.ui.storages.components.GroupsSelectContent
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
+import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
 
 @Preview
 @Composable
@@ -38,8 +40,10 @@ fun NotesContent(
             appBarSize = AppBarConst.appBarSize
         )
 ) {
-    val navigator = LocalRouter.current
+    val router = LocalRouter.current
     val addButtonAlpha by animateAlphaAsState(isPageFullyAvailable)
+    val addButtonVisible by rememberDerivedStateOf { addButtonAlpha > 0 }
+    val showStoragesTitle by rememberDerivedStateOf { scaffoldState.dragProgress.floatValue > 0.1f }
 
     SimpleBottomSheetScaffold(
         modifier = modifier
@@ -54,15 +58,15 @@ fun NotesContent(
             NotesListContent(
                 modifier = Modifier.fillMaxSize(),
                 storagePath = storagePath,
-                showStoragesTitle = scaffoldState.dragProgress.floatValue > 0.1f,
+                showStoragesTitle = showStoragesTitle,
             )
         },
     )
 
-    if (addButtonAlpha > 0) {
+    if (addButtonVisible) {
         FabSimpleInContainer(
             modifier = Modifier.alpha(addButtonAlpha),
-            onClick = { navigator.navigate(NoteDestination(path = storagePath)) },
+            onClick = remember { { router.navigate(NoteDestination(path = storagePath)) } },
             content = { Icon(Icons.Default.Add, contentDescription = "Add") }
         )
     }

@@ -67,6 +67,7 @@ fun StorageScreen(
     val accountTitleVisibility = accountScaffoldState.rememberMainTitleVisibleFlow()
     val mainTitleVisibility by rememberDerivedStateOf { !isAccountTab || accountTitleVisibility.value == true }
     val tabsVisible by rememberDerivedStateOf { !isAccountTab || accountScaffoldState.dragProgress.floatValue > 0.4f }
+    val targetTitleId = rememberDerivedStateOf { if (mainTitleVisibility) MainTitleId else SecondTittleId }
     val tabsAlpha by animateAlphaAsState(tabsVisible)
 
     HorizontalPager(
@@ -98,7 +99,7 @@ fun StorageScreen(
     }
 
     AppBarStates(
-        titleId = if (mainTitleVisibility) MainTitleId else SecondTittleId,
+        titleId = targetTitleId,
         navigationIcon = {
             IconButton(onClick = { navigator.back() }) {
                 Icon(

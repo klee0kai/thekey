@@ -21,6 +21,7 @@ import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.MutableFloatState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -34,6 +35,7 @@ import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleScaffoldConst.dragHandleSize
 import com.github.klee0kai.thekey.app.utils.views.accelerateDecelerate
 import com.github.klee0kai.thekey.app.utils.views.ratioBetween
+import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
 
 internal object SimpleScaffoldConst {
     val dragHandleSize = 48.dp
@@ -116,11 +118,13 @@ fun SimpleBottomSheetScaffold(
         end = appBarSize + topContentSize
     ).coerceIn(0f, 1f)
 
-    val dragAlpha = simpleBottomSheetScaffoldState.dragProgress.floatValue.ratioBetween(
-        start = 0.2f,
-        end = 0.5f,
-    ).coerceIn(0f, 1f)
-        .accelerateDecelerate()
+    val dragAlpha by rememberDerivedStateOf {
+        simpleBottomSheetScaffoldState.dragProgress.floatValue.ratioBetween(
+            start = 0.2f,
+            end = 0.5f,
+        ).coerceIn(0f, 1f)
+            .accelerateDecelerate()
+    }
 
 
     CompositionLocalProvider(LocalOverscrollConfiguration provides null) {

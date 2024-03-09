@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -28,6 +29,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.LazyListIndicatorI
 import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleBottomSheetScaffoldState
 import com.github.klee0kai.thekey.app.utils.views.accelerateDecelerate
 import com.github.klee0kai.thekey.app.utils.views.ratioBetween
+import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 
@@ -42,18 +44,22 @@ fun GroupsSelectContent(
     val colorGroups = groupsState()
     val lazyListState = rememberLazyListState()
 
-    val topContentAlpha = scaffoldState?.dragProgress?.floatValue
-        ?.ratioBetween(0.3f, 0.7f)
-        ?.coerceIn(0f, 1f)
-        ?.accelerateDecelerate()
-        ?: 1f
+    val topContentAlpha by rememberDerivedStateOf {
+        scaffoldState?.dragProgress?.floatValue
+            ?.ratioBetween(0.3f, 0.7f)
+            ?.coerceIn(0f, 1f)
+            ?.accelerateDecelerate()
+            ?: 1f
+    }
 
-    val dragTranslateY = scaffoldState?.dragProgress?.floatValue
-        ?.ratioBetween(1f, 0f)
-        ?.coerceIn(0f, 1f)
-        ?.accelerateDecelerate()
-        ?.let { 30.dp * -it }
-        ?: 0.dp
+    val dragTranslateY by rememberDerivedStateOf {
+        scaffoldState?.dragProgress?.floatValue
+            ?.ratioBetween(1f, 0f)
+            ?.coerceIn(0f, 1f)
+            ?.accelerateDecelerate()
+            ?.let { 30.dp * -it }
+            ?: 0.dp
+    }
 
     ConstraintLayout(
         modifier = modifier
