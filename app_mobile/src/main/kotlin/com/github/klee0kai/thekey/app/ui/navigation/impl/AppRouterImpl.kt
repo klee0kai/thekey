@@ -26,8 +26,12 @@ open class AppRouterImp(
     override val snackbarHostState: SnackbarHostState
         get() = ctx.snackbarHostState
 
-    override val composeController: NavController<Destination>
-        get() = ctx.composeController
+    override val navFullController: NavController<Destination>
+        get() = ctx.navFullController
+    override val navScreensController: NavController<Destination>
+        get() = ctx.navScreensController
+    override val navDialogsController: NavController<Destination>
+        get() = ctx.navDialogsController
 
     override val activity: ComponentActivity?
         get() = ctx.activity

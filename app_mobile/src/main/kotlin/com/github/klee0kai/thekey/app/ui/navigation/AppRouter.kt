@@ -30,7 +30,7 @@ interface ComposeRouter {
     fun back()
 
     @Composable
-    fun cleanNotUselessResultFlows()
+    fun collectBackstackChanges()
 
 }
 
@@ -58,7 +58,11 @@ interface PermissionsRouter {
 interface RouterContext {
 
     val snackbarHostState: SnackbarHostState
-    val composeController: NavController<Destination>
+
+    val navFullController: NavController<Destination>
+    val navScreensController: NavController<Destination>
+    val navDialogsController: NavController<Destination>
+
     val activity: ComponentActivity?
     val backDispatcher: OnBackPressedDispatcher?
 

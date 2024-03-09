@@ -8,6 +8,7 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.NonRestartableComposable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalInspectionMode
@@ -17,8 +18,10 @@ import com.github.klee0kai.thekey.app.BuildConfig
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.updateConfig
 import com.github.klee0kai.thekey.app.ui.designkit.EmptyScreen
+import com.github.klee0kai.thekey.app.ui.designkit.dialogs.AlertDialogScreen
 import com.github.klee0kai.thekey.app.ui.editstorage.EditStorageScreen
 import com.github.klee0kai.thekey.app.ui.login.LoginScreen
+import com.github.klee0kai.thekey.app.ui.navigation.model.AlertDialogDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.DesignDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.Destination
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditStorageDestination
@@ -50,28 +53,46 @@ fun MainNavContainer() {
         }
     }
 
-    NavBackHandler(router.composeController)
+    NavBackHandler(router.navFullController)
 
-    router.cleanNotUselessResultFlows()
+    router.collectBackstackChanges()
 
     CompositionLocalProvider(LocalRouter provides DI.router()) {
+        // screens
         AnimatedNavHost(
-            controller = router.composeController,
+            controller = router.navScreensController,
             transitionQueueing = NavTransitionQueueing.QueueAll,
             transitionSpec = customTransitionSpec,
             emptyBackstackPlaceholder = { EmptyScreen() }
         ) { destination ->
-            when (destination) {
-                is LoginDestination -> LoginScreen()
-                is StoragesDestination -> StoragesScreen()
-                is EditStorageDestination -> EditStorageScreen(path = destination.path)
-                is StorageDestination -> StorageScreen(destination)
-                is NoteDestination -> NoteScreen(destination)
-
-                // debug
-                is DesignDestination -> if (BuildConfig.DEBUG) EmptyScreen()
-            }
+            screenOf(destination = destination)
         }
+
+        // Dialogs
+        AnimatedNavHost(
+            controller = router.navDialogsController,
+            transitionQueueing = NavTransitionQueueing.QueueAll,
+            transitionSpec = customTransitionSpec,
+        ) { destination ->
+            screenOf(destination = destination)
+        }
+    }
+}
+
+@Composable
+@NonRestartableComposable
+private fun screenOf(destination: Destination) {
+    when (destination) {
+        is LoginDestination -> LoginScreen()
+        is StoragesDestination -> StoragesScreen()
+        is EditStorageDestination -> EditStorageScreen(path = destination.path)
+        is StorageDestination -> StorageScreen(destination)
+        is NoteDestination -> NoteScreen(destination)
+
+        is AlertDialogDestination -> AlertDialogScreen(destination)
+
+        // debug
+        is DesignDestination -> if (BuildConfig.DEBUG) EmptyScreen()
     }
 }
 

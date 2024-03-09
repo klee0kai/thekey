@@ -18,9 +18,15 @@ class RouterContextImpl : RouterContext {
     override val backDispatcher: OnBackPressedDispatcher? get() = DI.activity()?.onBackPressedDispatcher
 
     override val snackbarHostState: SnackbarHostState = SnackbarHostState()
-    override val composeController: NavController<Destination> = navController(startDestination = LoginDestination)
+    override val navFullController: NavController<Destination> = navController(startDestination)
+    override val navScreensController: NavController<Destination> = navController(startDestination)
+    override val navDialogsController: NavController<Destination> = navController(emptyList())
 
     override val navChanges = MutableSharedFlow<NavigateBackstackChange>(replay = 1)
     override val scope = DI.mainThreadScope()
+
+    companion object {
+        private val startDestination = LoginDestination
+    }
 
 }

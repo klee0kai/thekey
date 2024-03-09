@@ -1,7 +1,9 @@
 package com.github.klee0kai.thekey.app.perm.impl
 
+import android.Manifest
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
+import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.perm.PermUnit
 import com.github.klee0kai.thekey.app.perm.model.SimplePerm
@@ -54,5 +56,15 @@ class SimplePermUnit(
         val oneSimpleUnit = SimplePermUnit(simpleUnits.flatMap { it.permissions })
         val otherUnits = units.filter { it !is SimplePermUnit }
         return otherUnits + listOf(oneSimpleUnit)
+    }
+
+
+    companion object {
+
+        val WriteExternalStorage = SimplePerm(
+            perm = Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            desc = R.string.writeExternalStorage,
+        )
+
     }
 }

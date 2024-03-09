@@ -1,8 +1,10 @@
 package com.github.klee0kai.thekey.app.ui.navigation.model
 
 import android.os.Parcelable
+import androidx.compose.runtime.Stable
 import kotlinx.parcelize.Parcelize
 
+@Stable
 interface Destination : Parcelable
 
 @Parcelize

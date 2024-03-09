@@ -27,4 +27,8 @@
     <string name="fill_the_file_name">fill the file name</string>
     <string name="path_unreachable">Path is unreachable</string>
     <string name="remove">Remove</string>
+    <string name="writeExternalStorage">Write external storage</string>
+    <string name="title">Title</string>
+    <string name="ok">ok</string>
+    <string name="cancel">cancel</string>
 </resources>

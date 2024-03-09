@@ -6,6 +6,7 @@ import androidx.compose.runtime.NonRestartableComposable
 import com.github.klee0kai.thekey.app.ui.navigation.ComposeRouter
 import com.github.klee0kai.thekey.app.ui.navigation.RouterContext
 import com.github.klee0kai.thekey.app.ui.navigation.model.Destination
+import com.github.klee0kai.thekey.app.ui.navigation.model.DialogDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.NavigateBackstackChange
 import com.github.klee0kai.thekey.app.utils.coroutine.awaitSec
 import com.github.klee0kai.thekey.app.utils.coroutine.shareLatest
@@ -27,7 +28,7 @@ class ComposeRouterImpl(context: RouterContext) : ComposeRouter, RouterContext b
 
     override fun navigate(destination: Destination): Flow<Any?> = navigate(destination, Any::class.java)
 
-    override fun <R> navigate(destination: Destination, clazz: Class<R>): Flow<R?> = composeController.run {
+    override fun <R> navigate(destination: Destination, clazz: Class<R>): Flow<R> = navFullController.run {
         val navEntry = navEntry(destination)
         setNewBackstack(
             entries = backstack.entries + navEntry,
@@ -53,10 +54,10 @@ class ComposeRouterImpl(context: RouterContext) : ComposeRouter, RouterContext b
             if (result.closedDestination?.first == navEntry.id && clazz.isInstance(result.closedDestination.second)) {
                 emit(result.closedDestination.second as R)
             }
-        }
-    }.shareLatest(scope, clazz)
+        }.shareLatest(scope, clazz)
+    }
 
-    override fun <R> backWithResult(result: R, exitFromApp: Boolean): Boolean = composeController.run {
+    override fun <R> backWithResult(result: R, exitFromApp: Boolean): Boolean = navFullController.run {
         val navId = backstack.entries.last().id
         val popResult = pop()
         scope.launch {
@@ -80,24 +81,37 @@ class ComposeRouterImpl(context: RouterContext) : ComposeRouter, RouterContext b
 
     @Composable
     @NonRestartableComposable
-    override fun cleanNotUselessResultFlows() {
-        composeController?.apply {
-            LaunchedEffect(backstack.entries.map { it.id }.hashCode()) {
-                delay(10)
-                navChanges.emit(
-                    NavigateBackstackChange(
-                        currentNavStack = backstack.entries
-                    )
+    override fun collectBackstackChanges() {
+        val backstackHash = navFullController.backstack.entries.map { it.id }.hashCode()
+        LaunchedEffect(backstackHash) {
+            navScreensController.setNewBackstack(
+                navFullController.backstack.entries
+                    .filter { it.destination !is DialogDestination }
+            )
+
+            navDialogsController.setNewBackstack(
+                navFullController.backstack.entries
+                    .takeLastWhile { it.destination is DialogDestination }
+            )
+
+        }
+
+        LaunchedEffect(backstackHash) {
+            delay(10)
+            navChanges.emit(
+                NavigateBackstackChange(
+                    currentNavStack = navFullController.backstack.entries
                 )
-            }
-            LaunchedEffect(Unit) {
-                navChanges
-                    .map { change -> change.currentNavStack.lastOrNull() }
-                    .distinctUntilChanged { old, new -> old?.id == new?.id }
-                    .collect { dest ->
-                        Timber.d("open screen ${dest?.destination} id = ${dest?.id}")
-                    }
-            }
+            )
+        }
+
+        LaunchedEffect(Unit) {
+            navChanges
+                .map { change -> change.currentNavStack.lastOrNull() }
+                .distinctUntilChanged { old, new -> old?.id == new?.id }
+                .collect { dest ->
+                    Timber.d("open screen ${dest?.destination} id = ${dest?.id}")
+                }
         }
     }
 
