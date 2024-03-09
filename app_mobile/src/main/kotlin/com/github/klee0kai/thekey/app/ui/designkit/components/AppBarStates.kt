@@ -8,6 +8,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.NonRestartableComposable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -68,18 +69,20 @@ fun AppBarStates(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+@NonRestartableComposable
 fun SimpleBottomSheetScaffoldState.rememberMainTitleVisibleFlow(
     hideTitleOffset: Dp = 10.dp,
     showTitleOffset: Dp = 30.dp,
-): State<Boolean> {
-    val mainTitleVisibility = remember { mutableStateOf(true) }
+): State<Boolean?> {
+    val mainTitleVisibility = remember { mutableStateOf<Boolean?>(null) }
     val scaffoldTopOffset = runCatching {
         with(LocalDensity.current) {
             scaffoldState.bottomSheetState.requireOffset().toDp()
         }
-    }.getOrElse { 0.dp }
+    }.getOrNull()
 
     when {
+        scaffoldTopOffset == null -> mainTitleVisibility.value = null
         scaffoldTopOffset < appBarSize + hideTitleOffset -> mainTitleVisibility.value = false
         scaffoldTopOffset > appBarSize + showTitleOffset -> mainTitleVisibility.value = true
     }

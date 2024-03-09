@@ -123,9 +123,7 @@ fun SimpleBottomSheetScaffold(
         .accelerateDecelerate()
 
 
-    CompositionLocalProvider(
-        LocalOverscrollConfiguration.provides(null),
-    ) {
+    CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
         BottomSheetScaffold(
             modifier = modifier,
             scaffoldState = simpleBottomSheetScaffoldState.scaffoldState,
