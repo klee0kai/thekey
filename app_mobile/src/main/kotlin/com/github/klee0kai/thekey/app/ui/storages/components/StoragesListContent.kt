@@ -17,7 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.ui.navigation.backWithResult
+import com.github.klee0kai.thekey.app.ui.navigation.LocalRouter
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
 
 
@@ -27,9 +27,9 @@ fun StoragesListContent(
     modifier: Modifier = Modifier,
     showStoragesTitle: Boolean = true,
 ) {
+    val navigator = LocalRouter.current
     val scope = rememberCoroutineScope()
     val presenter = remember { DI.storagesPresenter() }
-    val navigator = remember { DI.navigator() }
     val storages = presenter.storages()
         .collectAsState(initial = emptyList(), scope.coroutineContext)
 

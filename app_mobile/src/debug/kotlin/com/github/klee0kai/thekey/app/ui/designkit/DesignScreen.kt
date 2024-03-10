@@ -34,7 +34,6 @@ import kotlinx.coroutines.launch
 fun DesignScreen() {
     val scope = rememberCoroutineScope()
     val presenter = remember { DI.storagesPresenter() }
-    val navigator = remember { DI.navigator() }
 
     val titles = listOf("Tab 1", "Tab 2", "Tab 3")
     val colors = listOf(Color.Cyan, Color.Green, Color.Red)

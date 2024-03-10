@@ -16,17 +16,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.FabSimpleInContainer
 import com.github.klee0kai.thekey.app.ui.designkit.components.SecondaryTabsConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleBottomSheetScaffold
 import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleBottomSheetScaffoldState
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberSimpleBottomSheetScaffoldState
-import com.github.klee0kai.thekey.app.ui.navigation.NoteDestination
+import com.github.klee0kai.thekey.app.ui.navigation.LocalRouter
+import com.github.klee0kai.thekey.app.ui.navigation.model.NoteDestination
 import com.github.klee0kai.thekey.app.ui.storages.components.GroupsSelectContent
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
-import dev.olshevski.navigation.reimagined.navigate
+import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
 
 @Preview
 @Composable
@@ -40,8 +40,10 @@ fun NotesContent(
             appBarSize = AppBarConst.appBarSize
         )
 ) {
-    val navigator = remember { DI.navigator() }
+    val router = LocalRouter.current
     val addButtonAlpha by animateAlphaAsState(isPageFullyAvailable)
+    val addButtonVisible by rememberDerivedStateOf { addButtonAlpha > 0 }
+    val showStoragesTitle by rememberDerivedStateOf { scaffoldState.dragProgress.floatValue > 0.1f }
 
     SimpleBottomSheetScaffold(
         modifier = modifier
@@ -56,15 +58,15 @@ fun NotesContent(
             NotesListContent(
                 modifier = Modifier.fillMaxSize(),
                 storagePath = storagePath,
-                showStoragesTitle = scaffoldState.dragProgress.floatValue > 0.1f,
+                showStoragesTitle = showStoragesTitle,
             )
         },
     )
 
-    if (addButtonAlpha > 0) {
+    if (addButtonVisible) {
         FabSimpleInContainer(
             modifier = Modifier.alpha(addButtonAlpha),
-            onClick = { navigator.navigate(NoteDestination(path = storagePath)) },
+            onClick = remember { { router.navigate(NoteDestination(path = storagePath)) } },
             content = { Icon(Icons.Default.Add, contentDescription = "Add") }
         )
     }

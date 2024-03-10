@@ -9,6 +9,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -23,11 +25,11 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.FabSimpleInContain
 import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleBottomSheetScaffold
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberMainTitleVisibleFlow
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberSimpleBottomSheetScaffoldState
-import com.github.klee0kai.thekey.app.ui.navigation.EditStorageDestination
-import com.github.klee0kai.thekey.app.ui.navigation.back
+import com.github.klee0kai.thekey.app.ui.navigation.LocalRouter
+import com.github.klee0kai.thekey.app.ui.navigation.model.EditStorageDestination
 import com.github.klee0kai.thekey.app.ui.storages.components.GroupsSelectContent
 import com.github.klee0kai.thekey.app.ui.storages.components.StoragesListContent
-import dev.olshevski.navigation.reimagined.navigate
+import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
 
 private val TOP_CONTENT_SIZE = 190.dp
 
@@ -39,32 +41,43 @@ private const val SecondTittleId = 1
 @OptIn(ExperimentalMaterial3Api::class)
 fun StoragesScreen() {
     val presenter = remember { DI.storagesPresenter() }
-    val navigator = remember { DI.navigator() }
+    val router = LocalRouter.current
     val scaffoldState = rememberSimpleBottomSheetScaffoldState(
         topContentSize = TOP_CONTENT_SIZE,
         appBarSize = AppBarConst.appBarSize
     )
-    val mainTitleVisibility = scaffoldState.rememberMainTitleVisibleFlow()
+    val mainTitleVisibility by scaffoldState.rememberMainTitleVisibleFlow()
+    val targetTitleId = rememberDerivedStateOf {
+        when (mainTitleVisibility) {
+            true -> MainTitleId
+            false -> SecondTittleId
+            null -> 0
+        }
+    }
+    val showStoragesTitle by rememberDerivedStateOf { scaffoldState.dragProgress.floatValue > 0.1f }
+
+
+    SideEffect {
+        presenter.startup()
+    }
 
     SimpleBottomSheetScaffold(
         simpleBottomSheetScaffoldState = scaffoldState,
         topContent = {
-            GroupsSelectContent(
-                scaffoldState = scaffoldState
-            )
+            GroupsSelectContent(scaffoldState = scaffoldState)
         },
         sheetContent = {
             StoragesListContent(
                 modifier = Modifier.fillMaxSize(),
-                showStoragesTitle = scaffoldState.dragProgress.floatValue > 0.1f,
+                showStoragesTitle = showStoragesTitle,
             )
         }
     )
 
     AppBarStates(
-        titleId = if (mainTitleVisibility.value) MainTitleId else SecondTittleId,
+        titleId = targetTitleId,
         navigationIcon = {
-            IconButton(onClick = { navigator.back() }) {
+            IconButton(onClick = remember { { router.back() } }) {
                 Icon(
                     Icons.Filled.ArrowBack,
                     contentDescription = null,
@@ -81,7 +94,7 @@ fun StoragesScreen() {
 
 
     FabSimpleInContainer(
-        onClick = { navigator.navigate(EditStorageDestination()) },
+        onClick = remember { { router.navigate(EditStorageDestination()) } },
         content = { Icon(Icons.Default.Add, contentDescription = "Add") }
     )
 

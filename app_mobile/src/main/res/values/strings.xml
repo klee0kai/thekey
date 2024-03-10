@@ -27,4 +27,14 @@
     <string name="fill_the_file_name">fill the file name</string>
     <string name="path_unreachable">Path is unreachable</string>
     <string name="remove">Remove</string>
+    <string name="writeExternalStorage">Write external storage</string>
+    <string name="title">Title</string>
+    <string name="ok">ok</string>
+    <string name="cancel">cancel</string>
+    <string name="grant_permissions">Grant permissions</string>
+    <string name="neen_permissions_list">Need permissions:</string>
+    <string name="manageExnternalStorage">Manage external storage</string>
+    <string name="reject">Reject</string>
+    <string name="go_to_settings">Go To settings</string>
+    <string name="find_external_storage_purpose">To Find external master storages need:</string>
 </resources>

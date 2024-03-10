@@ -39,7 +39,6 @@ import kotlinx.coroutines.flow.flowOf
 fun LoginScreen() {
     val scope = rememberCoroutineScope()
     val presenter = remember { DI.loginPresenter() }
-    val navigator = remember { DI.navigator() }
     val pathInputHelper = remember { DI.pathInputHelper() }
     val currentStorageState = currentStorageState()
     var passwordInputText by remember { mutableStateOf("") }
@@ -50,7 +49,6 @@ fun LoginScreen() {
             .toAnnotationString()
             .coloredPath()
     }
-
 
     ConstraintLayout(
         modifier = Modifier

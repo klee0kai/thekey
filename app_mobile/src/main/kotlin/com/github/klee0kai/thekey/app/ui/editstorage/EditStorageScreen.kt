@@ -46,7 +46,6 @@ import com.github.klee0kai.thekey.app.helpers.path.removeTKeyFormat
 import com.github.klee0kai.thekey.app.model.Storage
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarStates
-import com.github.klee0kai.thekey.app.ui.navigation.back
 import com.github.klee0kai.thekey.app.utils.coroutine.awaitSec
 import com.github.klee0kai.thekey.app.utils.views.AutoFillList
 import com.github.klee0kai.thekey.app.utils.views.Keyboard
@@ -63,7 +62,7 @@ import com.github.klee0kai.thekey.app.utils.views.toTransformationText
 fun EditStorageScreen(
     path: String? = null,
 ) {
-    val navigator = remember { DI.navigator() }
+    val navigator = remember { DI.router() }
     val presenter = remember { DI.editStoragePresenter(StorageIdentifier(path)) }
     val pathInputHelper = remember { DI.pathInputHelper() }
     val userShortPathHelper = remember { DI.userShortPaths() }

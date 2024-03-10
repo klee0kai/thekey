@@ -3,8 +3,7 @@ package com.github.klee0kai.thekey.app.ui.storage
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
-import com.github.klee0kai.thekey.app.ui.navigation.StorageDestination
-import com.github.klee0kai.thekey.app.ui.navigation.awaitScreenEvent
+import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.flow
@@ -15,13 +14,13 @@ class StoragePresenter(
     val storagePath: String = "",
 ) {
     private val engine = DI.cryptStorageEngineLazy(StorageIdentifier(storagePath))
-    private val navigator = DI.navigator()
+    private val router = DI.router()
     private val scope = DI.mainThreadScope()
     private val updateTicks = MutableSharedFlow<Unit>()
 
     init {
         scope.launch {
-            navigator.awaitScreenEvent(StorageDestination(storagePath))
+            router.awaitScreenEvent(StorageDestination(storagePath))
             doLogout()
         }
     }

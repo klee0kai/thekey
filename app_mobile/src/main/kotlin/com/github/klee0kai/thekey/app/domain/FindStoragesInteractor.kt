@@ -22,6 +22,7 @@ class FindStoragesInteractor {
     }.distinctUntilChanged()
 
     private val scope = DI.ioThreadScope()
+    private val perm = DI.permissionsHelperLazy()
     private val engine = DI.findStorageEngineLazy()
     private val rep = DI.foundStoragesRepositoryLazy()
     private val settingsRep = DI.settingsRepositoryLazy()
@@ -29,7 +30,10 @@ class FindStoragesInteractor {
     private var lastStartTime: Long = 0
 
     fun findStorages(force: Boolean = false) = scope.launch {
-        if (!checkForceFind(force = force)) return@launch
+        val canToScan = perm().checkPermissions(perm().writeStoragePermissions())
+        val needToScan by lazy { checkForceFind(force = force) }
+        if (!canToScan || !needToScan) return@launch
+
         DI.userShortPaths().rootAbsolutePaths
             .map { root ->
                 engine().findStoragesFlow(root)

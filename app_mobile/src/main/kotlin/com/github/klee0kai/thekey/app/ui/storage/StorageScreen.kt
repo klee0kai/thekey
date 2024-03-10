@@ -32,11 +32,12 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.SecondaryTabs
 import com.github.klee0kai.thekey.app.ui.designkit.components.SecondaryTabsConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberMainTitleVisibleFlow
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberSimpleBottomSheetScaffoldState
-import com.github.klee0kai.thekey.app.ui.navigation.StorageDestination
-import com.github.klee0kai.thekey.app.ui.navigation.back
+import com.github.klee0kai.thekey.app.ui.navigation.LocalRouter
+import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.GeneratePasswordContent
 import com.github.klee0kai.thekey.app.ui.storage.notes.NotesContent
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
+import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
 
 private const val MainTitleId = 0
 private const val SecondTittleId = 1
@@ -48,7 +49,7 @@ fun StorageScreen(
     args: StorageDestination = StorageDestination()
 ) {
     val presenter = remember { DI.storagePresenter(StorageIdentifier(args.path)) }
-    val navigator = remember { DI.navigator() }
+    val navigator = LocalRouter.current
     val titles = listOf(
         stringResource(id = R.string.accounts),
         stringResource(id = R.string.passw_generate)
@@ -59,12 +60,14 @@ fun StorageScreen(
             topContentSize = SecondaryTabsConst.allHeight + 190.dp,
             appBarSize = AppBarConst.appBarSize
         )
-    val isAccountTab = pagerState.currentPage == 0
-            && pagerState.currentPageOffsetFraction == 0f
+    val isAccountTab by rememberDerivedStateOf {
+        pagerState.currentPage == 0 && pagerState.currentPageOffsetFraction == 0f
+    }
 
     val accountTitleVisibility = accountScaffoldState.rememberMainTitleVisibleFlow()
-    val mainTitleVisibility = !isAccountTab || accountTitleVisibility.value
-    val tabsVisible = !isAccountTab || accountScaffoldState.dragProgress.floatValue > 0.4f
+    val mainTitleVisibility by rememberDerivedStateOf { !isAccountTab || accountTitleVisibility.value == true }
+    val tabsVisible by rememberDerivedStateOf { !isAccountTab || accountScaffoldState.dragProgress.floatValue > 0.4f }
+    val targetTitleId = rememberDerivedStateOf { if (mainTitleVisibility) MainTitleId else SecondTittleId }
     val tabsAlpha by animateAlphaAsState(tabsVisible)
 
     HorizontalPager(
@@ -96,7 +99,7 @@ fun StorageScreen(
     }
 
     AppBarStates(
-        titleId = if (mainTitleVisibility) MainTitleId else SecondTittleId,
+        titleId = targetTitleId,
         navigationIcon = {
             IconButton(onClick = { navigator.back() }) {
                 Icon(
