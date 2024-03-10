@@ -28,43 +28,44 @@ fun AutoFillList(
     onSelected: (String?) -> Unit = {},
 ) {
     val variantsListAlpha by animateAlphaAsState(isVisible && variants.isNotEmpty())
+    val notVisible = rememberDerivedStateOf { variantsListAlpha <= 0 }
 
-    if (variantsListAlpha > 0) {
-        LazyColumn(
-            modifier = modifier
-                .alpha(variantsListAlpha)
-                .heightIn(0.dp, 200.dp)
-                .background(
-                    color = MaterialTheme.colorScheme.surface,
-                    shape = RoundedCornerShape(16.dp)
-                ),
-        ) {
+    if (notVisible.value) return
+
+    LazyColumn(
+        modifier = modifier
+            .alpha(variantsListAlpha)
+            .heightIn(0.dp, 200.dp)
+            .background(
+                color = MaterialTheme.colorScheme.surface,
+                shape = RoundedCornerShape(16.dp)
+            ),
+    ) {
+        item {
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+        variants.forEach { text ->
             item {
-                Spacer(modifier = Modifier.height(8.dp))
-            }
-            variants.forEach { text ->
-                item {
-                    Box(
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            onSelected.invoke(text)
+                        }
+                ) {
+                    Text(
+                        text = text,
                         modifier = Modifier
+                            .padding(all = 8.dp)
+                            .padding(start = 8.dp, end = 8.dp)
                             .fillMaxWidth()
-                            .clickable {
-                                onSelected.invoke(text)
-                            }
-                    ) {
-                        Text(
-                            text = text,
-                            modifier = Modifier
-                                .padding(all = 8.dp)
-                                .padding(start = 8.dp, end = 8.dp)
-                                .fillMaxWidth()
-                        )
-                    }
-
+                    )
                 }
+
             }
-            item {
-                Spacer(modifier = Modifier.height(8.dp))
-            }
+        }
+        item {
+            Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }

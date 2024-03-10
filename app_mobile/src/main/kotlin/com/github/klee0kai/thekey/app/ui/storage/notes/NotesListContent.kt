@@ -45,6 +45,9 @@ fun NotesListContent(
     val notes = presenter.notes().collectAsState(initial = listOf())
     val titleAnimatedAlpha by animateAlphaAsState(showStoragesTitle)
 
+    if (notes.value.isEmpty()){
+        return
+    }
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
