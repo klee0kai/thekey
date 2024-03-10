@@ -41,48 +41,7 @@ internal object SimpleScaffoldConst {
     val dragHandleSize = 48.dp
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-data class SimpleBottomSheetScaffoldState(
-    val topContentSize: Dp = 190.dp,
-    val appBarSize: Dp = 0.dp,
-    val scaffoldState: BottomSheetScaffoldState,
-    val dragProgress: MutableFloatState = mutableFloatStateOf(0f),
-)
 
-@Composable
-@ExperimentalMaterial3Api
-fun rememberNonClosableBottomSheetState(
-    initialValue: SheetValue = SheetValue.PartiallyExpanded,
-    confirmValueChange: (SheetValue) -> Boolean = { true },
-    skipHiddenState: Boolean = true,
-): SheetState {
-    val density = LocalDensity.current
-    return remember {
-        SheetState(
-            skipPartiallyExpanded = false,
-            density = density,
-            confirmValueChange = confirmValueChange,
-            initialValue = initialValue,
-            skipHiddenState = skipHiddenState
-        )
-    }
-}
-
-@Composable
-@ExperimentalMaterial3Api
-fun rememberSimpleBottomSheetScaffoldState(
-    topContentSize: Dp = 190.dp,
-    appBarSize: Dp = 0.dp,
-    scaffoldState: BottomSheetScaffoldState = rememberBottomSheetScaffoldState(
-        bottomSheetState = rememberNonClosableBottomSheetState(),
-    ),
-): SimpleBottomSheetScaffoldState {
-    return remember {
-        SimpleBottomSheetScaffoldState(
-            topContentSize, appBarSize, scaffoldState
-        )
-    }
-}
 
 @Preview
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)

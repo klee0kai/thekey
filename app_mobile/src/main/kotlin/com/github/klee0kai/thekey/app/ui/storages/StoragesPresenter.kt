@@ -65,6 +65,4 @@ class StoragesPresenter {
             searchingStoragesStatus.value = false
         }
     }
-
-
 }

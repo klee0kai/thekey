@@ -3,6 +3,7 @@ package com.github.klee0kai.thekey.app.ui.storages.components
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,12 +33,18 @@ fun StoragesListContent(
     val presenter = remember { DI.storagesPresenter() }
     val storages = presenter.storages()
         .collectAsState(initial = emptyList(), scope.coroutineContext)
-
     val titleAnimatedAlpha by animateAlphaAsState(showStoragesTitle)
 
+    if (storages.value.isEmpty()){
+        // show empty state if need
+
+        // should return here so as not to reset the state of the list
+        return
+    }
     LazyColumn(
         modifier = modifier
-            .fillMaxSize()
+            .fillMaxSize(),
+        state = rememberLazyListState(),
     ) {
         item {
             Text(
