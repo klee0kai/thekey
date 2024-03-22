@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.engine
+package com.github.klee0kai.thekey.app.engine.findstorage
 
 class FindStorageDummyEngine : FindStorageEngine() {
 

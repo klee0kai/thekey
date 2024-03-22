@@ -4,8 +4,8 @@ import com.github.klee0kai.stone.annotations.module.Module
 import com.github.klee0kai.stone.annotations.module.Provide
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.engine.CryptStorageEngine
-import com.github.klee0kai.thekey.app.engine.EditStorageEngine
-import com.github.klee0kai.thekey.app.engine.FindStorageEngine
+import com.github.klee0kai.thekey.app.engine.findstorage.EditStorageEngine
+import com.github.klee0kai.thekey.app.engine.findstorage.FindStorageEngine
 
 @Module
 abstract class EngineModule {

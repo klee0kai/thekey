@@ -2,7 +2,7 @@ package com.github.klee0kai.thekey.app.ui.editstorage
 
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.engine.EditStorageEngine
+import com.github.klee0kai.thekey.app.engine.findstorage.EditStorageEngine
 import com.github.klee0kai.thekey.app.model.Storage
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch

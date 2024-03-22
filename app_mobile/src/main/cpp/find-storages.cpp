@@ -10,11 +10,11 @@ using namespace thekey;
 using namespace thekey_v1;
 
 
-std::shared_ptr<EngineFindStorageListener> findStorageListener = {};
+std::shared_ptr<EngineFindstorageFindStorageListener> findStorageListener = {};
 
-void EngineFindStorageEngine::findStorages(const std::string &folder,
-                                           const EngineFindStorageListener &listener) {
-    ::findStorageListener = std::make_shared<EngineFindStorageListener>(listener);
+void EngineFindstorageFindStorageEngine::findStorages(const std::string &folder,
+                                           const EngineFindstorageFindStorageListener &listener) {
+    ::findStorageListener = std::make_shared<EngineFindstorageFindStorageListener>(listener);
 
     thekey::findStorages(folder, [](const Storage &item) {
         findStorageListener->onStorageFound(ModelStorage{
