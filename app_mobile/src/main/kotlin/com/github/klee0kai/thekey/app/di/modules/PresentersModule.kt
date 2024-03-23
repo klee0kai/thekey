@@ -30,8 +30,7 @@ abstract class PresentersModule {
     }
 
     @Provide(cache = Provide.CacheType.Weak)
-    open fun storagePresenter(storageIdentifier: StorageIdentifier) =
-        StoragePresenter(storagePath = storageIdentifier.path ?: "")
+    abstract fun storagePresenter(storageIdentifier: StorageIdentifier): StoragePresenter
 
     @Provide(cache = Provide.CacheType.Weak)
     open fun notePresenter(noteIdentifier: NoteIdentifier) =

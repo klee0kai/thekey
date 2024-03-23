@@ -19,7 +19,6 @@ abstract class EngineModule {
     open fun cryptStorageEngine(id: StorageIdentifier): CryptStorage {
         return when (id.version) {
             1 -> K1Storage(id.path)
-            2 -> K1Storage(id.path)
             else -> throw StorageVersionNotSupported("storage version ${id.version} not supported")
         }
     }

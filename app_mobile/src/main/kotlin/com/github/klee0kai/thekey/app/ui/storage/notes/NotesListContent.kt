@@ -28,24 +28,25 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
+import com.github.klee0kai.thekey.app.ui.navigation.noteDestination
+import com.github.klee0kai.thekey.app.ui.navigation.toStorageIdentifier
 import com.github.klee0kai.thekey.app.ui.navigation.LocalRouter
-import com.github.klee0kai.thekey.app.ui.navigation.model.NoteDestination
+import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
 
 @Preview
 @Composable
 fun NotesListContent(
     modifier: Modifier = Modifier,
-    storagePath: String = "",
+    args: StorageDestination = StorageDestination(),
     showStoragesTitle: Boolean = true,
 ) {
-    val presenter = remember { DI.storagePresenter(StorageIdentifier(storagePath)) }
+    val presenter = remember { DI.storagePresenter(args.toStorageIdentifier()) }
     val navigator = LocalRouter.current
     val notes = presenter.notes().collectAsState(initial = listOf())
     val titleAnimatedAlpha by animateAlphaAsState(showStoragesTitle)
 
-    if (notes.value.isEmpty()){
+    if (notes.value.isEmpty()) {
         return
     }
     LazyColumn(
@@ -74,7 +75,7 @@ fun NotesListContent(
                                 showMenu = true
                             },
                             onClick = {
-                                navigator.navigate(NoteDestination(path = storagePath, notePtr = note.ptnote))
+                                navigator.navigate(args.noteDestination(notePtr = note.ptnote))
                             }
                         )
                 ) {

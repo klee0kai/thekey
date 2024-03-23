@@ -4,11 +4,12 @@
 #include <jni.h>
 #include <string>
 #include <android/log.h>
-#include "brooklyn.h"
 #include "memory"
 #include "key_core.h"
 #include "key1.h"
 #include "key_find.h"
+#include "brooklyn.h"
+
 
 using namespace brooklyn;
 using namespace std;
@@ -18,12 +19,12 @@ using namespace thekey_v1;
 typedef EngineStorageK1Storage JvmStorage1;
 typedef EngineModelStorage JvmStorageInfo;
 
-static map<string, KeyStorageV1> storages = {};
+static map<string, shared_ptr<KeyStorageV1>> storages = {};
 
 static KeyStorageV1 *findStorage(const string &path) {
     auto it = storages.find(path);
     if (it == storages.end())return {};
-    return &it->second;
+    return &*it->second;
 }
 
 JvmStorageInfo JvmStorage1::info() {
@@ -35,7 +36,7 @@ JvmStorageInfo JvmStorage1::info() {
                 .name = storageInfo->name,
                 .description = storageInfo->description,
                 .version = int(storageInfo->storageVersion),
-                .isLogined = storageV1 != NULL ? 1 : 0
+                .logined = storageV1 != NULL ? 1 : 0
         };
 
     return {};
@@ -43,7 +44,7 @@ JvmStorageInfo JvmStorage1::info() {
 
 void JvmStorage1::login(const std::string &passw) {
     auto storage = thekey_v1::storage(getStoragePath(), passw);
-    if (storage) storages.insert({getStoragePath(), *storage});
+    if (storage) storages.insert({getStoragePath(), storage});
 }
 
 void JvmStorage1::unlogin() {

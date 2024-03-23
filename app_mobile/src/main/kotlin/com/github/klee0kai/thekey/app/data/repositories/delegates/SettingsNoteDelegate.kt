@@ -9,22 +9,27 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
-class SettingsNoteDelegate(
+open class SettingsNoteDelegate<T>(
     private val settingsDao: AsyncCoroutineProvide<SettingDao>,
     private val scope: CoroutineScope,
     private val settingId: Int,
-    private val defaultValue: () -> String,
+    private val defaultValue: () -> T,
+    private val getTransform: (String) -> T,
+    private val setTransform: (T) -> String,
 ) {
 
-    fun set(value: String): Job = scope.launch {
-        val entry = SettingPairEntry(id = settingId, value = value)
+    fun set(value: T): Job = scope.launch {
+        val entry = SettingPairEntry(id = settingId, value = setTransform(value))
         settingsDao().update(entry = entry)
     }
 
-    fun get(): Deferred<String> = scope.async {
+    fun get(): Deferred<T> = scope.async {
         settingsDao()[settingId]
             ?.value
+            ?.let { getTransform(it) }
             ?: defaultValue()
     }
+
+    suspend operator fun invoke() = get().await()
 
 }

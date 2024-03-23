@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleScaffoldConst.dragHandleSize
+import com.github.klee0kai.thekey.app.ui.navigation.LocalRouter
 import com.github.klee0kai.thekey.app.utils.views.accelerateDecelerate
 import com.github.klee0kai.thekey.app.utils.views.ratioBetween
 import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
@@ -40,7 +41,6 @@ import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
 internal object SimpleScaffoldConst {
     val dragHandleSize = 48.dp
 }
-
 
 
 @Preview
@@ -93,7 +93,7 @@ fun SimpleBottomSheetScaffold(
             sheetPeekHeight = sheetMinSize,
             contentColor = colorScheme.onBackground,
             containerColor = colorScheme.background,
-            snackbarHost = { SnackbarHost(hostState = DI.snackbarHostState()) },
+            snackbarHost = { SnackbarHost(hostState = LocalRouter.current.snackbarHostState) },
             content = { innerPadding ->
                 Box(
                     modifier = Modifier

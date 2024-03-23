@@ -26,8 +26,6 @@ import com.github.klee0kai.thekey.app.di.wrap.AppWrappersStone
 import com.github.klee0kai.thekey.app.model.AppConfig
 
 val DI: AppComponent = Stone.createComponent(AppComponent::class.java).apply {
-    snackbarHostState(SnackbarHostState())
-
     if (BuildConfig.DEBUG) {
         with(DebugDI) { initDI() }
     }
@@ -75,9 +73,6 @@ interface AppComponent : AppComponentProviders {
 
     @BindInstance(cache = BindInstance.CacheType.Weak)
     fun activity(app: ComponentActivity? = null): ComponentActivity?
-
-    @BindInstance(cache = BindInstance.CacheType.Strong)
-    fun snackbarHostState(snackbarHostState: SnackbarHostState? = null): SnackbarHostState
 
     @BindInstance(cache = BindInstance.CacheType.Strong)
     fun config(snackbarHostState: AppConfig? = null): AppConfig

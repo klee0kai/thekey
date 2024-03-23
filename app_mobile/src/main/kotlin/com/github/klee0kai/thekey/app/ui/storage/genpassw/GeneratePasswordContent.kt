@@ -31,15 +31,18 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.ui.navigation.toStorageIdentifier
 import com.github.klee0kai.thekey.app.ui.navigation.LocalRouter
+import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 
 @Preview
 @Composable
 fun GeneratePasswordContent(
     modifier: Modifier = Modifier,
+    args: StorageDestination = StorageDestination(),
 ) {
     val scope = rememberCoroutineScope()
-    val presenter = remember { DI.loginPresenter() }
+    val presenter = remember { DI.storagePresenter(args.toStorageIdentifier()) }
     val navigator = LocalRouter.current
     val sliderValues = (4..12)
     var lenSliderPosition by remember { mutableIntStateOf(sliderValues.first) }

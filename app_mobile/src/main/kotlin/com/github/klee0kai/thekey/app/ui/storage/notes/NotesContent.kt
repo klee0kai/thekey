@@ -22,8 +22,9 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.SecondaryTabsConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleBottomSheetScaffold
 import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleBottomSheetScaffoldState
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberSimpleBottomSheetScaffoldState
+import com.github.klee0kai.thekey.app.ui.navigation.noteDestination
 import com.github.klee0kai.thekey.app.ui.navigation.LocalRouter
-import com.github.klee0kai.thekey.app.ui.navigation.model.NoteDestination
+import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.app.ui.storages.components.GroupsSelectContent
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
@@ -32,7 +33,7 @@ import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
 @Composable
 fun NotesContent(
     modifier: Modifier = Modifier,
-    storagePath: String = "",
+    args: StorageDestination = StorageDestination(),
     isPageFullyAvailable: Boolean = false,
     scaffoldState: SimpleBottomSheetScaffoldState =
         rememberSimpleBottomSheetScaffoldState(
@@ -57,7 +58,7 @@ fun NotesContent(
         sheetContent = {
             NotesListContent(
                 modifier = Modifier.fillMaxSize(),
-                storagePath = storagePath,
+                args = args,
                 showStoragesTitle = showStoragesTitle,
             )
         },
@@ -66,7 +67,7 @@ fun NotesContent(
     if (addButtonVisible) {
         FabSimpleInContainer(
             modifier = Modifier.alpha(addButtonAlpha),
-            onClick = remember { { router.navigate(NoteDestination(path = storagePath)) } },
+            onClick = remember { { router.navigate(args.noteDestination()) } },
             content = { Icon(Icons.Default.Add, contentDescription = "Add") }
         )
     }

@@ -46,6 +46,7 @@ import com.github.klee0kai.thekey.app.helpers.path.appendTKeyFormat
 import com.github.klee0kai.thekey.app.helpers.path.removeTKeyFormat
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarStates
+import com.github.klee0kai.thekey.app.ui.navigation.LocalRouter
 import com.github.klee0kai.thekey.app.utils.coroutine.awaitSec
 import com.github.klee0kai.thekey.app.utils.views.AutoFillList
 import com.github.klee0kai.thekey.app.utils.views.Keyboard
@@ -238,7 +239,7 @@ fun EditStorageScreen(
         Spacer(modifier = Modifier.weight(1f))
 
         SnackbarHost(
-            hostState = DI.snackbarHostState(),
+            hostState = navigator.snackbarHostState,
             modifier = Modifier.fillMaxWidth()
         )
 

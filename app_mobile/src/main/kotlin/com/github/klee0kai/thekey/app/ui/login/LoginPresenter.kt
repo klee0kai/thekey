@@ -2,16 +2,16 @@ package com.github.klee0kai.thekey.app.ui.login
 
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.model.ColoredStorage
-import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.StoragesDestination
 import com.github.klee0kai.thekey.app.ui.navigation.navigate
-import com.github.klee0kai.thekey.app.utils.coroutine.asyncResult
+import com.github.klee0kai.thekey.app.ui.navigation.toStorageDest
+import com.github.klee0kai.thekey.app.ui.navigation.toStorageIdentifier
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class LoginPresenter {
 
@@ -21,9 +21,10 @@ class LoginPresenter {
     private val scope = DI.mainThreadScope()
 
     fun currentStorageFlow() = flow<ColoredStorage> {
-        val storagePath = settingsRep().currentStoragePath.get().await()
+        val storagePath = settingsRep().currentStoragePath()
+        val newStorageVers = settingsRep().newStorageVersion()
         val storage = storagesRep().findStorage(storagePath).await()
-            ?: ColoredStorage(path = storagePath)
+            ?: ColoredStorage(version = newStorageVers, path = storagePath)
         emit(storage)
     }
 
@@ -39,15 +40,21 @@ class LoginPresenter {
         }
     }
 
-    fun login(passw: String) = scope.asyncResult {
+    fun login(passw: String) = scope.launch {
         if (passw.isBlank()) {
             router.snack(R.string.passw_is_null)
-            return@asyncResult
+            return@launch
         }
-        val storage = currentStorageFlow().first()
-        val engine = DI.cryptStorageEngineLazy(StorageIdentifier(storage.path))
-        engine().login(passw)
-        router.navigate(StorageDestination(path = storage.path))
+        runCatching {
+            val storage = currentStorageFlow().first()
+            val engine = DI.cryptStorageEngineLazy(storage.toStorageIdentifier())
+            engine().login(passw)
+            router.navigate(storage.toStorageDest())
+        }.onFailure { error ->
+            Timber.d(error)
+            router.snack(error.message ?: "error")
+        }
     }
 
 }
+

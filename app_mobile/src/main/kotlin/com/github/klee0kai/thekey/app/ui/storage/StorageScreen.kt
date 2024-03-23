@@ -24,7 +24,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarStates
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppTitleImage
@@ -32,6 +31,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.SecondaryTabs
 import com.github.klee0kai.thekey.app.ui.designkit.components.SecondaryTabsConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberMainTitleVisibleFlow
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberSimpleBottomSheetScaffoldState
+import com.github.klee0kai.thekey.app.ui.navigation.toStorageIdentifier
 import com.github.klee0kai.thekey.app.ui.navigation.LocalRouter
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.GeneratePasswordContent
@@ -48,7 +48,7 @@ private const val SecondTittleId = 1
 fun StorageScreen(
     args: StorageDestination = StorageDestination()
 ) {
-    val presenter = remember { DI.storagePresenter(StorageIdentifier(args.path)) }
+    val presenter = remember { DI.storagePresenter(args.toStorageIdentifier()) }
     val navigator = LocalRouter.current
     val titles = listOf(
         stringResource(id = R.string.accounts),
@@ -78,12 +78,14 @@ fun StorageScreen(
             Box {
                 when (page) {
                     0 -> NotesContent(
+                        args = args,
                         isPageFullyAvailable = isAccountTab,
                         scaffoldState = accountScaffoldState
                     )
 
                     1 -> GeneratePasswordContent(
-                        modifier = Modifier.padding(top = AppBarConst.appBarSize + SecondaryTabsConst.allHeight)
+                        modifier = Modifier.padding(top = AppBarConst.appBarSize + SecondaryTabsConst.allHeight),
+                        args = args,
                     )
                 }
             }

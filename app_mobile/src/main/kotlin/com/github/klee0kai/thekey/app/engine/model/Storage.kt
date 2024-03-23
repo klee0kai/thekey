@@ -13,5 +13,5 @@ data class Storage(
     val version: Int = 0,
 
     // opened storage info
-    val isLogined: Boolean = false,
+    val logined: Boolean = false,
 ) : Parcelable

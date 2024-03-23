@@ -9,5 +9,7 @@ data class ColoredStorage(
     val path: String = "",
     val name: String = "",
     val description: String = "",
+    val version: Int = 0,
     val colorGroup: ColoredStorageGroup? = null
+
 ) : Parcelable
