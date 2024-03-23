@@ -2,10 +2,11 @@ package com.github.klee0kai.thekey.app.engine.storage
 
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.engine.model.DecryptedPassw
+import com.github.klee0kai.thekey.app.engine.model.Storage
 
 interface CryptStorage {
 
-    fun isLogined(): Int
+    fun info(): Storage
 
     fun login(passw: String)
 

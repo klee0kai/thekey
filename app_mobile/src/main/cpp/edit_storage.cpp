@@ -13,7 +13,7 @@ using namespace std;
 using namespace thekey;
 using namespace thekey_v1;
 
-typedef ModelStorage JvmStorage;
+typedef EngineModelStorage JvmStorage;
 typedef EngineFindstorageEditStorageEngine JvmFindStorageListener;
 
 std::shared_ptr<JvmStorage> JvmFindStorageListener::findStorageInfo(const std::string &path) {

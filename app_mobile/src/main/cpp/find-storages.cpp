@@ -11,6 +11,7 @@ using namespace thekey_v1;
 
 typedef EngineFindstorageFindStorageListener JvmFindStorageListener;
 typedef EngineFindstorageFindStorageEngine JvmFindStorageEngine;
+typedef EngineModelStorage JvmStorageInfo;
 
 
 std::shared_ptr<JvmFindStorageListener> findStorageListener = {};
@@ -19,10 +20,11 @@ void JvmFindStorageEngine::findStorages(const std::string &folder, const JvmFind
     ::findStorageListener = std::make_shared<JvmFindStorageListener>(listener);
 
     thekey::findStorages(folder, [](const Storage &item) {
-        findStorageListener->onStorageFound(ModelStorage{
+        findStorageListener->onStorageFound(JvmStorageInfo{
                 .path = item.file,
                 .name = item.name,
-                .description = item.description
+                .description = item.description,
+                .version = int(item.storageVersion)
         });
     });
 }

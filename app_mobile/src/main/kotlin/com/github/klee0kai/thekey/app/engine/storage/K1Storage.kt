@@ -4,6 +4,7 @@ import com.github.klee0kai.brooklyn.JniMirror
 import com.github.klee0kai.thekey.app.engine.NativeLibLoader
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.engine.model.DecryptedPassw
+import com.github.klee0kai.thekey.app.engine.model.Storage
 
 @JniMirror
 class K1Storage(
@@ -14,7 +15,7 @@ class K1Storage(
         NativeLibLoader.loadIfNeed()
     }
 
-    external override fun isLogined(): Int
+    external override fun info(): Storage
 
     external override fun login(passw: String)
 

@@ -15,11 +15,15 @@ using namespace thekey;
 using namespace thekey_v1;
 
 typedef EngineStorageK2Storage JvmStorage2;
+typedef EngineModelStorage JvmStorageInfo;
 
 static shared_ptr<KeyStorageV1> storageV1 = {};
 
-int JvmStorage2::isLogined() {
-    return storageV1.get() != NULL;
+JvmStorageInfo JvmStorage2::info() {
+
+    return JvmStorageInfo{
+
+    };
 }
 
 void JvmStorage2::login(const std::string &passw) {
