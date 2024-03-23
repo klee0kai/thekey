@@ -20,7 +20,8 @@ add_library(crypt-storage-lib SHARED
         ${BROOKLYN_SRC}
         find-storages.cpp
         edit_storage.cpp
-        cryp_storage.cpp
+        cryp_storage_v1.cpp
+        cryp_storage_v2.cpp
         )
 
 target_include_directories(crypt-storage-lib

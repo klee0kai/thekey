@@ -60,7 +60,7 @@ import com.github.klee0kai.thekey.app.utils.views.toTransformationText
 @Preview
 @Composable
 fun EditStorageScreen(
-    path: String? = null,
+    path: String = "",
 ) {
     val navigator = remember { DI.router() }
     val presenter = remember { DI.editStoragePresenter(StorageIdentifier(path)) }

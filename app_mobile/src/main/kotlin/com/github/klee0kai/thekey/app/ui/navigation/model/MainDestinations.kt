@@ -18,7 +18,7 @@ data class EditStorageDestination(
     /**
      * storage path
      */
-    val path: String? = null
+    val path: String = ""
 ) : Destination
 
 @Parcelize
