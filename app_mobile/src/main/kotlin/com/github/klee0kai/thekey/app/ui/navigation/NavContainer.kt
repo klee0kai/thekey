@@ -40,7 +40,7 @@ import dev.olshevski.navigation.reimagined.NavTransitionScope
 import dev.olshevski.navigation.reimagined.NavTransitionSpec
 
 
-val LocalRouter = compositionLocalOf<AppRouter> { error("no local provided NavLocal") }
+val LocalRouter = compositionLocalOf { DI.router() }
 
 @Composable
 fun MainNavContainer() {

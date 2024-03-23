@@ -10,7 +10,6 @@
 #include "key_find.h"
 #include "brooklyn.h"
 
-
 using namespace brooklyn;
 using namespace std;
 using namespace thekey;
@@ -18,8 +17,9 @@ using namespace thekey_v1;
 
 typedef EngineStorageK1Storage JvmStorage1;
 typedef EngineModelStorage JvmStorageInfo;
+typedef EngineModelGenPasswParams JvmGenPasswParams;
 
-static map<string, shared_ptr<KeyStorageV1>> storages = {};
+static map <string, shared_ptr<KeyStorageV1>> storages = {};
 
 static KeyStorageV1 *findStorage(const string &path) {
     auto it = storages.find(path);
@@ -29,10 +29,10 @@ static KeyStorageV1 *findStorage(const string &path) {
 
 JvmStorageInfo JvmStorage1::info() {
     auto storageV1 = findStorage(getStoragePath());
-    auto storageInfo = thekey::storage(getStoragePath());
+    auto storageInfo = storageV1Info(getStoragePath());
     if (storageInfo)
         return JvmStorageInfo{
-                .path = storageInfo->file,
+                .path = storageInfo->path,
                 .name = storageInfo->name,
                 .description = storageInfo->description,
                 .version = int(storageInfo->storageVersion),
@@ -43,15 +43,22 @@ JvmStorageInfo JvmStorage1::info() {
 }
 
 void JvmStorage1::login(const std::string &passw) {
+    auto storageInfo = storageV1Info(getStoragePath());
+    if (!storageInfo) createStorage(Storage{.file = getStoragePath()});
+
     auto storage = thekey_v1::storage(getStoragePath(), passw);
-    if (storage) storages.insert({getStoragePath(), storage});
+    if (storage) {
+        storage->readAll();
+        storage->save();
+        storages.insert({getStoragePath(), storage});
+    }
 }
 
 void JvmStorage1::unlogin() {
     storages.erase(getStoragePath());
 }
 
-std::vector<EngineModelDecryptedNote> JvmStorage1::notes() {
+std::vector <EngineModelDecryptedNote> JvmStorage1::notes() {
     auto storageV1 = findStorage(getStoragePath());
     if (!storageV1)return {};
     auto notes = std::vector<EngineModelDecryptedNote>();
@@ -114,10 +121,14 @@ EngineModelDecryptedPassw JvmStorage1::getGenPassw(const int64_t &ptNote) {
     return passw;
 }
 
-
-std::string
-JvmStorage1::generateNewPassw(const int &len, const int &genPasswEncoding) {
+std::string JvmStorage1::generateNewPassw(const JvmGenPasswParams &params) {
     auto storageV1 = findStorage(getStoragePath());
     if (!storageV1)return "";
-    return storageV1->genPassw(len, genPasswEncoding);
+    int genPasswEncoding = ENC_NUM_ONLY;
+    if (params.specSymbolsInPassw) {
+        genPasswEncoding = ENC_EN_NUM_SPEC_SYMBOLS;
+    } else if (params.symbolsInPassw) {
+        genPasswEncoding = ENC_EN_NUM;
+    }
+    return storageV1->genPassw(params.len, genPasswEncoding);;
 }

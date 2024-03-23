@@ -4,6 +4,7 @@ import com.github.klee0kai.brooklyn.JniMirror
 import com.github.klee0kai.thekey.app.engine.NativeLibLoader
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.engine.model.DecryptedPassw
+import com.github.klee0kai.thekey.app.engine.model.GenPasswParams
 import com.github.klee0kai.thekey.app.engine.model.Storage
 
 @JniMirror
@@ -31,6 +32,6 @@ class K1Storage(
 
     external override fun getGenPassw(ptNote: Long): DecryptedPassw
 
-    external override fun generateNewPassw(len: Int, genPasswEncoding: Int): String
+    external override fun generateNewPassw(params: GenPasswParams): String
 
 }

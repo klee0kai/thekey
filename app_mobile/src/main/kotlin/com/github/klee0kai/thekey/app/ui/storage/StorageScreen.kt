@@ -31,10 +31,10 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.SecondaryTabs
 import com.github.klee0kai.thekey.app.ui.designkit.components.SecondaryTabsConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberMainTitleVisibleFlow
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberSimpleBottomSheetScaffoldState
-import com.github.klee0kai.thekey.app.ui.navigation.toStorageIdentifier
 import com.github.klee0kai.thekey.app.ui.navigation.LocalRouter
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
-import com.github.klee0kai.thekey.app.ui.storage.genpassw.GeneratePasswordContent
+import com.github.klee0kai.thekey.app.ui.navigation.toStorageIdentifier
+import com.github.klee0kai.thekey.app.ui.storage.genpassw.GenPasswordContent
 import com.github.klee0kai.thekey.app.ui.storage.notes.NotesContent
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
@@ -83,7 +83,7 @@ fun StorageScreen(
                         scaffoldState = accountScaffoldState
                     )
 
-                    1 -> GeneratePasswordContent(
+                    1 -> GenPasswordContent(
                         modifier = Modifier.padding(top = AppBarConst.appBarSize + SecondaryTabsConst.allHeight),
                         args = args,
                     )

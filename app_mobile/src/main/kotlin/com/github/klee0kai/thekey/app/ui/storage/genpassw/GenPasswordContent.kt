@@ -17,12 +17,10 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,24 +29,24 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.ui.navigation.toStorageIdentifier
 import com.github.klee0kai.thekey.app.ui.navigation.LocalRouter
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
+import com.github.klee0kai.thekey.app.ui.navigation.toStorageIdentifier
 
 @Preview
 @Composable
-fun GeneratePasswordContent(
+fun GenPasswordContent(
     modifier: Modifier = Modifier,
     args: StorageDestination = StorageDestination(),
 ) {
     val scope = rememberCoroutineScope()
-    val presenter = remember { DI.storagePresenter(args.toStorageIdentifier()) }
+    val presenter = remember { DI.genPasswPresenter(args.toStorageIdentifier()) }
     val navigator = LocalRouter.current
-    val sliderValues = (4..12)
-    var lenSliderPosition by remember { mutableIntStateOf(sliderValues.first) }
-    var symbolsChecked by remember { mutableStateOf(false) }
-    var specSymbolsChecked by remember { mutableStateOf(false) }
-    var passw by remember { mutableStateOf("GenPassw") }
+    val sliderValues = presenter.passwLenRange
+    val lenSliderPosition by presenter.passwLen.collectAsState()
+    val symbolsChecked by presenter.symInPassw.collectAsState()
+    val specSymbolsChecked by presenter.specSymbolsInPassw.collectAsState()
+    val passw by presenter.passw.collectAsState()
 
     ConstraintLayout(
         modifier = modifier
@@ -101,7 +99,7 @@ fun GeneratePasswordContent(
 
             Slider(
                 value = lenSliderPosition.toFloat(),
-                onValueChange = { lenSliderPosition = it.toInt() },
+                onValueChange = { presenter.passwLen.value = it.toInt() },
                 colors = SliderDefaults.colors(
                     thumbColor = MaterialTheme.colorScheme.primary,
                     activeTrackColor = MaterialTheme.colorScheme.primary,
@@ -132,7 +130,7 @@ fun GeneratePasswordContent(
                 })
 
             Switch(checked = symbolsChecked,
-                onCheckedChange = { symbolsChecked = it },
+                onCheckedChange = { presenter.symInPassw.value = it },
                 modifier = Modifier.constrainAs(symbolsSwitch) {
                     linkTo(
                         start = symbolsText.end,
@@ -158,7 +156,7 @@ fun GeneratePasswordContent(
 
 
             Switch(checked = specSymbolsChecked,
-                onCheckedChange = { specSymbolsChecked = it },
+                onCheckedChange = { presenter.specSymbolsInPassw.value = it },
                 modifier = Modifier.constrainAs(specSymbolsSwitch) {
                     linkTo(
                         start = specSymbolsText.end,
@@ -196,7 +194,7 @@ fun GeneratePasswordContent(
                     end.linkTo(parent.end)
                 },
             onClick = {
-
+                presenter.generatePassw()
             },
         ) {
             Text(stringResource(R.string.passw_generate))
@@ -228,8 +226,6 @@ fun GeneratePasswordContent(
             }
         )
 
-
     }
-
 
 }

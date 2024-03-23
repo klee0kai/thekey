@@ -2,6 +2,7 @@ package com.github.klee0kai.thekey.app.engine.storage
 
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.engine.model.DecryptedPassw
+import com.github.klee0kai.thekey.app.engine.model.GenPasswParams
 import com.github.klee0kai.thekey.app.engine.model.Storage
 
 interface CryptStorage {
@@ -22,6 +23,6 @@ interface CryptStorage {
 
     fun getGenPassw(ptNote: Long): DecryptedPassw
 
-    fun generateNewPassw(len: Int, genPasswEncoding: Int): String
+    fun generateNewPassw(params: GenPasswParams): String
 
 }
