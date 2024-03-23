@@ -1,11 +1,11 @@
-package com.github.klee0kai.thekey.app
+package com.github.klee0kai.thekey.app.di.debug
 
 import android.view.View
+import com.github.klee0kai.thekey.app.App
 import com.github.klee0kai.thekey.app.di.AppComponent
-import com.github.klee0kai.thekey.app.di.DummyEngineModule
-import com.github.klee0kai.thekey.app.di.DummyHelpersModule
 
-object TargetDI {
+
+object DebugDI {
 
     fun AppComponent.initDI() {
         val context = App.appRef?.get()

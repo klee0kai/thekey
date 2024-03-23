@@ -1,7 +1,4 @@
-package com.github.klee0kai.thekey.app.helpers
-
-import com.github.klee0kai.thekey.app.helpers.path.ShortPath
-import com.github.klee0kai.thekey.app.helpers.path.UserShortPaths
+package com.github.klee0kai.thekey.app.helpers.path
 
 class DummyUserShortPaths : UserShortPaths() {
 

@@ -8,7 +8,8 @@ import com.github.klee0kai.stone.annotations.component.Component
 import com.github.klee0kai.stone.annotations.component.Init
 import com.github.klee0kai.stone.annotations.module.BindInstance
 import com.github.klee0kai.thekey.app.App
-import com.github.klee0kai.thekey.app.TargetDI
+import com.github.klee0kai.thekey.app.BuildConfig
+import com.github.klee0kai.thekey.app.di.debug.DebugDI
 import com.github.klee0kai.thekey.app.di.dependencies.AppComponentProviders
 import com.github.klee0kai.thekey.app.di.identifier.NoteIdentifier
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
@@ -27,7 +28,9 @@ import com.github.klee0kai.thekey.app.model.AppConfig
 val DI: AppComponent = Stone.createComponent(AppComponent::class.java).apply {
     snackbarHostState(SnackbarHostState())
 
-    with(TargetDI) { initDI() }
+    if (BuildConfig.DEBUG) {
+        with(DebugDI) { initDI() }
+    }
 }
 
 
