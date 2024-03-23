@@ -9,12 +9,14 @@ using namespace brooklyn;
 using namespace thekey;
 using namespace thekey_v1;
 
+typedef EngineFindstorageFindStorageListener JvmFindStorageListener;
+typedef EngineFindstorageFindStorageEngine JvmFindStorageEngine;
 
-std::shared_ptr<EngineFindstorageFindStorageListener> findStorageListener = {};
 
-void EngineFindstorageFindStorageEngine::findStorages(const std::string &folder,
-                                           const EngineFindstorageFindStorageListener &listener) {
-    ::findStorageListener = std::make_shared<EngineFindstorageFindStorageListener>(listener);
+std::shared_ptr<JvmFindStorageListener> findStorageListener = {};
+
+void JvmFindStorageEngine::findStorages(const std::string &folder, const JvmFindStorageListener &listener) {
+    ::findStorageListener = std::make_shared<JvmFindStorageListener>(listener);
 
     thekey::findStorages(folder, [](const Storage &item) {
         findStorageListener->onStorageFound(ModelStorage{

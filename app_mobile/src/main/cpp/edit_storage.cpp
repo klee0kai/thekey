@@ -13,15 +13,18 @@ using namespace std;
 using namespace thekey;
 using namespace thekey_v1;
 
-std::shared_ptr<ModelStorage> EngineFindstorageEditStorageEngine::findStorageInfo(const std::string &path) {
-    auto storage = shared_ptr<ModelStorage>{
+typedef ModelStorage JvmStorage;
+typedef EngineFindstorageEditStorageEngine JvmFindStorageListener;
+
+std::shared_ptr<JvmStorage> JvmFindStorageListener::findStorageInfo(const std::string &path) {
+    auto storage = shared_ptr<JvmStorage>{
 
     };
     return storage;
 }
 
 
-int EngineFindstorageEditStorageEngine::createStorage(const brooklyn::ModelStorage &storage) {
+int JvmFindStorageListener::createStorage(const JvmStorage &storage) {
     auto error = thekey_v1::createStorage(thekey::Storage{
             .file = storage.path,
             .name = storage.name,
@@ -30,7 +33,7 @@ int EngineFindstorageEditStorageEngine::createStorage(const brooklyn::ModelStora
     return error;
 }
 
-int EngineFindstorageEditStorageEngine::editStorage(const brooklyn::ModelStorage &storage) {
+int JvmFindStorageListener::editStorage(const JvmStorage &storage) {
 
     return JNI_FALSE;
 }
