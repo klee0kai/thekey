@@ -4,6 +4,7 @@ package com.github.klee0kai.thekey.app.ui.storage.genpassw
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -223,6 +224,7 @@ fun GenPasswordContent(
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier
                 .alpha(passw.alpha)
+                .clickable { presenter.copyToClipboard() }
                 .constrainAs(passwText) {
                     linkTo(
                         top = generateParams.bottom,

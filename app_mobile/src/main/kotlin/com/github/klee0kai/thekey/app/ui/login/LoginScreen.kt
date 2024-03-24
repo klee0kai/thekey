@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -30,7 +29,6 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.model.ColoredStorage
-import com.github.klee0kai.thekey.app.ui.navigation.LocalRouter
 import com.github.klee0kai.thekey.app.utils.views.toAnnotationString
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
@@ -136,20 +134,6 @@ fun LoginScreen() {
                     bias = 1f,
                 )
                 top.linkTo(storageName.bottom, 8.dp)
-            }
-        )
-
-        SnackbarHost(
-            hostState = LocalRouter.current.snackbarHostState,
-            modifier = Modifier.constrainAs(snackHost) {
-                linkTo(
-                    top = passwTextField.bottom,
-                    bottom = storagesButton.top,
-                    start = parent.start,
-                    end = parent.end,
-                    verticalBias = 1f,
-                    bottomMargin = 12.dp
-                )
             }
         )
 
