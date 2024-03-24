@@ -37,7 +37,6 @@ abstract class PresentersModule {
     abstract fun genPasswPresente(storageIdentifier: StorageIdentifier): GenPasswPresenter
 
     @Provide(cache = Provide.CacheType.Weak)
-    open fun notePresenter(noteIdentifier: NoteIdentifier) =
-        NotePresenter(noteIdentifier.storagePath, noteIdentifier.ptnote)
+    abstract fun notePresenter(noteIdentifier: NoteIdentifier): NotePresenter
 
 }

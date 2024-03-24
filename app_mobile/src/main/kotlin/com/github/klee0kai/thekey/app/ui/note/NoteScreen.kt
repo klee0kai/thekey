@@ -31,6 +31,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarStates
 import com.github.klee0kai.thekey.app.ui.navigation.LocalRouter
 import com.github.klee0kai.thekey.app.ui.navigation.model.NoteDestination
+import com.github.klee0kai.thekey.app.ui.navigation.toIdentifier
 
 @Preview(showBackground = true)
 @Composable
@@ -38,7 +39,7 @@ fun NoteScreen(
     args: NoteDestination = NoteDestination(),
 ) {
     val navigator = LocalRouter.current
-    val presenter = remember { DI.notePresenter(NoteIdentifier(args.path, args.notePtr)) }
+    val presenter = remember { DI.notePresenter(args.toIdentifier()) }
     val isEditNote = args.notePtr != 0L
     var isSkeleton by remember { mutableStateOf(isEditNote) }
     var note by remember { mutableStateOf(DecryptedNote()) }

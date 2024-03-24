@@ -1,11 +1,11 @@
 package com.github.klee0kai.thekey.app.ui.navigation
 
+import com.github.klee0kai.thekey.app.di.identifier.NoteIdentifier
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.engine.model.Storage
 import com.github.klee0kai.thekey.app.model.ColoredStorage
 import com.github.klee0kai.thekey.app.ui.navigation.model.NoteDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
-import com.github.klee0kai.thekey.app.ui.navigation.model.StoragesDestination
 
 fun Storage.toStorageDest() = StorageDestination(version = version, path = path)
 
@@ -22,4 +22,17 @@ fun StorageDestination.toStorageIdentifier() =
     StorageIdentifier(version = version, path = path)
 
 fun StorageDestination.noteDestination(notePtr: Long = 0) =
-    NoteDestination(version = version, path = path, notePtr = notePtr)
+    NoteDestination(storageVersion = version, path = path, notePtr = notePtr)
+
+
+fun StorageIdentifier.toNote(notePtr: Long = 0) =
+    NoteIdentifier(storageVersion = version, storagePath = path, notePtr = notePtr)
+
+fun NoteIdentifier.storageIdentifier() =
+    StorageIdentifier(version = storageVersion, path = storagePath)
+
+fun StorageDestination.toNote(notePtr: Long) =
+    NoteDestination(storageVersion = version, path = path, notePtr = notePtr)
+
+fun NoteDestination.toIdentifier() =
+    NoteIdentifier(storageVersion = storageVersion, storagePath = path, notePtr = notePtr)

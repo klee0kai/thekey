@@ -51,7 +51,7 @@ data class NoteDestination(
     /**
      * Storage version
      */
-    val version: Int = 0,
+    val storageVersion: Int = 0,
     /**
      * Note mem ptr
      */

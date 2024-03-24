@@ -79,7 +79,7 @@ std::vector<EngineModelDecryptedNote> JvmStorage1::notes() {
 EngineModelDecryptedNote JvmStorage1::note(const int64_t &notePtr) {
     auto storageV1 = findStorage(getStoragePath());
     if (!storageV1)return {};
-    auto dnote = storageV1->note(notePtr, 1);
+    auto dnote = storageV1->note(notePtr, TK1_GET_NOTE_INFO | TK1_GET_NOTE_PASSWORD);
     auto result = EngineModelDecryptedNote{
             .ptnote = notePtr,
             .site =  dnote->site,
