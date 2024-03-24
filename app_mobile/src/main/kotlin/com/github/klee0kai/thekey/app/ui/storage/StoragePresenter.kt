@@ -18,14 +18,6 @@ class StoragePresenter(
     private val scope = DI.mainThreadScope()
     private val updateTicks = MutableSharedFlow<Unit>()
 
-    init {
-        scope.launch {
-            router.awaitScreenEvent(storageIdentifier.toDestination())
-            doLogout()
-        }
-    }
-
-
     fun notes(): Flow<List<DecryptedNote>> = flow {
         emit(engine().notes().toList())
         updateTicks.collect {

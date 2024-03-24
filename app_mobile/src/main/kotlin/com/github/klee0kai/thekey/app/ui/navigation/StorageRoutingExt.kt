@@ -13,7 +13,8 @@ fun Storage.toStorageIdentifier() = StorageIdentifier(version = version, path = 
 
 fun ColoredStorage.toStorageIdentifier() = StorageIdentifier(version = version, path = path)
 
-fun ColoredStorage.toStorageDest() = StorageDestination(version = version, path = path)
+fun ColoredStorage.toStorageDest(selectedPage: Int = 0) =
+    StorageDestination(version = version, path = path, selectedPage = selectedPage)
 
 fun StorageIdentifier.toDestination() = StorageDestination(version = version, path = path)
 

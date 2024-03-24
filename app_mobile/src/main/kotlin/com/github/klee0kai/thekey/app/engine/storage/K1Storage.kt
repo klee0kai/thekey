@@ -32,6 +32,8 @@ class K1Storage(
 
     external override fun getGenPassw(ptNote: Long): DecryptedPassw
 
+    external override fun lastGeneratedPassw(): String
+
     external override fun generateNewPassw(params: GenPasswParams): String
 
 }

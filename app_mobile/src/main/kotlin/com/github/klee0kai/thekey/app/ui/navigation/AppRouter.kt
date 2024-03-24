@@ -27,7 +27,7 @@ interface ComposeRouter {
 
     fun <R> backWithResult(result: R, exitFromApp: Boolean = false): Boolean
 
-    suspend fun awaitScreenEvent(destination: Destination)
+    suspend fun awaitScreenClose(destination: Destination)
 
     fun back()
 

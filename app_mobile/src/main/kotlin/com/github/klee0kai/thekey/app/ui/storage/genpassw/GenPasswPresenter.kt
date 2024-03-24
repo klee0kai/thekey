@@ -5,6 +5,7 @@ import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.engine.model.GenPasswParams
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class GenPasswPresenter(
     val storageIdentifier: StorageIdentifier,
@@ -14,15 +15,19 @@ class GenPasswPresenter(
     private val router = DI.router()
     private val scope = DI.mainThreadScope()
 
-    val passwLenRange = (4..12)
+    /**
+     * @see `tkcore/storage1/salt/salt1.h`
+     */
+    val passwLenRange = (4..16)
+
     val passwLen = MutableStateFlow(passwLenRange.first)
     val symInPassw = MutableStateFlow(false)
     val specSymbolsInPassw = MutableStateFlow(false)
     val passw = MutableStateFlow("")
 
-    init {
+    fun init() {
         scope.launch {
-
+            passw.value = engine().lastGeneratedPassw()
         }
     }
 

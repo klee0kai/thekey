@@ -54,7 +54,7 @@ fun StorageScreen(
         stringResource(id = R.string.accounts),
         stringResource(id = R.string.passw_generate)
     )
-    val pagerState = rememberPagerState { titles.size }
+    val pagerState = rememberPagerState(initialPage = args.selectedPage.coerceIn(titles.indices)) { titles.size }
     val accountScaffoldState =
         rememberSimpleBottomSheetScaffoldState(
             topContentSize = SecondaryTabsConst.allHeight + 190.dp,

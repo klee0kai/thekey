@@ -23,6 +23,8 @@ interface CryptStorage {
 
     fun getGenPassw(ptNote: Long): DecryptedPassw
 
+    fun lastGeneratedPassw(): String
+
     fun generateNewPassw(params: GenPasswParams): String
 
 }

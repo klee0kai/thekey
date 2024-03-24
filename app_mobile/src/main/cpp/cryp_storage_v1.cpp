@@ -19,7 +19,7 @@ typedef EngineStorageK1Storage JvmStorage1;
 typedef EngineModelStorage JvmStorageInfo;
 typedef EngineModelGenPasswParams JvmGenPasswParams;
 
-static map <string, shared_ptr<KeyStorageV1>> storages = {};
+static map<string, shared_ptr<KeyStorageV1>> storages = {};
 
 static KeyStorageV1 *findStorage(const string &path) {
     auto it = storages.find(path);
@@ -43,6 +43,7 @@ JvmStorageInfo JvmStorage1::info() {
 }
 
 void JvmStorage1::login(const std::string &passw) {
+    storages.erase(getStoragePath());
     auto storageInfo = storageV1Info(getStoragePath());
     if (!storageInfo) createStorage(Storage{.file = getStoragePath()});
 
@@ -58,7 +59,7 @@ void JvmStorage1::unlogin() {
     storages.erase(getStoragePath());
 }
 
-std::vector <EngineModelDecryptedNote> JvmStorage1::notes() {
+std::vector<EngineModelDecryptedNote> JvmStorage1::notes() {
     auto storageV1 = findStorage(getStoragePath());
     if (!storageV1)return {};
     auto notes = std::vector<EngineModelDecryptedNote>();
@@ -121,6 +122,17 @@ EngineModelDecryptedPassw JvmStorage1::getGenPassw(const int64_t &ptNote) {
     return passw;
 }
 
+std::string JvmStorage1::lastGeneratedPassw() {
+    auto storageV1 = findStorage(getStoragePath());
+    if (!storageV1)return "";
+    auto hist = storageV1->genPasswHistoryList();
+    if (!hist.empty()) {
+        auto genPassw = storageV1->genPasswHistory(hist.back().histPtr, TK1_GET_NOTE_HISTORY_FULL);
+        if (genPassw) return genPassw->passw;
+    }
+    return storageV1->genPassw(4, ENC_NUM_ONLY);
+}
+
 std::string JvmStorage1::generateNewPassw(const JvmGenPasswParams &params) {
     auto storageV1 = findStorage(getStoragePath());
     if (!storageV1)return "";
@@ -130,5 +142,5 @@ std::string JvmStorage1::generateNewPassw(const JvmGenPasswParams &params) {
     } else if (params.symbolsInPassw) {
         genPasswEncoding = ENC_EN_NUM;
     }
-    return storageV1->genPassw(params.len, genPasswEncoding);;
+    return storageV1->genPassw(params.len, genPasswEncoding);
 }

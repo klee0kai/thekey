@@ -22,6 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,6 +33,7 @@ import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.navigation.LocalRouter
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.app.ui.navigation.toStorageIdentifier
+import com.github.klee0kai.thekey.app.utils.views.collectAsStateCrossFaded
 
 @Preview
 @Composable
@@ -40,13 +42,16 @@ fun GenPasswordContent(
     args: StorageDestination = StorageDestination(),
 ) {
     val scope = rememberCoroutineScope()
-    val presenter = remember { DI.genPasswPresenter(args.toStorageIdentifier()) }
+    val presenter = remember {
+        DI.genPasswPresenter(args.toStorageIdentifier())
+            .also { it.init() }
+    }
     val navigator = LocalRouter.current
     val sliderValues = presenter.passwLenRange
     val lenSliderPosition by presenter.passwLen.collectAsState()
     val symbolsChecked by presenter.symInPassw.collectAsState()
     val specSymbolsChecked by presenter.specSymbolsInPassw.collectAsState()
-    val passw by presenter.passw.collectAsState()
+    val passw by presenter.passw.collectAsStateCrossFaded()
 
     ConstraintLayout(
         modifier = modifier
@@ -214,16 +219,18 @@ fun GenPasswordContent(
         ) { Text(stringResource(R.string.hist)) }
 
         Text(
-            text = passw,
+            text = passw.target,
             style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.constrainAs(passwText) {
-                linkTo(
-                    top = generateParams.bottom,
-                    bottom = histButton.top,
-                    start = parent.start,
-                    end = parent.end
-                )
-            }
+            modifier = Modifier
+                .alpha(passw.alpha)
+                .constrainAs(passwText) {
+                    linkTo(
+                        top = generateParams.bottom,
+                        bottom = histButton.top,
+                        start = parent.start,
+                        end = parent.end
+                    )
+                }
         )
 
     }

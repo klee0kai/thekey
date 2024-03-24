@@ -35,6 +35,11 @@ data class StorageDestination(
      * Storage version
      */
     val version: Int = 0,
+
+    /**
+     * selected page
+     */
+    val selectedPage: Int = 0,
 ) : Destination
 
 @Parcelize
