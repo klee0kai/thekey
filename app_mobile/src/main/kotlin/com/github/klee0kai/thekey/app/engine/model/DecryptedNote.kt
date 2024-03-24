@@ -15,3 +15,7 @@ data class DecryptedNote(
 
     val chTime: Long = 0,
 ) : Parcelable
+
+
+fun DecryptedNote.isEmpty(): Boolean =
+    site.isEmpty() && login.isEmpty() && passw.isEmpty() && desc.isEmpty()

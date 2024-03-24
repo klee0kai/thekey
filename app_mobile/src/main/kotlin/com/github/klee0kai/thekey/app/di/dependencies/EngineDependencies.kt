@@ -12,6 +12,6 @@ interface EngineDependencies {
 
     fun editStorageEngineLazy(): AsyncCoroutineProvide<EditStorageEngine>
 
-    fun cryptStorageEngineLazy(id: StorageIdentifier): AsyncCoroutineProvide<CryptStorage>
+    fun cryptStorageEngineLazy(id: StorageIdentifier): AsyncCoroutineProvide<CryptStorage?>
 
 }

@@ -49,7 +49,7 @@ fun NoteScreen(
             return@LaunchedEffect
         }
         isSkeleton = true
-        note = presenter.note().await()
+        note = presenter.note().await()!!
         isSkeleton = false
     }
 

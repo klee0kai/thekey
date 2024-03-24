@@ -34,6 +34,7 @@ import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.ui.navigation.LocalRouter
 import com.github.klee0kai.thekey.app.ui.navigation.createNote
+import com.github.klee0kai.thekey.app.ui.navigation.genHist
 import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.app.utils.views.collectAsStateCrossFaded
@@ -49,7 +50,7 @@ fun GenPasswordContent(
         DI.genPasswPresenter(dest.identifier())
             .also { it.init() }
     }
-    val navigator = LocalRouter.current
+    val router = LocalRouter.current
     val sliderValues = presenter.passwLenRange
     val lenSliderPosition by presenter.passwLen.collectAsState()
     val symbolsChecked by presenter.symInPassw.collectAsState()
@@ -187,7 +188,7 @@ fun GenPasswordContent(
                     end.linkTo(parent.end)
                 },
             onClick = {
-                navigator.navigate(dest.createNote(DecryptedNote(passw = presenter.passw.value)))
+                router.navigate(dest.createNote(DecryptedNote(passw = presenter.passw.value)))
             }
         ) {
             Text(stringResource(R.string.save))
@@ -217,9 +218,7 @@ fun GenPasswordContent(
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 },
-            onClick = {
-
-            }
+            onClick = { router.navigate(dest.genHist()) }
         ) { Text(stringResource(R.string.hist)) }
 
         Text(

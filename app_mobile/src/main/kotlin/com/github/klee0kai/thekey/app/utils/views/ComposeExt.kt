@@ -1,5 +1,8 @@
 package com.github.klee0kai.thekey.app.utils.views
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.NonRestartableComposable
 import androidx.compose.runtime.State
@@ -10,6 +13,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import com.valentinilk.shimmer.ShimmerBounds
+import com.valentinilk.shimmer.rememberShimmer
+import com.valentinilk.shimmer.shimmer
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
@@ -48,4 +57,22 @@ fun rememberTickerOf(trigger: () -> Boolean): State<Int> {
         }
     }
     return updateTicker
+}
+
+
+@Composable
+@NonRestartableComposable
+fun Modifier.skeleton(
+    color: Color = MaterialTheme.colorScheme.inverseSurface,
+    isSkeleton: () -> Boolean,
+): Modifier {
+    val shimmer = rememberShimmer(shimmerBounds = ShimmerBounds.Window)
+    if (!isSkeleton()) return this
+
+    return this then shimmer(shimmer)
+        .background(
+            color = color,
+            shape = RoundedCornerShape(4.dp)
+        )
+
 }

@@ -40,11 +40,13 @@ import com.github.klee0kai.thekey.app.di.updateConfig
 import com.github.klee0kai.thekey.app.ui.designkit.EmptyScreen
 import com.github.klee0kai.thekey.app.ui.designkit.dialogs.AlertDialogScreen
 import com.github.klee0kai.thekey.app.ui.editstorage.EditStorageScreen
+import com.github.klee0kai.thekey.app.ui.genhist.GenHistScreen
 import com.github.klee0kai.thekey.app.ui.login.LoginScreen
 import com.github.klee0kai.thekey.app.ui.navigation.model.AlertDialogDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.DesignDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.Destination
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditStorageDestination
+import com.github.klee0kai.thekey.app.ui.navigation.model.GenHistDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.LoginDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.NoteDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
@@ -53,6 +55,7 @@ import com.github.klee0kai.thekey.app.ui.note.NoteScreen
 import com.github.klee0kai.thekey.app.ui.storage.StorageScreen
 import com.github.klee0kai.thekey.app.ui.storages.StoragesScreen
 import com.github.klee0kai.thekey.app.utils.views.rememberTickerOf
+import com.valentinilk.shimmer.defaultShimmerTheme
 import dev.olshevski.navigation.reimagined.AnimatedNavHost
 import dev.olshevski.navigation.reimagined.NavAction
 import dev.olshevski.navigation.reimagined.NavBackHandler
@@ -62,6 +65,7 @@ import dev.olshevski.navigation.reimagined.NavTransitionSpec
 
 
 val LocalRouter = compositionLocalOf { DI.router() }
+val LocalShimmerTheme = compositionLocalOf { defaultShimmerTheme.copy() }
 
 @Composable
 fun MainNavContainer() {
@@ -78,7 +82,10 @@ fun MainNavContainer() {
 
     router.collectBackstackChanges()
 
-    CompositionLocalProvider(LocalRouter provides DI.router()) {
+    CompositionLocalProvider(
+        LocalRouter provides DI.router(),
+        LocalShimmerTheme provides defaultShimmerTheme.copy()
+    ) {
         // screens
         AnimatedNavHost(
             controller = router.navScreensController,
@@ -157,6 +164,7 @@ private fun screenOf(destination: Destination) {
         is StoragesDestination -> StoragesScreen()
         is EditStorageDestination -> EditStorageScreen(path = destination.path)
         is StorageDestination -> StorageScreen(destination)
+        is GenHistDestination -> GenHistScreen(destination)
         is NoteDestination -> NoteScreen(destination)
 
         is AlertDialogDestination -> AlertDialogScreen(destination)

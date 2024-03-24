@@ -18,6 +18,7 @@ using namespace thekey_v1;
 typedef EngineStorageK1Storage JvmStorage1;
 typedef EngineModelStorage JvmStorageInfo;
 typedef EngineModelGenPasswParams JvmGenPasswParams;
+typedef EngineModelDecryptedPassw JvmDecryptedPassw;
 
 static map<string, shared_ptr<KeyStorageV1>> storages = {};
 
@@ -117,9 +118,16 @@ int JvmStorage1::removeNote(const int64_t &notePt) {
     return 0;
 }
 
-EngineModelDecryptedPassw JvmStorage1::getGenPassw(const int64_t &ptNote) {
-    EngineModelDecryptedPassw passw = {};
-    return passw;
+std::string JvmStorage1::generateNewPassw(const JvmGenPasswParams &params) {
+    auto storageV1 = findStorage(getStoragePath());
+    if (!storageV1)return "";
+    int genPasswEncoding = ENC_NUM_ONLY;
+    if (params.specSymbolsInPassw) {
+        genPasswEncoding = ENC_EN_NUM_SPEC_SYMBOLS;
+    } else if (params.symbolsInPassw) {
+        genPasswEncoding = ENC_EN_NUM;
+    }
+    return storageV1->genPassw(params.len, genPasswEncoding);
 }
 
 std::string JvmStorage1::lastGeneratedPassw() {
@@ -133,14 +141,36 @@ std::string JvmStorage1::lastGeneratedPassw() {
     return storageV1->genPassw(4, ENC_NUM_ONLY);
 }
 
-std::string JvmStorage1::generateNewPassw(const JvmGenPasswParams &params) {
+std::vector<EngineModelDecryptedPassw> JvmStorage1::genHistory() {
     auto storageV1 = findStorage(getStoragePath());
-    if (!storageV1)return "";
-    int genPasswEncoding = ENC_NUM_ONLY;
-    if (params.specSymbolsInPassw) {
-        genPasswEncoding = ENC_EN_NUM_SPEC_SYMBOLS;
-    } else if (params.symbolsInPassw) {
-        genPasswEncoding = ENC_EN_NUM;
+    if (!storageV1)return {};
+
+    auto hist = storageV1->genPasswHistoryList();
+    auto jvmHist = std::vector<EngineModelDecryptedPassw>();
+    jvmHist.reserve(hist.size());
+    for (const auto &item: hist) {
+        jvmHist.push_back(JvmDecryptedPassw{
+                .passwPtr = item.histPtr,
+                .passw = item.passw,
+                .chTime = static_cast<int64_t>(item.genTime),
+        });
     }
-    return storageV1->genPassw(params.len, genPasswEncoding);
+
+    return jvmHist;
+}
+
+JvmDecryptedPassw JvmStorage1::getGenPassw(const int64_t &ptNote) {
+    auto storageV1 = findStorage(getStoragePath());
+    if (!storageV1)return {};
+
+    auto passw = storageV1->genPasswHistory(ptNote);
+    if (!passw)return {};
+
+    JvmDecryptedPassw jvmDecryptedPassw = {
+            .passwPtr = passw->histPtr,
+            .passw = passw->passw,
+            .chTime = static_cast<int64_t>(passw->genTime),
+    };
+
+    return jvmDecryptedPassw;
 }

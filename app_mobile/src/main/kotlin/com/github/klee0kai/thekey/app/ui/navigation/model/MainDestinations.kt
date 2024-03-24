@@ -63,3 +63,17 @@ data class NoteDestination(
      */
     val prefilled: DecryptedNote? = null,
 ) : Destination
+
+
+@Parcelize
+data class GenHistDestination(
+    /**
+     * storage path
+     */
+    val path: String = "",
+    /**
+     * Storage version
+     */
+    val storageVersion: Int = 0,
+) : Destination
+

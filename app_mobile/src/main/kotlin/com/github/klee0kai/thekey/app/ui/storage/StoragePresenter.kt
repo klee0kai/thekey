@@ -3,7 +3,6 @@ package com.github.klee0kai.thekey.app.ui.storage
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -17,19 +16,19 @@ class StoragePresenter(
     private val scope = DI.defaultThreadScope()
     private val updateTicks = MutableSharedFlow<Unit>()
 
-    fun notes(): Flow<List<DecryptedNote>> = flow {
-        emit(engine().notes().toList())
+    fun notes() = flow<List<DecryptedNote>> {
+        emit(engine()?.notes()?.toList() ?: emptyList())
         updateTicks.collect {
-            emit(engine().notes().toList())
+            emit(engine()?.notes()?.toList() ?: emptyList())
         }
     }.flowOn(DI.defaultDispatcher())
 
     fun remove(notePt: Long) = scope.launch {
-        engine().removeNote(notePt)
+        engine()?.removeNote(notePt)
         updateTicks.emit(Unit)
     }
 
-    private fun doLogout() = scope.launch { engine().unlogin() }
+    private fun doLogout() = scope.launch { engine()?.unlogin() }
 
 
 }

@@ -32,18 +32,18 @@ class GenPasswPresenter(
 
     fun init() {
         scope.launch {
-            passw.value = engine().lastGeneratedPassw()
+            passw.value = engine()?.lastGeneratedPassw() ?: return@launch
         }
     }
 
     fun generatePassw() = scope.launchLatest("gen_passw") {
-        val newPassw = engine().generateNewPassw(
+        val newPassw = engine()?.generateNewPassw(
             GenPasswParams(
                 len = passwLen.value,
                 symbolsInPassw = symInPassw.value,
                 specSymbolsInPassw = specSymbolsInPassw.value
             )
-        )
+        ) ?: return@launchLatest
 
         passw.value = newPassw
     }

@@ -6,6 +6,7 @@ import com.github.klee0kai.thekey.app.di.identifier.NoteIdentifier
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.ui.editstorage.CreateStoragePresenter
 import com.github.klee0kai.thekey.app.ui.editstorage.EditStoragePresenter
+import com.github.klee0kai.thekey.app.ui.genhist.GenHistPresenter
 import com.github.klee0kai.thekey.app.ui.login.LoginPresenter
 import com.github.klee0kai.thekey.app.ui.note.NotePresenter
 import com.github.klee0kai.thekey.app.ui.storage.StoragePresenter
@@ -35,6 +36,9 @@ abstract class PresentersModule {
 
     @Provide(cache = Provide.CacheType.Weak)
     abstract fun genPasswPresente(storageIdentifier: StorageIdentifier): GenPasswPresenter
+
+    @Provide(cache = Provide.CacheType.Weak)
+    abstract fun genHistPresenter(storageIdentifier: StorageIdentifier): GenHistPresenter
 
     @Provide(cache = Provide.CacheType.Weak)
     abstract fun notePresenter(noteIdentifier: NoteIdentifier): NotePresenter

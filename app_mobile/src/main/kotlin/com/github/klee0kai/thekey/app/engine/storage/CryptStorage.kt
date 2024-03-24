@@ -21,10 +21,13 @@ interface CryptStorage {
 
     fun removeNote(notePt: Long): Int
 
-    fun getGenPassw(ptNote: Long): DecryptedPassw
+    fun generateNewPassw(params: GenPasswParams): String
+
+    fun genHistory(): Array<DecryptedPassw>
 
     fun lastGeneratedPassw(): String
 
-    fun generateNewPassw(params: GenPasswParams): String
+    fun getGenPassw(ptNote: Long): DecryptedPassw
+
 
 }
