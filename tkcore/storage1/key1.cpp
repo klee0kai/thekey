@@ -641,6 +641,4 @@ static int decode(unsigned char *outText, const unsigned char *inText, unsigned 
     memset(saltedText, 0, buflen);
     delete[]saltedText;
     return buflen;
-
-
 }
