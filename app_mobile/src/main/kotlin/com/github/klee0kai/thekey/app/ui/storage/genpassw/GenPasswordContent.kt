@@ -166,7 +166,8 @@ fun GenPasswordContent(
 
             Switch(checked = specSymbolsChecked,
                 onCheckedChange = { presenter.specSymbolsInPassw.value = it },
-                modifier = Modifier.constrainAs(specSymbolsSwitch) {
+                modifier = Modifier
+                    .constrainAs(specSymbolsSwitch) {
                     linkTo(
                         start = specSymbolsText.end,
                         end = parent.end,

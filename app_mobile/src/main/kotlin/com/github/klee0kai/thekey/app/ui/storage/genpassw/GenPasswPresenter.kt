@@ -16,6 +16,7 @@ class GenPasswPresenter(
 ) {
 
     private val clipboardManager by lazy { DI.app().getSystemService(CLIPBOARD_SERVICE) as ClipboardManager }
+    private val settings = DI.settingsRepositoryLazy()
     private val engine = DI.cryptStorageEngineLazy(storageIdentifier)
     private val router = DI.router()
     private val scope = DI.defaultThreadScope()
@@ -30,11 +31,18 @@ class GenPasswPresenter(
     val specSymbolsInPassw = MutableStateFlow(false)
     val passw = MutableStateFlow("")
 
-    fun init() {
-        scope.launch {
-            passw.value = engine()?.lastGeneratedPassw() ?: return@launch
-        }
+    fun init() = scope.launchLatest("init") {
+        passwLen.value = settings().genPasswLen()
+        symInPassw.value = settings().genPasswIncludeSymbols()
+        specSymbolsInPassw.value = settings().genPasswIncludeSpecSymbols()
+        passw.value = engine()?.lastGeneratedPassw() ?: ""
+
+        // subscribe on user changes
+        launch { passwLen.collect { settings().genPasswLen.set(it) } }
+        launch { symInPassw.collect { settings().genPasswIncludeSymbols.set(it) } }
+        launch { specSymbolsInPassw.collect { settings().genPasswIncludeSpecSymbols.set(it) } }
     }
+
 
     fun generatePassw() = scope.launchLatest("gen_passw") {
         val newPassw = engine()?.generateNewPassw(

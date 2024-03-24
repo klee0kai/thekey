@@ -1,5 +1,6 @@
 package com.github.klee0kai.thekey.app.data.repositories
 
+import com.github.klee0kai.thekey.app.data.repositories.delegates.BooleanNoteDelegate
 import com.github.klee0kai.thekey.app.data.repositories.delegates.IntNoteDelegate
 import com.github.klee0kai.thekey.app.data.repositories.delegates.StringNoteDelegate
 import com.github.klee0kai.thekey.app.di.DI
@@ -16,6 +17,9 @@ class SettingsRepository {
 
     val newStorageVersion = intDelegate(SETTING_DEFAULT_STORAGE_VERSION) { 1 }
 
+    val genPasswLen = intDelegate(SETTING_GEN_PASS_LEN) { 4 }
+    val genPasswIncludeSymbols = booleanDelegate(SETTING_GEN_PASS_INCLUDE_EN) { false }
+    val genPasswIncludeSpecSymbols = booleanDelegate(SETTING_GEN_PASS_INCLUDE_SPEC_SYMBOLS) { false }
 
 
     private fun stringDelegate(
@@ -27,6 +31,11 @@ class SettingsRepository {
         settingId: Int,
         defaultValue: () -> Int
     ) = IntNoteDelegate(settingsDao, scope, settingId, defaultValue)
+
+    private fun booleanDelegate(
+        settingId: Int,
+        defaultValue: () -> Boolean
+    ) = BooleanNoteDelegate(settingsDao, scope, settingId, defaultValue)
 
     companion object {
         private const val SETTING_DEFAULT_STORAGE_PATH = 944
