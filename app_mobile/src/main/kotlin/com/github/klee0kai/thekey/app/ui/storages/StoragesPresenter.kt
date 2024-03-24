@@ -21,7 +21,7 @@ class StoragesPresenter {
     private val rep = DI.foundStoragesRepositoryLazy()
     private val router = DI.router()
     private val perm = DI.permissionsHelperLazy()
-    private val scope = DI.mainThreadScope()
+    private val scope = DI.defaultThreadScope()
 
     private var searchingJob: Job? = null
     private var permissionAsked = false

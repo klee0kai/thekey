@@ -31,20 +31,22 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.ui.navigation.LocalRouter
+import com.github.klee0kai.thekey.app.ui.navigation.createNote
+import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
-import com.github.klee0kai.thekey.app.ui.navigation.toStorageIdentifier
 import com.github.klee0kai.thekey.app.utils.views.collectAsStateCrossFaded
 
 @Preview
 @Composable
 fun GenPasswordContent(
     modifier: Modifier = Modifier,
-    args: StorageDestination = StorageDestination(),
+    dest: StorageDestination = StorageDestination(),
 ) {
     val scope = rememberCoroutineScope()
     val presenter = remember {
-        DI.genPasswPresenter(args.toStorageIdentifier())
+        DI.genPasswPresenter(dest.identifier())
             .also { it.init() }
     }
     val navigator = LocalRouter.current
@@ -185,6 +187,7 @@ fun GenPasswordContent(
                     end.linkTo(parent.end)
                 },
             onClick = {
+                navigator.navigate(dest.createNote(DecryptedNote(passw = presenter.passw.value)))
             }
         ) {
             Text(stringResource(R.string.save))

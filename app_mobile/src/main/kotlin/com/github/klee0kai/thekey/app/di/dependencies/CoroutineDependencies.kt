@@ -3,8 +3,8 @@ package com.github.klee0kai.thekey.app.di.dependencies
 import com.github.klee0kai.thekey.app.di.DefaultDispatcher
 import com.github.klee0kai.thekey.app.di.IODispatcher
 import com.github.klee0kai.thekey.app.di.MainDispatcher
+import com.github.klee0kai.thekey.app.utils.common.SafeContextScope
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
 
 interface CoroutineDependencies {
 
@@ -18,12 +18,12 @@ interface CoroutineDependencies {
     fun defaultDispatcher(): CoroutineDispatcher
 
     @MainDispatcher
-    fun mainThreadScope(): CoroutineScope
+    fun mainThreadScope(): SafeContextScope
 
     @IODispatcher
-    fun ioThreadScope(): CoroutineScope
+    fun ioThreadScope(): SafeContextScope
 
     @DefaultDispatcher
-    fun defaultThreadScope(): CoroutineScope
+    fun defaultThreadScope(): SafeContextScope
 
 }

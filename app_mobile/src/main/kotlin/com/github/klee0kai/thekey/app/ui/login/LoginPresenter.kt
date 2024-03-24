@@ -3,10 +3,10 @@ package com.github.klee0kai.thekey.app.ui.login
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.model.ColoredStorage
+import com.github.klee0kai.thekey.app.ui.navigation.dest
+import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.StoragesDestination
 import com.github.klee0kai.thekey.app.ui.navigation.navigate
-import com.github.klee0kai.thekey.app.ui.navigation.toStorageDest
-import com.github.klee0kai.thekey.app.ui.navigation.toStorageIdentifier
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
@@ -18,7 +18,7 @@ class LoginPresenter {
     private val storagesRep = DI.foundStoragesRepositoryLazy()
     private val settingsRep = DI.settingsRepositoryLazy()
     private val router = DI.router()
-    private val scope = DI.mainThreadScope()
+    private val scope = DI.defaultThreadScope()
 
     fun currentStorageFlow() = flow<ColoredStorage> {
         val storagePath = settingsRep().currentStoragePath()
@@ -47,9 +47,9 @@ class LoginPresenter {
         }
         runCatching {
             val storage = currentStorageFlow().first()
-            val engine = DI.cryptStorageEngineLazy(storage.toStorageIdentifier())
+            val engine = DI.cryptStorageEngineLazy(storage.identifier())
             engine().login(passw)
-            router.navigate(storage.toStorageDest())
+            router.navigate(storage.dest())
         }.onFailure { error ->
             Timber.d(error)
             router.snack(error.message ?: "error")

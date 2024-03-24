@@ -28,10 +28,10 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.ui.navigation.noteDestination
-import com.github.klee0kai.thekey.app.ui.navigation.toStorageIdentifier
 import com.github.klee0kai.thekey.app.ui.navigation.LocalRouter
+import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
+import com.github.klee0kai.thekey.app.ui.navigation.note
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
 
 @Preview
@@ -41,7 +41,7 @@ fun NotesListContent(
     args: StorageDestination = StorageDestination(),
     showStoragesTitle: Boolean = true,
 ) {
-    val presenter = remember { DI.storagePresenter(args.toStorageIdentifier()) }
+    val presenter = remember { DI.storagePresenter(args.identifier()) }
     val navigator = LocalRouter.current
     val notes = presenter.notes().collectAsState(initial = listOf())
     val titleAnimatedAlpha by animateAlphaAsState(showStoragesTitle)
@@ -75,7 +75,7 @@ fun NotesListContent(
                                 showMenu = true
                             },
                             onClick = {
-                                navigator.navigate(args.noteDestination(notePtr = note.ptnote))
+                                navigator.navigate(args.note(notePtr = note.ptnote))
                             }
                         )
                 ) {

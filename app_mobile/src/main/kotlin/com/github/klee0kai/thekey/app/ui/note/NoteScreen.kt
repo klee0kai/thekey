@@ -25,7 +25,6 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.di.identifier.NoteIdentifier
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarStates
@@ -45,7 +44,10 @@ fun NoteScreen(
     var note by remember { mutableStateOf(DecryptedNote()) }
 
     LaunchedEffect(Unit) {
-        if (!isEditNote) return@LaunchedEffect
+        if (!isEditNote) {
+            args.prefilled?.let { note = it }
+            return@LaunchedEffect
+        }
         isSkeleton = true
         note = presenter.note().await()
         isSkeleton = false

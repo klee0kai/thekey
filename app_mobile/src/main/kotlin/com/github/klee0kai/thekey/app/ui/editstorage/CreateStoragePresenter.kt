@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 open class CreateStoragePresenter {
 
     protected val router = DI.router()
-    protected val scope = DI.mainThreadScope()
+    protected val scope = DI.defaultThreadScope()
     protected val engine = DI.editStorageEngineLazy()
     protected val rep = DI.foundStoragesRepositoryLazy()
 

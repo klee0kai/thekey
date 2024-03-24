@@ -7,6 +7,7 @@ import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.engine.model.GenPasswParams
+import com.github.klee0kai.thekey.app.utils.common.launchLatest
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
@@ -17,7 +18,7 @@ class GenPasswPresenter(
     private val clipboardManager by lazy { DI.app().getSystemService(CLIPBOARD_SERVICE) as ClipboardManager }
     private val engine = DI.cryptStorageEngineLazy(storageIdentifier)
     private val router = DI.router()
-    private val scope = DI.mainThreadScope()
+    private val scope = DI.defaultThreadScope()
 
     /**
      * @see `tkcore/storage1/salt/salt1.h`
@@ -35,7 +36,7 @@ class GenPasswPresenter(
         }
     }
 
-    fun generatePassw() = scope.launch {
+    fun generatePassw() = scope.launchLatest("gen_passw") {
         val newPassw = engine().generateNewPassw(
             GenPasswParams(
                 len = passwLen.value,
@@ -47,8 +48,9 @@ class GenPasswPresenter(
         passw.value = newPassw
     }
 
-    fun copyToClipboard() = scope.launch {
-        clipboardManager.setPrimaryClip(ClipData.newPlainText("Password", passw.value))
+    fun copyToClipboard() = scope.launchLatest("copy_clipboard", DI.mainDispatcher()) {
+        val data = ClipData.newPlainText("Password", passw.value)
+        clipboardManager.setPrimaryClip(data)
 
         router.snack(R.string.copied_to_clipboard)
     }

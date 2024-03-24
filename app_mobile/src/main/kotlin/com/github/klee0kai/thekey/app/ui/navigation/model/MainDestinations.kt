@@ -2,6 +2,7 @@ package com.github.klee0kai.thekey.app.ui.navigation.model
 
 import android.os.Parcelable
 import androidx.compose.runtime.Stable
+import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import kotlinx.parcelize.Parcelize
 
 @Stable
@@ -56,4 +57,9 @@ data class NoteDestination(
      * Note mem ptr
      */
     val notePtr: Long = 0,
+
+    /**
+     * prefilled note
+     */
+    val prefilled: DecryptedNote? = null,
 ) : Destination

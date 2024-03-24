@@ -2,37 +2,38 @@ package com.github.klee0kai.thekey.app.ui.navigation
 
 import com.github.klee0kai.thekey.app.di.identifier.NoteIdentifier
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
+import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.engine.model.Storage
 import com.github.klee0kai.thekey.app.model.ColoredStorage
 import com.github.klee0kai.thekey.app.ui.navigation.model.NoteDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 
-fun Storage.toStorageDest() = StorageDestination(version = version, path = path)
+fun Storage.dest() = StorageDestination(version = version, path = path)
 
-fun Storage.toStorageIdentifier() = StorageIdentifier(version = version, path = path)
+fun Storage.identifier() = StorageIdentifier(version = version, path = path)
 
-fun ColoredStorage.toStorageIdentifier() = StorageIdentifier(version = version, path = path)
+fun ColoredStorage.identifier() = StorageIdentifier(version = version, path = path)
 
-fun ColoredStorage.toStorageDest(selectedPage: Int = 0) =
+fun ColoredStorage.dest(selectedPage: Int = 0) =
     StorageDestination(version = version, path = path, selectedPage = selectedPage)
 
-fun StorageIdentifier.toDestination() = StorageDestination(version = version, path = path)
+fun StorageIdentifier.dest() = StorageDestination(version = version, path = path)
 
-fun StorageDestination.toStorageIdentifier() =
+fun StorageDestination.identifier() =
     StorageIdentifier(version = version, path = path)
 
-fun StorageDestination.noteDestination(notePtr: Long = 0) =
+fun StorageDestination.note(notePtr: Long = 0) =
     NoteDestination(storageVersion = version, path = path, notePtr = notePtr)
 
+fun StorageDestination.createNote(prefilled: DecryptedNote) =
+    NoteDestination(storageVersion = version, path = path, prefilled = prefilled)
 
-fun StorageIdentifier.toNote(notePtr: Long = 0) =
+
+fun StorageIdentifier.noteDest(notePtr: Long = 0) =
     NoteIdentifier(storageVersion = version, storagePath = path, notePtr = notePtr)
 
-fun NoteIdentifier.storageIdentifier() =
+fun NoteIdentifier.storage() =
     StorageIdentifier(version = storageVersion, path = storagePath)
-
-fun StorageDestination.toNote(notePtr: Long) =
-    NoteDestination(storageVersion = version, path = path, notePtr = notePtr)
 
 fun NoteDestination.toIdentifier() =
     NoteIdentifier(storageVersion = storageVersion, storagePath = path, notePtr = notePtr)

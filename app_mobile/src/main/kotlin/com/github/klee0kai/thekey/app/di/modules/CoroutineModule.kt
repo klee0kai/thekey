@@ -4,8 +4,8 @@ import com.github.klee0kai.stone.annotations.module.Module
 import com.github.klee0kai.thekey.app.di.DefaultDispatcher
 import com.github.klee0kai.thekey.app.di.IODispatcher
 import com.github.klee0kai.thekey.app.di.MainDispatcher
+import com.github.klee0kai.thekey.app.utils.common.SafeContextScope
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 
@@ -25,19 +25,19 @@ open class CoroutineModule {
     open fun mainThreadScope(
         @MainDispatcher
         dispatcher: CoroutineDispatcher,
-    ): CoroutineScope = CoroutineScope(dispatcher + SupervisorJob())
+    ): SafeContextScope = SafeContextScope(dispatcher + SupervisorJob())
 
     @IODispatcher
     open fun ioThreadScope(
         @IODispatcher
         dispatcher: CoroutineDispatcher,
-    ): CoroutineScope = CoroutineScope(dispatcher + SupervisorJob())
+    ): SafeContextScope = SafeContextScope(dispatcher + SupervisorJob())
 
     @DefaultDispatcher
     open fun defaultThreadScope(
         @DefaultDispatcher
         dispatcher: CoroutineDispatcher,
-    ): CoroutineScope = CoroutineScope(dispatcher + SupervisorJob())
+    ): SafeContextScope = SafeContextScope(dispatcher + SupervisorJob())
 
 }
 
