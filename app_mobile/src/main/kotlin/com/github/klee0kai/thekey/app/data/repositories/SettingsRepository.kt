@@ -15,7 +15,7 @@ class SettingsRepository {
         File(DI.app().applicationInfo?.dataDir, "keys.ckey").path
     }
 
-    val newStorageVersion = intDelegate(SETTING_DEFAULT_STORAGE_VERSION) { 1 }
+    val newStorageVersion = intDelegate(SETTING_DEFAULT_STORAGE_VERSION) { 2 }
 
     val genPasswLen = intDelegate(SETTING_GEN_PASS_LEN) { 4 }
     val genPasswIncludeSymbols = booleanDelegate(SETTING_GEN_PASS_INCLUDE_EN) { false }

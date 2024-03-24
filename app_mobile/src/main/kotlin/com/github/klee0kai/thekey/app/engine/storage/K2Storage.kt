@@ -8,7 +8,7 @@ import com.github.klee0kai.thekey.app.engine.model.GenPasswParams
 import com.github.klee0kai.thekey.app.engine.model.Storage
 
 @JniMirror
-class K1Storage(
+class K2Storage(
     val storagePath: String
 ) : CryptStorage {
 

@@ -7,6 +7,7 @@ import com.github.klee0kai.thekey.app.engine.findstorage.EditStorageEngine
 import com.github.klee0kai.thekey.app.engine.findstorage.FindStorageEngine
 import com.github.klee0kai.thekey.app.engine.storage.CryptStorage
 import com.github.klee0kai.thekey.app.engine.storage.K1Storage
+import com.github.klee0kai.thekey.app.engine.storage.K2Storage
 
 @Module
 abstract class EngineModule {
@@ -18,6 +19,7 @@ abstract class EngineModule {
     open fun cryptStorageEngine(id: StorageIdentifier): CryptStorage? {
         return when (id.version) {
             1 -> K1Storage(id.path)
+            2 -> K2Storage(id.path)
             else -> null
         }
     }
