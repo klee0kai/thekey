@@ -1,7 +1,6 @@
 package com.github.klee0kai.thekey.app.di
 
 import androidx.activity.ComponentActivity
-import androidx.compose.material3.SnackbarHostState
 import com.github.klee0kai.stone.KotlinWrappersStone
 import com.github.klee0kai.stone.Stone
 import com.github.klee0kai.stone.annotations.component.Component

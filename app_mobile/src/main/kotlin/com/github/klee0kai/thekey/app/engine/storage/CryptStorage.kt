@@ -13,7 +13,7 @@ interface CryptStorage {
 
     fun unlogin()
 
-    fun notes(): Array<DecryptedNote>
+    fun notes(info: Boolean = false): Array<DecryptedNote>
 
     fun note(notePtr: Long): DecryptedNote
 

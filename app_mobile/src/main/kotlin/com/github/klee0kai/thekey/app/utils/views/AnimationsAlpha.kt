@@ -9,12 +9,12 @@ import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
@@ -23,7 +23,6 @@ data class TargetAlpha<T>(
     val target: T,
     val alpha: Float = 0f,
 )
-
 
 @Composable
 fun animateAlphaAsState(
@@ -34,15 +33,24 @@ fun animateAlphaAsState(
     label = label
 )
 
-
 @Composable
 fun <T> StateFlow<T>.collectAsStateCrossFaded(
+    key: Any? = null,
     context: CoroutineContext = EmptyCoroutineContext
 ): State<TargetAlpha<T>> {
-    val target by collectAsState(context)
+    val target by collectAsState(key = key ?: this, context = context)
     return animateTargetAlphaAsState(target)
 }
 
+@Composable
+fun <T> Flow<T>.collectAsStateCrossFaded(
+    key: Any?,
+    initial: T,
+    context: CoroutineContext = EmptyCoroutineContext
+): State<TargetAlpha<T>> {
+    val target by collectAsState(key = key, initial = initial, context = context)
+    return animateTargetAlphaAsState(target)
+}
 
 @Composable
 fun <T> animateTargetAlphaAsState(target: T): State<TargetAlpha<T>> {

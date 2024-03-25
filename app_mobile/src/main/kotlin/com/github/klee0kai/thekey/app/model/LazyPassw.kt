@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.ui.genhist.model
+package com.github.klee0kai.thekey.app.model
 
 import com.github.klee0kai.thekey.app.engine.model.DecryptedPassw
 import com.github.klee0kai.thekey.app.utils.common.LazyModel

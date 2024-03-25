@@ -20,6 +20,8 @@ import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.valentinilk.shimmer.shimmer
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
@@ -36,6 +38,27 @@ fun <T : R, R> Deferred<T>.collectAsState(
         value = await()
     }
 }
+
+@Composable
+@NonRestartableComposable
+fun <T : R, R> Flow<T>.collectAsState(
+    key: Any?,
+    initial: R,
+    context: CoroutineContext = EmptyCoroutineContext
+): State<R> = produceState(initial, key, context) {
+    if (context == EmptyCoroutineContext) {
+        collect { value = it }
+    } else withContext(context) {
+        collect { value = it }
+    }
+}
+
+@Suppress("StateFlowValueCalledInComposition")
+@Composable
+fun <T> StateFlow<T>.collectAsState(
+    key: Any?,
+    context: CoroutineContext = EmptyCoroutineContext
+): State<T> = collectAsState(key = key, initial = value, context = context)
 
 @Composable
 @NonRestartableComposable

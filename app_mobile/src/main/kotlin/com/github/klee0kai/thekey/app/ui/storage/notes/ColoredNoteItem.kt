@@ -7,28 +7,30 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
+import com.github.klee0kai.thekey.app.model.LazyNote
+import com.github.klee0kai.thekey.app.model.dummyLazyNote
+import com.github.klee0kai.thekey.app.utils.views.collectAsStateCrossFaded
+import com.github.klee0kai.thekey.app.utils.views.skeleton
 
 
 @Preview
 @Composable
 fun ColoredNoteItem(
     modifier: Modifier = Modifier,
-    note: DecryptedNote = DecryptedNote(
-        site = "",
-        login = "login",
-        desc = "description",
-    )
+    lazyNote: LazyNote = dummyLazyNote(),
 ) {
     val colorScheme = remember { DI.theme().colorScheme() }
+    val note by lazyNote.fullValueFlow().collectAsStateCrossFaded(key = Unit, initial = null)
 
     ConstraintLayout(
         modifier = modifier
@@ -47,9 +49,11 @@ fun ColoredNoteItem(
         )
 
         Text(
-            text = note.site?.takeIf { it.isNotBlank() } ?: stringResource(id = R.string.no_site),
+            text = note.target?.site.takeIf { !it.isNullOrBlank() } ?: stringResource(id = R.string.no_site),
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier
+                .alpha(note.alpha)
+                .skeleton { note.target == null }
                 .constrainAs(path) {
                     linkTo(
                         top = parent.top,
@@ -66,10 +70,12 @@ fun ColoredNoteItem(
                 }
         )
         Text(
-            text = note.login,
+            text = note.target?.login ?: "",
             color = MaterialTheme.colorScheme.onSurface,
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier
+                .alpha(note.alpha)
+                .skeleton { note.target == null }
                 .constrainAs(description) {
                     linkTo(
                         top = path.bottom,

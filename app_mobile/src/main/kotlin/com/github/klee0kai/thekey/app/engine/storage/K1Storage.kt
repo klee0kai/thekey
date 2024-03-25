@@ -22,7 +22,7 @@ class K1Storage(
 
     external override fun unlogin()
 
-    external override fun notes(): Array<DecryptedNote>
+    external override fun notes(info: Boolean): Array<DecryptedNote>
 
     external override fun note(notePtr: Long): DecryptedNote
 

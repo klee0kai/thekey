@@ -29,7 +29,6 @@ fun SafeContextScope.launchSafe(
     }
 }
 
-
 fun <R> SafeContextScope.asyncSafe(
     context: CoroutineContext = EmptyCoroutineContext,
     block: suspend CoroutineScope.() -> R
@@ -39,7 +38,6 @@ fun <R> SafeContextScope.asyncSafe(
         block()
     }
 }
-
 
 fun SafeContextScope.launchLatest(
     key: String,

@@ -14,7 +14,6 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,6 +32,7 @@ import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.app.ui.navigation.note
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
+import com.github.klee0kai.thekey.app.utils.views.collectAsState
 
 @Preview
 @Composable
@@ -43,7 +43,7 @@ fun NotesListContent(
 ) {
     val presenter = remember { DI.storagePresenter(args.identifier()) }
     val navigator = LocalRouter.current
-    val notes = presenter.notes().collectAsState(initial = listOf())
+    val notes = presenter.notes().collectAsState(key = Unit, initial = listOf())
     val titleAnimatedAlpha by animateAlphaAsState(showStoragesTitle)
 
     if (notes.value.isEmpty()) {
@@ -64,7 +64,7 @@ fun NotesListContent(
         }
 
         notes.value.forEach { note ->
-            item(key = note, contentType = note::class) {
+            item(contentType = note::class) {
                 var showMenu by remember { mutableStateOf(false) }
 
                 Box(
@@ -75,11 +75,11 @@ fun NotesListContent(
                                 showMenu = true
                             },
                             onClick = {
-                                navigator.navigate(args.note(notePtr = note.ptnote))
+                                navigator.navigate(args.note(notePtr = note.value.ptnote))
                             }
                         )
                 ) {
-                    ColoredNoteItem(note = note)
+                    ColoredNoteItem(lazyNote = note)
 
                     DropdownMenu(
                         offset = DpOffset(x = (-16).dp, y = 2.dp),
@@ -90,7 +90,7 @@ fun NotesListContent(
                             modifier = Modifier.align(Alignment.End),
                             text = { Text(text = stringResource(id = R.string.remove)) },
                             onClick = {
-                                presenter.remove(note.ptnote)
+                                presenter.remove(note.value.ptnote)
                                 showMenu = false
                             }
                         )

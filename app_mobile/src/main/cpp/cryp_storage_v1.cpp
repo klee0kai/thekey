@@ -60,11 +60,12 @@ void JvmStorage1::unlogin() {
     storages.erase(getStoragePath());
 }
 
-std::vector<EngineModelDecryptedNote> JvmStorage1::notes() {
+std::vector<EngineModelDecryptedNote> JvmStorage1::notes(const int &loadInfo) {
     auto storageV1 = findStorage(getStoragePath());
     if (!storageV1)return {};
     auto notes = std::vector<EngineModelDecryptedNote>();
-    for (const auto &dnote: storageV1->notes(TK1_GET_NOTE_INFO)) {
+    auto flags = loadInfo ? TK1_GET_NOTE_INFO : TK1_GET_NOTE_PTR_ONLY;
+    for (const auto &dnote: storageV1->notes(flags)) {
         notes.push_back(
                 {
                         .ptnote = dnote.notePtr,

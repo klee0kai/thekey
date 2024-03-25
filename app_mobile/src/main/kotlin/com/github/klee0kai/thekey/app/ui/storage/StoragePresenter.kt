@@ -2,11 +2,13 @@ package com.github.klee0kai.thekey.app.ui.storage
 
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
-import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
+import com.github.klee0kai.thekey.app.model.LazyNote
+import com.github.klee0kai.thekey.app.utils.common.preloaded
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class StoragePresenter(
     val storageIdentifier: StorageIdentifier,
@@ -16,10 +18,26 @@ class StoragePresenter(
     private val scope = DI.defaultThreadScope()
     private val updateTicks = MutableSharedFlow<Unit>()
 
-    fun notes() = flow<List<DecryptedNote>> {
-        emit(engine()?.notes()?.toList() ?: emptyList())
+    var notes = emptyList<LazyNote>()
+
+    fun notes() = flow<List<LazyNote>> {
+        val engine = engine() ?: return@flow
+        val collectNotes: suspend () -> Unit = {
+            notes = engine
+                .notes()
+                .map {
+                    LazyNote(it) {
+                        withContext(DI.defaultDispatcher()) {
+                            engine.note(it.ptnote)
+                        }
+                    }
+                }
+                .preloaded(notes)
+            emit(notes)
+        }
+        collectNotes.invoke()
         updateTicks.collect {
-            emit(engine()?.notes()?.toList() ?: emptyList())
+            collectNotes.invoke()
         }
     }.flowOn(DI.defaultDispatcher())
 
