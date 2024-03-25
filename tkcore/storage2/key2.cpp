@@ -716,6 +716,7 @@ int KeyStorageV2::removeOtpNote(long long notePtr) {
 
 // ---- gen passw and hist api ----
 std::string KeyStorageV2::genPassword(uint32_t schemeId, int len) {
+    if (!len) return "";
     auto passw = from(thekey_v2::gen_password(schemeId, len));
 
     CryptedPasswordFlat cryptedPasswordFlat{};

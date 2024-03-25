@@ -9,5 +9,6 @@ import kotlinx.parcelize.Parcelize
 data class GenPasswParams(
     val len: Int = 0,
     val symbolsInPassw: Boolean = false,
-    val specSymbolsInPassw: Boolean = false
+    val specSymbolsInPassw: Boolean = false,
+    val oldPassw: String = "",
 ) : Parcelable

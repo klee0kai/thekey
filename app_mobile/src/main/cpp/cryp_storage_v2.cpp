@@ -62,7 +62,7 @@ void JvmStorage2::unlogin() {
 
 std::vector<EngineModelDecryptedNote> JvmStorage2::notes(const int &loadInfo) {
     auto storage = findStorage(getStoragePath());
-    if (!storage)return {};
+    if (!storage) return {};
     auto notes = std::vector<EngineModelDecryptedNote>();
     auto flags = loadInfo ? TK2_GET_NOTE_INFO : TK2_GET_NOTE_PTR_ONLY;
     for (const auto &dnote: storage->notes(flags)) {
@@ -82,11 +82,12 @@ EngineModelDecryptedNote JvmStorage2::note(const int64_t &notePtr) {
     auto storage = findStorage(getStoragePath());
     if (!storage)return {};
     auto dnote = storage->note(notePtr, TK2_GET_NOTE_INFO | TK2_GET_NOTE_PASSWORD);
+    if (!dnote) return {};
     auto result = EngineModelDecryptedNote{
             .ptnote = notePtr,
-            .site =  dnote->site,
-            .login =  dnote->login,
-            .passw =  dnote->passw,
+            .site = dnote->site,
+            .login = dnote->login,
+            .passw = dnote->passw,
             .desc =  dnote->description,
             .chTime = (int64_t) dnote->genTime,
     };
@@ -96,7 +97,7 @@ EngineModelDecryptedNote JvmStorage2::note(const int64_t &notePtr) {
 
 int JvmStorage2::saveNote(const brooklyn::EngineModelDecryptedNote &decryptedNote) {
     auto storage = findStorage(getStoragePath());
-    if (!storage)return -1;
+    if (!storage) return -1;
 
     thekey_v2::DecryptedNote dnote = {
             .notePtr = decryptedNote.ptnote,
@@ -123,14 +124,21 @@ std::string JvmStorage2::generateNewPassw(const JvmGenPasswParams &params) {
     auto storage = findStorage(getStoragePath());
     if (!storage) return "";
 
+    auto len = params.len;
     auto schemeFlags = SCHEME_NUMBERS;
     if (params.specSymbolsInPassw) {
         schemeFlags |= SCHEME_SPEC_SYMBOLS;
     } else if (params.symbolsInPassw) {
         schemeFlags |= SCHEME_ENGLISH;
     }
-    auto schemeType = thekey_v2::findSchemeByFlags(schemeFlags);
-    return storage->genPassword(schemeType, params.len);
+
+    auto schemeId = thekey_v2::findSchemeByFlags(schemeFlags);
+    if (!params.oldPassw.empty()) {
+        schemeId = thekey_v2::find_scheme_id(key_salt::from(params.oldPassw));
+        if (!len) len = params.oldPassw.length();
+    }
+
+    return storage->genPassword(schemeId, len);
 }
 
 std::string JvmStorage2::lastGeneratedPassw() {

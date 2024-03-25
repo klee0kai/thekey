@@ -19,9 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
@@ -31,18 +29,17 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarStates
 import com.github.klee0kai.thekey.app.ui.navigation.LocalRouter
 import com.github.klee0kai.thekey.app.ui.navigation.model.NoteDestination
 import com.github.klee0kai.thekey.app.ui.navigation.toIdentifier
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
+import com.github.klee0kai.thekey.app.utils.views.collectAsState
 import com.github.klee0kai.thekey.app.utils.views.collectAsStateCrossFaded
 import com.github.klee0kai.thekey.app.utils.views.currentViewSizeState
 import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.app.utils.views.skeleton
-import kotlinx.coroutines.flow.onEach
 
 @Preview(showBackground = true)
 @Composable
@@ -50,12 +47,14 @@ fun NoteScreen(
     args: NoteDestination = NoteDestination(),
 ) {
     val navigator = LocalRouter.current
-    val presenter = remember { DI.notePresenter(args.toIdentifier()) }
+    val presenter = remember {
+        DI.notePresenter(args.toIdentifier()).apply {
+            init(args.prefilled)
+        }
+    }
     val isEditNote = args.notePtr != 0L
-    var note by remember { mutableStateOf(DecryptedNote()) }
-    val originNote = presenter.note()
-        .onEach { it?.let { note = it } }
-        .collectAsStateCrossFaded(key = Unit, initial = null)
+    val note by presenter.note.collectAsState(key = Unit)
+    val originNote = presenter.originNote.collectAsStateCrossFaded()
     val isSkeleton = rememberDerivedStateOf {
         isEditNote && originNote.value.target == null
     }
@@ -98,7 +97,7 @@ fun NoteScreen(
                     )
                 },
             value = note.site,
-            onValueChange = { note = note.copy(site = it) },
+            onValueChange = { presenter.note.value = note.copy(site = it) },
             label = { Text(stringResource(R.string.site)) }
         )
 
@@ -118,7 +117,7 @@ fun NoteScreen(
                     )
                 },
             value = note.login,
-            onValueChange = { note = note.copy(login = it) },
+            onValueChange = { presenter.note.value = note.copy(login = it) },
             label = { Text(stringResource(R.string.login)) }
         )
 
@@ -139,7 +138,7 @@ fun NoteScreen(
                     )
                 },
             value = note.passw,
-            onValueChange = { note = note.copy(passw = it) },
+            onValueChange = { presenter.note.value = note.copy(passw = it) },
             label = { Text(stringResource(R.string.password)) }
         )
 
@@ -160,7 +159,7 @@ fun NoteScreen(
                     )
                 },
             value = note.desc,
-            onValueChange = { note = note.copy(desc = it) },
+            onValueChange = { presenter.note.value = note.copy(desc = it) },
             label = { Text(stringResource(R.string.description)) }
         )
 
@@ -181,14 +180,14 @@ fun NoteScreen(
 
             TextButton(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = { }
+                onClick = { presenter.generate() }
             ) {
                 Text(stringResource(R.string.passw_generate))
             }
 
             FilledTonalButton(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = { presenter.save(note) }
+                onClick = { presenter.save() }
             ) {
                 Text(stringResource(R.string.save))
             }
@@ -213,7 +212,7 @@ fun NoteScreen(
                 IconButton(
                     modifier = Modifier.alpha(saveInToolbarAlpha.value),
                     onClick = {
-                        presenter.save(note)
+                        presenter.save()
                     }
                 ) {
                     Icon(
