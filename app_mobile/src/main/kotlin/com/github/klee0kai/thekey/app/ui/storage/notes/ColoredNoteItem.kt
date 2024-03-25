@@ -19,7 +19,7 @@ import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.model.LazyNote
 import com.github.klee0kai.thekey.app.model.dummyLazyNote
-import com.github.klee0kai.thekey.app.utils.views.collectAsStateCrossFaded
+import com.github.klee0kai.thekey.app.utils.common.collectAsStateCrossFaded
 import com.github.klee0kai.thekey.app.utils.views.skeleton
 
 
@@ -30,7 +30,7 @@ fun ColoredNoteItem(
     lazyNote: LazyNote = dummyLazyNote(),
 ) {
     val colorScheme = remember { DI.theme().colorScheme() }
-    val note by lazyNote.fullValueFlow().collectAsStateCrossFaded(key = Unit, initial = null)
+    val note by lazyNote.collectAsStateCrossFaded()
 
     ConstraintLayout(
         modifier = modifier

@@ -1,8 +1,13 @@
 package com.github.klee0kai.thekey.app.utils.common
 
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.State
+import com.github.klee0kai.thekey.app.utils.views.TargetAlpha
+import com.github.klee0kai.thekey.app.utils.views.collectAsStateCrossFaded
 import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 private val notLoaded = object {};
 
@@ -13,17 +18,11 @@ class LazyModel<T, R>(
 ) {
     companion object;
 
+    internal var preloaded: Any? = notLoaded
     internal var fullValueLoaded: Any? = notLoaded
     internal val mutex = Mutex()
 
     val isLoaded get() = fullValueLoaded != notLoaded
-
-    suspend fun fullValue(): R = mutex.withLock {
-        if (fullValueLoaded == notLoaded) {
-            fullValueLoaded = lazyProvide.invoke()
-        }
-        fullValueLoaded as R
-    }
 
     fun fullValueFlow() = singleEventFlow<R> {
         if (fullValueLoaded == notLoaded) {
@@ -31,6 +30,9 @@ class LazyModel<T, R>(
         }
         fullValueLoaded as R
     }
+
+    fun getOrNull() = fullValueLoaded.takeIf { it != notLoaded } as? R
+        ?: preloaded.takeIf { it != notLoaded } as? R
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -48,9 +50,15 @@ class LazyModel<T, R>(
 fun <T, R> List<LazyModel<T, R>>.preloaded(old: List<LazyModel<T, R>>) = apply {
     val cachedMap = old.groupBy { it.value }
     forEach { note ->
-        note.fullValueLoaded = cachedMap[note.value]
+        note.preloaded = cachedMap[note.value]
             ?.firstOrNull()
-            ?.fullValueLoaded
+            ?.getOrNull()
             ?: notLoaded
     }
 }
+
+
+@Composable
+fun <T, R> LazyModel<T, R>.collectAsStateCrossFaded(
+    context: CoroutineContext = EmptyCoroutineContext
+): State<TargetAlpha<R?>> = fullValueFlow().collectAsStateCrossFaded(key = value, initial = getOrNull())

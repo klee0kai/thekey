@@ -13,8 +13,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -31,7 +30,8 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarStates
 import com.github.klee0kai.thekey.app.ui.navigation.LocalRouter
 import com.github.klee0kai.thekey.app.ui.navigation.model.GenHistDestination
 import com.github.klee0kai.thekey.app.ui.navigation.storageIdentifier
-import com.github.klee0kai.thekey.app.utils.views.animateTargetAlphaAsState
+import com.github.klee0kai.thekey.app.utils.common.collectAsStateCrossFaded
+import com.github.klee0kai.thekey.app.utils.views.collectAsState
 import com.github.klee0kai.thekey.app.utils.views.skeleton
 
 @Preview
@@ -41,11 +41,7 @@ fun GenHistScreen(
 ) {
     val router = LocalRouter.current
     val presenter = remember { DI.genHistPresenter(dest.storageIdentifier()) }
-    val hist = remember { mutableStateOf(emptyList<LazyPassw>()) }
-
-    LaunchedEffect(key1 = Unit) {
-        hist.value = presenter.histNoteProviders().await()
-    }
+    val hist = presenter.hist().collectAsState(key = Unit, initial = emptyList())
 
     AppBarStates(
         navigationIcon = {
@@ -57,6 +53,8 @@ fun GenHistScreen(
             }
         },
     ) { Text(text = stringResource(id = R.string.gen_history)) }
+
+    if (hist.value.isEmpty()) return
 
     ConstraintLayout(
         modifier = Modifier
@@ -83,12 +81,8 @@ fun LazyPasswItem(
     passw: LazyPassw = dummyLazyPassw(),
     offset: Int = 0,
 ) {
-    val fullPassw = remember { mutableStateOf("") }
-    val fullPasswAnimated = animateTargetAlphaAsState(target = fullPassw.value)
+    val fullPassw by passw.collectAsStateCrossFaded()
 
-    LaunchedEffect(key1 = Unit) {
-        fullPassw.value = passw.fullValue().passw
-    }
     ConstraintLayout(
         modifier = modifier
             .fillMaxWidth()
@@ -97,11 +91,11 @@ fun LazyPasswItem(
         val (colorGroup, path, description) = createRefs()
 
         Text(
-            text = fullPasswAnimated.value.target,
+            text = fullPassw.target?.passw ?: "",
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier
-                .alpha(fullPasswAnimated.value.alpha)
-                .skeleton { fullPasswAnimated.value.target.isBlank() }
+                .alpha(fullPassw.alpha)
+                .skeleton { fullPassw.target == null }
                 .fillMaxWidth(0.5f)
                 .padding(2.dp)
                 .constrainAs(path) {

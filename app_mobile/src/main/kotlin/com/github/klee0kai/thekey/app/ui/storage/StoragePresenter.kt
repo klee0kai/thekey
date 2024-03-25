@@ -18,12 +18,12 @@ class StoragePresenter(
     private val scope = DI.defaultThreadScope()
     private val updateTicks = MutableSharedFlow<Unit>()
 
-    var notes = emptyList<LazyNote>()
+    private var lazyNotes = emptyList<LazyNote>()
 
     fun notes() = flow<List<LazyNote>> {
         val engine = engine() ?: return@flow
         val collectNotes: suspend () -> Unit = {
-            notes = engine
+            lazyNotes = engine
                 .notes()
                 .map {
                     LazyNote(it) {
@@ -32,8 +32,8 @@ class StoragePresenter(
                         }
                     }
                 }
-                .preloaded(notes)
-            emit(notes)
+                .preloaded(lazyNotes)
+            emit(lazyNotes)
         }
         collectNotes.invoke()
         updateTicks.collect {
