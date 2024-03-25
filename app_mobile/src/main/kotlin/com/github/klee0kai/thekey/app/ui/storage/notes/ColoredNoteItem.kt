@@ -53,7 +53,7 @@ fun ColoredNoteItem(
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier
                 .alpha(note.alpha)
-                .skeleton { note.target == null }
+                .skeleton(note.target == null)
                 .constrainAs(path) {
                     linkTo(
                         top = parent.top,
@@ -75,7 +75,7 @@ fun ColoredNoteItem(
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier
                 .alpha(note.alpha)
-                .skeleton { note.target == null }
+                .skeleton(note.target == null)
                 .constrainAs(description) {
                     linkTo(
                         top = path.bottom,

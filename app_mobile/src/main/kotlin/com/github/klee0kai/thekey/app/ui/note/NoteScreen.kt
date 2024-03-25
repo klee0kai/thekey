@@ -1,23 +1,29 @@
 package com.github.klee0kai.thekey.app.ui.note
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -31,6 +37,12 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarStates
 import com.github.klee0kai.thekey.app.ui.navigation.LocalRouter
 import com.github.klee0kai.thekey.app.ui.navigation.model.NoteDestination
 import com.github.klee0kai.thekey.app.ui.navigation.toIdentifier
+import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
+import com.github.klee0kai.thekey.app.utils.views.collectAsStateCrossFaded
+import com.github.klee0kai.thekey.app.utils.views.currentViewSizeState
+import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
+import com.github.klee0kai.thekey.app.utils.views.skeleton
+import kotlinx.coroutines.flow.onEach
 
 @Preview(showBackground = true)
 @Composable
@@ -40,49 +52,40 @@ fun NoteScreen(
     val navigator = LocalRouter.current
     val presenter = remember { DI.notePresenter(args.toIdentifier()) }
     val isEditNote = args.notePtr != 0L
-    var isSkeleton by remember { mutableStateOf(isEditNote) }
     var note by remember { mutableStateOf(DecryptedNote()) }
-
-    LaunchedEffect(Unit) {
-        if (!isEditNote) {
-            args.prefilled?.let { note = it }
-            return@LaunchedEffect
-        }
-        isSkeleton = true
-        note = presenter.note().await()!!
-        isSkeleton = false
+    val originNote = presenter.note()
+        .onEach { it?.let { note = it } }
+        .collectAsStateCrossFaded(key = Unit, initial = null)
+    val isSkeleton = rememberDerivedStateOf {
+        isEditNote && originNote.value.target == null
     }
-
-
-    AppBarStates(
-        navigationIcon = {
-            IconButton(onClick = { navigator.back() }) {
-                Icon(
-                    Icons.Filled.ArrowBack,
-                    contentDescription = null,
-                )
-            }
-        },
-    ) { Text(text = stringResource(id = R.string.account)) }
+    val alpha = rememberDerivedStateOf { if (isEditNote) originNote.value.alpha else 1f }
+    val scrollState = rememberScrollState()
+    val viewSize by currentViewSizeState()
+    val bottomButtons = rememberDerivedStateOf { viewSize.height > 700.dp }
+    val saveInToolbarAlpha = animateAlphaAsState(!bottomButtons.value)
 
     ConstraintLayout(
+        optimizationLevel = 0,
         modifier = Modifier
+            .verticalScroll(scrollState)
+            .fillMaxSize()
             .padding(
                 top = 16.dp + AppBarConst.appBarSize,
                 bottom = 16.dp,
                 start = 16.dp,
                 end = 16.dp
             )
-            .fillMaxSize()
     ) {
         val (
             siteTextField, loginTextField,
             passwTextField, descriptionTextField,
-            generatePasswButton, saveButton,
         ) = createRefs()
 
         OutlinedTextField(
             modifier = Modifier
+                .alpha(alpha.value)
+                .skeleton(isSkeleton.value)
                 .constrainAs(siteTextField) {
                     width = Dimension.fillToConstraints
                     linkTo(
@@ -101,6 +104,8 @@ fun NoteScreen(
 
         OutlinedTextField(
             modifier = Modifier
+                .alpha(alpha.value)
+                .skeleton(isSkeleton.value)
                 .constrainAs(loginTextField) {
                     width = Dimension.fillToConstraints
                     linkTo(
@@ -120,6 +125,8 @@ fun NoteScreen(
 
         OutlinedTextField(
             modifier = Modifier
+                .alpha(alpha.value)
+                .skeleton(isSkeleton.value)
                 .constrainAs(passwTextField) {
                     width = Dimension.fillToConstraints
                     linkTo(
@@ -139,6 +146,8 @@ fun NoteScreen(
 
         OutlinedTextField(
             modifier = Modifier
+                .alpha(alpha.value)
+                .skeleton(isSkeleton.value)
                 .constrainAs(descriptionTextField) {
                     width = Dimension.fillToConstraints
                     linkTo(
@@ -155,38 +164,65 @@ fun NoteScreen(
             label = { Text(stringResource(R.string.description)) }
         )
 
-        TextButton(
+    }
+
+    if (bottomButtons.value) {
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .constrainAs(generatePasswButton) {
-                    bottom.linkTo(saveButton.top, margin = 12.dp)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                },
-            onClick = {
-
-            }
+                .fillMaxSize()
+                .padding(
+                    top = 16.dp + AppBarConst.appBarSize,
+                    bottom = 16.dp,
+                    start = 16.dp,
+                    end = 16.dp
+                ),
         ) {
-            Text(stringResource(R.string.passw_generate))
-        }
+            Spacer(modifier = Modifier.weight(1f))
 
-        FilledTonalButton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .constrainAs(saveButton) {
-                    bottom.linkTo(parent.bottom)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                },
-            onClick = {
-                presenter.save(note)
+            TextButton(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = { }
+            ) {
+                Text(stringResource(R.string.passw_generate))
             }
-        ) {
-            Text(stringResource(R.string.save))
+
+            FilledTonalButton(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = { presenter.save(note) }
+            ) {
+                Text(stringResource(R.string.save))
+            }
+
         }
-
-
     }
 
 
+    AppBarStates(
+        isVisible = scrollState.value == 0,
+        navigationIcon = {
+            IconButton(onClick = { navigator.back() }) {
+                Icon(
+                    Icons.Filled.ArrowBack,
+                    contentDescription = null,
+                )
+            }
+        },
+        titleContent = { Text(text = stringResource(id = R.string.account)) },
+        actions = {
+            if (saveInToolbarAlpha.value > 0) {
+                IconButton(
+                    modifier = Modifier.alpha(saveInToolbarAlpha.value),
+                    onClick = {
+                        presenter.save(note)
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Done,
+                        contentDescription = stringResource(id = R.string.save),
+                        tint = MaterialTheme.colorScheme.onBackground
+                    )
+                }
+            }
+        }
+    )
 }

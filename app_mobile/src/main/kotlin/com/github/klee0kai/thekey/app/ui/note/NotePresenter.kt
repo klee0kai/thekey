@@ -7,7 +7,7 @@ import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.engine.model.isEmpty
 import com.github.klee0kai.thekey.app.ui.navigation.storage
 import com.github.klee0kai.thekey.app.utils.common.launchLatest
-import kotlinx.coroutines.async
+import com.github.klee0kai.thekey.app.utils.common.singleEventFlow
 
 class NotePresenter(
     val identifier: NoteIdentifier,
@@ -16,7 +16,7 @@ class NotePresenter(
     private val navigator = DI.router()
     private val engine = DI.cryptStorageEngineLazy(identifier.storage())
 
-    fun note() = scope.async {
+    fun note() = singleEventFlow(DI.defaultDispatcher()) {
         engine()?.note(identifier.notePtr)
     }
 

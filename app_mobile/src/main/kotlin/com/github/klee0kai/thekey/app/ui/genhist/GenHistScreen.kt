@@ -95,7 +95,7 @@ fun LazyPasswItem(
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier
                 .alpha(fullPassw.alpha)
-                .skeleton { fullPassw.target == null }
+                .skeleton(fullPassw.target == null)
                 .fillMaxWidth(0.5f)
                 .padding(2.dp)
                 .constrainAs(path) {

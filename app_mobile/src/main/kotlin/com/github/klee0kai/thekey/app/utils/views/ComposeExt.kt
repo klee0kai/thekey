@@ -84,13 +84,12 @@ fun rememberTickerOf(trigger: () -> Boolean): State<Int> {
 
 
 @Composable
-@NonRestartableComposable
 fun Modifier.skeleton(
+    isSkeleton: Boolean,
     color: Color = MaterialTheme.colorScheme.inverseSurface,
-    isSkeleton: () -> Boolean,
 ): Modifier {
     val shimmer = rememberShimmer(shimmerBounds = ShimmerBounds.Window)
-    if (!isSkeleton()) return this
+    if (!isSkeleton) return this
 
     return this then shimmer(shimmer)
         .background(
