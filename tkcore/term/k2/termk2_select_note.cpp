@@ -36,13 +36,13 @@ SelectedNote thekey_v2::ask_select_note(int flags) {
     if (noteIndex < notes.size()) {
         return {
                 .type = Simple,
-                .notePtr =  notes[noteIndex].notePtr
+                .notePtr =  notes[noteIndex].id
         };
     } else {
         noteIndex -= notes.size();
         return {
                 .type = Otp,
-                .notePtr = otpNotes[noteIndex].notePtr
+                .notePtr = otpNotes[noteIndex].id
         };
     }
 }

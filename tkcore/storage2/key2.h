@@ -31,9 +31,20 @@ namespace thekey_v2 {
         unsigned char keyForDescription[KEY_LEN + 1];
     };
 
+    struct CryptedPassword {
+        long long id;
+        CryptedPasswordFlat data;
+    };
+
     struct CryptedNote {
+        long long id;
         CryptedNoteFlat note;
-        std::list<CryptedPasswordFlat> history;
+        std::list<CryptedPassword> history;
+    };
+
+    struct CryptedOtpInfo {
+        long long id;
+        CryptedOtpInfoFlat data;
     };
 
     struct StorageInfo {
@@ -47,7 +58,7 @@ namespace thekey_v2 {
 
     struct DecryptedPassw {
         // note unic id
-        long long histPtr;
+        long long id;
 
         // editable
         std::string passw;
@@ -57,7 +68,7 @@ namespace thekey_v2 {
 
     struct DecryptedNote {
         // note unic id
-        long long notePtr;
+        long long id;
 
         // editable
         std::string site;
@@ -73,7 +84,7 @@ namespace thekey_v2 {
 
     struct DecryptedOtpNote {
         // note unic id
-        long long notePtr;
+        long long id;
 
         // editable
         std::string issuer;
@@ -104,9 +115,10 @@ namespace thekey_v2 {
         std::shared_ptr<StorageHeaderFlat> fheader;
         StorageInfo cachedInfo;
         // ---- payload ----
+        int idCounter;
         std::list<CryptedNote> cryptedNotes;
-        std::list<CryptedOtpInfoFlat> cryptedOtpNotes;
-        std::list<CryptedPasswordFlat> cryptedGeneratedPassws;
+        std::list<CryptedOtpInfo> cryptedOtpNotes;
+        std::list<CryptedPassword> cryptedGeneratedPassws;
 
     public:
         KeyStorageV2(int fd, const std::string &path, const std::shared_ptr<CryptContext> &ctx);
@@ -138,14 +150,14 @@ namespace thekey_v2 {
 
         /**
          *
-         * @param notePtr note unic identifier
+         * @param id note unic identifier
          * @param flags TK2_GET_NOTE_PASSWORD
          * @return
          */
-        virtual std::shared_ptr<DecryptedNote> note(long long notePtr, uint flags = TK2_GET_NOTE_PTR_ONLY);
+        virtual std::shared_ptr<DecryptedNote> note(long long id, uint flags = TK2_GET_NOTE_PTR_ONLY);
 
         /**
-         * @return histPtr note unic identifier
+         * @return created note. Has id
          */
         virtual std::shared_ptr<DecryptedNote> createNote(const DecryptedNote &note = {});
 
@@ -157,7 +169,7 @@ namespace thekey_v2 {
          */
         virtual int setNote(const DecryptedNote &dnote, uint flags = TK2_SET_NOTE_TRACK_HISTORY);
 
-        virtual int removeNote(long long notePtr);
+        virtual int removeNote(long long id);
 
         // ---- otp api -----
         /**
@@ -190,13 +202,13 @@ namespace thekey_v2 {
         /**
          * Get Otp note by ptr
          *
-         * @param notePtr otp note ptr
+         * @param id otp note identifier
          * @param flags
          * @param now now time for tests
          * @return
          */
         virtual std::shared_ptr<DecryptedOtpNote> otpNote(
-                long long notePtr,
+                long long id,
                 uint flags = TK2_GET_NOTE_PTR_ONLY,
                 time_t now = time(NULL)
         );
@@ -204,18 +216,18 @@ namespace thekey_v2 {
         /**
          * export Otp note to uri
          *
-         * @param notePtr  otp note ptr
+         * @param id  otp note identifier
          * @return uri like this otpauth://totp/Example:alice@google.com?secret=JBSWY3DPEHPK3PXP&issuer=Example
          */
-        virtual key_otp::OtpInfo exportOtpNote(long long notePtr);
+        virtual key_otp::OtpInfo exportOtpNote(long long id);
 
         /**
-         * Remove otp note by ptr
+         * Remove otp note by id
          *
-         * @param notePtr otp note ptr
+         * @param id otp note identifier
          * @return
          */
-        virtual int removeOtpNote(long long notePtr);
+        virtual int removeOtpNote(long long id);
 
         // ---- gen password and history api ----
         /**
@@ -239,12 +251,12 @@ namespace thekey_v2 {
          * get password from history.
          * The identifier can be either from the history of generated passwords or from the history of notes.
          *
-         * @param histPtr
+         * @param id history note identifier
          * @param flags TK2_GET_NOTE_HISTORY_FULL
          * @return
          */
         virtual std::shared_ptr<DecryptedPassw> genPasswHistory(
-                long long histPtr,
+                long long id,
                 const uint &flags = TK2_GET_NOTE_HISTORY_FULL
         );
 
