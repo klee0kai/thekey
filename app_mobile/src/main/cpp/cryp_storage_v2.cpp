@@ -68,7 +68,7 @@ std::vector<EngineModelDecryptedNote> JvmStorage2::notes(const int &loadInfo) {
     for (const auto &dnote: storage->notes(flags)) {
         notes.push_back(
                 {
-                        .ptnote = dnote.notePtr,
+                        .ptnote = dnote.id,
                         .site =  dnote.site,
                         .login =  dnote.login,
                         .desc =  dnote.description,
@@ -100,13 +100,13 @@ int JvmStorage2::saveNote(const brooklyn::EngineModelDecryptedNote &decryptedNot
     if (!storage) return -1;
 
     thekey_v2::DecryptedNote dnote = {
-            .notePtr = decryptedNote.ptnote,
+            .id = decryptedNote.ptnote,
             .site = decryptedNote.site,
             .login = decryptedNote.login,
             .passw = decryptedNote.passw,
             .description = decryptedNote.desc
     };
-    if (!dnote.notePtr) storage->createNote(dnote);
+    if (!dnote.id) storage->createNote(dnote);
     storage->setNote(dnote);
     return 0;
 
@@ -146,7 +146,7 @@ std::string JvmStorage2::lastGeneratedPassw() {
     if (!storage)return "";
     auto hist = storage->genPasswHistoryList();
     if (!hist.empty()) {
-        auto genPassw = storage->genPasswHistory(hist.back().histPtr, TK2_GET_NOTE_HISTORY_FULL);
+        auto genPassw = storage->genPasswHistory(hist.back().id, TK2_GET_NOTE_HISTORY_FULL);
         if (genPassw) return genPassw->passw;
     }
     auto schemeType = thekey_v2::findSchemeByFlags(SCHEME_NUMBERS);
@@ -162,7 +162,7 @@ std::vector<EngineModelDecryptedPassw> JvmStorage2::genHistory() {
     jvmHist.reserve(hist.size());
     for (const auto &item: hist) {
         jvmHist.push_back(JvmDecryptedPassw{
-                .passwPtr = item.histPtr,
+                .passwPtr = item.id,
                 .passw = item.passw,
                 .chTime = static_cast<int64_t>(item.genTime),
         });
@@ -179,7 +179,7 @@ JvmDecryptedPassw JvmStorage2::getGenPassw(const int64_t &ptNote) {
     if (!passw)return {};
 
     JvmDecryptedPassw jvmDecryptedPassw = {
-            .passwPtr = passw->histPtr,
+            .passwPtr = passw->id,
             .passw = passw->passw,
             .chTime = static_cast<int64_t>(passw->genTime),
     };

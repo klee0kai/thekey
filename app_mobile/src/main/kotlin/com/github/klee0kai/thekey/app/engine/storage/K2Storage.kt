@@ -16,37 +16,26 @@ class K2Storage(
         NativeLibLoader.loadIfNeed()
     }
 
-    @Synchronized
     external override fun info(): Storage
 
-    @Synchronized
     external override fun login(passw: String)
 
-    @Synchronized
     external override fun unlogin()
 
-    @Synchronized
     external override fun notes(info: Boolean): Array<DecryptedNote>
 
-    @Synchronized
     external override fun note(notePtr: Long): DecryptedNote
 
-    @Synchronized
     external override fun saveNote(decryptedNote: DecryptedNote): Int
 
-    @Synchronized
     external override fun removeNote(notePt: Long): Int
 
-    @Synchronized
     external override fun generateNewPassw(params: GenPasswParams): String
 
-    @Synchronized
     external override fun lastGeneratedPassw(): String
 
-    @Synchronized
     external override fun genHistory(): Array<DecryptedPassw>
 
-    @Synchronized
     external override fun getGenPassw(ptNote: Long): DecryptedPassw
 
 }
