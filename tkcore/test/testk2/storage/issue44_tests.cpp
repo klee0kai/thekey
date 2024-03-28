@@ -38,7 +38,7 @@ TEST(Storage2_Issue44, CreateStorage) {
     auto createNote = storage->createNote();
     storage->setNote(
             {
-                    .notePtr =createNote->notePtr,
+                    .id = createNote->id,
                     .site = "somesite.com",
                     .login = "some_user_login",
                     .passw = "simpplepassw",
@@ -75,7 +75,7 @@ TEST(Storage2_Issue44, CreateStorage) {
     const auto &notes = storage->notes();
     ASSERT_EQ(3, notes.size());
 
-    auto note = storage->note(notes[0].notePtr, TK2_GET_NOTE_INFO);
+    auto note = storage->note(notes[0].id, TK2_GET_NOTE_INFO);
     ASSERT_EQ("somesite.com", note->site);
     ASSERT_EQ("some_user_login", note->login);
     ASSERT_EQ("somesite_desc", note->description);
@@ -86,7 +86,7 @@ TEST(Storage2_Issue44, CreateStorage) {
                                 << " gen time " << note->genTime << endl;
     ASSERT_TRUE(note->passw.empty()) << "read without passw ";
 
-    note = storage->note(notes[1].notePtr, TK2_GET_NOTE_INFO);
+    note = storage->note(notes[1].id, TK2_GET_NOTE_INFO);
     ASSERT_EQ("testget.cv", note->site);
     ASSERT_EQ("person@email.su", note->login);
     ASSERT_EQ("desc", note->description);
@@ -126,7 +126,7 @@ TEST(Storage2_Issue44, ReadStorage) {
     const auto &notes = storage->notes();
     ASSERT_EQ(3, notes.size());
 
-    auto note = storage->note(notes[0].notePtr, TK2_GET_NOTE_INFO);
+    auto note = storage->note(notes[0].id, TK2_GET_NOTE_INFO);
     ASSERT_EQ("somesite.com", note->site);
     ASSERT_EQ("some_user_login", note->login);
     ASSERT_EQ("somesite_desc", note->description);
@@ -134,7 +134,7 @@ TEST(Storage2_Issue44, ReadStorage) {
     ASSERT_EQ(ORANGE, note->color);
     ASSERT_TRUE(note->passw.empty()) << "read without passw";
 
-    note = storage->note(notes[1].notePtr, TK2_GET_NOTE_INFO);
+    note = storage->note(notes[1].id, TK2_GET_NOTE_INFO);
     ASSERT_EQ("testget.cv", note->site);
     ASSERT_EQ("person@email.su", note->login);
     ASSERT_EQ("desc", note->description);
@@ -171,8 +171,8 @@ TEST(Storage2_Issue44, OtpSecretsTests) {
     ASSERT_EQ(2, otpNotes.size());
 
 
-    auto uri1 = uri(storage->exportOtpNote(otpNotes[0].notePtr).toUri());
-    auto uri2 = uri(storage->exportOtpNote(otpNotes[1].notePtr).toUri());
+    auto uri1 = uri(storage->exportOtpNote(otpNotes[0].id).toUri());
+    auto uri2 = uri(storage->exportOtpNote(otpNotes[1].id).toUri());
 
     ASSERT_EQ("JBSWY3DPEHPK3PXP", uri1.query["secret"]);
     ASSERT_EQ("WDW2ZCDQYHFXYV4G7WB6FG2WNBXKEGUJRW3QLE634JP43J4TCGTCPCKAAVISY6A7BNKYULEUXQ5YC2JPG7QXFFMDRIRJMESQNYWZ72A",
@@ -197,9 +197,9 @@ TEST(Storage2_Issue44, GenOtpGoogleExample) {
     ASSERT_EQ("Example", alise.issuer);
     ASSERT_EQ("alice@google.com", alise.name);
 
-    storage->otpNote(alise.notePtr, TK2_GET_NOTE_FULL);// counter 0
-    storage->otpNote(alise.notePtr, TK2_GET_NOTE_FULL);// counter 1
-    auto otpFull = storage->otpNote(alise.notePtr, TK2_GET_NOTE_FULL);// counter 2
+    storage->otpNote(alise.id, TK2_GET_NOTE_FULL);// counter 0
+    storage->otpNote(alise.id, TK2_GET_NOTE_FULL);// counter 1
+    auto otpFull = storage->otpNote(alise.id, TK2_GET_NOTE_FULL);// counter 2
 
     ASSERT_EQ("602287", otpFull->otpPassw);
 }
@@ -223,7 +223,7 @@ TEST(Storage2_Issue44, TOTPSimple6Test) {
     ASSERT_EQ("sha1Issuer", totpInfo.issuer);
     ASSERT_EQ("simple@test.com", totpInfo.name);
 
-    auto otpFull = storage->otpNote(totpInfo.notePtr, TK2_GET_NOTE_FULL, 1707657186);
+    auto otpFull = storage->otpNote(totpInfo.id, TK2_GET_NOTE_FULL, 1707657186);
 
     ASSERT_EQ("970135", otpFull->otpPassw);
 }

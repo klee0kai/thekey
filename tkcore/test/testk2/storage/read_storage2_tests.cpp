@@ -50,7 +50,7 @@ TEST(ReadStorage2, ReadNotes) {
     const auto &notes = storage->notes();
     ASSERT_EQ(3, notes.size());
 
-    auto note = storage->note(notes[0].notePtr, TK2_GET_NOTE_INFO);
+    auto note = storage->note(notes[0].id, TK2_GET_NOTE_INFO);
     ASSERT_EQ("somesite.com", note->site);
     ASSERT_EQ("some_user_login", note->login);
     ASSERT_EQ("somesite_desc", note->description);
@@ -59,7 +59,7 @@ TEST(ReadStorage2, ReadNotes) {
     ASSERT_EQ(1709490427, note->genTime);
     ASSERT_TRUE(note->passw.empty()) << "read without passw ";
 
-    note = storage->note(notes[1].notePtr, TK2_GET_NOTE_INFO);
+    note = storage->note(notes[1].id, TK2_GET_NOTE_INFO);
     ASSERT_EQ("testget.cv", note->site);
     ASSERT_EQ("person@email.su", note->login);
     ASSERT_EQ("desc", note->description);
@@ -81,7 +81,7 @@ TEST(ReadStorage2, ReadOtpNotes) {
     ASSERT_EQ(3, otpNotes.size());
 
     auto otpNote = otpNotes[0];
-    auto otpInfo = storage->exportOtpNote(otpNote.notePtr);
+    auto otpInfo = storage->exportOtpNote(otpNote.id);
     ASSERT_EQ("alice@google.com", otpNote.name);
     ASSERT_EQ("Example", otpNote.issuer);
     ASSERT_EQ("JBSWY3DPEHPK3PXP", base32::encode(otpInfo.secret, true));
@@ -90,7 +90,7 @@ TEST(ReadStorage2, ReadOtpNotes) {
 
 
     otpNote = otpNotes[1];
-    otpInfo = storage->exportOtpNote(otpNote.notePtr);
+    otpInfo = storage->exportOtpNote(otpNote.id);
     ASSERT_EQ("simple@test.com", otpNote.name);
     ASSERT_EQ("sha1Issuer", otpNote.issuer);
     ASSERT_EQ("WDW2ZCDQYHFXYV4G7WB6FG2WNBXKEGUJRW3QLE634JP43J4TCGTCPCKAAVISY6A7BNKYULEUXQ5YC2JPG7QXFFMDRIRJMESQNYWZ72A",
@@ -133,7 +133,7 @@ TEST(ReadStorage2, YaotpGenTest) {
     // WHEN
     auto otpNotes = storage->otpNotes();
     ASSERT_EQ(3, otpNotes.size());
-    auto yaotNote = storage->otpNote(otpNotes[2].notePtr, TK2_GET_NOTE_FULL, 1641559648L);
+    auto yaotNote = storage->otpNote(otpNotes[2].id, TK2_GET_NOTE_FULL, 1641559648L);
 
     //THEN
     ASSERT_EQ("umozdicq", yaotNote->otpPassw);
@@ -149,7 +149,7 @@ TEST(ReadStorage2, totpGenTest) {
     // WHEN
     auto otpNotes = storage->otpNotes();
     ASSERT_EQ(3, otpNotes.size());
-    auto yaotNote = storage->otpNote(otpNotes[1].notePtr, TK2_GET_NOTE_FULL, 1707657186);
+    auto yaotNote = storage->otpNote(otpNotes[1].id, TK2_GET_NOTE_FULL, 1707657186);
 
     //THEN
     ASSERT_EQ("970135", yaotNote->otpPassw);

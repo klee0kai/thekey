@@ -96,7 +96,7 @@ void thekey_v2::login(const std::string &filePath) {
         if (select.type == Simple) {
             auto note = storageV2->note(select.notePtr, 0);
             for (const auto &item: note->history) {
-                auto hist = storageV2->genPasswHistory(item.histPtr);
+                auto hist = storageV2->genPasswHistory(item.id);
                 cout << "-------------------------------------------" << endl;
                 cout << "passw: " << hist->passw << endl;
                 std::tm *changeTm = std::gmtime((time_t *) &hist->genTime);
@@ -202,7 +202,7 @@ void thekey_v2::login(const std::string &filePath) {
     it.cmd({"hist"}, "print gen password history", [&]() {
         if (!storageV2)return;
         for (const auto &item: storageV2->genPasswHistoryList()) {
-            auto hist = storageV2->genPasswHistory(item.histPtr);
+            auto hist = storageV2->genPasswHistory(item.id);
             cout << "-------------------------------------------" << endl;
             cout << "passw: " << hist->passw << endl;
             std::tm *changeTm = std::gmtime((time_t *) &hist->genTime);
