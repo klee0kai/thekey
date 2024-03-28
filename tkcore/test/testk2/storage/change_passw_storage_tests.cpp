@@ -143,7 +143,7 @@ TEST(Storage2ChangePassw, ChangePasswToNewFile) {
     ASSERT_EQ(3, otpNotes.size());
 
     auto otpNote = otpNotes.begin();
-    auto otpInfo = storage->exportOtpNote(otpNote->notePtr);
+    auto otpInfo = storage->exportOtpNote(otpNote->id);
     ASSERT_EQ("alice@google.com", otpNote->name);
     ASSERT_EQ("Example", otpNote->issuer);
     ASSERT_EQ("JBSWY3DPEHPK3PXP", base32::encode(otpInfo.secret, true));
@@ -152,7 +152,7 @@ TEST(Storage2ChangePassw, ChangePasswToNewFile) {
 
 
     otpNote++;
-    otpInfo = storage->exportOtpNote(otpNote->notePtr);
+    otpInfo = storage->exportOtpNote(otpNote->id);
     ASSERT_EQ("simple@test.com", otpNote->name);
     ASSERT_EQ("sha1Issuer", otpNote->issuer);
     ASSERT_EQ("WDW2ZCDQYHFXYV4G7WB6FG2WNBXKEGUJRW3QLE634JP43J4TCGTCPCKAAVISY6A7BNKYULEUXQ5YC2JPG7QXFFMDRIRJMESQNYWZ72A",
@@ -162,7 +162,7 @@ TEST(Storage2ChangePassw, ChangePasswToNewFile) {
 
 
     otpNote++;
-    otpInfo = storage->exportOtpNote(otpNote->notePtr);
+    otpInfo = storage->exportOtpNote(otpNote->id);
     ASSERT_EQ("user@yandex.ru", otpNote->name);
     ASSERT_EQ("yandex.ru", otpNote->issuer);
     ASSERT_EQ("6SB2IKNM6OBZPAVBVTOHDKS4FA", base32::encode(otpInfo.secret, true))
@@ -307,7 +307,7 @@ TEST(Storage2ChangePassw, ChangePasswToOldFile) {
     ASSERT_EQ(3, otpNotes.size());
 
     auto otpNote = otpNotes.begin();
-    auto otpInfo = storage->exportOtpNote(otpNote->notePtr);
+    auto otpInfo = storage->exportOtpNote(otpNote->id);
     ASSERT_EQ("alice@google.com", otpNote->name);
     ASSERT_EQ("Example", otpNote->issuer);
     ASSERT_EQ("JBSWY3DPEHPK3PXP", base32::encode(otpInfo.secret, true));
@@ -316,7 +316,7 @@ TEST(Storage2ChangePassw, ChangePasswToOldFile) {
 
 
     otpNote++;
-    otpInfo = storage->exportOtpNote(otpNote->notePtr);
+    otpInfo = storage->exportOtpNote(otpNote->id);
     ASSERT_EQ("simple@test.com", otpNote->name);
     ASSERT_EQ("sha1Issuer", otpNote->issuer);
     ASSERT_EQ("WDW2ZCDQYHFXYV4G7WB6FG2WNBXKEGUJRW3QLE634JP43J4TCGTCPCKAAVISY6A7BNKYULEUXQ5YC2JPG7QXFFMDRIRJMESQNYWZ72A",
@@ -326,7 +326,7 @@ TEST(Storage2ChangePassw, ChangePasswToOldFile) {
 
 
     otpNote++;
-    otpInfo = storage->exportOtpNote(otpNote->notePtr);
+    otpInfo = storage->exportOtpNote(otpNote->id);
     ASSERT_EQ("user@yandex.ru", otpNote->name);
     ASSERT_EQ("yandex.ru", otpNote->issuer);
     ASSERT_EQ("6SB2IKNM6OBZPAVBVTOHDKS4FA", base32::encode(otpInfo.secret, true))
@@ -469,7 +469,7 @@ TEST(Storage2ChangePassw, OldPassw) {
     ASSERT_EQ(3, otpNotes.size());
 
     auto otpNote = otpNotes.begin();
-    auto otpInfo = storage->exportOtpNote(otpNote->notePtr);
+    auto otpInfo = storage->exportOtpNote(otpNote->id);
     ASSERT_NE("alice@google.com", otpNote->name);
     ASSERT_NE("Example", otpNote->issuer);
     ASSERT_NE("JBSWY3DPEHPK3PXP", base32::encode(otpInfo.secret, true));
@@ -478,7 +478,7 @@ TEST(Storage2ChangePassw, OldPassw) {
 
 
     otpNote++;
-    otpInfo = storage->exportOtpNote(otpNote->notePtr);
+    otpInfo = storage->exportOtpNote(otpNote->id);
     ASSERT_NE("simple@test.com", otpNote->name);
     ASSERT_NE("sha1Issuer", otpNote->issuer);
     ASSERT_NE("WDW2ZCDQYHFXYV4G7WB6FG2WNBXKEGUJRW3QLE634JP43J4TCGTCPCKAAVISY6A7BNKYULEUXQ5YC2JPG7QXFFMDRIRJMESQNYWZ72A",
@@ -488,7 +488,7 @@ TEST(Storage2ChangePassw, OldPassw) {
 
 
     otpNote++;
-    otpInfo = storage->exportOtpNote(otpNote->notePtr);
+    otpInfo = storage->exportOtpNote(otpNote->id);
     ASSERT_NE("user@yandex.ru", otpNote->name);
     ASSERT_NE("yandex.ru", otpNote->issuer);
     ASSERT_NE("6SB2IKNM6OBZPAVBVTOHDKS4FA", base32::encode(otpInfo.secret, true))
