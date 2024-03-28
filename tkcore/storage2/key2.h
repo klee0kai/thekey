@@ -5,6 +5,7 @@
 #ifndef THEKEY_KEY2_H
 #define THEKEY_KEY2_H
 
+#include <mutex>
 #include "key_core.h"
 #include "list"
 #include "format/storage_structure.h"
@@ -101,6 +102,13 @@ namespace thekey_v2 {
         uint64_t createTime;
     };
 
+    struct DataSnapshot {
+        int idCounter;
+        std::shared_ptr<std::list<CryptedNote>> cryptedNotes;
+        std::shared_ptr<std::list<CryptedOtpInfo>> cryptedOtpNotes;
+        std::shared_ptr<std::list<CryptedPassword>> cryptedGeneratedPassws;
+    };
+
 
     class KeyStorageV2 {
     private:
@@ -110,15 +118,13 @@ namespace thekey_v2 {
         std::string storagePath;
         std::string tempStoragePath; // predict file write. (protect broken bits)
         std::shared_ptr<CryptContext> ctx;
+        std::recursive_mutex editMutex;
 
         // ---- info ------
         std::shared_ptr<StorageHeaderFlat> fheader;
         StorageInfo cachedInfo;
         // ---- payload ----
-        int idCounter;
-        std::list<CryptedNote> cryptedNotes;
-        std::list<CryptedOtpInfo> cryptedOtpNotes;
-        std::list<CryptedPassword> cryptedGeneratedPassws;
+        DataSnapshot _dataSnapshot;
 
     public:
         KeyStorageV2(int fd, const std::string &path, const std::shared_ptr<CryptContext> &ctx);
@@ -267,6 +273,20 @@ namespace thekey_v2 {
          * @return
          */
         virtual int appendPasswHistory(const std::vector<DecryptedPassw> &hist);
+
+    private:
+
+        /**
+         * thread securely receiving a snapshot of data
+         * @return
+         */
+        virtual DataSnapshot snapshot();
+
+        /**
+         *thread securely set a snapshot of data
+         * @param data
+         */
+        virtual void snapshot(const DataSnapshot &data);
 
 
     };
