@@ -7,32 +7,25 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,6 +35,7 @@ import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarStates
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppTitleImage
+import com.github.klee0kai.thekey.app.ui.designkit.components.SearchField
 import com.github.klee0kai.thekey.app.ui.designkit.components.SecondaryTabs
 import com.github.klee0kai.thekey.app.ui.designkit.components.SecondaryTabsConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberMainTitleVisibleFlow
@@ -78,7 +72,6 @@ fun StorageScreen(
     )
     val searchFocusRequester = remember { FocusRequester() }
     val searchState by presenter.searchState.collectAsState(Unit)
-    val searchCloseAlpha by rememberAlphaAnimate { searchState.searchText.isNotBlank() }
     val dragProgress = remember { mutableFloatStateOf(0f) }
     val pagerState = rememberPagerState(initialPage = args.selectedPage.coerceIn(titles.indices)) { titles.size }
     val secondaryTabsHeight by rememberDerivedStateOf { if (searchState.isActive) 0.dp else SecondaryTabsConst.allHeight }
@@ -171,42 +164,13 @@ fun StorageScreen(
                 }
 
                 SearchTitleId -> {
-                    Box {
-                        TextField(
-                            modifier = Modifier
-                                .wrapContentHeight()
-                                .fillMaxWidth()
-                                .focusRequester(searchFocusRequester),
-                            colors = TextFieldDefaults.colors(
-                                disabledContainerColor = Color.Transparent,
-                                errorContainerColor = Color.Transparent,
-                                focusedContainerColor = Color.Transparent,
-                                unfocusedContainerColor = Color.Transparent,
-                                disabledTextColor = Color.Transparent,
-                                focusedIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent,
-                                disabledIndicatorColor = Color.Transparent
-                            ),
-                            placeholder = {
-                                Text(
-                                    modifier = Modifier.alpha(0.4f),
-                                    text = stringResource(id = R.string.search),
-                                )
-                            },
-                            value = searchState.searchText,
-                            onValueChange = { newText -> presenter.searchState.update { it.copy(searchText = newText) } }
-                        )
-
-                        if (searchCloseAlpha > 0) {
-                            IconButton(
-                                modifier = Modifier
-                                    .align(Alignment.CenterEnd)
-                                    .alpha(searchCloseAlpha),
-                                onClick = { presenter.searchState.update { SearchState() } },
-                                content = { Icon(Icons.Filled.Close, contentDescription = null) }
-                            )
-                        }
-                    }
+                    SearchField(
+                        textModifier = Modifier
+                            .focusRequester(searchFocusRequester),
+                        searchText = searchState.searchText,
+                        onSearch = { newText -> presenter.searchState.update { it.copy(searchText = newText) } },
+                        onClose = { presenter.searchState.update { SearchState() } }
+                    )
                 }
             }
         },
