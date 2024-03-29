@@ -20,12 +20,22 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
 data class TargetAlpha<T>(
-    val target: T,
+    val current: T,
+    val next: T,
     val alpha: Float = 0f,
 )
 
+fun <T> TargetAlpha<T>.hideAlpha(vararg targetsToHide: T): Float {
+    return when {
+        targetsToHide.any { current == it } -> 0f
+        targetsToHide.any { next == it } -> alpha
+        else -> 1f
+    }
+
+}
+
 @Composable
-fun animateAlphaAsState(
+inline fun animateAlphaAsState(
     boolean: Boolean,
     label: String = "",
 ) = animateFloatAsState(
@@ -34,7 +44,7 @@ fun animateAlphaAsState(
 )
 
 @Composable
-fun <T> StateFlow<T>.collectAsStateCrossFaded(
+inline fun <T> StateFlow<T>.collectAsStateCrossFaded(
     key: Any? = null,
     context: CoroutineContext = EmptyCoroutineContext
 ): State<TargetAlpha<T>> {
@@ -43,7 +53,7 @@ fun <T> StateFlow<T>.collectAsStateCrossFaded(
 }
 
 @Composable
-fun <T> Flow<T>.collectAsStateCrossFaded(
+inline fun <T> Flow<T>.collectAsStateCrossFaded(
     key: Any?,
     initial: T,
     context: CoroutineContext = EmptyCoroutineContext
@@ -53,13 +63,26 @@ fun <T> Flow<T>.collectAsStateCrossFaded(
 }
 
 @Composable
-fun <T> animateTargetAlphaAsState(target: T): State<TargetAlpha<T>> {
-    val targetAlphaState = remember { mutableStateOf(TargetAlpha(target, 1f)) }
+inline fun <T> rememberTargetAlphaCrossSade(noinline calculation: () -> T): State<TargetAlpha<T>> {
+    val target = rememberDerivedStateOf(calculation)
+    return animateTargetAlphaAsState(target = target.value)
+}
+
+@Composable
+inline fun rememberAlphaAnimate(noinline calculation: () -> Boolean): State<Float> {
+    val target = rememberDerivedStateOf(calculation)
+    return animateAlphaAsState(target.value)
+}
+
+@Composable
+inline fun <T> animateTargetAlphaAsState(target: T): State<TargetAlpha<T>> {
+    val targetAlphaState = remember { mutableStateOf(TargetAlpha(target, target, 1f)) }
     var targetAlpha by targetAlphaState
     var velocity by remember { mutableFloatStateOf(0f) }
 
     LaunchedEffect(key1 = target) {
-        if (targetAlpha.target != target) {
+        targetAlpha = targetAlpha.copy(next = target)
+        if (targetAlpha.current != target) {
             animate(
                 initialValue = targetAlpha.alpha,
                 targetValue = 0f,
@@ -73,7 +96,7 @@ fun <T> animateTargetAlphaAsState(target: T): State<TargetAlpha<T>> {
                 velocity = newVelocity
             }
             velocity = -velocity
-            targetAlpha = targetAlpha.copy(target = target, alpha = 0f)
+            targetAlpha = targetAlpha.copy(current = target, alpha = 0f)
         }
 
         animate(

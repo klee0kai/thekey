@@ -4,24 +4,22 @@ package com.github.klee0kai.thekey.app.ui.storage.notes
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.FabSimpleInContainer
-import com.github.klee0kai.thekey.app.ui.designkit.components.SecondaryTabsConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleBottomSheetScaffold
 import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleBottomSheetScaffoldState
-import com.github.klee0kai.thekey.app.ui.designkit.components.rememberSimpleBottomSheetScaffoldState
+import com.github.klee0kai.thekey.app.ui.designkit.components.simpleBottomSheetScaffoldState
 import com.github.klee0kai.thekey.app.ui.navigation.LocalRouter
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.app.ui.navigation.note
@@ -35,24 +33,25 @@ fun NotesContent(
     modifier: Modifier = Modifier,
     args: StorageDestination = StorageDestination(),
     isPageFullyAvailable: Boolean = false,
-    scaffoldState: SimpleBottomSheetScaffoldState =
-        rememberSimpleBottomSheetScaffoldState(
-            topContentSize = 190.dp,
-            appBarSize = AppBarConst.appBarSize
-        )
+    scaffoldState: SimpleBottomSheetScaffoldState = simpleBottomSheetScaffoldState(LocalDensity.current),
+    onDrag: (Float) -> Unit = {},
 ) {
     val router = LocalRouter.current
+    val dragProgress = remember { mutableFloatStateOf(0f) }
     val addButtonAlpha by animateAlphaAsState(isPageFullyAvailable)
     val addButtonVisible by rememberDerivedStateOf { addButtonAlpha > 0 }
-    val showStoragesTitle by rememberDerivedStateOf { scaffoldState.dragProgress.floatValue > 0.1f }
+    val showStoragesTitle by rememberDerivedStateOf { dragProgress.floatValue > 0.1f }
 
     SimpleBottomSheetScaffold(
-        modifier = modifier
-            .padding(top = SecondaryTabsConst.allHeight),
+        modifier = modifier,
         simpleBottomSheetScaffoldState = scaffoldState,
+        onDrag = {
+            dragProgress.floatValue = it
+            onDrag.invoke(it)
+        },
         topContent = {
             GroupsSelectContent(
-                scaffoldState = scaffoldState,
+                dragProgress = dragProgress,
             )
         },
         sheetContent = {

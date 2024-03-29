@@ -42,4 +42,5 @@
     <string name="note_is_empty">Note is empty</string>
     <string name="no_name">No name</string>
     <string name="no_site">No site</string>
+    <string name="search">Search</string>
 </resources>

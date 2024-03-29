@@ -49,11 +49,11 @@ fun ColoredNoteItem(
         )
 
         Text(
-            text = note.target?.site.takeIf { !it.isNullOrBlank() } ?: stringResource(id = R.string.no_site),
+            text = note.current?.site.takeIf { !it.isNullOrBlank() } ?: stringResource(id = R.string.no_site),
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier
                 .alpha(note.alpha)
-                .skeleton(note.target == null)
+                .skeleton(note.current == null)
                 .constrainAs(path) {
                     linkTo(
                         top = parent.top,
@@ -70,12 +70,12 @@ fun ColoredNoteItem(
                 }
         )
         Text(
-            text = note.target?.login ?: "",
+            text = note.current?.login ?: "",
             color = MaterialTheme.colorScheme.onSurface,
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier
                 .alpha(note.alpha)
-                .skeleton(note.target == null)
+                .skeleton(note.current == null)
                 .constrainAs(description) {
                     linkTo(
                         top = path.bottom,

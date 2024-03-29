@@ -56,7 +56,7 @@ fun NoteScreen(
     val note by presenter.note.collectAsState(key = Unit)
     val originNote = presenter.originNote.collectAsStateCrossFaded()
     val isSkeleton = rememberDerivedStateOf {
-        isEditNote && originNote.value.target == null
+        isEditNote && originNote.value.current == null
     }
     val alpha = rememberDerivedStateOf { if (isEditNote) originNote.value.alpha else 1f }
     val scrollState = rememberScrollState()

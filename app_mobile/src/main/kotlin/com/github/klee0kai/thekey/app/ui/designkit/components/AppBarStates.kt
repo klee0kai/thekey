@@ -61,7 +61,7 @@ fun AppBarStates(
                 contentAlignment = Alignment.Center
             ) {
                 Box(modifier = Modifier.alpha(animateTargetAlpha.alpha)) {
-                    titleContent?.invoke(animateTargetAlpha.target)
+                    titleContent?.invoke(animateTargetAlpha.current)
                 }
             }
         },

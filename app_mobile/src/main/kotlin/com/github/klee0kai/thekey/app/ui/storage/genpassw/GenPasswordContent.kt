@@ -223,7 +223,7 @@ fun GenPasswordContent(
         ) { Text(stringResource(R.string.hist)) }
 
         Text(
-            text = passw.target,
+            text = passw.current,
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier
                 .alpha(passw.alpha)

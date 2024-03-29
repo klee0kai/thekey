@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -42,6 +43,8 @@ private const val SecondTittleId = 1
 fun StoragesScreen() {
     val presenter = remember { DI.storagesPresenter() }
     val router = LocalRouter.current
+
+    var dragProgress = remember { mutableFloatStateOf(0f) }
     val scaffoldState = rememberSimpleBottomSheetScaffoldState(
         topContentSize = TOP_CONTENT_SIZE,
         appBarSize = AppBarConst.appBarSize
@@ -54,7 +57,7 @@ fun StoragesScreen() {
             null -> 0
         }
     }
-    val showStoragesTitle by rememberDerivedStateOf { scaffoldState.dragProgress.floatValue > 0.1f }
+    val showStoragesTitle by rememberDerivedStateOf { dragProgress.value > 0.1f }
 
 
     SideEffect {
@@ -63,9 +66,8 @@ fun StoragesScreen() {
 
     SimpleBottomSheetScaffold(
         simpleBottomSheetScaffoldState = scaffoldState,
-        topContent = {
-            GroupsSelectContent(scaffoldState = scaffoldState)
-        },
+        onDrag = { dragProgress.floatValue = it },
+        topContent = { GroupsSelectContent(dragProgress = dragProgress) },
         sheetContent = {
             StoragesListContent(
                 modifier = Modifier.fillMaxSize(),

@@ -3,8 +3,10 @@ package com.github.klee0kai.thekey.app.ui.storage
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.model.LazyNote
+import com.github.klee0kai.thekey.app.ui.storage.model.SearchState
 import com.github.klee0kai.thekey.app.utils.common.preloaded
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
@@ -19,6 +21,8 @@ class StoragePresenter(
     private val updateTicks = MutableSharedFlow<Unit>()
 
     private var lazyNotes = emptyList<LazyNote>()
+
+    val searchState = MutableStateFlow(SearchState())
 
     fun notes() = flow<List<LazyNote>> {
         val engine = engine() ?: return@flow

@@ -91,11 +91,11 @@ fun LazyPasswItem(
         val (colorGroup, path, description) = createRefs()
 
         Text(
-            text = fullPassw.target?.passw ?: "",
+            text = fullPassw.current?.passw ?: "",
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier
                 .alpha(fullPassw.alpha)
-                .skeleton(fullPassw.target == null)
+                .skeleton(fullPassw.current == null)
                 .fillMaxWidth(0.5f)
                 .padding(2.dp)
                 .constrainAs(path) {

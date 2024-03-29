@@ -16,6 +16,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleScaffoldConst.dragHandleSize
 import com.github.klee0kai.thekey.app.utils.views.accelerateDecelerate
+import com.github.klee0kai.thekey.app.utils.views.pxToDp
 import com.github.klee0kai.thekey.app.utils.views.ratioBetween
 import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
 
@@ -40,48 +42,49 @@ internal object SimpleScaffoldConst {
 fun SimpleBottomSheetScaffold(
     modifier: Modifier = Modifier,
     simpleBottomSheetScaffoldState: SimpleBottomSheetScaffoldState = rememberSimpleBottomSheetScaffoldState(),
+    onDrag: (Float) -> Unit = {},
     topContent: @Composable () -> Unit = {},
     sheetContent: @Composable () -> Unit = {},
 ) {
-    val density = LocalDensity.current
     val view = LocalView.current
     val appBarSize = simpleBottomSheetScaffoldState.appBarSize
     val topContentSize = simpleBottomSheetScaffoldState.topContentSize
     val colorScheme = remember { DI.theme().colorScheme().androidColorScheme }
+    val dragProgress = remember { mutableFloatStateOf(0f) }
 
-    val viewHeight = remember(view.height) {
-        with(density) { if (view.isInEditMode) 900.dp else view.height.toDp() }
-    }
-    val sheetMinSize = remember(viewHeight) {
-        maxOf(viewHeight - appBarSize - topContentSize, 0.dp)
-    }
-    val sheetMaxSize = remember(viewHeight) { maxOf(viewHeight - appBarSize, sheetMinSize) }
+    val viewHeight = if (view.isInEditMode) 900.dp else view.height.pxToDp()
+    val sheetMinSize = remember(viewHeight, simpleBottomSheetScaffoldState) { maxOf(viewHeight - appBarSize - topContentSize, 0.dp) }
+    val sheetMaxSize = remember(viewHeight, simpleBottomSheetScaffoldState) { maxOf(viewHeight - appBarSize, 0.dp) }
 
     val scaffoldTopOffset = runCatching {
-        with(LocalDensity.current) {
-            simpleBottomSheetScaffoldState.scaffoldState.bottomSheetState.requireOffset().toDp()
-        }
+        simpleBottomSheetScaffoldState.scaffoldState.bottomSheetState.requireOffset().pxToDp()
     }.getOrElse { 0.dp }
 
-    simpleBottomSheetScaffoldState.dragProgress.floatValue = scaffoldTopOffset.ratioBetween(
+    scaffoldTopOffset.ratioBetween(
         start = appBarSize,
         end = appBarSize + topContentSize
     ).coerceIn(0f, 1f)
+        .also { newDrag ->
+            if (newDrag != dragProgress.floatValue) {
+                dragProgress.floatValue = newDrag
+                onDrag(newDrag)
+            }
+        }
 
     val dragAlpha by rememberDerivedStateOf {
-        simpleBottomSheetScaffoldState.dragProgress.floatValue.ratioBetween(
+        dragProgress.floatValue.ratioBetween(
             start = 0.2f,
             end = 0.5f,
         ).coerceIn(0f, 1f)
             .accelerateDecelerate()
     }
 
-
     CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
         BottomSheetScaffold(
             modifier = modifier,
             scaffoldState = simpleBottomSheetScaffoldState.scaffoldState,
             sheetPeekHeight = sheetMinSize,
+            sheetMaxWidth = view.width.pxToDp(),
             contentColor = colorScheme.onBackground,
             containerColor = colorScheme.background,
             content = { innerPadding ->

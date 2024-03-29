@@ -9,9 +9,7 @@ import androidx.compose.material3.SheetState
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableFloatState
 import androidx.compose.runtime.NonRestartableComposable
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalDensity
@@ -25,7 +23,6 @@ data class SimpleBottomSheetScaffoldState(
     val topContentSize: Dp = 190.dp,
     val appBarSize: Dp = 0.dp,
     val scaffoldState: BottomSheetScaffoldState,
-    val dragProgress: MutableFloatState = mutableFloatStateOf(0f),
 ) {
 
     companion object {
@@ -55,7 +52,6 @@ data class SimpleBottomSheetScaffoldState(
                         ),
                         snackbarHostState = SnackbarHostState(),
                     ),
-                    dragProgress = mutableFloatStateOf(0f),
                 )
             }
         )
@@ -98,7 +94,29 @@ fun rememberSimpleBottomSheetScaffoldState(
                 ),
                 snackbarHostState = SnackbarHostState(),
             ),
-            dragProgress = mutableFloatStateOf(0f),
         )
     }
+}
+
+
+fun simpleBottomSheetScaffoldState(
+    density: Density,
+    topContentSize: Dp = 190.dp,
+    appBarSize: Dp = 0.dp,
+): SimpleBottomSheetScaffoldState {
+    return SimpleBottomSheetScaffoldState(
+        scaffoldState = BottomSheetScaffoldState(
+            bottomSheetState = SheetState(
+                skipPartiallyExpanded = false,
+                density = density,
+                initialValue = SheetValue.PartiallyExpanded,
+                confirmValueChange = { true },
+                skipHiddenState = true
+            ),
+            snackbarHostState = SnackbarHostState(),
+        ),
+        appBarSize = appBarSize,
+        topContentSize = topContentSize,
+    )
+
 }

@@ -16,9 +16,9 @@ fun AppTitleImage(
     modifier: Modifier = Modifier,
 ) {
     Image(
+        modifier = modifier.scale(0.5f),
         painter = painterResource(id = R.drawable.logo_big),
         contentDescription = stringResource(id = R.string.app_name),
-        contentScale = ContentScale.Inside,
-        modifier = modifier.scale(0.5f)
+        contentScale = ContentScale.Inside
     )
 }

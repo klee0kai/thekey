@@ -10,9 +10,11 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.FloatState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -26,7 +28,6 @@ import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.model.ColorGroup
 import com.github.klee0kai.thekey.app.ui.designkit.components.LazyListIndicatorIfNeed
-import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleBottomSheetScaffoldState
 import com.github.klee0kai.thekey.app.utils.views.accelerateDecelerate
 import com.github.klee0kai.thekey.app.utils.views.ratioBetween
 import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
@@ -38,27 +39,25 @@ import kotlinx.coroutines.flow.flowOf
 @Composable
 fun GroupsSelectContent(
     modifier: Modifier = Modifier,
-    scaffoldState: SimpleBottomSheetScaffoldState? = null
+    dragProgress: FloatState = mutableFloatStateOf(0f),
 ) {
     val colorScheme = remember { DI.theme().colorScheme() }
     val colorGroups = groupsState()
     val lazyListState = rememberLazyListState()
 
     val topContentAlpha by rememberDerivedStateOf {
-        scaffoldState?.dragProgress?.floatValue
-            ?.ratioBetween(0.3f, 0.7f)
-            ?.coerceIn(0f, 1f)
-            ?.accelerateDecelerate()
-            ?: 1f
+        dragProgress.floatValue
+            .ratioBetween(0.3f, 0.7f)
+            .coerceIn(0f, 1f)
+            .accelerateDecelerate()
     }
 
     val dragTranslateY by rememberDerivedStateOf {
-        scaffoldState?.dragProgress?.floatValue
-            ?.ratioBetween(1f, 0f)
-            ?.coerceIn(0f, 1f)
-            ?.accelerateDecelerate()
-            ?.let { 30.dp * -it }
-            ?: 0.dp
+        dragProgress.floatValue
+            .ratioBetween(1f, 0f)
+            .coerceIn(0f, 1f)
+            .accelerateDecelerate()
+            .let { 30.dp * -it }
     }
 
     ConstraintLayout(
