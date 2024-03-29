@@ -46,6 +46,7 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.GenPasswordContent
 import com.github.klee0kai.thekey.app.ui.storage.model.SearchState
 import com.github.klee0kai.thekey.app.ui.storage.notes.NotesContent
+import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
 import com.github.klee0kai.thekey.app.utils.views.hideAlpha
 import com.github.klee0kai.thekey.app.utils.views.rememberAlphaAnimate
@@ -85,6 +86,7 @@ fun StorageScreen(
         )
     }
     val isAccountTab by rememberDerivedStateOf { pagerState.currentPage == 0 && pagerState.currentPageOffsetFraction == 0f }
+    val isAccountPageAlpha by animateAlphaAsState(boolean = isAccountTab)
     val accountTitleVisibility = accountScaffoldState.rememberMainTitleVisibleFlow()
     val tabsAlpha by rememberAlphaAnimate {
         when {
@@ -177,9 +179,11 @@ fun StorageScreen(
             }
         },
         actions = {
-            if (targetTitleId.current != SearchTitleId) {
+            if (isAccountPageAlpha > 0 && targetTitleId.current != SearchTitleId) {
                 IconButton(
-                    modifier = Modifier.alpha(targetTitleId.hideAlpha(SearchTitleId)),
+                    modifier = Modifier
+                        .alpha(targetTitleId.hideAlpha(SearchTitleId))
+                        .alpha(isAccountPageAlpha),
                     onClick = { presenter.searchState.update { it.copy(isActive = true) } },
                     content = { Icon(Icons.Filled.Search, contentDescription = null) }
                 )
