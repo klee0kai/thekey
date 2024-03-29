@@ -74,6 +74,8 @@ fun StorageScreen(
     val searchState by presenter.searchState.collectAsState(Unit)
     val dragProgress = remember { mutableFloatStateOf(0f) }
     val pagerState = rememberPagerState(initialPage = args.selectedPage.coerceIn(titles.indices)) { titles.size }
+    val singlePagePagerState = rememberPagerState(initialPage = 0) { 1 }
+    val pagerStateFiltered by rememberDerivedStateOf { if (searchState.isActive) singlePagePagerState else pagerState }
     val secondaryTabsHeight by rememberDerivedStateOf { if (searchState.isActive) 0.dp else SecondaryTabsConst.allHeight }
     val accountScaffoldState by rememberDerivedStateOf {
         simpleBottomSheetScaffoldState(
@@ -111,7 +113,7 @@ fun StorageScreen(
     }
 
     HorizontalPager(
-        pagerState,
+        state = pagerStateFiltered,
         modifier = Modifier
             .fillMaxSize(),
         pageContent = { page ->
