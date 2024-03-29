@@ -64,7 +64,7 @@ fun NotesListContent(
         }
 
         notes.value.forEach { note ->
-            item(contentType = note::class) {
+            item(contentType = note::class, key = note.value.ptnote) {
                 var showMenu by remember { mutableStateOf(false) }
 
                 Box(

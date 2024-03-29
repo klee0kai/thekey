@@ -22,12 +22,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
@@ -65,13 +67,14 @@ private const val SecondTittleId = 2
 fun StorageScreen(
     args: StorageDestination = StorageDestination()
 ) {
-    val presenter = remember { DI.storagePresenter(args.identifier()) }
+    val presenter = remember { DI.storagePresenter(args.identifier()).apply { init() } }
     val navigator = LocalRouter.current
     val density = LocalDensity.current
     val titles = listOf(
         stringResource(id = R.string.accounts),
         stringResource(id = R.string.passw_generate)
     )
+    val searchFocusRequester = remember { FocusRequester() }
     val searchState by presenter.searchState.collectAsState(Unit)
     val dragProgress = remember { mutableFloatStateOf(0f) }
     val pagerState = rememberPagerState(initialPage = args.selectedPage.coerceIn(titles.indices)) { titles.size }
@@ -103,6 +106,12 @@ fun StorageScreen(
 
     BackHandler(enabled = searchState.isActive) {
         presenter.searchState.update { SearchState() }
+    }
+
+    LaunchedEffect(key1 = targetTitleId.current) {
+        if (targetTitleId.current == SearchTitleId) {
+            searchFocusRequester.requestFocus()
+        }
     }
 
     HorizontalPager(
@@ -162,7 +171,8 @@ fun StorageScreen(
                     TextField(
                         modifier = Modifier
                             .wrapContentHeight()
-                            .fillMaxWidth(),
+                            .fillMaxWidth()
+                            .focusRequester(searchFocusRequester),
                         colors = TextFieldDefaults.colors(
                             disabledContainerColor = Color.Transparent,
                             errorContainerColor = Color.Transparent,
@@ -189,7 +199,7 @@ fun StorageScreen(
             if (targetTitleId.current != SearchTitleId) {
                 IconButton(
                     modifier = Modifier.alpha(targetTitleId.hideAlpha(SearchTitleId)),
-                    onClick = { presenter.searchState.update { it.copy(isActive = !it.isActive) } },
+                    onClick = { presenter.searchState.update { it.copy(isActive = true) } },
                     content = { Icon(Icons.Filled.Search, contentDescription = null) }
                 )
             }

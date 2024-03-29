@@ -5,6 +5,7 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State
 import com.github.klee0kai.thekey.app.utils.views.TargetAlpha
 import com.github.klee0kai.thekey.app.utils.views.collectAsStateCrossFaded
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.sync.Mutex
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
@@ -30,6 +31,8 @@ class LazyModel<T, R>(
         }
         fullValueLoaded as R
     }
+
+    suspend fun fullValue() = fullValueFlow().first()
 
     fun getOrNull() = fullValueLoaded.takeIf { it != notLoaded } as? R
         ?: preloaded.takeIf { it != notLoaded } as? R
