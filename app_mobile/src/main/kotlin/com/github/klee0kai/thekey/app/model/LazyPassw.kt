@@ -5,9 +5,11 @@ import com.github.klee0kai.thekey.app.utils.common.LazyModel
 import kotlinx.coroutines.delay
 import kotlin.random.Random
 
-typealias LazyPassw = LazyModel<DecryptedPassw, DecryptedPassw>
+typealias LazyPassw = LazyModel<Long, DecryptedPassw>
 
-fun dummyLazyPassw() = LazyPassw(DecryptedPassw()) {
+val LazyPassw.id get() = placeholder
+
+fun dummyLazyPassw() = LazyPassw(1) {
     delay(Random.nextLong(3000))
     DecryptedPassw(passw = "passw")
 }

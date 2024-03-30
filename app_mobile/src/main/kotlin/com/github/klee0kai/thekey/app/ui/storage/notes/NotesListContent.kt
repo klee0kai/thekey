@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.model.id
 import com.github.klee0kai.thekey.app.ui.navigation.LocalRouter
 import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
@@ -41,9 +42,13 @@ fun NotesListContent(
     args: StorageDestination = StorageDestination(),
     showStoragesTitle: Boolean = true,
 ) {
-    val presenter = remember { DI.storagePresenter(args.identifier()) }
+    val presenter = remember {
+        DI.storagePresenter(args.identifier()).apply {
+            collectNotesFromEngine(forceDirty = true)
+        }
+    }
     val navigator = LocalRouter.current
-    val notes = presenter.notes().collectAsState(key = Unit, initial = listOf())
+    val notes = presenter.filteredNotes.collectAsState(key = Unit)
     val titleAnimatedAlpha by animateAlphaAsState(showStoragesTitle)
 
     if (notes.value.isEmpty()) {
@@ -63,23 +68,21 @@ fun NotesListContent(
             )
         }
 
-        notes.value.forEach { note ->
-            item(contentType = note::class, key = note.value.ptnote) {
+        notes.value.forEach { lazyNote ->
+            item(contentType = lazyNote::class, key = lazyNote.id) {
                 var showMenu by remember { mutableStateOf(false) }
 
                 Box(
                     modifier = Modifier
                         .animateItemPlacement(animationSpec = tween())
                         .combinedClickable(
-                            onLongClick = {
-                                showMenu = true
-                            },
+                            onLongClick = { showMenu = true },
                             onClick = {
-                                navigator.navigate(args.note(notePtr = note.value.ptnote))
+                                navigator.navigate(args.note(notePtr = lazyNote.id))
                             }
                         )
                 ) {
-                    ColoredNoteItem(lazyNote = note)
+                    ColoredNoteItem(lazyNote = lazyNote)
 
                     DropdownMenu(
                         offset = DpOffset(x = (-16).dp, y = 2.dp),
@@ -90,7 +93,7 @@ fun NotesListContent(
                             modifier = Modifier.align(Alignment.End),
                             text = { Text(text = stringResource(id = R.string.remove)) },
                             onClick = {
-                                presenter.remove(note.value.ptnote)
+                                presenter.remove(lazyNote.id)
                                 showMenu = false
                             }
                         )

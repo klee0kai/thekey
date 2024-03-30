@@ -52,7 +52,6 @@ import com.github.klee0kai.thekey.app.utils.views.hideAlpha
 import com.github.klee0kai.thekey.app.utils.views.rememberAlphaAnimate
 import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.app.utils.views.rememberTargetAlphaCrossSade
-import kotlinx.coroutines.flow.update
 
 private const val SearchTitleId = 0
 private const val MainTitleId = 1
@@ -64,7 +63,7 @@ private const val SecondTittleId = 2
 fun StorageScreen(
     args: StorageDestination = StorageDestination()
 ) {
-    val presenter = remember { DI.storagePresenter(args.identifier()).apply { init() } }
+    val presenter = remember { DI.storagePresenter(args.identifier()) }
     val navigator = LocalRouter.current
     val density = LocalDensity.current
     val titles = listOf(
@@ -105,7 +104,7 @@ fun StorageScreen(
     }
 
     BackHandler(enabled = searchState.isActive) {
-        presenter.searchState.update { SearchState() }
+        presenter.filterNotes(SearchState())
     }
 
     LaunchedEffect(key1 = targetTitleId.current) {
@@ -172,8 +171,8 @@ fun StorageScreen(
                         textModifier = Modifier
                             .focusRequester(searchFocusRequester),
                         searchText = searchState.searchText,
-                        onSearch = { newText -> presenter.searchState.update { it.copy(searchText = newText) } },
-                        onClose = { presenter.searchState.update { SearchState() } }
+                        onSearch = { newText -> presenter.filterNotes(SearchState(isActive = true, searchText = newText)) },
+                        onClose = { presenter.filterNotes(SearchState()) }
                     )
                 }
             }
@@ -184,7 +183,7 @@ fun StorageScreen(
                     modifier = Modifier
                         .alpha(targetTitleId.hideAlpha(SearchTitleId))
                         .alpha(isAccountPageAlpha),
-                    onClick = { presenter.searchState.update { it.copy(isActive = true) } },
+                    onClick = { presenter.filterNotes(SearchState(isActive = true)) },
                     content = { Icon(Icons.Filled.Search, contentDescription = null) }
                 )
             }

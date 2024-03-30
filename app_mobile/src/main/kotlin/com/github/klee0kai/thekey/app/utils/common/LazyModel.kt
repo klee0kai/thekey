@@ -14,20 +14,21 @@ private val notLoaded = object {};
 
 @Stable
 class LazyModel<T, R>(
-    val value: T,
-    private val lazyProvide: suspend () -> R,
+    val placeholder: T,
+    private val lazyProvide: suspend LazyModel<T, R>.() -> R,
 ) {
     companion object;
 
-    internal var preloaded: Any? = notLoaded
+    var dirty: Boolean = true
     internal var fullValueLoaded: Any? = notLoaded
     internal val mutex = Mutex()
 
-    val isLoaded get() = fullValueLoaded != notLoaded
+    val isLoaded get() = !dirty && fullValueLoaded != notLoaded
 
     fun fullValueFlow() = singleEventFlow<R> {
-        if (fullValueLoaded == notLoaded) {
-            fullValueLoaded = lazyProvide.invoke()
+        if (dirty || fullValueLoaded == notLoaded) {
+            fullValueLoaded = lazyProvide()
+            dirty = false
         }
         fullValueLoaded as R
     }
@@ -35,33 +36,25 @@ class LazyModel<T, R>(
     suspend fun fullValue() = fullValueFlow().first()
 
     fun getOrNull() = fullValueLoaded.takeIf { it != notLoaded } as? R
-        ?: preloaded.takeIf { it != notLoaded } as? R
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
         other as LazyModel<*, *>
-        return value == other.value
+        return placeholder == other.placeholder
     }
 
     override fun hashCode(): Int {
-        return value?.hashCode() ?: 0
+        return placeholder?.hashCode() ?: 0
     }
 }
 
-
-fun <T, R> List<LazyModel<T, R>>.preloaded(old: List<LazyModel<T, R>>) = apply {
-    val cachedMap = old.groupBy { it.value }
-    forEach { note ->
-        note.preloaded = cachedMap[note.value]
-            ?.firstOrNull()
-            ?.getOrNull()
-            ?: notLoaded
-    }
+fun <T, R> fromPreloadedOrCreate(placeholder: T, old: List<LazyModel<T, R>>, lazyProvide: suspend LazyModel<T, R>.() -> R): LazyModel<T, R> {
+    return old.firstOrNull { it.placeholder == placeholder } ?: LazyModel(placeholder, lazyProvide)
 }
 
 
 @Composable
 fun <T, R> LazyModel<T, R>.collectAsStateCrossFaded(
     context: CoroutineContext = EmptyCoroutineContext
-): State<TargetAlpha<R?>> = fullValueFlow().collectAsStateCrossFaded(key = value, initial = getOrNull())
+): State<TargetAlpha<R?>> = fullValueFlow().collectAsStateCrossFaded(key = placeholder, initial = getOrNull())

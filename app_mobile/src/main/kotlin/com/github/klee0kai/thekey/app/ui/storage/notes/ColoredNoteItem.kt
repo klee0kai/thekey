@@ -27,10 +27,10 @@ import com.github.klee0kai.thekey.app.utils.views.skeleton
 @Composable
 fun ColoredNoteItem(
     modifier: Modifier = Modifier,
-    lazyNote: LazyNote = dummyLazyNote(),
+    lazyNote: LazyNote = dummyLazyNote()
 ) {
     val colorScheme = remember { DI.theme().colorScheme() }
-    val note by lazyNote.collectAsStateCrossFaded()
+    val animatedNote by lazyNote.collectAsStateCrossFaded()
 
     ConstraintLayout(
         modifier = modifier
@@ -49,11 +49,11 @@ fun ColoredNoteItem(
         )
 
         Text(
-            text = note.current?.site.takeIf { !it.isNullOrBlank() } ?: stringResource(id = R.string.no_site),
+            text = animatedNote.current?.site.takeIf { !it.isNullOrBlank() } ?: stringResource(id = R.string.no_site),
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier
-                .alpha(note.alpha)
-                .skeleton(note.current == null)
+                .alpha(animatedNote.alpha)
+                .skeleton(animatedNote.current == null)
                 .constrainAs(path) {
                     linkTo(
                         top = parent.top,
@@ -70,12 +70,12 @@ fun ColoredNoteItem(
                 }
         )
         Text(
-            text = note.current?.login ?: "",
+            text = animatedNote.current?.login ?: "",
             color = MaterialTheme.colorScheme.onSurface,
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier
-                .alpha(note.alpha)
-                .skeleton(note.current == null)
+                .alpha(animatedNote.alpha)
+                .skeleton(animatedNote.current == null)
                 .constrainAs(description) {
                     linkTo(
                         top = path.bottom,
