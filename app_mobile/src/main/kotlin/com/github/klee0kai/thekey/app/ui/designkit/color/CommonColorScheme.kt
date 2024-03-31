@@ -17,7 +17,7 @@ interface CommonColorScheme {
      */
     val androidColorScheme: ColorScheme
 
-    fun surfaceScheme(group: ColoredStorageGroup): SurfaceScheme
+    fun surfaceScheme(group: KeyColor): SurfaceScheme
 
 }
 
@@ -26,6 +26,10 @@ data class SurfaceScheme(
     val onSurfaceColor: Color,
 )
 
-enum class ColoredStorageGroup {
-    NOCOLOR, VIOLET, TURQUOISE, PINK, ORANGE, CORAL
+enum class KeyColor {
+    NOCOLOR, VIOLET, TURQUOISE, PINK, ORANGE, CORAL;
+
+    companion object {
+        val colors get() = entries.filter { it != NOCOLOR }
+    }
 }

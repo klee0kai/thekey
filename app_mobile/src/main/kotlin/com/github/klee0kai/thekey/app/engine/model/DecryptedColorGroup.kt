@@ -2,7 +2,7 @@ package com.github.klee0kai.thekey.app.engine.model
 
 import android.os.Parcelable
 import com.github.klee0kai.brooklyn.JniPojo
-import com.github.klee0kai.thekey.app.ui.designkit.color.ColoredStorageGroup
+import com.github.klee0kai.thekey.app.ui.designkit.color.KeyColor
 import kotlinx.parcelize.Parcelize
 
 @JniPojo
@@ -13,5 +13,5 @@ data class DecryptedColorGroup(
     val color: Int,
 ) : Parcelable
 
-fun DecryptedColorGroup.colorGroup(): ColoredStorageGroup =
-    ColoredStorageGroup.entries.getOrNull(color) ?: ColoredStorageGroup.NOCOLOR
+fun DecryptedColorGroup.colorGroup(): KeyColor =
+    KeyColor.entries.getOrNull(color) ?: KeyColor.NOCOLOR

@@ -44,4 +44,8 @@
     <string name="no_site">No site</string>
     <string name="search">Search</string>
     <string name="edit_group">Edit group</string>
+    <string name="create_group">Create group</string>
+    <string name="select_color">Select color</string>
+    <string name="group_name">Group name</string>
+    <string name="group_symbol">Group symbol</string>
 </resources>

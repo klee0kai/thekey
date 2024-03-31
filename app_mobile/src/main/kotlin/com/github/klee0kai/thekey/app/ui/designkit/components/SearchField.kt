@@ -15,9 +15,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.github.klee0kai.thekey.app.R
+import com.github.klee0kai.thekey.app.ui.designkit.color.transparentColorScheme
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
 
 @Composable
@@ -34,16 +34,7 @@ fun SearchField(
             modifier = textModifier
                 .wrapContentHeight()
                 .fillMaxWidth(),
-            colors = TextFieldDefaults.colors(
-                disabledContainerColor = Color.Transparent,
-                errorContainerColor = Color.Transparent,
-                focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent,
-                disabledTextColor = Color.Transparent,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                disabledIndicatorColor = Color.Transparent
-            ),
+            colors = TextFieldDefaults.transparentColorScheme(),
             placeholder = {
                 Text(
                     modifier = Modifier.alpha(0.4f),

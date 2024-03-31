@@ -51,14 +51,14 @@ class DarkColorScheme : CommonColorScheme {
         inverseOnSurface = blackColor,
     )
 
-    override fun surfaceScheme(group: ColoredStorageGroup): SurfaceScheme =
+    override fun surfaceScheme(group: KeyColor): SurfaceScheme =
         when (group) {
-            ColoredStorageGroup.NOCOLOR -> noColor
-            ColoredStorageGroup.VIOLET -> violet
-            ColoredStorageGroup.TURQUOISE -> turquoise
-            ColoredStorageGroup.PINK -> pink
-            ColoredStorageGroup.ORANGE -> orange
-            ColoredStorageGroup.CORAL -> coral
+            KeyColor.NOCOLOR -> noColor
+            KeyColor.VIOLET -> violet
+            KeyColor.TURQUOISE -> turquoise
+            KeyColor.PINK -> pink
+            KeyColor.ORANGE -> orange
+            KeyColor.CORAL -> coral
         }
 
 }

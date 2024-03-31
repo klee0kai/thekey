@@ -8,12 +8,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -29,7 +32,7 @@ import com.github.klee0kai.thekey.app.ui.navigation.LocalRouter
 import com.github.klee0kai.thekey.app.ui.navigation.dest
 import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteGroupDestination
-import com.github.klee0kai.thekey.app.ui.notegroup.components.AllColorsListContent
+import com.github.klee0kai.thekey.app.ui.notegroup.components.EditGroupInfoContent
 import com.github.klee0kai.thekey.app.ui.storage.notes.NotesListContent
 
 @Preview
@@ -39,6 +42,10 @@ fun EditNoteGroupScreen(
 ) {
     val presenter = remember { DI.editNoteGroupPresenter(dest.identifier()) }
     val router = LocalRouter.current
+    val groupNameFieldFocusRequester = remember { FocusRequester() }
+    val isCreate = dest.groupId == null
+    val selected by presenter.selectedKeyColor.collectAsState()
+    val name by presenter.name.collectAsState()
 
     var dragProgress by remember { mutableFloatStateOf(0f) }
     val scaffoldState = rememberSimpleBottomSheetScaffoldState(
@@ -51,16 +58,26 @@ fun EditNoteGroupScreen(
         simpleBottomSheetScaffoldState = scaffoldState,
         onDrag = { dragProgress = it },
         topContent = {
-            AllColorsListContent(
+            EditGroupInfoContent(
                 modifier = Modifier
                     .alpha(dragProgress.topContentAlphaFromDrag())
-                    .offset(y = dragProgress.topContentOffsetFromDrag())
+                    .offset(y = dragProgress.topContentOffsetFromDrag()),
+                groupNameFieldModifier = Modifier
+                    .focusRequester(groupNameFieldFocusRequester),
+                select = selected,
+                groupName = name,
+                onChangeGroupName = { presenter.name.value = it.take(1) },
+                onSelect = {
+                    groupNameFieldFocusRequester.freeFocus()
+                    presenter.selectedKeyColor.value = it
+                }
             )
         },
         sheetContent = {
             NotesListContent(
                 modifier = Modifier.fillMaxSize(),
-                args = dest.storageIdentifier.dest()
+                args = dest.storageIdentifier.dest(),
+                showStoragesTitle = false,
             )
         }
     )
@@ -71,7 +88,7 @@ fun EditNoteGroupScreen(
                 Icon(Icons.Filled.ArrowBack, contentDescription = null)
             }
         },
-        titleContent = { Text(text = stringResource(id = R.string.edit_group)) },
+        titleContent = { Text(text = stringResource(id = if (isCreate) R.string.create_group else R.string.edit_group)) },
     )
 }
 

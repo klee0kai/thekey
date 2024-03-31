@@ -6,7 +6,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.github.klee0kai.thekey.app.data.room.dao.ColorGroupDao
 import com.github.klee0kai.thekey.app.model.ColorGroup
-import com.github.klee0kai.thekey.app.ui.designkit.color.ColoredStorageGroup
+import com.github.klee0kai.thekey.app.ui.designkit.color.KeyColor
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -27,9 +27,9 @@ data class ColorGroupEntry(
 fun ColorGroupEntry.toColorGroup() =
     ColorGroup(
         name = name,
-        colorGroup = ColoredStorageGroup.entries
+        colorGroup = KeyColor.entries
             .getOrElse(colorGroup) {
-                ColoredStorageGroup.TURQUOISE
+                KeyColor.TURQUOISE
             }
     )
 
