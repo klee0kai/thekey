@@ -2,6 +2,7 @@ package com.github.klee0kai.thekey.app.engine.storage
 
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
+import com.github.klee0kai.thekey.app.engine.model.DecryptedColorGroup
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.engine.model.DecryptedPassw
 import com.github.klee0kai.thekey.app.engine.model.GenPasswParams
@@ -15,51 +16,36 @@ class CryptStorageSuspended(
     private val _engine = DI.cryptStorageEngineLazy(storageIdentifier)
     private val dispatcher = DI.jniDispatcher()
 
-    suspend fun info(): Storage = withContext(dispatcher) {
-        engine().info()
-    }
+    suspend fun info(): Storage = engineRun { info() }
 
-    suspend fun login(passw: String) = withContext(dispatcher) {
-        engine().login(passw)
-    }
+    suspend fun login(passw: String) = engineRun { login(passw) }
 
-    suspend fun unlogin() = withContext(dispatcher) {
-        engine().unlogin()
-    }
+    suspend fun unlogin() = engineRun { unlogin() }
 
-    suspend fun notes(info: Boolean = false): Array<DecryptedNote> = withContext(dispatcher) {
-        engine().notes(info)
-    }
+    suspend fun colorGroups(info: Boolean = false): Array<DecryptedColorGroup> = engineRun { colorGroups(info) }
 
-    suspend fun note(notePtr: Long): DecryptedNote = withContext(dispatcher) {
-        engine().note(notePtr)
-    }
+    suspend fun saveColorGroup(group: DecryptedColorGroup): Int = engineRun { saveColorGroup(group) }
 
-    suspend fun saveNote(decryptedNote: DecryptedNote): Int = withContext(dispatcher) {
-        engine().saveNote(decryptedNote)
-    }
+    suspend fun removeColorGroup(colorGroupId: Long): Int = engineRun { removeColorGroup(colorGroupId) }
 
-    suspend fun removeNote(noteptr: Long): Int = withContext(dispatcher) {
-        engine().removeNote(noteptr)
-    }
+    suspend fun notes(info: Boolean = false): Array<DecryptedNote> = engineRun { notes(info) }
 
-    suspend fun generateNewPassw(params: GenPasswParams): String = withContext(dispatcher) {
-        engine().generateNewPassw(params)
-    }
+    suspend fun note(notePtr: Long): DecryptedNote = engineRun { note(notePtr) }
 
-    suspend fun genHistory(): Array<DecryptedPassw> = withContext(dispatcher) {
-        engine().genHistory()
-    }
+    suspend fun saveNote(decryptedNote: DecryptedNote): Int = engineRun { saveNote(decryptedNote) }
 
-    suspend fun lastGeneratedPassw(): String = withContext(dispatcher) {
-        engine().lastGeneratedPassw()
-    }
+    suspend fun removeNote(noteptr: Long): Int = engineRun { removeNote(noteptr) }
 
-    suspend fun getGenPassw(ptNote: Long): DecryptedPassw = withContext(dispatcher) {
-        engine().getGenPassw(ptNote)
-    }
+    suspend fun generateNewPassw(params: GenPasswParams): String = engineRun { generateNewPassw(params) }
 
-    private suspend fun engine() =
-        _engine()!!
+    suspend fun genHistory(): Array<DecryptedPassw> = engineRun { genHistory() }
+
+    suspend fun lastGeneratedPassw(): String = engineRun { lastGeneratedPassw() }
+
+    suspend fun getGenPassw(ptNote: Long): DecryptedPassw = engineRun { getGenPassw(ptNote) }
+
+    private suspend fun <T> engineRun(block: suspend CryptStorage.() -> T): T = withContext(dispatcher) {
+        _engine()!!.block()
+    }
 
 }

@@ -27,5 +27,5 @@ data class SurfaceScheme(
 )
 
 enum class ColoredStorageGroup {
-    VIOLET, TURQUOISE, PINK, ORANGE, CORAL
+    NOCOLOR, VIOLET, TURQUOISE, PINK, ORANGE, CORAL
 }

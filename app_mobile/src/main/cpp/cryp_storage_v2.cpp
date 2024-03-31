@@ -60,6 +60,49 @@ void JvmStorage2::unlogin() {
     storages.erase(getStoragePath());
 }
 
+std::vector<EngineModelDecryptedColorGroup> JvmStorage2::colorGroups(const int &info) {
+    auto storage = findStorage(getStoragePath());
+    if (!storage) return {};
+    auto notes = std::vector<EngineModelDecryptedColorGroup>();
+    auto flags = info ? TK2_GET_NOTE_INFO : TK2_GET_NOTE_PTR_ONLY;
+    for (const auto &group: storage->colorGroups(flags)) {
+        notes.push_back(
+                EngineModelDecryptedColorGroup{
+                        .id = group.id,
+                        .name =  group.name,
+                        .color =  group.color,
+                }
+        );
+    }
+    return notes;
+}
+
+int JvmStorage2::saveColorGroup(const brooklyn::EngineModelDecryptedColorGroup &group) {
+    auto storage = findStorage(getStoragePath());
+    if (!storage) return -1;
+
+    DecryptedColorGroup dGroup = {
+            .id = group.id,
+            .color = KeyColor(group.color),
+            .name = group.name
+    };
+    if (!dGroup.id) {
+        storage->createColorGroup(dGroup);
+    } else {
+        storage->setColorGroup(dGroup);
+    }
+
+    return 0;
+}
+
+int JvmStorage2::removeColorGroup(const int64_t &colorGroupId) {
+    auto storage = findStorage(getStoragePath());
+    if (!storage) return -1;
+
+    storage->removeColorGroup(colorGroupId);
+    return 0;
+}
+
 std::vector<EngineModelDecryptedNote> JvmStorage2::notes(const int &loadInfo) {
     auto storage = findStorage(getStoragePath());
     if (!storage) return {};
@@ -106,8 +149,11 @@ int JvmStorage2::saveNote(const brooklyn::EngineModelDecryptedNote &decryptedNot
             .passw = decryptedNote.passw,
             .description = decryptedNote.desc
     };
-    if (!dnote.id) storage->createNote(dnote);
-    storage->setNote(dnote);
+    if (!dnote.id) {
+        storage->createNote(dnote);
+    } else {
+        storage->setNote(dnote);
+    }
     return 0;
 
 }

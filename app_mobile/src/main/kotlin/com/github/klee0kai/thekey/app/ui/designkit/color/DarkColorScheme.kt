@@ -14,6 +14,7 @@ class DarkColorScheme : CommonColorScheme {
     private val whiteColor = Color.White
     private val grayColor = Color(0xFFB7B7B7)
 
+    private val noColor = SurfaceScheme(grayColor, whiteColor)
     private val violet = SurfaceScheme(Color(0xFF837AE8), whiteColor)
     private val turquoise = SurfaceScheme(Color(0xFF7AE8E8), whiteColor)
     private val pink = SurfaceScheme(Color(0xFFE87AD6), whiteColor)
@@ -52,12 +53,12 @@ class DarkColorScheme : CommonColorScheme {
 
     override fun surfaceScheme(group: ColoredStorageGroup): SurfaceScheme =
         when (group) {
+            ColoredStorageGroup.NOCOLOR -> noColor
             ColoredStorageGroup.VIOLET -> violet
             ColoredStorageGroup.TURQUOISE -> turquoise
             ColoredStorageGroup.PINK -> pink
             ColoredStorageGroup.ORANGE -> orange
             ColoredStorageGroup.CORAL -> coral
         }
-
 
 }

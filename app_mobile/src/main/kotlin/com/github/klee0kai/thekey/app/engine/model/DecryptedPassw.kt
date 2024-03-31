@@ -11,5 +11,4 @@ data class DecryptedPassw(
     val passw: String = "",
     val chTime: Long = 0,
 
-    val color: Int = 0,
 ) : Parcelable

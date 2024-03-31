@@ -17,5 +17,6 @@ data class DecryptedNote(
 ) : Parcelable
 
 
+
 fun DecryptedNote.isEmpty(): Boolean =
     site.isEmpty() && login.isEmpty() && passw.isEmpty() && desc.isEmpty()

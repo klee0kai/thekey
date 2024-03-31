@@ -1,5 +1,6 @@
 package com.github.klee0kai.thekey.app.engine.storage
 
+import com.github.klee0kai.thekey.app.engine.model.DecryptedColorGroup
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.engine.model.DecryptedPassw
 import com.github.klee0kai.thekey.app.engine.model.GenPasswParams
@@ -12,6 +13,12 @@ interface CryptStorage {
     fun login(passw: String)
 
     fun unlogin()
+
+    fun colorGroups(info: Boolean = false): Array<DecryptedColorGroup>
+
+    fun saveColorGroup(group: DecryptedColorGroup): Int
+
+    fun removeColorGroup(colorGroupId: Long): Int
 
     fun notes(info: Boolean = false): Array<DecryptedNote>
 

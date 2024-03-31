@@ -2,6 +2,7 @@ package com.github.klee0kai.thekey.app.engine.storage
 
 import com.github.klee0kai.brooklyn.JniMirror
 import com.github.klee0kai.thekey.app.engine.NativeLibLoader
+import com.github.klee0kai.thekey.app.engine.model.DecryptedColorGroup
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.engine.model.DecryptedPassw
 import com.github.klee0kai.thekey.app.engine.model.GenPasswParams
@@ -24,6 +25,12 @@ class K1Storage(
 
     @Synchronized
     external override fun unlogin()
+
+    override fun colorGroups(info: Boolean): Array<DecryptedColorGroup> = emptyArray()
+
+    override fun saveColorGroup(group: DecryptedColorGroup): Int = -1
+
+    override fun removeColorGroup(colorGroupId: Long): Int = -1
 
     @Synchronized
     external override fun notes(info: Boolean): Array<DecryptedNote>
