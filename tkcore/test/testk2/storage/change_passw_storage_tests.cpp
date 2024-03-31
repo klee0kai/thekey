@@ -42,13 +42,17 @@ TEST(Storage2ChangePassw, ChangePasswToNewFile) {
     error = storage->readAll();
     ASSERT_FALSE(error);
 
+    auto violetGroup = storage->createColorGroup({.color = VIOLET, .name = "violet"});
+    auto pinkGroup = storage->createColorGroup({.color = PINK, .name = "pink"});
+    auto orangeGroup = storage->createColorGroup({.color = ORANGE, .name = "orange"});
+
     storage->createNote(
             {
                     .site = "target.site",
                     .login = "@wePers@n1",
                     .passw = "12$3",
                     .description = "mock createNote description",
-                    .color = VIOLET,
+                    .colorGroupId = violetGroup->id,
             });
 
     auto createNote = storage->createNote(
@@ -69,14 +73,14 @@ TEST(Storage2ChangePassw, ChangePasswToNewFile) {
                                                  "?secret=WDW2ZCDQYHFXYV4G7WB6FG2WNBXKEGUJRW3QLE634JP43J4TCGTCPCKAAVISY6A7BNKYULEUXQ5YC2JPG7QXFFMDRIRJMESQNYWZ72A"
                                                  "&issuer=sha1Issuer", TK2_GET_NOTE_INFO)
             .front();
-    createOtpNote.color = PINK;
+    createOtpNote.colorGroupId = pinkGroup->id;
     storage->setOtpNote(createOtpNote);
 
     createOtpNote = storage->createOtpNotes("otpauth://yaotp/user@yandex.ru"
                                             "?secret=6SB2IKNM6OBZPAVBVTOHDKS4FAAAAAAADFUTQMBTRY&name=user",
                                             TK2_GET_NOTE_INFO)
             .front();
-    createOtpNote.color = ORANGE;
+    createOtpNote.colorGroupId = orangeGroup->id;
     createOtpNote.pin = "1234";
     storage->setOtpNote(createOtpNote);
 
@@ -112,7 +116,7 @@ TEST(Storage2ChangePassw, ChangePasswToNewFile) {
     ASSERT_EQ("12$3", note->passw);
     ASSERT_EQ("mock createNote description", note->description);
     ASSERT_EQ(0, note->history.size());
-    ASSERT_EQ(VIOLET, note->color);
+    ASSERT_EQ(violetGroup->id, note->colorGroupId);
     ASSERT_TRUE(note->genTime - now < TIME_TOLERANCE)
                                 << "gen time incorrect now = " << now
                                 << " gen time " << note->genTime << endl;
@@ -124,18 +128,16 @@ TEST(Storage2ChangePassw, ChangePasswToNewFile) {
     ASSERT_EQ("321", note->passw);
     ASSERT_EQ("_", note->description);
     ASSERT_EQ(2, note->history.size());
-    ASSERT_EQ(NOCOLOR, note->color);
+    ASSERT_EQ(0, note->colorGroupId);
     ASSERT_TRUE(note->genTime - now < TIME_TOLERANCE)
                                 << "gen time incorrect now = " << now
                                 << " gen time " << createNote->genTime << endl;
     auto noteHist = note->history.begin();
     ASSERT_EQ("J23", noteHist->passw);
     ASSERT_TRUE(noteHist->genTime - now < TIME_TOLERANCE);
-    ASSERT_EQ(NOCOLOR, noteHist->color);
 
     noteHist++;
     ASSERT_EQ("$3$#", noteHist->passw);
-    ASSERT_EQ(NOCOLOR, noteHist->color);
     ASSERT_TRUE(noteHist->genTime - now < TIME_TOLERANCE);
 
 
@@ -147,7 +149,7 @@ TEST(Storage2ChangePassw, ChangePasswToNewFile) {
     ASSERT_EQ("alice@google.com", otpNote->name);
     ASSERT_EQ("Example", otpNote->issuer);
     ASSERT_EQ("JBSWY3DPEHPK3PXP", base32::encode(otpInfo.secret, true));
-    ASSERT_EQ(NOCOLOR, otpNote->color);
+    ASSERT_EQ(0, otpNote->colorGroupId);
     ASSERT_EQ("", otpNote->pin);
 
 
@@ -157,7 +159,7 @@ TEST(Storage2ChangePassw, ChangePasswToNewFile) {
     ASSERT_EQ("sha1Issuer", otpNote->issuer);
     ASSERT_EQ("WDW2ZCDQYHFXYV4G7WB6FG2WNBXKEGUJRW3QLE634JP43J4TCGTCPCKAAVISY6A7BNKYULEUXQ5YC2JPG7QXFFMDRIRJMESQNYWZ72A",
               base32::encode(otpInfo.secret, true));
-    ASSERT_EQ(PINK, otpNote->color);
+    ASSERT_EQ(pinkGroup->id, otpNote->colorGroupId);
     ASSERT_EQ("", otpNote->pin);
 
 
@@ -168,7 +170,7 @@ TEST(Storage2ChangePassw, ChangePasswToNewFile) {
     ASSERT_EQ("6SB2IKNM6OBZPAVBVTOHDKS4FA", base32::encode(otpInfo.secret, true))
                                 << "yaotp should truncate to 16. Not validate use"
                                 << endl;
-    ASSERT_EQ(ORANGE, otpNote->color);
+    ASSERT_EQ(orangeGroup->id, otpNote->colorGroupId);
     ASSERT_EQ("1234", otpNote->pin);
 
 
@@ -206,13 +208,17 @@ TEST(Storage2ChangePassw, ChangePasswToOldFile) {
     error = storage->readAll();
     ASSERT_FALSE(error);
 
+    auto violetGroup = storage->createColorGroup({.color = VIOLET, .name = "violet"});
+    auto pinkGroup = storage->createColorGroup({.color = PINK, .name = "pink"});
+    auto orangeGroup = storage->createColorGroup({.color = ORANGE, .name = "orange"});
+
     storage->createNote(
             {
                     .site = "target.site",
                     .login = "@wePers@n1",
                     .passw = "12$3",
                     .description = "mock createNote description",
-                    .color = VIOLET,
+                    .colorGroupId = violetGroup->id,
             });
 
     auto createNote = storage->createNote(
@@ -233,14 +239,14 @@ TEST(Storage2ChangePassw, ChangePasswToOldFile) {
                                                  "?secret=WDW2ZCDQYHFXYV4G7WB6FG2WNBXKEGUJRW3QLE634JP43J4TCGTCPCKAAVISY6A7BNKYULEUXQ5YC2JPG7QXFFMDRIRJMESQNYWZ72A"
                                                  "&issuer=sha1Issuer", TK2_GET_NOTE_INFO)
             .front();
-    createOtpNote.color = PINK;
+    createOtpNote.colorGroupId = pinkGroup->id;
     storage->setOtpNote(createOtpNote);
 
     createOtpNote = storage->createOtpNotes("otpauth://yaotp/user@yandex.ru"
                                             "?secret=6SB2IKNM6OBZPAVBVTOHDKS4FAAAAAAADFUTQMBTRY&name=user",
                                             TK2_GET_NOTE_INFO)
             .front();
-    createOtpNote.color = ORANGE;
+    createOtpNote.colorGroupId = orangeGroup->id;
     createOtpNote.pin = "1234";
     storage->setOtpNote(createOtpNote);
 
@@ -276,7 +282,7 @@ TEST(Storage2ChangePassw, ChangePasswToOldFile) {
     ASSERT_EQ("12$3", note->passw);
     ASSERT_EQ("mock createNote description", note->description);
     ASSERT_EQ(0, note->history.size());
-    ASSERT_EQ(VIOLET, note->color);
+    ASSERT_EQ(violetGroup->id, note->colorGroupId);
     ASSERT_TRUE(note->genTime - now < TIME_TOLERANCE)
                                 << "gen time incorrect now = " << now
                                 << " gen time " << note->genTime << endl;
@@ -288,18 +294,16 @@ TEST(Storage2ChangePassw, ChangePasswToOldFile) {
     ASSERT_EQ("321", note->passw);
     ASSERT_EQ("_", note->description);
     ASSERT_EQ(2, note->history.size());
-    ASSERT_EQ(NOCOLOR, note->color);
+    ASSERT_EQ(0, note->colorGroupId);
     ASSERT_TRUE(note->genTime - now < TIME_TOLERANCE)
                                 << "gen time incorrect now = " << now
                                 << " gen time " << createNote->genTime << endl;
     auto noteHist = note->history.begin();
     ASSERT_EQ("J23", noteHist->passw);
     ASSERT_TRUE(noteHist->genTime - now < TIME_TOLERANCE);
-    ASSERT_EQ(NOCOLOR, noteHist->color);
 
     noteHist++;
     ASSERT_EQ("$3$#", noteHist->passw);
-    ASSERT_EQ(NOCOLOR, noteHist->color);
     ASSERT_TRUE(noteHist->genTime - now < TIME_TOLERANCE);
 
 
@@ -311,7 +315,7 @@ TEST(Storage2ChangePassw, ChangePasswToOldFile) {
     ASSERT_EQ("alice@google.com", otpNote->name);
     ASSERT_EQ("Example", otpNote->issuer);
     ASSERT_EQ("JBSWY3DPEHPK3PXP", base32::encode(otpInfo.secret, true));
-    ASSERT_EQ(NOCOLOR, otpNote->color);
+    ASSERT_EQ(0, otpNote->colorGroupId);
     ASSERT_EQ("", otpNote->pin);
 
 
@@ -321,7 +325,7 @@ TEST(Storage2ChangePassw, ChangePasswToOldFile) {
     ASSERT_EQ("sha1Issuer", otpNote->issuer);
     ASSERT_EQ("WDW2ZCDQYHFXYV4G7WB6FG2WNBXKEGUJRW3QLE634JP43J4TCGTCPCKAAVISY6A7BNKYULEUXQ5YC2JPG7QXFFMDRIRJMESQNYWZ72A",
               base32::encode(otpInfo.secret, true));
-    ASSERT_EQ(PINK, otpNote->color);
+    ASSERT_EQ(pinkGroup->id, otpNote->colorGroupId);
     ASSERT_EQ("", otpNote->pin);
 
 
@@ -332,7 +336,7 @@ TEST(Storage2ChangePassw, ChangePasswToOldFile) {
     ASSERT_EQ("6SB2IKNM6OBZPAVBVTOHDKS4FA", base32::encode(otpInfo.secret, true))
                                 << "yaotp should truncate to 16. Not validate use"
                                 << endl;
-    ASSERT_EQ(ORANGE, otpNote->color);
+    ASSERT_EQ(orangeGroup->id, otpNote->colorGroupId);
     ASSERT_EQ("1234", otpNote->pin);
 
 
@@ -370,13 +374,17 @@ TEST(Storage2ChangePassw, OldPassw) {
     error = storage->readAll();
     ASSERT_FALSE(error);
 
+    auto violetGroup = storage->createColorGroup({.color = VIOLET, .name = "violet"});
+    auto pinkGroup = storage->createColorGroup({.color = PINK, .name = "pink"});
+    auto orangeGroup = storage->createColorGroup({.color = ORANGE, .name = "orange"});
+
     storage->createNote(
             {
                     .site = "target.site",
                     .login = "@wePers@n1",
                     .passw = "12$3",
                     .description = "mock createNote description",
-                    .color = VIOLET,
+                    .colorGroupId = violetGroup->id,
             });
 
     auto createNote = storage->createNote(
@@ -397,14 +405,14 @@ TEST(Storage2ChangePassw, OldPassw) {
                                                  "?secret=WDW2ZCDQYHFXYV4G7WB6FG2WNBXKEGUJRW3QLE634JP43J4TCGTCPCKAAVISY6A7BNKYULEUXQ5YC2JPG7QXFFMDRIRJMESQNYWZ72A"
                                                  "&issuer=sha1Issuer", TK2_GET_NOTE_INFO)
             .front();
-    createOtpNote.color = PINK;
+    createOtpNote.colorGroupId = pinkGroup->id;
     storage->setOtpNote(createOtpNote);
 
     createOtpNote = storage->createOtpNotes("otpauth://yaotp/user@yandex.ru"
                                             "?secret=6SB2IKNM6OBZPAVBVTOHDKS4FAAAAAAADFUTQMBTRY&name=user",
                                             TK2_GET_NOTE_INFO)
             .front();
-    createOtpNote.color = ORANGE;
+    createOtpNote.colorGroupId = orangeGroup->id;
     createOtpNote.pin = "1234";
     storage->setOtpNote(createOtpNote);
 
@@ -438,7 +446,7 @@ TEST(Storage2ChangePassw, OldPassw) {
     ASSERT_NE("12$3", note->passw);
     ASSERT_NE("mock createNote description", note->description);
     ASSERT_EQ(0, note->history.size());
-    ASSERT_EQ(VIOLET, note->color);
+    ASSERT_EQ(violetGroup->id, note->colorGroupId);
     ASSERT_TRUE(note->genTime - now < TIME_TOLERANCE)
                                 << "gen time incorrect now = " << now
                                 << " gen time " << note->genTime << endl;
@@ -450,18 +458,16 @@ TEST(Storage2ChangePassw, OldPassw) {
     ASSERT_NE("321", note->passw);
     ASSERT_NE("_", note->description);
     ASSERT_EQ(2, note->history.size());
-    ASSERT_EQ(NOCOLOR, note->color);
+    ASSERT_EQ(0, note->colorGroupId);
     ASSERT_TRUE(note->genTime - now < TIME_TOLERANCE)
                                 << "gen time incorrect now = " << now
                                 << " gen time " << createNote->genTime << endl;
     auto noteHist = note->history.begin();
     ASSERT_NE("J23", noteHist->passw);
     ASSERT_TRUE(noteHist->genTime - now < TIME_TOLERANCE);
-    ASSERT_EQ(NOCOLOR, noteHist->color);
 
     noteHist++;
     ASSERT_NE("$3$#", noteHist->passw);
-    ASSERT_EQ(NOCOLOR, noteHist->color);
     ASSERT_TRUE(noteHist->genTime - now < TIME_TOLERANCE);
 
 
@@ -473,7 +479,7 @@ TEST(Storage2ChangePassw, OldPassw) {
     ASSERT_NE("alice@google.com", otpNote->name);
     ASSERT_NE("Example", otpNote->issuer);
     ASSERT_NE("JBSWY3DPEHPK3PXP", base32::encode(otpInfo.secret, true));
-    ASSERT_EQ(NOCOLOR, otpNote->color);
+    ASSERT_EQ(0, otpNote->colorGroupId);
     ASSERT_EQ("", otpNote->pin) << "if pin empty, should be empty every where" << endl;
 
 
@@ -483,7 +489,7 @@ TEST(Storage2ChangePassw, OldPassw) {
     ASSERT_NE("sha1Issuer", otpNote->issuer);
     ASSERT_NE("WDW2ZCDQYHFXYV4G7WB6FG2WNBXKEGUJRW3QLE634JP43J4TCGTCPCKAAVISY6A7BNKYULEUXQ5YC2JPG7QXFFMDRIRJMESQNYWZ72A",
               base32::encode(otpInfo.secret, true));
-    ASSERT_EQ(PINK, otpNote->color);
+    ASSERT_EQ(pinkGroup->id, otpNote->colorGroupId);
     ASSERT_EQ("", otpNote->pin) << "if pin empty, should be empty every where" << endl;
 
 
@@ -494,7 +500,7 @@ TEST(Storage2ChangePassw, OldPassw) {
     ASSERT_NE("6SB2IKNM6OBZPAVBVTOHDKS4FA", base32::encode(otpInfo.secret, true))
                                 << "yaotp should truncate to 16. Not validate use"
                                 << endl;
-    ASSERT_EQ(ORANGE, otpNote->color);
+    ASSERT_EQ(orangeGroup->id, otpNote->colorGroupId);
     ASSERT_NE("1234", otpNote->pin);
 
 

@@ -41,6 +41,15 @@ TEST(ReadIssue44, ReadIssue44Storage) {
     auto error = storage->readAll();
     ASSERT_FALSE(error);
 
+    // THEN
+    const auto &groups = storage->colorGroups(TK2_GET_NOTE_INFO);
+    auto orangeGroup = std::find_if(groups.begin(), groups.end(), [](const DecryptedColorGroup &it) {
+        return it.color == ORANGE;
+    });
+    auto violetGroup = std::find_if(groups.begin(), groups.end(), [](const DecryptedColorGroup &it) {
+        return it.color == VIOLET;
+    });
+
     const auto &notes = storage->notes();
     ASSERT_EQ(3, notes.size());
 
@@ -49,7 +58,7 @@ TEST(ReadIssue44, ReadIssue44Storage) {
     ASSERT_EQ("some_user_login", note->login);
     ASSERT_EQ("somesite_desc", note->description);
     ASSERT_EQ(0, note->history.size());
-    ASSERT_EQ(ORANGE, note->color);
+    ASSERT_EQ(orangeGroup->id, note->colorGroupId);
     ASSERT_TRUE(note->passw.empty()) << "read without passw";
 
     note = storage->note(notes[1].id, TK2_GET_NOTE_INFO);
@@ -57,6 +66,6 @@ TEST(ReadIssue44, ReadIssue44Storage) {
     ASSERT_EQ("person@email.su", note->login);
     ASSERT_EQ("desc", note->description);
     ASSERT_EQ(0, note->history.size());
-    ASSERT_EQ(VIOLET, note->color);
+    ASSERT_EQ(violetGroup->id, note->colorGroupId);
     ASSERT_TRUE(note->passw.empty()) << "read without passw";
 }

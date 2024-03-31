@@ -92,7 +92,7 @@ TEST(MigrateK1toK2, SimpleMigrate) {
     ASSERT_EQ("first note description", noteIt->description);
     ASSERT_TRUE(noteIt->genTime - now < TIME_TOLERANCE);
     ASSERT_EQ(0, noteIt->history.size());
-    ASSERT_EQ(NOCOLOR, noteIt->color);
+    ASSERT_EQ(0, noteIt->colorGroupId);
 
     noteIt++;
     ASSERT_EQ("my.second.site", noteIt->site);
@@ -101,7 +101,7 @@ TEST(MigrateK1toK2, SimpleMigrate) {
     ASSERT_EQ("This is @Desc", noteIt->description);
     ASSERT_TRUE(noteIt->genTime - now < TIME_TOLERANCE);
     ASSERT_EQ(2, noteIt->history.size());
-    ASSERT_EQ(NOCOLOR, noteIt->color);
+    ASSERT_EQ(0, noteIt->colorGroupId);
     auto histIt = noteIt->history.begin();
     ASSERT_EQ("QWERTY", histIt->passw);
     ASSERT_TRUE(histIt->genTime - now < TIME_TOLERANCE);
@@ -208,7 +208,7 @@ TEST(MigrateK1toK2, MigrateStoragesDirectly) {
     ASSERT_EQ("first note description", noteIt->description);
     ASSERT_TRUE(noteIt->genTime - now < TIME_TOLERANCE);
     ASSERT_EQ(0, noteIt->history.size());
-    ASSERT_EQ(NOCOLOR, noteIt->color);
+    ASSERT_EQ(0, noteIt->colorGroupId);
 
     noteIt++;
     ASSERT_EQ("my.second.site", noteIt->site);
@@ -217,7 +217,7 @@ TEST(MigrateK1toK2, MigrateStoragesDirectly) {
     ASSERT_EQ("This is @Desc", noteIt->description);
     ASSERT_TRUE(noteIt->genTime - now < TIME_TOLERANCE);
     ASSERT_EQ(2, noteIt->history.size());
-    ASSERT_EQ(NOCOLOR, noteIt->color);
+    ASSERT_EQ(0, noteIt->colorGroupId);
     auto histIt = noteIt->history.begin();
     ASSERT_EQ("QWERTY", histIt->passw);
     ASSERT_TRUE(histIt->genTime - now < TIME_TOLERANCE);
