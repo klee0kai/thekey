@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.github.klee0kai.thekey.app.ui.designkit.components
+package com.github.klee0kai.thekey.app.ui.designkit.components.bottomsheet
 
 import android.os.Parcelable
 import androidx.compose.material3.BottomSheetScaffoldState

@@ -4,6 +4,7 @@ package com.github.klee0kai.thekey.app.ui.storage.notes
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -17,10 +18,13 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import com.github.klee0kai.thekey.app.ui.designkit.components.FabSimpleInContainer
-import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleBottomSheetScaffold
-import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleBottomSheetScaffoldState
-import com.github.klee0kai.thekey.app.ui.designkit.components.simpleBottomSheetScaffoldState
+import com.github.klee0kai.thekey.app.ui.designkit.components.bottomsheet.SimpleBottomSheetScaffold
+import com.github.klee0kai.thekey.app.ui.designkit.components.bottomsheet.SimpleBottomSheetScaffoldState
+import com.github.klee0kai.thekey.app.ui.designkit.components.bottomsheet.simpleBottomSheetScaffoldState
+import com.github.klee0kai.thekey.app.ui.designkit.components.bottomsheet.topContentAlphaFromDrag
+import com.github.klee0kai.thekey.app.ui.designkit.components.bottomsheet.topContentOffsetFromDrag
 import com.github.klee0kai.thekey.app.ui.navigation.LocalRouter
+import com.github.klee0kai.thekey.app.ui.navigation.createGroup
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.app.ui.navigation.note
 import com.github.klee0kai.thekey.app.ui.storages.components.GroupsSelectContent
@@ -51,7 +55,10 @@ fun NotesContent(
         },
         topContent = {
             GroupsSelectContent(
-                dragProgress = dragProgress,
+                modifier = Modifier
+                    .alpha(dragProgress.floatValue.topContentAlphaFromDrag())
+                    .offset(y = dragProgress.floatValue.topContentOffsetFromDrag()),
+                onAdd = { router.navigate(args.createGroup()) }
             )
         },
         sheetContent = {

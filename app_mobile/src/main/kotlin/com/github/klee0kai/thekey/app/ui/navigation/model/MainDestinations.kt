@@ -2,6 +2,7 @@ package com.github.klee0kai.thekey.app.ui.navigation.model
 
 import android.os.Parcelable
 import androidx.compose.runtime.Stable
+import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import kotlinx.parcelize.Parcelize
 
@@ -76,4 +77,18 @@ data class GenHistDestination(
      */
     val storageVersion: Int = 0,
 ) : Destination
+
+
+@Parcelize
+data class EditNoteGroupDestination(
+    /**
+     * storage identifier
+     */
+    val storageIdentifier: StorageIdentifier = StorageIdentifier(),
+    /**
+     * group id
+     */
+    val groupId: Long? = null,
+) : Destination
+
 

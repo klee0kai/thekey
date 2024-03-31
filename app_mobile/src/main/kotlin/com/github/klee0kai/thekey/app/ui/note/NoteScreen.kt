@@ -32,8 +32,8 @@ import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarStates
 import com.github.klee0kai.thekey.app.ui.navigation.LocalRouter
+import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.NoteDestination
-import com.github.klee0kai.thekey.app.ui.navigation.toIdentifier
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
 import com.github.klee0kai.thekey.app.utils.views.collectAsStateCrossFaded
@@ -48,7 +48,7 @@ fun NoteScreen(
 ) {
     val navigator = LocalRouter.current
     val presenter = remember {
-        DI.notePresenter(args.toIdentifier()).apply {
+        DI.notePresenter(args.identifier()).apply {
             init(args.prefilled)
         }
     }

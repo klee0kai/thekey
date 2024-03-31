@@ -2,6 +2,7 @@ package com.github.klee0kai.thekey.app.di.modules
 
 import com.github.klee0kai.stone.annotations.module.Module
 import com.github.klee0kai.stone.annotations.module.Provide
+import com.github.klee0kai.thekey.app.di.identifier.NoteGroupIdentifier
 import com.github.klee0kai.thekey.app.di.identifier.NoteIdentifier
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.ui.editstorage.CreateStoragePresenter
@@ -9,6 +10,7 @@ import com.github.klee0kai.thekey.app.ui.editstorage.EditStoragePresenter
 import com.github.klee0kai.thekey.app.ui.genhist.GenHistPresenter
 import com.github.klee0kai.thekey.app.ui.login.LoginPresenter
 import com.github.klee0kai.thekey.app.ui.note.NotePresenter
+import com.github.klee0kai.thekey.app.ui.notegroup.EditNoteGroupPresenter
 import com.github.klee0kai.thekey.app.ui.storage.StoragePresenter
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.GenPasswPresenter
 import com.github.klee0kai.thekey.app.ui.storages.StoragesPresenter
@@ -42,5 +44,9 @@ abstract class PresentersModule {
 
     @Provide(cache = Provide.CacheType.Weak)
     abstract fun notePresenter(noteIdentifier: NoteIdentifier): NotePresenter
+
+    @Provide(cache = Provide.CacheType.Weak)
+    abstract fun editNoteGroupPresenter(id: NoteGroupIdentifier): EditNoteGroupPresenter
+
 
 }

@@ -59,6 +59,7 @@ class CryptStorageSuspendedImpl(
         engine().getGenPassw(ptNote)
     }
 
-    private suspend fun engine() = _engine()!!
+    private suspend fun engine() =
+        _engine()!!
 
 }

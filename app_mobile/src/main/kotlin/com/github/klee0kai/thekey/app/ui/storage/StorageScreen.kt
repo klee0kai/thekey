@@ -38,8 +38,8 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.AppTitleImage
 import com.github.klee0kai.thekey.app.ui.designkit.components.SearchField
 import com.github.klee0kai.thekey.app.ui.designkit.components.SecondaryTabs
 import com.github.klee0kai.thekey.app.ui.designkit.components.SecondaryTabsConst
+import com.github.klee0kai.thekey.app.ui.designkit.components.bottomsheet.simpleBottomSheetScaffoldState
 import com.github.klee0kai.thekey.app.ui.designkit.components.rememberMainTitleVisibleFlow
-import com.github.klee0kai.thekey.app.ui.designkit.components.simpleBottomSheetScaffoldState
 import com.github.klee0kai.thekey.app.ui.navigation.LocalRouter
 import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination

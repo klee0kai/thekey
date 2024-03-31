@@ -10,6 +10,7 @@ import com.github.klee0kai.thekey.app.App
 import com.github.klee0kai.thekey.app.BuildConfig
 import com.github.klee0kai.thekey.app.di.debug.DebugDI
 import com.github.klee0kai.thekey.app.di.dependencies.AppComponentProviders
+import com.github.klee0kai.thekey.app.di.identifier.NoteGroupIdentifier
 import com.github.klee0kai.thekey.app.di.identifier.NoteIdentifier
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.di.modules.AndroidHelpersModule
@@ -35,6 +36,7 @@ val DI: AppComponent = Stone.createComponent(AppComponent::class.java).apply {
     identifiers = [
         StorageIdentifier::class,
         NoteIdentifier::class,
+        NoteGroupIdentifier::class,
     ],
     wrapperProviders = [
         KotlinWrappersStone::class,

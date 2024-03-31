@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.ui.storages.components
+package com.github.klee0kai.thekey.app.ui.notegroup.components
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,31 +10,21 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.model.ColorGroup
 import com.github.klee0kai.thekey.app.ui.designkit.components.LazyListIndicatorIfNeed
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
+import com.github.klee0kai.thekey.app.ui.storages.components.GroupCircle
 
-@Preview
 @Composable
-fun GroupsSelectContent(
+fun AllColorsListContent(
     modifier: Modifier = Modifier,
-    onAdd: () -> Unit = {},
 ) {
     val colorScheme = remember { DI.theme().colorScheme() }
-    val colorGroups = groupsState()
     val lazyListState = rememberLazyListState()
 
     ConstraintLayout(
@@ -91,14 +81,13 @@ fun GroupsSelectContent(
                     )
                 })
         {
-            val list = colorGroups.value
-            colorGroups.value.forEachIndexed { index, group ->
+            colorScheme.colorsGroupCollection.forEachIndexed { index, group ->
                 item {
                     val isFirst = index == 0
 
                     GroupCircle(
-                        name = group.name,
-                        colorScheme = colorScheme.surfaceScheme(group.colorGroup),
+                        name = "",
+                        colorScheme = group,
                         modifier = Modifier
                             .padding(
                                 start = if (isFirst) 16.dp else 4.dp,
@@ -113,32 +102,8 @@ fun GroupsSelectContent(
                 }
             }
 
-            item {
-                val isFirst = list.isEmpty()
-                AddCircle(
-                    modifier = Modifier
-                        .padding(
-                            start = if (isFirst) 16.dp else 4.dp,
-                            top = 16.dp,
-                            end = 16.dp,
-                            bottom = 16.dp
-                        ),
-                    onClick = onAdd
-                )
-            }
+
         }
     }
+
 }
-
-
-@Composable
-private fun groupsState(): State<List<ColorGroup>> {
-    val scope = rememberCoroutineScope()
-    val presenter = remember { DI.storagesPresenter() }
-    return if (LocalView.current.isInEditMode) {
-        flowOf((0..10).map { ColorGroup() })
-    } else {
-        flow { presenter.coloredGroups().collect { emit(it) } }
-    }.collectAsState(initial = emptyList(), scope.coroutineContext)
-}
-
