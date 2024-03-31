@@ -23,7 +23,7 @@ void thekey_v2::interactiveEditNote(const long long &notePtr) {
 
     editIt.cmd({"p", "print"}, "print note", [&]() {
         cout << "current note is: " << endl;
-        printNote(*note);
+        printNote(*note, storageV2->colorGroups(TK2_GET_NOTE_INFO));
     });
 
     editIt.cmd({"s", "site"}, "edit site", [&]() {
@@ -43,10 +43,11 @@ void thekey_v2::interactiveEditNote(const long long &notePtr) {
     });
 
     editIt.cmd({"color"}, "edit color", [&]() {
-        for (int i = 0; i < KEY_COLOR_LEN; ++i) {
-            cout << i << ") " << to_string(KeyColor(i)) << endl;
+        for (const auto &group: storageV2->colorGroups(TK2_GET_NOTE_INFO)) {
+            printGroup(group);
         }
-        note->color = KeyColor(term::ask_int_from_term("color : "));
+
+        note->colorGroupId = term::ask_int_from_term("colorGroupId : ");
     });
 
     editIt.loop();
@@ -69,7 +70,7 @@ void thekey_v2::interactiveEditOtpNote(const long long &notePtr) {
 
     editIt.cmd({"p", "print"}, "print note", [&]() {
         cout << "current note is: " << endl;
-        printNote(*note);
+        printNote(*note, storageV2->colorGroups(TK2_GET_NOTE_INFO));
     });
 
     editIt.cmd({"name"}, "edit name", [&]() {
@@ -81,10 +82,11 @@ void thekey_v2::interactiveEditOtpNote(const long long &notePtr) {
     });
 
     editIt.cmd({"color"}, "edit color", [&]() {
-        for (int i = 0; i < KEY_COLOR_LEN; ++i) {
-            cout << i << ") " << to_string(KeyColor(i)) << endl;
+        for (const auto &group: storageV2->colorGroups(TK2_GET_NOTE_INFO)) {
+            printGroup(group);
         }
-        note->color = KeyColor(term::ask_int_from_term("color : "));
+
+        note->colorGroupId = term::ask_int_from_term("colorGroupId : ");
     });
 
     if (note->method == key_otp::YAOTP) {

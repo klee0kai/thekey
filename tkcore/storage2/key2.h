@@ -57,6 +57,15 @@ namespace thekey_v2 {
         int invalidSectionsContains;
     };
 
+    struct DecryptedColorGroup {
+        // color unic id
+        long long id;
+
+        // editable
+        KeyColor color;
+        std::string name;
+    };
+
     struct DecryptedPassw {
         // note unic id
         long long id;
@@ -64,7 +73,6 @@ namespace thekey_v2 {
         // editable
         std::string passw;
         uint64_t genTime;
-        KeyColor color;
     };
 
     struct DecryptedNote {
@@ -76,7 +84,7 @@ namespace thekey_v2 {
         std::string login;
         std::string passw;
         std::string description;
-        KeyColor color;
+        long long colorGroupId;
 
         // not editable
         uint64_t genTime;
@@ -93,7 +101,7 @@ namespace thekey_v2 {
 
         // no have in export
         std::string pin;
-        KeyColor color;
+        long long colorGroupId;
 
         // not editable
         std::string otpPassw;
@@ -104,6 +112,8 @@ namespace thekey_v2 {
 
     struct DataSnapshot {
         int idCounter;
+        int colorGroupIdCounter;
+        std::shared_ptr<std::list<CryptedColorGroupFlat>> cryptedColorGroups;
         std::shared_ptr<std::list<CryptedNote>> cryptedNotes;
         std::shared_ptr<std::list<CryptedOtpInfo>> cryptedOtpNotes;
         std::shared_ptr<std::list<CryptedPassword>> cryptedGeneratedPassws;
@@ -144,6 +154,35 @@ namespace thekey_v2 {
                 const std::string &passw,
                 const std::function<void(const float &)> &progress = {}
         );
+
+        // ---- group api -----
+        /**
+         * get all color groups in storage
+         * @return
+         */
+        virtual std::vector<DecryptedColorGroup> colorGroups(uint flags = TK2_GET_NOTE_PTR_ONLY);
+
+        /**
+         * create new color group
+         * @param group
+         * @return
+         */
+        virtual std::shared_ptr<DecryptedColorGroup> createColorGroup(const thekey_v2::DecryptedColorGroup &group = {});
+
+        /**
+         * set color dGroup
+         * @param dGroup
+         * @return
+         */
+        virtual int setColorGroup(const thekey_v2::DecryptedColorGroup &dGroup);
+
+        /**
+         * remove color group
+         * @param colorGroupId
+         * @return
+         */
+        virtual int removeColorGroup(long long colorGroupId);
+
 
         // ---- notes api -----
         /**

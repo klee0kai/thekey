@@ -48,6 +48,11 @@ namespace thekey_v2 {
          * Otp info note
          */
         OtpNote,
+
+        /**
+        * Colour group info
+        */
+        ColorGroup,
     };
 
 
@@ -118,15 +123,21 @@ namespace thekey_v2 {
     struct CryptedPasswordFlat {
         INT64_BIG_ENDIAN(genTime)
 
+        CryptedTextFlat password;
+    };
+
+    struct CryptedColorGroupFlat {
+        INT32_BIG_ENDIAN(colorGroupId)
+
         INT32_BIG_ENDIAN_ENUM(color, KeyColor)
 
-        CryptedTextFlat password;
+        CryptedTextFlat name;
     };
 
     struct CryptedNoteFlat {
         INT64_BIG_ENDIAN(genTime)
 
-        INT32_BIG_ENDIAN_ENUM(color, KeyColor)
+        INT32_BIG_ENDIAN(colorGroupId)
 
         CryptedTextFlat site;
         CryptedTextFlat login;
@@ -138,7 +149,7 @@ namespace thekey_v2 {
 
         INT64_BIG_ENDIAN(createTime)
 
-        INT32_BIG_ENDIAN_ENUM(color, KeyColor)
+        INT32_BIG_ENDIAN(colorGroupId)
 
         INT32_BIG_ENDIAN_ENUM(scheme, key_otp::OtpScheme)
 
