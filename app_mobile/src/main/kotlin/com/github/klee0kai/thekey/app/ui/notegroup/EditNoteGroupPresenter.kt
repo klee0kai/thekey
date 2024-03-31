@@ -51,7 +51,7 @@ class EditNoteGroupPresenter(val groupIdentifier: NoteGroupIdentifier) {
             router.snack(R.string.select_color)
             return@launchLatest
         }
-        engine()?.saveColorGroup(
+        val created = engine()?.saveColorGroup(
             DecryptedColorGroup(
                 id = groupIdentifier.groupId ?: 0,
                 color = selectedKeyColor.value.ordinal,
@@ -64,7 +64,7 @@ class EditNoteGroupPresenter(val groupIdentifier: NoteGroupIdentifier) {
                     when {
                         selectedNotes.value.contains(note.ptnote) -> {
                             engine()?.saveNote(
-                                note = note.copy(colorGroupId = groupIdentifier.groupId ?: 0),
+                                note = note.copy(colorGroupId = created?.id ?: 0),
                                 setAll = false,
                             )
                         }

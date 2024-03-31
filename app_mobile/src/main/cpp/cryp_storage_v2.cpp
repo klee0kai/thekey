@@ -77,22 +77,30 @@ std::vector<EngineModelDecryptedColorGroup> JvmStorage2::colorGroups(const int &
     return notes;
 }
 
-int JvmStorage2::saveColorGroup(const brooklyn::EngineModelDecryptedColorGroup &group) {
+std::shared_ptr<EngineModelDecryptedColorGroup> JvmStorage2::saveColorGroup(const brooklyn::EngineModelDecryptedColorGroup &group) {
     auto storage = findStorage(getStoragePath());
-    if (!storage) return -1;
+    if (!storage) return {};
 
-    DecryptedColorGroup dGroup = {
+    auto dGroup = make_shared<DecryptedColorGroup>(DecryptedColorGroup{
             .id = group.id,
             .color = KeyColor(group.color),
             .name = group.name
-    };
-    if (!dGroup.id) {
-        storage->createColorGroup(dGroup);
+    });
+    if (!dGroup->id) {
+        dGroup = storage->createColorGroup(*dGroup);
     } else {
-        storage->setColorGroup(dGroup);
+        storage->setColorGroup(*dGroup);
     }
 
-    return 0;
+    auto jniColorGroup = make_shared<EngineModelDecryptedColorGroup>(
+            EngineModelDecryptedColorGroup{
+                    .id = dGroup->id,
+                    .name = dGroup->name,
+                    .color = dGroup->color,
+            }
+    );
+
+    return jniColorGroup;
 }
 
 int JvmStorage2::removeColorGroup(const int64_t &colorGroupId) {

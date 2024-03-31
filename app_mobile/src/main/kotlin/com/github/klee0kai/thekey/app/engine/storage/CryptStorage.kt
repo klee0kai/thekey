@@ -16,7 +16,7 @@ interface CryptStorage {
 
     fun colorGroups(info: Boolean = false): Array<DecryptedColorGroup>
 
-    fun saveColorGroup(group: DecryptedColorGroup): Int
+    fun saveColorGroup(group: DecryptedColorGroup): DecryptedColorGroup?
 
     fun removeColorGroup(colorGroupId: Long): Int
 

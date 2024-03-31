@@ -21,6 +21,7 @@ class StoragePresenter(
     private val scope = DI.defaultThreadScope()
 
     val searchState = MutableStateFlow(SearchState())
+    val selectedGroupId = MutableStateFlow<Long?>(null)
 
     private var allGroups = emptyList<ColorGroup>()
     val filteredColorGroups = MutableStateFlow<List<ColorGroup>>(emptyList())
@@ -42,7 +43,6 @@ class StoragePresenter(
         filteredColorGroups.value = allGroups
     }
 
-
     fun collectNotesFromEngine(forceDirty: Boolean = false) = scope.launchLatest("collect_notes") {
         val engine = engine() ?: return@launchLatest
         val oldNotes = allNotes
@@ -61,24 +61,45 @@ class StoragePresenter(
         filterNotes()
     }
 
-    fun filterNotes(newParams: SearchState? = null) = scope.launchLatest("filter") {
-        if (newParams != null) searchState.value = newParams
+    fun searchFilter(newParams: SearchState) = scope.launch {
+        searchState.value = newParams
+        filterNotes()
+    }
+
+    fun selectGroup(groupId: Long) = scope.launch {
+        if (selectedGroupId.value == groupId) {
+            selectedGroupId.value = null
+        } else {
+            selectedGroupId.value = groupId
+        }
+        filterNotes()
+    }
+
+    private fun filterNotes() = scope.launchLatest("filter") {
+        val selectedGroup = selectedGroupId.value
         val filter = searchState.value.searchText
         val notes = allNotes
 
-        if (filter.isBlank()) {
-            filteredNotes.emit(notes)
-            return@launchLatest
-        }
         notes.map { it.fullValueFlow() }
             .merge()
             .collect {
-                notes.filter {
-                    val note = it.getOrNull() ?: return@filter false
-                    note.site.contains(filter, ignoreCase = true)
-                            || note.login.contains(filter, ignoreCase = true)
-                            || note.desc.contains(filter, ignoreCase = true)
-                }.also { filteredNotes.emit(it) }
+                var filtList = notes
+                if (selectedGroup != null) {
+                    filtList = filtList.filter {
+                        it.getOrNull()?.colorGroupId == selectedGroup
+                    }
+                }
+
+                if (filter.isNotBlank()) {
+                    filtList = filtList.filter {
+                        val note = it.getOrNull() ?: return@filter false
+                        note.site.contains(filter, ignoreCase = true)
+                                || note.login.contains(filter, ignoreCase = true)
+                                || note.desc.contains(filter, ignoreCase = true)
+                    }
+                }
+
+                filteredNotes.emit(filtList)
             }
     }
 

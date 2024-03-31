@@ -25,7 +25,7 @@ class K2Storage(
 
     external override fun colorGroups(info: Boolean): Array<DecryptedColorGroup>
 
-    external override fun saveColorGroup(group: DecryptedColorGroup): Int
+    external override fun saveColorGroup(group: DecryptedColorGroup): DecryptedColorGroup?
 
     external override fun removeColorGroup(colorGroupId: Long): Int
 

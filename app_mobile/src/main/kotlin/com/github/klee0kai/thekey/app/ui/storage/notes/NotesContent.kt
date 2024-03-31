@@ -45,6 +45,7 @@ fun NotesContent(
 ) {
     val presenter = remember { DI.storagePresenter(args.identifier()).apply { collectGroupsFromEngine() } }
     val router = LocalRouter.current
+    val selectedGroup by presenter.selectedGroupId.collectAsState()
     val groups by presenter.filteredColorGroups.collectAsState()
     val dragProgress = remember { mutableFloatStateOf(0f) }
     val addButtonAlpha by animateAlphaAsState(isPageFullyAvailable)
@@ -63,9 +64,10 @@ fun NotesContent(
                 modifier = Modifier
                     .alpha(dragProgress.floatValue.topContentAlphaFromDrag())
                     .offset(y = dragProgress.floatValue.topContentOffsetFromDrag()),
+                selectedGroup = selectedGroup,
                 onAdd = { router.navigate(args.createGroup()) },
                 colorGroups = groups,
-                onGroupSelected = { },
+                onGroupSelected = { presenter.selectGroup(it.id) },
             )
         },
         sheetContent = {

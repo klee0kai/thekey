@@ -104,7 +104,7 @@ fun StorageScreen(
     }
 
     BackHandler(enabled = searchState.isActive) {
-        presenter.filterNotes(SearchState())
+        presenter.searchFilter(SearchState())
     }
 
     LaunchedEffect(key1 = targetTitleId.current) {
@@ -171,8 +171,8 @@ fun StorageScreen(
                         textModifier = Modifier
                             .focusRequester(searchFocusRequester),
                         searchText = searchState.searchText,
-                        onSearch = { newText -> presenter.filterNotes(SearchState(isActive = true, searchText = newText)) },
-                        onClose = { presenter.filterNotes(SearchState()) }
+                        onSearch = { newText -> presenter.searchFilter(SearchState(isActive = true, searchText = newText)) },
+                        onClose = { presenter.searchFilter(SearchState()) }
                     )
                 }
             }
@@ -183,7 +183,7 @@ fun StorageScreen(
                     modifier = Modifier
                         .alpha(targetTitleId.hideAlpha(SearchTitleId))
                         .alpha(isAccountPageAlpha),
-                    onClick = { presenter.filterNotes(SearchState(isActive = true)) },
+                    onClick = { presenter.searchFilter(SearchState(isActive = true)) },
                     content = { Icon(Icons.Filled.Search, contentDescription = null) }
                 )
             }

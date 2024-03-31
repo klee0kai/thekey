@@ -2,6 +2,7 @@
 
 package com.github.klee0kai.thekey.app.ui.storage.notes
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
@@ -51,9 +52,8 @@ fun NotesListContent(
     val notes = presenter.filteredNotes.collectAsState(key = Unit)
     val titleAnimatedAlpha by animateAlphaAsState(showStoragesTitle)
 
-    if (notes.value.isEmpty()) {
-        return
-    }
+
+
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
@@ -63,6 +63,7 @@ fun NotesListContent(
                 text = stringResource(id = R.string.accounts),
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier
+                    .animateContentSize()
                     .padding(start = 16.dp, top = 4.dp, bottom = 22.dp)
                     .alpha(titleAnimatedAlpha)
             )

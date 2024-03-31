@@ -28,7 +28,7 @@ class K1Storage(
 
     override fun colorGroups(info: Boolean): Array<DecryptedColorGroup> = emptyArray()
 
-    override fun saveColorGroup(group: DecryptedColorGroup): Int = -1
+    override fun saveColorGroup(group: DecryptedColorGroup): DecryptedColorGroup? = null
 
     override fun removeColorGroup(colorGroupId: Long): Int = -1
 

@@ -24,7 +24,7 @@ class CryptStorageSuspended(
 
     suspend fun colorGroups(info: Boolean = false): Array<DecryptedColorGroup> = engineRun { colorGroups(info) }
 
-    suspend fun saveColorGroup(group: DecryptedColorGroup): Int = engineRun { saveColorGroup(group) }
+    suspend fun saveColorGroup(group: DecryptedColorGroup): DecryptedColorGroup? = engineRun { saveColorGroup(group) }
 
     suspend fun removeColorGroup(colorGroupId: Long): Int = engineRun { removeColorGroup(colorGroupId) }
 
