@@ -6,6 +6,8 @@ import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.engine.findstorage.EditStorageEngine
 import com.github.klee0kai.thekey.app.engine.findstorage.FindStorageEngine
 import com.github.klee0kai.thekey.app.engine.storage.CryptStorage
+import com.github.klee0kai.thekey.app.engine.storage.CryptStorageSuspended
+import com.github.klee0kai.thekey.app.engine.storage.CryptStorageSuspendedImpl
 import com.github.klee0kai.thekey.app.engine.storage.K1Storage
 import com.github.klee0kai.thekey.app.engine.storage.K2Storage
 
@@ -22,6 +24,11 @@ abstract class EngineModule {
             2 -> K2Storage(id.path)
             else -> null
         }
+    }
+
+    @Provide(cache = Provide.CacheType.Factory)
+    open fun cryptStorageEngineSuspended(id: StorageIdentifier): CryptStorageSuspended? {
+        return CryptStorageSuspendedImpl(id)
     }
 
     @Provide(cache = Provide.CacheType.Soft)

@@ -14,7 +14,7 @@ class GenHistPresenter(
 
     private val scope = DI.defaultThreadScope()
     private val navigator = DI.router()
-    private val engine = DI.cryptStorageEngineLazy(storageIdentifier)
+    private val engine = DI.cryptStorageEngineSafeLazy(storageIdentifier)
 
     private var lazyHist = emptyList<LazyPassw>()
 

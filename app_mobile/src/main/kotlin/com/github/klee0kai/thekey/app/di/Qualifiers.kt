@@ -1,4 +1,3 @@
-
 package com.github.klee0kai.thekey.app.di
 
 import javax.inject.Qualifier
@@ -17,4 +16,9 @@ annotation class IODispatcher
 @MustBeDocumented
 @Retention(AnnotationRetention.BINARY)
 annotation class DefaultDispatcher
+
+@Qualifier
+@MustBeDocumented
+@Retention(AnnotationRetention.BINARY)
+annotation class JniDispatcher
 

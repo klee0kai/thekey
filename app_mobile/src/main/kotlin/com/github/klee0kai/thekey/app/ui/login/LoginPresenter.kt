@@ -47,7 +47,7 @@ class LoginPresenter {
         }
         runCatching {
             val storage = currentStorageFlow().first()
-            val engine = DI.cryptStorageEngineLazy(storage.identifier())
+            val engine = DI.cryptStorageEngineSafeLazy(storage.identifier())
             engine()!!.login(passw)
             router.navigate(storage.dest())
         }.onFailure { error ->

@@ -1,16 +1,26 @@
 package com.github.klee0kai.thekey.app.di.modules
 
 import com.github.klee0kai.stone.annotations.module.Module
+import com.github.klee0kai.stone.annotations.module.Provide
 import com.github.klee0kai.thekey.app.di.DefaultDispatcher
 import com.github.klee0kai.thekey.app.di.IODispatcher
+import com.github.klee0kai.thekey.app.di.JniDispatcher
 import com.github.klee0kai.thekey.app.di.MainDispatcher
 import com.github.klee0kai.thekey.app.utils.common.SafeContextScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.asCoroutineDispatcher
+import java.util.concurrent.Executors
 
 @Module
 open class CoroutineModule {
+
+    @JniDispatcher
+    @Provide(cache = Provide.CacheType.Strong)
+    open fun jniDispatcher(): CoroutineDispatcher {
+        return Executors.newFixedThreadPool(5).asCoroutineDispatcher()
+    }
 
     @MainDispatcher
     open fun mainDispatcher(): CoroutineDispatcher = Dispatchers.Main

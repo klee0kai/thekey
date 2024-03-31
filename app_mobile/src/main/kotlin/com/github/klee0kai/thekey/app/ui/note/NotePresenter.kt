@@ -17,7 +17,7 @@ class NotePresenter(
 ) {
     private val scope = DI.defaultThreadScope()
     private val navigator = DI.router()
-    private val engine = DI.cryptStorageEngineLazy(identifier.storage())
+    private val engine = DI.cryptStorageEngineSafeLazy(identifier.storage())
 
     val originNote = MutableStateFlow<DecryptedNote?>(null)
     val note = MutableStateFlow(DecryptedNote())

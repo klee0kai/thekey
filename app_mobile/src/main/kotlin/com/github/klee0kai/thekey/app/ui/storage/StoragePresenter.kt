@@ -14,7 +14,7 @@ import kotlinx.coroutines.withContext
 class StoragePresenter(
     val storageIdentifier: StorageIdentifier,
 ) {
-    private val engine = DI.cryptStorageEngineLazy(storageIdentifier)
+    private val engine = DI.cryptStorageEngineSafeLazy(storageIdentifier)
     private val router = DI.router()
     private val scope = DI.defaultThreadScope()
 

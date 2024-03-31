@@ -29,5 +29,4 @@ interface CryptStorage {
 
     fun getGenPassw(ptNote: Long): DecryptedPassw
 
-
 }
