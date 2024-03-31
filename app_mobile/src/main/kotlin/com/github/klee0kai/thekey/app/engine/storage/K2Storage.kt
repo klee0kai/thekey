@@ -33,7 +33,10 @@ class K2Storage(
 
     external override fun note(notePtr: Long): DecryptedNote
 
-    external override fun saveNote(decryptedNote: DecryptedNote): Int
+    external override fun saveNote(
+        decryptedNote: DecryptedNote,
+        setAll: Boolean,
+    ): Int
 
     external override fun removeNote(notePt: Long): Int
 

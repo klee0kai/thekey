@@ -116,6 +116,7 @@ std::vector<EngineModelDecryptedNote> JvmStorage2::notes(const int &loadInfo) {
                         .login =  dnote.login,
                         .desc =  dnote.description,
                         .chTime = (int64_t) dnote.genTime,
+                        .colorGroupId = dnote.colorGroupId,
                 });
     }
     return notes;
@@ -133,29 +134,35 @@ EngineModelDecryptedNote JvmStorage2::note(const int64_t &notePtr) {
             .passw = dnote->passw,
             .desc =  dnote->description,
             .chTime = (int64_t) dnote->genTime,
+            .colorGroupId = dnote->colorGroupId,
     };
     return result;
 
 }
 
-int JvmStorage2::saveNote(const brooklyn::EngineModelDecryptedNote &decryptedNote) {
+int JvmStorage2::saveNote(const brooklyn::EngineModelDecryptedNote &decryptedNote, const int &setAll) {
     auto storage = findStorage(getStoragePath());
     if (!storage) return -1;
+
+    auto flags = 0;
+    if (setAll) {
+        flags |= TK2_SET_NOTE_INFO | TK2_SET_NOTE_PASSW | TK2_SET_NOTE_TRACK_HISTORY | TK2_SET_NOTE_SAVE_TO_FILE;
+    }
 
     thekey_v2::DecryptedNote dnote = {
             .id = decryptedNote.ptnote,
             .site = decryptedNote.site,
             .login = decryptedNote.login,
             .passw = decryptedNote.passw,
-            .description = decryptedNote.desc
+            .description = decryptedNote.desc,
+            .colorGroupId = decryptedNote.colorGroupId,
     };
     if (!dnote.id) {
         storage->createNote(dnote);
     } else {
-        storage->setNote(dnote);
+        storage->setNote(dnote, flags);
     }
     return 0;
-
 }
 
 int JvmStorage2::removeNote(const int64_t &notePt) {

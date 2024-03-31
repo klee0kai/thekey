@@ -39,7 +39,10 @@ class K1Storage(
     external override fun note(notePtr: Long): DecryptedNote
 
     @Synchronized
-    external override fun saveNote(decryptedNote: DecryptedNote): Int
+    external override fun saveNote(
+        decryptedNote: DecryptedNote,
+        setAll: Boolean,
+    ): Int
 
     @Synchronized
     external override fun removeNote(notePt: Long): Int

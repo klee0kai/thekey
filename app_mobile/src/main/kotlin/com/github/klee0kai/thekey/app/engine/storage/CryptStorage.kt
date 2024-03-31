@@ -24,7 +24,10 @@ interface CryptStorage {
 
     fun note(notePtr: Long): DecryptedNote
 
-    fun saveNote(decryptedNote: DecryptedNote): Int
+    fun saveNote(
+        decryptedNote: DecryptedNote,
+        setAll: Boolean = false,
+    ): Int
 
     fun removeNote(notePt: Long): Int
 

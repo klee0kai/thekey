@@ -39,7 +39,7 @@ class NotePresenter(
             return@launchLatest
         }
 
-        val error = engine()?.saveNote(note)
+        val error = engine()?.saveNote(note, setAll = true)
         navigator.back()
     }
 

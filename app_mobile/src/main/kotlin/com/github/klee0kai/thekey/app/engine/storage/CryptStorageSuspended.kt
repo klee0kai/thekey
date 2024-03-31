@@ -32,7 +32,10 @@ class CryptStorageSuspended(
 
     suspend fun note(notePtr: Long): DecryptedNote = engineRun { note(notePtr) }
 
-    suspend fun saveNote(decryptedNote: DecryptedNote): Int = engineRun { saveNote(decryptedNote) }
+    suspend fun saveNote(
+        note: DecryptedNote,
+        setAll: Boolean = false,
+    ): Int = engineRun { saveNote(note, setAll = setAll) }
 
     suspend fun removeNote(noteptr: Long): Int = engineRun { removeNote(noteptr) }
 

@@ -2,6 +2,8 @@ package com.github.klee0kai.thekey.app.ui.storage
 
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
+import com.github.klee0kai.thekey.app.engine.model.colorGroup
+import com.github.klee0kai.thekey.app.model.ColorGroup
 import com.github.klee0kai.thekey.app.model.LazyNote
 import com.github.klee0kai.thekey.app.ui.storage.model.SearchState
 import com.github.klee0kai.thekey.app.utils.common.fromPreloadedOrCreate
@@ -20,10 +22,28 @@ class StoragePresenter(
 
     val searchState = MutableStateFlow(SearchState())
 
+    private var allGroups = emptyList<ColorGroup>()
+    val filteredColorGroups = MutableStateFlow<List<ColorGroup>>(emptyList())
+
     private var allNotes = emptyList<LazyNote>()
     val filteredNotes = MutableStateFlow<List<LazyNote>>(emptyList())
 
-    fun collectNotesFromEngine(forceDirty: Boolean = false) = scope.launchLatest("collect_from_engine") {
+    fun collectGroupsFromEngine() = scope.launchLatest("collect_groups") {
+        val engine = engine() ?: return@launchLatest
+
+        allGroups = engine
+            .colorGroups()
+            .map { it.colorGroup() }
+        filteredColorGroups.value = allGroups
+
+        allGroups = engine
+            .colorGroups(info = true)
+            .map { it.colorGroup() }
+        filteredColorGroups.value = allGroups
+    }
+
+
+    fun collectNotesFromEngine(forceDirty: Boolean = false) = scope.launchLatest("collect_notes") {
         val engine = engine() ?: return@launchLatest
         val oldNotes = allNotes
         allNotes = engine

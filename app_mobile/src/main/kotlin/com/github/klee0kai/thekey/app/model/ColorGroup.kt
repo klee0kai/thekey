@@ -6,6 +6,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ColorGroup(
+    val id: Long = 0,
     val name: String = "",
-    val colorGroup: KeyColor = KeyColor.TURQUOISE
+    val keyColor: KeyColor = KeyColor.TURQUOISE
 ) : Parcelable

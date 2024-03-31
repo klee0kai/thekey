@@ -596,13 +596,16 @@ int KeyStorageV2::setNote(const thekey_v2::DecryptedNote &dnote, uint flags) {
     }
 
     auto notCmpOld = (flags & TK2_SET_NOTE_FORCE);
+    auto setNoteInfo = (flags & TK2_SET_NOTE_INFO);
+    auto setNotePassw = (flags & TK2_SET_NOTE_PASSW);
     auto trackHist = (flags & TK2_SET_NOTE_TRACK_HISTORY);
     auto setFullHistory = (flags & TK2_SET_NOTE_FULL_HISTORY);
+    auto saveToFile = (flags & TK2_SET_NOTE_SAVE_TO_FILE);
     auto old = note(dnote.id, TK2_GET_NOTE_FULL);
 
     cryptedNote->note.colorGroupId(dnote.colorGroupId);
 
-    if (notCmpOld || old->site != dnote.site) {
+    if (setNoteInfo && (notCmpOld || old->site != dnote.site)) {
         cryptedNote->note.site.encrypt(
                 dnote.site,
                 ctx->keyForLogin,
@@ -610,7 +613,7 @@ int KeyStorageV2::setNote(const thekey_v2::DecryptedNote &dnote, uint flags) {
                 fheader->interactionsCount()
         );
     }
-    if (notCmpOld || old->login != dnote.login) {
+    if (setNoteInfo && (notCmpOld || old->login != dnote.login)) {
         cryptedNote->note.login.encrypt(
                 dnote.login,
                 ctx->keyForLogin,
@@ -619,7 +622,7 @@ int KeyStorageV2::setNote(const thekey_v2::DecryptedNote &dnote, uint flags) {
         );
     }
 
-    if (notCmpOld || old->description != dnote.description) {
+    if (setNoteInfo && (notCmpOld || old->description != dnote.description)) {
         cryptedNote->note.description.encrypt(
                 dnote.description,
                 ctx->keyForDescription,
@@ -628,7 +631,7 @@ int KeyStorageV2::setNote(const thekey_v2::DecryptedNote &dnote, uint flags) {
         );
     }
 
-    if (notCmpOld || old->passw != dnote.passw) {
+    if (setNotePassw && (notCmpOld || old->passw != dnote.passw)) {
         cryptedNote->note.password.encrypt(
                 dnote.passw,
                 ctx->keyForPassw,
@@ -667,7 +670,7 @@ int KeyStorageV2::setNote(const thekey_v2::DecryptedNote &dnote, uint flags) {
     }
 
     snapshot(data);
-    auto error = save();
+    auto error = saveToFile ? save() : 0;
     return error;
 }
 

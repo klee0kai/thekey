@@ -14,8 +14,8 @@ data class DecryptedNote(
     val desc: String = "",
 
     val chTime: Long = 0,
+    val colorGroupId: Long = 0,
 ) : Parcelable
-
 
 
 fun DecryptedNote.isEmpty(): Boolean =

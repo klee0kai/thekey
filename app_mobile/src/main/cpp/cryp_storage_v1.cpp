@@ -94,9 +94,9 @@ EngineModelDecryptedNote JvmStorage1::note(const int64_t &notePtr) {
 
 }
 
-int JvmStorage1::saveNote(const brooklyn::EngineModelDecryptedNote &decryptedNote) {
+int JvmStorage1::saveNote(const brooklyn::EngineModelDecryptedNote &decryptedNote, const int &setAll) {
     auto storageV1 = findStorage(getStoragePath());
-    if (!storageV1)return -1;
+    if (!storageV1 || !setAll)return -1;
 
     thekey_v1::DecryptedNote dnote = {
             .notePtr = decryptedNote.ptnote,
@@ -108,7 +108,6 @@ int JvmStorage1::saveNote(const brooklyn::EngineModelDecryptedNote &decryptedNot
     if (!dnote.notePtr) storageV1->createNote(dnote);
     storageV1->setNote(dnote);
     return 0;
-
 }
 
 int JvmStorage1::removeNote(const int64_t &notePt) {

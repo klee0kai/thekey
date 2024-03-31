@@ -27,7 +27,7 @@ data class ColorGroupEntry(
 fun ColorGroupEntry.toColorGroup() =
     ColorGroup(
         name = name,
-        colorGroup = KeyColor.entries
+        keyColor = KeyColor.entries
             .getOrElse(colorGroup) {
                 KeyColor.TURQUOISE
             }
@@ -40,5 +40,5 @@ fun ColorGroup.toColorGroupEntry(
     ColorGroupEntry(
         id = id ?: 0L,
         name = name,
-        colorGroup = colorGroup.ordinal
+        colorGroup = keyColor.ordinal
     )
