@@ -243,7 +243,7 @@ int KeyStorageV2::readAll() {
 
     snapshot(DataSnapshot{
             .idCounter = idCounter,
-            .colorGroupIdCounter = colorGroupIdCounter,
+            .colorGroupIdCounter = colorGroupIdCounter + 1,
             .cryptedColorGroups = make_shared<list<CryptedColorGroupFlat>>(cryptedColorGroups),
             .cryptedNotes = make_shared<list<CryptedNote>>(cryptedNotes),
             .cryptedOtpNotes = make_shared<list<CryptedOtpInfo>>(cryptedOtpNotes),
