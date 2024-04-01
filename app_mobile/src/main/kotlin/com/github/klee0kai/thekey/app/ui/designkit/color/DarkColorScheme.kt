@@ -14,12 +14,12 @@ class DarkColorScheme : CommonColorScheme {
     private val whiteColor = Color.White
     private val grayColor = Color(0xFFB7B7B7)
 
-    private val noColor = SurfaceScheme(grayColor, whiteColor)
-    private val violet = SurfaceScheme(Color(0xFF837AE8), whiteColor)
-    private val turquoise = SurfaceScheme(Color(0xFF7AE8E8), whiteColor)
-    private val pink = SurfaceScheme(Color(0xFFE87AD6), whiteColor)
-    private val orange = SurfaceScheme(Color(0xFFDC8938), whiteColor)
-    private val coral = SurfaceScheme(Color(0xFFE87A7A), whiteColor)
+    override val noColor = SurfaceScheme(grayColor, whiteColor)
+    override val violet = SurfaceScheme(Color(0xFF837AE8), whiteColor)
+    override val turquoise = SurfaceScheme(Color(0xFF7AE8E8), whiteColor)
+    override val pink = SurfaceScheme(Color(0xFFE87AD6), whiteColor)
+    override val orange = SurfaceScheme(Color(0xFFDC8938), whiteColor)
+    override val coral = SurfaceScheme(Color(0xFFE87A7A), whiteColor)
 
 
     override val colorsGroupCollection = listOf(violet, turquoise, pink, orange, coral)

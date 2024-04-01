@@ -9,6 +9,13 @@ interface CommonColorScheme {
 
     val statusBarColor: Color get() = androidColorScheme.background
 
+    val noColor: SurfaceScheme
+    val violet: SurfaceScheme
+    val turquoise: SurfaceScheme
+    val pink: SurfaceScheme
+    val orange: SurfaceScheme
+    val coral: SurfaceScheme
+
     val colorsGroupCollection: List<SurfaceScheme>
 
     /**

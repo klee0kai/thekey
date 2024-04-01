@@ -68,6 +68,7 @@ import dev.olshevski.navigation.reimagined.NavTransitionSpec
 
 val LocalRouter = compositionLocalOf { DI.router() }
 val LocalShimmerTheme = compositionLocalOf { defaultShimmerTheme.copy() }
+val LocalColorScheme = compositionLocalOf { DI.theme().colorScheme() }
 
 @Composable
 fun MainNavContainer() {
@@ -86,7 +87,8 @@ fun MainNavContainer() {
 
     CompositionLocalProvider(
         LocalRouter provides DI.router(),
-        LocalShimmerTheme provides defaultShimmerTheme.copy()
+        LocalShimmerTheme provides defaultShimmerTheme.copy(),
+        LocalColorScheme provides DI.theme().colorScheme(),
     ) {
         // screens
         AnimatedNavHost(

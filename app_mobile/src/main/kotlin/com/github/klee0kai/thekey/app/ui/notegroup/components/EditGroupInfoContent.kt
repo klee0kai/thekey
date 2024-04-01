@@ -1,7 +1,6 @@
 package com.github.klee0kai.thekey.app.ui.notegroup.components
 
 import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -15,10 +14,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -102,16 +99,14 @@ fun EditGroupInfoContent(
                 item(key = color) {
                     val isFirst = index == 0
 
-                    val scaleAnimated by animateFloatAsState(if (color == select) 1f else 0.7f, label = "color group scale")
-
                     GroupCircle(
                         name = "",
+                        enabled = color == select,
                         colorScheme = colorScheme.surfaceScheme(color),
                         modifier = Modifier
                             .animateContentSize()
-                            .scale(scaleAnimated)
                             .padding(
-                                start = if (isFirst) 16.dp else 4.dp,
+                                start = if (isFirst) 16.dp else 8.dp,
                                 top = 16.dp,
                                 end = 4.dp,
                                 bottom = 16.dp
