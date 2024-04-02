@@ -48,4 +48,8 @@
     <string name="select_color">Select color</string>
     <string name="group_name">Group name</string>
     <string name="group_symbol">Group symbol</string>
+    <string name="otp">OTP</string>
+    <string name="create">Create</string>
+    <string name="edit">Edit</string>
+    <string name="qr_code_scan">scan QR code</string>
 </resources>

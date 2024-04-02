@@ -21,7 +21,7 @@ android {
 
     defaultConfig {
         applicationId = appGroup
-        minSdk = 24
+        minSdk = 25
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -155,6 +155,7 @@ dependencies {
     // stone
     implementation("com.github.klee0kai.stone:android_lib:1.0.4")
     implementation("com.github.klee0kai.stone:kotlin_lib:1.0.4")
+    implementation("androidx.wear.compose:compose-material:1.3.0")
     kapt("com.github.klee0kai.stone:stone_processor:1.0.4")
 
     // room
@@ -172,7 +173,7 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2024.02.01"))
+    androidTestImplementation(platform("androidx.compose:compose-bom:2024.03.00"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")

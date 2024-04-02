@@ -41,29 +41,24 @@ fun SecondaryTabs(
         stringResource(id = R.string.accounts),
         stringResource(id = R.string.passw_generate)
     ),
-    pagerState: PagerState = rememberPagerState { titles.size }
+    selectedTab: Int = 0,
+    onTabClicked: (Int) -> Unit = { },
 ) {
-    val scope = rememberCoroutineScope()
-
     SecondaryTabRow(
         modifier = modifier
             .padding(top = AppBarConst.appBarSize)
             .background(MaterialTheme.colorScheme.background),
-        selectedTabIndex = pagerState.currentPage,
+        selectedTabIndex = selectedTab,
         containerColor = MaterialTheme.colorScheme.background,
         contentColor = MaterialTheme.colorScheme.onBackground,
     ) {
         titles.forEachIndexed { index, title ->
-            val selected = pagerState.currentPage == index
+            val selected = selectedTab == index
             Tab(
                 modifier = Modifier
                     .padding(top = SecondaryTabsConst.topPadding),
                 selected = selected,
-                onClick = {
-                    scope.launch {
-                        pagerState.animateScrollToPage(index)
-                    }
-                }
+                onClick = { onTabClicked(index) },
             ) {
                 Column(
                     Modifier
@@ -81,5 +76,4 @@ fun SecondaryTabs(
             }
         }
     }
-
 }

@@ -1,7 +1,12 @@
+@file:OptIn(ExperimentalFoundationApi::class, ExperimentalWearMaterialApi::class)
+
 package com.github.klee0kai.thekey.app.ui.note
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -20,44 +25,63 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.wear.compose.material.ExperimentalWearMaterialApi
+import androidx.wear.compose.material.FractionalThreshold
+import androidx.wear.compose.material.rememberSwipeableState
+import androidx.wear.compose.material.swipeable
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarStates
+import com.github.klee0kai.thekey.app.ui.designkit.components.SecondaryTabs
+import com.github.klee0kai.thekey.app.ui.designkit.components.SecondaryTabsConst
 import com.github.klee0kai.thekey.app.ui.navigation.LocalRouter
 import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.NoteDestination
+import com.github.klee0kai.thekey.app.utils.views.TargetAlpha
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
 import com.github.klee0kai.thekey.app.utils.views.collectAsStateCrossFaded
+import com.github.klee0kai.thekey.app.utils.views.crossFadeAlpha
 import com.github.klee0kai.thekey.app.utils.views.currentViewSizeState
+import com.github.klee0kai.thekey.app.utils.views.pxToDp
 import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.app.utils.views.skeleton
+import kotlinx.coroutines.launch
 
 @Preview(showBackground = true)
 @Composable
 fun NoteScreen(
     args: NoteDestination = NoteDestination(),
 ) {
+    val scope = rememberCoroutineScope()
     val navigator = LocalRouter.current
+    val view = LocalView.current
     val presenter = remember {
         DI.notePresenter(args.identifier()).apply {
             init(args.prefilled)
         }
     }
     val isEditNote = args.notePtr != 0L
+    val titles = listOf(stringResource(id = R.string.account), stringResource(id = R.string.otp))
     val note by presenter.note.collectAsState(key = Unit)
     val originNote = presenter.originNote.collectAsStateCrossFaded()
-    val isSkeleton = rememberDerivedStateOf {
-        isEditNote && originNote.value.current == null
-    }
+    val pagerHeight = if (!isEditNote) SecondaryTabsConst.allHeight else 0.dp
+
+    val pageSwipeState = rememberSwipeableState(0)
+    val targetPage by rememberDerivedStateOf { runCatching { pageSwipeState.progress.crossFadeAlpha() }.getOrNull() ?: TargetAlpha(0, 0, 0f) }
+    val isAccountEditPageTarget by rememberDerivedStateOf { targetPage.current == 0 }
+
+    val isSkeleton = rememberDerivedStateOf { isEditNote && originNote.value.current == null }
     val alpha = rememberDerivedStateOf { if (isEditNote) originNote.value.alpha else 1f }
     val scrollState = rememberScrollState()
     val viewSize by currentViewSizeState()
@@ -69,12 +93,19 @@ fun NoteScreen(
         modifier = Modifier
             .verticalScroll(scrollState)
             .fillMaxSize()
+            .defaultMinSize(minHeight = view.height.pxToDp() - 60.dp)
             .padding(
-                top = 16.dp + AppBarConst.appBarSize,
+                top = 16.dp + AppBarConst.appBarSize + pagerHeight,
                 bottom = 16.dp,
                 start = 16.dp,
                 end = 16.dp
             )
+            .swipeable(
+                state = pageSwipeState,
+                anchors = mapOf(0f to 0, -view.width.toFloat() to 1),
+                thresholds = { _, _ -> FractionalThreshold(0.2f) },
+                orientation = Orientation.Horizontal
+            ),
     ) {
         val (
             siteTextField, loginTextField,
@@ -165,12 +196,21 @@ fun NoteScreen(
 
     }
 
+    if (!isEditNote) {
+        SecondaryTabs(
+            modifier = Modifier,
+            titles = titles,
+            selectedTab = targetPage.current,
+            onTabClicked = { scope.launch { pageSwipeState.animateTo(it) } },
+        )
+    }
+
     if (bottomButtons.value) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(
-                    top = 16.dp + AppBarConst.appBarSize,
+                    top = 16.dp + AppBarConst.appBarSize + pagerHeight,
                     bottom = 16.dp,
                     start = 16.dp,
                     end = 16.dp
@@ -179,10 +219,19 @@ fun NoteScreen(
             Spacer(modifier = Modifier.weight(1f))
 
             TextButton(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = { presenter.generate() }
+                modifier = Modifier
+                    .alpha(targetPage.alpha)
+                    .fillMaxWidth(),
+                onClick = {
+                    if (isAccountEditPageTarget) {
+                        presenter.generate()
+                    } else {
+
+                    }
+                }
             ) {
-                Text(stringResource(R.string.passw_generate))
+                val textRes = if (isAccountEditPageTarget) R.string.passw_generate else R.string.qr_code_scan
+                Text(stringResource(textRes))
             }
 
             FilledTonalButton(
@@ -206,7 +255,13 @@ fun NoteScreen(
                 )
             }
         },
-        titleContent = { Text(text = stringResource(id = R.string.account)) },
+        titleContent = {
+            Text(
+                text = stringResource(
+                    id = if (isEditNote) R.string.edit else R.string.create
+                )
+            )
+        },
         actions = {
             if (saveInToolbarAlpha.value > 0) {
                 IconButton(

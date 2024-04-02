@@ -22,6 +22,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.FocusRequester
@@ -52,6 +53,7 @@ import com.github.klee0kai.thekey.app.utils.views.hideAlpha
 import com.github.klee0kai.thekey.app.utils.views.rememberAlphaAnimate
 import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.app.utils.views.rememberTargetAlphaCrossSade
+import kotlinx.coroutines.launch
 
 private const val SearchTitleId = 0
 private const val MainTitleId = 1
@@ -64,6 +66,7 @@ fun StorageScreen(
     args: StorageDestination = StorageDestination()
 ) {
     val presenter = remember { DI.storagePresenter(args.identifier()) }
+    val scope = rememberCoroutineScope()
     val navigator = LocalRouter.current
     val density = LocalDensity.current
     val titles = listOf(
@@ -143,7 +146,8 @@ fun StorageScreen(
         SecondaryTabs(
             modifier = Modifier.alpha(tabsAlpha),
             titles = titles,
-            pagerState = pagerState
+            selectedTab = pagerState.currentPage,
+            onTabClicked = { scope.launch { pagerState.animateScrollToPage(it) } },
         )
     }
 

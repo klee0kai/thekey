@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalWearMaterialApi::class)
+
 package com.github.klee0kai.thekey.app.utils.views
 
 import androidx.compose.animation.core.AnimationConstants.DefaultDurationMillis
@@ -7,18 +9,24 @@ import androidx.compose.animation.core.animate
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.wear.compose.material.ExperimentalWearMaterialApi
+import androidx.wear.compose.material.SwipeProgress
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
+@Stable
+@Immutable
 data class TargetAlpha<T>(
     val current: T,
     val next: T,
@@ -74,8 +82,26 @@ inline fun rememberAlphaAnimate(noinline calculation: () -> Boolean): State<Floa
     return animateAlphaAsState(target.value)
 }
 
+fun <T> SwipeProgress<T>.crossFadeAlpha(): TargetAlpha<T> = when {
+    fraction < 0.5f -> {
+        TargetAlpha(
+            current = from,
+            next = to,
+            alpha = (fraction * 2f).ratioBetween(1f, 0f).coerceIn(0f, 1f)
+        )
+    }
+
+    else -> {
+        TargetAlpha(
+            current = to,
+            next = to,
+            alpha = ((fraction - 0.5f) * 2f).ratioBetween(0f, 1f).coerceIn(0f, 1f)
+        )
+    }
+}
+
 @Composable
-inline fun <T> animateTargetAlphaAsState(target: T): State<TargetAlpha<T>> {
+inline fun <T> animateTargetAlphaAsState(target: T, progress: Float = 1f): State<TargetAlpha<T>> {
     val targetAlphaState = remember { mutableStateOf(TargetAlpha(target, target, 1f)) }
     var targetAlpha by targetAlphaState
     var velocity by remember { mutableFloatStateOf(0f) }
