@@ -24,10 +24,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -47,6 +50,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.SecondaryTabsConst
 import com.github.klee0kai.thekey.app.ui.navigation.LocalRouter
 import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.NoteDestination
+import com.github.klee0kai.thekey.app.utils.views.AutoFillList
 import com.github.klee0kai.thekey.app.utils.views.TargetAlpha
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
@@ -87,13 +91,14 @@ fun NoteScreen(
     val viewSize by currentViewSizeState()
     val bottomButtons = rememberDerivedStateOf { viewSize.height > 700.dp }
     val saveInToolbarAlpha = animateAlphaAsState(!bottomButtons.value)
+    var otpTypeSelected by remember { mutableStateOf<Boolean>(false) }
 
     ConstraintLayout(
         optimizationLevel = 0,
         modifier = Modifier
             .verticalScroll(scrollState)
             .fillMaxSize()
-            .defaultMinSize(minHeight = view.height.pxToDp() - 60.dp)
+            .defaultMinSize(minHeight = view.height.pxToDp())
             .padding(
                 top = 16.dp + AppBarConst.appBarSize + pagerHeight,
                 bottom = 16.dp,
@@ -110,6 +115,9 @@ fun NoteScreen(
         val (
             siteTextField, loginTextField,
             passwTextField, descriptionTextField,
+            otpTypeField, otpTypeAutoFillList,
+            otpAlgoField, otpAlgoAutoFill,
+            otpPeriod, otpDigits,
         ) = createRefs()
 
         OutlinedTextField(
@@ -156,6 +164,7 @@ fun NoteScreen(
         OutlinedTextField(
             modifier = Modifier
                 .alpha(alpha.value)
+                .alpha(targetPage.alpha)
                 .skeleton(isSkeleton.value)
                 .constrainAs(passwTextField) {
                     width = Dimension.fillToConstraints
@@ -170,7 +179,10 @@ fun NoteScreen(
                 },
             value = note.passw,
             onValueChange = { presenter.note.value = note.copy(passw = it) },
-            label = { Text(stringResource(R.string.password)) }
+            label = {
+                val text = if (isAccountEditPageTarget) R.string.password else R.string.secret
+                Text(stringResource(text))
+            }
         )
 
 
@@ -194,16 +206,88 @@ fun NoteScreen(
             label = { Text(stringResource(R.string.description)) }
         )
 
+
+//          otpTypeField, otpTypeAutoFillList,
+//            otpAlgoField, otpAlgoAutoFill,
+//            otpPeriod, otpDigits,
+
+        if (!isAccountEditPageTarget) {
+            OutlinedTextField(
+                modifier = Modifier
+                    .alpha(targetPage.alpha)
+                    .skeleton(isSkeleton.value)
+//                .menuAnchor()
+                    .onFocusChanged { otpTypeSelected = it.isFocused }
+                    .constrainAs(otpTypeField) {
+                        width = Dimension.fillToConstraints
+                        linkTo(
+                            top = descriptionTextField.bottom,
+                            start = parent.start,
+                            end = otpAlgoField.start,
+                            bottom = parent.bottom,
+                            verticalBias = 0f,
+                            topMargin = 8.dp,
+                            endMargin = 8.dp,
+                        )
+                    },
+                readOnly = true,
+                value = "type",
+                onValueChange = { },
+                label = { }
+            )
+
+            OutlinedTextField(
+                modifier = Modifier
+                    .alpha(targetPage.alpha)
+                    .skeleton(isSkeleton.value)
+                    .constrainAs(otpAlgoField) {
+                        width = Dimension.fillToConstraints
+                        linkTo(
+                            top = descriptionTextField.bottom,
+                            start = otpTypeField.end,
+                            end = parent.end,
+                            bottom = parent.bottom,
+                            verticalBias = 0f,
+                            topMargin = 8.dp,
+                            endMargin = 8.dp,
+                        )
+                    },
+                value = "type",
+                onValueChange = { },
+                label = { }
+            )
+
+            AutoFillList(
+                modifier = Modifier
+                    .constrainAs(otpTypeAutoFillList) {
+                        height = Dimension.wrapContent
+                        width = Dimension.fillToConstraints
+                        linkTo(
+                            start = otpTypeField.start,
+                            end = otpTypeField.end,
+                            top = otpTypeField.bottom,
+                            bottom = parent.bottom,
+                            verticalBias = 0f,
+                            bottomMargin = 16.dp
+                        )
+                    },
+                isVisible = otpTypeSelected,
+                variants = listOf("otp", "totp", "yaotp"),
+                onSelected = { selected ->
+
+                }
+            )
+        }
     }
 
-    if (!isEditNote) {
-        SecondaryTabs(
-            modifier = Modifier,
-            titles = titles,
-            selectedTab = targetPage.current,
-            onTabClicked = { scope.launch { pageSwipeState.animateTo(it) } },
-        )
-    }
+
+    SecondaryTabs(
+        modifier = Modifier,
+        isVisible = !isEditNote && scrollState.value == 0,
+        titles = titles,
+        selectedTab = targetPage.current,
+        onTabClicked = { scope.launch { pageSwipeState.animateTo(it) } },
+    )
 
     if (bottomButtons.value) {
         Column(
