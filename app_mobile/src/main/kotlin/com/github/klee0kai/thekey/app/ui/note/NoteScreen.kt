@@ -1,7 +1,8 @@
-@file:OptIn(ExperimentalFoundationApi::class, ExperimentalWearMaterialApi::class)
+@file:OptIn(ExperimentalFoundationApi::class, ExperimentalWearMaterialApi::class, ExperimentalMaterial3Api::class)
 
 package com.github.klee0kai.thekey.app.ui.note
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Column
@@ -15,6 +16,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,13 +26,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -45,12 +47,12 @@ import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarStates
+import com.github.klee0kai.thekey.app.ui.designkit.components.DropDownField
 import com.github.klee0kai.thekey.app.ui.designkit.components.SecondaryTabs
 import com.github.klee0kai.thekey.app.ui.designkit.components.SecondaryTabsConst
 import com.github.klee0kai.thekey.app.ui.navigation.LocalRouter
 import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.NoteDestination
-import com.github.klee0kai.thekey.app.utils.views.AutoFillList
 import com.github.klee0kai.thekey.app.utils.views.TargetAlpha
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
@@ -60,6 +62,7 @@ import com.github.klee0kai.thekey.app.utils.views.currentViewSizeState
 import com.github.klee0kai.thekey.app.utils.views.pxToDp
 import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.app.utils.views.skeleton
+import com.github.klee0kai.thekey.app.utils.views.toPx
 import kotlinx.coroutines.launch
 
 @Preview(showBackground = true)
@@ -91,7 +94,16 @@ fun NoteScreen(
     val viewSize by currentViewSizeState()
     val bottomButtons = rememberDerivedStateOf { viewSize.height > 700.dp }
     val saveInToolbarAlpha = animateAlphaAsState(!bottomButtons.value)
-    var otpTypeSelected by remember { mutableStateOf<Boolean>(false) }
+
+    var otpTypeExpanded by remember { mutableStateOf(false) }
+    var selectedOtpType by remember { mutableIntStateOf(0) }
+    var otpAlgoExpanded by remember { mutableStateOf(false) }
+    var selectedOtpAlgo by remember { mutableIntStateOf(0) }
+
+    BackHandler(otpTypeExpanded || otpAlgoExpanded) {
+        otpAlgoExpanded = false
+        otpTypeExpanded = false
+    }
 
     ConstraintLayout(
         optimizationLevel = 0,
@@ -115,8 +127,7 @@ fun NoteScreen(
         val (
             siteTextField, loginTextField,
             passwTextField, descriptionTextField,
-            otpTypeField, otpTypeAutoFillList,
-            otpAlgoField, otpAlgoAutoFill,
+            otpTypeField, otpAlgoField,
             otpPeriod, otpDigits,
         ) = createRefs()
 
@@ -203,21 +214,15 @@ fun NoteScreen(
                 },
             value = note.desc,
             onValueChange = { presenter.note.value = note.copy(desc = it) },
-            label = { Text(stringResource(R.string.description)) }
+            label = { Text(stringResource(R.string.description)) },
         )
 
 
-//          otpTypeField, otpTypeAutoFillList,
-//            otpAlgoField, otpAlgoAutoFill,
-//            otpPeriod, otpDigits,
-
         if (!isAccountEditPageTarget) {
-            OutlinedTextField(
+            DropDownField(
                 modifier = Modifier
                     .alpha(targetPage.alpha)
                     .skeleton(isSkeleton.value)
-//                .menuAnchor()
-                    .onFocusChanged { otpTypeSelected = it.isFocused }
                     .constrainAs(otpTypeField) {
                         width = Dimension.fillToConstraints
                         linkTo(
@@ -230,13 +235,19 @@ fun NoteScreen(
                             endMargin = 8.dp,
                         )
                     },
-                readOnly = true,
-                value = "type",
-                onValueChange = { },
-                label = { }
+                expanded = otpTypeExpanded,
+                onExpandedChange = { otpTypeExpanded = it },
+                variants = listOf("OTP", "HOTP", "TOTP", "YaOTP"),
+                selectedIndex = selectedOtpType,
+                onSelected = {
+                    selectedOtpType = it
+                    otpTypeExpanded = false
+                },
+                label = { Text(stringResource(R.string.type)) }
             )
 
-            OutlinedTextField(
+
+            DropDownField(
                 modifier = Modifier
                     .alpha(targetPage.alpha)
                     .skeleton(isSkeleton.value)
@@ -249,41 +260,70 @@ fun NoteScreen(
                             bottom = parent.bottom,
                             verticalBias = 0f,
                             topMargin = 8.dp,
+                            startMargin = 8.dp,
+                        )
+                    },
+                expanded = otpAlgoExpanded,
+                onExpandedChange = { otpAlgoExpanded = it },
+                variants = listOf("SHA1", "SHA256", "SHA512"),
+                selectedIndex = selectedOtpAlgo,
+                onSelected = {
+                    selectedOtpAlgo = it
+                    otpAlgoExpanded = false
+                },
+                label = { Text(stringResource(R.string.algorithm)) }
+            )
+
+            OutlinedTextField(
+                modifier = Modifier
+                    .alpha(alpha.value)
+                    .skeleton(isSkeleton.value)
+                    .constrainAs(otpPeriod) {
+                        width = Dimension.fillToConstraints
+                        linkTo(
+                            top = otpTypeField.bottom,
+                            start = parent.start,
+                            end = otpDigits.start,
+                            bottom = parent.bottom,
+                            verticalBias = 0f,
+                            topMargin = 8.dp,
                             endMargin = 8.dp,
                         )
                     },
-                value = "type",
-                onValueChange = { },
-                label = { }
+                value = note.desc,
+                onValueChange = { presenter.note.value = note.copy(desc = it) },
+                label = { Text(stringResource(R.string.period)) },
             )
 
-            AutoFillList(
+
+            OutlinedTextField(
                 modifier = Modifier
-                    .constrainAs(otpTypeAutoFillList) {
-                        height = Dimension.wrapContent
+                    .alpha(alpha.value)
+                    .skeleton(isSkeleton.value)
+                    .constrainAs(otpDigits) {
                         width = Dimension.fillToConstraints
                         linkTo(
-                            start = otpTypeField.start,
-                            end = otpTypeField.end,
                             top = otpTypeField.bottom,
+                            start = otpPeriod.end,
+                            end = parent.end,
                             bottom = parent.bottom,
                             verticalBias = 0f,
-                            bottomMargin = 16.dp
+                            topMargin = 8.dp,
+                            startMargin = 8.dp,
                         )
                     },
-                isVisible = otpTypeSelected,
-                variants = listOf("otp", "totp", "yaotp"),
-                onSelected = { selected ->
-
-                }
+                value = note.desc,
+                onValueChange = { presenter.note.value = note.copy(desc = it) },
+                label = { Text(stringResource(R.string.digits)) },
             )
+
         }
     }
 
 
     SecondaryTabs(
         modifier = Modifier,
-        isVisible = !isEditNote && scrollState.value == 0,
+        isVisible = !isEditNote && scrollState.value <= 0,
         titles = titles,
         selectedTab = targetPage.current,
         onTabClicked = { scope.launch { pageSwipeState.animateTo(it) } },
@@ -330,7 +370,7 @@ fun NoteScreen(
 
 
     AppBarStates(
-        isVisible = scrollState.value == 0,
+        isVisible = scrollState.value <= 30.dp.toPx(),
         navigationIcon = {
             IconButton(onClick = { navigator.back() }) {
                 Icon(
