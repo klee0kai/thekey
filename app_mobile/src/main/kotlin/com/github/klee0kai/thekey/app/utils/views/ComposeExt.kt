@@ -14,6 +14,7 @@ import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.valentinilk.shimmer.ShimmerBounds
@@ -96,5 +97,26 @@ fun Modifier.skeleton(
             color = color,
             shape = RoundedCornerShape(4.dp)
         )
+}
 
+@Composable
+fun rememberSkeletonModifier(
+    color: Color = MaterialTheme.colorScheme.inverseSurface,
+    isSkeleton: () -> Boolean,
+): State<Modifier> {
+    val shimmer = rememberShimmer(shimmerBounds = ShimmerBounds.Window)
+    val isSkeletonAnimated by rememberTargetAlphaCrossSade { isSkeleton() }
+    return rememberDerivedStateOf {
+        val modifier = Modifier.alpha(isSkeletonAnimated.alpha)
+        if (!isSkeletonAnimated.current) {
+            modifier
+        } else {
+            modifier
+                .shimmer(shimmer)
+                .background(
+                    color = color,
+                    shape = RoundedCornerShape(4.dp)
+                )
+        }
+    }
 }

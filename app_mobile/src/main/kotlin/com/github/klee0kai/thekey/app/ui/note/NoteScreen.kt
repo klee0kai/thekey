@@ -25,6 +25,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -61,6 +62,7 @@ import com.github.klee0kai.thekey.app.utils.views.crossFadeAlpha
 import com.github.klee0kai.thekey.app.utils.views.currentViewSizeState
 import com.github.klee0kai.thekey.app.utils.views.pxToDp
 import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
+import com.github.klee0kai.thekey.app.utils.views.rememberSkeletonModifier
 import com.github.klee0kai.thekey.app.utils.views.skeleton
 import com.github.klee0kai.thekey.app.utils.views.toPx
 import kotlinx.coroutines.launch
@@ -81,15 +83,14 @@ fun NoteScreen(
     val isEditNote = args.notePtr != 0L
     val titles = listOf(stringResource(id = R.string.account), stringResource(id = R.string.otp))
     val note by presenter.note.collectAsState(key = Unit)
-    val originNote = presenter.originNote.collectAsStateCrossFaded()
+    val originNote by presenter.originNote.collectAsState()
     val pagerHeight = if (!isEditNote) SecondaryTabsConst.allHeight else 0.dp
 
     val pageSwipeState = rememberSwipeableState(0)
     val targetPage by rememberDerivedStateOf { runCatching { pageSwipeState.progress.crossFadeAlpha() }.getOrNull() ?: TargetAlpha(0, 0, 0f) }
     val isAccountEditPageTarget by rememberDerivedStateOf { targetPage.current == 0 }
 
-    val isSkeleton = rememberDerivedStateOf { isEditNote && originNote.value.current == null }
-    val alpha = rememberDerivedStateOf { if (isEditNote) originNote.value.alpha else 1f }
+    val skeletonModifier by rememberSkeletonModifier { isEditNote && originNote == null }
     val scrollState = rememberScrollState()
     val viewSize by currentViewSizeState()
     val bottomButtons = rememberDerivedStateOf { viewSize.height > 700.dp }
@@ -133,8 +134,7 @@ fun NoteScreen(
 
         OutlinedTextField(
             modifier = Modifier
-                .alpha(alpha.value)
-                .skeleton(isSkeleton.value)
+                .then(skeletonModifier)
                 .constrainAs(siteTextField) {
                     width = Dimension.fillToConstraints
                     linkTo(
@@ -153,8 +153,7 @@ fun NoteScreen(
 
         OutlinedTextField(
             modifier = Modifier
-                .alpha(alpha.value)
-                .skeleton(isSkeleton.value)
+                .then(skeletonModifier)
                 .constrainAs(loginTextField) {
                     width = Dimension.fillToConstraints
                     linkTo(
@@ -174,9 +173,8 @@ fun NoteScreen(
 
         OutlinedTextField(
             modifier = Modifier
-                .alpha(alpha.value)
                 .alpha(targetPage.alpha)
-                .skeleton(isSkeleton.value)
+                .then(skeletonModifier)
                 .constrainAs(passwTextField) {
                     width = Dimension.fillToConstraints
                     linkTo(
@@ -199,8 +197,7 @@ fun NoteScreen(
 
         OutlinedTextField(
             modifier = Modifier
-                .alpha(alpha.value)
-                .skeleton(isSkeleton.value)
+                .then(skeletonModifier)
                 .constrainAs(descriptionTextField) {
                     width = Dimension.fillToConstraints
                     linkTo(
@@ -222,7 +219,7 @@ fun NoteScreen(
             DropDownField(
                 modifier = Modifier
                     .alpha(targetPage.alpha)
-                    .skeleton(isSkeleton.value)
+                    .then(skeletonModifier)
                     .constrainAs(otpTypeField) {
                         width = Dimension.fillToConstraints
                         linkTo(
@@ -246,11 +243,10 @@ fun NoteScreen(
                 label = { Text(stringResource(R.string.type)) }
             )
 
-
             DropDownField(
                 modifier = Modifier
                     .alpha(targetPage.alpha)
-                    .skeleton(isSkeleton.value)
+                    .then(skeletonModifier)
                     .constrainAs(otpAlgoField) {
                         width = Dimension.fillToConstraints
                         linkTo(
@@ -276,8 +272,7 @@ fun NoteScreen(
 
             OutlinedTextField(
                 modifier = Modifier
-                    .alpha(alpha.value)
-                    .skeleton(isSkeleton.value)
+                    .then(skeletonModifier)
                     .constrainAs(otpPeriod) {
                         width = Dimension.fillToConstraints
                         linkTo(
@@ -298,8 +293,7 @@ fun NoteScreen(
 
             OutlinedTextField(
                 modifier = Modifier
-                    .alpha(alpha.value)
-                    .skeleton(isSkeleton.value)
+                    .then(skeletonModifier)
                     .constrainAs(otpDigits) {
                         width = Dimension.fillToConstraints
                         linkTo(
@@ -316,7 +310,6 @@ fun NoteScreen(
                 onValueChange = { presenter.note.value = note.copy(desc = it) },
                 label = { Text(stringResource(R.string.digits)) },
             )
-
         }
     }
 
