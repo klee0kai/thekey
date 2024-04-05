@@ -12,7 +12,7 @@ import com.github.klee0kai.thekey.app.utils.common.launchLatestSafe
 import com.github.klee0kai.thekey.app.utils.common.launchSafe
 import kotlinx.coroutines.flow.MutableStateFlow
 
-class NotePresenter(
+class EditNotePresenter(
     val identifier: NoteIdentifier,
 ) {
     private val scope = DI.defaultThreadScope()

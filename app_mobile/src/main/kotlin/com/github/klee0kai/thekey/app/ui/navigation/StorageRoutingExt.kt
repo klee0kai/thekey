@@ -8,7 +8,7 @@ import com.github.klee0kai.thekey.app.engine.model.Storage
 import com.github.klee0kai.thekey.app.model.ColoredStorage
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteGroupDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.GenHistDestination
-import com.github.klee0kai.thekey.app.ui.navigation.model.NoteDestination
+import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 
 fun Storage.dest() = StorageDestination(version = version, path = path)
@@ -26,10 +26,10 @@ fun StorageDestination.identifier() =
     StorageIdentifier(version = version, path = path)
 
 fun StorageDestination.note(notePtr: Long = 0) =
-    NoteDestination(storageVersion = version, path = path, notePtr = notePtr)
+    EditNoteDestination(storageVersion = version, path = path, notePtr = notePtr)
 
 fun StorageDestination.createNote(prefilled: DecryptedNote) =
-    NoteDestination(storageVersion = version, path = path, prefilled = prefilled)
+    EditNoteDestination(storageVersion = version, path = path, prefilled = prefilled)
 
 fun StorageDestination.genHist() =
     GenHistDestination(storageVersion = version, path = path)
@@ -47,7 +47,7 @@ fun NoteIdentifier.storage() =
     StorageIdentifier(version = storageVersion, path = storagePath)
 
 
-fun NoteDestination.identifier() =
+fun EditNoteDestination.identifier() =
     NoteIdentifier(storageVersion = storageVersion, storagePath = path, notePtr = notePtr)
 
 fun StorageDestination.createGroup() =

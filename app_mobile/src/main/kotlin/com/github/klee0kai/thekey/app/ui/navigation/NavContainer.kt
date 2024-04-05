@@ -49,10 +49,10 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteGroupDestinati
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditStorageDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.GenHistDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.LoginDestination
-import com.github.klee0kai.thekey.app.ui.navigation.model.NoteDestination
+import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.StoragesDestination
-import com.github.klee0kai.thekey.app.ui.note.NoteScreen
+import com.github.klee0kai.thekey.app.ui.note.EditNoteScreen
 import com.github.klee0kai.thekey.app.ui.notegroup.EditNoteGroupScreen
 import com.github.klee0kai.thekey.app.ui.storage.StorageScreen
 import com.github.klee0kai.thekey.app.ui.storages.StoragesScreen
@@ -169,7 +169,7 @@ private fun screenOf(destination: Destination) {
         is EditStorageDestination -> EditStorageScreen(path = destination.path)
         is StorageDestination -> StorageScreen(destination)
         is GenHistDestination -> GenHistScreen(destination)
-        is NoteDestination -> NoteScreen(destination)
+        is EditNoteDestination -> EditNoteScreen(destination)
         is EditNoteGroupDestination -> EditNoteGroupScreen(destination)
 
         is AlertDialogDestination -> AlertDialogScreen(destination)

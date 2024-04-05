@@ -53,30 +53,28 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.SecondaryTabs
 import com.github.klee0kai.thekey.app.ui.designkit.components.SecondaryTabsConst
 import com.github.klee0kai.thekey.app.ui.navigation.LocalRouter
 import com.github.klee0kai.thekey.app.ui.navigation.identifier
-import com.github.klee0kai.thekey.app.ui.navigation.model.NoteDestination
+import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteDestination
 import com.github.klee0kai.thekey.app.utils.views.TargetAlpha
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
-import com.github.klee0kai.thekey.app.utils.views.collectAsStateCrossFaded
 import com.github.klee0kai.thekey.app.utils.views.crossFadeAlpha
 import com.github.klee0kai.thekey.app.utils.views.currentViewSizeState
 import com.github.klee0kai.thekey.app.utils.views.pxToDp
 import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.app.utils.views.rememberSkeletonModifier
-import com.github.klee0kai.thekey.app.utils.views.skeleton
 import com.github.klee0kai.thekey.app.utils.views.toPx
 import kotlinx.coroutines.launch
 
 @Preview(showBackground = true)
 @Composable
-fun NoteScreen(
-    args: NoteDestination = NoteDestination(),
+fun EditNoteScreen(
+    args: EditNoteDestination = EditNoteDestination(),
 ) {
     val scope = rememberCoroutineScope()
     val navigator = LocalRouter.current
     val view = LocalView.current
     val presenter = remember {
-        DI.notePresenter(args.identifier()).apply {
+        DI.editNotePresenter(args.identifier()).apply {
             init(args.prefilled)
         }
     }

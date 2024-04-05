@@ -45,7 +45,7 @@ data class StorageDestination(
 ) : Destination
 
 @Parcelize
-data class NoteDestination(
+data class EditNoteDestination(
     /**
      * storage path
      */
