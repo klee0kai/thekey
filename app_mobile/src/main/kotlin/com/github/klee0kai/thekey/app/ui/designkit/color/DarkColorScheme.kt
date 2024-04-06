@@ -7,6 +7,8 @@ class DarkColorScheme : CommonColorScheme {
 
     override val isDarkScheme: Boolean = true
 
+    override val deleteColor: Color = Color.Red
+
     private val lightBackground = Color(0xFF242738)
     private val background = Color(0xFF1B1D2D)
 

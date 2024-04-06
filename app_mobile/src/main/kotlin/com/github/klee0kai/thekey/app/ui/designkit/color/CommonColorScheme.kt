@@ -8,6 +8,7 @@ interface CommonColorScheme {
     val isDarkScheme: Boolean get() = false
 
     val statusBarColor: Color get() = androidColorScheme.background
+    val deleteColor: Color
 
     val noColor: SurfaceScheme
     val violet: SurfaceScheme

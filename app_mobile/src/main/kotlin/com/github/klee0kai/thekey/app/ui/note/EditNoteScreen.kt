@@ -12,9 +12,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
@@ -27,15 +29,13 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -48,21 +48,26 @@ import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarStates
+import com.github.klee0kai.thekey.app.ui.designkit.components.ColorGroupDropDownField
 import com.github.klee0kai.thekey.app.ui.designkit.components.DropDownField
 import com.github.klee0kai.thekey.app.ui.designkit.components.SecondaryTabs
 import com.github.klee0kai.thekey.app.ui.designkit.components.SecondaryTabsConst
+import com.github.klee0kai.thekey.app.ui.navigation.LocalColorScheme
 import com.github.klee0kai.thekey.app.ui.navigation.LocalRouter
 import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteDestination
+import com.github.klee0kai.thekey.app.ui.note.model.EditTabs
+import com.github.klee0kai.thekey.app.ui.note.model.EditTabs.Account
+import com.github.klee0kai.thekey.app.ui.note.model.EditTabs.Otp
 import com.github.klee0kai.thekey.app.utils.views.TargetAlpha
-import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
-import com.github.klee0kai.thekey.app.utils.views.collectAsState
 import com.github.klee0kai.thekey.app.utils.views.crossFadeAlpha
 import com.github.klee0kai.thekey.app.utils.views.currentViewSizeState
 import com.github.klee0kai.thekey.app.utils.views.pxToDp
 import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.app.utils.views.rememberSkeletonModifier
+import com.github.klee0kai.thekey.app.utils.views.rememberTargetAlphaCrossSade
 import com.github.klee0kai.thekey.app.utils.views.toPx
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @Preview(showBackground = true)
@@ -78,30 +83,30 @@ fun EditNoteScreen(
             init(args.prefilled)
         }
     }
-    val isEditNote = args.notePtr != 0L
     val titles = listOf(stringResource(id = R.string.account), stringResource(id = R.string.otp))
-    val note by presenter.note.collectAsState(key = Unit)
-    val originNote by presenter.originNote.collectAsState()
-    val pagerHeight = if (!isEditNote) SecondaryTabsConst.allHeight else 0.dp
+    val state by presenter.state.collectAsState()
+    val isSaveAvailable by rememberTargetAlphaCrossSade { state.isSaveAvailable }
+    val isRemoveAvailable by rememberTargetAlphaCrossSade { state.isRemoveAvailable }
+    val skeletonModifier by rememberSkeletonModifier { state.isSkeleton }
 
-    val pageSwipeState = rememberSwipeableState(0)
-    val targetPage by rememberDerivedStateOf { runCatching { pageSwipeState.progress.crossFadeAlpha() }.getOrNull() ?: TargetAlpha(0, 0, 0f) }
-    val isAccountEditPageTarget by rememberDerivedStateOf { targetPage.current == 0 }
+    val pagerHeight = if (!state.isEditMode) SecondaryTabsConst.allHeight else 0.dp
 
-    val skeletonModifier by rememberSkeletonModifier { isEditNote && originNote == null }
+    val pageSwipeState = rememberSwipeableState(Account)
+    val page by rememberDerivedStateOf {
+        runCatching { pageSwipeState.progress.crossFadeAlpha() }.getOrNull()
+            ?: TargetAlpha(Account, Account, 0f)
+    }
     val scrollState = rememberScrollState()
     val viewSize by currentViewSizeState()
-    val bottomButtons = rememberDerivedStateOf { viewSize.height > 700.dp }
-    val saveInToolbarAlpha = animateAlphaAsState(!bottomButtons.value)
+    val saveInToolbarAlpha by rememberTargetAlphaCrossSade { viewSize.height < 700.dp }
 
-    var otpTypeExpanded by remember { mutableStateOf(false) }
-    var selectedOtpType by remember { mutableIntStateOf(0) }
-    var otpAlgoExpanded by remember { mutableStateOf(false) }
-    var selectedOtpAlgo by remember { mutableIntStateOf(0) }
-
-    BackHandler(otpTypeExpanded || otpAlgoExpanded) {
-        otpAlgoExpanded = false
-        otpTypeExpanded = false
+    BackHandler(state.otpTypeExpanded || state.otpAlgoExpanded) {
+        presenter.state.update {
+            it.copy(
+                otpTypeExpanded = false,
+                otpAlgoExpanded = false,
+            )
+        }
     }
 
     ConstraintLayout(
@@ -118,16 +123,17 @@ fun EditNoteScreen(
             )
             .swipeable(
                 state = pageSwipeState,
-                anchors = mapOf(0f to 0, -view.width.toFloat() to 1),
+                anchors = mapOf(0f to Account, -view.width.toFloat() to Otp),
                 thresholds = { _, _ -> FractionalThreshold(0.2f) },
                 orientation = Orientation.Horizontal
             ),
     ) {
         val (
             siteTextField, loginTextField,
-            passwTextField, descriptionTextField,
+            passwTextField, passwChangeDateField, descriptionTextField,
             otpTypeField, otpAlgoField,
-            otpPeriod, otpDigits,
+            otpPeriodField, otpDigitsField,
+            colorGroupField,
         ) = createRefs()
 
         OutlinedTextField(
@@ -144,9 +150,16 @@ fun EditNoteScreen(
                         topMargin = 8.dp,
                     )
                 },
-            value = note.site,
-            onValueChange = { presenter.note.value = note.copy(site = it) },
-            label = { Text(stringResource(R.string.site)) }
+            value = state.siteOrIssuer,
+            onValueChange = { presenter.input { copy(siteOrIssuer = it) } },
+            label = {
+                val text = if (page.current == Account) R.string.site else R.string.issuer
+                Text(
+                    modifier = Modifier
+                        .alpha(page.alpha),
+                    text = stringResource(text)
+                )
+            }
         )
 
         OutlinedTextField(
@@ -163,15 +176,20 @@ fun EditNoteScreen(
                         topMargin = 8.dp,
                     )
                 },
-            value = note.login,
-            onValueChange = { presenter.note.value = note.copy(login = it) },
-            label = { Text(stringResource(R.string.login)) }
+            value = state.login,
+            onValueChange = { presenter.input { copy(login = it) } },
+            label = {
+                val text = if (page.current == Account) R.string.login else R.string.name
+                Text(
+                    modifier = Modifier
+                        .alpha(page.alpha),
+                    text = stringResource(text)
+                )
+            }
         )
-
 
         OutlinedTextField(
             modifier = Modifier
-                .alpha(targetPage.alpha)
                 .then(skeletonModifier)
                 .constrainAs(passwTextField) {
                     width = Dimension.fillToConstraints
@@ -184,44 +202,72 @@ fun EditNoteScreen(
                         topMargin = 8.dp,
                     )
                 },
-            value = note.passw,
-            onValueChange = { presenter.note.value = note.copy(passw = it) },
+            value = state.passw,
+            onValueChange = { presenter.input { copy(passw = it) } },
             label = {
-                val text = if (isAccountEditPageTarget) R.string.password else R.string.secret
-                Text(stringResource(text))
+                val text = if (page.current == Account) R.string.password else R.string.secret
+                Text(
+                    modifier = Modifier
+                        .alpha(page.alpha),
+                    text = stringResource(text)
+                )
             }
         )
 
+        if (state.changeTime.isNotBlank()) {
+            TextButton(
+                modifier = Modifier
+                    .then(skeletonModifier)
+                    .constrainAs(passwChangeDateField) {
+                        linkTo(
+                            top = passwTextField.bottom,
+                            start = parent.start,
+                            end = parent.end,
+                            bottom = parent.bottom,
+                            horizontalBias = 1f,
+                            verticalBias = 0f,
+                            topMargin = 8.dp,
+                        )
+                    },
+                onClick = { presenter.showHistory() },
+                content = { Text(text = state.changeTime) }
+            )
+        }
 
-        OutlinedTextField(
-            modifier = Modifier
-                .then(skeletonModifier)
-                .constrainAs(descriptionTextField) {
-                    width = Dimension.fillToConstraints
-                    linkTo(
-                        top = passwTextField.bottom,
-                        start = parent.start,
-                        end = parent.end,
-                        bottom = parent.bottom,
-                        verticalBias = 0f,
-                        topMargin = 8.dp,
-                    )
-                },
-            value = note.desc,
-            onValueChange = { presenter.note.value = note.copy(desc = it) },
-            label = { Text(stringResource(R.string.description)) },
-        )
+        if (page.current == Account) {
+            OutlinedTextField(
+                modifier = Modifier
+                    .alpha(page.alpha)
+                    .then(skeletonModifier)
+                    .constrainAs(descriptionTextField) {
+                        width = Dimension.fillToConstraints
+                        linkTo(
+                            top = when {
+                                state.changeTime.isNotBlank() -> passwChangeDateField.bottom
+                                else -> passwTextField.bottom
+                            },
+                            start = parent.start,
+                            end = parent.end,
+                            bottom = parent.bottom,
+                            verticalBias = 0f,
+                            topMargin = 8.dp,
+                        )
+                    },
+                value = state.desc,
+                onValueChange = { presenter.input { copy(passw = it) } },
+                label = { Text(stringResource(R.string.description)) },
+            )
+        }
 
-
-        if (!isAccountEditPageTarget) {
+        if (page.current == Otp) {
             DropDownField(
                 modifier = Modifier
-                    .alpha(targetPage.alpha)
+                    .alpha(page.alpha)
                     .then(skeletonModifier)
                     .constrainAs(otpTypeField) {
                         width = Dimension.fillToConstraints
                         linkTo(
-                            top = descriptionTextField.bottom,
+                            top = passwTextField.bottom,
                             start = parent.start,
                             end = otpAlgoField.start,
                             bottom = parent.bottom,
@@ -230,25 +276,24 @@ fun EditNoteScreen(
                             endMargin = 8.dp,
                         )
                     },
-                expanded = otpTypeExpanded,
-                onExpandedChange = { otpTypeExpanded = it },
-                variants = listOf("OTP", "HOTP", "TOTP", "YaOTP"),
-                selectedIndex = selectedOtpType,
-                onSelected = {
-                    selectedOtpType = it
-                    otpTypeExpanded = false
+                expanded = state.otpTypeExpanded,
+                onExpandedChange = { presenter.input { copy(otpTypeExpanded = it) } },
+                variants = state.otpTypeVariants,
+                selectedIndex = state.otpTypeSelected,
+                onSelected = { selected ->
+                    presenter.input { copy(otpTypeSelected = selected, otpTypeExpanded = false) }
                 },
                 label = { Text(stringResource(R.string.type)) }
             )
 
             DropDownField(
                 modifier = Modifier
-                    .alpha(targetPage.alpha)
+                    .alpha(page.alpha)
                     .then(skeletonModifier)
                     .constrainAs(otpAlgoField) {
                         width = Dimension.fillToConstraints
                         linkTo(
-                            top = descriptionTextField.bottom,
+                            top = passwTextField.bottom,
                             start = otpTypeField.end,
                             end = parent.end,
                             bottom = parent.bottom,
@@ -257,46 +302,48 @@ fun EditNoteScreen(
                             startMargin = 8.dp,
                         )
                     },
-                expanded = otpAlgoExpanded,
-                onExpandedChange = { otpAlgoExpanded = it },
-                variants = listOf("SHA1", "SHA256", "SHA512"),
-                selectedIndex = selectedOtpAlgo,
-                onSelected = {
-                    selectedOtpAlgo = it
-                    otpAlgoExpanded = false
+                expanded = state.otpAlgoExpanded,
+                onExpandedChange = { newExp -> presenter.input { copy(otpAlgoExpanded = newExp) } },
+                variants = state.otpAlgoVariants,
+                selectedIndex = state.otpAlgoSelected,
+                onSelected = { selected ->
+                    presenter.input { copy(otpAlgoSelected = selected, otpAlgoExpanded = false) }
                 },
                 label = { Text(stringResource(R.string.algorithm)) }
             )
 
             OutlinedTextField(
                 modifier = Modifier
+                    .alpha(page.alpha)
                     .then(skeletonModifier)
-                    .constrainAs(otpPeriod) {
+                    .constrainAs(otpPeriodField) {
                         width = Dimension.fillToConstraints
                         linkTo(
                             top = otpTypeField.bottom,
                             start = parent.start,
-                            end = otpDigits.start,
+                            end = otpDigitsField.start,
                             bottom = parent.bottom,
                             verticalBias = 0f,
                             topMargin = 8.dp,
                             endMargin = 8.dp,
                         )
                     },
-                value = note.desc,
-                onValueChange = { presenter.note.value = note.copy(desc = it) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                value = state.otpPeriod,
+                onValueChange = { presenter.input { copy(otpPeriod = it) } },
                 label = { Text(stringResource(R.string.period)) },
             )
 
 
             OutlinedTextField(
                 modifier = Modifier
+                    .alpha(page.alpha)
                     .then(skeletonModifier)
-                    .constrainAs(otpDigits) {
+                    .constrainAs(otpDigitsField) {
                         width = Dimension.fillToConstraints
                         linkTo(
                             top = otpTypeField.bottom,
-                            start = otpPeriod.end,
+                            start = otpPeriodField.end,
                             end = parent.end,
                             bottom = parent.bottom,
                             verticalBias = 0f,
@@ -304,23 +351,54 @@ fun EditNoteScreen(
                             startMargin = 8.dp,
                         )
                     },
-                value = note.desc,
-                onValueChange = { presenter.note.value = note.copy(desc = it) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                value = state.otpDigits,
+                onValueChange = { presenter.input { copy(otpDigits = it) } },
                 label = { Text(stringResource(R.string.digits)) },
             )
         }
+
+        ColorGroupDropDownField(
+            modifier = Modifier
+                .alpha(page.alpha)
+                .then(skeletonModifier)
+                .fillMaxWidth(0.5f)
+                .constrainAs(colorGroupField) {
+                    linkTo(
+                        top = when (page.current) {
+                            Account -> descriptionTextField.bottom
+                            Otp -> otpPeriodField.bottom
+                        },
+                        start = parent.start,
+                        end = parent.end,
+                        bottom = parent.bottom,
+                        verticalBias = 0f,
+                        horizontalBias = 0f,
+                        topMargin = 8.dp,
+                    )
+                },
+            expanded = state.colorGroupExpanded,
+            onExpandedChange = { presenter.input { copy(colorGroupExpanded = it) } },
+            onSelected = { presenter.input { copy(colorGroupSelected = it, colorGroupExpanded = false) } },
+            label = { Text(stringResource(R.string.color_group)) }
+        )
+
     }
 
 
     SecondaryTabs(
         modifier = Modifier,
-        isVisible = !isEditNote && scrollState.value <= 0,
+        isVisible = !state.isEditMode && scrollState.value <= 0,
         titles = titles,
-        selectedTab = targetPage.current,
-        onTabClicked = { scope.launch { pageSwipeState.animateTo(it) } },
+        selectedTab = page.current.ordinal,
+        onTabClicked = {
+            scope.launch {
+                pageSwipeState.animateTo(EditTabs.entries.getOrElse(it) { Account })
+            }
+        },
     )
 
-    if (bottomButtons.value) {
+    if (!saveInToolbarAlpha.current) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -335,27 +413,31 @@ fun EditNoteScreen(
 
             TextButton(
                 modifier = Modifier
-                    .alpha(targetPage.alpha)
+                    .alpha(page.alpha)
                     .fillMaxWidth(),
                 onClick = {
-                    if (isAccountEditPageTarget) {
+                    if (page.current == Account) {
                         presenter.generate()
                     } else {
 
                     }
                 }
             ) {
-                val textRes = if (isAccountEditPageTarget) R.string.passw_generate else R.string.qr_code_scan
+                val textRes = if (page.current == Account) R.string.passw_generate else R.string.qr_code_scan
                 Text(stringResource(textRes))
             }
 
-            FilledTonalButton(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = { presenter.save() }
-            ) {
-                Text(stringResource(R.string.save))
+            if (isSaveAvailable.current) {
+                FilledTonalButton(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .alpha(saveInToolbarAlpha.alpha)
+                        .alpha(isSaveAvailable.alpha),
+                    onClick = { presenter.save() }
+                ) {
+                    Text(stringResource(R.string.save))
+                }
             }
-
         }
     }
 
@@ -371,16 +453,30 @@ fun EditNoteScreen(
             }
         },
         titleContent = {
-            Text(
-                text = stringResource(
-                    id = if (isEditNote) R.string.edit else R.string.create
-                )
-            )
+            Text(text = stringResource(id = if (state.isEditMode) R.string.edit else R.string.create))
         },
         actions = {
-            if (saveInToolbarAlpha.value > 0) {
+            if (isRemoveAvailable.current) {
                 IconButton(
-                    modifier = Modifier.alpha(saveInToolbarAlpha.value),
+                    modifier = Modifier
+                        .alpha(isRemoveAvailable.alpha),
+                    onClick = {
+
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Delete,
+                        contentDescription = stringResource(id = R.string.remove),
+                        tint = LocalColorScheme.current.deleteColor
+                    )
+                }
+            }
+
+            if (saveInToolbarAlpha.current && isSaveAvailable.current) {
+                IconButton(
+                    modifier = Modifier
+                        .alpha(saveInToolbarAlpha.alpha)
+                        .alpha(isSaveAvailable.alpha),
                     onClick = {
                         presenter.save()
                     }
