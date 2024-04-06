@@ -1,21 +1,32 @@
 package com.github.klee0kai.thekey.app.ui.note
 
+import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.NoteIdentifier
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
+import com.github.klee0kai.thekey.app.engine.model.GenPasswParams
 import com.github.klee0kai.thekey.app.engine.model.colorGroup
 import com.github.klee0kai.thekey.app.engine.model.isEmpty
 import com.github.klee0kai.thekey.app.model.ColorGroup
 import com.github.klee0kai.thekey.app.model.noGroup
+import com.github.klee0kai.thekey.app.ui.navigation.model.AlertDialogDestination
+import com.github.klee0kai.thekey.app.ui.navigation.model.ConfirmDialogResult
+import com.github.klee0kai.thekey.app.ui.navigation.model.TextProvider
+import com.github.klee0kai.thekey.app.ui.navigation.navigate
 import com.github.klee0kai.thekey.app.ui.navigation.storage
 import com.github.klee0kai.thekey.app.ui.note.model.EditNoteState
+import com.github.klee0kai.thekey.app.ui.note.model.EditTabs
 import com.github.klee0kai.thekey.app.ui.note.model.decryptedNote
 import com.github.klee0kai.thekey.app.ui.note.model.isValid
+import com.github.klee0kai.thekey.app.utils.common.TimeFormats
 import com.github.klee0kai.thekey.app.utils.common.launchLatest
 import com.github.klee0kai.thekey.app.utils.common.launchLatestSafe
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.Date
+import java.util.concurrent.TimeUnit
 
 class EditNotePresenter(
     val identifier: NoteIdentifier,
@@ -23,8 +34,10 @@ class EditNotePresenter(
     private val otpTypesVariants = listOf("HOTP", "TOTP", "YaOTP")
     private val otpAlgoVariants = listOf("SHA1", "SHA256", "SHA512")
 
+    private val ctx get() = DI.app()
+    private val dateFormat = TimeFormats.simpleDateFormat()
     private val scope = DI.defaultThreadScope()
-    private val navigator = DI.router()
+    private val router = DI.router()
     private val engine = DI.cryptStorageEngineSafeLazy(identifier.storage())
 
     private var originNote: DecryptedNote? = null
@@ -36,7 +49,6 @@ class EditNotePresenter(
         val initState = EditNoteState(
             isEditMode = isEditMode,
             isSkeleton = true,
-            isRemoveAvailable = isEditMode,
             otpTypeVariants = otpTypesVariants,
             otpTypeSelected = 1,
             otpAlgoVariants = otpAlgoVariants,
@@ -52,20 +64,15 @@ class EditNotePresenter(
             originNote = engine()?.note(identifier.notePtr) ?: DecryptedNote()
             prefilled = originNote
         }
+
         colorGroups = (engine()?.colorGroups(true)
             ?.map { it.colorGroup() } ?: emptyList())
             .let { listOf(ColorGroup.noGroup()) + it }
 
 
-        prefilled?.chTime
-            ?.takeIf { it > 0L }
-            ?.let {
-
-            }
-
-
         state.update { note ->
             note.copy(
+                isRemoveAvailable = isEditMode,
                 isSkeleton = false,
                 siteOrIssuer = prefilled?.site ?: "",
                 login = prefilled?.login ?: "",
@@ -77,10 +84,12 @@ class EditNotePresenter(
                     .indexOfFirst { prefilled?.colorGroupId == it.id }
                     .takeIf { it >= 0 } ?: 0,
 
+                changeTime = prefilled?.chTime
+                    ?.takeIf { it > 0L }
+                    ?.let { dateFormat.format(Date(TimeUnit.SECONDS.toMillis(it))) }
+                    ?: "",
 
-//                chTime = prefilled?.chTime,
-//                colorGroupId = prefilled?.colorGroupId,
-            )
+                )
         }
     }
 
@@ -104,23 +113,55 @@ class EditNotePresenter(
 
     }
 
+    fun tryRemove() = scope.launchLatest("rm") {
+        val note = originNote ?: return@launchLatest
+        val deleteConfirm = router.navigate<ConfirmDialogResult>(
+            AlertDialogDestination(
+                title = TextProvider(R.string.confirm_delete),
+                message = TextProvider(buildString {
+                    appendLine(ctx.resources.getString(R.string.confirm_delete_note))
+                    appendLine("${note.site} - ${note.login}")
+                }),
+                confirm = TextProvider(R.string.delete),
+                reject = TextProvider(R.string.cancel),
+            )
+        ).last()
+
+        if (deleteConfirm == ConfirmDialogResult.CONFIRMED) {
+            engine()?.removeNote(note.ptnote)
+            router.back()
+        }
+    }
+
+    fun scanQRCode() = scope.launchLatest("qr") {
+
+    }
 
     fun save() = scope.launchLatest("safe") {
-//        val note = note.value
-//        if (note.isEmpty()) {
-//            navigator.snack(R.string.note_is_empty)
-//            return@launchLatest
-//        }
-//
-//        val error = engine()?.saveNote(note, setAll = true)
-//        navigator.back()
+        val curState = state.value
+        when (curState.page) {
+            EditTabs.Account -> {
+                val note = curState.decryptedNote()
+                if (note.isEmpty()) {
+                    router.snack(R.string.note_is_empty)
+                    return@launchLatest
+                }
+
+                val error = engine()?.saveNote(note, setAll = true)
+                router.back()
+            }
+
+            EditTabs.Otp -> {
+
+            }
+        }
+
     }
 
     fun generate() = scope.launchLatestSafe("gen") {
-//        val newPassw = engine()?.generateNewPassw(GenPasswParams(oldPassw = note.value.passw))
-//            ?: return@launchLatestSafe
-//
-//        note.value = note.value.copy(passw = newPassw)
+        val newPassw = engine()?.generateNewPassw(GenPasswParams(oldPassw = state.value.passw))
+            ?: return@launchLatestSafe
+        input { copy(passw = newPassw) }
     }
 
 

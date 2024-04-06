@@ -61,4 +61,9 @@
     <string name="name">Name</string>
     <string name="color_group">Color group</string>
     <string name="no_group">No Group</string>
+    <string name="no">NO</string>
+    <string name="group">Group</string>
+    <string name="confirm_delete">Confirm delete</string>
+    <string name="confirm_delete_note">Confirm delete the note</string>
+    <string name="delete">Delete</string>
 </resources>

@@ -101,7 +101,7 @@ fun EditGroupInfoContent(
 
                     GroupCircle(
                         name = "",
-                        enabled = color == select,
+                        checked = color == select,
                         colorScheme = colorScheme.surfaceScheme(color),
                         modifier = Modifier
                             .animateContentSize()

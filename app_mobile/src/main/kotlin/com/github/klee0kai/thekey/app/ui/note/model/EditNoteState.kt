@@ -9,6 +9,7 @@ import kotlinx.parcelize.Parcelize
 data class EditNoteState(
     val isEditMode: Boolean = false,
     val isSkeleton: Boolean = false,
+    val page: EditTabs = EditTabs.Account,
     val isSaveAvailable: Boolean = false,
     val isRemoveAvailable: Boolean = false,
 
@@ -52,6 +53,7 @@ fun EditNoteState.decryptedNote(origin: DecryptedNote = DecryptedNote()) =
         login = login,
         passw = passw,
         desc = desc,
+        colorGroupId = colorGroupVariants.getOrNull(colorGroupSelected)?.id ?: 0L
     )
 
 

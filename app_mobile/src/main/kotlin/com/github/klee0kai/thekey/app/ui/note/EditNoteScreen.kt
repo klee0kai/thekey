@@ -27,6 +27,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -107,6 +108,9 @@ fun EditNoteScreen(
                 otpAlgoExpanded = false,
             )
         }
+    }
+    LaunchedEffect(key1 = page.current) {
+        presenter.input { copy(page = page.current) }
     }
 
     ConstraintLayout(
@@ -377,10 +381,12 @@ fun EditNoteScreen(
                         topMargin = 8.dp,
                     )
                 },
+            selectedIndex = state.colorGroupSelected,
+            variants = state.colorGroupVariants,
             expanded = state.colorGroupExpanded,
             onExpandedChange = { presenter.input { copy(colorGroupExpanded = it) } },
             onSelected = { presenter.input { copy(colorGroupSelected = it, colorGroupExpanded = false) } },
-            label = { Text(stringResource(R.string.color_group)) }
+            label = { Text(stringResource(R.string.group)) }
         )
 
     }
@@ -419,7 +425,7 @@ fun EditNoteScreen(
                     if (page.current == Account) {
                         presenter.generate()
                     } else {
-
+                        presenter.scanQRCode()
                     }
                 }
             ) {
@@ -446,23 +452,16 @@ fun EditNoteScreen(
         isVisible = scrollState.value <= 30.dp.toPx(),
         navigationIcon = {
             IconButton(onClick = { navigator.back() }) {
-                Icon(
-                    Icons.Filled.ArrowBack,
-                    contentDescription = null,
-                )
+                Icon(Icons.Filled.ArrowBack, contentDescription = null)
             }
         },
-        titleContent = {
-            Text(text = stringResource(id = if (state.isEditMode) R.string.edit else R.string.create))
-        },
+        titleContent = { Text(text = stringResource(id = if (state.isEditMode) R.string.edit else R.string.create)) },
         actions = {
             if (isRemoveAvailable.current) {
                 IconButton(
                     modifier = Modifier
                         .alpha(isRemoveAvailable.alpha),
-                    onClick = {
-
-                    }
+                    onClick = { presenter.tryRemove() }
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Delete,
@@ -477,9 +476,7 @@ fun EditNoteScreen(
                     modifier = Modifier
                         .alpha(saveInToolbarAlpha.alpha)
                         .alpha(isSaveAvailable.alpha),
-                    onClick = {
-                        presenter.save()
-                    }
+                    onClick = { presenter.save() }
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Done,
@@ -490,4 +487,6 @@ fun EditNoteScreen(
             }
         }
     )
+
+
 }

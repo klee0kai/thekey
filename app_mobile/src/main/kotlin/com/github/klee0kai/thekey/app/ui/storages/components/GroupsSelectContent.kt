@@ -95,7 +95,7 @@ fun GroupsSelectContent(
                     GroupCircle(
                         name = group.name,
                         colorScheme = colorScheme.surfaceScheme(group.keyColor),
-                        enabled = group.id == selectedGroup,
+                        checked = group.id == selectedGroup,
                         modifier = Modifier
                             .padding(
                                 start = if (isFirst) 16.dp else 8.dp,

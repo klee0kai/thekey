@@ -16,6 +16,6 @@ data class ColorGroup(
 }
 
 fun ColorGroup.Companion.noGroup(): ColorGroup =
-    ColorGroup(name = DI.app().resources.getString(R.string.no_group), keyColor = KeyColor.NOCOLOR)
+    ColorGroup(name = DI.app().resources.getString(R.string.no), keyColor = KeyColor.NOCOLOR)
 
 
