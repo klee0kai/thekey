@@ -17,11 +17,12 @@ import kotlinx.coroutines.sync.withLock
 @Stable
 class LazyModelProvider<T, R>(
     override val placeholder: T,
+    preloaded: R? = null,
     private val lazyProvide: suspend LazyModelProvider<T, R>.() -> R,
 ) : LazyModel<T, R> {
     companion object;
 
-    private var dirty = MutableStateFlow(true)
+    private var dirty = MutableStateFlow(false)
     private var fullValueLoaded: Any? = notLoaded
     private val mutex = Mutex()
 
@@ -37,6 +38,12 @@ class LazyModelProvider<T, R>(
             }
             send(fullValueLoaded as R)
             dirty.first { it }
+        }
+    }
+
+    init {
+        if (preloaded != null) {
+            fullValueLoaded = preloaded
         }
     }
 
@@ -59,7 +66,7 @@ class LazyModelProvider<T, R>(
 }
 
 fun <T, R> fromPreloadedOrCreate(placeholder: T, old: List<LazyModel<T, R>>, lazyProvide: suspend LazyModel<T, R>.() -> R): LazyModel<T, R> {
-    return old.firstOrNull { it.placeholder == placeholder } ?: LazyModelProvider(placeholder, lazyProvide)
+    return old.firstOrNull { it.placeholder == placeholder } ?: LazyModelProvider(placeholder, lazyProvide = lazyProvide)
 }
 
 

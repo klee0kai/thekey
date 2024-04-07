@@ -19,10 +19,14 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.model.ColorGroup
+import com.github.klee0kai.thekey.app.model.ColoredNote
 import com.github.klee0kai.thekey.app.model.LazyColoredNote
 import com.github.klee0kai.thekey.app.model.dummyLazyColoredNote
 import com.github.klee0kai.thekey.app.model.noGroup
+import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
+import com.github.klee0kai.thekey.app.ui.designkit.color.KeyColor
+import com.github.klee0kai.thekey.app.utils.lazymodel.LazyModelProvider
 import com.github.klee0kai.thekey.app.utils.lazymodel.collectAsStateCrossFaded
 import com.github.klee0kai.thekey.app.utils.views.rememberAlphaAnimate
 import com.github.klee0kai.thekey.app.utils.views.rememberSkeletonModifier
@@ -32,7 +36,7 @@ import com.github.klee0kai.thekey.app.utils.views.rememberSkeletonModifier
 @Composable
 fun ColoredNoteItem(
     modifier: Modifier = Modifier,
-    lazyNote: LazyColoredNote = dummyLazyColoredNote()
+    lazyNote: LazyColoredNote = dummyLazyColoredNote(),
 ) {
     val colorScheme = LocalColorScheme.current
     val animatedNote by lazyNote.collectAsStateCrossFaded()
@@ -87,7 +91,8 @@ fun ColoredNoteItem(
 
         Text(
             text = animatedNote.current?.login.takeIf { !it.isNullOrBlank() } ?: "",
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.bodyMedium
+                .copy(color = LocalColorScheme.current.androidColorScheme.primary),
             modifier = Modifier
                 .then(skeletonModifier)
                 .constrainAs(loginField) {
@@ -108,9 +113,9 @@ fun ColoredNoteItem(
         )
 
         Text(
-            text = animatedNote.current?.desc.takeIf { !it.isNullOrBlank() } ?: "desc",
+            text = animatedNote.current?.desc.takeIf { !it.isNullOrBlank() } ?: "",
             color = MaterialTheme.colorScheme.onSurface,
-            style = MaterialTheme.typography.bodySmall,
+            style = MaterialTheme.typography.labelSmall,
             modifier = Modifier
                 .then(skeletonModifier)
                 .constrainAs(descriptionField) {
@@ -128,5 +133,31 @@ fun ColoredNoteItem(
                     )
                 }
         )
+    }
+}
+
+@Composable
+@Preview
+private fun ColoredNoteSkeleton() {
+    AppTheme {
+        ColoredNoteItem(lazyNote = LazyModelProvider(1L) { ColoredNote() })
+    }
+}
+
+@Composable
+@Preview
+private fun ColoredNoteDummy() {
+    AppTheme {
+        ColoredNoteItem(lazyNote = LazyModelProvider(
+            1L, preloaded = ColoredNote(
+                site = "some.super.site.com",
+                login = "potato",
+                desc = "my work note",
+                group = ColorGroup(
+                    name = "CO",
+                    keyColor = KeyColor.CORAL,
+                )
+            )
+        ) { ColoredNote() })
     }
 }
