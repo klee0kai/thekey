@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.data.repositories.delegates
+package com.github.klee0kai.thekey.app.data.repositories.settings.delegates
 
 import com.github.klee0kai.thekey.app.data.room.dao.SettingDao
 import com.github.klee0kai.thekey.app.di.wrap.AsyncCoroutineProvide

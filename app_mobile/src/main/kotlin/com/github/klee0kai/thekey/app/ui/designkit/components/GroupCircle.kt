@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.ui.storages.components
+package com.github.klee0kai.thekey.app.ui.designkit.components
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState

@@ -43,7 +43,7 @@ enum class EditTabs {
 
 fun EditNoteState.isValid(): Boolean {
     val allDigits = otpPeriod.all { it.isDigit() } && otpDigits.all { it.isDigit() } && otpCounter.all { it.isDigit() }
-    val correctLen = otpPeriod.length < 4 && otpDigits.length < 2
+    val correctLen = otpPeriod.length <= 4 && otpDigits.length <= 2
     return allDigits && correctLen
 }
 

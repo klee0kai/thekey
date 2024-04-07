@@ -569,7 +569,7 @@ std::shared_ptr<DecryptedNote> KeyStorageV2::note(long long id, uint flags) {
     return decryptedNote;
 }
 
-shared_ptr<DecryptedNote> KeyStorageV2::createNote(const DecryptedNote &note) {
+shared_ptr<DecryptedNote> KeyStorageV2::createNote(const DecryptedNote &note, uint flags) {
     lock_guard guard(editMutex);
     auto data = snapshot();
     data.cryptedNotes = make_shared<list<CryptedNote>>(list<CryptedNote>(*data.cryptedNotes));
@@ -580,7 +580,7 @@ shared_ptr<DecryptedNote> KeyStorageV2::createNote(const DecryptedNote &note) {
     dNote->id = createdId;
     snapshot(data);
 
-    setNote(*dNote, TK2_SET_NOTE_FORCE | TK2_SET_NOTE_FULL_HISTORY);
+    setNote(*dNote, flags | TK2_SET_NOTE_FORCE | TK2_SET_NOTE_FULL_HISTORY);
     return dNote;
 }
 

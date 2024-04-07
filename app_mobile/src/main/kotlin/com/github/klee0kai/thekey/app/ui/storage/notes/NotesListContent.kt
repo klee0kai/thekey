@@ -43,16 +43,12 @@ fun NotesListContent(
     args: StorageDestination = StorageDestination(),
     showStoragesTitle: Boolean = true,
 ) {
-    val presenter = remember {
-        DI.storagePresenter(args.identifier()).apply {
-            collectNotesFromEngine(forceDirty = true)
-        }
-    }
+    val presenter = remember { DI.storagePresenter(args.identifier()) }
     val navigator = LocalRouter.current
-    val notes = presenter.filteredNotes.collectAsState(key = Unit)
+    val notes by presenter.filteredNotes.collectAsState(key = Unit, initial = emptyList())
     val titleAnimatedAlpha by animateAlphaAsState(showStoragesTitle)
 
-
+    if (notes.isEmpty()) return
 
     LazyColumn(
         modifier = modifier
@@ -69,7 +65,7 @@ fun NotesListContent(
             )
         }
 
-        notes.value.forEach { lazyNote ->
+        notes.forEach { lazyNote ->
             item(contentType = lazyNote::class, key = lazyNote.id) {
                 var showMenu by remember { mutableStateOf(false) }
 

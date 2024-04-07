@@ -32,6 +32,7 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.app.ui.navigation.note
 import com.github.klee0kai.thekey.app.ui.storages.components.GroupsSelectContent
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
+import com.github.klee0kai.thekey.app.utils.views.collectAsState
 import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
 
 @Preview
@@ -43,10 +44,10 @@ fun NotesContent(
     scaffoldState: SimpleBottomSheetScaffoldState = simpleBottomSheetScaffoldState(LocalDensity.current),
     onDrag: (Float) -> Unit = {},
 ) {
-    val presenter = remember { DI.storagePresenter(args.identifier()).apply { collectGroupsFromEngine() } }
+    val presenter = remember { DI.storagePresenter(args.identifier()) }
     val router = LocalRouter.current
     val selectedGroup by presenter.selectedGroupId.collectAsState()
-    val groups by presenter.filteredColorGroups.collectAsState()
+    val groups by presenter.filteredColorGroups.collectAsState(key = Unit, initial = emptyList())
     val dragProgress = remember { mutableFloatStateOf(0f) }
     val addButtonAlpha by animateAlphaAsState(isPageFullyAvailable)
     val addButtonVisible by rememberDerivedStateOf { addButtonAlpha > 0 }
@@ -66,7 +67,7 @@ fun NotesContent(
                     .offset(y = dragProgress.floatValue.topContentOffsetFromDrag()),
                 selectedGroup = selectedGroup,
                 onAdd = { router.navigate(args.createGroup()) },
-                colorGroups = groups,
+                colorGroups = groups.map { it.getOrNull() ?: it.placeholder },
                 onGroupSelected = { presenter.selectGroup(it.id) },
             )
         },

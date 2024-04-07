@@ -63,14 +63,14 @@ class EditNoteGroupPresenter(val groupIdentifier: NoteGroupIdentifier) {
                 launch {
                     when {
                         selectedNotes.value.contains(note.ptnote) -> {
-                            engine()?.saveNote(
+                            engine().saveNote(
                                 note = note.copy(colorGroupId = created?.id ?: 0),
                                 setAll = false,
                             )
                         }
 
                         note.colorGroupId == groupIdentifier.groupId -> {
-                            engine()?.saveNote(
+                            engine().saveNote(
                                 note = note.copy(colorGroupId = 0),
                                 setAll = false,
                             )

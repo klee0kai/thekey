@@ -1,8 +1,8 @@
-package com.github.klee0kai.thekey.app.data.repositories
+package com.github.klee0kai.thekey.app.data.repositories.settings
 
-import com.github.klee0kai.thekey.app.data.repositories.delegates.BooleanNoteDelegate
-import com.github.klee0kai.thekey.app.data.repositories.delegates.IntNoteDelegate
-import com.github.klee0kai.thekey.app.data.repositories.delegates.StringNoteDelegate
+import com.github.klee0kai.thekey.app.data.repositories.settings.delegates.BooleanNoteDelegate
+import com.github.klee0kai.thekey.app.data.repositories.settings.delegates.IntNoteDelegate
+import com.github.klee0kai.thekey.app.data.repositories.settings.delegates.StringNoteDelegate
 import com.github.klee0kai.thekey.app.di.DI
 import java.io.File
 

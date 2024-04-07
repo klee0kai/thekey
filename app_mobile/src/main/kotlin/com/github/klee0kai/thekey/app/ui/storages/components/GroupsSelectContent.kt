@@ -19,6 +19,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.model.ColorGroup
+import com.github.klee0kai.thekey.app.ui.designkit.components.GroupCircle
 import com.github.klee0kai.thekey.app.ui.designkit.components.LazyListIndicatorIfNeed
 
 @Preview

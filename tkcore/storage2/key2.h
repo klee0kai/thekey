@@ -207,7 +207,7 @@ namespace thekey_v2 {
         /**
          * @return created note. Has id
          */
-        virtual std::shared_ptr<DecryptedNote> createNote(const DecryptedNote &note = {});
+        virtual std::shared_ptr<DecryptedNote> createNote(const DecryptedNote &note = {}, uint flags = 0);
 
         /**
          *

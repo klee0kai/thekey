@@ -5,7 +5,6 @@ import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.NoteIdentifier
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.engine.model.GenPasswParams
-import com.github.klee0kai.thekey.app.engine.model.colorGroup
 import com.github.klee0kai.thekey.app.engine.model.isEmpty
 import com.github.klee0kai.thekey.app.model.ColorGroup
 import com.github.klee0kai.thekey.app.model.noGroup
@@ -38,7 +37,8 @@ class EditNotePresenter(
     private val dateFormat = TimeFormats.simpleDateFormat()
     private val scope = DI.defaultThreadScope()
     private val router = DI.router()
-    private val engine = DI.cryptStorageEngineSafeLazy(identifier.storage())
+    private val notesRep = DI.notesRepLazy(identifier.storage())
+    private val groupsRep = DI.groupRepLazy(identifier.storage())
 
     private var originNote: DecryptedNote? = null
     private var colorGroups: List<ColorGroup> = emptyList()
@@ -61,14 +61,14 @@ class EditNotePresenter(
 
         var prefilled = prefilled
         if (identifier.notePtr != 0L) {
-            originNote = engine()?.note(identifier.notePtr) ?: DecryptedNote()
+            originNote = notesRep().note(identifier.notePtr).await()
             prefilled = originNote
         }
 
-        colorGroups = (engine()?.colorGroups(true)
-            ?.map { it.colorGroup() } ?: emptyList())
+        colorGroups = groupsRep().groups
+            .value
+            .map { it.fullValue() }
             .let { listOf(ColorGroup.noGroup()) + it }
-
 
         state.update { note ->
             note.copy(
@@ -128,7 +128,7 @@ class EditNotePresenter(
         ).last()
 
         if (deleteConfirm == ConfirmDialogResult.CONFIRMED) {
-            engine()?.removeNote(note.ptnote)
+            notesRep().removeNote(note.ptnote)
             router.back()
         }
     }
@@ -141,13 +141,13 @@ class EditNotePresenter(
         val curState = state.value
         when (curState.page) {
             EditTabs.Account -> {
-                val note = curState.decryptedNote()
+                val note = curState.decryptedNote(origin = originNote ?: DecryptedNote())
                 if (note.isEmpty()) {
                     router.snack(R.string.note_is_empty)
                     return@launchLatest
                 }
 
-                val error = engine()?.saveNote(note, setAll = true)
+                val error = notesRep().saveNote(note, setAll = true)
                 router.back()
             }
 
@@ -159,8 +159,10 @@ class EditNotePresenter(
     }
 
     fun generate() = scope.launchLatestSafe("gen") {
-        val newPassw = engine()?.generateNewPassw(GenPasswParams(oldPassw = state.value.passw))
-            ?: return@launchLatestSafe
+        val newPassw = notesRep()
+            .generateNewPassw(GenPasswParams(oldPassw = state.value.passw))
+            .await()
+
         input { copy(passw = newPassw) }
     }
 

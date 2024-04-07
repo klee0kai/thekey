@@ -40,10 +40,10 @@ fun NoteSelectToGroupComponent(
     header: LazyListScope.() -> Unit = {},
     footer: LazyListScope.() -> Unit = {},
 ) {
-    val presenter = remember { DI.storagePresenter(storageIdentifier).apply { collectNotesFromEngine() } }
-    val notes = presenter.filteredNotes.collectAsState(key = Unit)
+    val presenter = remember { DI.storagePresenter(storageIdentifier) }
+    val notes by presenter.filteredNotes.collectAsState(key = Unit, initial = emptyList())
 
-    if (notes.value.isEmpty()) {
+    if (notes.isEmpty()) {
         return
     }
 
@@ -53,7 +53,7 @@ fun NoteSelectToGroupComponent(
     ) {
         header()
 
-        notes.value.forEach { lazyNote ->
+        notes.forEach { lazyNote ->
             item(contentType = lazyNote::class, key = lazyNote.id) {
 
                 val icon by animateTargetAlphaAsState(target = if (selectedIds.contains(lazyNote.id)) Icons.Default.Check else Icons.Filled.Add)

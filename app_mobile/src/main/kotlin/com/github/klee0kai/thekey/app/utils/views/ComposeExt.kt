@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.NonRestartableComposable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -28,7 +27,6 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
 @Composable
-@NonRestartableComposable
 fun <T : R, R> Deferred<T>.collectAsState(
     initial: R,
     context: CoroutineContext = EmptyCoroutineContext
@@ -41,7 +39,6 @@ fun <T : R, R> Deferred<T>.collectAsState(
 }
 
 @Composable
-@NonRestartableComposable
 fun <T : R, R> Flow<T>.collectAsState(
     key: Any?,
     initial: R,
@@ -62,14 +59,12 @@ fun <T> StateFlow<T>.collectAsState(
 ): State<T> = collectAsState(key = key, initial = value, context = context)
 
 @Composable
-@NonRestartableComposable
 fun <T> rememberDerivedStateOf(calculation: () -> T) = remember {
     derivedStateOf(calculation)
 }
 
 
 @Composable
-@NonRestartableComposable
 fun rememberTickerOf(trigger: () -> Boolean): State<Int> {
     var lastState by remember { mutableStateOf(trigger()) }
     val updateTicker = remember { mutableIntStateOf(0) }

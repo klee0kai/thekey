@@ -48,7 +48,7 @@ class CryptStorageSuspended(
     suspend fun getGenPassw(ptNote: Long): DecryptedPassw = engineRun { getGenPassw(ptNote) }
 
     private suspend fun <T> engineRun(block: suspend CryptStorage.() -> T): T = withContext(dispatcher) {
-        _engine()!!.block()
+        _engine().block()
     }
 
 }

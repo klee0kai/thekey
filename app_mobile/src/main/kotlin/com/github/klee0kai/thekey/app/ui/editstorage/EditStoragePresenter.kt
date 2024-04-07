@@ -19,7 +19,6 @@ open class EditStoragePresenter(
     override fun save(storage: Storage) {
         scope.launch(DI.defaultDispatcher()) {
             engine().editStorage(storage)
-
         }
     }
 

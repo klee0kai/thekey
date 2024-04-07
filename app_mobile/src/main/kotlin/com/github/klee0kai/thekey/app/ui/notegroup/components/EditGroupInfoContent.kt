@@ -24,8 +24,8 @@ import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.designkit.color.KeyColor
 import com.github.klee0kai.thekey.app.ui.designkit.color.transparentColorScheme
+import com.github.klee0kai.thekey.app.ui.designkit.components.GroupCircle
 import com.github.klee0kai.thekey.app.ui.designkit.components.LazyListIndicatorIfNeed
-import com.github.klee0kai.thekey.app.ui.storages.components.GroupCircle
 
 @Composable
 @Preview

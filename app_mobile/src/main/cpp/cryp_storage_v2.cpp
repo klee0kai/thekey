@@ -166,7 +166,7 @@ int JvmStorage2::saveNote(const brooklyn::EngineModelDecryptedNote &decryptedNot
             .colorGroupId = decryptedNote.colorGroupId,
     };
     if (!dnote.id) {
-        storage->createNote(dnote);
+        storage->createNote(dnote, flags);
     } else {
         storage->setNote(dnote, flags);
     }

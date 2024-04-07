@@ -15,10 +15,11 @@ import timber.log.Timber
 
 class LoginPresenter {
 
+    private val scope = DI.defaultThreadScope()
     private val storagesRep = DI.foundStoragesRepositoryLazy()
     private val settingsRep = DI.settingsRepositoryLazy()
+    private val loginInteractor = DI.loginInteractorLazy()
     private val router = DI.router()
-    private val scope = DI.defaultThreadScope()
 
     fun currentStorageFlow() = flow<ColoredStorage> {
         val storagePath = settingsRep().currentStoragePath()
@@ -47,8 +48,9 @@ class LoginPresenter {
         }
         runCatching {
             val storage = currentStorageFlow().first()
-            val engine = DI.cryptStorageEngineSafeLazy(storage.identifier())
-            engine()!!.login(passw)
+            loginInteractor()
+                .login(storage.identifier(), passw)
+                .await()
             router.navigate(storage.dest())
         }.onFailure { error ->
             Timber.d(error)

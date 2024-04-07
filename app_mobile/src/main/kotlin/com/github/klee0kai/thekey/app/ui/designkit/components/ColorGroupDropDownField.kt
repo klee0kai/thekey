@@ -17,7 +17,6 @@ import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.model.ColorGroup
 import com.github.klee0kai.thekey.app.ui.designkit.color.KeyColor
 import com.github.klee0kai.thekey.app.ui.navigation.LocalColorScheme
-import com.github.klee0kai.thekey.app.ui.storages.components.GroupCircle
 
 @Preview
 @Composable

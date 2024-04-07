@@ -110,7 +110,9 @@ fun EditNoteScreen(
         }
     }
     LaunchedEffect(key1 = page.current) {
-        presenter.input { copy(page = page.current) }
+        if (!state.isSkeleton) {
+            presenter.input { copy(page = page.current) }
+        }
     }
 
     ConstraintLayout(
@@ -194,6 +196,7 @@ fun EditNoteScreen(
 
         OutlinedTextField(
             modifier = Modifier
+                .alpha(page.alpha)
                 .then(skeletonModifier)
                 .constrainAs(passwTextField) {
                     width = Dimension.fillToConstraints
@@ -206,14 +209,23 @@ fun EditNoteScreen(
                         topMargin = 8.dp,
                     )
                 },
-            value = state.passw,
-            onValueChange = { presenter.input { copy(passw = it) } },
+            value = when (page.current) {
+                Account -> state.passw
+                Otp -> state.otpSecret
+            },
+            onValueChange = {
+                when (page.current) {
+                    Account -> presenter.input { copy(passw = it) }
+                    Otp -> presenter.input { copy(otpSecret = it) }
+                }
+
+            },
             label = {
-                val text = if (page.current == Account) R.string.password else R.string.secret
                 Text(
-                    modifier = Modifier
-                        .alpha(page.alpha),
-                    text = stringResource(text)
+                    text = when (page.current) {
+                        Account -> stringResource(id = R.string.password)
+                        Otp -> stringResource(id = R.string.secret)
+                    }
                 )
             }
         )
@@ -258,7 +270,7 @@ fun EditNoteScreen(
                         )
                     },
                 value = state.desc,
-                onValueChange = { presenter.input { copy(passw = it) } },
+                onValueChange = { presenter.input { copy(desc = it) } },
                 label = { Text(stringResource(R.string.description)) },
             )
         }
