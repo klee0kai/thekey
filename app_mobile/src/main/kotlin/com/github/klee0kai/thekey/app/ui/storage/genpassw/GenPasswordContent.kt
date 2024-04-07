@@ -32,7 +32,7 @@ import androidx.constraintlayout.compose.Dimension
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
-import com.github.klee0kai.thekey.app.ui.navigation.LocalRouter
+import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
 import com.github.klee0kai.thekey.app.ui.navigation.createNote
 import com.github.klee0kai.thekey.app.ui.navigation.genHist
 import com.github.klee0kai.thekey.app.ui.navigation.identifier

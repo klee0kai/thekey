@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.github.klee0kai.thekey.app.ui.navigation.LocalRouter
+import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
 import com.github.klee0kai.thekey.app.ui.navigation.model.AlertDialogDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.ConfirmDialogResult
 

@@ -19,26 +19,18 @@ import androidx.compose.material3.SwipeToDismissBoxDefaults
 import androidx.compose.material3.SwipeToDismissBoxState
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.NonRestartableComposable
-import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalInspectionMode
-import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.platform.isDebugInspectorInfoEnabled
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.BuildConfig
-import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.di.updateConfig
-import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.EmptyScreen
+import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
 import com.github.klee0kai.thekey.app.ui.designkit.dialogs.AlertDialogScreen
 import com.github.klee0kai.thekey.app.ui.editstorage.EditStorageScreen
 import com.github.klee0kai.thekey.app.ui.genhist.GenHistScreen
@@ -58,7 +50,6 @@ import com.github.klee0kai.thekey.app.ui.notegroup.EditNoteGroupScreen
 import com.github.klee0kai.thekey.app.ui.storage.StorageScreen
 import com.github.klee0kai.thekey.app.ui.storages.StoragesScreen
 import com.github.klee0kai.thekey.app.utils.views.rememberTickerOf
-import com.valentinilk.shimmer.defaultShimmerTheme
 import dev.olshevski.navigation.reimagined.AnimatedNavHost
 import dev.olshevski.navigation.reimagined.NavAction
 import dev.olshevski.navigation.reimagined.NavBackHandler
@@ -67,54 +58,33 @@ import dev.olshevski.navigation.reimagined.NavTransitionScope
 import dev.olshevski.navigation.reimagined.NavTransitionSpec
 
 
-val LocalRouter = compositionLocalOf { DI.router() }
-val LocalShimmerTheme = compositionLocalOf { defaultShimmerTheme.copy() }
-val LocalColorScheme = compositionLocalOf { DI.theme().colorScheme() }
-
 @Composable
 fun MainNavContainer() {
-    val router = remember { DI.router() }
-    val isEditMode = LocalView.current.isInEditMode || LocalInspectionMode.current || isDebugInspectorInfoEnabled
+    NavBackHandler(LocalRouter.current.navFullController)
 
-    LaunchedEffect(Unit) {
-        DI.updateConfig {
-            copy(isViewEditMode = isEditMode)
-        }
+    LocalRouter.current.collectBackstackChanges()
+
+    // screens
+    AnimatedNavHost(
+        controller = LocalRouter.current.navScreensController,
+        transitionQueueing = NavTransitionQueueing.QueueAll,
+        transitionSpec = customTransitionSpec,
+        emptyBackstackPlaceholder = { EmptyScreen() }
+    ) { destination ->
+        screenOf(destination = destination)
     }
 
-    NavBackHandler(router.navFullController)
-
-    router.collectBackstackChanges()
-
-    CompositionLocalProvider(
-        LocalRouter provides DI.router(),
-        LocalShimmerTheme provides defaultShimmerTheme.copy(),
-        LocalColorScheme provides DI.theme().colorScheme(),
-    ) {
-        AppTheme {
-            // screens
-            AnimatedNavHost(
-                controller = router.navScreensController,
-                transitionQueueing = NavTransitionQueueing.QueueAll,
-                transitionSpec = customTransitionSpec,
-                emptyBackstackPlaceholder = { EmptyScreen() }
-            ) { destination ->
-                screenOf(destination = destination)
-            }
-
-            // Dialogs
-            AnimatedNavHost(
-                controller = router.navDialogsController,
-                transitionQueueing = NavTransitionQueueing.QueueAll,
-                transitionSpec = customTransitionSpec,
-            ) { destination ->
-                screenOf(destination = destination)
-            }
-
-            // snack
-            SnackContainer()
-        }
+    // Dialogs
+    AnimatedNavHost(
+        controller = LocalRouter.current.navDialogsController,
+        transitionQueueing = NavTransitionQueueing.QueueAll,
+        transitionSpec = customTransitionSpec,
+    ) { destination ->
+        screenOf(destination = destination)
     }
+
+    // snack
+    SnackContainer()
 }
 
 @Preview

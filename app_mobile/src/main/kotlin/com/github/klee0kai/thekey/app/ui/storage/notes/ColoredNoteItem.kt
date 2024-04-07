@@ -22,7 +22,7 @@ import com.github.klee0kai.thekey.app.model.ColorGroup
 import com.github.klee0kai.thekey.app.model.LazyColoredNote
 import com.github.klee0kai.thekey.app.model.dummyLazyColoredNote
 import com.github.klee0kai.thekey.app.model.noGroup
-import com.github.klee0kai.thekey.app.ui.navigation.LocalColorScheme
+import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
 import com.github.klee0kai.thekey.app.utils.lazymodel.collectAsStateCrossFaded
 import com.github.klee0kai.thekey.app.utils.views.rememberAlphaAnimate
 import com.github.klee0kai.thekey.app.utils.views.rememberSkeletonModifier
