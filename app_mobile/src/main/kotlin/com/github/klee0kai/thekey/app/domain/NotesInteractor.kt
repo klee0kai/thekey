@@ -47,6 +47,8 @@ class NotesInteractor(
 
     fun removeNote(noteptr: Long) = scope.launch { rep().removeNote(noteptr) }
 
+    fun setNoteGroup(notePt: Long, groupId: Long) = scope.launch{rep().setNoteGroup(notePt,groupId)}
+
     fun generateNewPassw(params: GenPasswParams) = scope.async { rep().generateNewPassw(params) }
 
     fun clear() = scope.launchLatest("clear") { rep().clear() }

@@ -10,29 +10,30 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.klee0kai.thekey.app.R
-import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.domain.model.ColorGroup
+import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
+import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
+import com.github.klee0kai.thekey.app.ui.designkit.color.KeyColor
 import com.github.klee0kai.thekey.app.ui.designkit.components.GroupCircle
 import com.github.klee0kai.thekey.app.ui.designkit.components.LazyListIndicatorIfNeed
+import com.github.klee0kai.thekey.app.utils.common.DummyId
 
-@Preview
 @Composable
 fun GroupsSelectContent(
     modifier: Modifier = Modifier,
     selectedGroup: Long? = null,
     colorGroups: List<ColorGroup> = emptyList(),
+    forceScrollIndicator: Boolean = false,
     onAdd: () -> Unit = {},
     onGroupSelected: (ColorGroup) -> Unit = {},
 ) {
-    val colorScheme = remember { DI.theme().colorScheme() }
-
+    val colorScheme = LocalColorScheme.current
     val lazyListState = rememberLazyListState()
 
     ConstraintLayout(
@@ -61,6 +62,7 @@ fun GroupsSelectContent(
         LazyListIndicatorIfNeed(
             lazyListState = lazyListState,
             horizontal = true,
+            forceScrollIndicator = forceScrollIndicator,
             modifier = Modifier
                 .size(52.dp, 4.dp)
                 .constrainAs(indicator) {
@@ -123,5 +125,22 @@ fun GroupsSelectContent(
                 )
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun GroupsSelectContentPreview() {
+    AppTheme {
+        GroupsSelectContent(
+            forceScrollIndicator = true,
+            selectedGroup = 1L,
+            colorGroups = listOf(
+                ColorGroup(DummyId.dummyId, "CE", KeyColor.CORAL),
+                ColorGroup(DummyId.dummyId, "AN", KeyColor.ORANGE),
+                ColorGroup(DummyId.dummyId, "TU", KeyColor.TURQUOISE),
+                ColorGroup(DummyId.dummyId, "T", KeyColor.VIOLET),
+            ),
+        )
     }
 }

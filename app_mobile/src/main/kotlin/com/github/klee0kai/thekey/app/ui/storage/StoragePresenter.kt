@@ -66,9 +66,8 @@ class StoragePresenter(
         }
     }
 
-    fun remove(notePt: Long) = scope.launch {
-        notesInteractor().removeNote(notePt)
+    fun setColorGroup(notePt: Long, groupId: Long) = scope.launch {
+        notesInteractor().setNoteGroup(notePt, groupId)
     }
-
 
 }

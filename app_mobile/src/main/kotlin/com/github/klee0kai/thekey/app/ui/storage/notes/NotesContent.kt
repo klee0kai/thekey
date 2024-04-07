@@ -14,6 +14,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalDensity
@@ -48,23 +49,23 @@ fun NotesContent(
     val router = LocalRouter.current
     val selectedGroup by presenter.selectedGroupId.collectAsState()
     val groups by presenter.filteredColorGroups.collectAsState(key = Unit, initial = emptyList())
-    val dragProgress = remember { mutableFloatStateOf(0f) }
+    var dragProgress by remember { mutableFloatStateOf(0f) }
     val addButtonAlpha by animateAlphaAsState(isPageFullyAvailable)
     val addButtonVisible by rememberDerivedStateOf { addButtonAlpha > 0 }
-    val showStoragesTitle by rememberDerivedStateOf { dragProgress.floatValue > 0.1f }
+    val showStoragesTitle by rememberDerivedStateOf { dragProgress > 0.1f }
 
     SimpleBottomSheetScaffold(
         modifier = modifier,
         simpleBottomSheetScaffoldState = scaffoldState,
         onDrag = {
-            dragProgress.floatValue = it
+            dragProgress = it
             onDrag.invoke(it)
         },
         topContent = {
             GroupsSelectContent(
                 modifier = Modifier
-                    .alpha(dragProgress.floatValue.topContentAlphaFromDrag())
-                    .offset(y = dragProgress.floatValue.topContentOffsetFromDrag()),
+                    .alpha(dragProgress.topContentAlphaFromDrag())
+                    .offset(y = dragProgress.topContentOffsetFromDrag()),
                 selectedGroup = selectedGroup,
                 onAdd = { router.navigate(args.createGroup()) },
                 colorGroups = groups.map { it.getOrNull() ?: it.placeholder },
@@ -83,7 +84,7 @@ fun NotesContent(
     if (addButtonVisible) {
         FabSimpleInContainer(
             modifier = Modifier.alpha(addButtonAlpha),
-            onClick = remember { { router.navigate(args.note()) } },
+            onClick = { router.navigate(args.note()) },
             content = { Icon(Icons.Default.Add, contentDescription = "Add") }
         )
     }

@@ -10,13 +10,13 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.klee0kai.thekey.app.utils.views.ratioBetween
+import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
 
 
 @Composable
@@ -24,36 +24,41 @@ import com.github.klee0kai.thekey.app.utils.views.ratioBetween
 fun LazyListIndicatorIfNeed(
     modifier: Modifier = Modifier,
     horizontal: Boolean = false,
+    forceScrollIndicator: Boolean = false,
     lazyListState: LazyListState = rememberLazyListState(),
 ) {
-    val allItemsCounts = remember { derivedStateOf { lazyListState.layoutInfo.totalItemsCount } }
-    val visibleItemsCount = remember(allItemsCounts.value) {
-        lazyListState.layoutInfo.visibleItemsInfo.size
-    }
-    val isScrollIndicatorVisible = allItemsCounts.value > visibleItemsCount * 1.3f
+    val allItemsCounts by rememberDerivedStateOf { lazyListState.layoutInfo.totalItemsCount }
+    val visibleItemsCount by rememberDerivedStateOf { lazyListState.layoutInfo.visibleItemsInfo.size }
+    val isScrollIndicatorVisible by rememberDerivedStateOf { forceScrollIndicator || allItemsCounts > visibleItemsCount * 1.3f }
     if (!isScrollIndicatorVisible) return
-    val firstVisibleItem = remember { derivedStateOf { lazyListState.firstVisibleItemIndex } }
-    val listVisibleRatio = visibleItemsCount.ratioBetween(0, allItemsCounts.value)
-    val scrollRatio = firstVisibleItem.value.ratioBetween(
-        start = 0,
-        end = allItemsCounts.value - visibleItemsCount
-    )
+    val firstVisibleItem by rememberDerivedStateOf { lazyListState.firstVisibleItemIndex }
+    val listVisibleRatio by rememberDerivedStateOf {
+        visibleItemsCount
+            .ratioBetween(0, allItemsCounts)
+            .coerceIn(0f, 1f)
+    }
+    val scrollRatio by rememberDerivedStateOf {
+        firstVisibleItem
+            .ratioBetween(start = 0, end = allItemsCounts - visibleItemsCount)
+            .coerceIn(0f, 1f)
+    }
 
     ConstraintLayout(
         modifier = modifier
     ) {
         val (indicatorContainer, indicator) = createRefs()
 
-        val indicatorModifier = if (horizontal) {
-            Modifier
-                .fillMaxHeight()
-                .fillMaxWidth(listVisibleRatio)
-        } else {
-            Modifier
-                .fillMaxWidth()
-                .fillMaxWidth(listVisibleRatio)
+        val indicatorModifier by rememberDerivedStateOf {
+            if (horizontal) {
+                Modifier
+                    .fillMaxHeight()
+                    .fillMaxWidth(listVisibleRatio)
+            } else {
+                Modifier
+                    .fillMaxWidth()
+                    .fillMaxWidth(listVisibleRatio)
+            }
         }
-
 
         Box(
             modifier = Modifier

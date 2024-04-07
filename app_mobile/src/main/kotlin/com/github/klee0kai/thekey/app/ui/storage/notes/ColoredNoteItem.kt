@@ -21,7 +21,7 @@ import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.domain.model.ColorGroup
 import com.github.klee0kai.thekey.app.domain.model.ColoredNote
 import com.github.klee0kai.thekey.app.domain.model.LazyColoredNote
-import com.github.klee0kai.thekey.app.domain.model.dummyLazyColoredNote
+import com.github.klee0kai.thekey.app.domain.model.dummyLazyColoredNoteSkeleton
 import com.github.klee0kai.thekey.app.domain.model.noGroup
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
@@ -36,7 +36,7 @@ import com.github.klee0kai.thekey.app.utils.views.rememberSkeletonModifier
 @Composable
 fun ColoredNoteItem(
     modifier: Modifier = Modifier,
-    lazyNote: LazyColoredNote = dummyLazyColoredNote(),
+    lazyNote: LazyColoredNote = dummyLazyColoredNoteSkeleton(),
 ) {
     val colorScheme = LocalColorScheme.current
     val animatedNote by lazyNote.collectAsStateCrossFaded()

@@ -21,7 +21,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.color.SurfaceScheme
 @Composable
 fun GroupCircle(
     modifier: Modifier = Modifier,
-    name: String = "",
+    name: String = "AN",
     colorScheme: SurfaceScheme = SurfaceScheme(Color.Cyan, Color.White),
     checked: Boolean = false,
     onClick: () -> Unit = {}
@@ -29,7 +29,9 @@ fun GroupCircle(
     val checkedState by animateDpAsState(if (checked) 12.dp else 24.dp, label = "color group checked")
     val rotate by animateFloatAsState(targetValue = if (checked) 70f else 0f, label = "color group select")
 
-    Box {
+    Box(
+        modifier = modifier,
+    ) {
         FilledIconButton(
             colors = IconButtonDefaults.filledIconButtonColors(
                 containerColor = colorScheme.surfaceColor,
@@ -37,7 +39,7 @@ fun GroupCircle(
                 disabledContainerColor = colorScheme.surfaceColor.copy(alpha = 0.4f),
                 disabledContentColor = colorScheme.onSurfaceColor.copy(alpha = 0.4f),
             ),
-            modifier = modifier
+            modifier = Modifier
                 .align(Alignment.Center)
                 .rotate(rotate),
             shape = RoundedCornerShape(checkedState),
