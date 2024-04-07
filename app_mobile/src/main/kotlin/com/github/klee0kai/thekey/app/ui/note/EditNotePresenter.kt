@@ -20,6 +20,7 @@ import com.github.klee0kai.thekey.app.ui.note.model.isValid
 import com.github.klee0kai.thekey.app.utils.common.TimeFormats
 import com.github.klee0kai.thekey.app.utils.common.launchLatest
 import com.github.klee0kai.thekey.app.utils.common.launchLatestSafe
+import com.github.klee0kai.thekey.app.utils.lazymodel.fullValue
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.last

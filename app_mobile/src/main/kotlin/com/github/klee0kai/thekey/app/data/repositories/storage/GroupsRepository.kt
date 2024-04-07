@@ -5,6 +5,7 @@ import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.engine.model.colorGroup
 import com.github.klee0kai.thekey.app.model.LazyColorGroup
 import com.github.klee0kai.thekey.app.model.id
+import com.github.klee0kai.thekey.app.utils.lazymodel.LazyModelProvider
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +16,6 @@ class GroupsRepository(
 ) {
 
     val engine = DI.cryptStorageEngineSafeLazy(identifier)
-
     val groups = MutableStateFlow<List<LazyColorGroup>>(emptyList())
 
     suspend fun loadGroups(forceDirty: Boolean = false) = coroutineScope {
@@ -31,10 +31,10 @@ class GroupsRepository(
                 .map { it.colorGroup() }
                 .map { groupLite ->
                     oldGroups.firstOrNull { it.id == groupLite.id }
-                        ?: LazyColorGroup(groupLite) {
+                        ?: LazyModelProvider(groupLite) {
                             fullyLoadedGroups.await().firstOrNull { it.id == groupLite.id } ?: groupLite
                         }.apply {
-                            dirty = forceDirty
+                            if (forceDirty) dirty()
                         }
                 }
         }

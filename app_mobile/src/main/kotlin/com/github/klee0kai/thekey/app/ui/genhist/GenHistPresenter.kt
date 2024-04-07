@@ -4,8 +4,8 @@ import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.model.LazyPassw
 import com.github.klee0kai.thekey.app.model.id
-import com.github.klee0kai.thekey.app.utils.common.fromPreloadedOrCreate
 import com.github.klee0kai.thekey.app.utils.common.singleEventFlow
+import com.github.klee0kai.thekey.app.utils.lazymodel.fromPreloadedOrCreate
 import kotlinx.coroutines.withContext
 
 class GenHistPresenter(
@@ -19,16 +19,15 @@ class GenHistPresenter(
     private var lazyHist = emptyList<LazyPassw>()
 
     fun hist() = singleEventFlow<List<LazyPassw>>(DI.defaultDispatcher()) {
-        val engine = engine() ?: return@singleEventFlow emptyList()
-        engine.genHistory()
+        engine().genHistory()
             .reversed()
             .map { passwLite ->
                 fromPreloadedOrCreate(passwLite.passwPtr, lazyHist) {
                     withContext(DI.defaultDispatcher()) {
-                        engine.getGenPassw(id)
+                        engine().getGenPassw(id)
                     }
                 }.apply {
-                    dirty = true
+                    dirty()
                 }
             }
             .also { lazyHist = it }

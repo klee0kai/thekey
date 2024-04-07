@@ -30,7 +30,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarStates
 import com.github.klee0kai.thekey.app.ui.navigation.LocalRouter
 import com.github.klee0kai.thekey.app.ui.navigation.model.GenHistDestination
 import com.github.klee0kai.thekey.app.ui.navigation.storageIdentifier
-import com.github.klee0kai.thekey.app.utils.common.collectAsStateCrossFaded
+import com.github.klee0kai.thekey.app.utils.lazymodel.collectAsStateCrossFaded
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
 import com.github.klee0kai.thekey.app.utils.views.skeleton
 

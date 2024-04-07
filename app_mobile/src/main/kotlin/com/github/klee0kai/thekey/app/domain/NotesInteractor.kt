@@ -10,6 +10,8 @@ import com.github.klee0kai.thekey.app.model.coloredNote
 import com.github.klee0kai.thekey.app.model.id
 import com.github.klee0kai.thekey.app.model.noGroup
 import com.github.klee0kai.thekey.app.utils.common.launchLatest
+import com.github.klee0kai.thekey.app.utils.lazymodel.fullValue
+import com.github.klee0kai.thekey.app.utils.lazymodel.map
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
@@ -28,12 +30,10 @@ class NotesInteractor(
             flow = rep().notes,
             flow2 = groupsRep().groups,
         ) { notes, groups ->
-            notes.map { note ->
-                LazyColoredNote(note.placeholder) {
-                    val noteFull = note.fullValue()
-                    val group = groups.firstOrNull { it.id == noteFull.colorGroupId }?.fullValue()
-                    note.fullValue()
-                        .coloredNote(group = group ?: ColorGroup.noGroup())
+            notes.map {
+                it.map { note ->
+                    val group = groups.firstOrNull { it.id == note.colorGroupId }?.fullValue()
+                    note.coloredNote(group = group ?: ColorGroup.noGroup())
                 }
             }
         }.collect(this)
