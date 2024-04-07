@@ -21,6 +21,7 @@ import com.github.klee0kai.thekey.app.utils.common.TimeFormats
 import com.github.klee0kai.thekey.app.utils.common.launchLatest
 import com.github.klee0kai.thekey.app.utils.common.launchLatestSafe
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -37,8 +38,8 @@ class EditNotePresenter(
     private val dateFormat = TimeFormats.simpleDateFormat()
     private val scope = DI.defaultThreadScope()
     private val router = DI.router()
-    private val notesRep = DI.notesRepLazy(identifier.storage())
-    private val groupsRep = DI.groupRepLazy(identifier.storage())
+    private val interactor = DI.notesInteractorLazy(identifier.storage())
+    private val groupsInteractor = DI.groupsInteractorLazy(identifier.storage())
 
     private var originNote: DecryptedNote? = null
     private var colorGroups: List<ColorGroup> = emptyList()
@@ -61,12 +62,12 @@ class EditNotePresenter(
 
         var prefilled = prefilled
         if (identifier.notePtr != 0L) {
-            originNote = notesRep().note(identifier.notePtr).await()
+            originNote = interactor().note(identifier.notePtr).await()
             prefilled = originNote
         }
 
-        colorGroups = groupsRep().groups
-            .value
+        colorGroups = groupsInteractor().groups
+            .first()
             .map { it.fullValue() }
             .let { listOf(ColorGroup.noGroup()) + it }
 
@@ -128,7 +129,7 @@ class EditNotePresenter(
         ).last()
 
         if (deleteConfirm == ConfirmDialogResult.CONFIRMED) {
-            notesRep().removeNote(note.ptnote)
+            interactor().removeNote(note.ptnote)
             router.back()
         }
     }
@@ -147,7 +148,7 @@ class EditNotePresenter(
                     return@launchLatest
                 }
 
-                val error = notesRep().saveNote(note, setAll = true)
+                val error = interactor().saveNote(note, setAll = true)
                 router.back()
             }
 
@@ -159,7 +160,7 @@ class EditNotePresenter(
     }
 
     fun generate() = scope.launchLatestSafe("gen") {
-        val newPassw = notesRep()
+        val newPassw = interactor()
             .generateNewPassw(GenPasswParams(oldPassw = state.value.passw))
             .await()
 

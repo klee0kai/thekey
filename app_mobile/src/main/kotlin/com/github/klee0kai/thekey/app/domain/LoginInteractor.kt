@@ -6,30 +6,30 @@ import kotlinx.coroutines.async
 
 class LoginInteractor {
 
-    val scope = DI.defaultThreadScope()
+    private val scope = DI.defaultThreadScope()
 
     fun login(identifier: StorageIdentifier, passw: String) = scope.async {
         val engine = DI.cryptStorageEngineSafeLazy(identifier)
-        val noteRep = DI.notesRepLazy(identifier)
-        val groupRepLazy = DI.groupRepLazy(identifier)
+        val notesInteractor = DI.notesInteractorLazy(identifier)
+        val groupsInteractor = DI.groupsInteractorLazy(identifier)
 
-        noteRep().clear()
-        groupRepLazy().clear()
+        notesInteractor().clear()
+        groupsInteractor().clear()
 
         engine().login(passw)
 
-        noteRep().loadNotes()
-        groupRepLazy().loadGroups()
+        notesInteractor().loadNotes()
+        groupsInteractor().loadGroups()
         Unit
     }
 
     fun unlogin(identifier: StorageIdentifier) = scope.async {
         val engine = DI.cryptStorageEngineSafeLazy(identifier)
-        val noteRep = DI.notesRepLazy(identifier)
-        val groupRepLazy = DI.groupRepLazy(identifier)
+        val notesInteractor = DI.notesInteractorLazy(identifier)
+        val groupsInteractor = DI.groupsInteractorLazy(identifier)
 
-        noteRep().clear()
-        groupRepLazy().clear()
+        notesInteractor().clear()
+        groupsInteractor().clear()
 
         engine().unlogin()
 

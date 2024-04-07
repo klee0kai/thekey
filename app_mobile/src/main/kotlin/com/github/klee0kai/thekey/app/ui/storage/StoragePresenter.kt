@@ -3,7 +3,7 @@ package com.github.klee0kai.thekey.app.ui.storage
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.model.LazyColorGroup
-import com.github.klee0kai.thekey.app.model.LazyNote
+import com.github.klee0kai.thekey.app.model.LazyColoredNote
 import com.github.klee0kai.thekey.app.ui.storage.model.SearchState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -13,8 +13,8 @@ import kotlinx.coroutines.launch
 class StoragePresenter(
     val storageIdentifier: StorageIdentifier,
 ) {
-    private val notesRep = DI.notesRepLazy(storageIdentifier)
-    private val groupsRep = DI.groupRepLazy(storageIdentifier)
+    private val notesInteractor = DI.notesInteractorLazy(storageIdentifier)
+    private val groupsInteractor = DI.groupsInteractorLazy(storageIdentifier)
 
     private val router = DI.router()
     private val scope = DI.defaultThreadScope()
@@ -23,21 +23,21 @@ class StoragePresenter(
     val selectedGroupId = MutableStateFlow<Long?>(null)
 
     val filteredColorGroups = flow<List<LazyColorGroup>> {
-        groupsRep().groups.collect(this@flow)
+        groupsInteractor().groups.collect(this@flow)
     }
 
-    val filteredNotes = flow<List<LazyNote>> {
+    val filteredNotes = flow<List<LazyColoredNote>> {
         combine(
             flow = searchState,
             flow2 = selectedGroupId,
-            flow3 = notesRep().notes,
+            flow3 = notesInteractor().notes,
             transform = { search, selectedGroup, orList ->
                 val filter = search.searchText
                 var filtList = orList
 
                 if (selectedGroup != null) {
                     filtList = filtList.filter {
-                        it.getOrNull()?.colorGroupId == selectedGroup
+                        it.getOrNull()?.group?.id == selectedGroup
                     }
                 }
 
@@ -67,7 +67,7 @@ class StoragePresenter(
     }
 
     fun remove(notePt: Long) = scope.launch {
-        notesRep().removeNote(notePt)
+        notesInteractor().removeNote(notePt)
     }
 
 

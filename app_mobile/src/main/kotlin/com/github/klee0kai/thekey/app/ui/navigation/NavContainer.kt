@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.BuildConfig
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.updateConfig
+import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.EmptyScreen
 import com.github.klee0kai.thekey.app.ui.designkit.dialogs.AlertDialogScreen
 import com.github.klee0kai.thekey.app.ui.editstorage.EditStorageScreen
@@ -45,11 +46,11 @@ import com.github.klee0kai.thekey.app.ui.login.LoginScreen
 import com.github.klee0kai.thekey.app.ui.navigation.model.AlertDialogDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.DesignDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.Destination
+import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteGroupDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditStorageDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.GenHistDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.LoginDestination
-import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.StoragesDestination
 import com.github.klee0kai.thekey.app.ui.note.EditNoteScreen
@@ -90,27 +91,29 @@ fun MainNavContainer() {
         LocalShimmerTheme provides defaultShimmerTheme.copy(),
         LocalColorScheme provides DI.theme().colorScheme(),
     ) {
-        // screens
-        AnimatedNavHost(
-            controller = router.navScreensController,
-            transitionQueueing = NavTransitionQueueing.QueueAll,
-            transitionSpec = customTransitionSpec,
-            emptyBackstackPlaceholder = { EmptyScreen() }
-        ) { destination ->
-            screenOf(destination = destination)
-        }
+        AppTheme {
+            // screens
+            AnimatedNavHost(
+                controller = router.navScreensController,
+                transitionQueueing = NavTransitionQueueing.QueueAll,
+                transitionSpec = customTransitionSpec,
+                emptyBackstackPlaceholder = { EmptyScreen() }
+            ) { destination ->
+                screenOf(destination = destination)
+            }
 
-        // Dialogs
-        AnimatedNavHost(
-            controller = router.navDialogsController,
-            transitionQueueing = NavTransitionQueueing.QueueAll,
-            transitionSpec = customTransitionSpec,
-        ) { destination ->
-            screenOf(destination = destination)
-        }
+            // Dialogs
+            AnimatedNavHost(
+                controller = router.navDialogsController,
+                transitionQueueing = NavTransitionQueueing.QueueAll,
+                transitionSpec = customTransitionSpec,
+            ) { destination ->
+                screenOf(destination = destination)
+            }
 
-        // snack
-        SnackContainer()
+            // snack
+            SnackContainer()
+        }
     }
 }
 
