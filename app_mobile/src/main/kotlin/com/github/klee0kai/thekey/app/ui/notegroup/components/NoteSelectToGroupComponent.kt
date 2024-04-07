@@ -24,7 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
-import com.github.klee0kai.thekey.app.model.id
+import com.github.klee0kai.thekey.app.domain.model.id
 import com.github.klee0kai.thekey.app.ui.storage.notes.ColoredNoteItem
 import com.github.klee0kai.thekey.app.utils.views.animateTargetAlphaAsState
 import com.github.klee0kai.thekey.app.utils.views.collectAsState

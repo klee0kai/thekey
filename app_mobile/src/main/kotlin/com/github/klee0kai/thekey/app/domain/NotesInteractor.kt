@@ -2,13 +2,13 @@ package com.github.klee0kai.thekey.app.domain
 
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
+import com.github.klee0kai.thekey.app.domain.model.ColorGroup
+import com.github.klee0kai.thekey.app.domain.model.LazyColoredNote
+import com.github.klee0kai.thekey.app.domain.model.coloredNote
+import com.github.klee0kai.thekey.app.domain.model.id
+import com.github.klee0kai.thekey.app.domain.model.noGroup
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.engine.model.GenPasswParams
-import com.github.klee0kai.thekey.app.model.ColorGroup
-import com.github.klee0kai.thekey.app.model.LazyColoredNote
-import com.github.klee0kai.thekey.app.model.coloredNote
-import com.github.klee0kai.thekey.app.model.id
-import com.github.klee0kai.thekey.app.model.noGroup
 import com.github.klee0kai.thekey.app.utils.common.launchLatest
 import com.github.klee0kai.thekey.app.utils.lazymodel.fullValue
 import com.github.klee0kai.thekey.app.utils.lazymodel.map

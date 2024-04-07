@@ -1,8 +1,8 @@
 package com.github.klee0kai.thekey.app.domain
 
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.app.engine.findstorage.findStoragesFlow
-import com.github.klee0kai.thekey.app.model.ColoredStorage
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.distinctUntilChanged

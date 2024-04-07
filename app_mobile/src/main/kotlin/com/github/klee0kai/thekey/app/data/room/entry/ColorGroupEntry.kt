@@ -5,7 +5,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.github.klee0kai.thekey.app.data.room.dao.ColorGroupDao
-import com.github.klee0kai.thekey.app.model.ColorGroup
+import com.github.klee0kai.thekey.app.domain.model.ColorGroup
 import com.github.klee0kai.thekey.app.ui.designkit.color.KeyColor
 import kotlinx.parcelize.Parcelize
 

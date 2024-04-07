@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.model
+package com.github.klee0kai.thekey.app.domain.model
 
 import com.github.klee0kai.thekey.app.utils.lazymodel.LazyModel
 import com.github.klee0kai.thekey.app.utils.lazymodel.LazyModelProvider

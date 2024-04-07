@@ -18,11 +18,11 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.github.klee0kai.thekey.app.R
-import com.github.klee0kai.thekey.app.model.ColorGroup
-import com.github.klee0kai.thekey.app.model.ColoredNote
-import com.github.klee0kai.thekey.app.model.LazyColoredNote
-import com.github.klee0kai.thekey.app.model.dummyLazyColoredNote
-import com.github.klee0kai.thekey.app.model.noGroup
+import com.github.klee0kai.thekey.app.domain.model.ColorGroup
+import com.github.klee0kai.thekey.app.domain.model.ColoredNote
+import com.github.klee0kai.thekey.app.domain.model.LazyColoredNote
+import com.github.klee0kai.thekey.app.domain.model.dummyLazyColoredNote
+import com.github.klee0kai.thekey.app.domain.model.noGroup
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
 import com.github.klee0kai.thekey.app.ui.designkit.color.KeyColor

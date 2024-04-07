@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.model
+package com.github.klee0kai.thekey.app.domain.model
 
 import android.os.Parcelable
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote

@@ -2,9 +2,9 @@ package com.github.klee0kai.thekey.app.data.repositories.storage
 
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
+import com.github.klee0kai.thekey.app.domain.model.LazyColorGroup
+import com.github.klee0kai.thekey.app.domain.model.id
 import com.github.klee0kai.thekey.app.engine.model.colorGroup
-import com.github.klee0kai.thekey.app.model.LazyColorGroup
-import com.github.klee0kai.thekey.app.model.id
 import com.github.klee0kai.thekey.app.utils.lazymodel.LazyModelProvider
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope

@@ -2,7 +2,7 @@ package com.github.klee0kai.thekey.app
 
 import android.app.Application
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.model.AppConfig
+import com.github.klee0kai.thekey.app.domain.model.AppConfig
 import com.github.klee0kai.thekey.app.utils.log.TimberConfig
 import java.lang.ref.WeakReference
 

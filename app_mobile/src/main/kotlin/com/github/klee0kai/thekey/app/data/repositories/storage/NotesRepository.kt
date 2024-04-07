@@ -1,10 +1,10 @@
 package com.github.klee0kai.thekey.app.data.repositories.storage
 
+import com.github.klee0kai.thekey.app.data.model.LazyNote
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.engine.model.GenPasswParams
-import com.github.klee0kai.thekey.app.model.LazyNote
 import com.github.klee0kai.thekey.app.utils.lazymodel.fromPreloadedOrCreate
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update

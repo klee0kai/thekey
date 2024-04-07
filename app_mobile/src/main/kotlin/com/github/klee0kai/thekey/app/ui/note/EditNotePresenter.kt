@@ -3,11 +3,11 @@ package com.github.klee0kai.thekey.app.ui.note
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.NoteIdentifier
+import com.github.klee0kai.thekey.app.domain.model.ColorGroup
+import com.github.klee0kai.thekey.app.domain.model.noGroup
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.engine.model.GenPasswParams
 import com.github.klee0kai.thekey.app.engine.model.isEmpty
-import com.github.klee0kai.thekey.app.model.ColorGroup
-import com.github.klee0kai.thekey.app.model.noGroup
 import com.github.klee0kai.thekey.app.ui.navigation.model.AlertDialogDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.ConfirmDialogResult
 import com.github.klee0kai.thekey.app.ui.navigation.model.TextProvider

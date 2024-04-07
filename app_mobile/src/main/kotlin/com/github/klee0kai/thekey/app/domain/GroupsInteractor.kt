@@ -2,7 +2,7 @@ package com.github.klee0kai.thekey.app.domain
 
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
-import com.github.klee0kai.thekey.app.model.LazyColorGroup
+import com.github.klee0kai.thekey.app.domain.model.LazyColorGroup
 import com.github.klee0kai.thekey.app.utils.common.launchLatest
 import kotlinx.coroutines.flow.flow
 

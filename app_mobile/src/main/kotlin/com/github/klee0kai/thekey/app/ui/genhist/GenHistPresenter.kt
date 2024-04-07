@@ -1,9 +1,9 @@
 package com.github.klee0kai.thekey.app.ui.genhist
 
+import com.github.klee0kai.thekey.app.data.model.LazyPassw
+import com.github.klee0kai.thekey.app.data.model.id
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
-import com.github.klee0kai.thekey.app.model.LazyPassw
-import com.github.klee0kai.thekey.app.model.id
 import com.github.klee0kai.thekey.app.utils.common.singleEventFlow
 import com.github.klee0kai.thekey.app.utils.lazymodel.fromPreloadedOrCreate
 import kotlinx.coroutines.withContext
@@ -13,7 +13,7 @@ class GenHistPresenter(
 ) {
 
     private val scope = DI.defaultThreadScope()
-    private val navigator = DI.router()
+    private val router = DI.router()
     private val engine = DI.cryptStorageEngineSafeLazy(storageIdentifier)
 
     private var lazyHist = emptyList<LazyPassw>()

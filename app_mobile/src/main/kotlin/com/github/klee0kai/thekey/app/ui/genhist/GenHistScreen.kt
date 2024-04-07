@@ -22,9 +22,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.klee0kai.thekey.app.R
+import com.github.klee0kai.thekey.app.data.model.LazyPassw
+import com.github.klee0kai.thekey.app.data.model.dummyLazyPassw
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.model.LazyPassw
-import com.github.klee0kai.thekey.app.model.dummyLazyPassw
 import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarStates

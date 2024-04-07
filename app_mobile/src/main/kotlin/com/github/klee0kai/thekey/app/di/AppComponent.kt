@@ -23,7 +23,7 @@ import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.di.modules.RepositoriesModule
 import com.github.klee0kai.thekey.app.di.modules.ThemeModule
 import com.github.klee0kai.thekey.app.di.wrap.AppWrappersStone
-import com.github.klee0kai.thekey.app.model.AppConfig
+import com.github.klee0kai.thekey.app.domain.model.AppConfig
 
 val DI: AppComponent = Stone.createComponent(AppComponent::class.java).apply {
     if (BuildConfig.DEBUG) {

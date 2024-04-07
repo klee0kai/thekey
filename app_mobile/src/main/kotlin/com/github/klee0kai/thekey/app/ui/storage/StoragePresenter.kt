@@ -2,8 +2,8 @@ package com.github.klee0kai.thekey.app.ui.storage
 
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
-import com.github.klee0kai.thekey.app.model.LazyColorGroup
-import com.github.klee0kai.thekey.app.model.LazyColoredNote
+import com.github.klee0kai.thekey.app.domain.model.LazyColorGroup
+import com.github.klee0kai.thekey.app.domain.model.LazyColoredNote
 import com.github.klee0kai.thekey.app.ui.storage.model.SearchState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
