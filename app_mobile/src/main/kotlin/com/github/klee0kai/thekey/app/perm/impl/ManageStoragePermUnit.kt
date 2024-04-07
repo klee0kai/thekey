@@ -24,7 +24,7 @@ class ManageStoragePermUnit : PermUnit {
     val scope by lazy { DI.mainThreadScope() }
     val router by lazy { DI.router() }
 
-    val app get() = DI.app()
+    val app get() = DI.ctx()
 
     override fun isGranted(): Boolean {
         return ActivityCompat.checkSelfPermission(app, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED

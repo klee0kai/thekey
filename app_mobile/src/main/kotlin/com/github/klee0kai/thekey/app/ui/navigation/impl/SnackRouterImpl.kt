@@ -17,7 +17,7 @@ class SnackRouterImpl(val context: RouterContext) : SnackRouter, RouterContext b
 
     override suspend fun snack(message: Int, duration: SnackbarDuration) {
         snackbarHostState.showSnackbar(
-            message = DI.app().getString(message),
+            message = DI.ctx().getString(message),
             duration = duration
         )
     }

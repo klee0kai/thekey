@@ -26,7 +26,7 @@ class PermissionRouterImpl(context: RouterContext) : PermissionsRouter, RouterCo
 
         val allGranted = perms.all { permission ->
             ContextCompat.checkSelfPermission(
-                DI.app(),
+                DI.ctx(),
                 permission
             ) == PackageManager.PERMISSION_GRANTED
         }

@@ -161,3 +161,18 @@ private fun ColoredNoteDummy() {
         ) { ColoredNote() })
     }
 }
+
+@Composable
+@Preview
+private fun ColoredNoteDummyNoGroup() {
+    AppTheme {
+        ColoredNoteItem(lazyNote = LazyModelProvider(
+            1L, preloaded = ColoredNote(
+                site = "some.super.site.com",
+                login = "potato",
+                desc = "my work note",
+                group = ColorGroup.noGroup()
+            )
+        ) { ColoredNote() })
+    }
+}

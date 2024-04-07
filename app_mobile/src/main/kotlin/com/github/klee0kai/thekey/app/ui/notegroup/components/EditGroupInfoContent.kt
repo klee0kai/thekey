@@ -100,7 +100,6 @@ fun EditGroupInfoContent(
                     val isFirst = index == 0
 
                     GroupCircle(
-                        name = "",
                         checked = color == select,
                         colorScheme = colorScheme.surfaceScheme(color),
                         modifier = Modifier

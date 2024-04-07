@@ -14,7 +14,7 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        DI.app(this)
+        DI.ctx(this)
         DI.config(AppConfig())
         TimberConfig.init()
     }

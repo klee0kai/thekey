@@ -35,7 +35,7 @@ class EditNotePresenter(
     private val otpTypesVariants = listOf("HOTP", "TOTP", "YaOTP")
     private val otpAlgoVariants = listOf("SHA1", "SHA256", "SHA512")
 
-    private val ctx get() = DI.app()
+    private val ctx get() = DI.ctx()
     private val dateFormat = TimeFormats.simpleDateFormat()
     private val scope = DI.defaultThreadScope()
     private val router = DI.router()

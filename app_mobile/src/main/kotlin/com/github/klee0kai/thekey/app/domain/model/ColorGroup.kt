@@ -1,6 +1,8 @@
 package com.github.klee0kai.thekey.app.domain.model
 
 import android.os.Parcelable
+import com.github.klee0kai.thekey.app.R
+import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.designkit.color.KeyColor
 import kotlinx.parcelize.Parcelize
 
@@ -14,6 +16,6 @@ data class ColorGroup(
 }
 
 fun ColorGroup.Companion.noGroup(): ColorGroup =
-    ColorGroup(name =/* DI.app().resources.getString(R.string.no)*/ "NO", keyColor = KeyColor.NOCOLOR)
+    ColorGroup(name = DI.ctx().resources.getString(R.string.no), keyColor = KeyColor.NOCOLOR)
 
 

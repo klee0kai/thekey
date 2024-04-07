@@ -25,7 +25,7 @@ class SimplePermUnit(
     val router by lazy { DI.router() }
 
     val activity get() = DI.activity()
-    val app get() = DI.app()
+    val app get() = DI.ctx()
 
     override fun isGranted(): Boolean = permissions.all { perm ->
         ActivityCompat.checkSelfPermission(app, perm.perm) == PackageManager.PERMISSION_GRANTED

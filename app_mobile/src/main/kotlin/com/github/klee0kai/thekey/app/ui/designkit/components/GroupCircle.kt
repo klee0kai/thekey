@@ -15,14 +15,14 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.color.SurfaceScheme
 
-@Preview
 @Composable
 fun GroupCircle(
     modifier: Modifier = Modifier,
-    name: String = "AN",
-    colorScheme: SurfaceScheme = SurfaceScheme(Color.Cyan, Color.White),
+    name: String = "",
+    colorScheme: SurfaceScheme,
     checked: Boolean = false,
     onClick: () -> Unit = {}
 ) {
@@ -53,5 +53,19 @@ fun GroupCircle(
             text = name
         )
     }
-
 }
+
+
+@Preview
+@Composable
+private fun GroupCirclePreview() {
+    AppTheme {
+        GroupCircle(
+            name = "AN",
+            colorScheme = SurfaceScheme(Color.Magenta, Color.White),
+        )
+    }
+}
+
+
+

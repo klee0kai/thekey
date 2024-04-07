@@ -15,7 +15,7 @@ class GenPasswPresenter(
     val storageIdentifier: StorageIdentifier,
 ) {
 
-    private val clipboardManager by lazy { DI.app().getSystemService(CLIPBOARD_SERVICE) as ClipboardManager }
+    private val clipboardManager by lazy { DI.ctx().getSystemService(CLIPBOARD_SERVICE) as ClipboardManager }
     private val settings = DI.settingsRepositoryLazy()
     private val engine = DI.cryptStorageEngineSafeLazy(storageIdentifier)
     private val router = DI.router()

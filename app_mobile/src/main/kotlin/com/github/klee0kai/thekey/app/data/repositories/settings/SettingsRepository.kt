@@ -12,7 +12,7 @@ class SettingsRepository {
     private val scope = DI.ioThreadScope()
 
     val currentStoragePath = stringDelegate(SETTING_DEFAULT_STORAGE_PATH) {
-        File(DI.app().applicationInfo?.dataDir, "keys.ckey").path
+        File(DI.ctx().applicationInfo?.dataDir, "keys.ckey").path
     }
 
     val newStorageVersion = intDelegate(SETTING_DEFAULT_STORAGE_VERSION) { 2 }

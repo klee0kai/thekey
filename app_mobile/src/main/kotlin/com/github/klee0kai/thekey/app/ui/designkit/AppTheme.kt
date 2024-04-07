@@ -27,6 +27,8 @@ fun AppTheme(
     content: @Composable () -> Unit
 ) {
     val view = LocalView.current
+    DI.ctx(view.context)
+
     val isEditMode = view.isInEditMode || LocalInspectionMode.current || isDebugInspectorInfoEnabled
     val colorScheme = remember { DI.theme().colorScheme() }
     val typeScheme = remember { DI.theme().typeScheme() }

@@ -1,12 +1,12 @@
 package com.github.klee0kai.thekey.app.di
 
+import android.content.Context
 import androidx.activity.ComponentActivity
 import com.github.klee0kai.stone.KotlinWrappersStone
 import com.github.klee0kai.stone.Stone
 import com.github.klee0kai.stone.annotations.component.Component
 import com.github.klee0kai.stone.annotations.component.Init
 import com.github.klee0kai.stone.annotations.module.BindInstance
-import com.github.klee0kai.thekey.app.App
 import com.github.klee0kai.thekey.app.BuildConfig
 import com.github.klee0kai.thekey.app.di.debug.DebugDI
 import com.github.klee0kai.thekey.app.di.dependencies.AppComponentProviders
@@ -70,7 +70,7 @@ interface AppComponent : AppComponentProviders {
     fun initHelpersModule(helpers: Class<out HelpersModule>)
 
     @BindInstance(cache = BindInstance.CacheType.Weak)
-    fun app(app: App? = null): App
+    fun ctx(ctx: Context? = null): Context
 
     @BindInstance(cache = BindInstance.CacheType.Weak)
     fun activity(app: ComponentActivity? = null): ComponentActivity?
