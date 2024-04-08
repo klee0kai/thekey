@@ -1,16 +1,22 @@
-package com.github.klee0kai.thekey.app.ui.designkit.components
+@file:OptIn(ExperimentalFoundationApi::class)
+
+package com.github.klee0kai.thekey.app.ui.designkit.components.buttons
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.FilledIconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,7 +30,9 @@ fun GroupCircle(
     name: String = "",
     colorScheme: SurfaceScheme,
     checked: Boolean = false,
-    onClick: () -> Unit = {}
+    onClick: (() -> Unit)? = null,
+    onLongClick: (() -> Unit)? = null,
+    overlayContent: @Composable () -> Unit = {},
 ) {
     val checkedState by animateDpAsState(if (checked) 12.dp else 24.dp, label = "color group checked")
     val rotate by animateFloatAsState(targetValue = if (checked) 70f else 0f, label = "color group select")
@@ -32,19 +40,23 @@ fun GroupCircle(
     Box(
         modifier = modifier,
     ) {
-        FilledIconButton(
-            colors = IconButtonDefaults.filledIconButtonColors(
-                containerColor = colorScheme.surfaceColor,
-                contentColor = colorScheme.onSurfaceColor,
-                disabledContainerColor = colorScheme.surfaceColor.copy(alpha = 0.4f),
-                disabledContentColor = colorScheme.onSurfaceColor.copy(alpha = 0.4f),
-            ),
-            modifier = Modifier
+        Box(
+            modifier = modifier
+                .minimumInteractiveComponentSize()
+                .rotate(rotate)
+                .size(40.dp)
+                .background(color = colorScheme.surfaceColor, shape = RoundedCornerShape(checkedState))
+                .clip(RoundedCornerShape(checkedState))
                 .align(Alignment.Center)
-                .rotate(rotate),
-            shape = RoundedCornerShape(checkedState),
-            onClick = onClick,
-            content = {}
+                .run {
+                    when {
+                        onClick == null && onLongClick == null -> this
+                        else -> combinedClickable(
+                            onLongClick = onLongClick,
+                            onClick = { onClick?.invoke() }
+                        )
+                    }
+                },
         )
 
         Text(
@@ -52,6 +64,8 @@ fun GroupCircle(
             color = colorScheme.onSurfaceColor,
             text = name
         )
+
+        overlayContent()
     }
 }
 
@@ -67,5 +81,17 @@ private fun GroupCirclePreview() {
     }
 }
 
+
+@Preview
+@Composable
+private fun GroupCircleCheckedPreview() {
+    AppTheme {
+        GroupCircle(
+            name = "CH",
+            colorScheme = SurfaceScheme(Color.Magenta, Color.White),
+            checked = true,
+        )
+    }
+}
 
 

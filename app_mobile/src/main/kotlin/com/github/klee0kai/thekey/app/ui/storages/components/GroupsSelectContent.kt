@@ -1,5 +1,8 @@
+@file:OptIn(ExperimentalFoundationApi::class)
+
 package com.github.klee0kai.thekey.app.ui.storages.components
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -7,9 +10,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -20,8 +28,10 @@ import com.github.klee0kai.thekey.app.domain.model.ColorGroup
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
 import com.github.klee0kai.thekey.app.ui.designkit.color.KeyColor
-import com.github.klee0kai.thekey.app.ui.designkit.components.GroupCircle
 import com.github.klee0kai.thekey.app.ui.designkit.components.LazyListIndicatorIfNeed
+import com.github.klee0kai.thekey.app.ui.designkit.components.buttons.AddCircle
+import com.github.klee0kai.thekey.app.ui.designkit.components.buttons.GroupCircle
+import com.github.klee0kai.thekey.app.ui.designkit.components.scrollPosition
 import com.github.klee0kai.thekey.app.utils.common.DummyId
 
 @Composable
@@ -32,6 +42,7 @@ fun GroupsSelectContent(
     forceScrollIndicator: Boolean = false,
     onAdd: () -> Unit = {},
     onGroupSelected: (ColorGroup) -> Unit = {},
+    onGroupDelete: (ColorGroup) -> Unit = {},
 ) {
     val colorScheme = LocalColorScheme.current
     val lazyListState = rememberLazyListState()
@@ -60,9 +71,8 @@ fun GroupsSelectContent(
         )
 
         LazyListIndicatorIfNeed(
-            lazyListState = lazyListState,
+            pos = lazyListState.scrollPosition(),
             horizontal = true,
-            forceScrollIndicator = forceScrollIndicator,
             modifier = Modifier
                 .size(52.dp, 4.dp)
                 .constrainAs(indicator) {
@@ -93,6 +103,7 @@ fun GroupsSelectContent(
         {
             colorGroups.forEachIndexed { index, group ->
                 item(key = group.id) {
+                    var showMenu by remember { mutableStateOf(false) }
                     val isFirst = index == 0
 
                     GroupCircle(
@@ -106,7 +117,18 @@ fun GroupsSelectContent(
                                 end = 4.dp,
                                 bottom = 16.dp
                             ),
-                        onClick = { onGroupSelected.invoke(group) }
+                        onLongClick = { showMenu = true },
+                        onClick = { onGroupSelected.invoke(group) },
+                        overlayContent = {
+                            DropdownMenu(
+                                expanded = showMenu,
+                                onDismissRequest = { showMenu = false }
+                            ) {
+                                GroupDropDownMenuContent(
+                                    onDelete = { onGroupDelete(group) },
+                                )
+                            }
+                        }
                     )
                 }
             }

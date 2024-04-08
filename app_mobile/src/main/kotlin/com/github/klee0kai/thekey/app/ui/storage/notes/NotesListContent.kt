@@ -6,7 +6,6 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -72,37 +71,40 @@ fun NotesListContent(
             item(contentType = lazyNote::class, key = lazyNote.id) {
                 var showMenu by remember { mutableStateOf(false) }
 
-                Box(
+                ColoredNoteItem(
                     modifier = Modifier
                         .animateItemPlacement(animationSpec = tween())
                         .combinedClickable(
-                            onLongClick = { showMenu = true },
+                            onLongClick = {
+                                showMenu = true
+                            },
                             onClick = {
                                 router.navigate(args.note(notePtr = lazyNote.id))
                             }
-                        )
-                ) {
-                    ColoredNoteItem(lazyNote = lazyNote)
-
-                    DropdownMenu(
-                        offset = DpOffset(x = (-16).dp, y = 2.dp),
-                        expanded = showMenu,
-                        onDismissRequest = { showMenu = false }
-                    ) {
-                        NoteDropDownMenuContent(
-                            colorGroups = groups.map { it.placeholder },
-                            selectedGroupId = lazyNote.getOrNull()?.group?.id,
-                            onColorGroupSelected = {
-                                presenter.setColorGroup(notePt = lazyNote.id, groupId = it.id)
-                                showMenu = false
-                            },
-                            onEdit = {
-                                router.navigate(args.note(lazyNote.id))
-                                showMenu = false
-                            }
-                        )
+                        ),
+                    lazyNote = lazyNote,
+                    overlayContent = {
+                        DropdownMenu(
+                            offset = DpOffset(x = (-16).dp, y = 2.dp),
+                            expanded = showMenu,
+                            onDismissRequest = { showMenu = false }
+                        ) {
+                            NoteDropDownMenuContent(
+                                colorGroups = groups.map { it.placeholder },
+                                selectedGroupId = lazyNote.getOrNull()?.group?.id,
+                                onColorGroupSelected = {
+                                    presenter.setColorGroup(notePt = lazyNote.id, groupId = it.id)
+                                    showMenu = false
+                                },
+                                onEdit = {
+                                    router.navigate(args.note(lazyNote.id))
+                                    showMenu = false
+                                }
+                            )
+                        }
                     }
-                }
+                )
+
             }
         }
     }

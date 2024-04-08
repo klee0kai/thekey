@@ -1,11 +1,18 @@
-package com.github.klee0kai.thekey.app.ui.designkit.components
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
+
+package com.github.klee0kai.thekey.app.ui.designkit.components.appbar
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.NonRestartableComposable
@@ -21,6 +28,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.components.bottomsheet.SimpleBottomSheetScaffoldState
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.app.utils.views.animateTargetAlphaAsState
@@ -31,8 +39,6 @@ object AppBarConst {
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Preview
 @Composable
 fun AppBarStates(
     modifier: Modifier = Modifier,
@@ -70,7 +76,6 @@ fun AppBarStates(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @NonRestartableComposable
 fun SimpleBottomSheetScaffoldState.rememberMainTitleVisibleFlow(
@@ -90,4 +95,21 @@ fun SimpleBottomSheetScaffoldState.rememberMainTitleVisibleFlow(
         scaffoldTopOffset > appBarSize + showTitleOffset -> mainTitleVisibility.value = true
     }
     return mainTitleVisibility
+}
+
+
+@Composable
+@Preview
+private fun AppBarTitlePreview() {
+    AppTheme {
+        AppBarStates(
+            navigationIcon = {
+                IconButton(onClick = { }) {
+                    Icon(Icons.Filled.Menu, contentDescription = null)
+                }
+            }
+        ) {
+            Text("Title")
+        }
+    }
 }

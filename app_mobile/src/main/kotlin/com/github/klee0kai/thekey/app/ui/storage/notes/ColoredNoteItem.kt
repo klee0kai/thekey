@@ -37,6 +37,7 @@ import com.github.klee0kai.thekey.app.utils.views.rememberSkeletonModifier
 fun ColoredNoteItem(
     modifier: Modifier = Modifier,
     lazyNote: LazyColoredNote = dummyLazyColoredNoteSkeleton(),
+    overlayContent: @Composable () -> Unit = {},
 ) {
     val colorScheme = LocalColorScheme.current
     val animatedNote by lazyNote.collectAsStateCrossFaded()
@@ -133,6 +134,8 @@ fun ColoredNoteItem(
                     )
                 }
         )
+
+        overlayContent()
     }
 }
 

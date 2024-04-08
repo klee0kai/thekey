@@ -26,8 +26,8 @@ import com.github.klee0kai.thekey.app.data.model.LazyPassw
 import com.github.klee0kai.thekey.app.data.model.dummyLazyPassw
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
-import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarConst
-import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarStates
+import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarConst
+import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.app.ui.navigation.model.GenHistDestination
 import com.github.klee0kai.thekey.app.ui.navigation.storageIdentifier
 import com.github.klee0kai.thekey.app.utils.lazymodel.collectAsStateCrossFaded

@@ -19,7 +19,7 @@ import com.github.klee0kai.thekey.app.domain.model.ColorGroup
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
 import com.github.klee0kai.thekey.app.ui.designkit.color.KeyColor
-import com.github.klee0kai.thekey.app.ui.designkit.components.GroupCircle
+import com.github.klee0kai.thekey.app.ui.designkit.components.buttons.GroupCircle
 import com.github.klee0kai.thekey.app.utils.common.DummyId
 
 @Composable
@@ -37,16 +37,16 @@ fun ColumnScope.NoteDropDownMenuContent(
     ) {
         colorGroups.take(5).forEachIndexed { index, group ->
             GroupCircle(
-                name = group.name,
-                colorScheme = colorScheme.surfaceScheme(group.keyColor),
-                checked = group.id == selectedGroupId,
                 modifier = Modifier
                     .padding(
                         start = 8.dp,
                         top = 8.dp,
                         bottom = 8.dp
                     ),
-                onClick = { onColorGroupSelected.invoke(group) }
+                name = group.name,
+                colorScheme = colorScheme.surfaceScheme(group.keyColor),
+                checked = group.id == selectedGroupId,
+                onClick = { onColorGroupSelected.invoke(group) },
             )
         }
 
@@ -63,7 +63,7 @@ fun ColumnScope.NoteDropDownMenuContent(
 
 @Preview
 @Composable
-fun NoteDropDownMenuWithGroupsPreview() {
+private fun NoteDropDownMenuWithGroupsPreview() {
     AppTheme {
         Column {
             NoteDropDownMenuContent(
@@ -85,7 +85,7 @@ fun NoteDropDownMenuWithGroupsPreview() {
 
 @Preview
 @Composable
-fun NoteDropDownMenuNoPreview() {
+private fun NoteDropDownMenuNoPreview() {
     AppTheme {
         Column {
             NoteDropDownMenuContent()

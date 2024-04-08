@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 
-package com.github.klee0kai.thekey.app.ui.designkit.components
+package com.github.klee0kai.thekey.app.ui.designkit.components.appbar
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -9,7 +9,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Tab
@@ -23,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.R
+import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
 
@@ -34,7 +39,6 @@ object SecondaryTabsConst {
 }
 
 @Composable
-@Preview
 fun SecondaryTabs(
     modifier: Modifier = Modifier,
     isVisible: Boolean = true,
@@ -52,7 +56,6 @@ fun SecondaryTabs(
     SecondaryTabRow(
         modifier = modifier
             .alpha(appBarAlpha)
-            .padding(top = AppBarConst.appBarSize)
             .background(MaterialTheme.colorScheme.background),
         selectedTabIndex = selectedTab,
         containerColor = MaterialTheme.colorScheme.background,
@@ -81,5 +84,29 @@ fun SecondaryTabs(
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun SecondaryTabsPreview() {
+    AppTheme {
+        SecondaryTabs(
+            modifier = Modifier
+                .padding(top = AppBarConst.appBarSize),
+            isVisible = true,
+            titles = listOf("Title1", "Title2"),
+            selectedTab = 0,
+        )
+
+        AppBarStates(
+            isVisible = true,
+            navigationIcon = {
+                IconButton(onClick = { }) {
+                    Icon(Icons.Filled.ArrowBack, contentDescription = null)
+                }
+            },
+            titleContent = { Text(text = stringResource(id = R.string.edit)) },
+        )
     }
 }

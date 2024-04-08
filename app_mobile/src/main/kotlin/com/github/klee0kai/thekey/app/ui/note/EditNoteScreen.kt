@@ -49,12 +49,12 @@ import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
-import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarConst
-import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarStates
-import com.github.klee0kai.thekey.app.ui.designkit.components.ColorGroupDropDownField
-import com.github.klee0kai.thekey.app.ui.designkit.components.DropDownField
-import com.github.klee0kai.thekey.app.ui.designkit.components.SecondaryTabs
-import com.github.klee0kai.thekey.app.ui.designkit.components.SecondaryTabsConst
+import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarConst
+import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarStates
+import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.SecondaryTabs
+import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.SecondaryTabsConst
+import com.github.klee0kai.thekey.app.ui.designkit.components.dropdownfields.ColorGroupDropDownField
+import com.github.klee0kai.thekey.app.ui.designkit.components.dropdownfields.DropDownField
 import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteDestination
 import com.github.klee0kai.thekey.app.ui.note.model.EditTabs
@@ -405,7 +405,8 @@ fun EditNoteScreen(
 
 
     SecondaryTabs(
-        modifier = Modifier,
+        modifier = Modifier
+            .padding(top = AppBarConst.appBarSize),
         isVisible = !state.isEditMode && scrollState.value <= 0,
         titles = titles,
         selectedTab = page.current.ordinal,

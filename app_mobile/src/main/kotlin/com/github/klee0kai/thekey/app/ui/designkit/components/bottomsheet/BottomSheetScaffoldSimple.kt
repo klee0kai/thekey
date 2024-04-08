@@ -23,7 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
 import com.github.klee0kai.thekey.app.ui.designkit.components.bottomsheet.SimpleScaffoldConst.dragHandleSize
 import com.github.klee0kai.thekey.app.utils.views.accelerateDecelerate
 import com.github.klee0kai.thekey.app.utils.views.pxToDp
@@ -46,9 +46,9 @@ fun SimpleBottomSheetScaffold(
     sheetContent: @Composable () -> Unit = {},
 ) {
     val view = LocalView.current
+    val colorScheme = LocalColorScheme.current.androidColorScheme
     val appBarSize = simpleBottomSheetScaffoldState.appBarSize
     val topContentSize = simpleBottomSheetScaffoldState.topContentSize
-    val colorScheme = remember { DI.theme().colorScheme().androidColorScheme }
     val dragProgress = remember { mutableFloatStateOf(0f) }
 
     val viewHeight = if (view.isInEditMode) 900.dp else view.height.pxToDp()

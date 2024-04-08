@@ -14,18 +14,18 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.klee0kai.thekey.app.R
-import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
 import com.github.klee0kai.thekey.app.ui.designkit.color.KeyColor
 import com.github.klee0kai.thekey.app.ui.designkit.color.transparentColorScheme
-import com.github.klee0kai.thekey.app.ui.designkit.components.GroupCircle
 import com.github.klee0kai.thekey.app.ui.designkit.components.LazyListIndicatorIfNeed
+import com.github.klee0kai.thekey.app.ui.designkit.components.buttons.GroupCircle
+import com.github.klee0kai.thekey.app.ui.designkit.components.scrollPosition
 
 @Composable
 @Preview
@@ -37,9 +37,8 @@ fun EditGroupInfoContent(
     onChangeGroupName: (String) -> Unit = {},
     onSelect: (KeyColor) -> Unit = {},
 ) {
-    val colorScheme = remember { DI.theme().colorScheme() }
+    val colorScheme = LocalColorScheme.current
     val lazyListState = rememberLazyListState()
-
 
     ConstraintLayout(
         modifier = modifier
@@ -65,7 +64,7 @@ fun EditGroupInfoContent(
         )
 
         LazyListIndicatorIfNeed(
-            lazyListState = lazyListState,
+            pos = lazyListState.scrollPosition(),
             horizontal = true,
             modifier = Modifier
                 .size(52.dp, 4.dp)
@@ -100,8 +99,6 @@ fun EditGroupInfoContent(
                     val isFirst = index == 0
 
                     GroupCircle(
-                        checked = color == select,
-                        colorScheme = colorScheme.surfaceScheme(color),
                         modifier = Modifier
                             .animateContentSize()
                             .padding(
@@ -110,7 +107,9 @@ fun EditGroupInfoContent(
                                 end = 4.dp,
                                 bottom = 16.dp
                             ),
-                        onClick = { onSelect(color) }
+                        checked = color == select,
+                        colorScheme = colorScheme.surfaceScheme(color),
+                        onClick = { onSelect(color) },
                     )
                 }
             }

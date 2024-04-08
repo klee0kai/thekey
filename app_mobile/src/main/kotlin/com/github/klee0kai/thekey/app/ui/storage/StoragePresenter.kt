@@ -70,4 +70,8 @@ class StoragePresenter(
         notesInteractor().setNoteGroup(notePt, groupId)
     }
 
+    fun deleteGroup(id: Long) = scope.launch {
+
+    }
+
 }

@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.github.klee0kai.thekey.app.ui.designkit.components
+package com.github.klee0kai.thekey.app.ui.designkit.components.dropdownfields
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DropdownMenuItem
@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.domain.model.ColorGroup
 import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
 import com.github.klee0kai.thekey.app.ui.designkit.color.KeyColor
+import com.github.klee0kai.thekey.app.ui.designkit.components.buttons.GroupCircle
 
 @Preview
 @Composable
@@ -72,7 +73,7 @@ fun ColorGroupDropDownField(
                                 .padding(4.dp),
                             colorScheme = LocalColorScheme.current.surfaceScheme(item.keyColor),
                             checked = index == selectedIndex,
-                            onClick = { onSelected(index) }
+                            onClick = { onSelected(index) },
                         )
                     },
                     onClick = { onSelected(index) }

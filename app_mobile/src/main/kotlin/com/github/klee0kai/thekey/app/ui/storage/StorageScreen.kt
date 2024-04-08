@@ -34,14 +34,14 @@ import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
-import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarConst
-import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarStates
-import com.github.klee0kai.thekey.app.ui.designkit.components.AppTitleImage
-import com.github.klee0kai.thekey.app.ui.designkit.components.SearchField
-import com.github.klee0kai.thekey.app.ui.designkit.components.SecondaryTabs
-import com.github.klee0kai.thekey.app.ui.designkit.components.SecondaryTabsConst
+import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarConst
+import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarStates
+import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppTitleImage
+import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.SearchField
+import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.SecondaryTabs
+import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.SecondaryTabsConst
+import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.rememberMainTitleVisibleFlow
 import com.github.klee0kai.thekey.app.ui.designkit.components.bottomsheet.simpleBottomSheetScaffoldState
-import com.github.klee0kai.thekey.app.ui.designkit.components.rememberMainTitleVisibleFlow
 import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.GenPasswordContent
@@ -144,7 +144,9 @@ fun StorageScreen(
 
     if (tabsAlpha > 0f) {
         SecondaryTabs(
-            modifier = Modifier.alpha(tabsAlpha),
+            modifier = Modifier
+                .padding(top = AppBarConst.appBarSize)
+                .alpha(tabsAlpha),
             titles = titles,
             selectedTab = pagerState.currentPage,
             onTabClicked = { scope.launch { pagerState.animateScrollToPage(it) } },
