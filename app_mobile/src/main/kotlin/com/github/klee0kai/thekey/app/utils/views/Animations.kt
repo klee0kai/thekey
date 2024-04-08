@@ -4,6 +4,7 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import androidx.compose.ui.unit.Dp
+import kotlin.math.abs
 
 fun Dp.ratioBetween(start: Dp, end: Dp): Float {
     val len = end - start
@@ -14,7 +15,7 @@ fun Dp.ratioBetween(start: Dp, end: Dp): Float {
 fun Number.ratioBetween(start: Number, end: Number): Float {
     val len = end.toFloat() - start.toFloat()
     val passed = this.toFloat() - start.toFloat()
-    if (len <= 0.01f) return 0f
+    if (abs(len) < 1e-9f) return 0f
     return passed / len
 }
 

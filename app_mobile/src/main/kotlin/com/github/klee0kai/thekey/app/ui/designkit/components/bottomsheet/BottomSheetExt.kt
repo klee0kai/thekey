@@ -5,7 +5,7 @@ import com.github.klee0kai.thekey.app.utils.views.accelerateDecelerate
 import com.github.klee0kai.thekey.app.utils.views.ratioBetween
 
 fun Float.topContentAlphaFromDrag() =
-    ratioBetween(0.3f, 0.7f)
+    ratioBetween(0.3f, 0.9f)
         .coerceIn(0f, 1f)
         .accelerateDecelerate()
 
