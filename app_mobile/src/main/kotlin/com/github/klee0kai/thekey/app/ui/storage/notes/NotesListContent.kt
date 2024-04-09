@@ -18,6 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
@@ -57,6 +58,7 @@ fun NotesListContent(
             Text(
                 text = stringResource(id = R.string.accounts),
                 style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
                 modifier = Modifier
                     .padding(start = 16.dp, top = 4.dp, bottom = 22.dp)
                     .alpha(titleAnimatedAlpha)
@@ -113,5 +115,16 @@ private fun NotesListContentPreview() = AppTheme {
     })
     NotesListContent(
         showStoragesTitle = false,
+    )
+}
+
+@Preview
+@Composable
+private fun NotesListContentTitlePreview() = AppTheme {
+    DI.initPresenterModule(object : PresentersModule() {
+        override fun storagePresenter(storageIdentifier: StorageIdentifier) = DummyStoragePresenter()
+    })
+    NotesListContent(
+        showStoragesTitle = true,
     )
 }

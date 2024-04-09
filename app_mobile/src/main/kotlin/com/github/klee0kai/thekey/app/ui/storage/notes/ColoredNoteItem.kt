@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -100,6 +101,7 @@ fun ColoredNoteItem(
         Text(
             text = animatedNote.current?.site.takeIf { !it.isNullOrBlank() } ?: stringResource(id = R.string.no_site),
             style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.Medium,
             modifier = Modifier
                 .alpha(skeleton.visibleOnTargetAlpha(false))
                 .constrainAs(siteField) {
@@ -124,6 +126,7 @@ fun ColoredNoteItem(
             text = animatedNote.current?.login.takeIf { !it.isNullOrBlank() } ?: "",
             style = MaterialTheme.typography.bodyMedium
                 .copy(color = LocalColorScheme.current.androidColorScheme.primary),
+            fontWeight = FontWeight.Medium,
             modifier = Modifier
                 .alpha(skeleton.visibleOnTargetAlpha(false))
                 .constrainAs(loginField) {
@@ -147,6 +150,7 @@ fun ColoredNoteItem(
             text = animatedNote.current?.desc.takeIf { !it.isNullOrBlank() } ?: "",
             color = MaterialTheme.colorScheme.onSurface,
             style = MaterialTheme.typography.labelSmall,
+            fontWeight = FontWeight.Normal,
             modifier = Modifier
                 .alpha(skeleton.visibleOnTargetAlpha(false))
                 .constrainAs(descriptionField) {

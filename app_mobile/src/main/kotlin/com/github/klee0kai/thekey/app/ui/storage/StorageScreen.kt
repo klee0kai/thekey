@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,6 +31,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -142,7 +144,8 @@ fun StorageScreen(
                     )
 
                     1 -> GenPasswordContent(
-                        modifier = Modifier.padding(top = AppBarConst.appBarSize + SecondaryTabsConst.allHeight),
+                        modifier = Modifier
+                            .padding(top = AppBarConst.appBarSize + SecondaryTabsConst.allHeight),
                         dest = dest,
                     )
                 }
@@ -176,6 +179,8 @@ fun StorageScreen(
                 SecondTittleId -> {
                     Text(
                         modifier = Modifier.alpha(targetTitleId.alpha),
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.Bold,
                         text = stringResource(id = R.string.accounts)
                     )
                 }
@@ -205,7 +210,7 @@ fun StorageScreen(
     )
 }
 
-@Preview(device = Devices.PIXEL_6   , showSystemUi = true)
+@Preview(device = Devices.PIXEL_6, showSystemUi = true)
 @Composable
 private fun StorageScreenAccountsPreview() = AppTheme {
     DI.initPresenterModule(object : PresentersModule() {

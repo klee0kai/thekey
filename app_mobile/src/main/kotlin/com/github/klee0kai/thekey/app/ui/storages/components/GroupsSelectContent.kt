@@ -3,10 +3,12 @@
 package com.github.klee0kai.thekey.app.ui.storages.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -20,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -57,6 +60,7 @@ fun GroupsSelectContent(
             text = stringResource(id = R.string.groups),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+            fontWeight = FontWeight.Bold,
             modifier = Modifier.constrainAs(groupsHint) {
                 linkTo(
                     start = parent.start,
@@ -101,6 +105,10 @@ fun GroupsSelectContent(
                     )
                 })
         {
+            item {
+                Spacer(modifier = Modifier.width(14.dp))
+            }
+
             colorGroups.forEachIndexed { index, group ->
                 item(key = group.id) {
                     var showMenu by remember { mutableStateOf(false) }
@@ -112,9 +120,9 @@ fun GroupsSelectContent(
                         checked = group.id == selectedGroup,
                         modifier = Modifier
                             .padding(
-                                start = if (isFirst) 16.dp else 8.dp,
+                                start = 1.dp,
                                 top = 16.dp,
-                                end = 4.dp,
+                                end = 1.dp,
                                 bottom = 16.dp
                             ),
                         onLongClick = { showMenu = true },
@@ -138,13 +146,17 @@ fun GroupsSelectContent(
                 AddCircle(
                     modifier = Modifier
                         .padding(
-                            start = if (isFirst) 16.dp else 8.dp,
+                            start = 1.dp,
                             top = 16.dp,
-                            end = 16.dp,
+                            end = 1.dp,
                             bottom = 16.dp
                         ),
                     onClick = onAdd
                 )
+            }
+
+            item {
+                Spacer(modifier = Modifier.width(14.dp))
             }
         }
     }

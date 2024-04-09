@@ -4,11 +4,11 @@ package com.github.klee0kai.thekey.app.ui.designkit.components.appbar
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -24,6 +24,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.R
@@ -32,10 +34,9 @@ import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
 
 object SecondaryTabsConst {
-    val textPadding = 10.dp
-    val textHeight = 30.dp
     val topPadding = 26.dp
-    val allHeight = textHeight + textPadding * 2 + topPadding
+    val textHeight = 48.dp
+    val allHeight = topPadding + textHeight   // should be 74
 }
 
 @Composable
@@ -55,31 +56,46 @@ fun SecondaryTabs(
 
     SecondaryTabRow(
         modifier = modifier
+            .padding(top = SecondaryTabsConst.topPadding)
             .alpha(appBarAlpha)
             .background(MaterialTheme.colorScheme.background),
         selectedTabIndex = selectedTab,
         containerColor = MaterialTheme.colorScheme.background,
         contentColor = MaterialTheme.colorScheme.onBackground,
+        indicator = {
+            Box(
+                Modifier
+                    .tabIndicatorOffset(
+                        selectedTabIndex = selectedTab,
+                        matchContentSize = true
+                    )
+                    .height(2.dp)
+                    .background(
+                        color = MaterialTheme.colorScheme.secondaryContainer,
+                        shape = RoundedCornerShape(1.dp),
+                    )
+            )
+        }
     ) {
         titles.forEachIndexed { index, title ->
             val selected = selectedTab == index
             Tab(
-                modifier = Modifier
-                    .padding(top = SecondaryTabsConst.topPadding),
                 selected = selected,
                 onClick = { onTabClicked(index) },
             ) {
-                Column(
-                    Modifier
-                        .padding(SecondaryTabsConst.textPadding)
+                Box(
+                    modifier = Modifier
                         .height(SecondaryTabsConst.textHeight)
+                        .padding(start = 30.dp, end = 30.dp)
                         .fillMaxWidth(),
-                    verticalArrangement = Arrangement.SpaceBetween
+                    contentAlignment = Alignment.Center,
                 ) {
                     Text(
                         text = title,
+                        textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.secondary,
                     )
                 }
             }
