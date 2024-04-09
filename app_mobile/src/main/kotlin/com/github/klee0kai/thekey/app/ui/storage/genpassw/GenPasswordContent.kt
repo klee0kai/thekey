@@ -18,28 +18,34 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
+import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
+import com.github.klee0kai.thekey.app.di.modules.PresentersModule
+import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
-import com.github.klee0kai.thekey.app.ui.navigation.createNote
 import com.github.klee0kai.thekey.app.ui.navigation.genHist
 import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
-import com.github.klee0kai.thekey.app.utils.views.collectAsStateCrossFaded
+import com.github.klee0kai.thekey.app.ui.storage.genpassw.model.GenPasswState
+import com.github.klee0kai.thekey.app.ui.storage.genpassw.presenter.GenPasswPresenter
+import com.github.klee0kai.thekey.app.utils.common.Dummy
+import com.github.klee0kai.thekey.app.utils.views.collectAsState
+import com.github.klee0kai.thekey.app.utils.views.rememberTargetAlphaCrossSade
+import kotlinx.coroutines.flow.MutableStateFlow
 
-@Preview
+
 @Composable
 fun GenPasswordContent(
     modifier: Modifier = Modifier,
@@ -52,10 +58,8 @@ fun GenPasswordContent(
     }
     val router = LocalRouter.current
     val sliderValues = presenter.passwLenRange
-    val lenSliderPosition by presenter.passwLen.collectAsState()
-    val symbolsChecked by presenter.symInPassw.collectAsState()
-    val specSymbolsChecked by presenter.specSymbolsInPassw.collectAsState()
-    val passw by presenter.passw.collectAsStateCrossFaded()
+    val state by presenter.state.collectAsState(key = Unit, initial = GenPasswState())
+    val passw by rememberTargetAlphaCrossSade { state.passw }
 
     ConstraintLayout(
         modifier = modifier
@@ -94,7 +98,7 @@ fun GenPasswordContent(
 
 
             Text(
-                text = lenSliderPosition.toString(),
+                text = state.passwLen.toString(),
                 modifier = Modifier.constrainAs(lenText) {
                     width = Dimension.fillToConstraints
                     height = Dimension.wrapContent
@@ -107,8 +111,8 @@ fun GenPasswordContent(
             )
 
             Slider(
-                value = lenSliderPosition.toFloat(),
-                onValueChange = { presenter.passwLen.value = it.toInt() },
+                value = state.passwLen.toFloat(),
+                onValueChange = { presenter.input { copy(passwLen = it.toInt()) } },
                 colors = SliderDefaults.colors(
                     thumbColor = MaterialTheme.colorScheme.primary,
                     activeTrackColor = MaterialTheme.colorScheme.primary,
@@ -138,8 +142,8 @@ fun GenPasswordContent(
                     )
                 })
 
-            Switch(checked = symbolsChecked,
-                onCheckedChange = { presenter.symInPassw.value = it },
+            Switch(checked = state.symInPassw,
+                onCheckedChange = { presenter.input { copy(symInPassw = it) } },
                 modifier = Modifier.constrainAs(symbolsSwitch) {
                     linkTo(
                         start = symbolsText.end,
@@ -164,18 +168,18 @@ fun GenPasswordContent(
             )
 
 
-            Switch(checked = specSymbolsChecked,
-                onCheckedChange = { presenter.specSymbolsInPassw.value = it },
+            Switch(checked = state.specSymbolsInPassw,
+                onCheckedChange = { presenter.input { copy(specSymbolsInPassw = it) } },
                 modifier = Modifier
                     .constrainAs(specSymbolsSwitch) {
-                    linkTo(
-                        start = specSymbolsText.end,
-                        end = parent.end,
-                        top = specSymbolsText.top,
-                        bottom = specSymbolsText.bottom,
-                        horizontalBias = 1f,
-                    )
-                }
+                        linkTo(
+                            start = specSymbolsText.end,
+                            end = parent.end,
+                            top = specSymbolsText.top,
+                            bottom = specSymbolsText.bottom,
+                            horizontalBias = 1f,
+                        )
+                    }
             )
         }
 
@@ -188,9 +192,7 @@ fun GenPasswordContent(
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 },
-            onClick = {
-                router.navigate(dest.createNote(DecryptedNote(passw = presenter.passw.value)))
-            }
+            onClick = { presenter.saveAsNewNote() }
         ) {
             Text(stringResource(R.string.save))
         }
@@ -237,7 +239,26 @@ fun GenPasswordContent(
                     )
                 }
         )
-
     }
 
+}
+
+
+@Preview(device = Devices.PIXEL_6, showSystemUi = true)
+@Composable
+private fun GenPasswordContentPreview() = AppTheme {
+    DI.initPresenterModule(object : PresentersModule() {
+        override fun genPasswPresente(storageIdentifier: StorageIdentifier) = object : GenPasswPresenter {
+            override val state = MutableStateFlow(
+                GenPasswState(
+                    passwLen = 8,
+                    symInPassw = true,
+                    passw = "GE@#!1"
+                )
+            )
+        }
+    })
+    GenPasswordContent(
+        dest = StorageDestination(path = Dummy.unicString, version = 2, selectedPage = 1)
+    )
 }

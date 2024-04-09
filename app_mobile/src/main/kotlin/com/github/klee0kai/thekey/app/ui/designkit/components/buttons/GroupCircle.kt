@@ -41,7 +41,8 @@ fun GroupCircle(
         modifier = modifier,
     ) {
         Box(
-            modifier = modifier
+            modifier = Modifier
+                .align(Alignment.Center)
                 .minimumInteractiveComponentSize()
                 .rotate(rotate)
                 .size(40.dp)

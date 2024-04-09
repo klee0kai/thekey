@@ -65,7 +65,7 @@ import com.github.klee0kai.thekey.app.ui.note.model.EditTabs
 import com.github.klee0kai.thekey.app.ui.note.model.EditTabs.Account
 import com.github.klee0kai.thekey.app.ui.note.model.EditTabs.Otp
 import com.github.klee0kai.thekey.app.ui.note.presenter.EditNotePresenter
-import com.github.klee0kai.thekey.app.utils.common.DummyId
+import com.github.klee0kai.thekey.app.utils.common.Dummy
 import com.github.klee0kai.thekey.app.utils.views.TargetAlpha
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
 import com.github.klee0kai.thekey.app.utils.views.crossFadeAlpha
@@ -515,7 +515,7 @@ private fun EditAccountScreenP6SkeletonPreview() = AppTheme {
             )
         }
     })
-    EditNoteScreen(dest = EditNoteDestination(path = DummyId.unicString))
+    EditNoteScreen(dest = EditNoteDestination(path = Dummy.unicString))
 }
 
 @Preview(device = Devices.PIXEL_6, showSystemUi = true)
@@ -534,7 +534,7 @@ private fun EditAccountScreenP6Preview() = AppTheme {
             )
         }
     })
-    EditNoteScreen(EditNoteDestination(path = DummyId.unicString))
+    EditNoteScreen(EditNoteDestination(path = Dummy.unicString))
 }
 
 
@@ -555,7 +555,7 @@ private fun EditAccountScreenSaveP6Preview() = AppTheme {
             )
         }
     })
-    EditNoteScreen(EditNoteDestination(path = DummyId.unicString))
+    EditNoteScreen(EditNoteDestination(path = Dummy.unicString))
 }
 
 
@@ -571,7 +571,7 @@ private fun EditOTPScreenP6SkeletonPreview() = AppTheme {
             )
         }
     })
-    EditNoteScreen(dest = EditNoteDestination(path = DummyId.unicString, tab = Otp))
+    EditNoteScreen(dest = EditNoteDestination(path = Dummy.unicString, tab = Otp))
 }
 
 @Preview(device = Devices.PIXEL_6, showSystemUi = true)
@@ -589,5 +589,5 @@ private fun EditOTPScreenP6Preview() = AppTheme(modifier = Modifier) {
             )
         }
     })
-    EditNoteScreen(dest = EditNoteDestination(path = DummyId.unicString, tab = Otp))
+    EditNoteScreen(dest = EditNoteDestination(path = Dummy.unicString, tab = Otp))
 }

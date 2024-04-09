@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.ui.storage
+package com.github.klee0kai.thekey.app.ui.storage.presenter
 
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
@@ -10,23 +10,23 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
-class StoragePresenter(
+open class StoragePresenterImpl(
     val storageIdentifier: StorageIdentifier,
-) {
+) : StoragePresenter {
     private val notesInteractor = DI.notesInteractorLazy(storageIdentifier)
     private val groupsInteractor = DI.groupsInteractorLazy(storageIdentifier)
 
     private val router = DI.router()
     private val scope = DI.defaultThreadScope()
 
-    val searchState = MutableStateFlow(SearchState())
-    val selectedGroupId = MutableStateFlow<Long?>(null)
+    override val searchState = MutableStateFlow(SearchState())
+    override val selectedGroupId = MutableStateFlow<Long?>(null)
 
-    val filteredColorGroups = flow<List<LazyColorGroup>> {
+    override val filteredColorGroups = flow<List<LazyColorGroup>> {
         groupsInteractor().groups.collect(this@flow)
     }
 
-    val filteredNotes = flow<List<LazyColoredNote>> {
+    override val filteredNotes = flow<List<LazyColoredNote>> {
         combine(
             flow = searchState,
             flow2 = selectedGroupId,
@@ -54,11 +54,11 @@ class StoragePresenter(
         ).collect(this@flow)
     }
 
-    fun searchFilter(newParams: SearchState) = scope.launch {
+    override fun searchFilter(newParams: SearchState) = scope.launch {
         searchState.value = newParams
     }
 
-    fun selectGroup(groupId: Long) = scope.launch {
+    override fun selectGroup(groupId: Long) = scope.launch {
         if (selectedGroupId.value == groupId) {
             selectedGroupId.value = null
         } else {
@@ -66,11 +66,11 @@ class StoragePresenter(
         }
     }
 
-    fun setColorGroup(notePt: Long, groupId: Long) = scope.launch {
+    override fun setColorGroup(notePt: Long, groupId: Long) = scope.launch {
         notesInteractor().setNoteGroup(notePt, groupId)
     }
 
-    fun deleteGroup(id: Long) = scope.launch {
+    override fun deleteGroup(id: Long) = scope.launch {
 
     }
 

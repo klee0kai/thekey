@@ -8,8 +8,8 @@ import com.github.klee0kai.thekey.app.ui.genhist.GenHistPresenter
 import com.github.klee0kai.thekey.app.ui.login.presenter.LoginPresenter
 import com.github.klee0kai.thekey.app.ui.note.presenter.EditNotePresenter
 import com.github.klee0kai.thekey.app.ui.notegroup.EditNoteGroupPresenter
-import com.github.klee0kai.thekey.app.ui.storage.StoragePresenter
-import com.github.klee0kai.thekey.app.ui.storage.genpassw.GenPasswPresenter
+import com.github.klee0kai.thekey.app.ui.storage.genpassw.presenter.GenPasswPresenter
+import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenter
 import com.github.klee0kai.thekey.app.ui.storages.StoragesPresenter
 
 interface PresentersDependencies {

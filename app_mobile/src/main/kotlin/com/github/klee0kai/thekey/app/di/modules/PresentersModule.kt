@@ -13,8 +13,10 @@ import com.github.klee0kai.thekey.app.ui.login.presenter.LoginPresenterImpl
 import com.github.klee0kai.thekey.app.ui.note.presenter.EditNotePresenter
 import com.github.klee0kai.thekey.app.ui.note.presenter.EditNotePresenterImpl
 import com.github.klee0kai.thekey.app.ui.notegroup.EditNoteGroupPresenter
-import com.github.klee0kai.thekey.app.ui.storage.StoragePresenter
-import com.github.klee0kai.thekey.app.ui.storage.genpassw.GenPasswPresenter
+import com.github.klee0kai.thekey.app.ui.storage.genpassw.presenter.GenPasswPresenter
+import com.github.klee0kai.thekey.app.ui.storage.genpassw.presenter.GenPasswPresenterImpl
+import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenter
+import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenterImpl
 import com.github.klee0kai.thekey.app.ui.storages.StoragesPresenter
 
 @Module
@@ -37,11 +39,11 @@ open class PresentersModule {
 
     @Provide(cache = Provide.CacheType.Weak)
     open fun storagePresenter(storageIdentifier: StorageIdentifier): StoragePresenter =
-        StoragePresenter(storageIdentifier)
+        StoragePresenterImpl(storageIdentifier)
 
     @Provide(cache = Provide.CacheType.Weak)
     open fun genPasswPresente(storageIdentifier: StorageIdentifier): GenPasswPresenter =
-        GenPasswPresenter(storageIdentifier)
+        GenPasswPresenterImpl(storageIdentifier)
 
     @Provide(cache = Provide.CacheType.Weak)
     open fun genHistPresenter(storageIdentifier: StorageIdentifier): GenHistPresenter =

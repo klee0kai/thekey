@@ -20,7 +20,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
 import com.github.klee0kai.thekey.app.ui.designkit.color.KeyColor
 import com.github.klee0kai.thekey.app.ui.designkit.components.buttons.GroupCircle
-import com.github.klee0kai.thekey.app.utils.common.DummyId
+import com.github.klee0kai.thekey.app.utils.common.Dummy
 
 @Composable
 fun ColumnScope.NoteDropDownMenuContent(
@@ -69,13 +69,13 @@ private fun NoteDropDownMenuWithGroupsPreview() {
             NoteDropDownMenuContent(
                 selectedGroupId = 1L,
                 colorGroups = listOf(
-                    ColorGroup(DummyId.dummyId, name = "AN", keyColor = KeyColor.VIOLET),
-                    ColorGroup(DummyId.dummyId, name = "QW", keyColor = KeyColor.TURQUOISE),
-                    ColorGroup(DummyId.dummyId, name = "Q", keyColor = KeyColor.ORANGE),
-                    ColorGroup(DummyId.dummyId, name = "W", keyColor = KeyColor.VIOLET),
-                    ColorGroup(DummyId.dummyId, name = "AA", keyColor = KeyColor.PINK),
-                    ColorGroup(DummyId.dummyId, name = "P", keyColor = KeyColor.NOCOLOR),
-                    ColorGroup(DummyId.dummyId, name = "P", keyColor = KeyColor.NOCOLOR),
+                    ColorGroup(Dummy.dummyId, name = "AN", keyColor = KeyColor.VIOLET),
+                    ColorGroup(Dummy.dummyId, name = "QW", keyColor = KeyColor.TURQUOISE),
+                    ColorGroup(Dummy.dummyId, name = "Q", keyColor = KeyColor.ORANGE),
+                    ColorGroup(Dummy.dummyId, name = "W", keyColor = KeyColor.VIOLET),
+                    ColorGroup(Dummy.dummyId, name = "AA", keyColor = KeyColor.PINK),
+                    ColorGroup(Dummy.dummyId, name = "P", keyColor = KeyColor.NOCOLOR),
+                    ColorGroup(Dummy.dummyId, name = "P", keyColor = KeyColor.NOCOLOR),
                 )
             )
         }

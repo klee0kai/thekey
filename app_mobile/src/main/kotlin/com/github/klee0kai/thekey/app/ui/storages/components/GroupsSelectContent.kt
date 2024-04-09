@@ -32,7 +32,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.LazyListIndicatorI
 import com.github.klee0kai.thekey.app.ui.designkit.components.buttons.AddCircle
 import com.github.klee0kai.thekey.app.ui.designkit.components.buttons.GroupCircle
 import com.github.klee0kai.thekey.app.ui.designkit.components.scrollPosition
-import com.github.klee0kai.thekey.app.utils.common.DummyId
+import com.github.klee0kai.thekey.app.utils.common.Dummy
 
 @Composable
 fun GroupsSelectContent(
@@ -158,10 +158,10 @@ private fun GroupsSelectContentPreview() {
             forceScrollIndicator = true,
             selectedGroup = 1L,
             colorGroups = listOf(
-                ColorGroup(DummyId.dummyId, "CE", KeyColor.CORAL),
-                ColorGroup(DummyId.dummyId, "AN", KeyColor.ORANGE),
-                ColorGroup(DummyId.dummyId, "TU", KeyColor.TURQUOISE),
-                ColorGroup(DummyId.dummyId, "T", KeyColor.VIOLET),
+                ColorGroup(Dummy.dummyId, "CE", KeyColor.CORAL),
+                ColorGroup(Dummy.dummyId, "AN", KeyColor.ORANGE),
+                ColorGroup(Dummy.dummyId, "TU", KeyColor.TURQUOISE),
+                ColorGroup(Dummy.dummyId, "T", KeyColor.VIOLET),
             ),
         )
     }

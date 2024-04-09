@@ -23,16 +23,22 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
+import com.github.klee0kai.thekey.app.di.modules.PresentersModule
+import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
+import com.github.klee0kai.thekey.app.ui.designkit.LocalAppConfig
 import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
 import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarStates
@@ -47,6 +53,8 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.GenPasswordContent
 import com.github.klee0kai.thekey.app.ui.storage.model.SearchState
 import com.github.klee0kai.thekey.app.ui.storage.notes.NotesContent
+import com.github.klee0kai.thekey.app.ui.storage.presenter.DummyStoragePresenter
+import com.github.klee0kai.thekey.app.utils.common.Dummy
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
 import com.github.klee0kai.thekey.app.utils.views.hideAlpha
@@ -60,12 +68,12 @@ private const val MainTitleId = 1
 private const val SecondTittleId = 2
 
 
-@Preview(showBackground = true)
 @Composable
 fun StorageScreen(
-    args: StorageDestination = StorageDestination()
+    dest: StorageDestination = StorageDestination()
 ) {
-    val presenter = remember { DI.storagePresenter(args.identifier()) }
+    val isEditMode = LocalAppConfig.current.isViewEditMode
+    val presenter = remember { DI.storagePresenter(dest.identifier()) }
     val scope = rememberCoroutineScope()
     val navigator = LocalRouter.current
     val density = LocalDensity.current
@@ -74,9 +82,9 @@ fun StorageScreen(
         stringResource(id = R.string.passw_generate)
     )
     val searchFocusRequester = remember { FocusRequester() }
-    val searchState by presenter.searchState.collectAsState(Unit)
-    val dragProgress = remember { mutableFloatStateOf(0f) }
-    val pagerState = rememberPagerState(initialPage = args.selectedPage.coerceIn(titles.indices)) { titles.size }
+    val searchState by presenter.searchState.collectAsState(key = Unit, initial = SearchState())
+    var dragProgress by remember { mutableFloatStateOf(0f) }
+    val pagerState = rememberPagerState(initialPage = dest.selectedPage.coerceIn(titles.indices)) { titles.size }
     val singlePagePagerState = rememberPagerState(initialPage = 0) { 1 }
     val pagerStateFiltered by rememberDerivedStateOf { if (searchState.isActive) singlePagePagerState else pagerState }
     val secondaryTabsHeight by rememberDerivedStateOf { if (searchState.isActive) 0.dp else SecondaryTabsConst.allHeight }
@@ -92,9 +100,10 @@ fun StorageScreen(
     val accountTitleVisibility = accountScaffoldState.rememberMainTitleVisibleFlow()
     val tabsAlpha by rememberAlphaAnimate {
         when {
+            isEditMode -> true
             searchState.isActive -> false
             !isAccountTab -> true
-            dragProgress.floatValue > 0.4f -> true
+            dragProgress > 0.4f -> true
             else -> false
         }
     }
@@ -127,15 +136,15 @@ fun StorageScreen(
                         modifier = Modifier
                             .animateContentSize()
                             .padding(top = secondaryTabsHeight),
-                        onDrag = { dragProgress.value = it },
-                        args = args,
+                        onDrag = { dragProgress = it },
+                        dest = dest,
                         isPageFullyAvailable = isAccountTab && !searchState.isActive,
                         scaffoldState = accountScaffoldState
                     )
 
                     1 -> GenPasswordContent(
                         modifier = Modifier.padding(top = AppBarConst.appBarSize + SecondaryTabsConst.allHeight),
-                        dest = args,
+                        dest = dest,
                     )
                 }
             }
@@ -195,6 +204,27 @@ fun StorageScreen(
             }
         }
     )
+}
+
+@Preview(device = Devices.PIXEL_6, showSystemUi = true)
+@Composable
+private fun StorageScreenAccountsPreview() = AppTheme {
+    DI.initPresenterModule(object : PresentersModule() {
+        override fun storagePresenter(storageIdentifier: StorageIdentifier) = DummyStoragePresenter()
+    })
+    StorageScreen(
+        dest = StorageDestination(path = Dummy.unicString, version = 2)
+    )
+}
 
 
+@Preview(device = Devices.PIXEL_6, showSystemUi = true)
+@Composable
+private fun StorageScreenGeneratePreview() = AppTheme {
+    DI.initPresenterModule(object : PresentersModule() {
+        override fun storagePresenter(storageIdentifier: StorageIdentifier) = DummyStoragePresenter()
+    })
+    StorageScreen(
+        dest = StorageDestination(path = Dummy.unicString, version = 2, selectedPage = 1)
+    )
 }

@@ -5,7 +5,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
@@ -17,11 +16,16 @@ import androidx.compose.ui.platform.isDebugInspectorInfoEnabled
 import androidx.core.view.WindowCompat
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.updateConfig
+import com.github.klee0kai.thekey.app.domain.model.AppConfig
+import com.github.klee0kai.thekey.app.ui.designkit.color.CommonColorScheme
+import com.github.klee0kai.thekey.app.ui.navigation.AppRouter
+import com.valentinilk.shimmer.ShimmerTheme
 import com.valentinilk.shimmer.defaultShimmerTheme
 
-val LocalRouter = compositionLocalOf { DI.router() }
-val LocalShimmerTheme = compositionLocalOf { defaultShimmerTheme.copy() }
-val LocalColorScheme = compositionLocalOf { DI.theme().colorScheme() }
+val LocalRouter = compositionLocalOf<AppRouter> { error("no router") }
+val LocalShimmerTheme = compositionLocalOf<ShimmerTheme> { error("no shimmer theme") }
+val LocalColorScheme = compositionLocalOf<CommonColorScheme> { error("no color scheme") }
+val LocalAppConfig = compositionLocalOf<AppConfig> { error("no app config") }
 
 @Composable
 fun AppTheme(
@@ -34,12 +38,12 @@ fun AppTheme(
     val isEditMode = view.isInEditMode || LocalInspectionMode.current || isDebugInspectorInfoEnabled
     val colorScheme = remember { DI.theme().colorScheme() }
     val typeScheme = remember { DI.theme().typeScheme() }
-
-    LaunchedEffect(Unit) {
+    remember {
         DI.updateConfig {
             copy(isViewEditMode = isEditMode)
         }
     }
+
 
     if (!view.isInEditMode) {
         SideEffect {
@@ -54,6 +58,7 @@ fun AppTheme(
         LocalRouter provides DI.router(),
         LocalShimmerTheme provides defaultShimmerTheme.copy(),
         LocalColorScheme provides DI.theme().colorScheme(),
+        LocalAppConfig provides DI.config(),
     ) {
         MaterialTheme(
             colorScheme = colorScheme.androidColorScheme,

@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class, ExperimentalFoundationApi::class)
+
 package com.github.klee0kai.thekey.app.ui.designkit.components.bottomsheet
 
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -23,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
 import com.github.klee0kai.thekey.app.ui.designkit.components.bottomsheet.SimpleScaffoldConst.dragHandleSize
 import com.github.klee0kai.thekey.app.utils.views.accelerateDecelerate
@@ -35,8 +38,6 @@ internal object SimpleScaffoldConst {
 }
 
 
-@Preview
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun SimpleBottomSheetScaffold(
     modifier: Modifier = Modifier,
@@ -51,7 +52,7 @@ fun SimpleBottomSheetScaffold(
     val topContentSize = simpleBottomSheetScaffoldState.topContentSize
     val dragProgress = remember { mutableFloatStateOf(0f) }
 
-    val viewHeight = if (view.isInEditMode) 900.dp else view.height.pxToDp()
+    val viewHeight = view.height.pxToDp()
     val sheetMinSize = remember(viewHeight, simpleBottomSheetScaffoldState) { maxOf(viewHeight - appBarSize - topContentSize, 0.dp) }
     val sheetMaxSize = remember(viewHeight, simpleBottomSheetScaffoldState) { maxOf(viewHeight - appBarSize, 0.dp) }
 
@@ -136,3 +137,14 @@ fun SimpleBottomSheetScaffold(
 }
 
 
+@Preview
+@Composable
+fun SimpleBottomSheetScaffoldPreview(
+    modifier: Modifier = Modifier,
+    simpleBottomSheetScaffoldState: SimpleBottomSheetScaffoldState = rememberSimpleBottomSheetScaffoldState(),
+    onDrag: (Float) -> Unit = {},
+    topContent: @Composable () -> Unit = {},
+    sheetContent: @Composable () -> Unit = {},
+) = AppTheme {
+    SimpleBottomSheetScaffold()
+}

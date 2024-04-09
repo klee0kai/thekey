@@ -32,12 +32,12 @@ fun AddCircle(
         modifier = modifier,
     ) {
         Box(
-            modifier = modifier
+            modifier = Modifier
+                .align(Alignment.Center)
                 .minimumInteractiveComponentSize()
                 .size(40.dp)
                 .background(color = MaterialTheme.colorScheme.surface, shape = CircleShape)
                 .clip(CircleShape)
-                .align(Alignment.Center)
                 .run {
                     when {
                         onClick == null && onLongClick == null -> this

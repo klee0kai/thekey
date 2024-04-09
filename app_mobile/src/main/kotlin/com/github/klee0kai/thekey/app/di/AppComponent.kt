@@ -26,6 +26,8 @@ import com.github.klee0kai.thekey.app.di.wrap.AppWrappersStone
 import com.github.klee0kai.thekey.app.domain.model.AppConfig
 
 val DI: AppComponent = Stone.createComponent(AppComponent::class.java).apply {
+    config(AppConfig())
+
     if (BuildConfig.DEBUG) {
         with(DebugDI) { initDI() }
     }

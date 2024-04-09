@@ -2,8 +2,6 @@
 
 package com.github.klee0kai.thekey.app.ui.storage.notes
 
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,15 +23,15 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.domain.model.LazyColoredNote
-import com.github.klee0kai.thekey.app.domain.model.dummyLazyColoredNoteLoaded
-import com.github.klee0kai.thekey.app.domain.model.dummyLazyColoredNoteSkeleton
+import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
+import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.domain.model.id
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
 import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.app.ui.navigation.note
+import com.github.klee0kai.thekey.app.ui.storage.presenter.DummyStoragePresenter
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
 
@@ -41,12 +39,11 @@ import com.github.klee0kai.thekey.app.utils.views.collectAsState
 fun NotesListContent(
     modifier: Modifier = Modifier,
     args: StorageDestination = StorageDestination(),
-    initList: List<LazyColoredNote> = emptyList(),
     showStoragesTitle: Boolean = true,
 ) {
     val presenter = remember { DI.storagePresenter(args.identifier()) }
     val router = LocalRouter.current
-    val notes by presenter.filteredNotes.collectAsState(key = Unit, initial = initList)
+    val notes by presenter.filteredNotes.collectAsState(key = Unit, initial = emptyList())
     val groups by presenter.filteredColorGroups.collectAsState(key = Unit, initial = emptyList())
     val titleAnimatedAlpha by animateAlphaAsState(showStoragesTitle)
 
@@ -61,7 +58,6 @@ fun NotesListContent(
                 text = stringResource(id = R.string.accounts),
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier
-                    .animateContentSize()
                     .padding(start = 16.dp, top = 4.dp, bottom = 22.dp)
                     .alpha(titleAnimatedAlpha)
             )
@@ -73,7 +69,6 @@ fun NotesListContent(
 
                 ColoredNoteItem(
                     modifier = Modifier
-                        .animateItemPlacement(animationSpec = tween())
                         .combinedClickable(
                             onLongClick = {
                                 showMenu = true
@@ -104,7 +99,6 @@ fun NotesListContent(
                         }
                     }
                 )
-
             }
         }
     }
@@ -113,17 +107,11 @@ fun NotesListContent(
 
 @Preview
 @Composable
-private fun NotesListContentPreview() {
-    AppTheme {
-        NotesListContent(
-            initList = listOf(
-                dummyLazyColoredNoteSkeleton(),
-                dummyLazyColoredNoteSkeleton(),
-                dummyLazyColoredNoteLoaded(),
-                dummyLazyColoredNoteLoaded(),
-                dummyLazyColoredNoteLoaded(),
-            ),
-            showStoragesTitle = false,
-        )
-    }
+private fun NotesListContentPreview() = AppTheme {
+    DI.initPresenterModule(object : PresentersModule() {
+        override fun storagePresenter(storageIdentifier: StorageIdentifier) = DummyStoragePresenter()
+    })
+    NotesListContent(
+        showStoragesTitle = false,
+    )
 }

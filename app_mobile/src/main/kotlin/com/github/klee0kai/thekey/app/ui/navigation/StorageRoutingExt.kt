@@ -28,7 +28,10 @@ fun StorageDestination.identifier() =
 fun StorageDestination.note(notePtr: Long = 0) =
     EditNoteDestination(storageVersion = version, path = path, notePtr = notePtr)
 
-fun StorageDestination.createNote(prefilled: DecryptedNote) =
+fun StorageDestination.createNoteDest(prefilled: DecryptedNote) =
+    EditNoteDestination(storageVersion = version, path = path, prefilled = prefilled)
+
+fun StorageIdentifier.createNoteDest(prefilled: DecryptedNote) =
     EditNoteDestination(storageVersion = version, path = path, prefilled = prefilled)
 
 fun StorageDestination.genHist() =
