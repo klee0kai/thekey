@@ -57,7 +57,7 @@ import com.github.klee0kai.thekey.app.ui.storage.presenter.DummyStoragePresenter
 import com.github.klee0kai.thekey.app.utils.common.Dummy
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
-import com.github.klee0kai.thekey.app.utils.views.hideAlpha
+import com.github.klee0kai.thekey.app.utils.views.hideOnTargetAlpha
 import com.github.klee0kai.thekey.app.utils.views.rememberAlphaAnimate
 import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.app.utils.views.rememberTargetAlphaCrossSade
@@ -195,7 +195,7 @@ fun StorageScreen(
             if (isAccountPageAlpha > 0 && targetTitleId.current != SearchTitleId) {
                 IconButton(
                     modifier = Modifier
-                        .alpha(targetTitleId.hideAlpha(SearchTitleId))
+                        .alpha(targetTitleId.hideOnTargetAlpha(SearchTitleId))
                         .alpha(isAccountPageAlpha),
                     onClick = { presenter.searchFilter(SearchState(isActive = true)) },
                     content = { Icon(Icons.Filled.Search, contentDescription = null) }
@@ -205,7 +205,7 @@ fun StorageScreen(
     )
 }
 
-@Preview(device = Devices.PIXEL_6, showSystemUi = true)
+@Preview(device = Devices.PIXEL_6   , showSystemUi = true)
 @Composable
 private fun StorageScreenAccountsPreview() = AppTheme {
     DI.initPresenterModule(object : PresentersModule() {

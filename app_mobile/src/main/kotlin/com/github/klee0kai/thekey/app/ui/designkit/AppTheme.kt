@@ -9,6 +9,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.LocalView
@@ -19,11 +20,10 @@ import com.github.klee0kai.thekey.app.di.updateConfig
 import com.github.klee0kai.thekey.app.domain.model.AppConfig
 import com.github.klee0kai.thekey.app.ui.designkit.color.CommonColorScheme
 import com.github.klee0kai.thekey.app.ui.navigation.AppRouter
-import com.valentinilk.shimmer.ShimmerTheme
+import com.valentinilk.shimmer.LocalShimmerTheme
 import com.valentinilk.shimmer.defaultShimmerTheme
 
 val LocalRouter = compositionLocalOf<AppRouter> { error("no router") }
-val LocalShimmerTheme = compositionLocalOf<ShimmerTheme> { error("no shimmer theme") }
 val LocalColorScheme = compositionLocalOf<CommonColorScheme> { error("no color scheme") }
 val LocalAppConfig = compositionLocalOf<AppConfig> { error("no app config") }
 
@@ -38,6 +38,15 @@ fun AppTheme(
     val isEditMode = view.isInEditMode || LocalInspectionMode.current || isDebugInspectorInfoEnabled
     val colorScheme = remember { DI.theme().colorScheme() }
     val typeScheme = remember { DI.theme().typeScheme() }
+    val shimmer = remember {
+        defaultShimmerTheme.copy(
+            shaderColors = listOf(
+                Color.Unspecified.copy(alpha = .25f),
+                Color.Unspecified.copy(alpha = .4f),
+                Color.Unspecified.copy(alpha = .25f),
+            ),
+        )
+    }
     remember {
         DI.updateConfig {
             copy(isViewEditMode = isEditMode)
@@ -56,7 +65,7 @@ fun AppTheme(
 
     CompositionLocalProvider(
         LocalRouter provides DI.router(),
-        LocalShimmerTheme provides defaultShimmerTheme.copy(),
+        LocalShimmerTheme provides shimmer,
         LocalColorScheme provides DI.theme().colorScheme(),
         LocalAppConfig provides DI.config(),
     ) {

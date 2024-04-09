@@ -33,14 +33,21 @@ data class TargetAlpha<T>(
     val alpha: Float = 0f,
 )
 
-fun <T> TargetAlpha<T>.hideAlpha(vararg targetsToHide: T): Float {
+fun <T> TargetAlpha<T>.hideOnTargetAlpha(vararg targetsToHide: T): Float {
     return when {
         targetsToHide.any { current == it } -> 0f
         targetsToHide.any { next == it } -> alpha
         else -> 1f
     }
-
 }
+
+fun <T> TargetAlpha<T>.visibleOnTargetAlpha(vararg targetsToVisible: T): Float {
+    return when {
+        targetsToVisible.any { current == it } -> alpha
+        else -> 0f
+    }
+}
+
 
 @Composable
 inline fun animateAlphaAsState(
