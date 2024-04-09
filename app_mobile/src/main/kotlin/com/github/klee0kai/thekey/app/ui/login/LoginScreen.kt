@@ -10,40 +10,40 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.domain.model.ColoredStorage
+import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
+import com.github.klee0kai.thekey.app.ui.login.presenter.LoginPresenter
+import com.github.klee0kai.thekey.app.utils.views.collectAsState
 import com.github.klee0kai.thekey.app.utils.views.toAnnotationString
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.MutableStateFlow
 
-@Preview(showBackground = true)
 @Composable
 fun LoginScreen() {
     val scope = rememberCoroutineScope()
     val presenter = remember { DI.loginPresenter() }
     val pathInputHelper = remember { DI.pathInputHelper() }
-    val currentStorageState = currentStorageState()
+    val currentStorageState by presenter.currentStorageFlow.collectAsState(Unit, initial = ColoredStorage())
     var passwordInputText by remember { mutableStateOf("") }
 
     val shortStoragePath = with(pathInputHelper) {
-        currentStorageState.value.path
+        currentStorageState.path
             .shortPath()
             .toAnnotationString()
             .coloredPath()
@@ -57,7 +57,6 @@ fun LoginScreen() {
         val (
             logoIcon, appDesc, passwTextField,
             storageName, storagePath,
-            snackHost,
             storagesButton, loginButton
         ) = createRefs()
 
@@ -112,7 +111,7 @@ fun LoginScreen() {
         )
 
         Text(
-            text = currentStorageState.value.name,
+            text = currentStorageState.name,
             style = MaterialTheme.typography.labelSmall,
             modifier = Modifier.constrainAs(storageName) {
                 linkTo(
@@ -169,17 +168,39 @@ fun LoginScreen() {
     }
 }
 
+@Preview(device = Devices.PIXEL_6, showSystemUi = true)
 @Composable
-private fun currentStorageState(): State<ColoredStorage> {
-    val scope = rememberCoroutineScope()
-    val presenter = remember { DI.loginPresenter() }
-    return if (LocalView.current.isInEditMode) {
-        flowOf(ColoredStorage(path = "/app_folder/some_path", name = "editModeStorage"))
-    } else {
-        flow {
-            presenter.currentStorageFlow().collect {
-                emit(it)
+private fun LoginScreePreviewPixel6() {
+    DI.initPresenterModule(
+        object : PresentersModule() {
+            override fun loginPresenter(): LoginPresenter {
+                return object : LoginPresenter {
+                    override val currentStorageFlow = MutableStateFlow(ColoredStorage(path = "/app_folder/some_path", name = "editModeStorage"))
+                }
             }
         }
-    }.collectAsState(initial = ColoredStorage(), scope.coroutineContext)
+    )
+    AppTheme {
+        LoginScreen()
+    }
+}
+
+@Preview(
+    device = Devices.TABLET,
+    showSystemUi = true
+)
+@Composable
+private fun LoginScreePreview() {
+    DI.initPresenterModule(
+        object : PresentersModule() {
+            override fun loginPresenter(): LoginPresenter {
+                return object : LoginPresenter {
+                    override val currentStorageFlow = MutableStateFlow(ColoredStorage(path = "/app_folder/some_path", name = "editModeStorage"))
+                }
+            }
+        }
+    )
+    AppTheme {
+        LoginScreen()
+    }
 }

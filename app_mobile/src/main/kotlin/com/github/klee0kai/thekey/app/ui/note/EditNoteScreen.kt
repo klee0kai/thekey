@@ -28,7 +28,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -37,6 +36,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -47,6 +47,9 @@ import androidx.wear.compose.material.rememberSwipeableState
 import androidx.wear.compose.material.swipeable
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.di.identifier.NoteIdentifier
+import com.github.klee0kai.thekey.app.di.modules.PresentersModule
+import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
 import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarConst
@@ -57,10 +60,14 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.dropdownfields.Col
 import com.github.klee0kai.thekey.app.ui.designkit.components.dropdownfields.DropDownField
 import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteDestination
+import com.github.klee0kai.thekey.app.ui.note.model.EditNoteState
 import com.github.klee0kai.thekey.app.ui.note.model.EditTabs
 import com.github.klee0kai.thekey.app.ui.note.model.EditTabs.Account
 import com.github.klee0kai.thekey.app.ui.note.model.EditTabs.Otp
+import com.github.klee0kai.thekey.app.ui.note.presenter.EditNotePresenter
+import com.github.klee0kai.thekey.app.utils.common.DummyId
 import com.github.klee0kai.thekey.app.utils.views.TargetAlpha
+import com.github.klee0kai.thekey.app.utils.views.collectAsState
 import com.github.klee0kai.thekey.app.utils.views.crossFadeAlpha
 import com.github.klee0kai.thekey.app.utils.views.currentViewSizeState
 import com.github.klee0kai.thekey.app.utils.views.pxToDp
@@ -68,45 +75,41 @@ import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.app.utils.views.rememberSkeletonModifier
 import com.github.klee0kai.thekey.app.utils.views.rememberTargetAlphaCrossSade
 import com.github.klee0kai.thekey.app.utils.views.toPx
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
-@Preview(showBackground = true)
 @Composable
 fun EditNoteScreen(
-    args: EditNoteDestination = EditNoteDestination(),
+    dest: EditNoteDestination = EditNoteDestination(),
 ) {
     val scope = rememberCoroutineScope()
     val navigator = LocalRouter.current
     val view = LocalView.current
     val presenter = remember {
-        DI.editNotePresenter(args.identifier()).apply {
-            init(args.prefilled)
+        DI.editNotePresenter(dest.identifier()).apply {
+            init(dest.prefilled)
         }
     }
     val titles = listOf(stringResource(id = R.string.account), stringResource(id = R.string.otp))
-    val state by presenter.state.collectAsState()
+    val state by presenter.state.collectAsState(key = Unit, initial = EditNoteState(isSkeleton = true))
     val isSaveAvailable by rememberTargetAlphaCrossSade { state.isSaveAvailable }
     val isRemoveAvailable by rememberTargetAlphaCrossSade { state.isRemoveAvailable }
     val skeletonModifier by rememberSkeletonModifier { state.isSkeleton }
 
     val pagerHeight = if (!state.isEditMode) SecondaryTabsConst.allHeight else 0.dp
 
-    val pageSwipeState = rememberSwipeableState(Account)
+    val pageSwipeState = rememberSwipeableState(dest.tab)
     val page by rememberDerivedStateOf {
         runCatching { pageSwipeState.progress.crossFadeAlpha() }.getOrNull()
-            ?: TargetAlpha(Account, Account, 0f)
+            ?: TargetAlpha(dest.tab, dest.tab, 0f)
     }
     val scrollState = rememberScrollState()
     val viewSize by currentViewSizeState()
-    val saveInToolbarAlpha by rememberTargetAlphaCrossSade { viewSize.height < 700.dp }
+    val saveInToolbarAlpha by rememberTargetAlphaCrossSade { viewSize.height in 1.dp..700.dp }
 
     BackHandler(state.otpTypeExpanded || state.otpAlgoExpanded) {
-        presenter.state.update {
-            it.copy(
-                otpTypeExpanded = false,
-                otpAlgoExpanded = false,
-            )
+        presenter.input {
+            copy(otpTypeExpanded = false, otpAlgoExpanded = false)
         }
     }
     LaunchedEffect(key1 = page.current) {
@@ -116,7 +119,6 @@ fun EditNoteScreen(
     }
 
     ConstraintLayout(
-        optimizationLevel = 0,
         modifier = Modifier
             .verticalScroll(scrollState)
             .fillMaxSize()
@@ -403,7 +405,6 @@ fun EditNoteScreen(
 
     }
 
-
     SecondaryTabs(
         modifier = Modifier
             .padding(top = AppBarConst.appBarSize),
@@ -417,19 +418,19 @@ fun EditNoteScreen(
         },
     )
 
-    if (!saveInToolbarAlpha.current) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(
-                    top = 16.dp + AppBarConst.appBarSize + pagerHeight,
-                    bottom = 16.dp,
-                    start = 16.dp,
-                    end = 16.dp
-                ),
-        ) {
-            Spacer(modifier = Modifier.weight(1f))
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(
+                top = 16.dp + AppBarConst.appBarSize + pagerHeight,
+                bottom = 16.dp,
+                start = 16.dp,
+                end = 16.dp
+            ),
+    ) {
+        Spacer(modifier = Modifier.weight(1f))
 
+        if (!saveInToolbarAlpha.current) {
             TextButton(
                 modifier = Modifier
                     .alpha(page.alpha)
@@ -445,17 +446,17 @@ fun EditNoteScreen(
                 val textRes = if (page.current == Account) R.string.passw_generate else R.string.qr_code_scan
                 Text(stringResource(textRes))
             }
+        }
 
-            if (isSaveAvailable.current) {
-                FilledTonalButton(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .alpha(saveInToolbarAlpha.alpha)
-                        .alpha(isSaveAvailable.alpha),
-                    onClick = { presenter.save() }
-                ) {
-                    Text(stringResource(R.string.save))
-                }
+        if (!saveInToolbarAlpha.current && isSaveAvailable.current) {
+            FilledTonalButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .alpha(saveInToolbarAlpha.alpha)
+                    .alpha(isSaveAvailable.alpha),
+                onClick = { presenter.save() }
+            ) {
+                Text(stringResource(R.string.save))
             }
         }
     }
@@ -474,7 +475,7 @@ fun EditNoteScreen(
                 IconButton(
                     modifier = Modifier
                         .alpha(isRemoveAvailable.alpha),
-                    onClick = { presenter.tryRemove() }
+                    onClick = { presenter.remove() }
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Delete,
@@ -500,6 +501,93 @@ fun EditNoteScreen(
             }
         }
     )
+}
+
+@Preview(device = Devices.PIXEL_6, showSystemUi = true)
+@Composable
+private fun EditAccountScreenP6SkeletonPreview() = AppTheme {
+    DI.initPresenterModule(object : PresentersModule() {
+        override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter = object : EditNotePresenter {
+            override val state = MutableStateFlow(
+                EditNoteState(
+                    isSkeleton = true,
+                )
+            )
+        }
+    })
+    EditNoteScreen(dest = EditNoteDestination(path = DummyId.unicString))
+}
+
+@Preview(device = Devices.PIXEL_6, showSystemUi = true)
+@Composable
+private fun EditAccountScreenP6Preview() = AppTheme {
+    DI.initPresenterModule(object : PresentersModule() {
+        override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter = object : EditNotePresenter {
+            override val state = MutableStateFlow(
+                EditNoteState(
+                    isRemoveAvailable = true,
+                    isSkeleton = false,
+                    siteOrIssuer = "some.site.com",
+                    login = "myLogin@2",
+                    passw = "123#",
+                )
+            )
+        }
+    })
+    EditNoteScreen(EditNoteDestination(path = DummyId.unicString))
+}
 
 
+@Preview(device = Devices.PIXEL_6, showSystemUi = true)
+@Composable
+private fun EditAccountScreenSaveP6Preview() = AppTheme {
+    DI.initPresenterModule(object : PresentersModule() {
+        override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter = object : EditNotePresenter {
+            override val state = MutableStateFlow(
+                EditNoteState(
+                    isRemoveAvailable = false,
+                    isSkeleton = false,
+                    isSaveAvailable = true,
+                    siteOrIssuer = "some.site.com",
+                    login = "myLogin@2",
+                    passw = "123#",
+                )
+            )
+        }
+    })
+    EditNoteScreen(EditNoteDestination(path = DummyId.unicString))
+}
+
+
+@Preview(device = Devices.PIXEL_6, showSystemUi = true)
+@Composable
+private fun EditOTPScreenP6SkeletonPreview() = AppTheme {
+    DI.initPresenterModule(object : PresentersModule() {
+        override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter = object : EditNotePresenter {
+            override val state = MutableStateFlow(
+                EditNoteState(
+                    isSkeleton = true,
+                )
+            )
+        }
+    })
+    EditNoteScreen(dest = EditNoteDestination(path = DummyId.unicString, tab = Otp))
+}
+
+@Preview(device = Devices.PIXEL_6, showSystemUi = true)
+@Composable
+private fun EditOTPScreenP6Preview() = AppTheme(modifier = Modifier) {
+    DI.initPresenterModule(object : PresentersModule() {
+        override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter = object : EditNotePresenter {
+            override val state = MutableStateFlow(
+                EditNoteState(
+                    isRemoveAvailable = true,
+                    isSkeleton = false,
+                    siteOrIssuer = "some.site.com",
+                    login = "myLogin@2",
+                )
+            )
+        }
+    })
+    EditNoteScreen(dest = EditNoteDestination(path = DummyId.unicString, tab = Otp))
 }

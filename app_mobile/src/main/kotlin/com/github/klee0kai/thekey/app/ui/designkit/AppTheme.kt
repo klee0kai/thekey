@@ -9,6 +9,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.LocalView
@@ -24,6 +25,7 @@ val LocalColorScheme = compositionLocalOf { DI.theme().colorScheme() }
 
 @Composable
 fun AppTheme(
+    modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
     val view = LocalView.current
@@ -58,6 +60,7 @@ fun AppTheme(
             typography = typeScheme.typography,
         ) {
             Surface(
+                modifier = modifier,
                 color = MaterialTheme.colorScheme.background,
                 contentColor = MaterialTheme.colorScheme.onBackground,
             ) {

@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.ui.note
+package com.github.klee0kai.thekey.app.ui.note.presenter
 
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
@@ -29,9 +29,9 @@ import kotlinx.coroutines.launch
 import java.util.Date
 import java.util.concurrent.TimeUnit
 
-class EditNotePresenter(
+class EditNotePresenterImpl(
     val identifier: NoteIdentifier,
-) {
+) : EditNotePresenter {
     private val otpTypesVariants = listOf("HOTP", "TOTP", "YaOTP")
     private val otpAlgoVariants = listOf("SHA1", "SHA256", "SHA512")
 
@@ -44,9 +44,9 @@ class EditNotePresenter(
 
     private var originNote: DecryptedNote? = null
     private var colorGroups: List<ColorGroup> = emptyList()
-    val state = MutableStateFlow(EditNoteState(isSkeleton = true))
+    override val state = MutableStateFlow(EditNoteState(isSkeleton = true))
 
-    fun init(prefilled: DecryptedNote? = null) = scope.launch {
+    override fun init(prefilled: DecryptedNote?) = scope.launch {
         val isEditMode = identifier.notePtr != 0L
         val initState = EditNoteState(
             isEditMode = isEditMode,
@@ -95,7 +95,7 @@ class EditNotePresenter(
         }
     }
 
-    fun input(block: EditNoteState.() -> EditNoteState) = scope.launchLatest("input") {
+    override fun input(block: EditNoteState.() -> EditNoteState) = scope.launchLatest("input") {
         var newState = block.invoke(state.value)
         if (!newState.isValid()) return@launchLatest
 
@@ -111,11 +111,11 @@ class EditNotePresenter(
         state.value = newState
     }
 
-    fun showHistory() = scope.launchLatest("hist") {
+    override fun showHistory() = scope.launchLatest("hist") {
 
     }
 
-    fun tryRemove() = scope.launchLatest("rm") {
+    override fun remove() = scope.launchLatest("rm") {
         val note = originNote ?: return@launchLatest
         val deleteConfirm = router.navigate<ConfirmDialogResult>(
             AlertDialogDestination(
@@ -135,11 +135,11 @@ class EditNotePresenter(
         }
     }
 
-    fun scanQRCode() = scope.launchLatest("qr") {
+    override fun scanQRCode() = scope.launchLatest("qr") {
 
     }
 
-    fun save() = scope.launchLatest("safe") {
+    override fun save() = scope.launchLatest("safe") {
         val curState = state.value
         when (curState.page) {
             EditTabs.Account -> {
@@ -160,7 +160,7 @@ class EditNotePresenter(
 
     }
 
-    fun generate() = scope.launchLatestSafe("gen") {
+    override fun generate() = scope.launchLatestSafe("gen") {
         val newPassw = interactor()
             .generateNewPassw(GenPasswParams(oldPassw = state.value.passw))
             .await()

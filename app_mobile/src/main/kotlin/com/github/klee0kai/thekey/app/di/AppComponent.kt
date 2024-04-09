@@ -69,6 +69,9 @@ interface AppComponent : AppComponentProviders {
     @Init
     fun initHelpersModule(helpers: Class<out HelpersModule>)
 
+    @Init
+    fun initPresenterModule(presentersModule: PresentersModule)
+
     @BindInstance(cache = BindInstance.CacheType.Weak)
     fun ctx(ctx: Context? = null): Context
 

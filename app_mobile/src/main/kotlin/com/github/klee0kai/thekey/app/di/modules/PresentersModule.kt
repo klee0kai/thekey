@@ -8,21 +8,23 @@ import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.ui.editstorage.CreateStoragePresenter
 import com.github.klee0kai.thekey.app.ui.editstorage.EditStoragePresenter
 import com.github.klee0kai.thekey.app.ui.genhist.GenHistPresenter
-import com.github.klee0kai.thekey.app.ui.login.LoginPresenter
-import com.github.klee0kai.thekey.app.ui.note.EditNotePresenter
+import com.github.klee0kai.thekey.app.ui.login.presenter.LoginPresenter
+import com.github.klee0kai.thekey.app.ui.login.presenter.LoginPresenterImpl
+import com.github.klee0kai.thekey.app.ui.note.presenter.EditNotePresenter
+import com.github.klee0kai.thekey.app.ui.note.presenter.EditNotePresenterImpl
 import com.github.klee0kai.thekey.app.ui.notegroup.EditNoteGroupPresenter
 import com.github.klee0kai.thekey.app.ui.storage.StoragePresenter
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.GenPasswPresenter
 import com.github.klee0kai.thekey.app.ui.storages.StoragesPresenter
 
 @Module
-abstract class PresentersModule {
+open class PresentersModule {
 
     @Provide(cache = Provide.CacheType.Weak)
-    abstract fun loginPresenter(): LoginPresenter
+    open fun loginPresenter(): LoginPresenter = LoginPresenterImpl()
 
     @Provide(cache = Provide.CacheType.Weak)
-    abstract fun storagesPresenter(): StoragesPresenter
+    open fun storagesPresenter(): StoragesPresenter = StoragesPresenter()
 
     @Provide(cache = Provide.CacheType.Weak)
     open fun editStoragePresenter(storageIdentifier: StorageIdentifier?): CreateStoragePresenter {
@@ -34,19 +36,23 @@ abstract class PresentersModule {
     }
 
     @Provide(cache = Provide.CacheType.Weak)
-    abstract fun storagePresenter(storageIdentifier: StorageIdentifier): StoragePresenter
+    open fun storagePresenter(storageIdentifier: StorageIdentifier): StoragePresenter =
+        StoragePresenter(storageIdentifier)
 
     @Provide(cache = Provide.CacheType.Weak)
-    abstract fun genPasswPresente(storageIdentifier: StorageIdentifier): GenPasswPresenter
+    open fun genPasswPresente(storageIdentifier: StorageIdentifier): GenPasswPresenter =
+        GenPasswPresenter(storageIdentifier)
 
     @Provide(cache = Provide.CacheType.Weak)
-    abstract fun genHistPresenter(storageIdentifier: StorageIdentifier): GenHistPresenter
+    open fun genHistPresenter(storageIdentifier: StorageIdentifier): GenHistPresenter =
+        GenHistPresenter(storageIdentifier)
 
     @Provide(cache = Provide.CacheType.Weak)
-    abstract fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter
+    open fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter =
+        EditNotePresenterImpl(noteIdentifier)
 
     @Provide(cache = Provide.CacheType.Weak)
-    abstract fun editNoteGroupPresenter(id: NoteGroupIdentifier): EditNoteGroupPresenter
-
+    open fun editNoteGroupPresenter(id: NoteGroupIdentifier): EditNoteGroupPresenter =
+        EditNoteGroupPresenter(id)
 
 }

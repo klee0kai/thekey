@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.ui.login
+package com.github.klee0kai.thekey.app.ui.login.presenter
 
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class LoginPresenter {
+class LoginPresenterImpl : LoginPresenter {
 
     private val scope = DI.defaultThreadScope()
     private val storagesRep = DI.foundStoragesRepositoryLazy()
@@ -21,7 +21,7 @@ class LoginPresenter {
     private val loginInteractor = DI.loginInteractorLazy()
     private val router = DI.router()
 
-    fun currentStorageFlow() = flow<ColoredStorage> {
+    override val currentStorageFlow = flow<ColoredStorage> {
         val storagePath = settingsRep().currentStoragePath()
         val newStorageVers = settingsRep().newStorageVersion()
         val storage = storagesRep().findStorage(storagePath).await()
@@ -29,7 +29,7 @@ class LoginPresenter {
         emit(storage)
     }
 
-    fun selectStorage() = scope.launch {
+    override fun selectStorage() = scope.launch {
         val selectedStorage = router
             .navigate<String>(StoragesDestination)
             .firstOrNull()
@@ -41,13 +41,13 @@ class LoginPresenter {
         }
     }
 
-    fun login(passw: String) = scope.launch {
+    override fun login(passw: String) = scope.launch {
         if (passw.isBlank()) {
             router.snack(R.string.passw_is_null)
             return@launch
         }
         runCatching {
-            val storage = currentStorageFlow().first()
+            val storage = currentStorageFlow.first()
             loginInteractor()
                 .login(storage.identifier(), passw)
                 .await()

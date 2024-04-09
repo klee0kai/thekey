@@ -1,5 +1,6 @@
 package com.github.klee0kai.thekey.app.utils.views
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -38,12 +39,13 @@ fun <T : R, R> Deferred<T>.collectAsState(
     }
 }
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun <T : R, R> Flow<T>.collectAsState(
     key: Any?,
     initial: R,
     context: CoroutineContext = EmptyCoroutineContext
-): State<R> = produceState(initial, key, context) {
+): State<R> = produceState((this as? StateFlow)?.value ?: initial, key, context) {
     if (context == EmptyCoroutineContext) {
         collect { value = it }
     } else withContext(context) {
