@@ -435,6 +435,7 @@ fun EditNoteScreen(
                 modifier = Modifier
                     .alpha(page.alpha)
                     .fillMaxWidth(),
+                colors = LocalColorScheme.current.textButtonColors,
                 onClick = {
                     if (page.current == Account) {
                         presenter.generate()

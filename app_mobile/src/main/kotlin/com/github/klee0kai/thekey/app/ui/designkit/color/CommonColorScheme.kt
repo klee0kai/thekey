@@ -1,5 +1,6 @@
 package com.github.klee0kai.thekey.app.ui.designkit.color
 
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ColorScheme
 import androidx.compose.ui.graphics.Color
 
@@ -9,6 +10,7 @@ interface CommonColorScheme {
 
     val statusBarColor: Color get() = androidColorScheme.background
     val deleteColor: Color
+    val textButtonColors: ButtonColors
 
     val noColor: SurfaceScheme
     val violet: SurfaceScheme

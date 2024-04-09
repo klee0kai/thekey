@@ -24,6 +24,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -34,6 +35,7 @@ import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
+import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
 import com.github.klee0kai.thekey.app.ui.navigation.genHist
 import com.github.klee0kai.thekey.app.ui.navigation.identifier
@@ -98,7 +100,9 @@ fun GenPasswordContent(
 
 
             Text(
-                text = state.passwLen.toString(),
+                text = stringResource(id = R.string.passw_len_is, state.passwLen),
+                style = MaterialTheme.typography.bodySmall,
+                fontWeight = FontWeight.Medium,
                 modifier = Modifier.constrainAs(lenText) {
                     width = Dimension.fillToConstraints
                     height = Dimension.wrapContent
@@ -132,7 +136,7 @@ fun GenPasswordContent(
                     }
             )
 
-            Text(text = stringResource(id = R.string.symbols_in_passw),
+            Text(
                 modifier = Modifier.constrainAs(symbolsText) {
                     top.linkTo(lenSlider.bottom, margin = 16.dp)
                     linkTo(
@@ -140,7 +144,11 @@ fun GenPasswordContent(
                         end = parent.end,
                         bias = 0f,
                     )
-                })
+                },
+                style = MaterialTheme.typography.bodySmall,
+                fontWeight = FontWeight.Medium,
+                text = stringResource(id = R.string.symbols_in_passw),
+            )
 
             Switch(checked = state.symInPassw,
                 onCheckedChange = { presenter.input { copy(symInPassw = it) } },
@@ -156,7 +164,7 @@ fun GenPasswordContent(
             )
 
 
-            Text(text = stringResource(id = R.string.spec_in_passw),
+            Text(
                 modifier = Modifier.constrainAs(specSymbolsText) {
                     top.linkTo(symbolsText.bottom, margin = 22.dp)
                     linkTo(
@@ -164,12 +172,14 @@ fun GenPasswordContent(
                         end = parent.end,
                         bias = 0f,
                     )
-                }
+                },
+                style = MaterialTheme.typography.bodySmall,
+                fontWeight = FontWeight.Medium,
+                text = stringResource(id = R.string.spec_in_passw),
             )
 
 
-            Switch(checked = state.specSymbolsInPassw,
-                onCheckedChange = { presenter.input { copy(specSymbolsInPassw = it) } },
+            Switch(
                 modifier = Modifier
                     .constrainAs(specSymbolsSwitch) {
                         linkTo(
@@ -179,7 +189,9 @@ fun GenPasswordContent(
                             bottom = specSymbolsText.bottom,
                             horizontalBias = 1f,
                         )
-                    }
+                    },
+                checked = state.specSymbolsInPassw,
+                onCheckedChange = { presenter.input { copy(specSymbolsInPassw = it) } },
             )
         }
 
@@ -206,6 +218,7 @@ fun GenPasswordContent(
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 },
+            colors = LocalColorScheme.current.textButtonColors,
             onClick = {
                 presenter.generatePassw()
             },
@@ -221,12 +234,14 @@ fun GenPasswordContent(
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 },
+            colors = LocalColorScheme.current.textButtonColors,
             onClick = { router.navigate(dest.genHist()) }
         ) { Text(stringResource(R.string.hist)) }
 
         Text(
             text = passw.current,
             style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold,
             modifier = Modifier
                 .alpha(passw.alpha)
                 .clickable { presenter.copyToClipboard() }

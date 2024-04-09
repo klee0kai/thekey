@@ -66,4 +66,5 @@
     <string name="confirm_delete">Confirm delete</string>
     <string name="confirm_delete_note">Confirm delete the note</string>
     <string name="delete">Delete</string>
+    <string name="passw_len_is">Password len is %1$d</string>
 </resources>
