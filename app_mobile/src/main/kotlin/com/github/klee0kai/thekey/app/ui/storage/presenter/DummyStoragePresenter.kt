@@ -7,10 +7,20 @@ import com.github.klee0kai.thekey.app.domain.model.dummyLazyColorGroupSkeleton
 import com.github.klee0kai.thekey.app.domain.model.dummyLazyColoredNoteLoaded
 import com.github.klee0kai.thekey.app.domain.model.dummyLazyColoredNoteSkeleton
 import com.github.klee0kai.thekey.app.ui.designkit.color.KeyColor
+import com.github.klee0kai.thekey.app.ui.storage.model.SearchState
 import com.github.klee0kai.thekey.app.utils.common.Dummy
 import kotlinx.coroutines.flow.MutableStateFlow
 
-open class DummyStoragePresenter : StoragePresenter {
+open class DummyStoragePresenter(
+    private val isSearchActive: Boolean = false,
+) : StoragePresenter {
+
+    override val searchState = MutableStateFlow(
+        SearchState(
+            isActive = isSearchActive,
+            searchText = "some_search",
+        )
+    )
 
     override val selectedGroupId = MutableStateFlow<Long?>(null)
 

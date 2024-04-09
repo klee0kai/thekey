@@ -18,24 +18,27 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 
 @Composable
 fun AddCircle(
     modifier: Modifier = Modifier,
+    buttonSize: Dp = 48.dp,
     onClick: (() -> Unit)? = null,
     onLongClick: (() -> Unit)? = null,
     overlayContent: @Composable () -> Unit = {},
 ) {
     Box(
-        modifier = modifier,
+        modifier = modifier
+            .size(buttonSize * 1.17f),
     ) {
         Box(
             modifier = Modifier
                 .align(Alignment.Center)
                 .minimumInteractiveComponentSize()
-                .size(40.dp)
+                .size(buttonSize)
                 .background(color = MaterialTheme.colorScheme.surface, shape = CircleShape)
                 .clip(CircleShape)
                 .run {

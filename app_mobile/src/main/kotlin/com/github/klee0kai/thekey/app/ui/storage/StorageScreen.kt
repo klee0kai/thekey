@@ -100,10 +100,9 @@ fun StorageScreen(
     val accountTitleVisibility = accountScaffoldState.rememberMainTitleVisibleFlow()
     val tabsAlpha by rememberAlphaAnimate {
         when {
-            isEditMode -> true
             searchState.isActive -> false
             !isAccountTab -> true
-            dragProgress > 0.4f -> true
+            dragProgress > 0.4f || isEditMode -> true
             else -> false
         }
     }
@@ -217,6 +216,18 @@ private fun StorageScreenAccountsPreview() = AppTheme {
     )
 }
 
+
+@Preview(device = Devices.PIXEL_6, showSystemUi = true)
+@Composable
+private fun StorageScreenAccountsSearchPreview() = AppTheme {
+    DI.initPresenterModule(object : PresentersModule() {
+        override fun storagePresenter(storageIdentifier: StorageIdentifier) =
+            DummyStoragePresenter(isSearchActive = true)
+    })
+    StorageScreen(
+        dest = StorageDestination(path = Dummy.unicString, version = 2)
+    )
+}
 
 @Preview(device = Devices.PIXEL_6, showSystemUi = true)
 @Composable

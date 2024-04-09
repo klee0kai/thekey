@@ -20,6 +20,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.color.SurfaceScheme
@@ -27,6 +28,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.color.SurfaceScheme
 @Composable
 fun GroupCircle(
     modifier: Modifier = Modifier,
+    buttonSize: Dp = 48.dp,
     name: String = "",
     colorScheme: SurfaceScheme,
     checked: Boolean = false,
@@ -38,14 +40,15 @@ fun GroupCircle(
     val rotate by animateFloatAsState(targetValue = if (checked) 70f else 0f, label = "color group select")
 
     Box(
-        modifier = modifier,
+        modifier = modifier
+            .size(buttonSize * 1.17f),
     ) {
         Box(
             modifier = Modifier
                 .align(Alignment.Center)
                 .minimumInteractiveComponentSize()
                 .rotate(rotate)
-                .size(40.dp)
+                .size(buttonSize)
                 .background(color = colorScheme.surfaceColor, shape = RoundedCornerShape(checkedState))
                 .clip(RoundedCornerShape(checkedState))
                 .align(Alignment.Center)
