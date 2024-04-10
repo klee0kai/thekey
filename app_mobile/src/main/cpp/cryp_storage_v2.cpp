@@ -103,6 +103,22 @@ std::shared_ptr<EngineModelDecryptedColorGroup> JvmStorage2::saveColorGroup(cons
     return jniColorGroup;
 }
 
+int JvmStorage2::setNotesGroup(const std::vector<int64_t> &notePtrs, const int64_t &groupId) {
+    auto storage = findStorage(getStoragePath());
+    if (!storage) return -1;
+
+    auto flags = TK2_GET_NOTE_PTR_ONLY;
+    for (const auto &id: notePtrs) {
+        auto note = storage->note(id, flags);
+        if (!note)continue;
+        note->colorGroupId = groupId;
+        storage->setNote(*note, flags);
+    }
+
+    storage->save();
+    return 0;
+}
+
 int JvmStorage2::removeColorGroup(const int64_t &colorGroupId) {
     auto storage = findStorage(getStoragePath());
     if (!storage) return -1;

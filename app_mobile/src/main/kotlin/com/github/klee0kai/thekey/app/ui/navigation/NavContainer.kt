@@ -46,7 +46,7 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.LoginDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.StoragesDestination
 import com.github.klee0kai.thekey.app.ui.note.EditNoteScreen
-import com.github.klee0kai.thekey.app.ui.notegroup.EditNoteGroupScreen
+import com.github.klee0kai.thekey.app.ui.notegroup.EditNoteGroupsScreen
 import com.github.klee0kai.thekey.app.ui.storage.StorageScreen
 import com.github.klee0kai.thekey.app.ui.storages.StoragesScreen
 import com.github.klee0kai.thekey.app.utils.views.rememberTickerOf
@@ -143,7 +143,7 @@ private fun screenOf(destination: Destination) {
         is StorageDestination -> StorageScreen(destination)
         is GenHistDestination -> GenHistScreen(destination)
         is EditNoteDestination -> EditNoteScreen(destination)
-        is EditNoteGroupDestination -> EditNoteGroupScreen(destination)
+        is EditNoteGroupDestination -> EditNoteGroupsScreen(destination)
 
         is AlertDialogDestination -> AlertDialogScreen(destination)
 

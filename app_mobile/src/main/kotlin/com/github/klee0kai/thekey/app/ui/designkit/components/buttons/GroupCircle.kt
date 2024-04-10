@@ -36,7 +36,7 @@ fun GroupCircle(
     onLongClick: (() -> Unit)? = null,
     overlayContent: @Composable () -> Unit = {},
 ) {
-    val checkedState by animateDpAsState(if (checked) 12.dp else 24.dp, label = "color group checked")
+    val checkedState by animateDpAsState(if (checked) 12.dp else buttonSize / 2, label = "color group checked")
     val rotate by animateFloatAsState(targetValue = if (checked) 70f else 0f, label = "color group select")
 
     Box(

@@ -5,19 +5,25 @@ package com.github.klee0kai.thekey.app.ui.storage
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -29,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -84,6 +91,7 @@ fun StorageScreen(
         stringResource(id = R.string.passw_generate)
     )
     val searchFocusRequester = remember { FocusRequester() }
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val searchState by presenter.searchState.collectAsState(key = Unit, initial = SearchState())
     var dragProgress by remember { mutableFloatStateOf(0f) }
     val pagerState = rememberPagerState(initialPage = dest.selectedPage.coerceIn(titles.indices)) { titles.size }
@@ -116,8 +124,11 @@ fun StorageScreen(
         }
     }
 
-    BackHandler(enabled = searchState.isActive) {
-        presenter.searchFilter(SearchState())
+    BackHandler(enabled = searchState.isActive || drawerState.isOpen) {
+        when {
+            drawerState.isOpen -> scope.launch { drawerState.close() }
+            searchState.isActive -> presenter.searchFilter(SearchState())
+        }
     }
 
     LaunchedEffect(key1 = targetTitleId.current) {
@@ -126,88 +137,100 @@ fun StorageScreen(
         }
     }
 
-    HorizontalPager(
-        state = pagerStateFiltered,
-        modifier = Modifier
-            .fillMaxSize(),
-        pageContent = { page ->
-            Box {
-                when (page) {
-                    0 -> NotesContent(
-                        modifier = Modifier
-                            .animateContentSize()
-                            .padding(top = secondaryTabsHeight),
-                        onDrag = { dragProgress = it },
-                        dest = dest,
-                        isPageFullyAvailable = isAccountTab && !searchState.isActive,
-                        scaffoldState = accountScaffoldState
-                    )
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(0.7f)
+                    .fillMaxHeight()
+                    .background(Color.Green.copy(alpha = .4f))
+            )
+        }
+    ) {
+        HorizontalPager(
+            state = pagerStateFiltered,
+            modifier = Modifier
+                .fillMaxSize(),
+            pageContent = { page ->
+                Box {
+                    when (page) {
+                        0 -> NotesContent(
+                            modifier = Modifier
+                                .animateContentSize()
+                                .padding(top = secondaryTabsHeight),
+                            onDrag = { dragProgress = it },
+                            dest = dest,
+                            isPageFullyAvailable = isAccountTab && !searchState.isActive,
+                            scaffoldState = accountScaffoldState
+                        )
 
-                    1 -> GenPasswordContent(
+                        1 -> GenPasswordContent(
+                            modifier = Modifier
+                                .padding(top = AppBarConst.appBarSize + SecondaryTabsConst.allHeight),
+                            dest = dest,
+                        )
+                    }
+                }
+            }
+        )
+
+        if (tabsAlpha > 0f) {
+            SecondaryTabs(
+                modifier = Modifier
+                    .padding(top = AppBarConst.appBarSize)
+                    .alpha(tabsAlpha),
+                titles = titles,
+                selectedTab = pagerState.currentPage,
+                onTabClicked = { scope.launch { pagerState.animateScrollToPage(it) } },
+            )
+        }
+
+        AppBarStates(
+            navigationIcon = {
+                IconButton(onClick = { scope.launch { drawerState.open() } }) {
+                    Icon(
+                        Icons.Filled.Menu,
+                        contentDescription = null,
+                    )
+                }
+            },
+            titleContent = {
+                when (targetTitleId.current) {
+                    MainTitleId -> AppTitleImage(modifier = Modifier.alpha(targetTitleId.alpha))
+                    SecondTittleId -> {
+                        Text(
+                            modifier = Modifier.alpha(targetTitleId.alpha),
+                            style = MaterialTheme.typography.labelLarge,
+                            fontWeight = FontWeight.Bold,
+                            text = stringResource(id = R.string.accounts)
+                        )
+                    }
+
+                    SearchTitleId -> {
+                        SearchField(
+                            textModifier = Modifier
+                                .focusRequester(searchFocusRequester),
+                            searchText = searchState.searchText,
+                            onSearch = { newText -> presenter.searchFilter(SearchState(isActive = true, searchText = newText)) },
+                            onClose = { presenter.searchFilter(SearchState()) }
+                        )
+                    }
+                }
+            },
+            actions = {
+                if (isAccountPageAlpha > 0 && targetTitleId.current != SearchTitleId) {
+                    IconButton(
                         modifier = Modifier
-                            .padding(top = AppBarConst.appBarSize + SecondaryTabsConst.allHeight),
-                        dest = dest,
+                            .alpha(targetTitleId.hideOnTargetAlpha(SearchTitleId))
+                            .alpha(isAccountPageAlpha),
+                        onClick = { presenter.searchFilter(SearchState(isActive = true)) },
+                        content = { Icon(Icons.Filled.Search, contentDescription = null) }
                     )
                 }
             }
-        }
-    )
-
-    if (tabsAlpha > 0f) {
-        SecondaryTabs(
-            modifier = Modifier
-                .padding(top = AppBarConst.appBarSize)
-                .alpha(tabsAlpha),
-            titles = titles,
-            selectedTab = pagerState.currentPage,
-            onTabClicked = { scope.launch { pagerState.animateScrollToPage(it) } },
         )
     }
-
-    AppBarStates(
-        navigationIcon = {
-            IconButton(onClick = { navigator.back() }) {
-                Icon(
-                    Icons.Filled.ArrowBack,
-                    contentDescription = null,
-                )
-            }
-        },
-        titleContent = {
-            when (targetTitleId.current) {
-                MainTitleId -> AppTitleImage(modifier = Modifier.alpha(targetTitleId.alpha))
-                SecondTittleId -> {
-                    Text(
-                        modifier = Modifier.alpha(targetTitleId.alpha),
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.Bold,
-                        text = stringResource(id = R.string.accounts)
-                    )
-                }
-
-                SearchTitleId -> {
-                    SearchField(
-                        textModifier = Modifier
-                            .focusRequester(searchFocusRequester),
-                        searchText = searchState.searchText,
-                        onSearch = { newText -> presenter.searchFilter(SearchState(isActive = true, searchText = newText)) },
-                        onClose = { presenter.searchFilter(SearchState()) }
-                    )
-                }
-            }
-        },
-        actions = {
-            if (isAccountPageAlpha > 0 && targetTitleId.current != SearchTitleId) {
-                IconButton(
-                    modifier = Modifier
-                        .alpha(targetTitleId.hideOnTargetAlpha(SearchTitleId))
-                        .alpha(isAccountPageAlpha),
-                    onClick = { presenter.searchFilter(SearchState(isActive = true)) },
-                    content = { Icon(Icons.Filled.Search, contentDescription = null) }
-                )
-            }
-        }
-    )
 }
 
 @Preview(device = Devices.PIXEL_6, showSystemUi = true)

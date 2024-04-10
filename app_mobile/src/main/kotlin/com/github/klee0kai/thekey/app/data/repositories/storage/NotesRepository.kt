@@ -1,13 +1,11 @@
 package com.github.klee0kai.thekey.app.data.repositories.storage
 
 import com.github.klee0kai.thekey.app.data.model.LazyNote
-import com.github.klee0kai.thekey.app.data.model.id
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.engine.model.GenPasswParams
 import com.github.klee0kai.thekey.app.utils.lazymodel.fromPreloadedOrCreate
-import com.github.klee0kai.thekey.app.utils.lazymodel.fullValue
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withContext
@@ -37,12 +35,8 @@ class NotesRepository(
 
     suspend fun note(notePtr: Long) = engine().note(notePtr)
 
-    suspend fun setNoteGroup(notePt: Long, groupId: Long) {
-        val newNote = notes.value.firstOrNull { it.id == notePt }
-            ?.fullValue()
-            ?.copy(colorGroupId = groupId)
-            ?: return
-        engine().saveNote(newNote)
+    suspend fun setNotesGroup(notesPtr: List<Long>, groupId: Long) {
+        engine().setNotesGroup(notesPtr.toTypedArray(), groupId)
         loadNotes(forceDirty = true)
     }
 

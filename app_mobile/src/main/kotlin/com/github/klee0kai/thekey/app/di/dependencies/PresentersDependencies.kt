@@ -7,7 +7,7 @@ import com.github.klee0kai.thekey.app.ui.editstorage.CreateStoragePresenter
 import com.github.klee0kai.thekey.app.ui.genhist.GenHistPresenter
 import com.github.klee0kai.thekey.app.ui.login.presenter.LoginPresenter
 import com.github.klee0kai.thekey.app.ui.note.presenter.EditNotePresenter
-import com.github.klee0kai.thekey.app.ui.notegroup.EditNoteGroupPresenter
+import com.github.klee0kai.thekey.app.ui.notegroup.presenter.EditNoteGroupsPresenter
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.presenter.GenPasswPresenter
 import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenter
 import com.github.klee0kai.thekey.app.ui.storages.StoragesPresenter
@@ -28,6 +28,6 @@ interface PresentersDependencies {
 
     fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter
 
-    fun editNoteGroupPresenter(id: NoteGroupIdentifier): EditNoteGroupPresenter
+    fun editNoteGroupPresenter(id: NoteGroupIdentifier): EditNoteGroupsPresenter
 
 }

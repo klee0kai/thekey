@@ -67,11 +67,11 @@ open class StoragePresenterImpl(
     }
 
     override fun setColorGroup(notePt: Long, groupId: Long) = scope.launch {
-        notesInteractor().setNoteGroup(notePt, groupId)
+        notesInteractor().setNotesGroup(listOf(notePt), groupId)
     }
 
     override fun deleteGroup(id: Long) = scope.launch {
-
+        groupsInteractor().removeGroup(id)
     }
 
 }

@@ -6,11 +6,12 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.BottomSheetScaffold
@@ -22,11 +23,13 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
+import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.bottomsheet.SimpleScaffoldConst.dragHandleSize
 import com.github.klee0kai.thekey.app.utils.views.accelerateDecelerate
 import com.github.klee0kai.thekey.app.utils.views.pxToDp
@@ -91,16 +94,11 @@ fun SimpleBottomSheetScaffold(
                 Box(
                     modifier = Modifier
                         .padding(innerPadding)
+                        .padding(top = appBarSize)
                         .fillMaxWidth()
                         .height(topContentSize)
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .padding(top = appBarSize)
-                            .fillMaxSize()
-                    ) {
-                        topContent.invoke()
-                    }
+                    topContent.invoke()
                 }
             },
             sheetShape = BottomSheetDefaults.ExpandedShape,
@@ -139,12 +137,47 @@ fun SimpleBottomSheetScaffold(
 
 @Preview
 @Composable
-fun SimpleBottomSheetScaffoldPreview(
-    modifier: Modifier = Modifier,
-    simpleBottomSheetScaffoldState: SimpleBottomSheetScaffoldState = rememberSimpleBottomSheetScaffoldState(),
-    onDrag: (Float) -> Unit = {},
-    topContent: @Composable () -> Unit = {},
-    sheetContent: @Composable () -> Unit = {},
-) = AppTheme {
+fun SimpleBottomSheetScaffoldPreview() = AppTheme {
     SimpleBottomSheetScaffold()
+}
+
+
+@Preview
+@Composable
+fun SimpleBottomSheetScaffoldTopContentPreview() = AppTheme {
+    SimpleBottomSheetScaffold(
+        topContent = {
+            Box(
+                modifier = Modifier
+                    .background(Color.Green.copy(alpha = 0.5f))
+                    .fillMaxHeight()
+                    .width(100.dp)
+            )
+        }
+    )
+}
+
+
+@Preview
+@Composable
+fun SimpleBottomSheetScaffoldTopContent2Preview() = AppTheme {
+    val state = rememberSimpleBottomSheetScaffoldState(topContentSize = 190.dp, appBarSize = AppBarConst.appBarSize)
+    SimpleBottomSheetScaffold(
+        simpleBottomSheetScaffoldState = state,
+        topContent = {
+            Box(
+                modifier = Modifier
+                    .background(Color.Green.copy(alpha = 0.5f))
+                    .fillMaxHeight()
+                    .width(100.dp)
+            )
+        }
+    )
+    Box(
+        modifier = Modifier
+            .padding(top = AppBarConst.appBarSize)
+            .background(Color.Red.copy(alpha = 0.5f))
+            .height(190.dp)
+            .width(50.dp)
+    )
 }

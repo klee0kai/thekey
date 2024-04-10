@@ -20,14 +20,13 @@ interface CryptStorage {
 
     fun removeColorGroup(colorGroupId: Long): Int
 
+    fun setNotesGroup(notePtrs: Array<Long>, groupId: Long): Int
+
     fun notes(info: Boolean = false): Array<DecryptedNote>
 
     fun note(notePtr: Long): DecryptedNote
 
-    fun saveNote(
-        decryptedNote: DecryptedNote,
-        setAll: Boolean = false,
-    ): Int
+    fun saveNote(decryptedNote: DecryptedNote, setAll: Boolean = false): Int
 
     fun removeNote(notePt: Long): Int
 

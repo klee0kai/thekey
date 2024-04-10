@@ -4,7 +4,7 @@ import com.github.klee0kai.thekey.app.data.model.LazyPassw
 import com.github.klee0kai.thekey.app.data.model.id
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
-import com.github.klee0kai.thekey.app.utils.common.singleEventFlow
+import com.github.klee0kai.thekey.app.utils.coroutine.singleEventFlow
 import com.github.klee0kai.thekey.app.utils.lazymodel.fromPreloadedOrCreate
 import kotlinx.coroutines.withContext
 

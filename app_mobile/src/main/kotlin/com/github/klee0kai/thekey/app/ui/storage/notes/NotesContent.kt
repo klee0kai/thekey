@@ -31,6 +31,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.bottomsheet.simple
 import com.github.klee0kai.thekey.app.ui.designkit.components.bottomsheet.topContentAlphaFromDrag
 import com.github.klee0kai.thekey.app.ui.designkit.components.bottomsheet.topContentOffsetFromDrag
 import com.github.klee0kai.thekey.app.ui.navigation.createGroup
+import com.github.klee0kai.thekey.app.ui.navigation.editGroup
 import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.app.ui.navigation.note
@@ -75,6 +76,7 @@ fun NotesContent(
                 onAdd = { router.navigate(dest.createGroup()) },
                 colorGroups = groups.map { it.getOrNull() ?: it.placeholder },
                 onGroupSelected = { presenter.selectGroup(it.id) },
+                onGroupEdit = { router.navigate(dest.editGroup(it.id)) },
                 onGroupDelete = { presenter.deleteGroup(it.id) }
             )
         },

@@ -4,6 +4,7 @@ import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.domain.model.LazyColorGroup
 import com.github.klee0kai.thekey.app.domain.model.id
+import com.github.klee0kai.thekey.app.engine.model.DecryptedColorGroup
 import com.github.klee0kai.thekey.app.engine.model.colorGroup
 import com.github.klee0kai.thekey.app.utils.lazymodel.LazyModelProvider
 import kotlinx.coroutines.async
@@ -39,6 +40,18 @@ class GroupsRepository(
                 }
         }
     }
+
+    suspend fun saveColorGroup(decryptedColorGroup: DecryptedColorGroup): DecryptedColorGroup? {
+        return engine().saveColorGroup(decryptedColorGroup).also {
+            loadGroups(forceDirty = true)
+        }
+    }
+
+    suspend fun removeGroup(id: Long) {
+        engine().removeColorGroup(id)
+        loadGroups(forceDirty = true)
+    }
+
 
     suspend fun clear() = groups.update { emptyList() }
 

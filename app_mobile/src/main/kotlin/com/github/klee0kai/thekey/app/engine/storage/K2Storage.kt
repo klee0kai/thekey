@@ -29,6 +29,8 @@ class K2Storage(
 
     external override fun removeColorGroup(colorGroupId: Long): Int
 
+    external override fun setNotesGroup(notePtrs: Array<Long>, groupId: Long): Int
+
     external override fun notes(info: Boolean): Array<DecryptedNote>
 
     external override fun note(notePtr: Long): DecryptedNote

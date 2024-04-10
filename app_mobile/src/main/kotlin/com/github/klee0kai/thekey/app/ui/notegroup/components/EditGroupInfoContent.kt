@@ -1,6 +1,8 @@
 package com.github.klee0kai.thekey.app.ui.notegroup.components
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -14,12 +16,14 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.klee0kai.thekey.app.R
+import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
 import com.github.klee0kai.thekey.app.ui.designkit.color.KeyColor
 import com.github.klee0kai.thekey.app.ui.designkit.color.transparentColorScheme
@@ -28,12 +32,12 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.buttons.GroupCircl
 import com.github.klee0kai.thekey.app.ui.designkit.components.scrollPosition
 
 @Composable
-@Preview
 fun EditGroupInfoContent(
     modifier: Modifier = Modifier,
     groupNameFieldModifier: Modifier = Modifier,
     groupName: String = "",
     select: KeyColor = KeyColor.NOCOLOR,
+    forceIndicatorVisible: Boolean = false,
     onChangeGroupName: (String) -> Unit = {},
     onSelect: (KeyColor) -> Unit = {},
 ) {
@@ -42,7 +46,7 @@ fun EditGroupInfoContent(
 
     ConstraintLayout(
         modifier = modifier
-            .fillMaxSize()
+            .fillMaxWidth()
     ) {
         val (groupsHint, groupsList, indicator, groupNameField) = createRefs()
 
@@ -57,6 +61,7 @@ fun EditGroupInfoContent(
                     bottom = groupsList.top,
                     end = parent.end,
                     horizontalBias = 0f,
+                    topMargin = 16.dp,
                     startMargin = 16.dp,
                     verticalBias = 1f,
                 )
@@ -65,6 +70,7 @@ fun EditGroupInfoContent(
 
         LazyListIndicatorIfNeed(
             pos = lazyListState.scrollPosition(),
+            forceVisible = forceIndicatorVisible,
             horizontal = true,
             modifier = Modifier
                 .size(52.dp, 4.dp)
@@ -86,27 +92,30 @@ fun EditGroupInfoContent(
                 .fillMaxWidth()
                 .constrainAs(groupsList) {
                     linkTo(
-                        top = parent.top,
+                        top = groupsHint.bottom,
                         start = parent.start,
-                        bottom = parent.bottom,
+                        bottom = groupNameField.top,
                         end = parent.end,
-                        verticalBias = 0.6f
+                        verticalBias = 0f
                     )
                 })
         {
+            item {
+                Spacer(modifier = Modifier.width(14.dp))
+            }
+
             KeyColor.colors.forEachIndexed { index, color ->
                 item(key = color) {
-                    val isFirst = index == 0
-
                     GroupCircle(
                         modifier = Modifier
                             .animateContentSize()
                             .padding(
-                                start = if (isFirst) 16.dp else 8.dp,
-                                top = 16.dp,
-                                end = 4.dp,
-                                bottom = 16.dp
+                                start = 1.dp,
+                                top = 8.dp,
+                                end = 1.dp,
+                                bottom = 8.dp
                             ),
+                        buttonSize = 56.dp,
                         checked = color == select,
                         colorScheme = colorScheme.surfaceScheme(color),
                         onClick = { onSelect(color) },
@@ -128,7 +137,7 @@ fun EditGroupInfoContent(
                         verticalBias = 0f,
                         horizontalBias = 0f,
                         startMargin = 16.dp,
-                        topMargin = 12.dp
+                        topMargin = 8.dp
                     )
                 },
 
@@ -139,5 +148,24 @@ fun EditGroupInfoContent(
         )
 
     }
+}
 
+
+@Preview
+@Composable
+private fun EditGroupInfoContentPreview() = AppTheme {
+    EditGroupInfoContent(
+        forceIndicatorVisible = true,
+    )
+}
+
+@Preview
+@Composable
+private fun EditGroupInfoContentInBoxPreview() = AppTheme {
+    Box(modifier = Modifier.fillMaxSize()) {
+        EditGroupInfoContent(
+            modifier = Modifier.align(Alignment.Center),
+            forceIndicatorVisible = true,
+        )
+    }
 }

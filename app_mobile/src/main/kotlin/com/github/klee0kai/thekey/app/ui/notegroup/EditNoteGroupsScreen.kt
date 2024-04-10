@@ -14,7 +14,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
@@ -25,10 +24,14 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.di.identifier.NoteGroupIdentifier
+import com.github.klee0kai.thekey.app.di.modules.PresentersModule
+import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
 import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarStates
@@ -40,19 +43,21 @@ import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteGroupDestination
 import com.github.klee0kai.thekey.app.ui.notegroup.components.EditGroupInfoContent
 import com.github.klee0kai.thekey.app.ui.notegroup.components.NoteSelectToGroupComponent
+import com.github.klee0kai.thekey.app.ui.notegroup.model.EditNoteGroupsState
+import com.github.klee0kai.thekey.app.ui.notegroup.presenter.EditNoteGroupsPresenterDummy
+import com.github.klee0kai.thekey.app.ui.notegroup.presenter.selectNote
+import com.github.klee0kai.thekey.app.utils.common.Dummy
+import com.github.klee0kai.thekey.app.utils.views.collectAsState
+import kotlinx.coroutines.flow.MutableStateFlow
 
-@Preview
 @Composable
-fun EditNoteGroupScreen(
+fun EditNoteGroupsScreen(
     dest: EditNoteGroupDestination = EditNoteGroupDestination(),
 ) {
-    val presenter = remember { DI.editNoteGroupPresenter(dest.identifier()) }
+    val presenter = remember { DI.editNoteGroupPresenter(dest.identifier()).apply { init() } }
     val router = LocalRouter.current
     val groupNameFieldFocusRequester = remember { FocusRequester() }
-    val isCreate = dest.groupId == null
-    val selectedColor by presenter.selectedKeyColor.collectAsState()
-    val selectedNotes by presenter.selectedNotes.collectAsState()
-    val name by presenter.name.collectAsState()
+    val state by presenter.state.collectAsState(key = Unit, initial = EditNoteGroupsState())
 
     var dragProgress by remember { mutableFloatStateOf(0f) }
     val scaffoldState = rememberSimpleBottomSheetScaffoldState(
@@ -66,16 +71,17 @@ fun EditNoteGroupScreen(
         topContent = {
             EditGroupInfoContent(
                 modifier = Modifier
+                    .height(scaffoldState.topContentSize)
                     .alpha(dragProgress.topContentAlphaFromDrag())
                     .offset(y = dragProgress.topContentOffsetFromDrag()),
                 groupNameFieldModifier = Modifier
                     .focusRequester(groupNameFieldFocusRequester),
-                select = selectedColor,
-                groupName = name,
-                onChangeGroupName = { presenter.name.value = it.take(1) },
+                select = state.color,
+                groupName = state.name,
+                onChangeGroupName = { presenter.input { copy(name = it.take(1)) } },
                 onSelect = {
                     groupNameFieldFocusRequester.freeFocus()
-                    presenter.selectedKeyColor.value = it
+                    presenter.input { copy(color = it) }
                 }
             )
         },
@@ -84,23 +90,21 @@ fun EditNoteGroupScreen(
                 modifier = Modifier
                     .padding(top = 20.dp)
                     .fillMaxSize(),
-                storageIdentifier = dest.storageIdentifier,
-                selectedIds = selectedNotes,
-                onSelect = { presenter.noteSelected(it) },
-                footer = {
-                    item { Spacer(modifier = Modifier.height(200.dp)) }
-                }
+                dest = dest,
+                onSelect = { notePt, selected -> presenter.selectNote(notePt, selected) },
+                footer = { Spacer(modifier = Modifier.height(200.dp)) }
             )
         }
     )
 
     AppBarStates(
+        modifier = Modifier,
         navigationIcon = {
             IconButton(onClick = remember { { router.back() } }) {
                 Icon(Icons.Filled.ArrowBack, contentDescription = null)
             }
         },
-        titleContent = { Text(text = stringResource(id = if (isCreate) R.string.create_group else R.string.edit_group)) },
+        titleContent = { Text(text = stringResource(id = if (state.isEditMode) R.string.edit_group else R.string.create_group)) },
     )
 
     Box(
@@ -124,3 +128,22 @@ fun EditNoteGroupScreen(
     }
 }
 
+
+@Preview(
+    device = Devices.PIXEL_6,
+    showSystemUi = true,
+)
+@Composable
+private fun EditNoteGroupsSkeletonPreview() = AppTheme {
+    DI.initPresenterModule(object : PresentersModule() {
+        override fun editNoteGroupPresenter(id: NoteGroupIdentifier) = object : EditNoteGroupsPresenterDummy() {
+            override val state = MutableStateFlow(
+                EditNoteGroupsState(
+                    isSkeleton = true,
+                    isEditMode = false,
+                )
+            )
+        }
+    })
+    EditNoteGroupsScreen(dest = EditNoteGroupDestination(groupId = Dummy.dummyId))
+}

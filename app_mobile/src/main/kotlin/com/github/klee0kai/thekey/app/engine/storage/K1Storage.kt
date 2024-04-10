@@ -32,6 +32,8 @@ class K1Storage(
 
     override fun removeColorGroup(colorGroupId: Long): Int = -1
 
+    override fun setNotesGroup(notePtrs: Array<Long>, groupId: Long): Int = -1
+
     @Synchronized
     external override fun notes(info: Boolean): Array<DecryptedNote>
 
@@ -39,10 +41,8 @@ class K1Storage(
     external override fun note(notePtr: Long): DecryptedNote
 
     @Synchronized
-    external override fun saveNote(
-        decryptedNote: DecryptedNote,
-        setAll: Boolean,
-    ): Int
+    external override fun saveNote(decryptedNote: DecryptedNote, setAll: Boolean): Int
+
 
     @Synchronized
     external override fun removeNote(notePt: Long): Int

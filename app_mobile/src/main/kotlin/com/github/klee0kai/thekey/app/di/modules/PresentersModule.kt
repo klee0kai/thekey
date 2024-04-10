@@ -12,7 +12,8 @@ import com.github.klee0kai.thekey.app.ui.login.presenter.LoginPresenter
 import com.github.klee0kai.thekey.app.ui.login.presenter.LoginPresenterImpl
 import com.github.klee0kai.thekey.app.ui.note.presenter.EditNotePresenter
 import com.github.klee0kai.thekey.app.ui.note.presenter.EditNotePresenterImpl
-import com.github.klee0kai.thekey.app.ui.notegroup.EditNoteGroupPresenter
+import com.github.klee0kai.thekey.app.ui.notegroup.presenter.EditNoteGroupsPresenter
+import com.github.klee0kai.thekey.app.ui.notegroup.presenter.EditNoteGroupsPresenterImpl
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.presenter.GenPasswPresenter
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.presenter.GenPasswPresenterImpl
 import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenter
@@ -54,7 +55,7 @@ open class PresentersModule {
         EditNotePresenterImpl(noteIdentifier)
 
     @Provide(cache = Provide.CacheType.Weak)
-    open fun editNoteGroupPresenter(id: NoteGroupIdentifier): EditNoteGroupPresenter =
-        EditNoteGroupPresenter(id)
+    open fun editNoteGroupPresenter(id: NoteGroupIdentifier): EditNoteGroupsPresenter =
+        EditNoteGroupsPresenterImpl(id)
 
 }

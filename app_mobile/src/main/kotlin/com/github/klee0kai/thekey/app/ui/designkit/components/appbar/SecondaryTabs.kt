@@ -2,6 +2,7 @@
 
 package com.github.klee0kai.thekey.app.ui.designkit.components.appbar
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -30,11 +31,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
+import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
 
 object SecondaryTabsConst {
-    val topPadding = 26.dp
+    val topPadding = 8.dp
     val textHeight = 48.dp
     val allHeight = topPadding + textHeight   // should be 74
 }
@@ -79,6 +81,14 @@ fun SecondaryTabs(
     ) {
         titles.forEachIndexed { index, title ->
             val selected = selectedTab == index
+            val textColor by animateColorAsState(
+                targetValue = if (selected)
+                    MaterialTheme.colorScheme.secondary else
+                    LocalColorScheme.current.textButtonColors.contentColor,
+                label = "tab title color",
+            )
+
+
             Tab(
                 selected = selected,
                 onClick = { onTabClicked(index) },
@@ -95,7 +105,7 @@ fun SecondaryTabs(
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.secondary,
+                        color = textColor,
                     )
                 }
             }

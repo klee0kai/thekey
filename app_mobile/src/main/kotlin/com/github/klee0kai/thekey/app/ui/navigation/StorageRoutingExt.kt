@@ -56,5 +56,8 @@ fun EditNoteDestination.identifier() =
 fun StorageDestination.createGroup() =
     EditNoteGroupDestination(StorageIdentifier(path, version))
 
+fun StorageDestination.editGroup(groupId: Long) =
+    EditNoteGroupDestination(StorageIdentifier(path, version), groupId = groupId)
+
 fun EditNoteGroupDestination.identifier() =
     NoteGroupIdentifier(storageIdentifier = storageIdentifier, groupId = groupId)

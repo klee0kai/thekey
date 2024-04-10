@@ -37,6 +37,11 @@ class CryptStorageSuspended(
         setAll: Boolean = false,
     ): Int = engineRun { saveNote(note, setAll = setAll) }
 
+    suspend fun setNotesGroup(
+        notePtrs: Array<Long>,
+        groupId: Long,
+    ): Int = engineRun { setNotesGroup(notePtrs, groupId) }
+
     suspend fun removeNote(noteptr: Long): Int = engineRun { removeNote(noteptr) }
 
     suspend fun generateNewPassw(params: GenPasswParams): String = engineRun { generateNewPassw(params) }

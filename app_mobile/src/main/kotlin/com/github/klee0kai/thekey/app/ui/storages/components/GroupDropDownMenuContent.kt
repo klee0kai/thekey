@@ -14,12 +14,19 @@ import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 
 @Composable
 fun ColumnScope.GroupDropDownMenuContent(
+    onEdit: () -> Unit = {},
     onDelete: () -> Unit = {},
 ) {
     DropdownMenuItem(
         modifier = Modifier.align(Alignment.End),
+        text = { Text(text = stringResource(id = R.string.edit)) },
+        onClick = onEdit,
+    )
+
+    DropdownMenuItem(
+        modifier = Modifier.align(Alignment.End),
         text = { Text(text = stringResource(id = R.string.remove)) },
-        onClick = onDelete
+        onClick = onDelete,
     )
 }
 

@@ -50,11 +50,12 @@ fun LazyListState.scrollPosition(): ScrollPosition {
 @Composable
 fun LazyListIndicatorIfNeed(
     modifier: Modifier = Modifier,
+    forceVisible: Boolean = false,
     horizontal: Boolean = false,
     pos: ScrollPosition = ScrollPosition(),
 ) {
 
-    val scrollableListVisible by animateAlphaAsState(boolean = pos.listVisibleRatio > 0.01f && pos.listVisibleRatio < 0.99f)
+    val scrollableListVisible by animateAlphaAsState(boolean = forceVisible || pos.listVisibleRatio > 0.01f && pos.listVisibleRatio < 0.99f)
 
     if (scrollableListVisible == 0f) return
 

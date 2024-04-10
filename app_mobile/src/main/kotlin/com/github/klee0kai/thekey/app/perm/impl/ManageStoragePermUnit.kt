@@ -13,8 +13,8 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.ConfirmDialogResult
 import com.github.klee0kai.thekey.app.ui.navigation.model.TextProvider
 import com.github.klee0kai.thekey.app.ui.navigation.navigate
 import com.github.klee0kai.thekey.app.ui.navigation.navigateManageExternalStorage
-import com.github.klee0kai.thekey.app.utils.common.singleEventFlow
 import com.github.klee0kai.thekey.app.utils.coroutine.shareLatest
+import com.github.klee0kai.thekey.app.utils.coroutine.singleEventFlow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.last
 

@@ -42,9 +42,9 @@ fun GroupsSelectContent(
     modifier: Modifier = Modifier,
     selectedGroup: Long? = null,
     colorGroups: List<ColorGroup> = emptyList(),
-    forceScrollIndicator: Boolean = false,
     onAdd: () -> Unit = {},
     onGroupSelected: (ColorGroup) -> Unit = {},
+    onGroupEdit: (ColorGroup) -> Unit = {},
     onGroupDelete: (ColorGroup) -> Unit = {},
 ) {
     val colorScheme = LocalColorScheme.current
@@ -112,10 +112,10 @@ fun GroupsSelectContent(
             colorGroups.forEachIndexed { index, group ->
                 item(key = group.id) {
                     var showMenu by remember { mutableStateOf(false) }
-                    val isFirst = index == 0
 
                     GroupCircle(
                         name = group.name,
+                        buttonSize = 56.dp,
                         colorScheme = colorScheme.surfaceScheme(group.keyColor),
                         checked = group.id == selectedGroup,
                         modifier = Modifier
@@ -133,6 +133,7 @@ fun GroupsSelectContent(
                                 onDismissRequest = { showMenu = false }
                             ) {
                                 GroupDropDownMenuContent(
+                                    onEdit = { onGroupEdit(group) },
                                     onDelete = { onGroupDelete(group) },
                                 )
                             }
@@ -142,7 +143,6 @@ fun GroupsSelectContent(
             }
 
             item {
-                val isFirst = colorGroups.isEmpty()
                 AddCircle(
                     modifier = Modifier
                         .padding(
@@ -151,6 +151,7 @@ fun GroupsSelectContent(
                             end = 1.dp,
                             bottom = 16.dp
                         ),
+                    buttonSize = 56.dp,
                     onClick = onAdd
                 )
             }
@@ -167,7 +168,6 @@ fun GroupsSelectContent(
 private fun GroupsSelectContentPreview() {
     AppTheme {
         GroupsSelectContent(
-            forceScrollIndicator = true,
             selectedGroup = 1L,
             colorGroups = listOf(
                 ColorGroup(Dummy.dummyId, "CE", KeyColor.CORAL),
