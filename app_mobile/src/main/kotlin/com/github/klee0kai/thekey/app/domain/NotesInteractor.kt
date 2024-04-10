@@ -5,12 +5,10 @@ import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.domain.model.ColorGroup
 import com.github.klee0kai.thekey.app.domain.model.LazyColoredNote
 import com.github.klee0kai.thekey.app.domain.model.coloredNote
-import com.github.klee0kai.thekey.app.domain.model.id
 import com.github.klee0kai.thekey.app.domain.model.noGroup
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.engine.model.GenPasswParams
 import com.github.klee0kai.thekey.app.utils.common.launchLatest
-import com.github.klee0kai.thekey.app.utils.lazymodel.fullValue
 import com.github.klee0kai.thekey.app.utils.lazymodel.map
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.combine
@@ -29,10 +27,10 @@ class NotesInteractor(
         combine(
             flow = rep().notes,
             flow2 = groupsRep().groups,
-        ) { notes, groups ->
-            notes.map {
-                it.map { note ->
-                    val group = groups.firstOrNull { it.id == note.colorGroupId }?.fullValue()
+        ) { lazyNotes, groups ->
+            lazyNotes.map { lazyNote ->
+                lazyNote.map { note ->
+                    val group = groups.firstOrNull { it.id == note.colorGroupId }
                     note.coloredNote(group = group ?: ColorGroup.noGroup())
                 }
             }

@@ -87,7 +87,7 @@ fun NotesListContent(
                             onDismissRequest = { showMenu = false }
                         ) {
                             NoteDropDownMenuContent(
-                                colorGroups = groups.map { it.placeholder },
+                                colorGroups = groups,
                                 selectedGroupId = lazyNote.getOrNull()?.group?.id,
                                 onColorGroupSelected = {
                                     presenter.setColorGroup(notePt = lazyNote.id, groupId = it.id)

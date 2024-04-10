@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 
 @Stable
+@Deprecated("difficult to use")
 interface LazyModel<T, R> {
     companion object {
         internal val notLoaded = object {};

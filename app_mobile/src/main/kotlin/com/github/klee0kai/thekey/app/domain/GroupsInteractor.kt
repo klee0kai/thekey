@@ -2,7 +2,6 @@ package com.github.klee0kai.thekey.app.domain
 
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
-import com.github.klee0kai.thekey.app.domain.model.LazyColorGroup
 import com.github.klee0kai.thekey.app.engine.model.DecryptedColorGroup
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.flow
@@ -15,12 +14,10 @@ class GroupsInteractor(
     private val scope = DI.defaultThreadScope()
     private val rep = DI.groupRepLazy(identifier)
 
-    val groups = flow<List<LazyColorGroup>> {
-        rep().groups.collect(this)
-    }
+    val groups = flow { rep().groups.collect(this) }
 
-    fun loadGroups(forceDirty: Boolean = false) = scope.launch {
-        rep().loadGroups(forceDirty)
+    fun loadGroups() = scope.launch {
+        rep().loadGroups()
     }
 
     fun clear() = scope.launch {

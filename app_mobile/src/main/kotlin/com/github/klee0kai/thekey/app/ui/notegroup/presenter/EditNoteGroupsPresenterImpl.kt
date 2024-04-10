@@ -4,7 +4,6 @@ import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.NoteGroupIdentifier
 import com.github.klee0kai.thekey.app.domain.model.ColorGroup
-import com.github.klee0kai.thekey.app.domain.model.id
 import com.github.klee0kai.thekey.app.engine.model.DecryptedColorGroup
 import com.github.klee0kai.thekey.app.ui.designkit.color.KeyColor
 import com.github.klee0kai.thekey.app.ui.notegroup.model.EditNoteGroupsState
@@ -58,7 +57,6 @@ open class EditNoteGroupsPresenterImpl(
             originalGroup = interactor().groups
                 .firstOrNull()
                 ?.firstOrNull { it.id == groupIdentifier.groupId }
-                ?.fullValue()
                 ?: return@launchLatest
 
             notesInteractor().notes

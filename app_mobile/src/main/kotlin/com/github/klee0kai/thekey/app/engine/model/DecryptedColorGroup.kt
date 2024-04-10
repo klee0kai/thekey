@@ -17,10 +17,13 @@ data class DecryptedColorGroup(
 fun DecryptedColorGroup.keyColor(): KeyColor =
     KeyColor.entries.getOrNull(color) ?: KeyColor.NOCOLOR
 
-fun DecryptedColorGroup.colorGroup() = ColorGroup(
+fun DecryptedColorGroup.colorGroup(
+    isLoaded: Boolean = false,
+) = ColorGroup(
     id = id,
     name = name,
-    keyColor = keyColor()
+    keyColor = keyColor(),
+    isLoaded = isLoaded,
 )
 
 

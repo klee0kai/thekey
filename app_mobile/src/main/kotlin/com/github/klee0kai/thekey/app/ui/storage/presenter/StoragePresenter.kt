@@ -1,6 +1,6 @@
 package com.github.klee0kai.thekey.app.ui.storage.presenter
 
-import com.github.klee0kai.thekey.app.domain.model.LazyColorGroup
+import com.github.klee0kai.thekey.app.domain.model.ColorGroup
 import com.github.klee0kai.thekey.app.domain.model.LazyColoredNote
 import com.github.klee0kai.thekey.app.ui.storage.model.SearchState
 import kotlinx.coroutines.Job
@@ -15,7 +15,7 @@ interface StoragePresenter {
     val selectedGroupId: Flow<Long?>
         get() = MutableStateFlow(null)
 
-    val filteredColorGroups: Flow<List<LazyColorGroup>>
+    val filteredColorGroups: Flow<List<ColorGroup>>
         get() = MutableStateFlow(emptyList())
 
     val filteredNotes: Flow<List<LazyColoredNote>>

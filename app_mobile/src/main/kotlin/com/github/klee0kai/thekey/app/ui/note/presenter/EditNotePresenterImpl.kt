@@ -20,7 +20,6 @@ import com.github.klee0kai.thekey.app.ui.note.model.isValid
 import com.github.klee0kai.thekey.app.utils.common.TimeFormats
 import com.github.klee0kai.thekey.app.utils.common.launchLatest
 import com.github.klee0kai.thekey.app.utils.common.launchLatestSafe
-import com.github.klee0kai.thekey.app.utils.lazymodel.fullValue
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.last
@@ -69,7 +68,6 @@ class EditNotePresenterImpl(
 
         colorGroups = groupsInteractor().groups
             .first()
-            .map { it.fullValue() }
             .let { listOf(ColorGroup.noGroup()) + it }
 
         state.update { note ->

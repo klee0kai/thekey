@@ -74,7 +74,7 @@ fun NotesContent(
                     .offset(y = dragProgress.topContentOffsetFromDrag()),
                 selectedGroup = selectedGroup,
                 onAdd = { router.navigate(dest.createGroup()) },
-                colorGroups = groups.map { it.getOrNull() ?: it.placeholder },
+                colorGroups = groups,
                 onGroupSelected = { presenter.selectGroup(it.id) },
                 onGroupEdit = { router.navigate(dest.editGroup(it.id)) },
                 onGroupDelete = { presenter.deleteGroup(it.id) }

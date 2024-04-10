@@ -15,6 +15,7 @@ import kotlinx.coroutines.sync.withLock
 
 
 @Stable
+@Deprecated("difficult to use")
 class LazyModelProvider<T, R>(
     override val placeholder: T,
     preloaded: R? = null,

@@ -2,8 +2,6 @@ package com.github.klee0kai.thekey.app.ui.storage.presenter
 
 import com.github.klee0kai.thekey.app.domain.model.ColorGroup
 import com.github.klee0kai.thekey.app.domain.model.ColoredNote
-import com.github.klee0kai.thekey.app.domain.model.dummyLazyColorGroup
-import com.github.klee0kai.thekey.app.domain.model.dummyLazyColorGroupSkeleton
 import com.github.klee0kai.thekey.app.domain.model.dummyLazyColoredNoteLoaded
 import com.github.klee0kai.thekey.app.domain.model.dummyLazyColoredNoteSkeleton
 import com.github.klee0kai.thekey.app.ui.designkit.color.KeyColor
@@ -26,9 +24,9 @@ open class DummyStoragePresenter(
 
     override val filteredColorGroups = MutableStateFlow(
         listOf(
-            dummyLazyColorGroupSkeleton(),
-            dummyLazyColorGroup(ColorGroup(id = Dummy.dummyId.also { selectedGroupId.value = it }, name = "AD", keyColor = KeyColor.VIOLET)),
-            dummyLazyColorGroup(ColorGroup(id = Dummy.dummyId, name = "TU", keyColor = KeyColor.TURQUOISE))
+            ColorGroup(),
+            ColorGroup(id = Dummy.dummyId.also { selectedGroupId.value = it }, name = "AD", keyColor = KeyColor.VIOLET),
+            ColorGroup(id = Dummy.dummyId, name = "TU", keyColor = KeyColor.TURQUOISE)
         )
     )
 

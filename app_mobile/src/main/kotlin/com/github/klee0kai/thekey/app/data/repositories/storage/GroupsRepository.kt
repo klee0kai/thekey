@@ -2,12 +2,9 @@ package com.github.klee0kai.thekey.app.data.repositories.storage
 
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
-import com.github.klee0kai.thekey.app.domain.model.LazyColorGroup
-import com.github.klee0kai.thekey.app.domain.model.id
+import com.github.klee0kai.thekey.app.domain.model.ColorGroup
 import com.github.klee0kai.thekey.app.engine.model.DecryptedColorGroup
 import com.github.klee0kai.thekey.app.engine.model.colorGroup
-import com.github.klee0kai.thekey.app.utils.lazymodel.LazyModelProvider
-import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
@@ -17,39 +14,30 @@ class GroupsRepository(
 ) {
 
     val engine = DI.cryptStorageEngineSafeLazy(identifier)
-    val groups = MutableStateFlow<List<LazyColorGroup>>(emptyList())
 
-    suspend fun loadGroups(forceDirty: Boolean = false) = coroutineScope {
-        groups.update { oldGroups ->
-            val fullyLoadedGroups = async {
-                engine()
-                    .colorGroups(info = true)
-                    .map { it.colorGroup() }
-            }
+    val groups = MutableStateFlow<List<ColorGroup>>(emptyList())
 
-            engine()
+    suspend fun loadGroups() = coroutineScope {
+        if (groups.value.isEmpty()) {
+            groups.value = engine()
                 .colorGroups()
-                .map { it.colorGroup() }
-                .map { groupLite ->
-                    oldGroups.firstOrNull { it.id == groupLite.id }
-                        ?: LazyModelProvider(groupLite) {
-                            fullyLoadedGroups.await().firstOrNull { it.id == groupLite.id } ?: groupLite
-                        }.apply {
-                            if (forceDirty) dirty()
-                        }
-                }
+                .map { it.colorGroup(isLoaded = false) }
         }
+
+        groups.value = engine()
+            .colorGroups(info = true)
+            .map { it.colorGroup(isLoaded = true) }
     }
 
     suspend fun saveColorGroup(decryptedColorGroup: DecryptedColorGroup): DecryptedColorGroup? {
         return engine().saveColorGroup(decryptedColorGroup).also {
-            loadGroups(forceDirty = true)
+            loadGroups()
         }
     }
 
     suspend fun removeGroup(id: Long) {
         engine().removeColorGroup(id)
-        loadGroups(forceDirty = true)
+        loadGroups()
     }
 
 

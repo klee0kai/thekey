@@ -2,7 +2,7 @@ package com.github.klee0kai.thekey.app.ui.storage.presenter
 
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
-import com.github.klee0kai.thekey.app.domain.model.LazyColorGroup
+import com.github.klee0kai.thekey.app.domain.model.ColorGroup
 import com.github.klee0kai.thekey.app.domain.model.LazyColoredNote
 import com.github.klee0kai.thekey.app.ui.storage.model.SearchState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +22,7 @@ open class StoragePresenterImpl(
     override val searchState = MutableStateFlow(SearchState())
     override val selectedGroupId = MutableStateFlow<Long?>(null)
 
-    override val filteredColorGroups = flow<List<LazyColorGroup>> {
+    override val filteredColorGroups = flow<List<ColorGroup>> {
         groupsInteractor().groups.collect(this@flow)
     }
 

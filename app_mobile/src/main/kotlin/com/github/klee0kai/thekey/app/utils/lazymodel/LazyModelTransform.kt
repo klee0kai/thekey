@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 
 @Stable
+@Deprecated("difficult to use")
 class LazyModelTransform<T, R1, R2>(
     val origin: LazyModel<T, R1>,
     val transform: suspend (R1) -> R2

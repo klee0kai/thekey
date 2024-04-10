@@ -10,7 +10,9 @@ import kotlinx.parcelize.Parcelize
 data class ColorGroup(
     val id: Long = 0,
     val name: String = "",
-    val keyColor: KeyColor = KeyColor.NOCOLOR
+    val keyColor: KeyColor = KeyColor.NOCOLOR,
+
+    val isLoaded: Boolean = false,
 ) : Parcelable {
     companion object;
 }
