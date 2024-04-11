@@ -7,7 +7,8 @@ import com.github.klee0kai.thekey.app.di.identifier.NoteIdentifier
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.ui.editstorage.CreateStoragePresenter
 import com.github.klee0kai.thekey.app.ui.editstorage.EditStoragePresenter
-import com.github.klee0kai.thekey.app.ui.genhist.GenHistPresenter
+import com.github.klee0kai.thekey.app.ui.genhist.presenter.GenHistPresenter
+import com.github.klee0kai.thekey.app.ui.genhist.presenter.GenHistPresenterImpl
 import com.github.klee0kai.thekey.app.ui.login.presenter.LoginPresenter
 import com.github.klee0kai.thekey.app.ui.login.presenter.LoginPresenterImpl
 import com.github.klee0kai.thekey.app.ui.note.presenter.EditNotePresenter
@@ -48,7 +49,7 @@ open class PresentersModule {
 
     @Provide(cache = Provide.CacheType.Weak)
     open fun genHistPresenter(storageIdentifier: StorageIdentifier): GenHistPresenter =
-        GenHistPresenter(storageIdentifier)
+        GenHistPresenterImpl(storageIdentifier)
 
     @Provide(cache = Provide.CacheType.Weak)
     open fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter =

@@ -46,7 +46,7 @@ class CryptStorageSuspended(
 
     suspend fun generateNewPassw(params: GenPasswParams): String = engineRun { generateNewPassw(params) }
 
-    suspend fun genHistory(): Array<DecryptedPassw> = engineRun { genHistory() }
+    suspend fun genHistory(info: Boolean = false): Array<DecryptedPassw> = engineRun { genHistory(info) }
 
     suspend fun lastGeneratedPassw(): String = engineRun { lastGeneratedPassw() }
 

@@ -141,11 +141,12 @@ std::string JvmStorage1::lastGeneratedPassw() {
     return storageV1->genPassw(4, ENC_NUM_ONLY);
 }
 
-std::vector<EngineModelDecryptedPassw> JvmStorage1::genHistory() {
+std::vector<EngineModelDecryptedPassw> JvmStorage1::genHistory(const int &info) {
     auto storageV1 = findStorage(getStoragePath());
     if (!storageV1)return {};
 
-    auto hist = storageV1->genPasswHistoryList();
+    auto flags = info ? TK1_GET_NOTE_HISTORY_FULL : 0;
+    auto hist = storageV1->genPasswHistoryList(flags);
     auto jvmHist = std::vector<EngineModelDecryptedPassw>();
     jvmHist.reserve(hist.size());
     for (const auto &item: hist) {

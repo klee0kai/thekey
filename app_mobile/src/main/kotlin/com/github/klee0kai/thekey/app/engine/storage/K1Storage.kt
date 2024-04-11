@@ -54,7 +54,7 @@ class K1Storage(
     external override fun lastGeneratedPassw(): String
 
     @Synchronized
-    external override fun genHistory(): Array<DecryptedPassw>
+    external override fun genHistory(info: Boolean): Array<DecryptedPassw>
 
     @Synchronized
     external override fun getGenPassw(ptNote: Long): DecryptedPassw

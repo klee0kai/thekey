@@ -46,7 +46,7 @@ class K2Storage(
 
     external override fun lastGeneratedPassw(): String
 
-    external override fun genHistory(): Array<DecryptedPassw>
+    external override fun genHistory(info: Boolean): Array<DecryptedPassw>
 
     external override fun getGenPassw(ptNote: Long): DecryptedPassw
 

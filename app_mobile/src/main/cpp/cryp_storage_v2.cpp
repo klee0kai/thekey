@@ -230,11 +230,12 @@ std::string JvmStorage2::lastGeneratedPassw() {
     return storage->genPassword(schemeType, 4);
 }
 
-std::vector<EngineModelDecryptedPassw> JvmStorage2::genHistory() {
+std::vector<EngineModelDecryptedPassw> JvmStorage2::genHistory(const int &info) {
     auto storage = findStorage(getStoragePath());
     if (!storage)return {};
 
-    auto hist = storage->genPasswHistoryList();
+    auto flags = info ? TK2_GET_NOTE_HISTORY_FULL : 0;
+    auto hist = storage->genPasswHistoryList(flags);
     auto jvmHist = std::vector<EngineModelDecryptedPassw>();
     jvmHist.reserve(hist.size());
     for (const auto &item: hist) {

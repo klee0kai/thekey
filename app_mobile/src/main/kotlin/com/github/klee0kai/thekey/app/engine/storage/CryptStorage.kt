@@ -32,7 +32,7 @@ interface CryptStorage {
 
     fun generateNewPassw(params: GenPasswParams): String
 
-    fun genHistory(): Array<DecryptedPassw>
+    fun genHistory(info: Boolean): Array<DecryptedPassw>
 
     fun lastGeneratedPassw(): String
 
