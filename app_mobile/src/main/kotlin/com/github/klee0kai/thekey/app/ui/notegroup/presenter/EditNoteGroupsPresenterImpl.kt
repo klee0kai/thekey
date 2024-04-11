@@ -12,7 +12,6 @@ import com.github.klee0kai.thekey.app.ui.notegroup.model.selected
 import com.github.klee0kai.thekey.app.utils.common.launchLatest
 import com.github.klee0kai.thekey.app.utils.common.launchSafe
 import com.github.klee0kai.thekey.app.utils.coroutine.triggerOn
-import com.github.klee0kai.thekey.app.utils.lazymodel.fullValue
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.firstOrNull
@@ -35,7 +34,6 @@ open class EditNoteGroupsPresenterImpl(
     override val allNotes = flow<List<SelectedNote>> {
         notesInteractor().notes
             .triggerOn(updateNoteTrigger)
-            .map { notes -> notes.map { it.fullValue() } }
             .map { notes ->
                 val selected = state.value.selectedNotes
                 notes.filter { note ->
@@ -61,7 +59,6 @@ open class EditNoteGroupsPresenterImpl(
 
             notesInteractor().notes
                 .firstOrNull()
-                ?.map { it.fullValue() }
                 ?.filter { it.group.id == originalGroup?.id }
                 ?.map { it.ptnote }
                 ?.let { selectedNotes -> input { copy(selectedNotes = selectedNotes.toSet()) } }

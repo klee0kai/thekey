@@ -2,6 +2,7 @@
 
 package com.github.klee0kai.thekey.app.ui.storage.notes
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,7 +27,6 @@ import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
-import com.github.klee0kai.thekey.app.domain.model.id
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
 import com.github.klee0kai.thekey.app.ui.navigation.identifier
@@ -44,15 +44,16 @@ fun NotesListContent(
 ) {
     val presenter = remember { DI.storagePresenter(args.identifier()) }
     val router = LocalRouter.current
-    val notes by presenter.filteredNotes.collectAsState(key = Unit, initial = emptyList())
+    val notes by presenter.filteredNotes.collectAsState(key = Unit, initial = null)
     val groups by presenter.filteredColorGroups.collectAsState(key = Unit, initial = emptyList())
     val titleAnimatedAlpha by animateAlphaAsState(showStoragesTitle)
 
-    if (notes.isEmpty()) return
+    if (notes == null) return
 
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
+            .animateContentSize(),
     ) {
         item {
             Text(
@@ -61,40 +62,45 @@ fun NotesListContent(
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
                     .padding(start = 16.dp, top = 4.dp, bottom = 22.dp)
+                    .animateContentSize()
                     .alpha(titleAnimatedAlpha)
             )
         }
 
-        notes.forEach { lazyNote ->
-            item(contentType = lazyNote::class, key = lazyNote.id) {
+        notes?.forEach { note ->
+            item(
+                contentType = note::class,
+                key = note.ptnote
+            ) {
                 var showMenu by remember { mutableStateOf(false) }
-
                 ColoredNoteItem(
                     modifier = Modifier
+                        .animateContentSize()
                         .combinedClickable(
                             onLongClick = {
                                 showMenu = true
                             },
                             onClick = {
-                                router.navigate(args.note(notePtr = lazyNote.id))
+                                router.navigate(args.note(notePtr = note.ptnote))
                             }
                         ),
-                    lazyNote = lazyNote,
+                    note = note,
                     overlayContent = {
                         DropdownMenu(
                             offset = DpOffset(x = (-16).dp, y = 2.dp),
                             expanded = showMenu,
                             onDismissRequest = { showMenu = false }
                         ) {
+
                             NoteDropDownMenuContent(
                                 colorGroups = groups,
-                                selectedGroupId = lazyNote.getOrNull()?.group?.id,
+                                selectedGroupId = note.group.id,
                                 onColorGroupSelected = {
-                                    presenter.setColorGroup(notePt = lazyNote.id, groupId = it.id)
+                                    presenter.setColorGroup(notePt = note.ptnote, groupId = it.id)
                                     showMenu = false
                                 },
                                 onEdit = {
-                                    router.navigate(args.note(lazyNote.id))
+                                    router.navigate(args.note(note.ptnote))
                                     showMenu = false
                                 }
                             )

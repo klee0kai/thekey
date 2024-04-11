@@ -1,36 +1,30 @@
 package com.github.klee0kai.thekey.app.data.repositories.storage
 
-import com.github.klee0kai.thekey.app.data.model.LazyNote
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
+import com.github.klee0kai.thekey.app.domain.model.ColoredNote
+import com.github.klee0kai.thekey.app.domain.model.coloredNote
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.engine.model.GenPasswParams
-import com.github.klee0kai.thekey.app.utils.lazymodel.fromPreloadedOrCreate
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.withContext
 
 class NotesRepository(
     val identifier: StorageIdentifier,
 ) {
 
     val engine = DI.cryptStorageEngineSafeLazy(identifier)
-    val notes = MutableStateFlow<List<LazyNote>>(emptyList())
+
+    val notes = MutableStateFlow<List<ColoredNote>>(emptyList())
 
     suspend fun loadNotes(forceDirty: Boolean = false) {
-        notes.update { oldNotes ->
-            engine()
-                .notes()
-                .map { noteLite ->
-                    fromPreloadedOrCreate(noteLite.ptnote, oldNotes) {
-                        withContext(DI.defaultDispatcher()) {
-                            engine().note(noteLite.ptnote)
-                        }
-                    }.apply {
-                        if (forceDirty) dirty()
-                    }
-                }
+        if (notes.value.isEmpty()) {
+            notes.value = engine().notes()
+                .map { it.coloredNote(isLoaded = false) }
         }
+
+        notes.value = engine().notes(info = true)
+            .map { it.coloredNote(isLoaded = true) }
     }
 
     suspend fun note(notePtr: Long) = engine().note(notePtr)

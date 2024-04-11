@@ -3,12 +3,13 @@ package com.github.klee0kai.thekey.app.ui.storage.presenter
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.domain.model.ColorGroup
-import com.github.klee0kai.thekey.app.domain.model.LazyColoredNote
+import com.github.klee0kai.thekey.app.domain.model.ColoredNote
 import com.github.klee0kai.thekey.app.ui.storage.model.SearchState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 open class StoragePresenterImpl(
     val storageIdentifier: StorageIdentifier,
@@ -26,7 +27,7 @@ open class StoragePresenterImpl(
         groupsInteractor().groups.collect(this@flow)
     }
 
-    override val filteredNotes = flow<List<LazyColoredNote>> {
+    override val filteredNotes = flow<List<ColoredNote>> {
         combine(
             flow = searchState,
             flow2 = selectedGroupId,
@@ -37,18 +38,18 @@ open class StoragePresenterImpl(
 
                 if (selectedGroup != null) {
                     filtList = filtList.filter {
-                        it.getOrNull()?.group?.id == selectedGroup
+                        it.group.id == selectedGroup
                     }
                 }
 
                 if (filter.isNotBlank()) {
-                    filtList = filtList.filter {
-                        val note = it.getOrNull() ?: return@filter false
+                    filtList = filtList.filter { note ->
                         note.site.contains(filter, ignoreCase = true)
                                 || note.login.contains(filter, ignoreCase = true)
                                 || note.desc.contains(filter, ignoreCase = true)
                     }
                 }
+                Timber.d("StoragePresenterImpl notes ${filtList}")
                 filtList
             }
         ).collect(this@flow)

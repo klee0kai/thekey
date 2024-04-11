@@ -12,19 +12,22 @@ data class ColoredNote(
     val passw: String = "",
     val desc: String = "",
 
-    val group: ColorGroup = ColorGroup.noGroup()
+    val group: ColorGroup = ColorGroup.noGroup(),
+    val isLoaded: Boolean = false,
 ) : Parcelable {
     companion object;
 }
 
 
 fun DecryptedNote.coloredNote(
-    group: ColorGroup = ColorGroup.noGroup()
+    group: ColorGroup? = null,
+    isLoaded: Boolean = false,
 ) = ColoredNote(
     ptnote = ptnote,
     site = site,
     login = login,
     passw = passw,
     desc = desc,
-    group = group,
+    group = group ?: ColorGroup(id = colorGroupId),
+    isLoaded = isLoaded,
 )

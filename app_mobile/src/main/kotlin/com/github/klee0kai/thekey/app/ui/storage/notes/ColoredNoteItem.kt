@@ -21,14 +21,10 @@ import androidx.constraintlayout.compose.Dimension
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.domain.model.ColorGroup
 import com.github.klee0kai.thekey.app.domain.model.ColoredNote
-import com.github.klee0kai.thekey.app.domain.model.LazyColoredNote
-import com.github.klee0kai.thekey.app.domain.model.dummyLazyColoredNoteSkeleton
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
 import com.github.klee0kai.thekey.app.ui.designkit.color.KeyColor
-import com.github.klee0kai.thekey.app.utils.lazymodel.LazyModelProvider
-import com.github.klee0kai.thekey.app.utils.lazymodel.collectAsStateCrossFaded
-import com.github.klee0kai.thekey.app.utils.views.rememberTargetAlphaCrossSade
+import com.github.klee0kai.thekey.app.utils.views.animateTargetAlphaAsState
 import com.github.klee0kai.thekey.app.utils.views.skeleton
 import com.github.klee0kai.thekey.app.utils.views.visibleOnTargetAlpha
 
@@ -36,13 +32,12 @@ import com.github.klee0kai.thekey.app.utils.views.visibleOnTargetAlpha
 @Composable
 fun ColoredNoteItem(
     modifier: Modifier = Modifier,
-    lazyNote: LazyColoredNote = dummyLazyColoredNoteSkeleton(),
+    note: ColoredNote = ColoredNote(),
     overlayContent: @Composable () -> Unit = {},
 ) {
     val colorScheme = LocalColorScheme.current
-    val animatedNote by lazyNote.collectAsStateCrossFaded()
-    val skeleton by rememberTargetAlphaCrossSade { animatedNote.current == null }
-    val colorGroup = lazyNote.getOrNull()?.group ?: ColorGroup()
+    val animatedNote by animateTargetAlphaAsState(note)
+    val skeleton by animateTargetAlphaAsState(!note.isLoaded)
 
     ConstraintLayout(
         modifier = modifier
@@ -82,7 +77,7 @@ fun ColoredNoteItem(
                 .alpha(skeleton.visibleOnTargetAlpha(false))
                 .size(2.dp, 24.dp)
                 .background(
-                    color = colorScheme.surfaceScheme(colorGroup.keyColor).surfaceColor,
+                    color = colorScheme.surfaceScheme(animatedNote.current.group.keyColor).surfaceColor,
                     shape = RoundedCornerShape(2.dp),
                 )
                 .constrainAs(colorGroupField) {
@@ -99,7 +94,7 @@ fun ColoredNoteItem(
         )
 
         Text(
-            text = animatedNote.current?.site.takeIf { !it.isNullOrBlank() } ?: stringResource(id = R.string.no_site),
+            text = animatedNote.current.site.takeIf { it.isNotBlank() } ?: stringResource(id = R.string.no_site),
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Medium,
             modifier = Modifier
@@ -123,7 +118,7 @@ fun ColoredNoteItem(
 
 
         Text(
-            text = animatedNote.current?.login.takeIf { !it.isNullOrBlank() } ?: "",
+            text = animatedNote.current.login,
             style = MaterialTheme.typography.bodyMedium
                 .copy(color = LocalColorScheme.current.androidColorScheme.primary),
             fontWeight = FontWeight.Medium,
@@ -147,7 +142,7 @@ fun ColoredNoteItem(
         )
 
         Text(
-            text = animatedNote.current?.desc.takeIf { !it.isNullOrBlank() } ?: "",
+            text = animatedNote.current.desc,
             color = MaterialTheme.colorScheme.onSurface,
             style = MaterialTheme.typography.labelSmall,
             fontWeight = FontWeight.Normal,
@@ -177,7 +172,7 @@ fun ColoredNoteItem(
 @Preview
 private fun ColoredNoteSkeleton() {
     AppTheme {
-        ColoredNoteItem(lazyNote = LazyModelProvider(1L) { ColoredNote() })
+        ColoredNoteItem(note = ColoredNote(isLoaded = false))
     }
 }
 
@@ -185,17 +180,18 @@ private fun ColoredNoteSkeleton() {
 @Preview
 private fun ColoredNoteDummy() {
     AppTheme {
-        ColoredNoteItem(lazyNote = LazyModelProvider(
-            1L, preloaded = ColoredNote(
+        ColoredNoteItem(
+            note = ColoredNote(
                 site = "some.super.site.com",
                 login = "potato",
                 desc = "my work note",
                 group = ColorGroup(
                     name = "CO",
                     keyColor = KeyColor.CORAL,
-                )
-            )
-        ) { ColoredNote() })
+                ),
+                isLoaded = true,
+            ),
+        )
     }
 }
 
@@ -203,13 +199,14 @@ private fun ColoredNoteDummy() {
 @Preview
 private fun ColoredNoteDummyNoGroup() {
     AppTheme {
-        ColoredNoteItem(lazyNote = LazyModelProvider(
-            1L, preloaded = ColoredNote(
+        ColoredNoteItem(
+            note = ColoredNote(
                 site = "some.super.site.com",
                 login = "potato",
                 desc = "my work note",
-                group = ColorGroup()
+                group = ColorGroup(),
+                isLoaded = true,
             )
-        ) { ColoredNote() })
+        )
     }
 }
