@@ -44,11 +44,13 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteGroupDestinati
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditStorageDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.GenHistDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.LoginDestination
+import com.github.klee0kai.thekey.app.ui.navigation.model.QRCodeScanDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.StoragesDestination
 import com.github.klee0kai.thekey.app.ui.navigationboard.StorageNavigationBoard
 import com.github.klee0kai.thekey.app.ui.note.EditNoteScreen
 import com.github.klee0kai.thekey.app.ui.notegroup.EditNoteGroupsScreen
+import com.github.klee0kai.thekey.app.ui.scanqr.ScanQRCodeScreen
 import com.github.klee0kai.thekey.app.ui.storage.StorageScreen
 import com.github.klee0kai.thekey.app.ui.storages.StoragesScreen
 import com.github.klee0kai.thekey.app.utils.views.rememberTickerOf
@@ -157,6 +159,7 @@ private fun screenOf(destination: Destination) {
         is GenHistDestination -> GenHistScreen(destination)
         is EditNoteDestination -> EditNoteScreen(destination)
         is EditNoteGroupDestination -> EditNoteGroupsScreen(destination)
+        is QRCodeScanDestination -> ScanQRCodeScreen()
 
         is AlertDialogDestination -> AlertDialogScreen(destination)
 

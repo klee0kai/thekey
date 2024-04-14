@@ -10,6 +10,7 @@ import com.github.klee0kai.thekey.app.engine.model.GenPasswParams
 import com.github.klee0kai.thekey.app.engine.model.isEmpty
 import com.github.klee0kai.thekey.app.ui.navigation.model.AlertDialogDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.ConfirmDialogResult
+import com.github.klee0kai.thekey.app.ui.navigation.model.QRCodeScanDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.TextProvider
 import com.github.klee0kai.thekey.app.ui.navigation.navigate
 import com.github.klee0kai.thekey.app.ui.navigation.storage
@@ -93,9 +94,9 @@ class EditNotePresenterImpl(
         }
     }
 
-    override fun input(block: EditNoteState.() -> EditNoteState) = scope.launchLatest("input") {
+    override fun input(block: EditNoteState.() -> EditNoteState) = scope.launch(DI.mainDispatcher()) {
         var newState = block.invoke(state.value)
-        if (!newState.isValid()) return@launchLatest
+        if (!newState.isValid()) return@launch
 
         val isSaveAvailable = when {
             originNote == null -> !newState.decryptedNote().isEmpty()
@@ -134,7 +135,7 @@ class EditNotePresenterImpl(
     }
 
     override fun scanQRCode() = scope.launchLatest("qr") {
-
+        router.navigate(QRCodeScanDestination)
     }
 
     override fun save() = scope.launchLatest("safe") {

@@ -8,6 +8,8 @@ interface AndroidHelpersDependencies {
 
     fun permissionsHelperLazy(): AsyncCoroutineProvide<PermissionsHelper>
 
+    fun permissionsHelper(): PermissionsHelper
+
     fun router(): AppRouter
 
 }

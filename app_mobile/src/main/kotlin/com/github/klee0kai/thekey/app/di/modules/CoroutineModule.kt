@@ -11,10 +11,17 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.asCoroutineDispatcher
+import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
 @Module
 open class CoroutineModule {
+
+    @DefaultDispatcher
+    @Provide(cache = Provide.CacheType.Strong)
+    open fun defaultExecutor(): Executor {
+        return Executors.newFixedThreadPool(5)
+    }
 
     @JniDispatcher
     @Provide(cache = Provide.CacheType.Strong)

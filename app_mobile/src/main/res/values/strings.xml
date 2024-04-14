@@ -70,4 +70,5 @@
     <string name="current_storage">Current Storage</string>
     <string name="favorites">Favorites</string>
     <string name="openned">Openned</string>
+    <string name="camera_permission">Camera permission</string>
 </resources>

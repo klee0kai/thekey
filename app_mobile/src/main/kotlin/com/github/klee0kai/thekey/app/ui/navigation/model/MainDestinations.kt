@@ -98,3 +98,6 @@ data class EditNoteGroupDestination(
 ) : Destination
 
 
+@Parcelize
+data object QRCodeScanDestination : Destination
+

@@ -86,5 +86,10 @@ class SimplePermUnit(
             desc = R.string.writeExternalStorage,
         )
 
+        val Camera = SimplePerm(
+            perm = Manifest.permission.CAMERA,
+            desc = R.string.camera_permission,
+        )
+
     }
 }
