@@ -10,6 +10,13 @@ class AppTypeScheme : TypeScheme {
 
     private val appFontFamily = FontFamily.SansSerif
 
+    private val titleLarge = TextStyle(
+        fontFamily = appFontFamily,
+        fontSize = 16.sp,
+        lineHeight = 21.sp,
+        fontWeight = FontWeight.Bold,
+    )
+
     private val titleText = TextStyle(
         fontFamily = appFontFamily,
         fontSize = 20.sp,
@@ -26,6 +33,7 @@ class AppTypeScheme : TypeScheme {
         fontFamily = appFontFamily,
         fontSize = 12.sp,
         lineHeight = 14.sp,
+        fontWeight = FontWeight.Medium
     )
 
     private val labelLarge = TextStyle(
@@ -44,7 +52,7 @@ class AppTypeScheme : TypeScheme {
         headlineMedium = titleText,
         headlineSmall = titleText,
 
-        titleLarge = titleText,
+        titleLarge = titleLarge,
         titleMedium = titleText,
         titleSmall = titleText,
 

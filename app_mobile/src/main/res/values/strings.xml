@@ -67,4 +67,7 @@
     <string name="confirm_delete_note">Confirm delete the note</string>
     <string name="delete">Delete</string>
     <string name="passw_len_is">Password len is %1$d</string>
+    <string name="current_storage">Current Storage</string>
+    <string name="favorites">Favorites</string>
+    <string name="openned">Openned</string>
 </resources>

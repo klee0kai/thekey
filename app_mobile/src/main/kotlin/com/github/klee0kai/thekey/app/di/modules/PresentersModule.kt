@@ -11,6 +11,8 @@ import com.github.klee0kai.thekey.app.ui.genhist.presenter.GenHistPresenter
 import com.github.klee0kai.thekey.app.ui.genhist.presenter.GenHistPresenterImpl
 import com.github.klee0kai.thekey.app.ui.login.presenter.LoginPresenter
 import com.github.klee0kai.thekey.app.ui.login.presenter.LoginPresenterImpl
+import com.github.klee0kai.thekey.app.ui.navigationboard.presenter.NavigationBoardPresenter
+import com.github.klee0kai.thekey.app.ui.navigationboard.presenter.NavigationBoardPresenterImpl
 import com.github.klee0kai.thekey.app.ui.note.presenter.EditNotePresenter
 import com.github.klee0kai.thekey.app.ui.note.presenter.EditNotePresenterImpl
 import com.github.klee0kai.thekey.app.ui.notegroup.presenter.EditNoteGroupsPresenter
@@ -26,6 +28,9 @@ open class PresentersModule {
 
     @Provide(cache = Provide.CacheType.Weak)
     open fun loginPresenter(): LoginPresenter = LoginPresenterImpl()
+
+    @Provide(cache = Provide.CacheType.Weak)
+    open fun navigationBoardPresenter(): NavigationBoardPresenter = NavigationBoardPresenterImpl()
 
     @Provide(cache = Provide.CacheType.Weak)
     open fun storagesPresenter(): StoragesPresenter = StoragesPresenter()

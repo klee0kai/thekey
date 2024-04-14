@@ -8,10 +8,12 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SwipeToDismissBox
@@ -26,7 +28,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.BuildConfig
 import com.github.klee0kai.thekey.app.ui.designkit.EmptyScreen
@@ -45,6 +46,7 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.GenHistDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.LoginDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.StoragesDestination
+import com.github.klee0kai.thekey.app.ui.navigationboard.StorageNavigationBoard
 import com.github.klee0kai.thekey.app.ui.note.EditNoteScreen
 import com.github.klee0kai.thekey.app.ui.notegroup.EditNoteGroupsScreen
 import com.github.klee0kai.thekey.app.ui.storage.StorageScreen
@@ -64,14 +66,26 @@ fun MainNavContainer() {
 
     LocalRouter.current.collectBackstackChanges()
 
-    // screens
-    AnimatedNavHost(
-        controller = LocalRouter.current.navScreensController,
-        transitionQueueing = NavTransitionQueueing.QueueAll,
-        transitionSpec = customTransitionSpec,
-        emptyBackstackPlaceholder = { EmptyScreen() }
-    ) { destination ->
-        screenOf(destination = destination)
+
+    ModalNavigationDrawer(
+        drawerState = LocalRouter.current.navBoardState,
+        drawerContent = {
+            StorageNavigationBoard(
+                modifier = Modifier
+                    .fillMaxWidth(0.7f)
+                    .fillMaxHeight()
+            )
+        }
+    ) {
+        // screens
+        AnimatedNavHost(
+            controller = LocalRouter.current.navScreensController,
+            transitionQueueing = NavTransitionQueueing.QueueAll,
+            transitionSpec = customTransitionSpec,
+            emptyBackstackPlaceholder = { EmptyScreen() }
+        ) { destination ->
+            screenOf(destination = destination)
+        }
     }
 
     // Dialogs
@@ -87,7 +101,6 @@ fun MainNavContainer() {
     SnackContainer()
 }
 
-@Preview
 @Composable
 fun SnackContainer() {
     val snackbarHostState = LocalRouter.current.snackbarHostState

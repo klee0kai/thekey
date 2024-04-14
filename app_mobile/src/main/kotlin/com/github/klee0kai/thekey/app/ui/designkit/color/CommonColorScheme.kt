@@ -10,6 +10,7 @@ interface CommonColorScheme {
 
     val statusBarColor: Color get() = androidColorScheme.background
     val deleteColor: Color
+    val navigationBoard: NavigationBoardColors
     val textButtonColors: ButtonColors
 
     val noColor: SurfaceScheme

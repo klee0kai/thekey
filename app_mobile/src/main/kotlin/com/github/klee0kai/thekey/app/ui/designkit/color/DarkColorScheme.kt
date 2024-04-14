@@ -16,6 +16,10 @@ class DarkColorScheme : CommonColorScheme {
     private val grayColor = Color(0xFFB7B7B7)
 
     override val deleteColor: Color = Color.Red
+    override val navigationBoard = NavigationBoardColors(
+        headerContainerColor = Color(0xFF3A3D52),
+        bodyContentColor = Color(0xFF1C1D27),
+    )
     override val textButtonColors = ButtonColors(
         contentColor = Color(0xffB7B7B7),
         containerColor = Color.Transparent,

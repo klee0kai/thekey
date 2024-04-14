@@ -1,10 +1,15 @@
 package com.github.klee0kai.thekey.app.ui.login
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -30,14 +35,18 @@ import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
+import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
+import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.app.ui.login.presenter.LoginPresenter
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
 import com.github.klee0kai.thekey.app.utils.views.toAnnotationString
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen() {
     val scope = rememberCoroutineScope()
+    val router = LocalRouter.current
     val presenter = remember { DI.loginPresenter() }
     val pathInputHelper = remember { DI.pathInputHelper() }
     val currentStorageState by presenter.currentStorageFlow.collectAsState(Unit, initial = ColoredStorage())
@@ -48,6 +57,12 @@ fun LoginScreen() {
             .shortPath()
             .toAnnotationString()
             .coloredPath()
+    }
+
+    BackHandler(enabled = router.isNavigationBoardIsOpen()) {
+        when {
+            router.isNavigationBoardIsOpen() -> scope.launch { router.hideNavigationBoard() }
+        }
     }
 
     ConstraintLayout(
@@ -168,6 +183,19 @@ fun LoginScreen() {
             Text(stringResource(R.string.login))
         }
     }
+
+
+    AppBarStates(
+        navigationIcon = {
+            IconButton(onClick = { scope.launch { router.showNavigationBoard() } }) {
+                Icon(
+                    Icons.Filled.Menu,
+                    contentDescription = null,
+                )
+            }
+        }
+    )
+
 }
 
 @Preview(device = Devices.PIXEL_6, showSystemUi = true)
