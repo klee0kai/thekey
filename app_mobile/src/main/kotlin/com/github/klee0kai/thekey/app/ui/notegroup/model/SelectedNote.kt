@@ -4,10 +4,6 @@ import android.os.Parcelable
 import com.github.klee0kai.thekey.app.domain.model.ColorGroup
 import com.github.klee0kai.thekey.app.domain.model.ColoredNote
 import com.github.klee0kai.thekey.app.domain.model.noGroup
-import com.github.klee0kai.thekey.app.utils.common.Dummy
-import com.github.klee0kai.thekey.app.utils.lazymodel.LazyModel
-import com.github.klee0kai.thekey.app.utils.lazymodel.LazyModelProvider
-import kotlinx.coroutines.awaitCancellation
 import kotlinx.parcelize.Parcelize
 
 
@@ -25,11 +21,6 @@ data class SelectedNote(
     companion object;
 }
 
-typealias LazySelectedNote = LazyModel<Long, SelectedNote>
-
-val LazySelectedNote.id get() = placeholder
-
-
 fun ColoredNote.selected(selected: Boolean = false) = SelectedNote(
     ptnote = ptnote,
     site = site,
@@ -39,10 +30,3 @@ fun ColoredNote.selected(selected: Boolean = false) = SelectedNote(
     group = group,
     selected = selected,
 )
-
-
-fun dummyLazySelectedNoteSkeleton() = LazyModelProvider<Long, SelectedNote>(Dummy.dummyId) {
-    awaitCancellation()
-}
-
-fun dummyLazySelectedNoteLoaded(note: SelectedNote = SelectedNote()) = LazyModelProvider(placeholder = Dummy.dummyId, preloaded = note) { SelectedNote() }
