@@ -9,6 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.wear.compose.material.Button
 import androidx.wear.compose.material.Text
@@ -16,7 +17,8 @@ import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
 import com.github.klee0kai.thekey.app.ui.navigation.model.TextProvider
-import com.github.klee0kai.thekey.app.ui.scanqr.components.CameraQrScanner
+import com.github.klee0kai.thekey.app.ui.scanqr.components.CameraPreviewCompose
+import com.github.klee0kai.thekey.app.ui.scanqr.components.qrCodeUserScanner
 import kotlinx.coroutines.launch
 
 @SuppressLint("RestrictedApi")
@@ -33,14 +35,18 @@ fun ScanQRCodeScreen() {
                 .fillMaxSize()
                 .background(Color.Green)
         ) {
-            CameraQrScanner(
-                onFound = { barcodes ->
-                    barcodes.forEach {
-                        scope.launch {
-                            router.snack("qrcode ${it.rawValue}")
+            CameraPreviewCompose(
+                userCases = listOf(
+                    LocalContext.current.qrCodeUserScanner(
+                        onFound = { barcodes ->
+                            barcodes.forEach {
+                                scope.launch {
+                                    router.snack("qrcode ${it.rawValue}")
+                                }
+                            }
                         }
-                    }
-                }
+                    )
+                ),
             )
         }
     } else {
