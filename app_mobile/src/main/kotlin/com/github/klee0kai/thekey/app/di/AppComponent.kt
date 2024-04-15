@@ -66,6 +66,9 @@ interface AppComponent : AppComponentProviders {
     fun initHelpersModule(helpers: Class<out HelpersModule>)
 
     @Init
+    fun initAndroidHelpersModule(helpers: AndroidHelpersModule)
+
+    @Init
     fun initPresenterModule(presentersModule: PresentersModule)
 
     @BindInstance(cache = BindInstance.CacheType.Weak)

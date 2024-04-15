@@ -71,4 +71,6 @@
     <string name="favorites">Favorites</string>
     <string name="openned">Openned</string>
     <string name="camera_permission">Camera permission</string>
+    <string name="camera_error">Camera Error</string>
+    <string name="camera_starting">starting...</string>
 </resources>

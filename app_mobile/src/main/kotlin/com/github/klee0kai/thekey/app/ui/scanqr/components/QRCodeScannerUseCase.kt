@@ -11,7 +11,7 @@ import com.google.mlkit.vision.barcode.common.Barcode
 
 fun Context.qrCodeUserScanner(
     onFound: (List<Barcode>) -> Unit = {}
-): UseCase {
+): UseCase? = runCatching {
     val context = this
     val barcodeScanner = BarcodeScanning
         .getClient(
@@ -37,5 +37,5 @@ fun Context.qrCodeUserScanner(
             setAnalyzer(ContextCompat.getMainExecutor(context), mlKitAnalyzer)
         }
 
-    return qrCodeAnalyser
-}
+    qrCodeAnalyser
+}.getOrNull()

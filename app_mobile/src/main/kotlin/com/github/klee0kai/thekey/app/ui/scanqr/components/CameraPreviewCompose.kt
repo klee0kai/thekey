@@ -20,7 +20,8 @@ import timber.log.Timber
 @Composable
 fun CameraPreviewCompose(
     modifier: Modifier = Modifier,
-    userCases: List<UseCase> = emptyList(),
+    useCases: List<UseCase> = emptyList(),
+    onCameraStarted: () -> Unit = {},
     onError: (Exception) -> Unit = {},
 ) {
     val scope = rememberCoroutineScope()
@@ -53,10 +54,11 @@ fun CameraPreviewCompose(
                         CameraSelector.DEFAULT_BACK_CAMERA,
                         UseCaseGroup.Builder()
                             .addUseCase(preview)
-                            .apply { userCases.forEach { addUseCase(it) } }
+                            .apply { useCases.forEach { addUseCase(it) } }
                             .build()
                     )
 
+                    onCameraStarted()
                 } catch (e: Exception) {
                     Timber.e(e)
                     onError(e)
@@ -66,6 +68,4 @@ fun CameraPreviewCompose(
             previewView
         })
 }
-
-
 
