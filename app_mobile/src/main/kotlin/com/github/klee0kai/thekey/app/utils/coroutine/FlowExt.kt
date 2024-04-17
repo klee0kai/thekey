@@ -18,7 +18,6 @@ import kotlinx.coroutines.withTimeout
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
-
 fun <T> singleEventFlow(
     coroutineContext: CoroutineContext = EmptyCoroutineContext,
     block: suspend CoroutineScope.() -> T
@@ -72,4 +71,3 @@ suspend inline fun <reified T> Flow<T>.await(timeout: Long): T? =
     withTimeout(timeout) { firstOrNull() }
 
 suspend inline fun <reified T> Flow<T>.awaitSec(): T? = await(1000)
-

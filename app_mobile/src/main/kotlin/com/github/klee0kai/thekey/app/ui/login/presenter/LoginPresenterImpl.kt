@@ -57,6 +57,4 @@ class LoginPresenterImpl : LoginPresenter {
             router.snack(error.message ?: "error")
         }
     }
-
 }
-

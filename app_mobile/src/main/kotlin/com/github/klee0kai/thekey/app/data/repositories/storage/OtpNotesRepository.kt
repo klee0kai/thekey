@@ -44,10 +44,8 @@ class OtpNotesRepository(
 
     suspend fun otpNoteFromUrl(url: String) = engine().otpNoteFromUrl(url)
 
-
     suspend fun clear() {
         otpNotes.update { emptyList() }
     }
-
 
 }

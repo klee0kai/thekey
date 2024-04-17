@@ -96,7 +96,6 @@ fun NotesContent(
             content = { Icon(Icons.Default.Add, contentDescription = "Add") }
         )
     }
-
 }
 
 @Preview(device = Devices.PIXEL_6, showSystemUi = true)

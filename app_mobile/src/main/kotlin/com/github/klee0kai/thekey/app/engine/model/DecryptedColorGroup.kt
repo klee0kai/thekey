@@ -26,4 +26,3 @@ fun DecryptedColorGroup.colorGroup(
     isLoaded = isLoaded,
 )
 
-

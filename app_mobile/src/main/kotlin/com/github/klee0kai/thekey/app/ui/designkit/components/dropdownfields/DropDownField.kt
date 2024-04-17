@@ -62,7 +62,6 @@ fun DropDownField(
     }
 }
 
-
 @Preview
 @Composable
 private fun DropDownFieldEmptyPreview() = AppTheme {

@@ -40,7 +40,6 @@ class GroupsRepository(
         loadGroups()
     }
 
-
     suspend fun clear() = groups.update { emptyList() }
 
 }

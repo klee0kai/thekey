@@ -63,7 +63,6 @@ class DarkColorScheme : CommonColorScheme {
 
     override val colorsGroupCollection = listOf(violet, turquoise, pink, orange, coral)
 
-
     override fun surfaceScheme(group: KeyColor): SurfaceScheme =
         when (group) {
             KeyColor.NOCOLOR -> noColor

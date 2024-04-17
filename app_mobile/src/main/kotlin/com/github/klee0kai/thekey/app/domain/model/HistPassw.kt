@@ -13,7 +13,6 @@ data class HistPassw(
     val isLoaded: Boolean = false,
 ) : Parcelable
 
-
 fun DecryptedPassw.histPasww(
     isLoaded: Boolean = false,
 ) = HistPassw(
@@ -22,4 +21,3 @@ fun DecryptedPassw.histPasww(
     chTime = chTime,
     isLoaded = isLoaded,
 )
-

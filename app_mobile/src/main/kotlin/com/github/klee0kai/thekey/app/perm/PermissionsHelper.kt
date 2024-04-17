@@ -21,12 +21,11 @@ open class PermissionsHelper {
             add(SimplePermUnit(listOf(WriteExternalStorage)))
         }
 
-    }.toImmutableList()
+    }
 
     open fun cameraPermissions() = buildList {
         add(SimplePermUnit(listOf(Camera)))
-    }.toImmutableList()
-
+    }
 
     /**
      * check all permissions is granted

@@ -64,6 +64,4 @@ open class GenPasswPresenterImpl(
         launch { settings().genPasswIncludeSpecSymbols.set(newState.specSymbolsInPassw) }
         state.value = newState
     }
-
-
 }

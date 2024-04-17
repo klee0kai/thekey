@@ -19,5 +19,3 @@ data class ColorGroup(
 
 fun ColorGroup.Companion.noGroup(): ColorGroup =
     ColorGroup(name = DI.ctx().resources.getString(R.string.no), keyColor = KeyColor.NOCOLOR)
-
-

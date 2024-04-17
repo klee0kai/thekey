@@ -223,5 +223,4 @@ class EditNotePresenterImpl(
         input { copy(passw = newPassw) }
     }
 
-
 }

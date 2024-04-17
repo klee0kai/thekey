@@ -19,7 +19,6 @@ fun DefaultHeader(
     Box(
         modifier = modifier
     ) {
-
         Image(
             modifier = Modifier
                 .defaultMinSize(minHeight = 100.dp, minWidth = 100.dp)
@@ -27,8 +26,6 @@ fun DefaultHeader(
             painter = painterResource(id = R.drawable.logo_big),
             contentDescription = "key",
         )
-
-
     }
 }
 

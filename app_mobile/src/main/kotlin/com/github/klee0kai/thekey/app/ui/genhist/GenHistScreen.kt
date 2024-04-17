@@ -52,7 +52,6 @@ fun GenHistScreen(
         },
     ) { Text(text = stringResource(id = R.string.gen_history)) }
 
-
     ConstraintLayout(
         modifier = Modifier
             .padding(top = AppBarConst.appBarSize)

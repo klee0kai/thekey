@@ -33,5 +33,4 @@ class NavigationBoardPresenterImpl : NavigationBoardPresenter {
         loginInteractor().logginedStorages.collect(this)
     }
 
-
 }

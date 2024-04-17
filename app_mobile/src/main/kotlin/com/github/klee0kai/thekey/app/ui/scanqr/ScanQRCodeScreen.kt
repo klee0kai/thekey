@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,7 +31,6 @@ import com.github.klee0kai.thekey.app.ui.scanqr.components.CameraPreviewCompose
 import com.github.klee0kai.thekey.app.ui.scanqr.components.qrCodeUserScanner
 import com.github.klee0kai.thekey.app.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.app.utils.views.animateTargetAlphaAsState
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 sealed interface CameraState {

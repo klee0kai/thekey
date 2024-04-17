@@ -16,7 +16,6 @@ data class ColoredOtpNote(
     companion object;
 }
 
-
 fun DecryptedOtpNote.coloredNote(
     group: ColorGroup? = null,
     isLoaded: Boolean = false,

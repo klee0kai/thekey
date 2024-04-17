@@ -98,7 +98,6 @@ fun rememberSimpleBottomSheetScaffoldState(
     }
 }
 
-
 fun simpleBottomSheetScaffoldState(
     density: Density,
     topContentSize: Dp = 190.dp,
@@ -118,5 +117,4 @@ fun simpleBottomSheetScaffoldState(
         appBarSize = appBarSize,
         topContentSize = topContentSize,
     )
-
 }

@@ -247,7 +247,6 @@ fun EditStorageScreen(
     }
 
 
-
     AppBarStates(
         isVisible = scrollState.value == 0,
         navigationIcon = {
@@ -275,6 +274,4 @@ fun EditStorageScreen(
             }
         }
     ) { Text(text = stringResource(id = presenter.titleRes)) }
-
-
 }

@@ -112,7 +112,6 @@ open class EditNoteGroupsPresenterImpl(
 
         router.back()
     }
-
 }
 
 

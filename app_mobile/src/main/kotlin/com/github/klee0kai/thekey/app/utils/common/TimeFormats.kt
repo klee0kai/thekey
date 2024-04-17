@@ -4,7 +4,6 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.TimeZone
 
-
 object TimeFormats {
 
     fun simpleDateFormat(): DateFormat {
@@ -14,5 +13,3 @@ object TimeFormats {
     }
 
 }
-
-

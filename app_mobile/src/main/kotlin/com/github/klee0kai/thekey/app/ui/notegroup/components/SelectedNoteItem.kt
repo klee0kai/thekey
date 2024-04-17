@@ -105,7 +105,6 @@ fun SelectedNoteItem(
                 }
         )
 
-
         Text(
             text = animatedNote.current.login.takeIf { it.isNotBlank() } ?: "",
             style = MaterialTheme.typography.bodyMedium

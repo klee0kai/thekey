@@ -46,7 +46,6 @@ fun FabSimpleInContainer(
     }
 }
 
-
 @Preview
 @Composable
 private fun FabSimplePreview() = AppTheme {

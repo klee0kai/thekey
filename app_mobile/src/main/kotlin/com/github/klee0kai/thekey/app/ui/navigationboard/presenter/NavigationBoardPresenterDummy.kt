@@ -41,5 +41,4 @@ class NavigationBoardPresenterDummy(
 
         else -> emptyFlow()
     }
-
 }

@@ -146,7 +146,6 @@ fun EditGroupInfoContent(
             value = groupName,
             onValueChange = onChangeGroupName
         )
-
     }
 }
 

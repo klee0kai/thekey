@@ -5,7 +5,6 @@ import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.engine.NativeLibLoader
 import com.github.klee0kai.thekey.app.engine.model.Storage
 
-
 @JniMirror
 class EditStorageEngine {
 
@@ -24,7 +23,6 @@ class EditStorageEngine {
         UNKNOWN_ERROR(-1, R.string.unknown_error),
         ITIS_FOLDER_ERROR(-2, R.string.fill_the_file_name),
         PATH_UNREACHABLE(-3, R.string.path_unreachable),
-
         ;
 
         companion object {
@@ -33,7 +31,6 @@ class EditStorageEngine {
                     .firstOrNull { it.code == code }
                     ?: UNKNOWN_ERROR
         }
-
     }
 }
 

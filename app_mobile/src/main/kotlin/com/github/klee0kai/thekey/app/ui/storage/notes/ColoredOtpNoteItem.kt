@@ -116,7 +116,6 @@ fun ColoredOtpNoteItem(
                 }
         )
 
-
         Text(
             text = animatedNote.current.name,
             style = MaterialTheme.typography.bodyMedium

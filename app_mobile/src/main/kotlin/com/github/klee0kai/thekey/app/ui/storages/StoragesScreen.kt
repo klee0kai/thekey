@@ -59,7 +59,6 @@ fun StoragesScreen() {
     }
     val showStoragesTitle by rememberDerivedStateOf { dragProgress.value > 0.1f }
 
-
     SideEffect {
         presenter.startup()
     }
@@ -100,12 +99,9 @@ fun StoragesScreen() {
         },
     )
 
-
     FabSimpleInContainer(
         onClick = remember { { router.navigate(EditStorageDestination()) } },
         content = { Icon(Icons.Default.Add, contentDescription = "Add") }
     )
-
-
 }
 

@@ -18,7 +18,6 @@ import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.utils.views.animateTargetAlphaAsState
 import com.github.klee0kai.thekey.app.utils.views.skeleton
 
-
 @Composable
 fun HistPasswItem(
     modifier: Modifier = Modifier,
@@ -66,7 +65,6 @@ private fun HistPasswItemSkeletonPreview() = AppTheme {
         passw = HistPassw(isLoaded = false)
     )
 }
-
 
 @Preview
 @Composable

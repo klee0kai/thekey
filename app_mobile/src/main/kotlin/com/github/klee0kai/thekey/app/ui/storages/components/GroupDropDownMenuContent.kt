@@ -30,7 +30,6 @@ fun ColumnScope.GroupDropDownMenuContent(
     )
 }
 
-
 @Preview
 @Composable
 private fun NoteDropDownMenuWithGroupsPreview() = AppTheme {

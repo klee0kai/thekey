@@ -99,7 +99,5 @@ data class EditNoteGroupDestination(
     val groupId: Long? = null,
 ) : Destination
 
-
 @Parcelize
 data object QRCodeScanDestination : Destination
-

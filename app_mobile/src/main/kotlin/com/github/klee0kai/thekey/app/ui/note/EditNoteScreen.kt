@@ -403,7 +403,6 @@ fun EditNoteScreen(
             onSelected = { presenter.input { copy(colorGroupSelected = it, colorGroupExpanded = false) } },
             label = { Text(stringResource(R.string.group)) }
         )
-
     }
 
     SecondaryTabs(
@@ -462,7 +461,6 @@ fun EditNoteScreen(
             }
         }
     }
-
 
     AppBarStates(
         isVisible = scrollState.value <= 30.dp.toPx(),

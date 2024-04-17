@@ -311,8 +311,6 @@ EngineModelDecryptedOtpNote JvmStorage2::otpNote(const int64_t &notePtr) {
             .crTime = (int64_t) dnote.createTime,
             .colorGroupId = dnote.colorGroupId,
     };
-
-
 }
 
 int JvmStorage2::saveOtpNote(const brooklyn::EngineModelDecryptedOtpNote &jOtp, const int &setAll) {

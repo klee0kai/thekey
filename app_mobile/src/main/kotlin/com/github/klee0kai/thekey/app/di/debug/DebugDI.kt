@@ -4,7 +4,6 @@ import android.view.View
 import com.github.klee0kai.thekey.app.App
 import com.github.klee0kai.thekey.app.di.AppComponent
 
-
 object DebugDI {
 
     fun AppComponent.initDI() {

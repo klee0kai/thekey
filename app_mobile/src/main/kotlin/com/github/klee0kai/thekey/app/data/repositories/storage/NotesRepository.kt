@@ -47,10 +47,8 @@ class NotesRepository(
     suspend fun generateNewPassw(params: GenPasswParams) =
         engine().generateNewPassw(params)
 
-
     suspend fun clear() {
         notes.update { emptyList() }
     }
-
 
 }

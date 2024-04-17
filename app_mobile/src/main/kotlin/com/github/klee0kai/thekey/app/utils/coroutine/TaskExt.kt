@@ -21,4 +21,3 @@ suspend fun <T> ListenableFuture<T>.await(): T = suspendCoroutine { cont ->
         cont.resume(get())
     }, DI.defaultExecutor())
 }
-

@@ -97,7 +97,6 @@ fun SimpleBottomSheetScaffoldState.rememberMainTitleVisibleFlow(
     return mainTitleVisibility
 }
 
-
 @Composable
 @Preview
 private fun AppBarTitlePreview() = AppTheme {

@@ -73,9 +73,7 @@ data class EditNoteState(
             2 -> OtpAlgo.SHA512
             else -> OtpAlgo.SHA1
         }
-
     }
-
 }
 
 enum class EditTabs {
@@ -134,7 +132,6 @@ fun EditNoteState.updateWith(
     }
     return state
 }
-
 
 fun EditNoteState.updateWith(otp: DecryptedOtpNote): EditNoteState = with(EditNoteState.Companion) {
     copy(
