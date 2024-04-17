@@ -59,8 +59,6 @@ fun AlertDialogScreen(
 
 @Preview
 @Composable
-private fun AlertDialogPreview() {
-    AppTheme {
-        AlertDialogScreen()
-    }
+private fun AlertDialogPreview() = AppTheme {
+    AlertDialogScreen()
 }

@@ -170,43 +170,37 @@ fun ColoredNoteItem(
 
 @Composable
 @Preview
-private fun ColoredNoteSkeleton() {
-    AppTheme {
-        ColoredNoteItem(note = ColoredNote(isLoaded = false))
-    }
+private fun ColoredNoteSkeleton() = AppTheme {
+    ColoredNoteItem(note = ColoredNote(isLoaded = false))
 }
 
 @Composable
 @Preview
-private fun ColoredNoteDummy() {
-    AppTheme {
-        ColoredNoteItem(
-            note = ColoredNote(
-                site = "some.super.site.com",
-                login = "potato",
-                desc = "my work note",
-                group = ColorGroup(
-                    name = "CO",
-                    keyColor = KeyColor.CORAL,
-                ),
-                isLoaded = true,
+private fun ColoredNoteDummy() = AppTheme {
+    ColoredNoteItem(
+        note = ColoredNote(
+            site = "some.super.site.com",
+            login = "potato",
+            desc = "my work note",
+            group = ColorGroup(
+                name = "CO",
+                keyColor = KeyColor.CORAL,
             ),
-        )
-    }
+            isLoaded = true,
+        ),
+    )
 }
 
 @Composable
 @Preview
-private fun ColoredNoteDummyNoGroup() {
-    AppTheme {
-        ColoredNoteItem(
-            note = ColoredNote(
-                site = "some.super.site.com",
-                login = "potato",
-                desc = "my work note",
-                group = ColorGroup(),
-                isLoaded = true,
-            )
+private fun ColoredNoteDummyNoGroup() = AppTheme {
+    ColoredNoteItem(
+        note = ColoredNote(
+            site = "some.super.site.com",
+            login = "potato",
+            desc = "my work note",
+            group = ColorGroup(),
+            isLoaded = true,
         )
-    }
+    )
 }

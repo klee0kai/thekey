@@ -179,35 +179,31 @@ fun SelectedNoteItem(
 
 @Composable
 @Preview
-private fun ColoredNoteDummy() {
-    AppTheme {
-        SelectedNoteItem(
-            note = SelectedNote(
-                ptnote = Dummy.dummyId,
-                site = "some.super.site.com",
-                login = "potato",
-                desc = "my work note",
-                group = ColorGroup(
-                    name = "CO",
-                    keyColor = KeyColor.CORAL,
-                )
+private fun ColoredNoteDummy() = AppTheme {
+    SelectedNoteItem(
+        note = SelectedNote(
+            ptnote = Dummy.dummyId,
+            site = "some.super.site.com",
+            login = "potato",
+            desc = "my work note",
+            group = ColorGroup(
+                name = "CO",
+                keyColor = KeyColor.CORAL,
             )
         )
-    }
+    )
 }
 
 @Composable
 @Preview
-private fun ColoredNoteDummyNoGroup() {
-    AppTheme {
-        SelectedNoteItem(
-            note = SelectedNote(
-                ptnote = Dummy.dummyId,
-                site = "some.super.site.com",
-                login = "potato",
-                desc = "my work note",
-                group = ColorGroup()
-            )
+private fun ColoredNoteDummyNoGroup() = AppTheme {
+    SelectedNoteItem(
+        note = SelectedNote(
+            ptnote = Dummy.dummyId,
+            site = "some.super.site.com",
+            login = "potato",
+            desc = "my work note",
+            group = ColorGroup()
         )
-    }
+    )
 }

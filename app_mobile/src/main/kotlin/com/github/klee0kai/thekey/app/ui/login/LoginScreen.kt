@@ -200,7 +200,7 @@ fun LoginScreen() {
 
 @Preview(device = Devices.PIXEL_6, showSystemUi = true)
 @Composable
-private fun LoginScreePreviewPixel6() {
+private fun LoginScreePreviewPixel6() = AppTheme {
     DI.initPresenterModule(
         object : PresentersModule() {
             override fun loginPresenter(): LoginPresenter {
@@ -210,9 +210,7 @@ private fun LoginScreePreviewPixel6() {
             }
         }
     )
-    AppTheme {
-        LoginScreen()
-    }
+    LoginScreen()
 }
 
 @Preview(
@@ -220,7 +218,7 @@ private fun LoginScreePreviewPixel6() {
     showSystemUi = true
 )
 @Composable
-private fun LoginScreePreview() {
+private fun LoginScreePreview() = AppTheme {
     DI.initPresenterModule(
         object : PresentersModule() {
             override fun loginPresenter(): LoginPresenter {
@@ -230,7 +228,5 @@ private fun LoginScreePreview() {
             }
         }
     )
-    AppTheme {
-        LoginScreen()
-    }
+    LoginScreen()
 }

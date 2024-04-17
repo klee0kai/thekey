@@ -76,26 +76,22 @@ fun GroupCircle(
 
 @Preview
 @Composable
-private fun GroupCirclePreview() {
-    AppTheme {
-        GroupCircle(
-            name = "AN",
-            colorScheme = SurfaceScheme(Color.Magenta, Color.White),
-        )
-    }
+private fun GroupCirclePreview() = AppTheme {
+    GroupCircle(
+        name = "AN",
+        colorScheme = SurfaceScheme(Color.Magenta, Color.White),
+    )
 }
 
 
 @Preview
 @Composable
-private fun GroupCircleCheckedPreview() {
-    AppTheme {
-        GroupCircle(
-            name = "CH",
-            colorScheme = SurfaceScheme(Color.Magenta, Color.White),
-            checked = true,
-        )
-    }
+private fun GroupCircleCheckedPreview() = AppTheme {
+    GroupCircle(
+        name = "CH",
+        colorScheme = SurfaceScheme(Color.Magenta, Color.White),
+        checked = true,
+    )
 }
 
 

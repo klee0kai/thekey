@@ -100,16 +100,14 @@ fun SimpleBottomSheetScaffoldState.rememberMainTitleVisibleFlow(
 
 @Composable
 @Preview
-private fun AppBarTitlePreview() {
-    AppTheme {
-        AppBarStates(
-            navigationIcon = {
-                IconButton(onClick = { }) {
-                    Icon(Icons.Filled.Menu, contentDescription = null)
-                }
+private fun AppBarTitlePreview() = AppTheme {
+    AppBarStates(
+        navigationIcon = {
+            IconButton(onClick = { }) {
+                Icon(Icons.Filled.Menu, contentDescription = null)
             }
-        ) {
-            Text("Title")
         }
+    ) {
+        Text("Title")
     }
 }

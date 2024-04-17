@@ -165,16 +165,14 @@ fun GroupsSelectContent(
 
 @Preview
 @Composable
-private fun GroupsSelectContentPreview() {
-    AppTheme {
-        GroupsSelectContent(
-            selectedGroup = 1L,
-            colorGroups = listOf(
-                ColorGroup(Dummy.dummyId, "CE", KeyColor.CORAL),
-                ColorGroup(Dummy.dummyId, "AN", KeyColor.ORANGE),
-                ColorGroup(Dummy.dummyId, "TU", KeyColor.TURQUOISE),
-                ColorGroup(Dummy.dummyId, "T", KeyColor.VIOLET),
-            ),
-        )
-    }
+private fun GroupsSelectContentPreview() = AppTheme {
+    GroupsSelectContent(
+        selectedGroup = 1L,
+        colorGroups = listOf(
+            ColorGroup(Dummy.dummyId, "CE", KeyColor.CORAL),
+            ColorGroup(Dummy.dummyId, "AN", KeyColor.ORANGE),
+            ColorGroup(Dummy.dummyId, "TU", KeyColor.TURQUOISE),
+            ColorGroup(Dummy.dummyId, "T", KeyColor.VIOLET),
+        ),
+    )
 }

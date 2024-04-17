@@ -62,44 +62,40 @@ fun SearchField(
 
 @Preview
 @Composable
-private fun SearchFieldEmptyPreview() {
-    AppTheme {
-        AppBarStates(
-            navigationIcon = {
-                IconButton(onClick = { }) {
-                    Icon(
-                        Icons.Filled.ArrowBack,
-                        contentDescription = null,
-                    )
-                }
+private fun SearchFieldEmptyPreview() = AppTheme {
+    AppBarStates(
+        navigationIcon = {
+            IconButton(onClick = { }) {
+                Icon(
+                    Icons.Filled.ArrowBack,
+                    contentDescription = null,
+                )
             }
-        ) {
-            SearchField(
-                textModifier = Modifier,
-                searchText = "",
-            )
         }
+    ) {
+        SearchField(
+            textModifier = Modifier,
+            searchText = "",
+        )
     }
 }
 
 @Preview
 @Composable
-private fun SearchFieldTextPreview() {
-    AppTheme {
-        AppBarStates(
-            navigationIcon = {
-                IconButton(onClick = { }) {
-                    Icon(
-                        Icons.Filled.ArrowBack,
-                        contentDescription = null,
-                    )
-                }
+private fun SearchFieldTextPreview() = AppTheme {
+    AppBarStates(
+        navigationIcon = {
+            IconButton(onClick = { }) {
+                Icon(
+                    Icons.Filled.ArrowBack,
+                    contentDescription = null,
+                )
             }
-        ) {
-            SearchField(
-                textModifier = Modifier,
-                searchText = "some text",
-            )
         }
+    ) {
+        SearchField(
+            textModifier = Modifier,
+            searchText = "some text",
+        )
     }
 }

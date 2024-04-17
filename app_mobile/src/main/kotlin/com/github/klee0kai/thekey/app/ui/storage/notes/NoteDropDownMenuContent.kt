@@ -63,32 +63,28 @@ fun ColumnScope.NoteDropDownMenuContent(
 
 @Preview
 @Composable
-private fun NoteDropDownMenuWithGroupsPreview() {
-    AppTheme {
-        Column {
-            NoteDropDownMenuContent(
-                selectedGroupId = 1L,
-                colorGroups = listOf(
-                    ColorGroup(Dummy.dummyId, name = "AN", keyColor = KeyColor.VIOLET),
-                    ColorGroup(Dummy.dummyId, name = "QW", keyColor = KeyColor.TURQUOISE),
-                    ColorGroup(Dummy.dummyId, name = "Q", keyColor = KeyColor.ORANGE),
-                    ColorGroup(Dummy.dummyId, name = "W", keyColor = KeyColor.VIOLET),
-                    ColorGroup(Dummy.dummyId, name = "AA", keyColor = KeyColor.PINK),
-                    ColorGroup(Dummy.dummyId, name = "P", keyColor = KeyColor.NOCOLOR),
-                    ColorGroup(Dummy.dummyId, name = "P", keyColor = KeyColor.NOCOLOR),
-                )
+private fun NoteDropDownMenuWithGroupsPreview() = AppTheme {
+    Column {
+        NoteDropDownMenuContent(
+            selectedGroupId = 1L,
+            colorGroups = listOf(
+                ColorGroup(Dummy.dummyId, name = "AN", keyColor = KeyColor.VIOLET),
+                ColorGroup(Dummy.dummyId, name = "QW", keyColor = KeyColor.TURQUOISE),
+                ColorGroup(Dummy.dummyId, name = "Q", keyColor = KeyColor.ORANGE),
+                ColorGroup(Dummy.dummyId, name = "W", keyColor = KeyColor.VIOLET),
+                ColorGroup(Dummy.dummyId, name = "AA", keyColor = KeyColor.PINK),
+                ColorGroup(Dummy.dummyId, name = "P", keyColor = KeyColor.NOCOLOR),
+                ColorGroup(Dummy.dummyId, name = "P", keyColor = KeyColor.NOCOLOR),
             )
-        }
+        )
     }
 }
 
 
 @Preview
 @Composable
-private fun NoteDropDownMenuNoPreview() {
-    AppTheme {
-        Column {
-            NoteDropDownMenuContent()
-        }
+private fun NoteDropDownMenuNoPreview() = AppTheme {
+    Column {
+        NoteDropDownMenuContent()
     }
 }

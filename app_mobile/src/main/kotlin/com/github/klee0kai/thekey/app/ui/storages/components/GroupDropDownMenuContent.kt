@@ -33,11 +33,9 @@ fun ColumnScope.GroupDropDownMenuContent(
 
 @Preview
 @Composable
-private fun NoteDropDownMenuWithGroupsPreview() {
-    AppTheme {
-        Column {
-            GroupDropDownMenuContent()
-        }
+private fun NoteDropDownMenuWithGroupsPreview() = AppTheme {
+    Column {
+        GroupDropDownMenuContent()
     }
 }
 

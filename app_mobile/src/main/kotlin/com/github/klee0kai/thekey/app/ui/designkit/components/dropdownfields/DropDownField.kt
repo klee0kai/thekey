@@ -65,43 +65,37 @@ fun DropDownField(
 
 @Preview
 @Composable
-private fun DropDownFieldEmptyPreview() {
-    AppTheme {
-        DropDownField(
-            selectedIndex = 0,
-            variants = emptyList(),
-            label = { Text(stringResource(R.string.type)) }
-        )
-    }
+private fun DropDownFieldEmptyPreview() = AppTheme {
+    DropDownField(
+        selectedIndex = 0,
+        variants = emptyList(),
+        label = { Text(stringResource(R.string.type)) }
+    )
 }
 
 @Preview
 @Composable
-private fun DropDownFieldSelectedPreview() {
-    AppTheme {
-        DropDownField(
-            selectedIndex = 1,
-            variants = listOf(
-                "Type1",
-                "Type2"
-            ),
-            label = { Text(stringResource(R.string.type)) }
-        )
-    }
+private fun DropDownFieldSelectedPreview() = AppTheme {
+    DropDownField(
+        selectedIndex = 1,
+        variants = listOf(
+            "Type1",
+            "Type2"
+        ),
+        label = { Text(stringResource(R.string.type)) }
+    )
 }
 
 @Preview
 @Composable
-private fun DropDownFieldExpandedPreview() {
-    AppTheme {
-        DropDownField(
-            selectedIndex = 1,
-            expanded = true,
-            variants = listOf(
-                "Type1",
-                "Type2"
-            ),
-            label = { Text(stringResource(R.string.type)) }
-        )
-    }
+private fun DropDownFieldExpandedPreview() = AppTheme {
+    DropDownField(
+        selectedIndex = 1,
+        expanded = true,
+        variants = listOf(
+            "Type1",
+            "Type2"
+        ),
+        label = { Text(stringResource(R.string.type)) }
+    )
 }

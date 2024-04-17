@@ -90,7 +90,5 @@ private fun GenHistScreenPreview() = AppTheme {
             )
         }
     })
-    GenHistScreen(
-
-    )
+    GenHistScreen()
 }

@@ -115,24 +115,22 @@ fun SecondaryTabs(
 
 @Preview
 @Composable
-private fun SecondaryTabsPreview() {
-    AppTheme {
-        SecondaryTabs(
-            modifier = Modifier
-                .padding(top = AppBarConst.appBarSize),
-            isVisible = true,
-            titles = listOf("Title1", "Title2"),
-            selectedTab = 0,
-        )
+private fun SecondaryTabsPreview() = AppTheme {
+    SecondaryTabs(
+        modifier = Modifier
+            .padding(top = AppBarConst.appBarSize),
+        isVisible = true,
+        titles = listOf("Title1", "Title2"),
+        selectedTab = 0,
+    )
 
-        AppBarStates(
-            isVisible = true,
-            navigationIcon = {
-                IconButton(onClick = { }) {
-                    Icon(Icons.Filled.ArrowBack, contentDescription = null)
-                }
-            },
-            titleContent = { Text(text = stringResource(id = R.string.edit)) },
-        )
-    }
+    AppBarStates(
+        isVisible = true,
+        navigationIcon = {
+            IconButton(onClick = { }) {
+                Icon(Icons.Filled.ArrowBack, contentDescription = null)
+            }
+        },
+        titleContent = { Text(text = stringResource(id = R.string.edit)) },
+    )
 }

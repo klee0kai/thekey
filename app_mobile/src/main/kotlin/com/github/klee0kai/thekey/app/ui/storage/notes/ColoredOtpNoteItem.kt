@@ -169,8 +169,7 @@ private fun ColoredOtpNoteDummyPreview() = AppTheme {
 
 @Composable
 @Preview
-private fun ColoredOtpNoteDummyNoGroupPreview() {
-    AppTheme {
+private fun ColoredOtpNoteDummyNoGroupPreview()  = AppTheme {
         ColoredOtpNoteItem(
             otp = ColoredOtpNote(
                 issuer = "some.super.site.com",
@@ -179,5 +178,4 @@ private fun ColoredOtpNoteDummyNoGroupPreview() {
                 isLoaded = true,
             )
         )
-    }
 }

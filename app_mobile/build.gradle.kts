@@ -149,11 +149,6 @@ dependencies {
     // BarCodeScan
     implementation("com.google.mlkit:barcode-scanning:17.2.0")
     implementation("com.google.mlkit:vision-common:17.3.0")
-//    implementation("com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.0")
-//    implementation("androidx.camera:camera-camera2:1.3.2")
-//    implementation("androidx.camera:camera-lifecycle:1.3.2")
-//    implementation("androidx.camera:camera-view:1.3.2")
-
 
     // shimmer compose https://github.com/valentinilk/compose-shimmer
     implementation("com.valentinilk.shimmer:compose-shimmer:1.2.0")
@@ -177,10 +172,8 @@ dependencies {
     // hummus
     implementation("com.github.klee0kai.hummus:android_kotlin_hummus:0.0.2")
 
-
     // compose-navigation-reimagined
     implementation("dev.olshevski.navigation:reimagined:1.5.0")
-
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

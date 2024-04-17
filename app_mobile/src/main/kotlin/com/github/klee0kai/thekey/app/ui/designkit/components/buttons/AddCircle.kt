@@ -64,8 +64,6 @@ fun AddCircle(
 
 @Preview
 @Composable
-private fun AddCirclePreview() {
-    AppTheme {
-        AddCircle()
-    }
+private fun AddCirclePreview() = AppTheme {
+    AddCircle()
 }

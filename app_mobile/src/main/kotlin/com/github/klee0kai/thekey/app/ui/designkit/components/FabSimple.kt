@@ -49,26 +49,22 @@ fun FabSimpleInContainer(
 
 @Preview
 @Composable
-private fun FabSimplePreview() {
-    AppTheme {
-        FabSimple {
-            Icon(
-                imageVector = Icons.Filled.Add,
-                contentDescription = "add"
-            )
-        }
+private fun FabSimplePreview() = AppTheme {
+    FabSimple {
+        Icon(
+            imageVector = Icons.Filled.Add,
+            contentDescription = "add"
+        )
     }
 }
 
 @Preview
 @Composable
-private fun FabSimpleInContainerPreview() {
-    AppTheme {
-        FabSimpleInContainer {
-            Icon(
-                imageVector = Icons.Filled.Add,
-                contentDescription = "add"
-            )
-        }
+private fun FabSimpleInContainerPreview() = AppTheme {
+    FabSimpleInContainer {
+        Icon(
+            imageVector = Icons.Filled.Add,
+            contentDescription = "add"
+        )
     }
 }

@@ -29,19 +29,17 @@ fun AppTitleImage(
 
 @Composable
 @Preview
-private fun AppBarTitlePreview() {
-    AppTheme {
-        AppBarStates(
-            navigationIcon = {
-                IconButton(onClick = { }) {
-                    Icon(
-                        Icons.Filled.ArrowBack,
-                        contentDescription = null,
-                    )
-                }
+private fun AppBarTitlePreview() = AppTheme {
+    AppBarStates(
+        navigationIcon = {
+            IconButton(onClick = { }) {
+                Icon(
+                    Icons.Filled.ArrowBack,
+                    contentDescription = null,
+                )
             }
-        ) {
-            AppTitleImage()
         }
+    ) {
+        AppTitleImage()
     }
 }

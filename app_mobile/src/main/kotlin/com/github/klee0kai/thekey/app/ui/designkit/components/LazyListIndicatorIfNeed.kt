@@ -114,61 +114,55 @@ fun LazyListIndicatorIfNeed(
 
 @Preview
 @Composable
-private fun ListIndicatorVerticalPreview() {
-    AppTheme {
-        Box(
+private fun ListIndicatorVerticalPreview() = AppTheme {
+    Box(
+        modifier = Modifier
+            .size(10.dp, 100.dp)
+    ) {
+        LazyListIndicatorIfNeed(
             modifier = Modifier
-                .size(10.dp, 100.dp)
-        ) {
-            LazyListIndicatorIfNeed(
-                modifier = Modifier
-                    .size(2.dp, 48.dp)
-                    .align(Alignment.Center),
-                pos = ScrollPosition(
-                    listVisibleRatio = 0.5f,
-                    scrollRatio = 0.2f,
-                )
+                .size(2.dp, 48.dp)
+                .align(Alignment.Center),
+            pos = ScrollPosition(
+                listVisibleRatio = 0.5f,
+                scrollRatio = 0.2f,
             )
-        }
+        )
     }
 }
 
 @Preview
 @Composable
-private fun ListIndicatorHorizontalPreview() {
-    AppTheme {
-        Box(
+private fun ListIndicatorHorizontalPreview() = AppTheme {
+    Box(
+        modifier = Modifier
+            .size(100.dp, 10.dp)
+    ) {
+        LazyListIndicatorIfNeed(
+            horizontal = true,
             modifier = Modifier
-                .size(100.dp, 10.dp)
-        ) {
-            LazyListIndicatorIfNeed(
-                horizontal = true,
-                modifier = Modifier
-                    .size(48.dp, 2.dp)
-                    .align(Alignment.Center),
-                pos = ScrollPosition(
-                    listVisibleRatio = 0.7f,
-                    scrollRatio = 0.9f,
-                )
+                .size(48.dp, 2.dp)
+                .align(Alignment.Center),
+            pos = ScrollPosition(
+                listVisibleRatio = 0.7f,
+                scrollRatio = 0.9f,
             )
-        }
+        )
     }
 }
 
 
 @Preview
 @Composable
-private fun ListIndicatorZeroPreview() {
-    AppTheme {
-        Box(
+private fun ListIndicatorZeroPreview() = AppTheme {
+    Box(
+        modifier = Modifier
+            .size(100.dp, 10.dp)
+    ) {
+        LazyListIndicatorIfNeed(
             modifier = Modifier
-                .size(100.dp, 10.dp)
-        ) {
-            LazyListIndicatorIfNeed(
-                modifier = Modifier
-                    .size(48.dp, 2.dp)
-                    .align(Alignment.Center),
-            )
-        }
+                .size(48.dp, 2.dp)
+                .align(Alignment.Center),
+        )
     }
 }
