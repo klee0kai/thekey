@@ -9,6 +9,7 @@
 #include "key2.h"
 #include "brooklyn.h"
 #include "salt_text/salt2_schema.h"
+#include "tools/base32.h"
 
 using namespace brooklyn;
 using namespace std;
@@ -263,4 +264,121 @@ JvmDecryptedPassw JvmStorage2::getGenPassw(const int64_t &ptNote) {
     };
 
     return jvmDecryptedPassw;
+}
+
+std::vector<EngineModelDecryptedOtpNote> JvmStorage2::otpNotes(const int &info) {
+    auto storage = findStorage(getStoragePath());
+    if (!storage)return {};
+    auto otpNotes = std::vector<EngineModelDecryptedOtpNote>();
+    auto flags = info ? TK2_GET_NOTE_INFO : TK2_GET_NOTE_PTR_ONLY;
+    for (const auto &dnote: storage->otpNotes(flags)) {
+        otpNotes.push_back(
+                EngineModelDecryptedOtpNote{
+                        .ptnote = dnote.id,
+                        .issuer =  dnote.issuer,
+                        .name =  dnote.name,
+                        .otpMethodRaw = dnote.method,
+                        .otpAlgoRaw = dnote.algo,
+                        .digits = int(dnote.digits),
+                        .interval = int(dnote.interval),
+                        .counter = int(dnote.counter),
+                        .crTime = (int64_t) dnote.createTime,
+                        .colorGroupId = dnote.colorGroupId,
+                });
+    }
+
+    return otpNotes;
+}
+
+EngineModelDecryptedOtpNote JvmStorage2::otpNote(const int64_t &notePtr) {
+    auto storage = findStorage(getStoragePath());
+    if (!storage)return {};
+    auto dnotePtr = storage->otpNote(notePtr, TK2_GET_NOTE_INFO | TK2_GET_NOTE_PASSWORD);
+    if (!dnotePtr)return {};
+    auto dnote = *dnotePtr;
+    return EngineModelDecryptedOtpNote{
+            .ptnote = dnote.id,
+            .issuer =  dnote.issuer,
+            .name =  dnote.name,
+            .secret = dnote.secret,
+            .pin = dnote.pin,
+            .otpPassw = dnote.otpPassw,
+            .otpMethodRaw = dnote.method,
+            .otpAlgoRaw = dnote.algo,
+            .digits = int(dnote.digits),
+            .interval = int(dnote.interval),
+            .counter = int(dnote.counter),
+            .crTime = (int64_t) dnote.createTime,
+            .colorGroupId = dnote.colorGroupId,
+    };
+
+
+}
+
+int JvmStorage2::saveOtpNote(const brooklyn::EngineModelDecryptedOtpNote &jOtp, const int &setAll) {
+    auto storage = findStorage(getStoragePath());
+    if (!storage)return {};
+
+    auto dnote = DecryptedOtpNote{
+            .id = jOtp.ptnote,
+            .issuer = jOtp.issuer,
+            .name = jOtp.name,
+            .secret = jOtp.secret,
+            .method =  key_otp::OtpMethod(jOtp.otpMethodRaw),
+            .algo =  key_otp::OtpAlgo(jOtp.otpAlgoRaw),
+            .digits = uint32_t(jOtp.digits),
+            .interval = uint32_t(jOtp.interval),
+            .counter = uint32_t(jOtp.counter),
+            .pin = jOtp.pin,
+            .colorGroupId = jOtp.colorGroupId,
+    };
+
+    if (dnote.id == 0) {
+        storage->createOtpNote(dnote, 0);
+    } else {
+        storage->setOtpNote(dnote, 0);
+    }
+    return -1;
+}
+
+int JvmStorage2::removeOtpNote(const int64_t &notePt) {
+    auto storage = findStorage(getStoragePath());
+    if (!storage)return {};
+
+    storage->removeOtpNote(notePt);
+    return 0;
+}
+
+shared_ptr<EngineModelDecryptedOtpNote> JvmStorage2::otpNoteFromUrl(const std::string &url) {
+    auto otpList = key_otp::parseOtpUri(url);
+    if (otpList.empty())return {};
+    auto otp = otpList.front();
+    return make_shared<EngineModelDecryptedOtpNote>(
+            EngineModelDecryptedOtpNote{
+                    .issuer = otp.issuer,
+                    .name = otp.name,
+                    .url = otp.toUri(),
+                    .secret = base32::encode(otp.secret, true),
+                    .otpMethodRaw = otp.method,
+                    .otpAlgoRaw = otp.algorithm,
+                    .digits =int(otp.digits),
+                    .interval=int(otp.interval),
+                    .counter = int(otp.counter),
+            });
+}
+
+int JvmStorage2::setOtpNotesGroup(const std::vector<int64_t> &notePtrs, const int64_t &groupId) {
+    auto storage = findStorage(getStoragePath());
+    if (!storage)return {};
+
+    auto flags = TK2_GET_NOTE_PTR_ONLY;
+    for (const auto &id: notePtrs) {
+        auto note = storage->otpNote(id, flags);
+        if (!note)continue;
+        note->colorGroupId = groupId;
+        storage->setOtpNote(*note, flags);
+    }
+
+    storage->save();
+    return 0;
 }

@@ -4,6 +4,7 @@ import com.github.klee0kai.brooklyn.JniMirror
 import com.github.klee0kai.thekey.app.engine.NativeLibLoader
 import com.github.klee0kai.thekey.app.engine.model.DecryptedColorGroup
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
+import com.github.klee0kai.thekey.app.engine.model.DecryptedOtpNote
 import com.github.klee0kai.thekey.app.engine.model.DecryptedPassw
 import com.github.klee0kai.thekey.app.engine.model.GenPasswParams
 import com.github.klee0kai.thekey.app.engine.model.Storage
@@ -46,6 +47,18 @@ class K1Storage(
 
     @Synchronized
     external override fun removeNote(notePt: Long): Int
+
+    override fun otpNotes(info: Boolean): Array<DecryptedOtpNote> = emptyArray()
+
+    override fun otpNote(notePtr: Long): DecryptedOtpNote = DecryptedOtpNote()
+
+    override fun otpNoteFromUrl(url: String): DecryptedOtpNote? = null
+
+    override fun saveOtpNote(decryptedNote: DecryptedOtpNote, setAll: Boolean): Int = -1
+
+    override fun removeOtpNote(notePt: Long): Int = -1
+
+    override fun setOtpNotesGroup(notePtrs: Array<Long>, groupId: Long): Int = -1
 
     @Synchronized
     external override fun generateNewPassw(params: GenPasswParams): String

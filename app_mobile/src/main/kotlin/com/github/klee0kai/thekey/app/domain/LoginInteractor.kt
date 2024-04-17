@@ -27,14 +27,17 @@ class LoginInteractor {
     fun login(identifier: StorageIdentifier, passw: String) = scope.async {
         val engine = DI.cryptStorageEngineSafeLazy(identifier)
         val notesInteractor = DI.notesInteractorLazy(identifier)
+        val otpNotesInteractor = DI.otpNotesInteractorLazy(identifier)
         val groupsInteractor = DI.groupsInteractorLazy(identifier)
 
         notesInteractor().clear()
+        otpNotesInteractor().clear()
         groupsInteractor().clear()
 
         engine().login(passw)
 
         notesInteractor().loadNotes()
+        otpNotesInteractor().loadOtpNotes()
         groupsInteractor().loadGroups()
         rep().logined(identifier)
         Unit
@@ -43,9 +46,11 @@ class LoginInteractor {
     fun unlogin(identifier: StorageIdentifier) = scope.async {
         val engine = DI.cryptStorageEngineSafeLazy(identifier)
         val notesInteractor = DI.notesInteractorLazy(identifier)
+        val otpNotesInteractor = DI.otpNotesInteractorLazy(identifier)
         val groupsInteractor = DI.groupsInteractorLazy(identifier)
 
         notesInteractor().clear()
+        otpNotesInteractor().clear()
         groupsInteractor().clear()
 
         engine().unlogin()

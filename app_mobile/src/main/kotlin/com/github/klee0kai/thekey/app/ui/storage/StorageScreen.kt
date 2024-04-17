@@ -55,7 +55,7 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.GenPasswordContent
 import com.github.klee0kai.thekey.app.ui.storage.model.SearchState
 import com.github.klee0kai.thekey.app.ui.storage.notes.NotesContent
-import com.github.klee0kai.thekey.app.ui.storage.presenter.DummyStoragePresenter
+import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenterDummy
 import com.github.klee0kai.thekey.app.utils.common.Dummy
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
@@ -217,7 +217,7 @@ fun StorageScreen(
 @Composable
 private fun StorageScreenAccountsPreview() = AppTheme {
     DI.initPresenterModule(object : PresentersModule() {
-        override fun storagePresenter(storageIdentifier: StorageIdentifier) = DummyStoragePresenter()
+        override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterDummy()
     })
     StorageScreen(
         dest = StorageDestination(path = Dummy.unicString, version = 2)
@@ -230,7 +230,7 @@ private fun StorageScreenAccountsPreview() = AppTheme {
 private fun StorageScreenAccountsSearchPreview() = AppTheme {
     DI.initPresenterModule(object : PresentersModule() {
         override fun storagePresenter(storageIdentifier: StorageIdentifier) =
-            DummyStoragePresenter(isSearchActive = true)
+            StoragePresenterDummy(isSearchActive = true)
     })
     StorageScreen(
         dest = StorageDestination(path = Dummy.unicString, version = 2)
@@ -241,7 +241,7 @@ private fun StorageScreenAccountsSearchPreview() = AppTheme {
 @Composable
 private fun StorageScreenGeneratePreview() = AppTheme {
     DI.initPresenterModule(object : PresentersModule() {
-        override fun storagePresenter(storageIdentifier: StorageIdentifier) = DummyStoragePresenter()
+        override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterDummy()
     })
     StorageScreen(
         dest = StorageDestination(path = Dummy.unicString, version = 2, selectedPage = 1)

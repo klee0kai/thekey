@@ -4,6 +4,7 @@ import android.os.Parcelable
 import androidx.compose.runtime.Stable
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
+import com.github.klee0kai.thekey.app.engine.model.DecryptedOtpNote
 import com.github.klee0kai.thekey.app.ui.note.model.EditTabs
 import kotlinx.parcelize.Parcelize
 
@@ -55,15 +56,16 @@ data class EditNoteDestination(
      * Storage version
      */
     val storageVersion: Int = 0,
-    /**
-     * Note mem ptr
-     */
-    val notePtr: Long = 0,
 
     /**
      * prefilled note
      */
-    val prefilled: DecryptedNote? = null,
+    val note: DecryptedNote? = null,
+
+    /**
+     * prefilled note
+     */
+    val otpNote: DecryptedOtpNote? = null,
 
     /**
      * opened tab

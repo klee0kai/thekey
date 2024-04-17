@@ -31,7 +31,7 @@ class NotesInteractor(
         }.collect(this)
     }
 
-    fun loadNotes(forceDirty: Boolean = false) = scope.launchLatest("load_notes") { rep().loadNotes(forceDirty) }
+    fun loadNotes() = scope.launchLatest("load_notes") { rep().loadNotes() }
 
     fun note(notePtr: Long) = scope.async { rep().note(notePtr) }
 

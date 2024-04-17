@@ -15,6 +15,7 @@
 #define TK2_GET_NOTE_INFO 0x01
 #define TK2_GET_NOTE_PASSWORD 0x02
 #define TK2_GET_NOTE_HISTORY_FULL 0x04
+#define TK2_GET_NOTE_INCREMENT_HOTP 0x8
 #define TK2_GET_NOTE_FULL TK2_GET_NOTE_INFO|TK2_GET_NOTE_PASSWORD|TK2_GET_NOTE_HISTORY_FULL
 
 // set flags 0xFF00
@@ -101,6 +102,12 @@ namespace thekey_v2 {
         // editable
         std::string issuer;
         std::string name;
+        std::string secret;
+        key_otp::OtpMethod method;
+        key_otp::OtpAlgo algo;
+        uint32_t digits;
+        uint32_t interval;
+        uint32_t counter;
 
         // no have in export
         std::string pin;
@@ -108,8 +115,6 @@ namespace thekey_v2 {
 
         // not editable
         std::string otpPassw;
-        key_otp::OtpMethod method;
-        uint32_t interval;
         uint64_t createTime;
     };
 
@@ -231,6 +236,13 @@ namespace thekey_v2 {
          */
         virtual std::list<DecryptedOtpNote> createOtpNotes(const std::string &uri, uint flags = TK2_GET_NOTE_PTR_ONLY);
 
+        /**
+         * create new OTP
+         * @param dnote
+         * @param flags
+         * @return
+         */
+        virtual std::shared_ptr<DecryptedOtpNote> createOtpNote(const DecryptedOtpNote &dnote = {}, uint flags = 0);
 
         /**
          * Edit OTP dnote OTP dnote from uri

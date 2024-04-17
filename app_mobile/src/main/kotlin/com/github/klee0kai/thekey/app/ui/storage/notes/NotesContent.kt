@@ -36,7 +36,7 @@ import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.app.ui.navigation.note
 import com.github.klee0kai.thekey.app.ui.storage.StorageScreen
-import com.github.klee0kai.thekey.app.ui.storage.presenter.DummyStoragePresenter
+import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenterDummy
 import com.github.klee0kai.thekey.app.ui.storages.components.GroupsSelectContent
 import com.github.klee0kai.thekey.app.utils.common.Dummy
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
@@ -103,7 +103,7 @@ fun NotesContent(
 @Composable
 private fun NotesContentPreview() = AppTheme {
     DI.initPresenterModule(object : PresentersModule() {
-        override fun storagePresenter(storageIdentifier: StorageIdentifier) = DummyStoragePresenter()
+        override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterDummy()
     })
     StorageScreen(
         dest = StorageDestination(path = Dummy.unicString, version = 2)

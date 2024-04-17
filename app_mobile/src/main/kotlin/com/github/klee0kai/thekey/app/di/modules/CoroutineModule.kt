@@ -30,7 +30,7 @@ open class CoroutineModule {
     }
 
     @MainDispatcher
-    open fun mainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+    open fun mainDispatcher(): CoroutineDispatcher = Dispatchers.Main.immediate
 
     @IODispatcher
     open fun ioDispatcher(): CoroutineDispatcher = Dispatchers.IO

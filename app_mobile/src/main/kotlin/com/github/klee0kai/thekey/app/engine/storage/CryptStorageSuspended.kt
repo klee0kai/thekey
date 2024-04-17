@@ -4,6 +4,7 @@ import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.engine.model.DecryptedColorGroup
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
+import com.github.klee0kai.thekey.app.engine.model.DecryptedOtpNote
 import com.github.klee0kai.thekey.app.engine.model.DecryptedPassw
 import com.github.klee0kai.thekey.app.engine.model.GenPasswParams
 import com.github.klee0kai.thekey.app.engine.model.Storage
@@ -22,11 +23,14 @@ class CryptStorageSuspended(
 
     suspend fun unlogin() = engineRun { unlogin() }
 
+    /* color groups  */
     suspend fun colorGroups(info: Boolean = false): Array<DecryptedColorGroup> = engineRun { colorGroups(info) }
 
     suspend fun saveColorGroup(group: DecryptedColorGroup): DecryptedColorGroup? = engineRun { saveColorGroup(group) }
 
     suspend fun removeColorGroup(colorGroupId: Long): Int = engineRun { removeColorGroup(colorGroupId) }
+
+    /* notes  */
 
     suspend fun notes(info: Boolean = false): Array<DecryptedNote> = engineRun { notes(info) }
 
@@ -43,6 +47,22 @@ class CryptStorageSuspended(
     ): Int = engineRun { setNotesGroup(notePtrs, groupId) }
 
     suspend fun removeNote(noteptr: Long): Int = engineRun { removeNote(noteptr) }
+
+    /*  otp notes */
+
+    suspend fun otpNotes(info: Boolean = false): Array<DecryptedOtpNote> = engineRun { otpNotes(info) }
+
+    suspend fun otpNote(notePtr: Long): DecryptedOtpNote = engineRun { otpNote(notePtr) }
+
+    suspend fun otpNoteFromUrl(url: String): DecryptedOtpNote? = engineRun { otpNoteFromUrl(url) }
+
+    suspend fun saveOtpNote(decryptedNote: DecryptedOtpNote, setAll: Boolean = false): Int = engineRun { saveOtpNote(decryptedNote, setAll) }
+
+    suspend fun removeOtpNote(notePt: Long): Int = engineRun { removeOtpNote(notePt) }
+
+    suspend fun setOtpNotesGroup(notePtrs: Array<Long>, groupId: Long): Int = engineRun { setOtpNotesGroup(notePtrs, groupId) }
+
+    /* gen passw  */
 
     suspend fun generateNewPassw(params: GenPasswParams): String = engineRun { generateNewPassw(params) }
 

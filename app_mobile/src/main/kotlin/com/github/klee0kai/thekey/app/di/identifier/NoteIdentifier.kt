@@ -8,4 +8,5 @@ data class NoteIdentifier(
     val storageVersion: Int = 0,
     val storagePath: String = "",
     val notePtr: Long = 0L,
+    val otpNotePtr: Long = 0L,
 ) : Parcelable

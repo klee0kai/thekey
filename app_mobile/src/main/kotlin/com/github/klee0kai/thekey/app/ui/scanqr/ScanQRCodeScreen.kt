@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,6 +32,7 @@ import com.github.klee0kai.thekey.app.ui.scanqr.components.CameraPreviewCompose
 import com.github.klee0kai.thekey.app.ui.scanqr.components.qrCodeUserScanner
 import com.github.klee0kai.thekey.app.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.app.utils.views.animateTargetAlphaAsState
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 sealed interface CameraState {
@@ -48,14 +50,16 @@ fun ScanQRCodeScreen() {
     var permGranded by remember { mutableStateOf(permissionHelper.checkPermissions(permissionHelper.cameraPermissions())) }
     val permGrandedAnimated by animateTargetAlphaAsState(permGranded)
     var cameraState by remember { mutableStateOf<CameraState>(CameraState.NoState) }
+    var screenClosed by remember { mutableStateOf(false) }
 
     val qrCodeAnalyser = remember {
         context.qrCodeUserScanner(
             onFound = { barcodes ->
-                barcodes.forEach {
-                    scope.launch {
-                        router.snack("qrcode ${it.rawValue}")
-                    }
+                scope.launch {
+                    if (screenClosed) return@launch
+                    val barcode = barcodes.firstOrNull() ?: return@launch
+                    router.backWithResult(barcode.rawValue)
+                    screenClosed = true
                 }
             }
         )

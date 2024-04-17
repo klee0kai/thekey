@@ -6,13 +6,15 @@ import kotlinx.parcelize.Parcelize
 
 @JniPojo
 @Parcelize
-data class DecryptedOtpNoteNote(
+data class DecryptedOtpNote(
     val ptnote: Long = 0L,
     val issuer: String = "",
     val name: String = "",
 
+    val url: String = "",
     val secret: String = "",
     val pin: String = "",
+    val otpPassw: String = "",
     val otpMethodRaw: Int = OtpMethod.TOTP.code,
     val otpAlgoRaw: Int = OtpAlgo.SHA1.code,
     val digits: Int = 6,
@@ -55,3 +57,6 @@ enum class OtpAlgo(val code: Int) {
         }
     }
 }
+
+fun DecryptedOtpNote.isEmpty(): Boolean =
+    issuer.isEmpty() && name.isEmpty() && secret.isEmpty() && url.isEmpty()

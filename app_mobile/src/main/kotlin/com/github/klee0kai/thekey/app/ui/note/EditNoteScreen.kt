@@ -64,6 +64,7 @@ import com.github.klee0kai.thekey.app.ui.note.model.EditNoteState
 import com.github.klee0kai.thekey.app.ui.note.model.EditTabs
 import com.github.klee0kai.thekey.app.ui.note.model.EditTabs.Account
 import com.github.klee0kai.thekey.app.ui.note.model.EditTabs.Otp
+import com.github.klee0kai.thekey.app.ui.note.model.initTab
 import com.github.klee0kai.thekey.app.ui.note.presenter.EditNotePresenter
 import com.github.klee0kai.thekey.app.utils.common.Dummy
 import com.github.klee0kai.thekey.app.utils.views.TargetAlpha
@@ -87,7 +88,7 @@ fun EditNoteScreen(
     val view = LocalView.current
     val presenter = remember {
         DI.editNotePresenter(dest.identifier()).apply {
-            init(dest.prefilled)
+            init(dest.tab, dest.note, dest.otpNote)
         }
     }
     val titles = listOf(stringResource(id = R.string.account), stringResource(id = R.string.otp))
@@ -98,18 +99,18 @@ fun EditNoteScreen(
 
     val pagerHeight = if (!state.isEditMode) SecondaryTabsConst.allHeight else 0.dp
 
-    val pageSwipeState = rememberSwipeableState(dest.tab)
+    val pageSwipeState = rememberSwipeableState(dest.initTab())
     val page by rememberDerivedStateOf {
         runCatching { pageSwipeState.progress.crossFadeAlpha() }.getOrNull()
-            ?: TargetAlpha(dest.tab, dest.tab, 0f)
+            ?: TargetAlpha(dest.tab, dest.tab, 1f)
     }
     val scrollState = rememberScrollState()
     val viewSize by currentViewSizeState()
     val saveInToolbarAlpha by rememberTargetAlphaCrossSade { viewSize.height in 1.dp..700.dp }
 
-    BackHandler(state.otpTypeExpanded || state.otpAlgoExpanded) {
+    BackHandler(state.otpMethodExpanded || state.otpAlgoExpanded) {
         presenter.input {
-            copy(otpTypeExpanded = false, otpAlgoExpanded = false)
+            copy(otpMethodExpanded = false, otpAlgoExpanded = false)
         }
     }
     LaunchedEffect(key1 = page.current) {
@@ -184,8 +185,8 @@ fun EditNoteScreen(
                         topMargin = 8.dp,
                     )
                 },
-            value = state.login,
-            onValueChange = { presenter.input { copy(login = it) } },
+            value = state.loginOrName,
+            onValueChange = { presenter.input { copy(loginOrName = it) } },
             label = {
                 val text = if (page.current == Account) R.string.login else R.string.name
                 Text(
@@ -294,12 +295,12 @@ fun EditNoteScreen(
                             endMargin = 8.dp,
                         )
                     },
-                expanded = state.otpTypeExpanded,
-                onExpandedChange = { presenter.input { copy(otpTypeExpanded = it) } },
-                variants = state.otpTypeVariants,
-                selectedIndex = state.otpTypeSelected,
+                expanded = state.otpMethodExpanded,
+                onExpandedChange = { presenter.input { copy(otpMethodExpanded = it) } },
+                variants = state.otpMethodVariants,
+                selectedIndex = state.otpMethodSelected,
                 onSelected = { selected ->
-                    presenter.input { copy(otpTypeSelected = selected, otpTypeExpanded = false) }
+                    presenter.input { copy(otpMethodSelected = selected, otpMethodExpanded = false) }
                 },
                 label = { Text(stringResource(R.string.type)) }
             )
@@ -347,8 +348,8 @@ fun EditNoteScreen(
                         )
                     },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                value = state.otpPeriod,
-                onValueChange = { presenter.input { copy(otpPeriod = it) } },
+                value = state.otpInterval,
+                onValueChange = { presenter.input { copy(otpInterval = it) } },
                 label = { Text(stringResource(R.string.period)) },
             )
 
@@ -529,7 +530,7 @@ private fun EditAccountScreenP6Preview() = AppTheme {
                     isRemoveAvailable = true,
                     isSkeleton = false,
                     siteOrIssuer = "some.site.com",
-                    login = "myLogin@2",
+                    loginOrName = "myLogin@2",
                     passw = "123#",
                 )
             )
@@ -550,7 +551,7 @@ private fun EditAccountScreenSaveP6Preview() = AppTheme {
                     isSkeleton = false,
                     isSaveAvailable = true,
                     siteOrIssuer = "some.site.com",
-                    login = "myLogin@2",
+                    loginOrName = "myLogin@2",
                     passw = "123#",
                 )
             )
@@ -585,7 +586,8 @@ private fun EditOTPScreenP6Preview() = AppTheme(modifier = Modifier) {
                     isRemoveAvailable = true,
                     isSkeleton = false,
                     siteOrIssuer = "some.site.com",
-                    login = "myLogin@2",
+                    loginOrName = "myLogin@2",
+                    otpSecret = "Ot#SecteXA",
                 )
             )
         }

@@ -1,7 +1,9 @@
 package com.github.klee0kai.thekey.app.ui.note.presenter
 
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
+import com.github.klee0kai.thekey.app.engine.model.DecryptedOtpNote
 import com.github.klee0kai.thekey.app.ui.note.model.EditNoteState
+import com.github.klee0kai.thekey.app.ui.note.model.EditTabs
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -10,7 +12,11 @@ interface EditNotePresenter {
 
     val state: Flow<EditNoteState> get() = flow { }
 
-    fun init(prefilled: DecryptedNote? = null): Job = Job()
+    fun init(
+        tab: EditTabs? = null,
+        prefilledNote: DecryptedNote? = null,
+        prefilledOtp: DecryptedOtpNote? = null,
+    ): Job = Job()
 
     fun input(block: EditNoteState.() -> EditNoteState): Job = Job()
 

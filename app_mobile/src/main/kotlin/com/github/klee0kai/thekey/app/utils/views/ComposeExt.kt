@@ -1,6 +1,7 @@
 package com.github.klee0kai.thekey.app.utils.views
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -17,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.github.klee0kai.thekey.app.di.DI
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.valentinilk.shimmer.shimmer
@@ -116,4 +118,10 @@ fun rememberSkeletonModifier(
                 )
         }
     }
+}
+
+@Composable
+fun Modifier.animateContentSizeProduction() = run {
+    if (DI.config().isViewEditMode) this
+    else animateContentSize()
 }

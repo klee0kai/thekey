@@ -8,8 +8,8 @@ import androidx.compose.material3.SnackbarHostState
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.navigation.RouterContext
 import com.github.klee0kai.thekey.app.ui.navigation.model.Destination
+import com.github.klee0kai.thekey.app.ui.navigation.model.LoginDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.NavigateBackstackChange
-import com.github.klee0kai.thekey.app.ui.navigation.model.QRCodeScanDestination
 import dev.olshevski.navigation.reimagined.NavController
 import dev.olshevski.navigation.reimagined.navController
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -33,7 +33,7 @@ class RouterContextImpl : RouterContext {
     override fun genRequestCode(): Int = _reqCodeCounter++
 
     companion object {
-        private val startDestination = QRCodeScanDestination
+        private val startDestination = LoginDestination
     }
 
 }

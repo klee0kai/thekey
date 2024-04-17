@@ -17,7 +17,7 @@ class NotesRepository(
 
     val notes = MutableStateFlow<List<ColoredNote>>(emptyList())
 
-    suspend fun loadNotes(forceDirty: Boolean = false) {
+    suspend fun loadNotes() {
         if (notes.value.isEmpty()) {
             notes.value = engine().notes()
                 .map { it.coloredNote(isLoaded = false) }
@@ -31,17 +31,17 @@ class NotesRepository(
 
     suspend fun setNotesGroup(notesPtr: List<Long>, groupId: Long) {
         engine().setNotesGroup(notesPtr.toTypedArray(), groupId)
-        loadNotes(forceDirty = true)
+        loadNotes()
     }
 
     suspend fun saveNote(note: DecryptedNote, setAll: Boolean = false) {
         engine().saveNote(note, setAll = setAll)
-        loadNotes(forceDirty = true)
+        loadNotes()
     }
 
     suspend fun removeNote(noteptr: Long) {
         engine().removeNote(noteptr)
-        loadNotes(forceDirty = true)
+        loadNotes()
     }
 
     suspend fun generateNewPassw(params: GenPasswParams) =

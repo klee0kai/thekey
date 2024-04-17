@@ -3,15 +3,17 @@ package com.github.klee0kai.thekey.app.ui.storage.presenter
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.domain.model.ColorGroup
 import com.github.klee0kai.thekey.app.domain.model.ColoredNote
+import com.github.klee0kai.thekey.app.domain.model.ColoredOtpNote
 import com.github.klee0kai.thekey.app.ui.designkit.color.KeyColor
 import com.github.klee0kai.thekey.app.ui.storage.model.SearchState
+import com.github.klee0kai.thekey.app.ui.storage.model.storageItem
 import com.github.klee0kai.thekey.app.utils.common.Dummy
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-open class DummyStoragePresenter(
+open class StoragePresenterDummy(
     private val isSearchActive: Boolean = false,
 ) : StoragePresenter {
 
@@ -34,10 +36,11 @@ open class DummyStoragePresenter(
         )
     )
 
-    override val filteredNotes = MutableStateFlow(
+    override val filteredItems = MutableStateFlow(
         listOf(
-            ColoredNote(ptnote = Dummy.dummyId),
-            ColoredNote(ptnote = Dummy.dummyId),
+            ColoredNote(ptnote = Dummy.dummyId).storageItem(),
+            ColoredNote(ptnote = Dummy.dummyId).storageItem(),
+            ColoredOtpNote(ptnote = Dummy.dummyId).storageItem(),
             ColoredNote(
                 ptnote = Dummy.dummyId,
                 site = "some.site",
@@ -48,7 +51,7 @@ open class DummyStoragePresenter(
                     keyColor = KeyColor.VIOLET
                 ),
                 isLoaded = true,
-            ),
+            ).storageItem(),
             ColoredNote(
                 ptnote = Dummy.dummyId,
                 site = "some.site2",
@@ -59,8 +62,19 @@ open class DummyStoragePresenter(
                     keyColor = KeyColor.ORANGE
                 ),
                 isLoaded = true,
-            ),
-            ColoredNote(ptnote = Dummy.dummyId),
+            ).storageItem(),
+            ColoredOtpNote(
+                ptnote = Dummy.dummyId,
+                issuer = "Example@otp.su",
+                name = "ExampleName",
+                group = ColorGroup(
+                    id = Dummy.dummyId,
+                    keyColor = KeyColor.ORANGE
+                ),
+                isLoaded = true,
+            ).storageItem(),
+
+            ColoredNote(ptnote = Dummy.dummyId).storageItem(),
         )
     )
 
@@ -68,8 +82,13 @@ open class DummyStoragePresenter(
         scope.launch {
             delay(1000)
 
-            filteredNotes.update {
-                it.map { it.copy(isLoaded = true) }
+            filteredItems.update {
+                it.map { storageItem ->
+                    storageItem.copy(
+                        note = storageItem.note?.copy(isLoaded = true),
+                        otp = storageItem.otp?.copy(isLoaded = true),
+                    )
+                }
             }
 
         }

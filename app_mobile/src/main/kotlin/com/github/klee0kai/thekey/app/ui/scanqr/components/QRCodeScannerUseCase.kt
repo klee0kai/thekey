@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.UseCase
 import androidx.camera.mlkit.vision.MlKitAnalyzer
-import androidx.core.content.ContextCompat
+import com.github.klee0kai.thekey.app.di.DI
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
@@ -12,7 +12,6 @@ import com.google.mlkit.vision.barcode.common.Barcode
 fun Context.qrCodeUserScanner(
     onFound: (List<Barcode>) -> Unit = {}
 ): UseCase? = runCatching {
-    val context = this
     val barcodeScanner = BarcodeScanning
         .getClient(
             BarcodeScannerOptions.Builder()
@@ -23,7 +22,7 @@ fun Context.qrCodeUserScanner(
     val mlKitAnalyzer: ImageAnalysis.Analyzer = MlKitAnalyzer(
         listOf(barcodeScanner),
         ImageAnalysis.COORDINATE_SYSTEM_ORIGINAL,
-        ContextCompat.getMainExecutor(context),
+        DI.defaultExecutor(),
     ) { result: MlKitAnalyzer.Result? ->
         val qrCodes = result?.getValue(barcodeScanner)
         if (!qrCodes.isNullOrEmpty()) {
@@ -34,7 +33,7 @@ fun Context.qrCodeUserScanner(
     val qrCodeAnalyser: ImageAnalysis = ImageAnalysis.Builder()
         .build()
         .apply {
-            setAnalyzer(ContextCompat.getMainExecutor(context), mlKitAnalyzer)
+            setAnalyzer(DI.defaultExecutor(), mlKitAnalyzer)
         }
 
     qrCodeAnalyser

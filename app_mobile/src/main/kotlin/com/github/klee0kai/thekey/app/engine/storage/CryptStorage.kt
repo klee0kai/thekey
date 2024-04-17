@@ -2,6 +2,7 @@ package com.github.klee0kai.thekey.app.engine.storage
 
 import com.github.klee0kai.thekey.app.engine.model.DecryptedColorGroup
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
+import com.github.klee0kai.thekey.app.engine.model.DecryptedOtpNote
 import com.github.klee0kai.thekey.app.engine.model.DecryptedPassw
 import com.github.klee0kai.thekey.app.engine.model.GenPasswParams
 import com.github.klee0kai.thekey.app.engine.model.Storage
@@ -29,6 +30,18 @@ interface CryptStorage {
     fun saveNote(decryptedNote: DecryptedNote, setAll: Boolean = false): Int
 
     fun removeNote(notePt: Long): Int
+
+    fun otpNotes(info: Boolean = false): Array<DecryptedOtpNote>
+
+    fun otpNote(notePtr: Long): DecryptedOtpNote
+
+    fun otpNoteFromUrl(url: String): DecryptedOtpNote?
+
+    fun setOtpNotesGroup(notePtrs: Array<Long>, groupId: Long): Int
+
+    fun saveOtpNote(decryptedNote: DecryptedOtpNote, setAll: Boolean = false): Int
+
+    fun removeOtpNote(notePt: Long): Int
 
     fun generateNewPassw(params: GenPasswParams): String
 

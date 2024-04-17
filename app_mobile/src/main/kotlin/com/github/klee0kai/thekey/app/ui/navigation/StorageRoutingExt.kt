@@ -5,6 +5,7 @@ import com.github.klee0kai.thekey.app.di.identifier.NoteIdentifier
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
+import com.github.klee0kai.thekey.app.engine.model.DecryptedOtpNote
 import com.github.klee0kai.thekey.app.engine.model.Storage
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteGroupDestination
@@ -26,13 +27,16 @@ fun StorageDestination.identifier() =
     StorageIdentifier(version = version, path = path)
 
 fun StorageDestination.note(notePtr: Long = 0) =
-    EditNoteDestination(storageVersion = version, path = path, notePtr = notePtr)
+    EditNoteDestination(storageVersion = version, path = path, note = DecryptedNote(ptnote = notePtr))
+
+fun StorageDestination.otpNote(notePtr: Long = 0) =
+    EditNoteDestination(storageVersion = version, path = path, otpNote = DecryptedOtpNote(ptnote = notePtr))
 
 fun StorageDestination.createNoteDest(prefilled: DecryptedNote) =
-    EditNoteDestination(storageVersion = version, path = path, prefilled = prefilled)
+    EditNoteDestination(storageVersion = version, path = path, note = prefilled)
 
 fun StorageIdentifier.createNoteDest(prefilled: DecryptedNote) =
-    EditNoteDestination(storageVersion = version, path = path, prefilled = prefilled)
+    EditNoteDestination(storageVersion = version, path = path, note = prefilled)
 
 fun StorageDestination.genHist() =
     GenHistDestination(storageVersion = version, path = path)
@@ -49,9 +53,13 @@ fun StorageIdentifier.noteDest(notePtr: Long = 0) =
 fun NoteIdentifier.storage() =
     StorageIdentifier(version = storageVersion, path = storagePath)
 
-
 fun EditNoteDestination.identifier() =
-    NoteIdentifier(storageVersion = storageVersion, storagePath = path, notePtr = notePtr)
+    NoteIdentifier(
+        storageVersion = storageVersion,
+        storagePath = path,
+        notePtr = note?.ptnote ?: 0L,
+        otpNotePtr = otpNote?.ptnote ?: 0L,
+    )
 
 fun StorageDestination.createGroup() =
     EditNoteGroupDestination(StorageIdentifier(path, version))

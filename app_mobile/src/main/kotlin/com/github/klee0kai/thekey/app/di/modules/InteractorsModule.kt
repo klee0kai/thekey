@@ -7,6 +7,7 @@ import com.github.klee0kai.thekey.app.domain.FindStoragesInteractor
 import com.github.klee0kai.thekey.app.domain.GroupsInteractor
 import com.github.klee0kai.thekey.app.domain.LoginInteractor
 import com.github.klee0kai.thekey.app.domain.NotesInteractor
+import com.github.klee0kai.thekey.app.domain.OtpNotesInteractor
 
 @Module
 interface InteractorsModule {
@@ -19,6 +20,9 @@ interface InteractorsModule {
 
     @Provide(cache = Provide.CacheType.Soft)
     fun notesInteractor(storageIdentifier: StorageIdentifier): NotesInteractor
+
+    @Provide(cache = Provide.CacheType.Soft)
+    fun otpNotesInteractor(storageIdentifier: StorageIdentifier): OtpNotesInteractor
 
     @Provide(cache = Provide.CacheType.Soft)
     fun groupsInteractor(storageIdentifier: StorageIdentifier): GroupsInteractor

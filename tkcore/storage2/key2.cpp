@@ -747,11 +747,25 @@ std::list<DecryptedOtpNote> KeyStorageV2::createOtpNotes(const std::string &uri,
     return addedOtpNotes;
 }
 
-int KeyStorageV2::setOtpNote(const thekey_v2::DecryptedOtpNote &dnote, uint flags) {
+std::shared_ptr<DecryptedOtpNote> KeyStorageV2::createOtpNote(const thekey_v2::DecryptedOtpNote &dnote, uint flags) {
     lock_guard guard(editMutex);
     auto data = snapshot();
     data.cryptedOtpNotes = make_shared<list<CryptedOtpInfo>>(list<CryptedOtpInfo>(*data.cryptedOtpNotes));
 
+    auto createdId = data.idCounter++;
+    data.cryptedOtpNotes->push_back({.id=createdId});
+    auto dNote = make_shared<DecryptedOtpNote>(dnote);
+    dNote->id = createdId;
+    snapshot(data);
+
+    setOtpNote(*dNote, flags | TK2_SET_NOTE_FORCE | TK2_SET_NOTE_FULL_HISTORY | TK2_SET_NOTE_PASSW);
+    return dNote;
+}
+
+int KeyStorageV2::setOtpNote(const thekey_v2::DecryptedOtpNote &dnote, uint flags) {
+    lock_guard guard(editMutex);
+    auto data = snapshot();
+    data.cryptedOtpNotes = make_shared<list<CryptedOtpInfo>>(list<CryptedOtpInfo>(*data.cryptedOtpNotes));
 
     auto cryptedNote = findItBy(*data.cryptedOtpNotes, [&](const auto &item) { return item.id == dnote.id; });
     if (cryptedNote == data.cryptedOtpNotes->end()) {
@@ -760,8 +774,15 @@ int KeyStorageV2::setOtpNote(const thekey_v2::DecryptedOtpNote &dnote, uint flag
     }
 
     auto notCmpOld = (flags & TK2_SET_NOTE_FORCE);
+    auto setPasswFlag = (flags & TK2_SET_NOTE_PASSW);
     auto old = otpNote(dnote.id, TK2_GET_NOTE_FULL);
 
+    cryptedNote->data.createTime(time(NULL));
+    cryptedNote->data.method(dnote.method);
+    cryptedNote->data.algorithm(dnote.algo);
+    cryptedNote->data.digits(dnote.digits);
+    cryptedNote->data.interval(dnote.interval);
+    cryptedNote->data.counter(dnote.counter);
     cryptedNote->data.colorGroupId(dnote.colorGroupId);
 
     if (notCmpOld || old->issuer != dnote.issuer) {
@@ -785,6 +806,15 @@ int KeyStorageV2::setOtpNote(const thekey_v2::DecryptedOtpNote &dnote, uint flag
     if (notCmpOld || old->pin != dnote.pin) {
         cryptedNote->data.pin.encrypt(
                 dnote.pin,
+                ctx->keyForPassw,
+                fheader->cryptType(),
+                fheader->interactionsCount()
+        );
+    }
+
+    if (setPasswFlag && (notCmpOld || old->secret != dnote.secret)) {
+        cryptedNote->data.secret.encrypt(
+                base32::decodeRaw(dnote.secret),
                 ctx->keyForPassw,
                 fheader->cryptType(),
                 fheader->interactionsCount()
@@ -821,7 +851,10 @@ std::shared_ptr<DecryptedOtpNote> KeyStorageV2::otpNote(long long id, uint flags
     decryptedNote->createTime = cryptedNote->data.createTime();
     decryptedNote->colorGroupId = cryptedNote->data.colorGroupId();
     decryptedNote->method = cryptedNote->data.method();
+    decryptedNote->algo = cryptedNote->data.algorithm();
+    decryptedNote->digits = cryptedNote->data.digits();
     decryptedNote->interval = cryptedNote->data.interval();
+    decryptedNote->counter = cryptedNote->data.counter();
 
     if ((flags & TK2_GET_NOTE_INFO) != 0) {
         decryptedNote->issuer = cryptedNote->data.issuer.decrypt(
@@ -838,6 +871,12 @@ std::shared_ptr<DecryptedOtpNote> KeyStorageV2::otpNote(long long id, uint flags
     }
 
     if ((flags & TK2_GET_NOTE_PASSWORD) != 0) {
+        decryptedNote->secret = base32::encode(cryptedNote->data.secret.decrypt(
+                ctx->keyForOtpPassw,
+                fheader->cryptType(),
+                fheader->interactionsCount()
+        ), true);
+
         decryptedNote->pin = cryptedNote->data.pin.decrypt(
                 ctx->keyForPassw,
                 fheader->cryptType(),
@@ -847,7 +886,7 @@ std::shared_ptr<DecryptedOtpNote> KeyStorageV2::otpNote(long long id, uint flags
         auto otpInfo = exportOtpNote(id);
         decryptedNote->otpPassw = key_otp::generate(otpInfo, now);
 
-        if (cryptedNote->data.method() == HOTP) {
+        if ((flags & TK2_GET_NOTE_INCREMENT_HOTP) != 0 && cryptedNote->data.method() == HOTP) {
             cryptedNote->data.counter(cryptedNote->data.counter() + 1);
             save();
         }

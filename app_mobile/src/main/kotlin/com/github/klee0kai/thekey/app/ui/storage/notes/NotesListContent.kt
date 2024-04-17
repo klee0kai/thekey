@@ -2,7 +2,6 @@
 
 package com.github.klee0kai.thekey.app.ui.storage.notes
 
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,8 +31,10 @@ import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
 import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.app.ui.navigation.note
-import com.github.klee0kai.thekey.app.ui.storage.presenter.DummyStoragePresenter
+import com.github.klee0kai.thekey.app.ui.navigation.otpNote
+import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenterDummy
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
+import com.github.klee0kai.thekey.app.utils.views.animateContentSizeProduction
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
 
 @Composable
@@ -44,16 +45,16 @@ fun NotesListContent(
 ) {
     val presenter = remember { DI.storagePresenter(args.identifier()) }
     val router = LocalRouter.current
-    val notes by presenter.filteredNotes.collectAsState(key = Unit, initial = null)
+    val storageItems by presenter.filteredItems.collectAsState(key = Unit, initial = null)
     val groups by presenter.filteredColorGroups.collectAsState(key = Unit, initial = emptyList())
     val titleAnimatedAlpha by animateAlphaAsState(showStoragesTitle)
 
-    if (notes == null) return
+    if (storageItems == null) return
 
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
-            .animateContentSize(),
+            .animateContentSizeProduction(),
     ) {
         item {
             Text(
@@ -62,51 +63,80 @@ fun NotesListContent(
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
                     .padding(start = 16.dp, top = 4.dp, bottom = 22.dp)
-                    .animateContentSize()
+                    .animateContentSizeProduction()
                     .alpha(titleAnimatedAlpha)
             )
         }
 
-        notes?.forEach { note ->
-            item(
-                contentType = note::class,
-                key = note.ptnote
-            ) {
-                var showMenu by remember { mutableStateOf(false) }
-                ColoredNoteItem(
-                    modifier = Modifier
-                        .animateContentSize()
-                        .combinedClickable(
-                            onLongClick = {
-                                showMenu = true
-                            },
-                            onClick = {
-                                router.navigate(args.note(notePtr = note.ptnote))
-                            }
-                        ),
-                    note = note,
-                    overlayContent = {
-                        DropdownMenu(
-                            offset = DpOffset(x = (-16).dp, y = 2.dp),
-                            expanded = showMenu,
-                            onDismissRequest = { showMenu = false }
-                        ) {
+        storageItems?.forEach { storageItem ->
+            val note = storageItem.note
+            val otp = storageItem.otp
 
-                            NoteDropDownMenuContent(
-                                colorGroups = groups,
-                                selectedGroupId = note.group.id,
-                                onColorGroupSelected = {
-                                    presenter.setColorGroup(notePt = note.ptnote, groupId = it.id)
-                                    showMenu = false
+            if (note != null) {
+                item(
+                    contentType = note::class,
+                    key = note.ptnote
+                ) {
+                    var showMenu by remember { mutableStateOf(false) }
+
+                    ColoredNoteItem(
+                        modifier = Modifier
+                            .animateContentSizeProduction()
+                            .combinedClickable(
+                                onLongClick = {
+                                    showMenu = true
                                 },
-                                onEdit = {
-                                    router.navigate(args.note(note.ptnote))
-                                    showMenu = false
+                                onClick = {
+                                    router.navigate(args.note(notePtr = note.ptnote))
                                 }
-                            )
+                            ),
+                        note = note,
+                        overlayContent = {
+                            DropdownMenu(
+                                offset = DpOffset(x = (-16).dp, y = 2.dp),
+                                expanded = showMenu,
+                                onDismissRequest = { showMenu = false }
+                            ) {
+
+                                NoteDropDownMenuContent(
+                                    colorGroups = groups,
+                                    selectedGroupId = note.group.id,
+                                    onColorGroupSelected = {
+                                        presenter.setColorGroup(notePt = note.ptnote, groupId = it.id)
+                                        showMenu = false
+                                    },
+                                    onEdit = {
+                                        router.navigate(args.note(note.ptnote))
+                                        showMenu = false
+                                    }
+                                )
+                            }
                         }
-                    }
-                )
+                    )
+                }
+            }
+
+            if (otp != null) {
+                item(
+                    contentType = otp::class,
+                    key = otp.ptnote
+                ) {
+                    ColoredOtpNoteItem(
+                        modifier = Modifier
+                            .animateContentSizeProduction()
+                            .combinedClickable(
+                                onLongClick = {
+                                },
+                                onClick = {
+                                    router.navigate(args.otpNote(notePtr = otp.ptnote))
+                                }
+                            ),
+                        otp = otp,
+                        overlayContent = {
+
+                        }
+                    )
+                }
             }
         }
     }
@@ -117,7 +147,7 @@ fun NotesListContent(
 @Composable
 private fun NotesListContentPreview() = AppTheme {
     DI.initPresenterModule(object : PresentersModule() {
-        override fun storagePresenter(storageIdentifier: StorageIdentifier) = DummyStoragePresenter()
+        override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterDummy()
     })
     NotesListContent(
         showStoragesTitle = false,
@@ -128,7 +158,7 @@ private fun NotesListContentPreview() = AppTheme {
 @Composable
 private fun NotesListContentTitlePreview() = AppTheme {
     DI.initPresenterModule(object : PresentersModule() {
-        override fun storagePresenter(storageIdentifier: StorageIdentifier) = DummyStoragePresenter()
+        override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterDummy()
     })
     NotesListContent(
         showStoragesTitle = true,
