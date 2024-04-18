@@ -16,15 +16,15 @@
 #define TK2_GET_NOTE_PASSWORD 0x02
 #define TK2_GET_NOTE_HISTORY_FULL 0x04
 #define TK2_GET_NOTE_INCREMENT_HOTP 0x8
-#define TK2_GET_NOTE_FULL TK2_GET_NOTE_INFO|TK2_GET_NOTE_PASSWORD|TK2_GET_NOTE_HISTORY_FULL
+#define TK2_GET_NOTE_FULL TK2_GET_NOTE_INFO| TK2_GET_NOTE_PASSWORD | TK2_GET_NOTE_HISTORY_FULL
 
 // set flags 0xFF00
 #define TK2_SET_NOTE_FORCE 0x100
 #define TK2_SET_NOTE_INFO 0x200
 #define TK2_SET_NOTE_PASSW 0x400
 #define TK2_SET_NOTE_TRACK_HISTORY 0x800
-#define TK2_SET_NOTE_FULL_HISTORY 0xF00
-#define TK2_SET_NOTE_SAVE_TO_FILE 0x1000
+#define TK2_SET_NOTE_FULL_HISTORY 0x1000
+#define TK2_SET_NOTE_SAVE_TO_FILE 0x2000
 
 namespace thekey_v2 {
 
@@ -220,9 +220,8 @@ namespace thekey_v2 {
          * @param flags TK2_SET_NOTE_FORCE / TK2_SET_NOTE_TRACK_HISTORY
          * @return
          */
-        virtual int setNote(
-                const DecryptedNote &dnote,
-                uint flags = TK2_SET_NOTE_INFO | TK2_SET_NOTE_PASSW | TK2_SET_NOTE_TRACK_HISTORY | TK2_SET_NOTE_SAVE_TO_FILE);
+        virtual int
+        setNote(const DecryptedNote &dnote, uint flags = TK2_SET_NOTE_TRACK_HISTORY | TK2_SET_NOTE_SAVE_TO_FILE);
 
         virtual int removeNote(long long id);
 

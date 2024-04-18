@@ -49,7 +49,7 @@ TEST(Storage2_Issue44, CreateStorage) {
                     .description = "somesite_desc",
                     .colorGroupId = orangeGroup->id,
 
-            }, TK2_SET_NOTE_TRACK_HISTORY);
+            }, TK2_SET_NOTE_INFO | TK2_SET_NOTE_PASSW | TK2_SET_NOTE_TRACK_HISTORY);
 
     storage->createNote(
             {
@@ -212,9 +212,9 @@ TEST(Storage2_Issue44, GenOtpGoogleExample) {
     ASSERT_EQ("Example", alise.issuer);
     ASSERT_EQ("alice@google.com", alise.name);
 
-    storage->otpNote(alise.id, TK2_GET_NOTE_FULL);// counter 0
-    storage->otpNote(alise.id, TK2_GET_NOTE_FULL);// counter 1
-    auto otpFull = storage->otpNote(alise.id, TK2_GET_NOTE_FULL);// counter 2
+    storage->otpNote(alise.id, TK2_GET_NOTE_FULL | TK2_GET_NOTE_INCREMENT_HOTP);// counter 0
+    storage->otpNote(alise.id, TK2_GET_NOTE_FULL | TK2_GET_NOTE_INCREMENT_HOTP);// counter 1
+    auto otpFull = storage->otpNote(alise.id, TK2_GET_NOTE_FULL | TK2_GET_NOTE_INCREMENT_HOTP);// counter 2
 
     ASSERT_EQ("602287", otpFull->otpPassw);
 }

@@ -580,7 +580,7 @@ shared_ptr<DecryptedNote> KeyStorageV2::createNote(const DecryptedNote &note, ui
     dNote->id = createdId;
     snapshot(data);
 
-    setNote(*dNote, flags | TK2_SET_NOTE_FORCE | TK2_SET_NOTE_FULL_HISTORY);
+    setNote(*dNote, flags | TK2_SET_NOTE_FORCE | TK2_SET_NOTE_INFO | TK2_SET_NOTE_PASSW | TK2_SET_NOTE_FULL_HISTORY);
     return dNote;
 }
 
@@ -758,7 +758,7 @@ std::shared_ptr<DecryptedOtpNote> KeyStorageV2::createOtpNote(const thekey_v2::D
     dNote->id = createdId;
     snapshot(data);
 
-    setOtpNote(*dNote, flags | TK2_SET_NOTE_FORCE | TK2_SET_NOTE_FULL_HISTORY | TK2_SET_NOTE_PASSW);
+    setOtpNote(*dNote, flags | TK2_SET_NOTE_FORCE | TK2_SET_NOTE_PASSW);
     return dNote;
 }
 

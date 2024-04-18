@@ -63,10 +63,10 @@ TEST(Storage2ChangePassw, ChangePasswToNewFile) {
                     .description = "_"
             });
     createNote->passw = "J23";
-    storage->setNote(*createNote);
+    storage->setNote(*createNote, TK2_SET_NOTE_PASSW | TK2_SET_NOTE_TRACK_HISTORY);
 
     createNote->passw = "321";
-    storage->setNote(*createNote);
+    storage->setNote(*createNote, TK2_SET_NOTE_PASSW | TK2_SET_NOTE_TRACK_HISTORY);
 
     storage->createOtpNotes("otpauth://hotp/Example:alice@google.com?secret=JBSWY3DPEHPK3PXP&issuer=Example");
     auto createOtpNote = storage->createOtpNotes("otpauth://totp/sha1Issuer%3Asimple%40test.com"
@@ -229,10 +229,10 @@ TEST(Storage2ChangePassw, ChangePasswToOldFile) {
                     .description = "_"
             });
     createNote->passw = "J23";
-    storage->setNote(*createNote);
+    storage->setNote(*createNote, TK2_SET_NOTE_PASSW | TK2_SET_NOTE_TRACK_HISTORY);
 
     createNote->passw = "321";
-    storage->setNote(*createNote);
+    storage->setNote(*createNote, TK2_SET_NOTE_PASSW | TK2_SET_NOTE_TRACK_HISTORY);
 
     storage->createOtpNotes("otpauth://hotp/Example:alice@google.com?secret=JBSWY3DPEHPK3PXP&issuer=Example");
     auto createOtpNote = storage->createOtpNotes("otpauth://totp/sha1Issuer%3Asimple%40test.com"
@@ -395,10 +395,10 @@ TEST(Storage2ChangePassw, OldPassw) {
                     .description = "_"
             });
     createNote->passw = "J23";
-    storage->setNote(*createNote);
+    storage->setNote(*createNote, TK2_SET_NOTE_PASSW | TK2_SET_NOTE_TRACK_HISTORY);
 
     createNote->passw = "321";
-    storage->setNote(*createNote);
+    storage->setNote(*createNote, TK2_SET_NOTE_PASSW | TK2_SET_NOTE_TRACK_HISTORY);
 
     storage->createOtpNotes("otpauth://hotp/Example:alice@google.com?secret=JBSWY3DPEHPK3PXP&issuer=Example");
     auto createOtpNote = storage->createOtpNotes("otpauth://totp/sha1Issuer%3Asimple%40test.com"
