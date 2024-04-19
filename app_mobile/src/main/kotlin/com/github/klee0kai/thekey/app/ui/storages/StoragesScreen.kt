@@ -43,7 +43,6 @@ private const val SecondTittleId = 1
 fun StoragesScreen() {
     val presenter = remember { DI.storagesPresenter() }
     val router = LocalRouter.current
-
     var dragProgress = remember { mutableFloatStateOf(0f) }
     val scaffoldState = rememberSimpleBottomSheetScaffoldState(
         topContentSize = 190.dp,

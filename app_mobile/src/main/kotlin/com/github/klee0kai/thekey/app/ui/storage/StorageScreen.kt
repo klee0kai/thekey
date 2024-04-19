@@ -62,13 +62,12 @@ import com.github.klee0kai.thekey.app.utils.views.collectAsState
 import com.github.klee0kai.thekey.app.utils.views.hideOnTargetAlpha
 import com.github.klee0kai.thekey.app.utils.views.rememberAlphaAnimate
 import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
-import com.github.klee0kai.thekey.app.utils.views.rememberTargetAlphaCrossSade
+import com.github.klee0kai.thekey.app.utils.views.rememberTargetCrossFaded
 import kotlinx.coroutines.launch
 
 private const val SearchTitleId = 0
 private const val MainTitleId = 1
 private const val SecondTittleId = 2
-
 
 @Composable
 fun StorageScreen(
@@ -108,7 +107,7 @@ fun StorageScreen(
             else -> false
         }
     }
-    val targetTitleId by rememberTargetAlphaCrossSade {
+    val targetTitleId by rememberTargetCrossFaded {
         when {
             searchState.isActive -> SearchTitleId
             !isAccountTab || accountTitleVisibility.value == true -> MainTitleId
@@ -223,7 +222,6 @@ private fun StorageScreenAccountsPreview() = AppTheme {
         dest = StorageDestination(path = Dummy.unicString, version = 2)
     )
 }
-
 
 @Preview(device = Devices.PIXEL_6, showSystemUi = true)
 @Composable

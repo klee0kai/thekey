@@ -51,7 +51,6 @@ void JvmStorage1::login(const std::string &passw) {
     auto storage = thekey_v1::storage(getStoragePath(), passw);
     if (storage) {
         storage->readAll();
-        storage->save();
         storages.insert({getStoragePath(), storage});
     }
 }

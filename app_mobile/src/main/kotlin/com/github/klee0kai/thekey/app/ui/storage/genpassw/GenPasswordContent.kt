@@ -44,7 +44,7 @@ import com.github.klee0kai.thekey.app.ui.storage.genpassw.model.GenPasswState
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.presenter.GenPasswPresenter
 import com.github.klee0kai.thekey.app.utils.common.Dummy
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
-import com.github.klee0kai.thekey.app.utils.views.rememberTargetAlphaCrossSade
+import com.github.klee0kai.thekey.app.utils.views.rememberTargetCrossFaded
 import kotlinx.coroutines.flow.MutableStateFlow
 
 
@@ -61,7 +61,7 @@ fun GenPasswordContent(
     val router = LocalRouter.current
     val sliderValues = presenter.passwLenRange
     val state by presenter.state.collectAsState(key = Unit, initial = GenPasswState())
-    val passw by rememberTargetAlphaCrossSade { state.passw }
+    val passw by rememberTargetCrossFaded { state.passw }
 
     ConstraintLayout(
         modifier = modifier

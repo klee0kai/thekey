@@ -24,7 +24,7 @@ import com.github.klee0kai.thekey.app.domain.model.ColoredOtpNote
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
 import com.github.klee0kai.thekey.app.ui.designkit.color.KeyColor
-import com.github.klee0kai.thekey.app.utils.views.animateTargetAlphaAsState
+import com.github.klee0kai.thekey.app.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.app.utils.views.skeleton
 import com.github.klee0kai.thekey.app.utils.views.visibleOnTargetAlpha
 
@@ -36,8 +36,8 @@ fun ColoredOtpNoteItem(
     overlayContent: @Composable () -> Unit = {},
 ) {
     val colorScheme = LocalColorScheme.current
-    val animatedNote by animateTargetAlphaAsState(otp)
-    val skeleton by animateTargetAlphaAsState(!otp.isLoaded)
+    val animatedNote by animateTargetCrossFaded(otp)
+    val skeleton by animateTargetCrossFaded(!otp.isLoaded)
 
     ConstraintLayout(
         modifier = modifier

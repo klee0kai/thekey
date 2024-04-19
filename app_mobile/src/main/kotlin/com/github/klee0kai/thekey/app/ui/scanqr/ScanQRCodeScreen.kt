@@ -30,7 +30,7 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.TextProvider
 import com.github.klee0kai.thekey.app.ui.scanqr.components.CameraPreviewCompose
 import com.github.klee0kai.thekey.app.ui.scanqr.components.qrCodeUserScanner
 import com.github.klee0kai.thekey.app.utils.annotations.DebugOnly
-import com.github.klee0kai.thekey.app.utils.views.animateTargetAlphaAsState
+import com.github.klee0kai.thekey.app.utils.views.animateTargetCrossFaded
 import kotlinx.coroutines.launch
 
 sealed interface CameraState {
@@ -46,7 +46,7 @@ fun ScanQRCodeScreen() {
     val context = LocalContext.current
     val permissionHelper = remember { DI.permissionsHelper() }
     var permGranded by remember { mutableStateOf(permissionHelper.checkPermissions(permissionHelper.cameraPermissions())) }
-    val permGrandedAnimated by animateTargetAlphaAsState(permGranded)
+    val permGrandedAnimated by animateTargetCrossFaded(permGranded)
     var cameraState by remember { mutableStateOf<CameraState>(CameraState.NoState) }
     var screenClosed by remember { mutableStateOf(false) }
 

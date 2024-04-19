@@ -184,14 +184,10 @@ fun LoginScreen() {
         }
     }
 
-
     AppBarStates(
         navigationIcon = {
             IconButton(onClick = { scope.launch { router.showNavigationBoard() } }) {
-                Icon(
-                    Icons.Filled.Menu,
-                    contentDescription = null,
-                )
+                Icon(Icons.Filled.Menu, contentDescription = null)
             }
         }
     )

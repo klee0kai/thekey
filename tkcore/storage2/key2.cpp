@@ -505,7 +505,6 @@ int KeyStorageV2::removeColorGroup(long long colorGroupId) {
     return error;
 }
 
-
 // ---- notes api ----
 
 std::vector<DecryptedNote> KeyStorageV2::notes(uint flags) {

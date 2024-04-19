@@ -21,7 +21,6 @@ import androidx.compose.runtime.setValue
 import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import androidx.wear.compose.material.SwipeProgress
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -48,7 +47,6 @@ fun <T> TargetAlpha<T>.visibleOnTargetAlpha(vararg targetsToVisible: T): Float {
     }
 }
 
-
 @Composable
 inline fun animateAlphaAsState(
     boolean: Boolean,
@@ -59,28 +57,19 @@ inline fun animateAlphaAsState(
 )
 
 @Composable
-inline fun <T> StateFlow<T>.collectAsStateCrossFaded(
-    key: Any? = null,
-    context: CoroutineContext = EmptyCoroutineContext
-): State<TargetAlpha<T>> {
-    val target by collectAsState(key = key ?: this, context = context)
-    return animateTargetAlphaAsState(target)
-}
-
-@Composable
 inline fun <T> Flow<T>.collectAsStateCrossFaded(
     key: Any?,
     initial: T,
     context: CoroutineContext = EmptyCoroutineContext
 ): State<TargetAlpha<T>> {
     val target by collectAsState(key = key, initial = initial, context = context)
-    return animateTargetAlphaAsState(target)
+    return animateTargetCrossFaded(target)
 }
 
 @Composable
-inline fun <T> rememberTargetAlphaCrossSade(noinline calculation: () -> T): State<TargetAlpha<T>> {
+inline fun <T> rememberTargetCrossFaded(noinline calculation: () -> T): State<TargetAlpha<T>> {
     val target = rememberDerivedStateOf(calculation)
-    return animateTargetAlphaAsState(target = target.value)
+    return animateTargetCrossFaded(target = target.value)
 }
 
 @Composable
@@ -108,7 +97,7 @@ fun <T> SwipeProgress<T>.crossFadeAlpha(): TargetAlpha<T> = when {
 }
 
 @Composable
-inline fun <T> animateTargetAlphaAsState(target: T, progress: Float = 1f): State<TargetAlpha<T>> {
+inline fun <T> animateTargetCrossFaded(target: T, progress: Float = 1f): State<TargetAlpha<T>> {
     val targetAlphaState = remember { mutableStateOf(TargetAlpha(target, target, 1f)) }
     var targetAlpha by targetAlphaState
     var velocity by remember { mutableFloatStateOf(0f) }

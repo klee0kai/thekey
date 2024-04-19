@@ -24,7 +24,7 @@ import com.github.klee0kai.thekey.app.domain.model.ColoredNote
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
 import com.github.klee0kai.thekey.app.ui.designkit.color.KeyColor
-import com.github.klee0kai.thekey.app.utils.views.animateTargetAlphaAsState
+import com.github.klee0kai.thekey.app.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.app.utils.views.skeleton
 import com.github.klee0kai.thekey.app.utils.views.visibleOnTargetAlpha
 
@@ -36,8 +36,8 @@ fun ColoredNoteItem(
     overlayContent: @Composable () -> Unit = {},
 ) {
     val colorScheme = LocalColorScheme.current
-    val animatedNote by animateTargetAlphaAsState(note)
-    val skeleton by animateTargetAlphaAsState(!note.isLoaded)
+    val animatedNote by animateTargetCrossFaded(note)
+    val skeleton by animateTargetCrossFaded(!note.isLoaded)
 
     ConstraintLayout(
         modifier = modifier
@@ -115,7 +115,6 @@ fun ColoredNoteItem(
                     )
                 }
         )
-
 
         Text(
             text = animatedNote.current.login,

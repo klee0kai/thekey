@@ -55,18 +55,10 @@ fun <T : R, R> Flow<T>.collectAsState(
     }
 }
 
-@Suppress("StateFlowValueCalledInComposition")
-@Composable
-fun <T> StateFlow<T>.collectAsState(
-    key: Any?,
-    context: CoroutineContext = EmptyCoroutineContext
-): State<T> = collectAsState(key = key, initial = value, context = context)
-
 @Composable
 fun <T> rememberDerivedStateOf(calculation: () -> T) = remember {
     derivedStateOf(calculation)
 }
-
 
 @Composable
 fun rememberTickerOf(trigger: () -> Boolean): State<Int> {
@@ -104,7 +96,7 @@ fun rememberSkeletonModifier(
     isSkeleton: () -> Boolean,
 ): State<Modifier> {
     val shimmer = rememberShimmer(shimmerBounds = ShimmerBounds.Window)
-    val isSkeletonAnimated by rememberTargetAlphaCrossSade { isSkeleton() }
+    val isSkeletonAnimated by rememberTargetCrossFaded { isSkeleton() }
     return rememberDerivedStateOf {
         val modifier = Modifier.alpha(isSkeletonAnimated.alpha)
         if (!isSkeletonAnimated.current) {

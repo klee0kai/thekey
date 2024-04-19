@@ -15,7 +15,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.github.klee0kai.thekey.app.domain.model.HistPassw
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
-import com.github.klee0kai.thekey.app.utils.views.animateTargetAlphaAsState
+import com.github.klee0kai.thekey.app.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.app.utils.views.skeleton
 
 @Composable
@@ -23,7 +23,7 @@ fun HistPasswItem(
     modifier: Modifier = Modifier,
     passw: HistPassw = HistPassw(),
 ) {
-    val passwAnimated by animateTargetAlphaAsState(target = passw)
+    val passwAnimated by animateTargetCrossFaded(target = passw)
 
     ConstraintLayout(
         modifier = modifier

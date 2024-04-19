@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.components.bottomsheet.SimpleBottomSheetScaffoldState
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
-import com.github.klee0kai.thekey.app.utils.views.animateTargetAlphaAsState
+import com.github.klee0kai.thekey.app.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
 
 object AppBarConst {
@@ -48,7 +48,7 @@ fun AppBarStates(
     actions: @Composable RowScope.() -> Unit = {},
     titleContent: (@Composable (titleId: Int) -> Unit)? = null,
 ) {
-    val animateTargetAlpha by animateTargetAlphaAsState(target = titleId.value)
+    val animateTargetAlpha by animateTargetCrossFaded(target = titleId.value)
     val appBarAlpha by animateAlphaAsState(isVisible)
     val isNotVisible by rememberDerivedStateOf { appBarAlpha <= 0 }
 

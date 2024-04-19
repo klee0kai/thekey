@@ -74,7 +74,7 @@ import com.github.klee0kai.thekey.app.utils.views.currentViewSizeState
 import com.github.klee0kai.thekey.app.utils.views.pxToDp
 import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.app.utils.views.rememberSkeletonModifier
-import com.github.klee0kai.thekey.app.utils.views.rememberTargetAlphaCrossSade
+import com.github.klee0kai.thekey.app.utils.views.rememberTargetCrossFaded
 import com.github.klee0kai.thekey.app.utils.views.toPx
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -93,8 +93,8 @@ fun EditNoteScreen(
     }
     val titles = listOf(stringResource(id = R.string.account), stringResource(id = R.string.otp))
     val state by presenter.state.collectAsState(key = Unit, initial = EditNoteState(isSkeleton = true))
-    val isSaveAvailable by rememberTargetAlphaCrossSade { state.isSaveAvailable }
-    val isRemoveAvailable by rememberTargetAlphaCrossSade { state.isRemoveAvailable }
+    val isSaveAvailable by rememberTargetCrossFaded { state.isSaveAvailable }
+    val isRemoveAvailable by rememberTargetCrossFaded { state.isRemoveAvailable }
     val skeletonModifier by rememberSkeletonModifier { state.isSkeleton }
 
     val pagerHeight = if (!state.isEditMode) SecondaryTabsConst.allHeight else 0.dp
@@ -106,7 +106,7 @@ fun EditNoteScreen(
     }
     val scrollState = rememberScrollState()
     val viewSize by currentViewSizeState()
-    val saveInToolbarAlpha by rememberTargetAlphaCrossSade { viewSize.height in 1.dp..700.dp }
+    val saveInToolbarAlpha by rememberTargetCrossFaded { viewSize.height in 1.dp..700.dp }
 
     BackHandler(state.otpMethodExpanded || state.otpAlgoExpanded) {
         presenter.input {

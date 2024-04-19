@@ -82,12 +82,10 @@ fun SecondaryTabs(
         titles.forEachIndexed { index, title ->
             val selected = selectedTab == index
             val textColor by animateColorAsState(
-                targetValue = if (selected)
-                    MaterialTheme.colorScheme.secondary else
-                    LocalColorScheme.current.textButtonColors.contentColor,
+                targetValue = if (selected) MaterialTheme.colorScheme.secondary
+                else LocalColorScheme.current.textButtonColors.contentColor,
                 label = "tab title color",
             )
-
 
             Tab(
                 selected = selected,

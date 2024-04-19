@@ -30,7 +30,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
 import com.github.klee0kai.thekey.app.ui.designkit.color.KeyColor
 import com.github.klee0kai.thekey.app.ui.notegroup.model.SelectedNote
 import com.github.klee0kai.thekey.app.utils.common.Dummy
-import com.github.klee0kai.thekey.app.utils.views.animateTargetAlphaAsState
+import com.github.klee0kai.thekey.app.utils.views.animateTargetCrossFaded
 
 
 @Composable
@@ -41,8 +41,8 @@ fun SelectedNoteItem(
     overlayContent: @Composable () -> Unit = {},
 ) {
     val colorScheme = LocalColorScheme.current
-    val animatedNote by animateTargetAlphaAsState(note)
-    val icon by animateTargetAlphaAsState(target = if (note.selected) Icons.Default.Check else Icons.Filled.Add)
+    val animatedNote by animateTargetCrossFaded(note)
+    val icon by animateTargetCrossFaded(target = if (note.selected) Icons.Default.Check else Icons.Filled.Add)
 
     ConstraintLayout(
         modifier = modifier
