@@ -6,8 +6,8 @@ import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.navigation.PermissionsRouter
 import com.github.klee0kai.thekey.app.ui.navigation.RouterContext
 import com.github.klee0kai.thekey.app.ui.navigation.model.RequestPermResult
-import com.github.klee0kai.thekey.app.utils.common.singleEventFlow
 import com.github.klee0kai.thekey.app.utils.coroutine.shareLatest
+import com.github.klee0kai.thekey.app.utils.coroutine.singleEventFlow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.first
@@ -26,7 +26,7 @@ class PermissionRouterImpl(context: RouterContext) : PermissionsRouter, RouterCo
 
         val allGranted = perms.all { permission ->
             ContextCompat.checkSelfPermission(
-                DI.app(),
+                DI.ctx(),
                 permission
             ) == PackageManager.PERMISSION_GRANTED
         }

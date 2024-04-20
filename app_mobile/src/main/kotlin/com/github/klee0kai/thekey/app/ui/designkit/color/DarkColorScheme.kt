@@ -1,5 +1,6 @@
 package com.github.klee0kai.thekey.app.ui.designkit.color
 
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.ui.graphics.Color
 
@@ -14,14 +15,24 @@ class DarkColorScheme : CommonColorScheme {
     private val whiteColor = Color.White
     private val grayColor = Color(0xFFB7B7B7)
 
-    private val violet = SurfaceScheme(Color(0xFF837AE8), whiteColor)
-    private val turquoise = SurfaceScheme(Color(0xFF7AE8E8), whiteColor)
-    private val pink = SurfaceScheme(Color(0xFFE87AD6), whiteColor)
-    private val orange = SurfaceScheme(Color(0xFFDC8938), whiteColor)
-    private val coral = SurfaceScheme(Color(0xFFE87A7A), whiteColor)
+    override val deleteColor: Color = Color.Red
+    override val navigationBoard = NavigationBoardColors(
+        headerContainerColor = Color(0xFF3A3D52),
+        bodyContentColor = Color(0xFF1C1D27),
+    )
+    override val textButtonColors = ButtonColors(
+        contentColor = Color(0xffB7B7B7),
+        containerColor = Color.Transparent,
+        disabledContainerColor = Color(0xffB7B7B7),
+        disabledContentColor = Color.Transparent,
+    )
 
-
-    override val colorsGroupCollection = listOf(violet, turquoise, pink, orange, coral)
+    override val noColor = SurfaceScheme(grayColor, whiteColor)
+    override val violet = SurfaceScheme(Color(0xFF837AE8), whiteColor)
+    override val turquoise = SurfaceScheme(Color(0xFF7AE8E8), whiteColor)
+    override val pink = SurfaceScheme(Color(0xFFE87AD6), whiteColor)
+    override val orange = SurfaceScheme(Color(0xFFDC8938), whiteColor)
+    override val coral = SurfaceScheme(Color(0xFFE87A7A), whiteColor)
 
     override val androidColorScheme = darkColorScheme(
         primary = turquoise.surfaceColor,
@@ -50,14 +61,16 @@ class DarkColorScheme : CommonColorScheme {
         inverseOnSurface = blackColor,
     )
 
-    override fun surfaceScheme(group: ColoredStorageGroup): SurfaceScheme =
-        when (group) {
-            ColoredStorageGroup.VIOLET -> violet
-            ColoredStorageGroup.TURQUOISE -> turquoise
-            ColoredStorageGroup.PINK -> pink
-            ColoredStorageGroup.ORANGE -> orange
-            ColoredStorageGroup.CORAL -> coral
-        }
+    override val colorsGroupCollection = listOf(violet, turquoise, pink, orange, coral)
 
+    override fun surfaceScheme(group: KeyColor): SurfaceScheme =
+        when (group) {
+            KeyColor.NOCOLOR -> noColor
+            KeyColor.VIOLET -> violet
+            KeyColor.TURQUOISE -> turquoise
+            KeyColor.PINK -> pink
+            KeyColor.ORANGE -> orange
+            KeyColor.CORAL -> coral
+        }
 
 }

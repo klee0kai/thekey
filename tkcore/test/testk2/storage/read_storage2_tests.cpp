@@ -47,6 +47,17 @@ TEST(ReadStorage2, ReadNotes) {
 
 
     // THEN
+    const auto &groups = storage->colorGroups(TK2_GET_NOTE_INFO);
+    auto orangeGroup = std::find_if(groups.begin(), groups.end(), [](const DecryptedColorGroup &it) {
+        return it.color == ORANGE;
+    });
+    auto violetGroup = std::find_if(groups.begin(), groups.end(), [](const DecryptedColorGroup &it) {
+        return it.color == VIOLET;
+    });
+    auto pinkGroup = std::find_if(groups.begin(), groups.end(), [](const DecryptedColorGroup &it) {
+        return it.color == PINK;
+    });
+
     const auto &notes = storage->notes();
     ASSERT_EQ(3, notes.size());
 
@@ -55,8 +66,8 @@ TEST(ReadStorage2, ReadNotes) {
     ASSERT_EQ("some_user_login", note->login);
     ASSERT_EQ("somesite_desc", note->description);
     ASSERT_EQ(0, note->history.size());
-    ASSERT_EQ(ORANGE, note->color);
-    ASSERT_EQ(1709490427, note->genTime);
+    ASSERT_EQ(orangeGroup->id, note->colorGroupId);
+    ASSERT_EQ(1711897865, note->genTime);
     ASSERT_TRUE(note->passw.empty()) << "read without passw ";
 
     note = storage->note(notes[1].id, TK2_GET_NOTE_INFO);
@@ -64,8 +75,8 @@ TEST(ReadStorage2, ReadNotes) {
     ASSERT_EQ("person@email.su", note->login);
     ASSERT_EQ("desc", note->description);
     ASSERT_EQ(0, note->history.size());
-    ASSERT_EQ(VIOLET, note->color);
-    ASSERT_EQ(1709490429, note->genTime);
+    ASSERT_EQ(violetGroup->id, note->colorGroupId);
+    ASSERT_EQ(1711897868, note->genTime);
     ASSERT_TRUE(note->passw.empty()) << "read without passw ";
 }
 
@@ -77,6 +88,11 @@ TEST(ReadStorage2, ReadOtpNotes) {
     ASSERT_FALSE(error);
 
     // THEN
+    const auto &groups = storage->colorGroups(TK2_GET_NOTE_INFO);
+    auto pinkGroup = std::find_if(groups.begin(), groups.end(), [](const DecryptedColorGroup &it) {
+        return it.color == PINK;
+    });
+
     auto otpNotes = storage->otpNotes(TK2_GET_NOTE_INFO);
     ASSERT_EQ(3, otpNotes.size());
 
@@ -85,8 +101,8 @@ TEST(ReadStorage2, ReadOtpNotes) {
     ASSERT_EQ("alice@google.com", otpNote.name);
     ASSERT_EQ("Example", otpNote.issuer);
     ASSERT_EQ("JBSWY3DPEHPK3PXP", base32::encode(otpInfo.secret, true));
-    ASSERT_EQ(0, otpNote.color);
-    ASSERT_EQ(1709490431, otpNote.createTime);
+    ASSERT_EQ(0, otpNote.colorGroupId);
+    ASSERT_EQ(1711897870, otpNote.createTime);
 
 
     otpNote = otpNotes[1];
@@ -95,8 +111,8 @@ TEST(ReadStorage2, ReadOtpNotes) {
     ASSERT_EQ("sha1Issuer", otpNote.issuer);
     ASSERT_EQ("WDW2ZCDQYHFXYV4G7WB6FG2WNBXKEGUJRW3QLE634JP43J4TCGTCPCKAAVISY6A7BNKYULEUXQ5YC2JPG7QXFFMDRIRJMESQNYWZ72A",
               base32::encode(otpInfo.secret, true));
-    ASSERT_EQ(PINK, otpNote.color);
-    ASSERT_EQ(1709490431, otpNote.createTime);
+    ASSERT_EQ(pinkGroup->id, otpNote.colorGroupId);
+    ASSERT_EQ(1711897870, otpNote.createTime);
 
 }
 
@@ -112,15 +128,15 @@ TEST(ReadStorage2, ReadGenHistory) {
     ASSERT_EQ(3, genHist.size());
 
     auto genHistIt = genHist.begin();
-    ASSERT_EQ("dvjGse", genHistIt->passw);
-    ASSERT_EQ(1709490434, genHistIt->genTime);
+    ASSERT_EQ("DjRb3N", genHistIt->passw);
+    ASSERT_EQ(1711897873, genHistIt->genTime);
 
     genHistIt++;
-    ASSERT_EQ("'!.j=#Px", genHistIt->passw);
-    ASSERT_EQ(1709490434, genHistIt->genTime);
+    ASSERT_EQ("#Y8?\\=.B", genHistIt->passw);
+    ASSERT_EQ(1711897873, genHistIt->genTime);
 
-    ASSERT_EQ("'!.j=#Px", genHistIt->passw);
-    ASSERT_EQ(1709490434, genHistIt->genTime);
+    ASSERT_EQ("#Y8?\\=.B", genHistIt->passw);
+    ASSERT_EQ(1711897873, genHistIt->genTime);
 }
 
 TEST(ReadStorage2, YaotpGenTest) {

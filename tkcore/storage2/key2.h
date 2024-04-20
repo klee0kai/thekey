@@ -15,12 +15,16 @@
 #define TK2_GET_NOTE_INFO 0x01
 #define TK2_GET_NOTE_PASSWORD 0x02
 #define TK2_GET_NOTE_HISTORY_FULL 0x04
-#define TK2_GET_NOTE_FULL TK2_GET_NOTE_INFO|TK2_GET_NOTE_PASSWORD|TK2_GET_NOTE_HISTORY_FULL
+#define TK2_GET_NOTE_INCREMENT_HOTP 0x8
+#define TK2_GET_NOTE_FULL TK2_GET_NOTE_INFO| TK2_GET_NOTE_PASSWORD | TK2_GET_NOTE_HISTORY_FULL
 
 // set flags 0xFF00
 #define TK2_SET_NOTE_FORCE 0x100
-#define TK2_SET_NOTE_TRACK_HISTORY 0x200
-#define TK2_SET_NOTE_FULL_HISTORY 0x400
+#define TK2_SET_NOTE_INFO 0x200
+#define TK2_SET_NOTE_PASSW 0x400
+#define TK2_SET_NOTE_TRACK_HISTORY 0x800
+#define TK2_SET_NOTE_FULL_HISTORY 0x1000
+#define TK2_SET_NOTE_SAVE_TO_FILE 0x2000
 
 namespace thekey_v2 {
 
@@ -57,6 +61,15 @@ namespace thekey_v2 {
         int invalidSectionsContains;
     };
 
+    struct DecryptedColorGroup {
+        // color unic id
+        long long id;
+
+        // editable
+        KeyColor color;
+        std::string name;
+    };
+
     struct DecryptedPassw {
         // note unic id
         long long id;
@@ -64,7 +77,6 @@ namespace thekey_v2 {
         // editable
         std::string passw;
         uint64_t genTime;
-        KeyColor color;
     };
 
     struct DecryptedNote {
@@ -76,7 +88,7 @@ namespace thekey_v2 {
         std::string login;
         std::string passw;
         std::string description;
-        KeyColor color;
+        long long colorGroupId;
 
         // not editable
         uint64_t genTime;
@@ -90,20 +102,26 @@ namespace thekey_v2 {
         // editable
         std::string issuer;
         std::string name;
+        std::string secret;
+        key_otp::OtpMethod method;
+        key_otp::OtpAlgo algo;
+        uint32_t digits;
+        uint32_t interval;
+        uint32_t counter;
 
         // no have in export
         std::string pin;
-        KeyColor color;
+        long long colorGroupId;
 
         // not editable
         std::string otpPassw;
-        key_otp::OtpMethod method;
-        uint32_t interval;
         uint64_t createTime;
     };
 
     struct DataSnapshot {
         int idCounter;
+        int colorGroupIdCounter;
+        std::shared_ptr<std::list<CryptedColorGroupFlat>> cryptedColorGroups;
         std::shared_ptr<std::list<CryptedNote>> cryptedNotes;
         std::shared_ptr<std::list<CryptedOtpInfo>> cryptedOtpNotes;
         std::shared_ptr<std::list<CryptedPassword>> cryptedGeneratedPassws;
@@ -145,6 +163,35 @@ namespace thekey_v2 {
                 const std::function<void(const float &)> &progress = {}
         );
 
+        // ---- group api -----
+        /**
+         * get all color groups in storage
+         * @return
+         */
+        virtual std::vector<DecryptedColorGroup> colorGroups(uint flags = TK2_GET_NOTE_PTR_ONLY);
+
+        /**
+         * create new color group
+         * @param group
+         * @return
+         */
+        virtual std::shared_ptr<DecryptedColorGroup> createColorGroup(const thekey_v2::DecryptedColorGroup &group = {});
+
+        /**
+         * set color dGroup
+         * @param dGroup
+         * @return
+         */
+        virtual int setColorGroup(const thekey_v2::DecryptedColorGroup &dGroup);
+
+        /**
+         * remove color group
+         * @param colorGroupId
+         * @return
+         */
+        virtual int removeColorGroup(long long colorGroupId);
+
+
         // ---- notes api -----
         /**
          * read all notes
@@ -165,7 +212,7 @@ namespace thekey_v2 {
         /**
          * @return created note. Has id
          */
-        virtual std::shared_ptr<DecryptedNote> createNote(const DecryptedNote &note = {});
+        virtual std::shared_ptr<DecryptedNote> createNote(const DecryptedNote &note = {}, uint flags = 0);
 
         /**
          *
@@ -173,7 +220,8 @@ namespace thekey_v2 {
          * @param flags TK2_SET_NOTE_FORCE / TK2_SET_NOTE_TRACK_HISTORY
          * @return
          */
-        virtual int setNote(const DecryptedNote &dnote, uint flags = TK2_SET_NOTE_TRACK_HISTORY);
+        virtual int
+        setNote(const DecryptedNote &dnote, uint flags = TK2_SET_NOTE_TRACK_HISTORY | TK2_SET_NOTE_SAVE_TO_FILE);
 
         virtual int removeNote(long long id);
 
@@ -187,6 +235,13 @@ namespace thekey_v2 {
          */
         virtual std::list<DecryptedOtpNote> createOtpNotes(const std::string &uri, uint flags = TK2_GET_NOTE_PTR_ONLY);
 
+        /**
+         * create new OTP
+         * @param dnote
+         * @param flags
+         * @return
+         */
+        virtual std::shared_ptr<DecryptedOtpNote> createOtpNote(const DecryptedOtpNote &dnote = {}, uint flags = 0);
 
         /**
          * Edit OTP dnote OTP dnote from uri

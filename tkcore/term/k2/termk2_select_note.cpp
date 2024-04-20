@@ -16,11 +16,17 @@ using namespace term;
 
 SelectedNote thekey_v2::ask_select_note(int flags) {
     auto index = 0;
+    auto selectColorGroup = (flags & NOTE_SELECT_COLOR_GROUP) != 0;
     auto selectSimpleNotes = (flags & NOTE_SELECT_SIMPLE) != 0;
     auto selectOtpNotes = (flags & NOTE_SELECT_OTP) != 0;
 
+    auto groups = selectColorGroup ? storageV2->colorGroups(TK2_GET_NOTE_INFO) : vector<DecryptedColorGroup>{};
     auto notes = selectSimpleNotes ? storageV2->notes(TK2_GET_NOTE_INFO) : vector<DecryptedNote>{};
     auto otpNotes = selectOtpNotes ? storageV2->otpNotes(TK2_GET_NOTE_INFO) : vector<DecryptedOtpNote>{};
+
+    for (const auto &group: groups) {
+        cout << ++index << ") " << to_string(group.color) << " - " << group.name << endl;
+    }
     for (const auto &note: notes) {
         cout << ++index << ") '" << note.site << "' / '" << note.login << "' " << endl;
     }
@@ -28,12 +34,17 @@ SelectedNote thekey_v2::ask_select_note(int flags) {
         cout << ++index << ") '" << note.issuer << "' / '" << note.name << "' " << endl;
     }
     auto noteIndex = term::ask_int_from_term("Select note. Write index: ");
-    if (noteIndex < 1 || noteIndex > notes.size() + otpNotes.size()) {
+    if (noteIndex < 1 || noteIndex > groups.size() + notes.size() + otpNotes.size()) {
         cerr << "incorrect index " << noteIndex << endl;
         return {};
     }
     noteIndex--;
-    if (noteIndex < notes.size()) {
+    if (noteIndex < groups.size()) {
+        return {
+                .type = Group,
+                .notePtr = notes[noteIndex].id
+        };
+    } else if (noteIndex < notes.size()) {
         return {
                 .type = Simple,
                 .notePtr =  notes[noteIndex].id

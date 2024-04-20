@@ -23,11 +23,12 @@ static auto now = time(NULL);
 
 TEST(Storage1, CreateStorage) {
     // GIVEN
-    auto error = thekey_v1::createStorage({
-                                                  .file = "ts_v1.ckey",
-                                                  .name = "ts_v1",
-                                                  .description ="test_storage_version_1"
-                                          });
+    auto error = thekey_v1::createStorage(
+            {
+                    .file = "ts_v1.ckey",
+                    .name = "ts_v1",
+                    .description ="test_storage_version_1"
+            });
     ASSERT_FALSE(error);
 
     auto storage = thekey_v1::storage("ts_v1.ckey", "somepsws");
@@ -96,7 +97,6 @@ TEST(Storage1, CreateStorage) {
         genHistIt++;
         expectGenPasswIt++;
     }
-
 }
 
 // RUN AFTER Storage1::CreateStorage
@@ -130,7 +130,7 @@ TEST(Storage1, EditPassw) {
     ASSERT_TRUE(note->history.front().genTime - now < TIME_TOLERANCE);
 
 
-    note = storage->note(notesPtrs[1].notePtr, TK1_GET_NOTE_PASSWORD|TK1_GET_NOTE_INFO);
+    note = storage->note(notesPtrs[1].notePtr, TK1_GET_NOTE_PASSWORD | TK1_GET_NOTE_INFO);
     ASSERT_EQ("site_2.vd.rv", note->site);
     ASSERT_EQ("user_super_login", note->login);
     ASSERT_EQ("@31!!12@", note->passw);
@@ -149,7 +149,6 @@ TEST(Storage1, EditPassw) {
         genHistIt++;
         expectGenPasswIt++;
     }
-
 }
 
 
@@ -243,10 +242,7 @@ TEST(Storage1, ReadStorageIcorrectPassw) {
         genHistIt++;
         expectGenPasswIt++;
     }
-
 }
-
-
 
 // RUN AFTER Storage1::EditPassw
 TEST(Storage1, EditStorage) {

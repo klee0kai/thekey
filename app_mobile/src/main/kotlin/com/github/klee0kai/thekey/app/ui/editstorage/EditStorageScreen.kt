@@ -4,8 +4,7 @@ package com.github.klee0kai.thekey.app.ui.editstorage
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -20,7 +19,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -28,6 +26,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.onFocusChanged
@@ -41,11 +40,11 @@ import androidx.constraintlayout.compose.Dimension
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
+import com.github.klee0kai.thekey.app.engine.model.Storage
 import com.github.klee0kai.thekey.app.helpers.path.appendTKeyFormat
 import com.github.klee0kai.thekey.app.helpers.path.removeTKeyFormat
-import com.github.klee0kai.thekey.app.model.Storage
-import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarConst
-import com.github.klee0kai.thekey.app.ui.designkit.components.AppBarStates
+import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarConst
+import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.app.utils.coroutine.awaitSec
 import com.github.klee0kai.thekey.app.utils.views.AutoFillList
 import com.github.klee0kai.thekey.app.utils.views.Keyboard
@@ -60,7 +59,7 @@ import com.github.klee0kai.thekey.app.utils.views.toTransformationText
 @Preview
 @Composable
 fun EditStorageScreen(
-    path: String? = null,
+    path: String = "",
 ) {
     val navigator = remember { DI.router() }
     val presenter = remember { DI.editStoragePresenter(StorageIdentifier(path)) }
@@ -225,7 +224,7 @@ fun EditStorageScreen(
     }
 
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(
@@ -235,26 +234,17 @@ fun EditStorageScreen(
                 end = 16.dp
             ),
     ) {
-        Spacer(modifier = Modifier.weight(1f))
-
-        SnackbarHost(
-            hostState = DI.snackbarHostState(),
-            modifier = Modifier.fillMaxWidth()
-        )
-
         if (bottomSaveButton) {
             FilledTonalButton(
                 modifier = Modifier
+                    .align(Alignment.BottomCenter)
                     .fillMaxWidth(),
-                onClick = {
-                    presenter.save(storage)
-                }
+                onClick = { presenter.save(storage) }
             ) {
                 Text(stringResource(R.string.save))
             }
         }
     }
-
 
 
     AppBarStates(
@@ -284,6 +274,4 @@ fun EditStorageScreen(
             }
         }
     ) { Text(text = stringResource(id = presenter.titleRes)) }
-
-
 }

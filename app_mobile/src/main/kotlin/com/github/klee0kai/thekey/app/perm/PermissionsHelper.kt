@@ -3,6 +3,7 @@ package com.github.klee0kai.thekey.app.perm
 import android.os.Build
 import com.github.klee0kai.thekey.app.perm.impl.ManageStoragePermUnit
 import com.github.klee0kai.thekey.app.perm.impl.SimplePermUnit
+import com.github.klee0kai.thekey.app.perm.impl.SimplePermUnit.Companion.Camera
 import com.github.klee0kai.thekey.app.perm.impl.SimplePermUnit.Companion.WriteExternalStorage
 import com.github.klee0kai.thekey.app.ui.navigation.model.TextProvider
 import kotlinx.collections.immutable.toImmutableList
@@ -20,7 +21,11 @@ open class PermissionsHelper {
             add(SimplePermUnit(listOf(WriteExternalStorage)))
         }
 
-    }.toImmutableList()
+    }
+
+    open fun cameraPermissions() = buildList {
+        add(SimplePermUnit(listOf(Camera)))
+    }
 
     /**
      * check all permissions is granted

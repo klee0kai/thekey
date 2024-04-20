@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 
 fun ActivityRouter.navigateAppSettings(): Flow<ActivityResult> {
     val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-    val uri = Uri.fromParts("package", DI.app().packageName, null)
+    val uri = Uri.fromParts("package", DI.ctx().packageName, null)
     intent.setData(uri)
     return navigate(intent)
 }
@@ -22,6 +22,6 @@ fun ActivityRouter.navigateAppSettings(): Flow<ActivityResult> {
 fun ActivityRouter.navigateManageExternalStorage(): Flow<ActivityResult> {
     val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
     intent.addCategory(Intent.CATEGORY_DEFAULT)
-    intent.data = Uri.parse("package:${DI.app().packageName}")
+    intent.data = Uri.parse("package:${DI.ctx().packageName}")
     return navigate(intent)
 }

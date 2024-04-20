@@ -12,8 +12,8 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.ConfirmDialogResult
 import com.github.klee0kai.thekey.app.ui.navigation.model.TextProvider
 import com.github.klee0kai.thekey.app.ui.navigation.navigate
 import com.github.klee0kai.thekey.app.ui.navigation.navigateAppSettings
-import com.github.klee0kai.thekey.app.utils.common.singleEventFlow
 import com.github.klee0kai.thekey.app.utils.coroutine.shareLatest
+import com.github.klee0kai.thekey.app.utils.coroutine.singleEventFlow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.last
 
@@ -25,7 +25,7 @@ class SimplePermUnit(
     val router by lazy { DI.router() }
 
     val activity get() = DI.activity()
-    val app get() = DI.app()
+    val app get() = DI.ctx()
 
     override fun isGranted(): Boolean = permissions.all { perm ->
         ActivityCompat.checkSelfPermission(app, perm.perm) == PackageManager.PERMISSION_GRANTED
@@ -84,6 +84,11 @@ class SimplePermUnit(
         val WriteExternalStorage = SimplePerm(
             perm = Manifest.permission.WRITE_EXTERNAL_STORAGE,
             desc = R.string.writeExternalStorage,
+        )
+
+        val Camera = SimplePerm(
+            perm = Manifest.permission.CAMERA,
+            desc = R.string.camera_permission,
         )
 
     }

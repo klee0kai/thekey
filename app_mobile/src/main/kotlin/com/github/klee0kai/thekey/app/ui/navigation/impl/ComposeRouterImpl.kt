@@ -115,7 +115,7 @@ class ComposeRouterImpl(context: RouterContext) : ComposeRouter, RouterContext b
         }
     }
 
-    override suspend fun awaitScreenEvent(destination: Destination) {
+    override suspend fun awaitScreenClose(destination: Destination) {
         // wait screen open
         navChanges.filter { change ->
             change.currentNavStack.any { it.destination == destination }

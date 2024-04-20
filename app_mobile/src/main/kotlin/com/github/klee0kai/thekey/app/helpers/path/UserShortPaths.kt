@@ -1,12 +1,6 @@
 package com.github.klee0kai.thekey.app.helpers.path
 
 import android.os.Environment
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.input.OffsetMapping
-import androidx.compose.ui.text.input.TransformedText
-import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.withStyle
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.utils.common.runForEach
 import java.io.File
@@ -24,7 +18,7 @@ open class UserShortPaths {
 
     open val shortPaths by lazy {
         listOf(
-            ShortPath("appdata", DI.app().applicationInfo.dataDir),
+            ShortPath("appdata", DI.ctx().applicationInfo.dataDir),
             ShortPath(
                 "phoneStorage",
                 Environment.getExternalStorageDirectory().absolutePath

@@ -555,10 +555,12 @@ std::shared_ptr<DecryptedPassw> KeyStorageV1::genPasswHistory(long long histPtr,
     dPassw.histPtr = histPtr;
     dPassw.genTime = hist->genTime;
 
-    unsigned char passwBuffer[PASSW_LEN];
-    memset(passwBuffer, 0, PASSW_LEN);
-    decode(passwBuffer, hist->passw, PASSW_LEN, ctx->keyForGenPassw);
-    dPassw.passw = (char *) passwBuffer;
+    if (flags & TK1_GET_NOTE_HISTORY_FULL) {
+        unsigned char passwBuffer[PASSW_LEN];
+        memset(passwBuffer, 0, PASSW_LEN);
+        decode(passwBuffer, hist->passw, PASSW_LEN, ctx->keyForGenPassw);
+        dPassw.passw = (char *) passwBuffer;
+    }
 
     return make_shared<DecryptedPassw>(dPassw);
 }
@@ -639,6 +641,4 @@ static int decode(unsigned char *outText, const unsigned char *inText, unsigned 
     memset(saltedText, 0, buflen);
     delete[]saltedText;
     return buflen;
-
-
 }

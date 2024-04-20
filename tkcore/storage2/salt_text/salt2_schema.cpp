@@ -206,7 +206,6 @@ uint32_t thekey_v2::find_scheme_id(const key_salt::wide_string &str, const int &
                            [str, minLen](const EncodingScheme &schema) {
                                return schema.all_contains(str) && schema.len() > minLen;
                            });
-
     if (it != encodingSchemas.end()) {
         return it->id;
     }

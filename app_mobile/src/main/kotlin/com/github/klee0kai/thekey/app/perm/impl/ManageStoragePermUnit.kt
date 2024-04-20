@@ -13,8 +13,8 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.ConfirmDialogResult
 import com.github.klee0kai.thekey.app.ui.navigation.model.TextProvider
 import com.github.klee0kai.thekey.app.ui.navigation.navigate
 import com.github.klee0kai.thekey.app.ui.navigation.navigateManageExternalStorage
-import com.github.klee0kai.thekey.app.utils.common.singleEventFlow
 import com.github.klee0kai.thekey.app.utils.coroutine.shareLatest
+import com.github.klee0kai.thekey.app.utils.coroutine.singleEventFlow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.last
 
@@ -24,7 +24,7 @@ class ManageStoragePermUnit : PermUnit {
     val scope by lazy { DI.mainThreadScope() }
     val router by lazy { DI.router() }
 
-    val app get() = DI.app()
+    val app get() = DI.ctx()
 
     override fun isGranted(): Boolean {
         return ActivityCompat.checkSelfPermission(app, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED

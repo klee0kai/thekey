@@ -20,13 +20,14 @@ add_library(crypt-storage-lib SHARED
         ${BROOKLYN_SRC}
         find-storages.cpp
         edit_storage.cpp
-        cryp_storage.cpp
-        )
+        cryp_storage_v1.cpp
+        cryp_storage_v2.cpp
+)
 
 target_include_directories(crypt-storage-lib
         PUBLIC
         ${BROOKLYN_INCLUDE_DIRS}
-        )
+)
 
 target_link_libraries(crypt-storage-lib
         ${log-lib}
@@ -35,7 +36,7 @@ target_link_libraries(crypt-storage-lib
         key_storage1_static
         key_storage2_static
 
-        )
+)
 
 
 # for https://github.com/android/ndk/issues/517

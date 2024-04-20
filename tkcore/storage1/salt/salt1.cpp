@@ -17,7 +17,6 @@ using namespace key_salt;
 using namespace key_salt;
 
 #define SALT_IN_RING(x, max, ring) ( (x) + (ring) * rand((max) / (ring) ))
-#define TYPE_MAX(typeLen) ((1L << ( (typeLen) * 8L)) -1L)
 
 #define TEXT_DECODE_RESERVE_LEN 6 // extra unused bytes in the text
 
@@ -62,7 +61,7 @@ int key_salt::salt_text(unsigned char *out, const unsigned char *source, unsigne
     randmem(out, buflen);
 
     int olen = 0;
-    if ((olen = acsii_to_num(salted->saltText, source, true)) > 0) {
+    if ((olen = acsii_to_num(salted->saltText, source, true)) >= 0) {
         salted->coding = ENC_NUM_ONLY;
         salted->len = (size_t) olen;
         saltHeader(salted, lenRing);
@@ -102,7 +101,6 @@ int key_salt::desalt_text(unsigned char *out, const unsigned char *source, unsig
     size_t lenRing = buflen - SaltTextHeader_LEN - TEXT_DECODE_RESERVE_LEN;
     desaltgHeader(&salted, lenRing);
     memset(out, 0, buflen);
-
 
     switch (salted.coding) {
         case ENC_NUM_ONLY: {
@@ -254,17 +252,17 @@ static int num_to_acsii(unsigned char *out, const unsigned char *source, unsigne
 }
 
 void saltHeader(SaltTextHeader *header, size_t lenRing) {
-    long charMax = TYPE_MAX(sizeof(char));
-    long uint32Max = TYPE_MAX(sizeof(uint32_t));
+    u_char charMax = -1;
+    uint32_t uint32Max = -1;
 
-    header->lenCoding = (unsigned char) ((header->len <= PASSW_MAX_LEN && header->len >= PASSW_MIN_LEN)
-                                         ? ENC_LEN_PASSW : ENC_LEN_TEXT);
+    header->lenCoding = (unsigned char) ((header->len <= PASSW_MAX_LEN && header->len >= PASSW_MIN_LEN) ? ENC_LEN_PASSW : ENC_LEN_TEXT);
 
     header->coding = (unsigned char) SALT_IN_RING(header->coding, charMax, 5L);
-    if (header->lenCoding == ENC_LEN_PASSW)
+    if (header->lenCoding == ENC_LEN_PASSW) {
         header->len = (size_t) SALT_IN_RING(header->len - PASSW_MIN_LEN, uint32Max, PASSW_MAX_LEN - PASSW_MIN_LEN + 1);
-    else
+    } else {
         header->len = (size_t) SALT_IN_RING(header->len, uint32Max, lenRing);
+    }
 
     header->lenCoding = (unsigned char) SALT_IN_RING(header->lenCoding, charMax, 2L);
 }

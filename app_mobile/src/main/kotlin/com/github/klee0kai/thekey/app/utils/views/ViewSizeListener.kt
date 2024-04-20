@@ -1,6 +1,5 @@
 package com.github.klee0kai.thekey.app.utils.views
 
-import android.view.View
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State

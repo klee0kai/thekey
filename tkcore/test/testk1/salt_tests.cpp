@@ -76,5 +76,4 @@ TEST(SaltTests, SalteDesalt) {
 
     //  saltHeader salt not work
     ASSERT_FALSE(fmSaltIndex >= 1000);
-
 }

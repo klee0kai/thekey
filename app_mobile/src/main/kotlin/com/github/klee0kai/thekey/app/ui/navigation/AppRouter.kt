@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedDispatcher
 import androidx.annotation.StringRes
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
@@ -17,7 +18,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 
-interface AppRouter : RouterContext, ComposeRouter, SnackRouter, ActivityRouter, PermissionsRouter
+interface AppRouter : RouterContext, ComposeRouter, SnackRouter, NavBoardRouter, ActivityRouter, PermissionsRouter
 
 interface ComposeRouter {
 
@@ -27,7 +28,7 @@ interface ComposeRouter {
 
     fun <R> backWithResult(result: R, exitFromApp: Boolean = false): Boolean
 
-    suspend fun awaitScreenEvent(destination: Destination)
+    suspend fun awaitScreenClose(destination: Destination)
 
     fun back()
 
@@ -41,6 +42,16 @@ interface SnackRouter {
     suspend fun snack(message: String, duration: SnackbarDuration = SnackbarDuration.Short): SnackbarResult
 
     suspend fun snack(@StringRes message: Int, duration: SnackbarDuration = SnackbarDuration.Short)
+
+}
+
+interface NavBoardRouter {
+
+    fun isNavigationBoardIsOpen(): Boolean
+
+    suspend fun showNavigationBoard()
+
+    suspend fun hideNavigationBoard()
 
 }
 
@@ -64,6 +75,7 @@ interface PermissionsRouter {
 interface RouterContext {
 
     val snackbarHostState: SnackbarHostState
+    val navBoardState: DrawerState
     val navFullController: NavController<Destination>
     val navScreensController: NavController<Destination>
     val navDialogsController: NavController<Destination>

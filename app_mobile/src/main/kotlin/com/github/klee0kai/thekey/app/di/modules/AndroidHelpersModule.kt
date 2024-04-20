@@ -7,10 +7,10 @@ import com.github.klee0kai.thekey.app.ui.navigation.AppRouter
 import com.github.klee0kai.thekey.app.ui.navigation.impl.AppRouterImp
 
 @Module
-abstract class AndroidHelpersModule {
+open class AndroidHelpersModule {
 
     @Provide(cache = Provide.CacheType.Weak)
-    abstract fun permissionsHelper(): PermissionsHelper
+    open fun permissionsHelper(): PermissionsHelper = PermissionsHelper()
 
     @Provide(cache = Provide.CacheType.Weak)
     open fun router(): AppRouter = AppRouterImp()

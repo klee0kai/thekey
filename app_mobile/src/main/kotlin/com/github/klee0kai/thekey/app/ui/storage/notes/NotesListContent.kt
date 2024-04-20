@@ -2,100 +2,165 @@
 
 package com.github.klee0kai.thekey.app.ui.storage.notes
 
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
-import com.github.klee0kai.thekey.app.ui.navigation.LocalRouter
-import com.github.klee0kai.thekey.app.ui.navigation.model.NoteDestination
+import com.github.klee0kai.thekey.app.di.modules.PresentersModule
+import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
+import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
+import com.github.klee0kai.thekey.app.ui.navigation.identifier
+import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
+import com.github.klee0kai.thekey.app.ui.navigation.note
+import com.github.klee0kai.thekey.app.ui.navigation.otpNote
+import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenterDummy
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
+import com.github.klee0kai.thekey.app.utils.views.animateContentSizeProduction
+import com.github.klee0kai.thekey.app.utils.views.collectAsState
 
-@Preview
 @Composable
 fun NotesListContent(
     modifier: Modifier = Modifier,
-    storagePath: String = "",
+    args: StorageDestination = StorageDestination(),
     showStoragesTitle: Boolean = true,
 ) {
-    val presenter = remember { DI.storagePresenter(StorageIdentifier(storagePath)) }
-    val navigator = LocalRouter.current
-    val notes = presenter.notes().collectAsState(initial = listOf())
+    val presenter = remember { DI.storagePresenter(args.identifier()) }
+    val router = LocalRouter.current
+    val storageItems by presenter.filteredItems.collectAsState(key = Unit, initial = null)
+    val groups by presenter.filteredColorGroups.collectAsState(key = Unit, initial = emptyList())
     val titleAnimatedAlpha by animateAlphaAsState(showStoragesTitle)
 
-    if (notes.value.isEmpty()){
-        return
-    }
+    if (storageItems == null) return
+
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
+            .animateContentSizeProduction(),
     ) {
         item {
             Text(
                 text = stringResource(id = R.string.accounts),
                 style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
                 modifier = Modifier
                     .padding(start = 16.dp, top = 4.dp, bottom = 22.dp)
+                    .animateContentSizeProduction()
                     .alpha(titleAnimatedAlpha)
             )
         }
 
-        notes.value.forEach { note ->
-            item(key = note, contentType = note::class) {
-                var showMenu by remember { mutableStateOf(false) }
+        storageItems?.forEach { storageItem ->
+            val note = storageItem.note
+            val otp = storageItem.otp
 
-                Box(
-                    modifier = Modifier
-                        .animateItemPlacement(animationSpec = tween())
-                        .combinedClickable(
-                            onLongClick = {
-                                showMenu = true
-                            },
-                            onClick = {
-                                navigator.navigate(NoteDestination(path = storagePath, notePtr = note.ptnote))
-                            }
-                        )
+            if (note != null) {
+                item(
+                    contentType = note::class,
+                    key = note.ptnote
                 ) {
-                    ColoredNoteItem(note = note)
+                    var showMenu by remember { mutableStateOf(false) }
 
-                    DropdownMenu(
-                        offset = DpOffset(x = (-16).dp, y = 2.dp),
-                        expanded = showMenu,
-                        onDismissRequest = { showMenu = false }
-                    ) {
-                        DropdownMenuItem(
-                            modifier = Modifier.align(Alignment.End),
-                            text = { Text(text = stringResource(id = R.string.remove)) },
-                            onClick = {
-                                presenter.remove(note.ptnote)
-                                showMenu = false
+                    ColoredNoteItem(
+                        modifier = Modifier
+                            .animateContentSizeProduction()
+                            .combinedClickable(
+                                onLongClick = {
+                                    showMenu = true
+                                },
+                                onClick = {
+                                    router.navigate(args.note(notePtr = note.ptnote))
+                                }
+                            ),
+                        note = note,
+                        overlayContent = {
+                            DropdownMenu(
+                                offset = DpOffset(x = (-16).dp, y = 2.dp),
+                                expanded = showMenu,
+                                onDismissRequest = { showMenu = false }
+                            ) {
+
+                                NoteDropDownMenuContent(
+                                    colorGroups = groups,
+                                    selectedGroupId = note.group.id,
+                                    onColorGroupSelected = {
+                                        presenter.setColorGroup(notePt = note.ptnote, groupId = it.id)
+                                        showMenu = false
+                                    },
+                                    onEdit = {
+                                        router.navigate(args.note(note.ptnote))
+                                        showMenu = false
+                                    }
+                                )
                             }
-                        )
-                    }
+                        }
+                    )
+                }
+            }
+
+            if (otp != null) {
+                item(
+                    contentType = otp::class,
+                    key = otp.ptnote
+                ) {
+                    ColoredOtpNoteItem(
+                        modifier = Modifier
+                            .animateContentSizeProduction()
+                            .combinedClickable(
+                                onLongClick = {
+                                },
+                                onClick = {
+                                    router.navigate(args.otpNote(notePtr = otp.ptnote))
+                                }
+                            ),
+                        otp = otp,
+                        overlayContent = {
+
+                        }
+                    )
                 }
             }
         }
     }
+}
+
+
+@Preview
+@Composable
+private fun NotesListContentPreview() = AppTheme {
+    DI.initPresenterModule(object : PresentersModule() {
+        override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterDummy()
+    })
+    NotesListContent(
+        showStoragesTitle = false,
+    )
+}
+
+@Preview
+@Composable
+private fun NotesListContentTitlePreview() = AppTheme {
+    DI.initPresenterModule(object : PresentersModule() {
+        override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterDummy()
+    })
+    NotesListContent(
+        showStoragesTitle = true,
+    )
 }

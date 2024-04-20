@@ -51,15 +51,21 @@ void thekey_v2::login(const std::string &filePath) {
 
     it.cmd({"l", "list"}, "list storage notes", [&]() {
         if (!storageV2)return;
+        const auto &groups = storageV2->colorGroups(TK2_GET_NOTE_INFO);
+        for (const auto &group: groups) {
+            cout << "-------------------------------------------" << endl;
+            printGroup(group);
+        }
+
         for (const auto &note: storageV2->notes(TK2_GET_NOTE_INFO)) {
             cout << "-------------------------------------------" << endl;
-            printNote(note);
+            printNote(note, groups);
         }
         auto otpNotes = storageV2->otpNotes(TK2_GET_NOTE_INFO);
         if (!otpNotes.empty()) {
             cout << "------------------- otp -------------------" << endl;
             for (const auto &note: otpNotes) {
-                printNote(note);
+                printNote(note, groups);
                 cout << "-------------------------------------------" << endl;
             }
         } else {
@@ -69,11 +75,11 @@ void thekey_v2::login(const std::string &filePath) {
 
     it.cmd({"p", "passw"}, "print note password or OTP codes", [&]() {
         if (!storageV2)return;
-        const auto &select = ask_select_note();
+        const auto &select = ask_select_note(NOTE_SELECT_SIMPLE | NOTE_SELECT_OTP);
         switch (select.type) {
             case Simple: {
                 auto noteFull = storageV2->note(select.notePtr, TK2_GET_NOTE_FULL);
-                printNote(*noteFull);
+                printNote(*noteFull, storageV2->colorGroups(TK2_GET_NOTE_INFO));
                 break;
             }
             case Otp: {
@@ -106,6 +112,22 @@ void thekey_v2::login(const std::string &filePath) {
         }
     });
 
+    it.cmd({"createGroup"}, "create new color group", [&]() {
+        if (!storageV2)return;
+        for (int i = 0; i < KEY_COLOR_LEN; ++i) {
+            cout << i << ") " << to_string(KeyColor(i)) << endl;
+        }
+        auto color = ask_int_from_term("select color : ");
+        auto name = ask_from_term("group name: ");
+
+        auto dGroup = storageV2->createColorGroup(DecryptedColorGroup{
+                .color = KeyColor(color),
+                .name = name,
+        });
+
+        cout << "color group saved " << dGroup->id << endl;
+    });
+
     it.cmd({"create"}, "create new note", [&]() {
         if (!storageV2)return;
         auto site = ask_from_term("site : ");
@@ -123,6 +145,7 @@ void thekey_v2::login(const std::string &filePath) {
         cout << "note saved " << notePtr << endl;
     });
 
+
     it.cmd({"createOtp"}, "create new otp note", [&]() {
         if (!storageV2)return;
         auto uri = ask_from_term("input uri (otpauth or otpauth-migration schemas): ");
@@ -133,7 +156,7 @@ void thekey_v2::login(const std::string &filePath) {
     it.cmd({"edit"}, "edit note", [&]() {
         if (!storageV2)return;
 
-        const auto &selectOtp = ask_select_note();
+        const auto &selectOtp = ask_select_note(NOTE_SELECT_SIMPLE | NOTE_SELECT_OTP);
 
         switch (selectOtp.type) {
             case Simple:
@@ -157,9 +180,12 @@ void thekey_v2::login(const std::string &filePath) {
 
     it.cmd({"remove"}, "remove note", [&]() {
         if (!storageV2)return;
-        const auto &selectNote = ask_select_note();
+        const auto &selectNote = ask_select_note(NOTE_SELECT_COLOR_GROUP | NOTE_SELECT_SIMPLE | NOTE_SELECT_OTP);
 
-        if (selectNote.type == Simple) {
+        if (selectNote.type == Group) {
+            storageV2->removeColorGroup(selectNote.notePtr);
+            cout << "group removed" << endl;
+        } else if (selectNote.type == Simple) {
             storageV2->removeNote(selectNote.notePtr);
             cout << "note removed" << endl;
         } else if (selectNote.type == Otp) {

@@ -41,5 +41,4 @@ void for_each(std::list<T> &sList, const Predicate ptr) {
     std::for_each(sList.begin(), sList.end(), ptr);
 }
 
-
 #endif //THEKEY_COMMON_H

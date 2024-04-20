@@ -43,6 +43,9 @@ TEST(CreateStorage2, CreateStorage) {
     error = storage->readAll();
     ASSERT_FALSE(error);
 
+    auto violetGroup = storage->createColorGroup({.color = VIOLET, .name = "violet"});
+    auto pinkGroup = storage->createColorGroup({.color = PINK, .name = "pink"});
+    auto orangeGroup = storage->createColorGroup({.color = ORANGE, .name = "orange"});
 
     auto createNote = storage->createNote(
             {
@@ -50,7 +53,7 @@ TEST(CreateStorage2, CreateStorage) {
                     .login = "some_user_login",
                     .passw = "simpplepassw",
                     .description = "somesite_desc",
-                    .color = ORANGE,
+                    .colorGroupId = orangeGroup->id,
             });
 
     storage->createNote(
@@ -59,7 +62,7 @@ TEST(CreateStorage2, CreateStorage) {
                     .login = "person@email.su",
                     .passw = "12@21QW",
                     .description = "desc",
-                    .color = VIOLET,
+                    .colorGroupId = violetGroup->id,
             });
 
     storage->createNote(
@@ -75,14 +78,14 @@ TEST(CreateStorage2, CreateStorage) {
                             "secret=WDW2ZCDQYHFXYV4G7WB6FG2WNBXKEGUJRW3QLE634JP43J4TCGTCPCKAAVISY6A7BNKYULEUXQ5YC2JPG7QXFFMDRIRJMESQNYWZ72A"
                             "&issuer=sha1Issuer");
     auto otpNote = storage->otpNotes(TK2_GET_NOTE_INFO)[1];
-    otpNote.color = PINK;
+    otpNote.colorGroupId = pinkGroup->id;
     storage->setOtpNote(otpNote);
 
     auto createOtpNote = storage->createOtpNotes("otpauth://yaotp/user@yandex.ru"
                                                  "?secret=6SB2IKNM6OBZPAVBVTOHDKS4FAAAAAAADFUTQMBTRY&name=user",
                                                  TK2_GET_NOTE_INFO)
             .front();
-    createOtpNote.color = ORANGE;
+    createOtpNote.colorGroupId = orangeGroup->id;
     createOtpNote.pin = "5239";
     storage->setOtpNote(createOtpNote);
 
@@ -111,6 +114,17 @@ TEST(CreateStorage2, ReadNotes) {
 
 
     // THEN
+    const auto &groups = storage->colorGroups(TK2_GET_NOTE_INFO);
+    auto orangeGroup = std::find_if(groups.begin(), groups.end(), [](const DecryptedColorGroup &it) {
+        return it.color == ORANGE;
+    });
+    auto violetGroup = std::find_if(groups.begin(), groups.end(), [](const DecryptedColorGroup &it) {
+        return it.color == VIOLET;
+    });
+    auto pinkGroup = std::find_if(groups.begin(), groups.end(), [](const DecryptedColorGroup &it) {
+        return it.color == PINK;
+    });
+
     const auto &notes = storage->notes();
     ASSERT_EQ(3, notes.size());
 
@@ -119,7 +133,7 @@ TEST(CreateStorage2, ReadNotes) {
     ASSERT_EQ("some_user_login", note->login);
     ASSERT_EQ("somesite_desc", note->description);
     ASSERT_EQ(0, note->history.size());
-    ASSERT_EQ(ORANGE, note->color);
+    ASSERT_EQ(orangeGroup->id, note->colorGroupId);
     ASSERT_TRUE(note->genTime - now < 30)
                                 << "gen time incorrect now = " << now
                                 << " gen time " << note->genTime << endl;
@@ -130,7 +144,7 @@ TEST(CreateStorage2, ReadNotes) {
     ASSERT_EQ("person@email.su", note->login);
     ASSERT_EQ("desc", note->description);
     ASSERT_EQ(0, note->history.size());
-    ASSERT_EQ(VIOLET, note->color);
+    ASSERT_EQ(violetGroup->id, note->colorGroupId);
     ASSERT_TRUE(note->genTime - now < 30)
                                 << "gen time incorrect now = " << now
                                 << " gen time " << note->genTime << endl;
@@ -146,6 +160,12 @@ TEST(CreateStorage2, ReadOtpNotes) {
     ASSERT_FALSE(error);
 
     // THEN
+    // THEN
+    const auto &groups = storage->colorGroups(TK2_GET_NOTE_INFO);
+    auto pinkGroup = std::find_if(groups.begin(), groups.end(), [](const DecryptedColorGroup &it) {
+        return it.color == PINK;
+    });
+
     auto otpNotes = storage->otpNotes(TK2_GET_NOTE_INFO);
     ASSERT_EQ(3, otpNotes.size());
 
@@ -154,7 +174,7 @@ TEST(CreateStorage2, ReadOtpNotes) {
     ASSERT_EQ("alice@google.com", otpNote.name);
     ASSERT_EQ("Example", otpNote.issuer);
     ASSERT_EQ("JBSWY3DPEHPK3PXP", base32::encode(otpInfo.secret, true));
-    ASSERT_EQ(0, otpNote.color);
+    ASSERT_EQ(0, otpNote.colorGroupId);
     ASSERT_TRUE(otpNote.createTime - now < 30)
                                 << "gen time incorrect now = " << now
                                 << " createTime time " << otpNote.createTime << endl;
@@ -165,7 +185,7 @@ TEST(CreateStorage2, ReadOtpNotes) {
     ASSERT_EQ("sha1Issuer", otpNote.issuer);
     ASSERT_EQ("WDW2ZCDQYHFXYV4G7WB6FG2WNBXKEGUJRW3QLE634JP43J4TCGTCPCKAAVISY6A7BNKYULEUXQ5YC2JPG7QXFFMDRIRJMESQNYWZ72A",
               base32::encode(otpInfo.secret, true));
-    ASSERT_EQ(PINK, otpNote.color);
+    ASSERT_EQ(pinkGroup->id, otpNote.colorGroupId);
     ASSERT_TRUE(otpNote.createTime - now < 30)
                                 << "gen time incorrect now = " << now
                                 << " createTime time " << otpNote.createTime << endl;

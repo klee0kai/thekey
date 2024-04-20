@@ -2,8 +2,8 @@ package com.github.klee0kai.thekey.app.ui.storages
 
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.model.ColorGroup
-import com.github.klee0kai.thekey.app.model.ColoredStorage
+import com.github.klee0kai.thekey.app.domain.model.ColorGroup
+import com.github.klee0kai.thekey.app.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.app.ui.navigation.model.TextProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -21,7 +21,7 @@ class StoragesPresenter {
     private val rep = DI.foundStoragesRepositoryLazy()
     private val router = DI.router()
     private val perm = DI.permissionsHelperLazy()
-    private val scope = DI.mainThreadScope()
+    private val scope = DI.defaultThreadScope()
 
     private var searchingJob: Job? = null
     private var permissionAsked = false

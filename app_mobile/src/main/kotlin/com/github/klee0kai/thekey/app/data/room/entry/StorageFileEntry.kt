@@ -5,8 +5,8 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.github.klee0kai.thekey.app.data.room.dao.StorageFilesDao
-import com.github.klee0kai.thekey.app.model.ColoredStorage
-import com.github.klee0kai.thekey.app.model.Storage
+import com.github.klee0kai.thekey.app.domain.model.ColoredStorage
+import com.github.klee0kai.thekey.app.engine.model.Storage
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

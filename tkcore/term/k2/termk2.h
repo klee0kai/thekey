@@ -8,13 +8,15 @@
 #include "../def_header.h"
 #include "key2.h"
 
-#define NOTE_SELECT_SIMPLE 0x1
-#define NOTE_SELECT_OTP 0x2
+#define NOTE_SELECT_COLOR_GROUP 0x1
+#define NOTE_SELECT_SIMPLE 0x2
+#define NOTE_SELECT_OTP 0x4
 
 namespace thekey_v2 {
 
     enum SelectedNoteType {
         NoSelect,
+        Group,
         Simple,
         Otp,
     };
@@ -35,9 +37,13 @@ namespace thekey_v2 {
 
     SelectedNote ask_select_note(int flags = NOTE_SELECT_SIMPLE | NOTE_SELECT_OTP);
 
-    void printNote(const thekey_v2::DecryptedNote &note);
+    void printGroup(const thekey_v2::DecryptedColorGroup &group);
 
-    void printNote(const thekey_v2::DecryptedOtpNote &note);
+    void printNote(const thekey_v2::DecryptedNote &note,
+                   const std::vector<thekey_v2::DecryptedColorGroup> &groups = {});
+
+    void printNote(const thekey_v2::DecryptedOtpNote &note,
+                   const std::vector<thekey_v2::DecryptedColorGroup> &groups = {});
 }
 
 #endif //THEKEY_TERMK2_H

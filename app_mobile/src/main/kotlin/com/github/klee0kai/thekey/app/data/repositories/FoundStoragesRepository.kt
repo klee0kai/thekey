@@ -5,8 +5,8 @@ import com.github.klee0kai.thekey.app.data.room.entry.toColorGroupEntry
 import com.github.klee0kai.thekey.app.data.room.entry.toColoredStorage
 import com.github.klee0kai.thekey.app.data.room.entry.toStorageEntry
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.model.ColorGroup
-import com.github.klee0kai.thekey.app.model.Storage
+import com.github.klee0kai.thekey.app.domain.model.ColorGroup
+import com.github.klee0kai.thekey.app.engine.model.Storage
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
@@ -47,6 +47,5 @@ class FoundStoragesRepository {
         storagesDao().insert(storage.toStorageEntry(id = cachedStorage?.id))
         updateDbFlow.emit(Unit)
     }
-
 
 }

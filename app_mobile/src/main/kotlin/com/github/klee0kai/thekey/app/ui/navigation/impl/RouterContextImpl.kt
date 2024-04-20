@@ -2,6 +2,8 @@ package com.github.klee0kai.thekey.app.ui.navigation.impl
 
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedDispatcher
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.SnackbarHostState
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.navigation.RouterContext
@@ -19,6 +21,7 @@ class RouterContextImpl : RouterContext {
     override val backDispatcher: OnBackPressedDispatcher? get() = DI.activity()?.onBackPressedDispatcher
 
     override val snackbarHostState: SnackbarHostState = SnackbarHostState()
+    override val navBoardState: DrawerState = DrawerState(DrawerValue.Closed)
     override val navFullController: NavController<Destination> = navController(startDestination)
     override val navScreensController: NavController<Destination> = navController(startDestination)
     override val navDialogsController: NavController<Destination> = navController(emptyList())

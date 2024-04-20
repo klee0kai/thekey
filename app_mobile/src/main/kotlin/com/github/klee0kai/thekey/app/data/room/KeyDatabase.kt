@@ -30,7 +30,7 @@ abstract class KeyDatabase : RoomDatabase() {
 
     companion object {
         fun create(): KeyDatabase =
-            databaseBuilder(DI.app(), KeyDatabase::class.java, "db")
+            databaseBuilder(DI.ctx(), KeyDatabase::class.java, "db")
                 .allowMainThreadQueries()
                 .build()
     }

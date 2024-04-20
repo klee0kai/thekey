@@ -1,5 +1,6 @@
 package com.github.klee0kai.thekey.app.ui.designkit.color
 
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ColorScheme
 import androidx.compose.ui.graphics.Color
 
@@ -8,6 +9,16 @@ interface CommonColorScheme {
     val isDarkScheme: Boolean get() = false
 
     val statusBarColor: Color get() = androidColorScheme.background
+    val deleteColor: Color
+    val navigationBoard: NavigationBoardColors
+    val textButtonColors: ButtonColors
+
+    val noColor: SurfaceScheme
+    val violet: SurfaceScheme
+    val turquoise: SurfaceScheme
+    val pink: SurfaceScheme
+    val orange: SurfaceScheme
+    val coral: SurfaceScheme
 
     val colorsGroupCollection: List<SurfaceScheme>
 
@@ -17,7 +28,7 @@ interface CommonColorScheme {
      */
     val androidColorScheme: ColorScheme
 
-    fun surfaceScheme(group: ColoredStorageGroup): SurfaceScheme
+    fun surfaceScheme(group: KeyColor): SurfaceScheme
 
 }
 
@@ -26,6 +37,10 @@ data class SurfaceScheme(
     val onSurfaceColor: Color,
 )
 
-enum class ColoredStorageGroup {
-    VIOLET, TURQUOISE, PINK, ORANGE, CORAL
+enum class KeyColor {
+    NOCOLOR, VIOLET, TURQUOISE, PINK, ORANGE, CORAL;
+
+    companion object {
+        val colors get() = entries.filter { it != NOCOLOR }
+    }
 }

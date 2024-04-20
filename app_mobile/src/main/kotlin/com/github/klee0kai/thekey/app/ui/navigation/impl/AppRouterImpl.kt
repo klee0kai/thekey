@@ -2,10 +2,12 @@ package com.github.klee0kai.thekey.app.ui.navigation.impl
 
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedDispatcher
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.SnackbarHostState
 import com.github.klee0kai.thekey.app.ui.navigation.ActivityRouter
 import com.github.klee0kai.thekey.app.ui.navigation.AppRouter
 import com.github.klee0kai.thekey.app.ui.navigation.ComposeRouter
+import com.github.klee0kai.thekey.app.ui.navigation.NavBoardRouter
 import com.github.klee0kai.thekey.app.ui.navigation.PermissionsRouter
 import com.github.klee0kai.thekey.app.ui.navigation.RouterContext
 import com.github.klee0kai.thekey.app.ui.navigation.SnackRouter
@@ -20,11 +22,15 @@ open class AppRouterImp(
 ) : AppRouter,
     ComposeRouter by ComposeRouterImpl(ctx),
     SnackRouter by SnackRouterImpl(ctx),
+    NavBoardRouter by NavBoardRouterImpl(ctx),
     ActivityRouter by ActivityRouterImpl(ctx),
     PermissionsRouter by PermissionRouterImpl(ctx) {
 
     override val snackbarHostState: SnackbarHostState
         get() = ctx.snackbarHostState
+
+    override val navBoardState: DrawerState
+        get() = ctx.navBoardState
 
     override val navFullController: NavController<Destination>
         get() = ctx.navFullController

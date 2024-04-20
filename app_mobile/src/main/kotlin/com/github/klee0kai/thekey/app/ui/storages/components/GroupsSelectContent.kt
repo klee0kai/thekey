@@ -1,70 +1,58 @@
+@file:OptIn(ExperimentalFoundationApi::class)
+
 package com.github.klee0kai.thekey.app.ui.storages.components
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.klee0kai.thekey.app.R
-import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.model.ColorGroup
+import com.github.klee0kai.thekey.app.domain.model.ColorGroup
+import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
+import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
+import com.github.klee0kai.thekey.app.ui.designkit.color.KeyColor
 import com.github.klee0kai.thekey.app.ui.designkit.components.LazyListIndicatorIfNeed
-import com.github.klee0kai.thekey.app.ui.designkit.components.SimpleBottomSheetScaffoldState
-import com.github.klee0kai.thekey.app.utils.views.accelerateDecelerate
-import com.github.klee0kai.thekey.app.utils.views.ratioBetween
-import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
+import com.github.klee0kai.thekey.app.ui.designkit.components.buttons.AddCircle
+import com.github.klee0kai.thekey.app.ui.designkit.components.buttons.GroupCircle
+import com.github.klee0kai.thekey.app.ui.designkit.components.scrollPosition
+import com.github.klee0kai.thekey.app.utils.common.Dummy
 
-
-@Preview
 @Composable
 fun GroupsSelectContent(
     modifier: Modifier = Modifier,
-    scaffoldState: SimpleBottomSheetScaffoldState? = null
+    selectedGroup: Long? = null,
+    colorGroups: List<ColorGroup> = emptyList(),
+    onAdd: () -> Unit = {},
+    onGroupSelected: (ColorGroup) -> Unit = {},
+    onGroupEdit: (ColorGroup) -> Unit = {},
+    onGroupDelete: (ColorGroup) -> Unit = {},
 ) {
-    val colorScheme = remember { DI.theme().colorScheme() }
-    val colorGroups = groupsState()
+    val colorScheme = LocalColorScheme.current
     val lazyListState = rememberLazyListState()
-
-    val topContentAlpha by rememberDerivedStateOf {
-        scaffoldState?.dragProgress?.floatValue
-            ?.ratioBetween(0.3f, 0.7f)
-            ?.coerceIn(0f, 1f)
-            ?.accelerateDecelerate()
-            ?: 1f
-    }
-
-    val dragTranslateY by rememberDerivedStateOf {
-        scaffoldState?.dragProgress?.floatValue
-            ?.ratioBetween(1f, 0f)
-            ?.coerceIn(0f, 1f)
-            ?.accelerateDecelerate()
-            ?.let { 30.dp * -it }
-            ?: 0.dp
-    }
 
     ConstraintLayout(
         modifier = modifier
             .fillMaxSize()
-            .alpha(topContentAlpha)
     ) {
         val (groupsHint, groupsList, indicator) = createRefs()
 
@@ -72,6 +60,7 @@ fun GroupsSelectContent(
             text = stringResource(id = R.string.groups),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+            fontWeight = FontWeight.Bold,
             modifier = Modifier.constrainAs(groupsHint) {
                 linkTo(
                     start = parent.start,
@@ -82,12 +71,11 @@ fun GroupsSelectContent(
                     startMargin = 16.dp,
                     verticalBias = 1f,
                 )
-                translationY = dragTranslateY
             }
         )
 
         LazyListIndicatorIfNeed(
-            lazyListState = lazyListState,
+            pos = lazyListState.scrollPosition(),
             horizontal = true,
             modifier = Modifier
                 .size(52.dp, 4.dp)
@@ -99,7 +87,6 @@ fun GroupsSelectContent(
                         bottom = parent.bottom,
                         verticalBias = 0f,
                     )
-                    translationY = dragTranslateY
                 },
         )
 
@@ -116,59 +103,76 @@ fun GroupsSelectContent(
                         end = parent.end,
                         verticalBias = 0.6f
                     )
-                    translationY = dragTranslateY
                 })
         {
-            val list = colorGroups.value
-            colorGroups.value.forEachIndexed { index, group ->
-                item {
-                    val isFirst = index == 0
+            item {
+                Spacer(modifier = Modifier.width(14.dp))
+            }
+
+            colorGroups.forEachIndexed { index, group ->
+                item(key = group.id) {
+                    var showMenu by remember { mutableStateOf(false) }
 
                     GroupCircle(
                         name = group.name,
-                        colorScheme = colorScheme.surfaceScheme(group.colorGroup),
+                        buttonSize = 56.dp,
+                        colorScheme = colorScheme.surfaceScheme(group.keyColor),
+                        checked = group.id == selectedGroup,
                         modifier = Modifier
                             .padding(
-                                start = if (isFirst) 16.dp else 4.dp,
+                                start = 1.dp,
                                 top = 16.dp,
-                                end = 4.dp,
+                                end = 1.dp,
                                 bottom = 16.dp
                             ),
-                        onClick = {
-
+                        onLongClick = { showMenu = true },
+                        onClick = { onGroupSelected.invoke(group) },
+                        overlayContent = {
+                            DropdownMenu(
+                                expanded = showMenu,
+                                onDismissRequest = { showMenu = false }
+                            ) {
+                                GroupDropDownMenuContent(
+                                    onEdit = { onGroupEdit(group) },
+                                    onDelete = { onGroupDelete(group) },
+                                )
+                            }
                         }
                     )
                 }
             }
 
             item {
-                val isFirst = list.isEmpty()
                 AddCircle(
                     modifier = Modifier
                         .padding(
-                            start = if (isFirst) 16.dp else 4.dp,
+                            start = 1.dp,
                             top = 16.dp,
-                            end = 16.dp,
+                            end = 1.dp,
                             bottom = 16.dp
                         ),
-                    onClick = {
-
-                    }
+                    buttonSize = 56.dp,
+                    onClick = onAdd
                 )
+            }
+
+            item {
+                Spacer(modifier = Modifier.width(14.dp))
             }
         }
     }
 }
 
-
+@Preview
 @Composable
-private fun groupsState(): State<List<ColorGroup>> {
-    val scope = rememberCoroutineScope()
-    val presenter = remember { DI.storagesPresenter() }
-    return if (LocalView.current.isInEditMode) {
-        flowOf((0..10).map { ColorGroup() })
-    } else {
-        flow { presenter.coloredGroups().collect { emit(it) } }
-    }.collectAsState(initial = emptyList(), scope.coroutineContext)
+private fun GroupsSelectContentPreview() = AppTheme {
+    GroupsSelectContent(
+        selectedGroup = 1L,
+        colorGroups = listOf(
+            ColorGroup(Dummy.dummyId, "CE", KeyColor.CORAL),
+            ColorGroup(Dummy.dummyId, "AN", KeyColor.ORANGE),
+            ColorGroup(Dummy.dummyId, "TU", KeyColor.TURQUOISE),
+            ColorGroup(Dummy.dummyId, "T", KeyColor.VIOLET),
+        ),
+    )
 }
-

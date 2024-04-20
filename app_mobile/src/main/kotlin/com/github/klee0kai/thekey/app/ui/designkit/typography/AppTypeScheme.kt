@@ -3,11 +3,19 @@ package com.github.klee0kai.thekey.app.ui.designkit.typography
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
 class AppTypeScheme : TypeScheme {
 
     private val appFontFamily = FontFamily.SansSerif
+
+    private val titleLarge = TextStyle(
+        fontFamily = appFontFamily,
+        fontSize = 16.sp,
+        lineHeight = 21.sp,
+        fontWeight = FontWeight.Bold,
+    )
 
     private val titleText = TextStyle(
         fontFamily = appFontFamily,
@@ -25,6 +33,14 @@ class AppTypeScheme : TypeScheme {
         fontFamily = appFontFamily,
         fontSize = 12.sp,
         lineHeight = 14.sp,
+        fontWeight = FontWeight.Medium
+    )
+
+    private val labelLarge = TextStyle(
+        fontFamily = appFontFamily,
+        fontSize = 14.sp,
+        lineHeight = 16.sp,
+        fontWeight = FontWeight.Bold,
     )
 
     override val typography = Typography(
@@ -36,7 +52,7 @@ class AppTypeScheme : TypeScheme {
         headlineMedium = titleText,
         headlineSmall = titleText,
 
-        titleLarge = titleText,
+        titleLarge = titleLarge,
         titleMedium = titleText,
         titleSmall = titleText,
 
@@ -44,7 +60,10 @@ class AppTypeScheme : TypeScheme {
         bodyMedium = normalText,
         bodySmall = hintText,
 
-        labelLarge = normalText,
+        /**
+         * labelLarge using in Button
+         */
+        labelLarge = labelLarge,
         labelMedium = normalText,
         labelSmall = hintText,
 
