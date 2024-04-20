@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "TheKey"
 include(":app_mobile")
+include(":qrcodescanner")
