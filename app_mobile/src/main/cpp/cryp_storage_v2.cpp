@@ -16,10 +16,13 @@ using namespace std;
 using namespace thekey;
 using namespace thekey_v2;
 
-typedef EngineStorageK2Storage JvmStorage2;
-typedef EngineModelStorage JvmStorageInfo;
-typedef EngineModelGenPasswParams JvmGenPasswParams;
-typedef EngineModelDecryptedPassw JvmDecryptedPassw;
+typedef brooklyn::EngineStorageK2Storage JvmStorage2;
+typedef brooklyn::EngineModelStorage JvmStorageInfo;
+typedef brooklyn::EngineModelGenPasswParams JvmGenPasswParams;
+typedef brooklyn::EngineModelDecryptedPassw JvmDecryptedPassw;
+typedef brooklyn::EngineModelDecryptedNote JvmDecryptedNote;
+typedef brooklyn::EngineModelDecryptedOtpNote JvmDecryptedOtpNote;
+typedef brooklyn::EngineModelDecryptedColorGroup JvmColorGroup;
 
 static map<string, shared_ptr<KeyStorageV2>> storages = {};
 
@@ -60,14 +63,14 @@ void JvmStorage2::unlogin() {
     storages.erase(getStoragePath());
 }
 
-std::vector<EngineModelDecryptedColorGroup> JvmStorage2::colorGroups(const int &info) {
+std::vector<JvmColorGroup> JvmStorage2::colorGroups(const int &info) {
     auto storage = findStorage(getStoragePath());
     if (!storage) return {};
-    auto notes = std::vector<EngineModelDecryptedColorGroup>();
+    auto notes = std::vector<JvmColorGroup>();
     auto flags = info ? TK2_GET_NOTE_INFO : TK2_GET_NOTE_PTR_ONLY;
     for (const auto &group: storage->colorGroups(flags)) {
         notes.push_back(
-                EngineModelDecryptedColorGroup{
+                JvmColorGroup{
                         .id = group.id,
                         .name =  group.name,
                         .color =  group.color,
@@ -77,7 +80,7 @@ std::vector<EngineModelDecryptedColorGroup> JvmStorage2::colorGroups(const int &
     return notes;
 }
 
-std::shared_ptr<EngineModelDecryptedColorGroup> JvmStorage2::saveColorGroup(const brooklyn::EngineModelDecryptedColorGroup &group) {
+std::shared_ptr<JvmColorGroup> JvmStorage2::saveColorGroup(const JvmColorGroup &group) {
     auto storage = findStorage(getStoragePath());
     if (!storage) return {};
 
@@ -92,8 +95,8 @@ std::shared_ptr<EngineModelDecryptedColorGroup> JvmStorage2::saveColorGroup(cons
         storage->setColorGroup(*dGroup);
     }
 
-    auto jniColorGroup = make_shared<EngineModelDecryptedColorGroup>(
-            EngineModelDecryptedColorGroup{
+    auto jniColorGroup = make_shared<JvmColorGroup>(
+            JvmColorGroup{
                     .id = dGroup->id,
                     .name = dGroup->name,
                     .color = dGroup->color,
@@ -127,10 +130,10 @@ int JvmStorage2::removeColorGroup(const int64_t &colorGroupId) {
     return 0;
 }
 
-std::vector<EngineModelDecryptedNote> JvmStorage2::notes(const int &loadInfo) {
+std::vector<JvmDecryptedNote> JvmStorage2::notes(const int &loadInfo) {
     auto storage = findStorage(getStoragePath());
     if (!storage) return {};
-    auto notes = std::vector<EngineModelDecryptedNote>();
+    auto notes = std::vector<JvmDecryptedNote>();
     auto flags = loadInfo ? TK2_GET_NOTE_INFO : TK2_GET_NOTE_PTR_ONLY;
     for (const auto &dnote: storage->notes(flags)) {
         notes.push_back(
@@ -146,12 +149,12 @@ std::vector<EngineModelDecryptedNote> JvmStorage2::notes(const int &loadInfo) {
     return notes;
 }
 
-EngineModelDecryptedNote JvmStorage2::note(const int64_t &notePtr) {
+JvmDecryptedNote JvmStorage2::note(const int64_t &notePtr) {
     auto storage = findStorage(getStoragePath());
     if (!storage)return {};
     auto dnote = storage->note(notePtr, TK2_GET_NOTE_INFO | TK2_GET_NOTE_PASSWORD);
     if (!dnote) return {};
-    auto result = EngineModelDecryptedNote{
+    auto result = JvmDecryptedNote{
             .ptnote = notePtr,
             .site = dnote->site,
             .login = dnote->login,
@@ -164,7 +167,7 @@ EngineModelDecryptedNote JvmStorage2::note(const int64_t &notePtr) {
 
 }
 
-int JvmStorage2::saveNote(const brooklyn::EngineModelDecryptedNote &decryptedNote, const int &setAll) {
+int JvmStorage2::saveNote(const JvmDecryptedNote &decryptedNote, const int &setAll) {
     auto storage = findStorage(getStoragePath());
     if (!storage) return -1;
 
@@ -230,13 +233,13 @@ std::string JvmStorage2::lastGeneratedPassw() {
     return storage->genPassword(schemeType, 4);
 }
 
-std::vector<EngineModelDecryptedPassw> JvmStorage2::genHistory(const int &info) {
+std::vector<JvmDecryptedPassw> JvmStorage2::genHistory(const int &info) {
     auto storage = findStorage(getStoragePath());
     if (!storage)return {};
 
     auto flags = info ? TK2_GET_NOTE_HISTORY_FULL : 0;
     auto hist = storage->genPasswHistoryList(flags);
-    auto jvmHist = std::vector<EngineModelDecryptedPassw>();
+    auto jvmHist = std::vector<JvmDecryptedPassw>();
     jvmHist.reserve(hist.size());
     for (const auto &item: hist) {
         jvmHist.push_back(JvmDecryptedPassw{
@@ -265,14 +268,14 @@ JvmDecryptedPassw JvmStorage2::getGenPassw(const int64_t &ptNote) {
     return jvmDecryptedPassw;
 }
 
-std::vector<EngineModelDecryptedOtpNote> JvmStorage2::otpNotes(const int &info) {
+std::vector<JvmDecryptedOtpNote> JvmStorage2::otpNotes(const int &info) {
     auto storage = findStorage(getStoragePath());
     if (!storage)return {};
-    auto otpNotes = std::vector<EngineModelDecryptedOtpNote>();
+    auto otpNotes = std::vector<JvmDecryptedOtpNote>();
     auto flags = info ? TK2_GET_NOTE_INFO : TK2_GET_NOTE_PTR_ONLY;
     for (const auto &dnote: storage->otpNotes(flags)) {
         otpNotes.push_back(
-                EngineModelDecryptedOtpNote{
+                JvmDecryptedOtpNote{
                         .ptnote = dnote.id,
                         .issuer =  dnote.issuer,
                         .name =  dnote.name,
@@ -289,13 +292,13 @@ std::vector<EngineModelDecryptedOtpNote> JvmStorage2::otpNotes(const int &info) 
     return otpNotes;
 }
 
-EngineModelDecryptedOtpNote JvmStorage2::otpNote(const int64_t &notePtr) {
+JvmDecryptedOtpNote JvmStorage2::otpNote(const int64_t &notePtr) {
     auto storage = findStorage(getStoragePath());
     if (!storage)return {};
     auto dnotePtr = storage->otpNote(notePtr, TK2_GET_NOTE_INFO | TK2_GET_NOTE_PASSWORD);
     if (!dnotePtr)return {};
     auto dnote = *dnotePtr;
-    return EngineModelDecryptedOtpNote{
+    return JvmDecryptedOtpNote{
             .ptnote = dnote.id,
             .issuer =  dnote.issuer,
             .name =  dnote.name,
@@ -312,7 +315,7 @@ EngineModelDecryptedOtpNote JvmStorage2::otpNote(const int64_t &notePtr) {
     };
 }
 
-int JvmStorage2::saveOtpNote(const brooklyn::EngineModelDecryptedOtpNote &jOtp, const int &setAll) {
+int JvmStorage2::saveOtpNote(const JvmDecryptedOtpNote &jOtp, const int &setAll) {
     auto storage = findStorage(getStoragePath());
     if (!storage)return {};
 
@@ -346,12 +349,12 @@ int JvmStorage2::removeOtpNote(const int64_t &notePt) {
     return 0;
 }
 
-shared_ptr<EngineModelDecryptedOtpNote> JvmStorage2::otpNoteFromUrl(const std::string &url) {
+shared_ptr<JvmDecryptedOtpNote> JvmStorage2::otpNoteFromUrl(const std::string &url) {
     auto otpList = key_otp::parseOtpUri(url);
     if (otpList.empty())return {};
     auto otp = otpList.front();
-    return make_shared<EngineModelDecryptedOtpNote>(
-            EngineModelDecryptedOtpNote{
+    return make_shared<JvmDecryptedOtpNote>(
+            JvmDecryptedOtpNote{
                     .issuer = otp.issuer,
                     .name = otp.name,
                     .url = otp.toUri(),

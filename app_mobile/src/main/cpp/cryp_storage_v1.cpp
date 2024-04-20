@@ -15,10 +15,11 @@ using namespace std;
 using namespace thekey;
 using namespace thekey_v1;
 
-typedef EngineStorageK1Storage JvmStorage1;
-typedef EngineModelStorage JvmStorageInfo;
-typedef EngineModelGenPasswParams JvmGenPasswParams;
-typedef EngineModelDecryptedPassw JvmDecryptedPassw;
+typedef brooklyn::EngineStorageK1Storage JvmStorage1;
+typedef brooklyn::EngineModelStorage JvmStorageInfo;
+typedef brooklyn::EngineModelGenPasswParams JvmGenPasswParams;
+typedef brooklyn::EngineModelDecryptedPassw JvmDecryptedPassw;
+typedef brooklyn::EngineModelDecryptedNote JvmDecryptedNote;
 
 static map<string, shared_ptr<KeyStorageV1>> storages = {};
 
@@ -59,10 +60,10 @@ void JvmStorage1::unlogin() {
     storages.erase(getStoragePath());
 }
 
-std::vector<EngineModelDecryptedNote> JvmStorage1::notes(const int &loadInfo) {
+std::vector<JvmDecryptedNote> JvmStorage1::notes(const int &loadInfo) {
     auto storageV1 = findStorage(getStoragePath());
     if (!storageV1)return {};
-    auto notes = std::vector<EngineModelDecryptedNote>();
+    auto notes = std::vector<JvmDecryptedNote>();
     auto flags = loadInfo ? TK1_GET_NOTE_INFO : TK1_GET_NOTE_PTR_ONLY;
     for (const auto &dnote: storageV1->notes(flags)) {
         notes.push_back(
@@ -77,11 +78,11 @@ std::vector<EngineModelDecryptedNote> JvmStorage1::notes(const int &loadInfo) {
     return notes;
 }
 
-EngineModelDecryptedNote JvmStorage1::note(const int64_t &notePtr) {
+JvmDecryptedNote JvmStorage1::note(const int64_t &notePtr) {
     auto storageV1 = findStorage(getStoragePath());
     if (!storageV1)return {};
     auto dnote = storageV1->note(notePtr, TK1_GET_NOTE_INFO | TK1_GET_NOTE_PASSWORD);
-    auto result = EngineModelDecryptedNote{
+    auto result = JvmDecryptedNote{
             .ptnote = notePtr,
             .site =  dnote->site,
             .login =  dnote->login,
@@ -90,10 +91,9 @@ EngineModelDecryptedNote JvmStorage1::note(const int64_t &notePtr) {
             .chTime = (int64_t) dnote->genTime,
     };
     return result;
-
 }
 
-int JvmStorage1::saveNote(const brooklyn::EngineModelDecryptedNote &decryptedNote, const int &setAll) {
+int JvmStorage1::saveNote(const JvmDecryptedNote &decryptedNote, const int &setAll) {
     auto storageV1 = findStorage(getStoragePath());
     if (!storageV1 || !setAll)return -1;
 
