@@ -76,4 +76,5 @@
     <string name="otpnote_is_empty">Otp is Empty</string>
     <string name="confirm_delete_otp">Confirm delete OTP</string>
     <string name="title_qrcodescanner">QR Code Scanner</string>
+    <string name="desc_qrcodescanner">Scan OTP QRCodes</string>
 </resources>
