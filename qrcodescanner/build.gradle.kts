@@ -33,6 +33,9 @@ tasks.register("pushFeatureDebug") {
     val adb = android.adbExecutable
     val apkFile = layout.buildDirectory.file("outputs/apk/debug").get().asFile
     doLast {
+        exec { commandLine = listOf(adb.absolutePath, "shell", "rm", "-rf", "/data/local/tmp/tkey_features") }
+    }
+    doLast {
         exec { commandLine = listOf(adb.absolutePath, "shell", "mkdir", "-p", "/data/local/tmp/tkey_features") }
     }
     doLast {

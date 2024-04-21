@@ -11,10 +11,9 @@ import android.os.Build
 import androidx.core.content.ContextCompat
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.features.model.DynamicFeature
-import com.google.android.play.core.ktx.requestDeferredUninstall
+import com.github.klee0kai.thekey.app.utils.common.invokeReflection
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
 import java.io.FileInputStream
@@ -93,6 +92,7 @@ class DynamicFeaturesManagerDebug : DynamicFeaturesManager {
             val apk = findModuleApk(feature.moduleName) ?: return
             val sessionParams = PackageInstaller.SessionParams(PackageInstaller.SessionParams.MODE_INHERIT_EXISTING)
 
+            sessionParams.invokeReflection("setDontKillApp", true)
             sessionParams.setAppPackageName(DI.ctx().packageName)
             sessionParams.setSize(apk.length())
 

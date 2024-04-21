@@ -10,8 +10,6 @@ import com.github.klee0kai.thekey.app.features.model.NotInstalled
 import com.github.klee0kai.thekey.app.utils.common.launchSafe
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class InstallTracker {
 
@@ -24,30 +22,30 @@ class InstallTracker {
 
     init {
         update()
-        scope.launch(DI.mainDispatcher()) {
-            packageInstaller.registerSessionCallback(object : PackageInstaller.SessionCallback() {
-                override fun onCreated(sessionId: Int) {
-                    Timber.d("install on created $sessionId")
-                }
-
-                override fun onBadgingChanged(sessionId: Int) {
-                    Timber.d("install onBadgingChanged $sessionId")
-                }
-
-                override fun onActiveChanged(sessionId: Int, active: Boolean) {
-                    Timber.d("install onActiveChanged $sessionId active $active")
-                }
-
-                override fun onProgressChanged(sessionId: Int, progress: Float) {
-                    Timber.d("install onProgressChanged $sessionId progress $progress")
-                }
-
-                override fun onFinished(sessionId: Int, success: Boolean) {
-                    Timber.d("install onFinished $sessionId success ${success}")
-//                    update()
-                }
-            })
-        }
+//        scope.launch(DI.mainDispatcher()) {
+//            packageInstaller.registerSessionCallback(object : PackageInstaller.SessionCallback() {
+//                override fun onCreated(sessionId: Int) {
+//                    Timber.d("install on created $sessionId")
+//                }
+//
+//                override fun onBadgingChanged(sessionId: Int) {
+//                    Timber.d("install onBadgingChanged $sessionId")
+//                }
+//
+//                override fun onActiveChanged(sessionId: Int, active: Boolean) {
+//                    Timber.d("install onActiveChanged $sessionId active $active")
+//                }
+//
+//                override fun onProgressChanged(sessionId: Int, progress: Float) {
+//                    Timber.d("install onProgressChanged $sessionId progress $progress")
+//                }
+//
+//                override fun onFinished(sessionId: Int, success: Boolean) {
+//                    Timber.d("install onFinished $sessionId success ${success}")
+////                    update()
+//                }
+//            })
+//        }
     }
 
     fun track(module: String, sessionId: Int) = scope.launchSafe {

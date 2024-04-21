@@ -8,13 +8,16 @@ import com.google.android.play.core.splitinstall.SplitInstallRequest
 import com.google.android.play.core.splitinstall.SplitInstallStateUpdatedListener
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import timber.log.Timber
 
 class DynamicFeaturesManagerGooglePlay : DynamicFeaturesManager {
 
-    override val features = MutableStateFlow<List<InstallDynamicFeature>>(emptyList())
+    private val installTracker = InstallTracker()
 
     private val manager = SplitInstallManagerFactory.create(DI.ctx());
+
+    override val features = installTracker.features.asStateFlow()
 
     init {
         val installListener = SplitInstallStateUpdatedListener { state ->
@@ -33,6 +36,7 @@ class DynamicFeaturesManagerGooglePlay : DynamicFeaturesManager {
                 }
 
                 SplitInstallSessionStatus.INSTALLED -> {
+                    installTracker.update()
                 }
 
                 SplitInstallSessionStatus.FAILED -> {}

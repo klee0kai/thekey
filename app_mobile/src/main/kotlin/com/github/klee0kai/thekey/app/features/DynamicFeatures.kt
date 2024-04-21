@@ -13,3 +13,4 @@ fun DynamicFeature.Companion.qrcodeScanner() = DynamicFeature(
     titleRes = R.string.title_qrcodescanner,
     descRes = R.string.desc_qrcodescanner,
 )
+

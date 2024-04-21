@@ -2,18 +2,17 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dist="http://schemas.android.com/apk/distribution">
 
-    <uses-feature
-        android:name="android.hardware.camera"
-        android:required="false" />
+    <!--    <uses-feature-->
+    <!--        android:name="android.hardware.camera"-->
+    <!--        android:required="false" />-->
 
-    <uses-permission android:name="android.permission.CAMERA" />
+    <!--    <uses-permission android:name="android.permission.CAMERA" />-->
 
     <dist:module
-        dist:instant="false"
         dist:title="@string/title_qrcodescanner">
         <dist:delivery>
             <dist:on-demand />
         </dist:delivery>
-        <dist:fusing dist:include="true" />
+        <dist:fusing dist:include="false" />
     </dist:module>
 </manifest>
