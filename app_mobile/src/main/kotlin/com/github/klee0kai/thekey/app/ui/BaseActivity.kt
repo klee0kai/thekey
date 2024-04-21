@@ -8,7 +8,8 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.RequestPermResult
 
 open class BaseActivity : ComponentActivity() {
 
-    val router get() = DI.router()
+    protected val scope = DI.mainThreadScope()
+    protected val router get() = DI.router()
 
     override fun onResume() {
         super.onResume()

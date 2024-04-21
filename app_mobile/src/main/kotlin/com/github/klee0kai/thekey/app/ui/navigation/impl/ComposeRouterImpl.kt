@@ -3,11 +3,14 @@ package com.github.klee0kai.thekey.app.ui.navigation.impl
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.NonRestartableComposable
+import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.navigation.ComposeRouter
 import com.github.klee0kai.thekey.app.ui.navigation.RouterContext
 import com.github.klee0kai.thekey.app.ui.navigation.model.Destination
 import com.github.klee0kai.thekey.app.ui.navigation.model.DialogDestination
+import com.github.klee0kai.thekey.app.ui.navigation.model.EmptyDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.NavigateBackstackChange
+import com.github.klee0kai.thekey.app.utils.common.launchLatest
 import com.github.klee0kai.thekey.app.utils.coroutine.awaitSec
 import com.github.klee0kai.thekey.app.utils.coroutine.shareLatest
 import dev.olshevski.navigation.reimagined.NavAction
@@ -18,6 +21,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -25,6 +29,24 @@ import kotlinx.coroutines.withTimeoutOrNull
 import timber.log.Timber
 
 class ComposeRouterImpl(context: RouterContext) : ComposeRouter, RouterContext by context {
+
+    override fun initIfNeed(destination: Destination) {
+        scope.launchLatest("init") {
+            val curDest = DI.router().navChanges
+                .firstOrNull()
+                ?.currentNavStack
+                ?.last()
+                ?.destination
+
+            if (curDest == EmptyDestination) {
+                val navEntry = navEntry(destination)
+                DI.router().navFullController.setNewBackstack(
+                    entries = listOf(navEntry),
+                    action = NavAction.Idle,
+                )
+            }
+        }
+    }
 
     override fun navigate(destination: Destination): Flow<Any?> = navigate(destination, Any::class.java)
 

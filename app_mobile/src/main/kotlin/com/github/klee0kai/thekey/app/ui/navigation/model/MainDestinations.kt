@@ -12,6 +12,9 @@ import kotlinx.parcelize.Parcelize
 interface Destination : Parcelable
 
 @Parcelize
+data object EmptyDestination : Destination
+
+@Parcelize
 data object LoginDestination : Destination
 
 @Parcelize
@@ -97,6 +100,17 @@ data class EditNoteGroupDestination(
      * group id
      */
     val groupId: Long? = null,
+) : Destination
+
+@Parcelize
+data object SettingsDestination : Destination
+
+@Parcelize
+data object PluginsDestination : Destination
+
+@Parcelize
+data class PluginDestination(
+    val feature: String = "",
 ) : Destination
 
 @Parcelize

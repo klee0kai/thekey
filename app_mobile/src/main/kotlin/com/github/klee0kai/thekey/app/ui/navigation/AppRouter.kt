@@ -13,14 +13,16 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.ActivityResult
 import com.github.klee0kai.thekey.app.ui.navigation.model.Destination
 import com.github.klee0kai.thekey.app.ui.navigation.model.NavigateBackstackChange
 import com.github.klee0kai.thekey.app.ui.navigation.model.RequestPermResult
+import com.github.klee0kai.thekey.app.utils.common.SafeContextScope
 import dev.olshevski.navigation.reimagined.NavController
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 
 interface AppRouter : RouterContext, ComposeRouter, SnackRouter, NavBoardRouter, ActivityRouter, PermissionsRouter
 
 interface ComposeRouter {
+
+    fun initIfNeed(destination: Destination)
 
     fun navigate(destination: Destination): Flow<Any?>
 
@@ -84,7 +86,7 @@ interface RouterContext {
     val backDispatcher: OnBackPressedDispatcher?
     val navChanges: MutableSharedFlow<NavigateBackstackChange>
 
-    val scope: CoroutineScope
+    val scope: SafeContextScope
 
     fun genRequestCode(): Int
 

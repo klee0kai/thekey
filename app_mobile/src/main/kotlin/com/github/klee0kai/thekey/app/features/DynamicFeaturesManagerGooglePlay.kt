@@ -2,6 +2,7 @@ package com.github.klee0kai.thekey.app.features
 
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.features.model.DynamicFeature
+import com.github.klee0kai.thekey.app.features.model.InstallDynamicFeature
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import com.google.android.play.core.splitinstall.SplitInstallRequest
 import com.google.android.play.core.splitinstall.SplitInstallStateUpdatedListener
@@ -11,8 +12,9 @@ import timber.log.Timber
 
 class DynamicFeaturesManagerGooglePlay : DynamicFeaturesManager {
 
+    override val features = MutableStateFlow<List<InstallDynamicFeature>>(emptyList())
+
     private val manager = SplitInstallManagerFactory.create(DI.ctx());
-    override val installedFeatures = MutableStateFlow<List<DynamicFeature>>(emptyList())
 
     init {
         val installListener = SplitInstallStateUpdatedListener { state ->
@@ -31,7 +33,6 @@ class DynamicFeaturesManagerGooglePlay : DynamicFeaturesManager {
                 }
 
                 SplitInstallSessionStatus.INSTALLED -> {
-                    updateInstalledFeatures()
                 }
 
                 SplitInstallSessionStatus.FAILED -> {}
@@ -43,7 +44,6 @@ class DynamicFeaturesManagerGooglePlay : DynamicFeaturesManager {
             }
         }
         manager.registerListener(installListener)
-        updateInstalledFeatures()
     }
 
     override fun install(feature: DynamicFeature) {
@@ -62,10 +62,5 @@ class DynamicFeaturesManagerGooglePlay : DynamicFeaturesManager {
         }
     }
 
-    private fun updateInstalledFeatures() {
-        val installed = manager.installedModules
-        installedFeatures.value = DynamicFeature.allFeatures()
-            .filter { it.moduleName in installed }
-    }
 
 }

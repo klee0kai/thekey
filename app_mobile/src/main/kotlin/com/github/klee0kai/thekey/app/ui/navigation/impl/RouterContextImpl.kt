@@ -8,7 +8,7 @@ import androidx.compose.material3.SnackbarHostState
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.navigation.RouterContext
 import com.github.klee0kai.thekey.app.ui.navigation.model.Destination
-import com.github.klee0kai.thekey.app.ui.navigation.model.LoginDestination
+import com.github.klee0kai.thekey.app.ui.navigation.model.EmptyDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.NavigateBackstackChange
 import dev.olshevski.navigation.reimagined.NavController
 import dev.olshevski.navigation.reimagined.navController
@@ -22,8 +22,8 @@ class RouterContextImpl : RouterContext {
 
     override val snackbarHostState: SnackbarHostState = SnackbarHostState()
     override val navBoardState: DrawerState = DrawerState(DrawerValue.Closed)
-    override val navFullController: NavController<Destination> = navController(startDestination)
-    override val navScreensController: NavController<Destination> = navController(startDestination)
+    override val navFullController: NavController<Destination> = navController(EmptyDestination)
+    override val navScreensController: NavController<Destination> = navController(EmptyDestination)
     override val navDialogsController: NavController<Destination> = navController(emptyList())
 
     override val navChanges = MutableSharedFlow<NavigateBackstackChange>(replay = 1)
@@ -31,9 +31,5 @@ class RouterContextImpl : RouterContext {
 
     private var _reqCodeCounter = Random.nextInt(1000) + 1
     override fun genRequestCode(): Int = _reqCodeCounter++
-
-    companion object {
-        private val startDestination = LoginDestination
-    }
 
 }

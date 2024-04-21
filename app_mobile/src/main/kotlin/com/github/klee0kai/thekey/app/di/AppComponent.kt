@@ -12,6 +12,7 @@ import com.github.klee0kai.thekey.app.di.debug.DebugDI
 import com.github.klee0kai.thekey.app.di.dependencies.AppComponentProviders
 import com.github.klee0kai.thekey.app.di.identifier.NoteGroupIdentifier
 import com.github.klee0kai.thekey.app.di.identifier.NoteIdentifier
+import com.github.klee0kai.thekey.app.di.identifier.PluginIdentifier
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.di.modules.AndroidHelpersModule
 import com.github.klee0kai.thekey.app.di.modules.CoroutineModule
@@ -34,6 +35,7 @@ var DI: AppComponent = initAppComponent()
         StorageIdentifier::class,
         NoteIdentifier::class,
         NoteGroupIdentifier::class,
+        PluginIdentifier::class,
     ],
     wrapperProviders = [
         KotlinWrappersStone::class,

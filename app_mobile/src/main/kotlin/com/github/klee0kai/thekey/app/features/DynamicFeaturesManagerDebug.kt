@@ -11,24 +11,27 @@ import androidx.core.content.ContextCompat
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.features.model.DynamicFeature
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import timber.log.Timber
 import java.io.File
 import java.io.FileInputStream
 
 class DynamicFeaturesManagerDebug : DynamicFeaturesManager {
 
-    private val BUF_SIZE = 4096
+    private val scope = DI.defaultThreadScope()
+    private val installTracker = InstallTracker()
     private val manager = SplitInstallManagerFactory.create(DI.ctx());
-    override val installedFeatures = MutableStateFlow<List<DynamicFeature>>(emptyList())
     private val packageInstaller: PackageInstaller = DI.ctx().packageManager.packageInstaller
+    private val router = DI.router()
+
+    override val features = installTracker.features.asStateFlow()
 
     private val receiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            Timber.d("install receive ${intent}")
-
-            val sessionId = intent?.getIntExtra(PackageInstaller.EXTRA_SESSION_ID, 0) ?: return
+        override fun onReceive(context: Context, intent: Intent) {
+            Timber.d("install receive $intent")
+            val sessionId = intent.getIntExtra(PackageInstaller.EXTRA_SESSION_ID, 0)
             val status = intent.getIntExtra(PackageInstaller.EXTRA_STATUS, 0)
+            val statusMessage = intent.getStringExtra(PackageInstaller.EXTRA_STATUS_MESSAGE)
             val pkgName = intent.getStringExtra(PackageInstaller.EXTRA_PACKAGE_NAME)
 
             val userConfirmIntent: Intent? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -37,12 +40,47 @@ class DynamicFeaturesManagerDebug : DynamicFeaturesManager {
                 intent.extras?.getParcelable(Intent.EXTRA_INTENT)
             }
             Timber.d("install $sessionId status is $status modules $pkgName intent $userConfirmIntent")
+            when (status) {
+                PackageInstaller.STATUS_PENDING_USER_ACTION -> {
+                    if (userConfirmIntent != null) {
+                        router.navigate(
+                            userConfirmIntent
+                                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        )
+                        Timber.d("request user action")
+                    }
+                }
+
+                PackageInstaller.STATUS_SUCCESS -> {
+                    installTracker.update()
+                }
+
+                PackageInstaller.STATUS_FAILURE,
+                PackageInstaller.STATUS_FAILURE_BLOCKED,
+                PackageInstaller.STATUS_FAILURE_ABORTED,
+                PackageInstaller.STATUS_FAILURE_CONFLICT,
+                PackageInstaller.STATUS_FAILURE_STORAGE,
+                PackageInstaller.STATUS_FAILURE_INCOMPATIBLE,
+                PackageInstaller.STATUS_FAILURE_TIMEOUT -> {
+                    Timber.w("install failure $status - $statusMessage")
+                }
+
+                else -> {
+                    Timber.e("non processed status $status")
+                }
+            }
         }
     }
 
     init {
-        ContextCompat.registerReceiver(DI.ctx(), receiver, IntentFilter(), ContextCompat.RECEIVER_NOT_EXPORTED)
-        updateInstalledFeatures()
+        ContextCompat.registerReceiver(
+            DI.ctx(),
+            receiver,
+            IntentFilter().apply {
+                addAction(INSTALL_ACTION)
+            },
+            ContextCompat.RECEIVER_NOT_EXPORTED
+        )
     }
 
     override fun install(feature: DynamicFeature) {
@@ -53,31 +91,39 @@ class DynamicFeaturesManagerDebug : DynamicFeaturesManager {
         sessionParams.setAppPackageName(DI.ctx().packageName)
         sessionParams.setSize(apk.length())
 
-        val sesID: Int = packageInstaller.createSession(sessionParams)
-        val session: PackageInstaller.Session = packageInstaller.openSession(sesID)
+        val sessionId = packageInstaller.createSession(sessionParams)
+        val session = packageInstaller.openSession(sessionId)
 
         val buffer = ByteArray(BUF_SIZE)
-        val fileSize: Long = apk.length()
-        val outStream = session.openWrite(apk.getName(), 0, fileSize)
+        val outStream = session.openWrite(apk.getName(), 0, apk.length())
         val fileInputStream = FileInputStream(apk)
-        var bytesRead: Int
+        var bytesRead = 0
         while (fileInputStream.read(buffer).also { bytesRead = it } != -1) {
             outStream.write(buffer, 0, bytesRead)
         }
         session.fsync(outStream)
         outStream.close()
 
-        Timber.d("success install ${feature.moduleName} in $sesID")
+        Timber.d("commit install ${feature.moduleName} in $sessionId")
+        session.commit(
+            PendingIntent.getBroadcast(
+                DI.ctx(),
+                sessionId,
+                Intent(INSTALL_ACTION),
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                } else {
+                    PendingIntent.FLAG_UPDATE_CURRENT
+                }
+            ).intentSender
+        )
 
-        val intent = Intent(DI.ctx(), receiver.javaClass)
-        session.commit(PendingIntent.getBroadcast(DI.ctx(), sesID, intent, PendingIntent.FLAG_IMMUTABLE).intentSender)
         session.close()
     }
 
-    private fun updateInstalledFeatures() {
-        val installed = manager.installedModules
-        installedFeatures.value = DynamicFeature.allFeatures()
-            .filter { it.moduleName in installed }
+    override fun uninstall(feature: DynamicFeature) {
+        Timber.d("uninstall ${feature.moduleName} ")
+        manager.deferredUninstall(listOf(feature.moduleName))
     }
 
     private fun findModuleApk(moduleName: String): File? {
@@ -85,6 +131,11 @@ class DynamicFeaturesManagerDebug : DynamicFeaturesManager {
         return File("/data/local/tmp/tkey_features")
             .walk(FileWalkDirection.TOP_DOWN)
             .find { file -> file.name.contains(moduleName) && file.name.endsWith(".apk") }
+    }
+
+    companion object {
+        private const val BUF_SIZE = 4096
+        private const val INSTALL_ACTION = "DYNAMIC_FEATURE_INSTALL_ACTION"
     }
 
 }

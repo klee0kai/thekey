@@ -19,7 +19,7 @@ android {
     }
 }
 
-tasks.register("installDebug") {
+tasks.register("pushFeatureDebug") {
     dependsOn(tasks.getByName("assembleDebug"))
     notCompatibleWithConfigurationCache("todo")
     val adb = android.adbExecutable
