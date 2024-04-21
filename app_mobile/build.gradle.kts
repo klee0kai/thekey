@@ -147,6 +147,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.7")
 
     // dynamic features
+//    implementation("com.google.android.play:core:1.10.3")
     implementation("com.google.android.play:feature-delivery-ktx:2.1.0")
 
     // compose-navigation-reimagined

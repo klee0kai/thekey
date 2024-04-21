@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:dist="http://schemas.android.com/apk/distribution">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:dist="http://schemas.android.com/apk/distribution">
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <dist:module
         dist:instant="false"
@@ -8,6 +15,5 @@
             <dist:on-demand />
         </dist:delivery>
         <dist:fusing dist:include="true" />
-
     </dist:module>
 </manifest>

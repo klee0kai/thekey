@@ -38,7 +38,7 @@ class ComposeRouterImpl(context: RouterContext) : ComposeRouter, RouterContext b
                 ?.last()
                 ?.destination
 
-            if (curDest == EmptyDestination) {
+            if (curDest == null || curDest == EmptyDestination) {
                 val navEntry = navEntry(destination)
                 DI.router().navFullController.setNewBackstack(
                     entries = listOf(navEntry),
