@@ -6,12 +6,11 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageInstaller
-import android.content.pm.PackageInstaller.SessionInfo
 import android.os.Build
 import androidx.core.content.ContextCompat
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.features.model.DynamicFeature
-import com.github.klee0kai.thekey.app.utils.common.invokeReflection
+import com.github.klee0kai.thekey.app.utils.common.JvmReflection
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import kotlinx.coroutines.flow.asStateFlow
 import timber.log.Timber
@@ -32,7 +31,6 @@ class DynamicFeaturesManagerDebug : DynamicFeaturesManager {
         override fun onReceive(context: Context, intent: Intent) {
             Timber.d("install receive $intent")
             val sessionId = intent.getIntExtra(PackageInstaller.EXTRA_SESSION_ID, 0)
-            val session = intent.getParcelableExtra<SessionInfo>(PackageInstaller.EXTRA_SESSION)
             val status = intent.getIntExtra(PackageInstaller.EXTRA_STATUS, 0)
             val statusMessage = intent.getStringExtra(PackageInstaller.EXTRA_STATUS_MESSAGE)
             val pkgName = intent.getStringExtra(PackageInstaller.EXTRA_PACKAGE_NAME)
@@ -92,7 +90,7 @@ class DynamicFeaturesManagerDebug : DynamicFeaturesManager {
             val apk = findModuleApk(feature.moduleName) ?: return
             val sessionParams = PackageInstaller.SessionParams(PackageInstaller.SessionParams.MODE_INHERIT_EXISTING)
 
-            sessionParams.invokeReflection("setDontKillApp", true)
+            with(JvmReflection) { sessionParams.invokeReflection("setDontKillApp", true) }
             sessionParams.setAppPackageName(DI.ctx().packageName)
             sessionParams.setSize(apk.length())
 
