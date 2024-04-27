@@ -9,9 +9,14 @@ import com.github.klee0kai.thekey.app.features.DynamicFeaturesManagerGooglePlay
 import com.github.klee0kai.thekey.app.perm.PermissionsHelper
 import com.github.klee0kai.thekey.app.ui.navigation.AppRouter
 import com.github.klee0kai.thekey.app.ui.navigation.impl.AppRouterImp
+import com.github.klee0kai.thekey.app.ui.navigation.screenresolver.ScreenResolver
+import com.github.klee0kai.thekey.app.ui.navigation.screenresolver.ScreenResolverImpl
 
 @Module
 open class AndroidHelpersModule {
+
+    @Provide(cache = Provide.CacheType.Weak)
+    open fun screenResolver(): ScreenResolver = ScreenResolverImpl()
 
     @Provide(cache = Provide.CacheType.Weak)
     open fun permissionsHelper(): PermissionsHelper = PermissionsHelper()

@@ -25,6 +25,9 @@ import com.github.klee0kai.thekey.app.di.modules.RepositoriesModule
 import com.github.klee0kai.thekey.app.di.modules.ThemeModule
 import com.github.klee0kai.thekey.app.di.wrap.AppWrappersStone
 import com.github.klee0kai.thekey.app.domain.model.AppConfig
+import com.github.klee0kai.thekey.app.features.allFeatures
+import com.github.klee0kai.thekey.app.features.model.DynamicFeature
+import com.github.klee0kai.thekey.app.features.model.findApi
 import com.github.klee0kai.thekey.app.utils.annotations.DebugOnly
 
 var DI: AppComponent = initAppComponent()
@@ -95,4 +98,11 @@ private fun initAppComponent() = Stone.createComponent(AppComponent::class.java)
     if (BuildConfig.DEBUG) {
         with(DebugDI) { initDI() }
     }
+
+    DynamicFeature
+        .allFeatures()
+        .forEach { feature ->
+            feature.findApi()?.initDI()
+        }
+
 }

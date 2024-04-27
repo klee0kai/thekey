@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.navigation.MainNavContainer
-import com.github.klee0kai.thekey.app.ui.navigation.model.PluginDestination
+import com.github.klee0kai.thekey.app.ui.navigation.model.LoginDestination
 
 class MainActivity : BaseActivity() {
 
@@ -16,11 +16,8 @@ class MainActivity : BaseActivity() {
                 MainNavContainer()
             }
         }
+        router.initIfNeed(LoginDestination)
     }
 
-    override fun onResume() {
-        super.onResume()
-        router.initIfNeed(PluginDestination("qrcodescanner"))
-    }
 
 }

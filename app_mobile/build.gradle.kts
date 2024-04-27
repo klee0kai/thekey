@@ -98,14 +98,6 @@ android {
         viewBinding = true
         buildConfig = true
     }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.4"
     }
@@ -114,7 +106,13 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = "17"
+    }
 }
 
 afterEvaluate {
@@ -134,10 +132,10 @@ afterEvaluate {
 }
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.core:core-ktx:1.13.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
-    implementation(platform("androidx.compose:compose-bom:2024.04.00"))
-    implementation("androidx.activity:activity-compose:1.8.2")
+    implementation(platform("androidx.compose:compose-bom:2024.04.01"))
+    implementation("androidx.activity:activity-compose:1.9.0")
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
@@ -168,7 +166,7 @@ dependencies {
     implementation("com.google.mlkit:vision-common:17.3.0")
     implementation("com.google.mlkit:camera:16.0.0-beta3")
     implementation("com.google.android.gms:play-services-vision-common:19.1.3")
-    implementation("androidx.camera:camera-mlkit-vision:1.4.0-alpha04")
+    implementation("androidx.camera:camera-mlkit-vision:1.4.0-alpha05")
 
     // room
     implementation("androidx.room:room-runtime:2.6.1")
@@ -183,6 +181,6 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2024.04.00"))
+    androidTestImplementation(platform("androidx.compose:compose-bom:2024.04.01"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
 }

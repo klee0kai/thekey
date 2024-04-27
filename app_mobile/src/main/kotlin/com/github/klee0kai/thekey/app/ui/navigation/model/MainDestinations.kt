@@ -5,11 +5,18 @@ import androidx.compose.runtime.Stable
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.engine.model.DecryptedOtpNote
+import com.github.klee0kai.thekey.app.features.model.DynamicFeature
+import com.github.klee0kai.thekey.app.features.qrcodeScanner
 import com.github.klee0kai.thekey.app.ui.note.model.EditTabs
 import kotlinx.parcelize.Parcelize
 
 @Stable
 interface Destination : Parcelable
+
+@Stable
+abstract class DynamicDestination(
+    val feature: DynamicFeature
+) : Destination
 
 @Parcelize
 data object EmptyDestination : Destination
@@ -114,4 +121,4 @@ data class PluginDestination(
 ) : Destination
 
 @Parcelize
-data object QRCodeScanDestination : Destination
+data object QRCodeScanDestination : DynamicDestination(DynamicFeature.qrcodeScanner())

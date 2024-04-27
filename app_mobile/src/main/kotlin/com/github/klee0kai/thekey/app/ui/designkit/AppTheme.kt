@@ -20,12 +20,14 @@ import com.github.klee0kai.thekey.app.di.updateConfig
 import com.github.klee0kai.thekey.app.domain.model.AppConfig
 import com.github.klee0kai.thekey.app.ui.designkit.color.CommonColorScheme
 import com.github.klee0kai.thekey.app.ui.navigation.AppRouter
+import com.github.klee0kai.thekey.app.ui.navigation.screenresolver.ScreenResolver
 import com.valentinilk.shimmer.LocalShimmerTheme
 import com.valentinilk.shimmer.defaultShimmerTheme
 
 val LocalRouter = compositionLocalOf<AppRouter> { error("no router") }
 val LocalColorScheme = compositionLocalOf<CommonColorScheme> { error("no color scheme") }
 val LocalAppConfig = compositionLocalOf<AppConfig> { error("no app config") }
+val LocalScreenResolver = compositionLocalOf<ScreenResolver> { error("no app config") }
 
 @Composable
 fun AppTheme(
@@ -53,7 +55,6 @@ fun AppTheme(
         }
     }
 
-
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
@@ -68,6 +69,7 @@ fun AppTheme(
         LocalShimmerTheme provides shimmer,
         LocalColorScheme provides DI.theme().colorScheme(),
         LocalAppConfig provides DI.config(),
+        LocalScreenResolver provides DI.screenResolver(),
     ) {
         MaterialTheme(
             colorScheme = colorScheme.androidColorScheme,
