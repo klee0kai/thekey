@@ -71,9 +71,7 @@ dependencies {
 
     // BarCodeScan
     implementation("com.google.mlkit:barcode-scanning:17.2.0")
-    implementation("com.google.mlkit:vision-common:17.3.0")
     implementation("com.google.mlkit:camera:16.0.0-beta3")
-    implementation("com.google.android.gms:play-services-vision-common:19.1.3")
     implementation("androidx.camera:camera-mlkit-vision:1.4.0-alpha05")
 
     // hummus

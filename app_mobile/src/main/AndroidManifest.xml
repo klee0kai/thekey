@@ -27,6 +27,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- fix crash https://stackoverflow.com/questions/68153515 -->
+        <provider
+            android:name="com.google.mlkit.common.internal.MlKitInitProvider"
+            android:authorities=".mlkitinitprovider"
+            tools:node="remove" />
+
     </application>
 
 </manifest>
