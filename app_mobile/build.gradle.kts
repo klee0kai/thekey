@@ -145,7 +145,8 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.7")
 
     // dynamic features
-    implementation("com.google.android.play:feature-delivery-ktx:2.1.0")
+//    implementation("com.google.android.play:feature-delivery-ktx:2.1.0")
+    implementation("com.google.mlkit:playstore-dynamic-feature-support:16.0.0-beta2")
 
     // compose-navigation-reimagined
     implementation("dev.olshevski.navigation:reimagined:1.5.0")
@@ -160,13 +161,6 @@ dependencies {
     implementation("com.github.klee0kai.stone:android_lib:1.0.4")
     implementation("com.github.klee0kai.stone:kotlin_lib:1.0.4")
     kapt("com.github.klee0kai.stone:stone_processor:1.0.4")
-
-    // BarCodeScan
-    implementation("com.google.mlkit:barcode-scanning:17.2.0")
-    implementation("com.google.mlkit:vision-common:17.3.0")
-    implementation("com.google.mlkit:camera:16.0.0-beta3")
-    implementation("com.google.android.gms:play-services-vision-common:19.1.3")
-    implementation("androidx.camera:camera-mlkit-vision:1.4.0-alpha05")
 
     // room
     implementation("androidx.room:room-runtime:2.6.1")

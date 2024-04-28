@@ -39,6 +39,7 @@ var DI: AppComponent = initAppComponent()
         NoteIdentifier::class,
         NoteGroupIdentifier::class,
         PluginIdentifier::class,
+        DynamicFeature::class,
     ],
     wrapperProviders = [
         KotlinWrappersStone::class,

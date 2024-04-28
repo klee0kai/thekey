@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.LifecycleOwner
-import com.github.klee0kai.thekey.app.utils.coroutine.await
+import com.github.klee0kai.thekey.feature.qrcodescanner.utils.await
 import kotlinx.coroutines.launch
 import timber.log.Timber
 

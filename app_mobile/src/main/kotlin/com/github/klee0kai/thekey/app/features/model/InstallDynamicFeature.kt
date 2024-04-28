@@ -9,5 +9,3 @@ data class InstallDynamicFeature(
 
     val status: InstallStatus = NotInstalled,
 ) : Parcelable
-
-val InstallDynamicFeature.installed get() = status is Installed

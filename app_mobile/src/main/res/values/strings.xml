@@ -83,4 +83,7 @@
     <string name="emty" />
     <string name="install">Install</string>
     <string name="uninstall">Uninstall</string>
+    <string name="installing">Installing %1$f</string>
+    <string name="installed">Installed</string>
+    <string name="install_error">Install Error</string>
 </resources>

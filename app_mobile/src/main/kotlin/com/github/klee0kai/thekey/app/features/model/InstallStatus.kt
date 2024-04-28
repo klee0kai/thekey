@@ -14,6 +14,13 @@ data object NotInstalled : InstallStatus
 data object Installed : InstallStatus
 
 @Parcelize
+data object InstallError : InstallStatus
+
+@Parcelize
 data class Installing(
     val progress: Float = 0f,
 ) : InstallStatus
+
+val InstallStatus.isInstalled get() = this is Installed
+
+val InstallStatus.isCompleted get() = this is Installed || this is InstallError

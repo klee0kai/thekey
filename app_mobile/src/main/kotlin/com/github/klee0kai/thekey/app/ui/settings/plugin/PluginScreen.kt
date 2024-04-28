@@ -20,7 +20,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.PluginIdentifier
-import com.github.klee0kai.thekey.app.features.model.installed
+import com.github.klee0kai.thekey.app.features.model.isInstalled
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
 import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarConst
@@ -79,7 +79,7 @@ fun PluginScreen(
             },
             onClick = {
                 when {
-                    feature.current?.installed == true -> presenter.uninstall()
+                    feature.current?.status?.isInstalled == true -> presenter.uninstall()
                     else -> presenter.install()
                 }
             }
@@ -89,7 +89,7 @@ fun PluginScreen(
                     .alpha(feature.alpha),
                 text = stringResource(
                     id = when {
-                        feature.current?.installed == true -> R.string.uninstall
+                        feature.current?.status?.isInstalled == true -> R.string.uninstall
                         else -> R.string.install
                     }
                 )

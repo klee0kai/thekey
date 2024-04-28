@@ -13,6 +13,7 @@ import com.github.klee0kai.thekey.app.features.model.DynamicFeature
 import com.github.klee0kai.thekey.app.features.qrcodeScanner
 import com.github.klee0kai.thekey.app.ui.navigation.model.AlertDialogDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.ConfirmDialogResult
+import com.github.klee0kai.thekey.app.ui.navigation.model.QRCodeScanDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.TextProvider
 import com.github.klee0kai.thekey.app.ui.navigation.navigate
 import com.github.klee0kai.thekey.app.ui.navigation.storage
@@ -29,6 +30,7 @@ import com.github.klee0kai.thekey.app.utils.common.launchLatest
 import com.github.klee0kai.thekey.app.utils.common.launchLatestSafe
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -44,7 +46,6 @@ class EditNotePresenterImpl(
     private val notesInteractor = DI.notesInteractorLazy(identifier.storage())
     private val otpNotesInteractor = DI.otpNotesInteractorLazy(identifier.storage())
     private val groupsInteractor = DI.groupsInteractorLazy(identifier.storage())
-    private val featuresManager = DI.dynamicFeaturesManager()
 
     private var originNote: DecryptedNote? = null
     private var originOtpNote: DecryptedOtpNote? = null
@@ -184,12 +185,9 @@ class EditNotePresenterImpl(
     }
 
     override fun scanQRCode() = scope.launchLatest("qr") {
-        featuresManager().install(DynamicFeature.qrcodeScanner())
-
-
-//        val otpUrl = router.navigate<String>(QRCodeScanDestination).firstOrNull() ?: return@launchLatest
-//        val otp = otpNotesInteractor().otpNoteFromUrl(otpUrl) ?: return@launchLatest
-//        input { updateWith(otp) }
+        val otpUrl = router.navigate<String>(QRCodeScanDestination).firstOrNull() ?: return@launchLatest
+        val otp = otpNotesInteractor().otpNoteFromUrl(otpUrl) ?: return@launchLatest
+        input { updateWith(otp) }
     }
 
     override fun save() = scope.launchLatest("safe") {

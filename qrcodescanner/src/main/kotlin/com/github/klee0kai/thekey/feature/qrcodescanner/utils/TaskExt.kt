@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.utils.coroutine
+package com.github.klee0kai.thekey.feature.qrcodescanner.utils
 
 import com.github.klee0kai.thekey.app.di.DI
 import com.google.android.gms.tasks.Task
