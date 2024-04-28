@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.features.model.DynamicFeature
 import com.github.klee0kai.thekey.app.utils.common.JvmReflection
+import com.github.klee0kai.thekey.app.utils.common.launchSafe
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import kotlinx.coroutines.flow.asStateFlow
 import timber.log.Timber
@@ -52,10 +53,7 @@ class DynamicFeaturesManagerDebug : DynamicFeaturesManager {
                     }
                 }
 
-                PackageInstaller.STATUS_SUCCESS -> {
-                    installTracker.update()
-                }
-
+                PackageInstaller.STATUS_SUCCESS -> Unit
                 PackageInstaller.STATUS_FAILURE,
                 PackageInstaller.STATUS_FAILURE_BLOCKED,
                 PackageInstaller.STATUS_FAILURE_ABORTED,
@@ -84,10 +82,11 @@ class DynamicFeaturesManagerDebug : DynamicFeaturesManager {
         )
     }
 
-    override fun install(feature: DynamicFeature) {
+    override fun install(feature: DynamicFeature) = scope.launchSafe {
         Timber.d("install ${feature.moduleName} from ${findModuleApk(feature.moduleName)}")
         try {
-            val apk = findModuleApk(feature.moduleName) ?: return
+            installTracker.abortAllInstallations().join()
+            val apk = findModuleApk(feature.moduleName) ?: return@launchSafe
             val sessionParams = PackageInstaller.SessionParams(PackageInstaller.SessionParams.MODE_INHERIT_EXISTING)
 
             with(JvmReflection) { sessionParams.invokeReflection("setDontKillApp", true) }
@@ -122,12 +121,14 @@ class DynamicFeaturesManagerDebug : DynamicFeaturesManager {
             )
 
             session.close()
+
+            installTracker.startInstall(sessionId, feature)
         } catch (e: IllegalStateException) {
             Timber.e(e)
         }
     }
 
-    override fun uninstall(feature: DynamicFeature) {
+    override fun uninstall(feature: DynamicFeature) = scope.launchSafe {
         Timber.d("uninstall ${feature.moduleName} ")
         manager.deferredUninstall(listOf(feature.moduleName))
     }

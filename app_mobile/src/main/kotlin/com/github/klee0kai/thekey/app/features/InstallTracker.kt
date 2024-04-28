@@ -5,11 +5,16 @@ import android.util.SparseArray
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.features.model.DynamicFeature
 import com.github.klee0kai.thekey.app.features.model.InstallDynamicFeature
+import com.github.klee0kai.thekey.app.features.model.InstallStatus
 import com.github.klee0kai.thekey.app.features.model.Installed
+import com.github.klee0kai.thekey.app.features.model.Installing
 import com.github.klee0kai.thekey.app.features.model.NotInstalled
 import com.github.klee0kai.thekey.app.utils.common.launchSafe
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class InstallTracker {
 
@@ -21,62 +26,90 @@ class InstallTracker {
     private val activeSessions = SparseArray<String>()
 
     init {
-        update()
-//        scope.launch(DI.mainDispatcher()) {
-//            packageInstaller.registerSessionCallback(object : PackageInstaller.SessionCallback() {
-//                override fun onCreated(sessionId: Int) {
-//                    Timber.d("install on created $sessionId")
-//                }
-//
-//                override fun onBadgingChanged(sessionId: Int) {
-//                    Timber.d("install onBadgingChanged $sessionId")
-//                }
-//
-//                override fun onActiveChanged(sessionId: Int, active: Boolean) {
-//                    Timber.d("install onActiveChanged $sessionId active $active")
-//                }
-//
-//                override fun onProgressChanged(sessionId: Int, progress: Float) {
-//                    Timber.d("install onProgressChanged $sessionId progress $progress")
-//                }
-//
-//                override fun onFinished(sessionId: Int, success: Boolean) {
-//                    Timber.d("install onFinished $sessionId success ${success}")
-////                    update()
-//                }
-//            })
-//        }
-    }
-
-    fun track(module: String, sessionId: Int) = scope.launchSafe {
-        activeSessions[sessionId] = module
-    }
-
-    fun update() = scope.launchSafe {
-//        val myActiveSessions = packageInstaller
-//            .mySessions
-//            .filter { isActive }
-//            .map { packageSession ->
-//                val splitInstallSession = runCatching { splitInstallManager.requestSessionState(packageSession.sessionId) }.getOrNull()
-//                packageSession to splitInstallSession
-//            }
-        val installed = splitInstallManager.installedModules
-
-        features.value = DynamicFeature.allFeatures().map { feature ->
-//            val session = myActiveSessions.firstOrNull { it.second?.moduleNames()?.contains(feature.moduleName) == true }
-            InstallDynamicFeature(
-                feature = feature,
-                status = when {
-                    feature.moduleName in installed -> Installed
-//                    session?.first != null -> Installing(
-//                        progress = session.first.progress
-//                    )
-
-                    else -> NotInstalled
+        updateOnStart()
+        scope.launch(DI.mainDispatcher()) {
+            packageInstaller.registerSessionCallback(object : PackageInstaller.SessionCallback() {
+                override fun onCreated(sessionId: Int) {
+                    scope.launchSafe {
+                        Timber.d("install on created $sessionId")
+                    }
                 }
-            )
+
+                override fun onBadgingChanged(sessionId: Int) {
+                    scope.launchSafe {
+                        Timber.d("install onBadgingChanged $sessionId")
+                    }
+                }
+
+                override fun onActiveChanged(sessionId: Int, active: Boolean) {
+                    scope.launchSafe {
+                        Timber.d("install onActiveChanged $sessionId active $active")
+                    }
+                }
+
+                override fun onProgressChanged(sessionId: Int, progress: Float) {
+                    scope.launchSafe {
+                        Timber.d("install onProgressChanged $sessionId progress $progress")
+                        val moduleName = activeSessions.get(sessionId, null) ?: return@launchSafe
+                        val feature = DynamicFeature.byName(moduleName) ?: return@launchSafe
+                        update(feature = feature, status = Installing(progress = progress))
+                    }
+                }
+
+                override fun onFinished(sessionId: Int, success: Boolean) {
+                    scope.launchSafe {
+                        Timber.d("install onFinished $sessionId success ${success}")
+                        val moduleName = activeSessions.get(sessionId, null) ?: return@launchSafe
+                        val feature = DynamicFeature.byName(moduleName) ?: return@launchSafe
+                        update(feature = feature, status = if (success) Installed else NotInstalled)
+
+                    }
+                }
+            })
         }
     }
 
+    fun startInstall(sessionId: Int, feature: DynamicFeature) = scope.launchSafe {
+        activeSessions[sessionId] = feature.moduleName
+        update(feature = feature, status = Installing(progress = 0f))
+    }
+
+    fun updateOnStart() = scope.launchSafe {
+        val installed = splitInstallManager.installedModules
+        features.value = DynamicFeature.allFeatures()
+            .map { feature ->
+                InstallDynamicFeature(
+                    feature = feature,
+                    status = when {
+                        feature.moduleName in installed -> Installed
+                        else -> NotInstalled
+                    }
+                )
+            }
+    }
+
+    fun abortAllInstallations() = scope.launchSafe {
+        packageInstaller
+            .mySessions
+            .forEach { packageSession ->
+                Timber.d("abandonSession ${packageSession.sessionId}")
+                packageInstaller.abandonSession(packageSession.sessionId)
+            }
+    }
+
+    private fun update(feature: DynamicFeature, status: InstallStatus) {
+        features.update { featuresList ->
+            featuresList.filter { it.feature.moduleName != feature.moduleName }
+                .toMutableList()
+                .apply {
+                    add(
+                        InstallDynamicFeature(
+                            feature = feature,
+                            status = status
+                        )
+                    )
+                }
+        }
+    }
 
 }

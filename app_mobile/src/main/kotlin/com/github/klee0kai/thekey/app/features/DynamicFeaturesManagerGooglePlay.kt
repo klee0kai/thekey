@@ -2,17 +2,17 @@ package com.github.klee0kai.thekey.app.features
 
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.features.model.DynamicFeature
-import com.github.klee0kai.thekey.app.features.model.InstallDynamicFeature
+import com.github.klee0kai.thekey.app.utils.common.launchSafe
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import com.google.android.play.core.splitinstall.SplitInstallRequest
 import com.google.android.play.core.splitinstall.SplitInstallStateUpdatedListener
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import timber.log.Timber
 
 class DynamicFeaturesManagerGooglePlay : DynamicFeaturesManager {
 
+    private val scope = DI.defaultThreadScope()
     private val installTracker = InstallTracker()
 
     private val manager = SplitInstallManagerFactory.create(DI.ctx());
@@ -36,7 +36,7 @@ class DynamicFeaturesManagerGooglePlay : DynamicFeaturesManager {
                 }
 
                 SplitInstallSessionStatus.INSTALLED -> {
-                    installTracker.update()
+                    installTracker.updateOnStart()
                 }
 
                 SplitInstallSessionStatus.FAILED -> {}
@@ -50,7 +50,7 @@ class DynamicFeaturesManagerGooglePlay : DynamicFeaturesManager {
         manager.registerListener(installListener)
     }
 
-    override fun install(feature: DynamicFeature) {
+    override fun install(feature: DynamicFeature) = scope.launchSafe {
         Timber.d("install ${feature.moduleName}")
 
         manager.startInstall(

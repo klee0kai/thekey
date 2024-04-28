@@ -7,6 +7,8 @@ fun DynamicFeature.Companion.allFeatures() = listOf(
     qrcodeScanner(),
 )
 
+fun DynamicFeature.Companion.byName(moduleName: String) = allFeatures().firstOrNull { it.moduleName == moduleName }
+
 
 fun DynamicFeature.Companion.qrcodeScanner() = DynamicFeature(
     moduleName = "qrcodescanner",
