@@ -92,8 +92,10 @@ class InstallTracker {
         packageInstaller
             .mySessions
             .forEach { packageSession ->
-                Timber.d("abandonSession ${packageSession.sessionId}")
-                packageInstaller.abandonSession(packageSession.sessionId)
+                runCatching {
+                    Timber.d("try abandonSession ${packageSession.sessionId}")
+                    packageInstaller.abandonSession(packageSession.sessionId)
+                }
             }
     }
 

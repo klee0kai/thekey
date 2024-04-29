@@ -125,7 +125,7 @@ fun DynamicFeatureScreen(dest: DynamicDestination) {
                                 bottomMargin = 16.dp,
                             )
                         },
-                    text = stringResource(id = R.string.installing, curStatus.progress)
+                    text = stringResource(id = R.string.installing_progress, curStatus.progress)
                 )
             }
 

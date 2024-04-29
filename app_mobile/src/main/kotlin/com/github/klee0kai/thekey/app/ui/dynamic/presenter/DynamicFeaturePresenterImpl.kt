@@ -5,6 +5,7 @@ import com.github.klee0kai.thekey.app.features.model.DynamicFeature
 import com.github.klee0kai.thekey.app.features.model.NotInstalled
 import com.github.klee0kai.thekey.app.features.model.isCompleted
 import com.github.klee0kai.thekey.app.utils.common.launchLatest
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
@@ -15,6 +16,7 @@ class DynamicFeaturePresenterImpl(
 
     private val scope = DI.defaultThreadScope()
     private val featuresManager = DI.dynamicFeaturesManager()
+    private val router = DI.router()
 
     override val status = flow {
         featuresManager()
@@ -28,8 +30,13 @@ class DynamicFeaturePresenterImpl(
 
     override fun install() = scope.launchLatest("install") {
         featuresManager().install(feature)
-
         status.firstOrNull { it.isCompleted }
+
+        router.showInitDynamicFeatureScreen.value = true
+        delay(1000)
+
+        delay(1000)
+        router.showInitDynamicFeatureScreen.value = false
     }
 
 }

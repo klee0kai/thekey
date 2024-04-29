@@ -32,7 +32,7 @@ class ComposeRouterImpl(context: RouterContext) : ComposeRouter, RouterContext b
 
     override fun initIfNeed(destination: Destination) {
         scope.launchLatest("init") {
-            val curDest = DI.router().navChanges
+            val curDest = navChanges
                 .firstOrNull()
                 ?.currentNavStack
                 ?.last()
@@ -40,7 +40,7 @@ class ComposeRouterImpl(context: RouterContext) : ComposeRouter, RouterContext b
 
             if (curDest == null || curDest == EmptyDestination) {
                 val navEntry = navEntry(destination)
-                DI.router().navFullController.setNewBackstack(
+                navFullController.setNewBackstack(
                     entries = listOf(navEntry),
                     action = NavAction.Idle,
                 )

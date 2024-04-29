@@ -7,6 +7,7 @@ import com.github.klee0kai.thekey.app.ui.navigation.NavBoardRouter
 import com.github.klee0kai.thekey.app.ui.navigation.PermissionsRouter
 import com.github.klee0kai.thekey.app.ui.navigation.RouterContext
 import com.github.klee0kai.thekey.app.ui.navigation.SnackRouter
+import kotlinx.coroutines.flow.MutableStateFlow
 
 open class AppRouterImp(
     private val ctx: RouterContext = RouterContextImpl()
@@ -16,6 +17,8 @@ open class AppRouterImp(
     NavBoardRouter by NavBoardRouterImpl(ctx),
     ActivityRouter by ActivityRouterImpl(ctx),
     PermissionsRouter by PermissionRouterImpl(ctx) {
+
+    override val showInitDynamicFeatureScreen get() = ctx.showInitDynamicFeatureScreen
 
     override val snackbarHostState get() = ctx.snackbarHostState
 
