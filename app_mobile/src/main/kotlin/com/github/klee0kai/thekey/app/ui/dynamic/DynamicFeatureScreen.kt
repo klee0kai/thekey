@@ -171,7 +171,7 @@ private fun DynamicFeatureScreenPreview() = AppTheme {
 @Composable
 private fun DynamicFeatureScreenInstallingPreview() = AppTheme {
     DI.hardReset()
-    DI.initPresenterModule(object : PresentersModule() {
+    DI.initPresenterModule(object : PresentersModule {
         override fun dynamicFeaturePresenter(feature: DynamicFeature) = object : DynamicFeaturePresenter {
             override val status = MutableStateFlow(Installing(progress = 0.6f))
         }
@@ -184,7 +184,7 @@ private fun DynamicFeatureScreenInstallingPreview() = AppTheme {
 @Composable
 private fun DynamicFeatureScreenInstalledPreview() = AppTheme {
     DI.hardReset()
-    DI.initPresenterModule(object : PresentersModule() {
+    DI.initPresenterModule(object : PresentersModule {
         override fun dynamicFeaturePresenter(feature: DynamicFeature) = object : DynamicFeaturePresenter {
             override val status = MutableStateFlow(Installed)
         }
@@ -197,7 +197,7 @@ private fun DynamicFeatureScreenInstalledPreview() = AppTheme {
 @Composable
 private fun DynamicFeatureScreenInstallErrorPreview() = AppTheme {
     DI.hardReset()
-    DI.initPresenterModule(object : PresentersModule() {
+    DI.initPresenterModule(object : PresentersModule {
         override fun dynamicFeaturePresenter(feature: DynamicFeature) = object : DynamicFeaturePresenter {
             override val status = MutableStateFlow(InstallError)
         }

@@ -262,7 +262,7 @@ fun GenPasswordContent(
 @Preview(device = Devices.PIXEL_6, showSystemUi = true)
 @Composable
 private fun GenPasswordContentPreview() = AppTheme {
-    DI.initPresenterModule(object : PresentersModule() {
+    DI.initPresenterModule(object : PresentersModule {
         override fun genPasswPresente(storageIdentifier: StorageIdentifier) = object : GenPasswPresenter {
             override val state = MutableStateFlow(
                 GenPasswState(

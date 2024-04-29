@@ -75,7 +75,7 @@ fun GenHistScreen(
 )
 @Composable
 private fun GenHistScreenPreview() = AppTheme {
-    DI.initPresenterModule(object : PresentersModule() {
+    DI.initPresenterModule(object : PresentersModule {
         override fun genHistPresenter(storageIdentifier: StorageIdentifier) = object : GenHistPresenter {
             override val histFlow = MutableStateFlow(
                 listOf(

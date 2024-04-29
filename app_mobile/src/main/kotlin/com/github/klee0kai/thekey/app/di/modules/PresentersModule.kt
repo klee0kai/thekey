@@ -30,19 +30,19 @@ import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenterImpl
 import com.github.klee0kai.thekey.app.ui.storages.StoragesPresenter
 
 @Module
-open class PresentersModule {
+interface PresentersModule {
 
     @Provide(cache = Provide.CacheType.Weak)
     open fun loginPresenter(): LoginPresenter = LoginPresenterImpl()
 
     @Provide(cache = Provide.CacheType.Weak)
-    open fun navigationBoardPresenter(): NavigationBoardPresenter = NavigationBoardPresenterImpl()
+    fun navigationBoardPresenter(): NavigationBoardPresenter = NavigationBoardPresenterImpl()
 
     @Provide(cache = Provide.CacheType.Weak)
-    open fun storagesPresenter(): StoragesPresenter = StoragesPresenter()
+    fun storagesPresenter(): StoragesPresenter = StoragesPresenter()
 
     @Provide(cache = Provide.CacheType.Weak)
-    open fun editStoragePresenter(storageIdentifier: StorageIdentifier?): CreateStoragePresenter {
+    fun editStoragePresenter(storageIdentifier: StorageIdentifier?): CreateStoragePresenter {
         return if (storageIdentifier?.path == null) {
             CreateStoragePresenter()
         } else {
@@ -51,32 +51,32 @@ open class PresentersModule {
     }
 
     @Provide(cache = Provide.CacheType.Weak)
-    open fun storagePresenter(storageIdentifier: StorageIdentifier): StoragePresenter =
+    fun storagePresenter(storageIdentifier: StorageIdentifier): StoragePresenter =
         StoragePresenterImpl(storageIdentifier)
 
     @Provide(cache = Provide.CacheType.Weak)
-    open fun genPasswPresente(storageIdentifier: StorageIdentifier): GenPasswPresenter =
+    fun genPasswPresente(storageIdentifier: StorageIdentifier): GenPasswPresenter =
         GenPasswPresenterImpl(storageIdentifier)
 
     @Provide(cache = Provide.CacheType.Weak)
-    open fun genHistPresenter(storageIdentifier: StorageIdentifier): GenHistPresenter =
+    fun genHistPresenter(storageIdentifier: StorageIdentifier): GenHistPresenter =
         GenHistPresenterImpl(storageIdentifier)
 
     @Provide(cache = Provide.CacheType.Weak)
-    open fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter =
+    fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter =
         EditNotePresenterImpl(noteIdentifier)
 
     @Provide(cache = Provide.CacheType.Weak)
-    open fun editNoteGroupPresenter(id: NoteGroupIdentifier): EditNoteGroupsPresenter =
+    fun editNoteGroupPresenter(id: NoteGroupIdentifier): EditNoteGroupsPresenter =
         EditNoteGroupsPresenterImpl(id)
 
     @Provide(cache = Provide.CacheType.Weak)
-    open fun pluginsPresenter(): PluginsPresenter = PluginsPresenter()
+    fun pluginsPresenter(): PluginsPresenter = PluginsPresenter()
 
     @Provide(cache = Provide.CacheType.Weak)
-    open fun pluginPresenter(identifier: PluginIdentifier): PluginPresenter = PluginPresenter(identifier)
+    fun pluginPresenter(identifier: PluginIdentifier): PluginPresenter = PluginPresenter(identifier)
 
     @Provide(cache = Provide.CacheType.Weak)
-    open fun dynamicFeaturePresenter(feature: DynamicFeature): DynamicFeaturePresenter = DynamicFeaturePresenterImpl(feature)
+    fun dynamicFeaturePresenter(feature: DynamicFeature): DynamicFeaturePresenter = DynamicFeaturePresenterImpl(feature)
 
 }

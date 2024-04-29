@@ -135,7 +135,7 @@ fun EditNoteGroupsScreen(
 )
 @Composable
 private fun EditNoteGroupsSkeletonPreview() = AppTheme {
-    DI.initPresenterModule(object : PresentersModule() {
+    DI.initPresenterModule(object : PresentersModule {
         override fun editNoteGroupPresenter(id: NoteGroupIdentifier) = object : EditNoteGroupsPresenterDummy() {
             override val state = MutableStateFlow(
                 EditNoteGroupsState(

@@ -215,7 +215,7 @@ fun StorageScreen(
 @Preview(device = Devices.PIXEL_6, showSystemUi = true)
 @Composable
 private fun StorageScreenAccountsPreview() = AppTheme {
-    DI.initPresenterModule(object : PresentersModule() {
+    DI.initPresenterModule(object : PresentersModule {
         override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterDummy()
     })
     StorageScreen(
@@ -226,7 +226,7 @@ private fun StorageScreenAccountsPreview() = AppTheme {
 @Preview(device = Devices.PIXEL_6, showSystemUi = true)
 @Composable
 private fun StorageScreenAccountsSearchPreview() = AppTheme {
-    DI.initPresenterModule(object : PresentersModule() {
+    DI.initPresenterModule(object : PresentersModule {
         override fun storagePresenter(storageIdentifier: StorageIdentifier) =
             StoragePresenterDummy(isSearchActive = true)
     })
@@ -238,7 +238,7 @@ private fun StorageScreenAccountsSearchPreview() = AppTheme {
 @Preview(device = Devices.PIXEL_6, showSystemUi = true)
 @Composable
 private fun StorageScreenGeneratePreview() = AppTheme {
-    DI.initPresenterModule(object : PresentersModule() {
+    DI.initPresenterModule(object : PresentersModule {
         override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterDummy()
     })
     StorageScreen(

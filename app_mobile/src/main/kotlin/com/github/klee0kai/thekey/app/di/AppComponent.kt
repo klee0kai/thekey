@@ -47,6 +47,7 @@ var DI: AppComponent = initAppComponent()
     ],
 )
 interface AppComponent : AppComponentProviders {
+
     open fun coroutine(): CoroutineModule
 
     open fun presenters(): PresentersModule

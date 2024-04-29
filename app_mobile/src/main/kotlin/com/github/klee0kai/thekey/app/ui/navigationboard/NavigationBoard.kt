@@ -110,7 +110,7 @@ fun StorageNavigationBoard(modifier: Modifier = Modifier) {
 @Composable
 private fun StorageNavigationBoardPreview() = AppTheme {
     DI.hardReset()
-    DI.initPresenterModule(object : PresentersModule() {
+    DI.initPresenterModule(object : PresentersModule {
         override fun navigationBoardPresenter() = NavigationBoardPresenterDummy(
             hasCurrentStorage = true,
             hasFavorites = true,
@@ -130,7 +130,7 @@ private fun StorageNavigationBoardPreview() = AppTheme {
 @Composable
 private fun StorageNavigationBoardNoCurrentPreview() = AppTheme {
     DI.hardReset()
-    DI.initPresenterModule(object : PresentersModule() {
+    DI.initPresenterModule(object : PresentersModule {
         override fun navigationBoardPresenter() = NavigationBoardPresenterDummy(
             hasFavorites = true,
         )
@@ -150,7 +150,7 @@ private fun StorageNavigationBoardNoCurrentPreview() = AppTheme {
 @Composable
 private fun StorageNavigationBoardEmptyPreview() = AppTheme {
     DI.hardReset()
-    DI.initPresenterModule(object : PresentersModule() {
+    DI.initPresenterModule(object : PresentersModule {
         override fun navigationBoardPresenter() = NavigationBoardPresenterDummy()
     })
     Box(

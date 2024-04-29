@@ -506,7 +506,7 @@ fun EditNoteScreen(
 @Preview(device = Devices.PIXEL_6, showSystemUi = true)
 @Composable
 private fun EditAccountScreenP6SkeletonPreview() = AppTheme {
-    DI.initPresenterModule(object : PresentersModule() {
+    DI.initPresenterModule(object : PresentersModule {
         override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter = object : EditNotePresenter {
             override val state = MutableStateFlow(
                 EditNoteState(
@@ -521,7 +521,7 @@ private fun EditAccountScreenP6SkeletonPreview() = AppTheme {
 @Preview(device = Devices.PIXEL_6, showSystemUi = true)
 @Composable
 private fun EditAccountScreenP6Preview() = AppTheme {
-    DI.initPresenterModule(object : PresentersModule() {
+    DI.initPresenterModule(object : PresentersModule {
         override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter = object : EditNotePresenter {
             override val state = MutableStateFlow(
                 EditNoteState(
@@ -541,7 +541,7 @@ private fun EditAccountScreenP6Preview() = AppTheme {
 @Preview(device = Devices.PIXEL_6, showSystemUi = true)
 @Composable
 private fun EditAccountScreenSaveP6Preview() = AppTheme {
-    DI.initPresenterModule(object : PresentersModule() {
+    DI.initPresenterModule(object : PresentersModule {
         override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter = object : EditNotePresenter {
             override val state = MutableStateFlow(
                 EditNoteState(
@@ -562,7 +562,7 @@ private fun EditAccountScreenSaveP6Preview() = AppTheme {
 @Preview(device = Devices.PIXEL_6, showSystemUi = true)
 @Composable
 private fun EditOTPScreenP6SkeletonPreview() = AppTheme {
-    DI.initPresenterModule(object : PresentersModule() {
+    DI.initPresenterModule(object : PresentersModule {
         override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter = object : EditNotePresenter {
             override val state = MutableStateFlow(
                 EditNoteState(
@@ -577,7 +577,7 @@ private fun EditOTPScreenP6SkeletonPreview() = AppTheme {
 @Preview(device = Devices.PIXEL_6, showSystemUi = true)
 @Composable
 private fun EditOTPScreenP6Preview() = AppTheme(modifier = Modifier) {
-    DI.initPresenterModule(object : PresentersModule() {
+    DI.initPresenterModule(object : PresentersModule {
         override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter = object : EditNotePresenter {
             override val state = MutableStateFlow(
                 EditNoteState(

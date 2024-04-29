@@ -198,7 +198,7 @@ fun LoginScreen() {
 @Composable
 private fun LoginScreePreviewPixel6() = AppTheme {
     DI.initPresenterModule(
-        object : PresentersModule() {
+        object : PresentersModule {
             override fun loginPresenter(): LoginPresenter {
                 return object : LoginPresenter {
                     override val currentStorageFlow = MutableStateFlow(ColoredStorage(path = "/app_folder/some_path", name = "editModeStorage"))
@@ -216,7 +216,7 @@ private fun LoginScreePreviewPixel6() = AppTheme {
 @Composable
 private fun LoginScreePreview() = AppTheme {
     DI.initPresenterModule(
-        object : PresentersModule() {
+        object : PresentersModule {
             override fun loginPresenter(): LoginPresenter {
                 return object : LoginPresenter {
                     override val currentStorageFlow = MutableStateFlow(ColoredStorage(path = "/app_folder/some_path", name = "editModeStorage"))

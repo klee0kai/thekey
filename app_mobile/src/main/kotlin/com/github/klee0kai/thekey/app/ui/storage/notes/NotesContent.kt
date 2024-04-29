@@ -101,7 +101,7 @@ fun NotesContent(
 @Preview(device = Devices.PIXEL_6, showSystemUi = true)
 @Composable
 private fun NotesContentPreview() = AppTheme {
-    DI.initPresenterModule(object : PresentersModule() {
+    DI.initPresenterModule(object : PresentersModule {
         override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterDummy()
     })
     StorageScreen(

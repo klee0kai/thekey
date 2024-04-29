@@ -146,7 +146,7 @@ fun NotesListContent(
 @Preview
 @Composable
 private fun NotesListContentPreview() = AppTheme {
-    DI.initPresenterModule(object : PresentersModule() {
+    DI.initPresenterModule(object : PresentersModule {
         override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterDummy()
     })
     NotesListContent(
@@ -157,7 +157,7 @@ private fun NotesListContentPreview() = AppTheme {
 @Preview
 @Composable
 private fun NotesListContentTitlePreview() = AppTheme {
-    DI.initPresenterModule(object : PresentersModule() {
+    DI.initPresenterModule(object : PresentersModule {
         override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterDummy()
     })
     NotesListContent(

@@ -66,7 +66,7 @@ fun NoteSelectToGroupComponent(
 @Preview
 @Composable
 fun NoteSelectToGroupComponentPreview() = AppTheme {
-    DI.initPresenterModule(object : PresentersModule() {
+    DI.initPresenterModule(object : PresentersModule {
         override fun editNoteGroupPresenter(id: NoteGroupIdentifier) = EditNoteGroupsPresenterDummy()
     })
     NoteSelectToGroupComponent(dest = EditNoteGroupDestination(groupId = Dummy.dummyId))

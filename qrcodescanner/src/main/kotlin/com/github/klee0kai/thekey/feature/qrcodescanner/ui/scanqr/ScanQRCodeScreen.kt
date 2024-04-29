@@ -128,7 +128,7 @@ fun ScanQRCodeScreen() {
 @Composable
 private fun ScanQRCodeScreenNoPermissionPreview() = AppTheme {
     DI.hardReset()
-    DI.initAndroidHelpersModule(object : AndroidHelpersModule() {
+    DI.initAndroidHelpersModule(object : AndroidHelpersModule {
         override fun permissionsHelper() = PermissionsHelperDummy(false)
     })
     ScanQRCodeScreen()
@@ -139,7 +139,7 @@ private fun ScanQRCodeScreenNoPermissionPreview() = AppTheme {
 @Composable
 private fun ScanQRCodeScreenPreview() = AppTheme {
     DI.hardReset()
-    DI.initAndroidHelpersModule(object : AndroidHelpersModule() {
+    DI.initAndroidHelpersModule(object : AndroidHelpersModule {
         override fun permissionsHelper() = PermissionsHelperDummy(true)
     })
     ScanQRCodeScreen()

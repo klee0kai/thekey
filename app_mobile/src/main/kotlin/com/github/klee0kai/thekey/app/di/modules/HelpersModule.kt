@@ -5,10 +5,10 @@ import com.github.klee0kai.thekey.app.helpers.path.PathInputHelper
 import com.github.klee0kai.thekey.app.helpers.path.UserShortPaths
 
 @Module
-abstract class HelpersModule {
+interface HelpersModule {
 
-    abstract fun providePathInputHelper(): PathInputHelper
+    fun providePathInputHelper(): PathInputHelper
 
-    abstract fun provideUserShortPaths(): UserShortPaths
+    fun provideUserShortPaths(): UserShortPaths
 
 }

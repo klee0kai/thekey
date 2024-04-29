@@ -76,7 +76,7 @@ fun StorageNavigationMapList(
 @Preview
 @Composable
 private fun NavigationMapListPreview() = AppTheme {
-    DI.initPresenterModule(object : PresentersModule() {
+    DI.initPresenterModule(object : PresentersModule {
         override fun navigationBoardPresenter() = NavigationBoardPresenterDummy(
             hasOpened = true,
             hasFavorites = true,

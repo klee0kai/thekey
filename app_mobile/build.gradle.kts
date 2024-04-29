@@ -158,9 +158,9 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 
     // stone
-    implementation("com.github.klee0kai.stone:android_lib:1.0.4")
-    implementation("com.github.klee0kai.stone:kotlin_lib:1.0.4")
-    kapt("com.github.klee0kai.stone:stone_processor:1.0.4")
+    implementation("com.github.klee0kai.stone:android_lib:1.0.5")
+    implementation("com.github.klee0kai.stone:kotlin_lib:1.0.5")
+    kapt("com.github.klee0kai.stone:stone_processor:1.0.5")
 
     // room
     implementation("androidx.room:room-runtime:2.6.1")

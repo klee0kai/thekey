@@ -13,19 +13,19 @@ import com.github.klee0kai.thekey.app.ui.navigation.screenresolver.ScreenResolve
 import com.github.klee0kai.thekey.app.ui.navigation.screenresolver.ScreenResolverImpl
 
 @Module
-open class AndroidHelpersModule {
+interface AndroidHelpersModule {
 
     @Provide(cache = Provide.CacheType.Weak)
-    open fun screenResolver(): ScreenResolver = ScreenResolverImpl()
+    fun screenResolver(): ScreenResolver = ScreenResolverImpl()
 
     @Provide(cache = Provide.CacheType.Weak)
-    open fun permissionsHelper(): PermissionsHelper = PermissionsHelper()
+    fun permissionsHelper(): PermissionsHelper = PermissionsHelper()
 
     @Provide(cache = Provide.CacheType.Weak)
-    open fun router(): AppRouter = AppRouterImp()
+    fun router(): AppRouter = AppRouterImp()
 
     @Provide(cache = Provide.CacheType.Strong)
-    open fun dynamicFeaturesManager(): DynamicFeaturesManager = when {
+    fun dynamicFeaturesManager(): DynamicFeaturesManager = when {
         BuildConfig.DEBUG -> DynamicFeaturesManagerDebug()
         else -> DynamicFeaturesManagerGooglePlay()
     }

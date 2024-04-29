@@ -65,9 +65,9 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.7")
 
     // stone
-    implementation("com.github.klee0kai.stone:android_lib:1.0.4")
-    implementation("com.github.klee0kai.stone:kotlin_lib:1.0.4")
-    kapt("com.github.klee0kai.stone:stone_processor:1.0.4")
+    implementation("com.github.klee0kai.stone:android_lib:1.0.5")
+    implementation("com.github.klee0kai.stone:kotlin_lib:1.0.5")
+    kapt("com.github.klee0kai.stone:stone_processor:1.0.5")
 
     // BarCodeScan
     implementation("com.google.mlkit:barcode-scanning:17.2.0")
