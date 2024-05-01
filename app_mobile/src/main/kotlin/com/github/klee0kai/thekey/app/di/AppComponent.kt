@@ -6,6 +6,7 @@ import com.github.klee0kai.stone.KotlinWrappersStone
 import com.github.klee0kai.stone.Stone
 import com.github.klee0kai.stone.annotations.component.Component
 import com.github.klee0kai.stone.annotations.component.Init
+import com.github.klee0kai.stone.annotations.component.ModuleOriginFactory
 import com.github.klee0kai.stone.annotations.module.BindInstance
 import com.github.klee0kai.thekey.app.BuildConfig
 import com.github.klee0kai.thekey.app.di.debug.DebugDI
@@ -46,37 +47,7 @@ var DI: AppComponent = initAppComponent()
         AppWrappersStone::class,
     ],
 )
-interface AppComponent : AppComponentProviders {
-
-    open fun coroutine(): CoroutineModule
-
-    open fun presenters(): PresentersModule
-
-    open fun androidHelpers(): AndroidHelpersModule
-
-    open fun helpers(): HelpersModule
-
-    open fun interactors(): InteractorsModule
-
-    open fun repositories(): RepositoriesModule
-
-    open fun engine(): EngineModule
-
-    open fun databases(): DBModule
-
-    open fun theme(): ThemeModule
-
-    @Init
-    fun initEngineModule(engineModule: Class<out EngineModule>)
-
-    @Init
-    fun initHelpersModule(helpers: Class<out HelpersModule>)
-
-    @Init
-    fun initAndroidHelpersModule(helpers: AndroidHelpersModule)
-
-    @Init
-    fun initPresenterModule(presentersModule: PresentersModule)
+interface AppComponent : AppComponentModules, AppComponentProviders {
 
     @BindInstance(cache = BindInstance.CacheType.Weak)
     fun ctx(ctx: Context? = null): Context
@@ -94,9 +65,7 @@ fun AppComponent.hardReset() {
     DI = initAppComponent()
 }
 
-private fun initAppComponent() = Stone.createComponent(AppComponent::class.java).apply {
-    config(AppConfig())
-
+fun AppComponent.updateComponentsSoft() {
     if (BuildConfig.DEBUG) {
         with(DebugDI) { initDI() }
     }
@@ -104,7 +73,13 @@ private fun initAppComponent() = Stone.createComponent(AppComponent::class.java)
     DynamicFeature
         .allFeatures()
         .forEach { feature ->
-            feature.findApi()?.initDI()
+            with(feature.findApi() ?: return@forEach) {
+                initDI()
+            }
         }
+}
 
+private fun initAppComponent() = Stone.createComponent(AppComponent::class.java).apply {
+    config(AppConfig())
+    updateComponentsSoft()
 }

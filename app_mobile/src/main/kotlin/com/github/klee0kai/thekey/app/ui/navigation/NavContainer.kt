@@ -28,9 +28,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.designkit.EmptyScreen
 import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
-import com.github.klee0kai.thekey.app.ui.designkit.LocalScreenResolver
 import com.github.klee0kai.thekey.app.ui.dynamic.InitDIScreen
 import com.github.klee0kai.thekey.app.ui.navigation.model.Destination
 import com.github.klee0kai.thekey.app.ui.navigationboard.StorageNavigationBoard
@@ -55,6 +55,8 @@ fun MainNavContainer() {
         if (initDIScreen.alpha > 0.9) return
     }
 
+    val screenResolver = remember { DI.screenResolver() }
+
     ModalNavigationDrawer(
         drawerState = LocalRouter.current.navBoardState,
         drawerContent = {
@@ -72,7 +74,7 @@ fun MainNavContainer() {
             transitionSpec = customTransitionSpec,
             emptyBackstackPlaceholder = { EmptyScreen() }
         ) { destination ->
-            LocalScreenResolver.current.screenOf(destination = destination)
+            screenResolver.screenOf(destination = destination)
         }
     }
 
@@ -82,7 +84,7 @@ fun MainNavContainer() {
         transitionQueueing = NavTransitionQueueing.QueueAll,
         transitionSpec = customTransitionSpec,
     ) { destination ->
-        LocalScreenResolver.current.screenOf(destination = destination)
+        screenResolver.screenOf(destination = destination)
     }
 
     // snack

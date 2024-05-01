@@ -1,6 +1,7 @@
 package com.github.klee0kai.thekey.app.ui.dynamic.presenter
 
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.di.updateComponentsSoft
 import com.github.klee0kai.thekey.app.features.model.DynamicFeature
 import com.github.klee0kai.thekey.app.features.model.NotInstalled
 import com.github.klee0kai.thekey.app.features.model.isCompleted
@@ -34,7 +35,7 @@ class DynamicFeaturePresenterImpl(
 
         router.showInitDynamicFeatureScreen.value = true
         delay(1000)
-
+        DI.updateComponentsSoft()
         delay(1000)
         router.showInitDynamicFeatureScreen.value = false
     }

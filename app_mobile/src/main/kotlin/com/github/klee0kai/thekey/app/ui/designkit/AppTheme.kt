@@ -27,7 +27,6 @@ import com.valentinilk.shimmer.defaultShimmerTheme
 val LocalRouter = compositionLocalOf<AppRouter> { error("no router") }
 val LocalColorScheme = compositionLocalOf<CommonColorScheme> { error("no color scheme") }
 val LocalAppConfig = compositionLocalOf<AppConfig> { error("no app config") }
-val LocalScreenResolver = compositionLocalOf<ScreenResolver> { error("no app config") }
 
 @Composable
 fun AppTheme(
@@ -69,7 +68,6 @@ fun AppTheme(
         LocalShimmerTheme provides shimmer,
         LocalColorScheme provides DI.theme().colorScheme(),
         LocalAppConfig provides DI.config(),
-        LocalScreenResolver provides DI.screenResolver(),
     ) {
         MaterialTheme(
             colorScheme = colorScheme.androidColorScheme,
