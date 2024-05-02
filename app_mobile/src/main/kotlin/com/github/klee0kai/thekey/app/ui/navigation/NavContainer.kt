@@ -31,10 +31,8 @@ import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.designkit.EmptyScreen
 import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
-import com.github.klee0kai.thekey.app.ui.dynamic.InitDIScreen
 import com.github.klee0kai.thekey.app.ui.navigation.model.Destination
 import com.github.klee0kai.thekey.app.ui.navigationboard.StorageNavigationBoard
-import com.github.klee0kai.thekey.app.utils.views.collectAsStateCrossFaded
 import com.github.klee0kai.thekey.app.utils.views.rememberTickerOf
 import dev.olshevski.navigation.reimagined.AnimatedNavHost
 import dev.olshevski.navigation.reimagined.NavAction
@@ -47,15 +45,6 @@ import dev.olshevski.navigation.reimagined.NavTransitionSpec
 fun MainNavContainer() {
     NavBackHandler(LocalRouter.current.navFullController)
     LocalRouter.current.collectBackstackChanges()
-
-    val initDIScreen by LocalRouter.current.showInitDynamicFeatureScreen.collectAsStateCrossFaded(key = Unit, initial = false)
-
-    if (initDIScreen.current) {
-        InitDIScreen(modifier = Modifier.alpha(initDIScreen.alpha))
-        if (initDIScreen.alpha > 0.9) return
-    }
-
-    val screenResolver = remember { DI.screenResolver() }
 
     ModalNavigationDrawer(
         drawerState = LocalRouter.current.navBoardState,
@@ -74,7 +63,7 @@ fun MainNavContainer() {
             transitionSpec = customTransitionSpec,
             emptyBackstackPlaceholder = { EmptyScreen() }
         ) { destination ->
-            screenResolver.screenOf(destination = destination)
+            DI.screenResolver().screenOf(destination = destination)
         }
     }
 
@@ -84,7 +73,7 @@ fun MainNavContainer() {
         transitionQueueing = NavTransitionQueueing.QueueAll,
         transitionSpec = customTransitionSpec,
     ) { destination ->
-        screenResolver.screenOf(destination = destination)
+        DI.screenResolver().screenOf(destination = destination)
     }
 
     // snack

@@ -36,7 +36,7 @@ class DynamicFeaturePresenterImpl(
         router.showInitDynamicFeatureScreen.value = true
         delay(1000)
         DI.updateComponentsSoft()
-        delay(1000)
+        delay(100)
         router.showInitDynamicFeatureScreen.value = false
     }
 

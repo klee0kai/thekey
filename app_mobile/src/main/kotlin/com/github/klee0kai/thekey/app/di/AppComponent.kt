@@ -5,8 +5,8 @@ import androidx.activity.ComponentActivity
 import com.github.klee0kai.stone.KotlinWrappersStone
 import com.github.klee0kai.stone.Stone
 import com.github.klee0kai.stone.annotations.component.Component
-import com.github.klee0kai.stone.annotations.component.Init
-import com.github.klee0kai.stone.annotations.component.ModuleOriginFactory
+import com.github.klee0kai.stone.annotations.component.GcWeakScope
+import com.github.klee0kai.stone.annotations.component.RunGc
 import com.github.klee0kai.stone.annotations.module.BindInstance
 import com.github.klee0kai.thekey.app.BuildConfig
 import com.github.klee0kai.thekey.app.di.debug.DebugDI
@@ -15,15 +15,6 @@ import com.github.klee0kai.thekey.app.di.identifier.NoteGroupIdentifier
 import com.github.klee0kai.thekey.app.di.identifier.NoteIdentifier
 import com.github.klee0kai.thekey.app.di.identifier.PluginIdentifier
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
-import com.github.klee0kai.thekey.app.di.modules.AndroidHelpersModule
-import com.github.klee0kai.thekey.app.di.modules.CoroutineModule
-import com.github.klee0kai.thekey.app.di.modules.DBModule
-import com.github.klee0kai.thekey.app.di.modules.EngineModule
-import com.github.klee0kai.thekey.app.di.modules.HelpersModule
-import com.github.klee0kai.thekey.app.di.modules.InteractorsModule
-import com.github.klee0kai.thekey.app.di.modules.PresentersModule
-import com.github.klee0kai.thekey.app.di.modules.RepositoriesModule
-import com.github.klee0kai.thekey.app.di.modules.ThemeModule
 import com.github.klee0kai.thekey.app.di.wrap.AppWrappersStone
 import com.github.klee0kai.thekey.app.domain.model.AppConfig
 import com.github.klee0kai.thekey.app.features.allFeatures
@@ -58,6 +49,10 @@ interface AppComponent : AppComponentModules, AppComponentProviders {
     @BindInstance(cache = BindInstance.CacheType.Strong)
     fun config(snackbarHostState: AppConfig? = null): AppConfig
 
+    @RunGc
+    @GcWeakScope
+    fun gcWeak()
+
 }
 
 @DebugOnly
@@ -66,6 +61,7 @@ fun AppComponent.hardReset() {
 }
 
 fun AppComponent.updateComponentsSoft() {
+    gcWeak()
     if (BuildConfig.DEBUG) {
         with(DebugDI) { initDI() }
     }

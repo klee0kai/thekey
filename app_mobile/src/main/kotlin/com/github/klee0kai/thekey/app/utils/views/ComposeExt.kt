@@ -6,6 +6,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.NonRestartableComposable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -19,6 +21,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.utils.common.ObjHolder
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.valentinilk.shimmer.shimmer
@@ -58,6 +61,21 @@ fun <T : R, R> Flow<T>.collectAsState(
 @Composable
 fun <T> rememberDerivedStateOf(calculation: () -> T) = remember {
     derivedStateOf(calculation)
+}
+
+@Composable
+@NonRestartableComposable
+inline fun <T> rememberOnScreen(block: () -> T): T {
+    val cached = remember { ObjHolder<T?>(null) }
+    DisposableEffect(key1 = Unit) {
+        onDispose {
+            cached.value = null
+        }
+    }
+    return when {
+        cached.value != null -> cached.value as T
+        else -> block().also { cached.value = it }
+    }
 }
 
 @Composable
