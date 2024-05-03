@@ -40,4 +40,8 @@ class PluginPresenterImpl(
         router.showInitDynamicFeatureScreen.value = false
     }
 
+    override fun uninstall() = scope.launchLatest("install") {
+        featuresManager().uninstall(feature)
+    }
+
 }
