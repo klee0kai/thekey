@@ -5,7 +5,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
@@ -28,12 +27,13 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.DynamicDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.QRCodeScanDestination
 import com.github.klee0kai.thekey.app.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.app.utils.views.collectAsStateCrossFaded
+import com.github.klee0kai.thekey.app.utils.views.rememberOnScreen
 import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
 fun DynamicFeatureScreen(dest: DynamicDestination) {
 
-    val presenter = remember { DI.dynamicFeaturePresenter(dest.feature) }
+    val presenter = rememberOnScreen { DI.dynamicFeaturePresenter(dest.feature) }
     val status by presenter.status.collectAsStateCrossFaded(key = Unit, initial = null)
 
     ConstraintLayout(

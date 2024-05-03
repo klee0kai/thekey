@@ -10,7 +10,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
@@ -31,6 +30,7 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.GenHistDestination
 import com.github.klee0kai.thekey.app.ui.navigation.storageIdentifier
 import com.github.klee0kai.thekey.app.utils.common.Dummy
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
+import com.github.klee0kai.thekey.app.utils.views.rememberOnScreen
 import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
@@ -38,7 +38,7 @@ fun GenHistScreen(
     dest: GenHistDestination = GenHistDestination(),
 ) {
     val router = LocalRouter.current
-    val presenter = remember { DI.genHistPresenter(dest.storageIdentifier()) }
+    val presenter = rememberOnScreen { DI.genHistPresenter(dest.storageIdentifier()) }
     val hist by presenter.histFlow.collectAsState(key = Unit, initial = null)
 
     AppBarStates(

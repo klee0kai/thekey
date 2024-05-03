@@ -42,6 +42,7 @@ import com.github.klee0kai.thekey.app.utils.common.Dummy
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
 import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
+import com.github.klee0kai.thekey.app.utils.views.rememberOnScreen
 
 @Composable
 fun NotesContent(
@@ -51,7 +52,7 @@ fun NotesContent(
     scaffoldState: SimpleBottomSheetScaffoldState = simpleBottomSheetScaffoldState(LocalDensity.current),
     onDrag: (Float) -> Unit = {},
 ) {
-    val presenter = remember { DI.storagePresenter(dest.identifier()) }
+    val presenter = rememberOnScreen { DI.storagePresenter(dest.identifier()) }
     val router = LocalRouter.current
     val selectedGroup by presenter.selectedGroupId.collectAsState(key = Unit, initial = null)
     val groups by presenter.filteredColorGroups.collectAsState(key = Unit, initial = emptyList())

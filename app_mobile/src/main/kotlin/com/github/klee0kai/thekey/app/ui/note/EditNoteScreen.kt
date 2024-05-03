@@ -29,7 +29,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -73,6 +72,7 @@ import com.github.klee0kai.thekey.app.utils.views.crossFadeAlpha
 import com.github.klee0kai.thekey.app.utils.views.currentViewSizeState
 import com.github.klee0kai.thekey.app.utils.views.pxToDp
 import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
+import com.github.klee0kai.thekey.app.utils.views.rememberOnScreen
 import com.github.klee0kai.thekey.app.utils.views.rememberSkeletonModifier
 import com.github.klee0kai.thekey.app.utils.views.rememberTargetCrossFaded
 import com.github.klee0kai.thekey.app.utils.views.toPx
@@ -86,7 +86,7 @@ fun EditNoteScreen(
     val scope = rememberCoroutineScope()
     val navigator = LocalRouter.current
     val view = LocalView.current
-    val presenter = remember {
+    val presenter = rememberOnScreen {
         DI.editNotePresenter(dest.identifier()).apply {
             init(dest.tab, dest.note, dest.otpNote)
         }

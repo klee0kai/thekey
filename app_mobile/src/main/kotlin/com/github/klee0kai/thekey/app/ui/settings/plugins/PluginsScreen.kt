@@ -6,7 +6,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -18,12 +17,13 @@ import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
 import com.github.klee0kai.thekey.app.ui.navigation.model.PluginDestination
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
+import com.github.klee0kai.thekey.app.utils.views.rememberOnScreen
 
 @Composable
 fun PluginsScreen() {
     val scope = rememberCoroutineScope()
     val router = LocalRouter.current
-    val presenter = remember { DI.pluginsPresenter() }
+    val presenter = rememberOnScreen { DI.pluginsPresenter() }
     val features by presenter.features.collectAsState(key = Unit, initial = emptyList())
 
     LazyColumn(

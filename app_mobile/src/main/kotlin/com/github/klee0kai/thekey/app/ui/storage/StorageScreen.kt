@@ -62,6 +62,7 @@ import com.github.klee0kai.thekey.app.utils.views.collectAsState
 import com.github.klee0kai.thekey.app.utils.views.hideOnTargetAlpha
 import com.github.klee0kai.thekey.app.utils.views.rememberAlphaAnimate
 import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
+import com.github.klee0kai.thekey.app.utils.views.rememberOnScreen
 import com.github.klee0kai.thekey.app.utils.views.rememberTargetCrossFaded
 import kotlinx.coroutines.launch
 
@@ -74,7 +75,7 @@ fun StorageScreen(
     dest: StorageDestination = StorageDestination()
 ) {
     val isEditMode = LocalAppConfig.current.isViewEditMode
-    val presenter = remember { DI.storagePresenter(dest.identifier()) }
+    val presenter = rememberOnScreen { DI.storagePresenter(dest.identifier()) }
     val scope = rememberCoroutineScope()
     val router = LocalRouter.current
     val density = LocalDensity.current

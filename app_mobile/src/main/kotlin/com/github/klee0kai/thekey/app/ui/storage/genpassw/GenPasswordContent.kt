@@ -19,7 +19,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -44,6 +43,7 @@ import com.github.klee0kai.thekey.app.ui.storage.genpassw.model.GenPasswState
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.presenter.GenPasswPresenter
 import com.github.klee0kai.thekey.app.utils.common.Dummy
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
+import com.github.klee0kai.thekey.app.utils.views.rememberOnScreen
 import com.github.klee0kai.thekey.app.utils.views.rememberTargetCrossFaded
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -54,7 +54,7 @@ fun GenPasswordContent(
     dest: StorageDestination = StorageDestination(),
 ) {
     val scope = rememberCoroutineScope()
-    val presenter = remember {
+    val presenter = rememberOnScreen {
         DI.genPasswPresenter(dest.identifier())
             .also { it.init() }
     }

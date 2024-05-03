@@ -11,7 +11,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -24,6 +23,7 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteGroupDestinati
 import com.github.klee0kai.thekey.app.ui.notegroup.presenter.EditNoteGroupsPresenterDummy
 import com.github.klee0kai.thekey.app.utils.common.Dummy
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
+import com.github.klee0kai.thekey.app.utils.views.rememberOnScreen
 
 
 @Composable
@@ -34,7 +34,7 @@ fun NoteSelectToGroupComponent(
     header: @Composable LazyItemScope.() -> Unit = { Spacer(modifier = Modifier.height(12.dp)) },
     footer: @Composable LazyItemScope.() -> Unit = { Spacer(modifier = Modifier.height(12.dp)) },
 ) {
-    val presenter = remember { DI.editNoteGroupPresenter(dest.identifier()) }
+    val presenter = rememberOnScreen { DI.editNoteGroupPresenter(dest.identifier()) }
     val notes by presenter.allNotes.collectAsState(key = Unit, initial = emptyList())
 
     if (notes.isEmpty()) {

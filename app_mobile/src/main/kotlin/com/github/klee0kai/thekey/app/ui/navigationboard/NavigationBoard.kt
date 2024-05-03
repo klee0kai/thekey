@@ -10,7 +10,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
@@ -33,12 +32,13 @@ import com.github.klee0kai.thekey.app.ui.navigationboard.components.StorageNavig
 import com.github.klee0kai.thekey.app.ui.navigationboard.presenter.NavigationBoardPresenterDummy
 import com.github.klee0kai.thekey.app.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.app.utils.views.collectAsStateCrossFaded
+import com.github.klee0kai.thekey.app.utils.views.rememberOnScreen
 
 @Composable
 fun StorageNavigationBoard(modifier: Modifier = Modifier) {
     val colorScheme = LocalColorScheme.current.navigationBoard
     val router = LocalRouter.current
-    val presenter = remember { DI.navigationBoardPresenter() }
+    val presenter = rememberOnScreen { DI.navigationBoardPresenter() }
     val currentStorage by presenter.currentStorage.collectAsStateCrossFaded(key = Unit, initial = null)
 
     ConstraintLayout(

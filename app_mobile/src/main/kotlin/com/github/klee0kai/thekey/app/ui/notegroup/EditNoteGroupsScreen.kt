@@ -48,13 +48,14 @@ import com.github.klee0kai.thekey.app.ui.notegroup.presenter.EditNoteGroupsPrese
 import com.github.klee0kai.thekey.app.ui.notegroup.presenter.selectNote
 import com.github.klee0kai.thekey.app.utils.common.Dummy
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
+import com.github.klee0kai.thekey.app.utils.views.rememberOnScreen
 import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
 fun EditNoteGroupsScreen(
     dest: EditNoteGroupDestination = EditNoteGroupDestination(),
 ) {
-    val presenter = remember { DI.editNoteGroupPresenter(dest.identifier()).apply { init() } }
+    val presenter = rememberOnScreen { DI.editNoteGroupPresenter(dest.identifier()).apply { init() } }
     val router = LocalRouter.current
     val groupNameFieldFocusRequester = remember { FocusRequester() }
     val state by presenter.state.collectAsState(key = Unit, initial = EditNoteGroupsState())

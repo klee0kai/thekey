@@ -10,7 +10,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
@@ -27,13 +26,14 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.app.ui.navigation.model.PluginDestination
 import com.github.klee0kai.thekey.app.utils.views.collectAsStateCrossFaded
+import com.github.klee0kai.thekey.app.utils.views.rememberOnScreen
 
 @Composable
 fun PluginScreen(
     desc: PluginDestination = PluginDestination(),
 ) {
     val router = LocalRouter.current
-    val presenter = remember { DI.pluginPresenter(PluginIdentifier(desc.feature)) }
+    val presenter = rememberOnScreen { DI.pluginPresenter(PluginIdentifier(desc.feature)) }
     val feature by presenter.feature.collectAsStateCrossFaded(key = Unit, initial = null)
 
     ConstraintLayout(

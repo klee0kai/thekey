@@ -17,14 +17,12 @@ import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.github.klee0kai.thekey.app.di.DI
 import kotlinx.coroutines.launch
 
 
@@ -33,7 +31,6 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 fun DesignScreen() {
     val scope = rememberCoroutineScope()
-    val presenter = remember { DI.storagesPresenter() }
 
     val titles = listOf("Tab 1", "Tab 2", "Tab 3")
     val colors = listOf(Color.Cyan, Color.Green, Color.Red)

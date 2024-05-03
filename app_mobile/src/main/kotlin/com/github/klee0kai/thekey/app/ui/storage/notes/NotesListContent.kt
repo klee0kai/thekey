@@ -36,6 +36,7 @@ import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenterDummy
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.app.utils.views.animateContentSizeProduction
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
+import com.github.klee0kai.thekey.app.utils.views.rememberOnScreen
 
 @Composable
 fun NotesListContent(
@@ -43,7 +44,7 @@ fun NotesListContent(
     args: StorageDestination = StorageDestination(),
     showStoragesTitle: Boolean = true,
 ) {
-    val presenter = remember { DI.storagePresenter(args.identifier()) }
+    val presenter = rememberOnScreen { DI.storagePresenter(args.identifier()) }
     val router = LocalRouter.current
     val storageItems by presenter.filteredItems.collectAsState(key = Unit, initial = null)
     val groups by presenter.filteredColorGroups.collectAsState(key = Unit, initial = emptyList())

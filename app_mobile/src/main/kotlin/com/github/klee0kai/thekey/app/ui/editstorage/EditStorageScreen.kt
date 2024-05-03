@@ -53,6 +53,7 @@ import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.app.utils.views.currentViewSizeState
 import com.github.klee0kai.thekey.app.utils.views.keyboardAsState
 import com.github.klee0kai.thekey.app.utils.views.onGlobalPositionState
+import com.github.klee0kai.thekey.app.utils.views.rememberOnScreen
 import com.github.klee0kai.thekey.app.utils.views.toTextFieldValue
 import com.github.klee0kai.thekey.app.utils.views.toTransformationText
 
@@ -61,10 +62,10 @@ import com.github.klee0kai.thekey.app.utils.views.toTransformationText
 fun EditStorageScreen(
     path: String = "",
 ) {
-    val navigator = remember { DI.router() }
-    val presenter = remember { DI.editStoragePresenter(StorageIdentifier(path)) }
-    val pathInputHelper = remember { DI.pathInputHelper() }
-    val userShortPathHelper = remember { DI.userShortPaths() }
+    val navigator = rememberOnScreen { DI.router() }
+    val presenter = rememberOnScreen { DI.editStoragePresenter(StorageIdentifier(path)) }
+    val pathInputHelper = rememberOnScreen { DI.pathInputHelper() }
+    val userShortPathHelper = rememberOnScreen { DI.userShortPaths() }
     var storage by remember { mutableStateOf(Storage()) }
 
     var storagePathTextValue by remember { mutableStateOf(TextFieldValue()) }
