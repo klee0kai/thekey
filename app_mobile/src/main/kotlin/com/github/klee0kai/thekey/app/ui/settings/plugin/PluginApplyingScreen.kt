@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.ui.dynamic
+package com.github.klee0kai.thekey.app.ui.settings.plugin
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
@@ -13,7 +13,7 @@ import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 
 @Composable
-fun InitDIScreen(
+fun PluginApplyingScreen(
     modifier: Modifier = Modifier,
 ) {
     ConstraintLayout(
@@ -41,6 +41,6 @@ fun InitDIScreen(
 
 @Preview(showSystemUi = true, device = Devices.PIXEL_6)
 @Composable
-private fun InitDIScreenPreview() = AppTheme {
-    InitDIScreen()
+private fun PluginApplyingScreenPreview() = AppTheme {
+    PluginApplyingScreen()
 }

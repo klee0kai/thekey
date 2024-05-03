@@ -6,7 +6,6 @@ import com.github.klee0kai.thekey.app.BuildConfig
 import com.github.klee0kai.thekey.app.ui.designkit.DesignScreen
 import com.github.klee0kai.thekey.app.ui.designkit.EmptyScreen
 import com.github.klee0kai.thekey.app.ui.designkit.dialogs.AlertDialogScreen
-import com.github.klee0kai.thekey.app.ui.dynamic.DynamicFeatureScreen
 import com.github.klee0kai.thekey.app.ui.editstorage.EditStorageScreen
 import com.github.klee0kai.thekey.app.ui.genhist.GenHistScreen
 import com.github.klee0kai.thekey.app.ui.login.LoginScreen
@@ -27,6 +26,7 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.StoragesDestination
 import com.github.klee0kai.thekey.app.ui.note.EditNoteScreen
 import com.github.klee0kai.thekey.app.ui.notegroup.EditNoteGroupsScreen
 import com.github.klee0kai.thekey.app.ui.settings.SettingScreen
+import com.github.klee0kai.thekey.app.ui.settings.plugin.PluginDummyScreen
 import com.github.klee0kai.thekey.app.ui.settings.plugin.PluginScreen
 import com.github.klee0kai.thekey.app.ui.settings.plugins.PluginsScreen
 import com.github.klee0kai.thekey.app.ui.storage.StorageScreen
@@ -53,7 +53,7 @@ class ScreenResolverImpl : ScreenResolver {
             is AlertDialogDestination -> AlertDialogScreen(destination)
 
             // dynamic features
-            is DynamicDestination -> DynamicFeatureScreen(destination)
+            is DynamicDestination -> PluginDummyScreen(destination)
 
             // debug
             is DesignDestination -> if (BuildConfig.DEBUG) DesignScreen() else EmptyScreen()

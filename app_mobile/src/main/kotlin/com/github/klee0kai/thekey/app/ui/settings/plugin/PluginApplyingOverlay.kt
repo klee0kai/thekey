@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.ui.dynamic
+package com.github.klee0kai.thekey.app.ui.settings.plugin
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -8,13 +8,13 @@ import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
 import com.github.klee0kai.thekey.app.utils.views.collectAsStateCrossFaded
 
 @Composable
-fun DynamicFeatureInstallDummy(
-    content: @Composable() () -> Unit,
+fun PluginApplyingOverlay(
+    content: @Composable () -> Unit,
 ) {
     val initDIScreen by LocalRouter.current.showInitDynamicFeatureScreen.collectAsStateCrossFaded(key = Unit, initial = false)
 
     if (initDIScreen.current) {
-        InitDIScreen(modifier = Modifier.alpha(initDIScreen.alpha))
+        PluginApplyingScreen(modifier = Modifier.alpha(initDIScreen.alpha))
         if (initDIScreen.alpha > 0.9) return
     }
 

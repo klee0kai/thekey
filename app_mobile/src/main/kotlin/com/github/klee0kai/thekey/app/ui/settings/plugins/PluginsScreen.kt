@@ -53,7 +53,7 @@ fun PluginsScreen() {
             item {
                 SettingItem(
                     modifier = Modifier
-                        .clickable { router.navigate(PluginDestination(feature = feature.feature.moduleName)) },
+                        .clickable { router.navigate(PluginDestination(feature = feature.feature)) },
                     text = stringResource(id = feature.feature.titleRes)
                 )
             }

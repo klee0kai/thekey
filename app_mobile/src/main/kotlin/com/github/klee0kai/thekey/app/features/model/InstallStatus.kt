@@ -24,3 +24,5 @@ data class Installing(
 val InstallStatus.isInstalled get() = this is Installed
 
 val InstallStatus.isCompleted get() = this is Installed || this is InstallError
+
+val InstallStatus.isNotInstalled get() = this is NotInstalled || this is InstallError

@@ -117,7 +117,7 @@ data object PluginsDestination : Destination
 
 @Parcelize
 data class PluginDestination(
-    val feature: String = "",
+    val feature: DynamicFeature,
 ) : Destination
 
 @Parcelize

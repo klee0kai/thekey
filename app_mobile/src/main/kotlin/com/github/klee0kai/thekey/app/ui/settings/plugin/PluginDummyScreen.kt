@@ -31,13 +31,14 @@ import com.github.klee0kai.thekey.app.features.model.InstallError
 import com.github.klee0kai.thekey.app.features.model.Installed
 import com.github.klee0kai.thekey.app.features.model.Installing
 import com.github.klee0kai.thekey.app.features.model.NotInstalled
-import com.github.klee0kai.thekey.app.features.qrcodeScanner
+import com.github.klee0kai.thekey.app.features.model.isNotInstalled
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
 import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarStates
-import com.github.klee0kai.thekey.app.ui.navigation.model.PluginDestination
+import com.github.klee0kai.thekey.app.ui.navigation.model.DynamicDestination
+import com.github.klee0kai.thekey.app.ui.navigation.model.QRCodeScanDestination
 import com.github.klee0kai.thekey.app.ui.settings.plugin.presenter.PluginPresenter
 import com.github.klee0kai.thekey.app.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
@@ -45,11 +46,10 @@ import com.github.klee0kai.thekey.app.utils.views.rememberOnScreenRef
 import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
-fun PluginScreen(
-    dest: PluginDestination,
-) {
+fun PluginDummyScreen(dest: DynamicDestination) {
     val router = LocalRouter.current
     val presenter by rememberOnScreenRef { DI.pluginPresenter(dest.feature) }
+    val feature = dest.feature
     val featureStatus by presenter!!.status.collectAsState(key = Unit, initial = NotInstalled)
 
     ConstraintLayout(
@@ -86,49 +86,51 @@ fun PluginScreen(
                 },
             fontWeight = FontWeight.Normal,
             textAlign = TextAlign.Center,
-            text = stringResource(id = dest.feature.titleRes)
+            text = stringResource(id = feature.descRes)
         )
 
-        TextButton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .constrainAs(installField) {
-                    linkTo(
-                        start = parent.start,
-                        end = parent.end,
-                        top = parent.top,
-                        bottom = parent.bottom,
-                        verticalBias = 1f,
-                        horizontalBias = 1f,
-                    )
-                },
-            onClick = {
-                when (featureStatus) {
-                    NotInstalled, InstallError -> presenter?.install()
-                    Installed, is Installing -> presenter?.uninstall()
-                }
-            },
-            colors = when (featureStatus) {
-                InstallError, Installed, is Installing -> LocalColorScheme.current.textButtonColors
-                InstallError, NotInstalled -> ButtonDefaults.textButtonColors()
-            }
-        ) {
-            Text(
-                modifier = Modifier,
-                text = stringResource(
-                    id = when (featureStatus) {
-                        InstallError -> R.string.try_again
-                        Installed -> R.string.uninstall
-                        is Installing -> R.string.cancel
-                        NotInstalled ->
-                            if (dest.feature.purchase.isBlank()) {
-                                R.string.install
-                            } else {
-                                R.string.buy
-                            }
+        if (featureStatus.isNotInstalled) {
+            TextButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .constrainAs(installField) {
+                        linkTo(
+                            start = parent.start,
+                            end = parent.end,
+                            top = parent.top,
+                            bottom = parent.bottom,
+                            verticalBias = 1f,
+                            horizontalBias = 1f,
+                        )
+                    },
+                onClick = {
+                    when (featureStatus) {
+                        NotInstalled, InstallError -> presenter?.install()
+                        Installed, is Installing -> presenter?.uninstall()
                     }
+                },
+                colors = when (featureStatus) {
+                    InstallError, Installed, is Installing -> LocalColorScheme.current.textButtonColors
+                    InstallError, NotInstalled -> ButtonDefaults.textButtonColors()
+                }
+            ) {
+                Text(
+                    modifier = Modifier,
+                    text = stringResource(
+                        id = when (featureStatus) {
+                            InstallError -> R.string.try_again
+                            Installed -> R.string.uninstall
+                            is Installing -> R.string.cancel
+                            NotInstalled ->
+                                if (feature.purchase.isBlank()) {
+                                    R.string.install
+                                } else {
+                                    R.string.buy
+                                }
+                        }
+                    )
                 )
-            )
+            }
         }
 
         Text(
@@ -154,82 +156,57 @@ fun PluginScreen(
         },
         titleContent = {
             Text(
-                text = stringResource(id = dest.feature.titleRes)
+                text = stringResource(id = feature.titleRes)
             )
         },
     )
 }
 
-@OptIn(DebugOnly::class)
-@Preview(showSystemUi = true, device = Devices.PIXEL_6)
-@Composable
-private fun PluginNotInstalledPreview() = AppTheme {
-    DI.hardReset()
-    DI.initPresenterModule(object : PresentersModule {
-        override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {
-            override val status = MutableStateFlow(NotInstalled)
-        }
-    })
-    PluginScreen(PluginDestination(DynamicFeature.qrcodeScanner()))
-}
 
 @OptIn(DebugOnly::class)
 @Preview(showSystemUi = true, device = Devices.PIXEL_6)
 @Composable
-private fun PluginBuyPreview() = AppTheme {
+private fun PluginDummyScreenScreenPreview() = AppTheme {
     DI.hardReset()
-    DI.initPresenterModule(object : PresentersModule {
-        override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {
-            override val status = MutableStateFlow(NotInstalled)
-        }
-    })
-    PluginScreen(
-        PluginDestination(
-            DynamicFeature
-                .qrcodeScanner()
-                .copy(purchase = "purchase")
-        )
-    )
-}
-
-@OptIn(DebugOnly::class)
-@Preview(showSystemUi = true, device = Devices.PIXEL_6)
-@Composable
-private fun PluginInstallingPreview() = AppTheme {
-    DI.hardReset()
-    DI.initPresenterModule(object : PresentersModule {
-        override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {
-            override val status = MutableStateFlow(Installing(0.3f))
-        }
-    })
-    PluginScreen(PluginDestination(DynamicFeature.qrcodeScanner()))
+    PluginDummyScreen(QRCodeScanDestination)
 }
 
 
 @OptIn(DebugOnly::class)
 @Preview(showSystemUi = true, device = Devices.PIXEL_6)
 @Composable
-private fun PluginInstalledPreview() = AppTheme {
+private fun PluginDummyScreenInstallingPreview() = AppTheme {
+    DI.hardReset()
+    DI.initPresenterModule(object : PresentersModule {
+        override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {
+            override val status = MutableStateFlow(Installing(progress = 0.6f))
+        }
+    })
+    PluginDummyScreen(QRCodeScanDestination)
+}
+
+@OptIn(DebugOnly::class)
+@Preview(showSystemUi = true, device = Devices.PIXEL_6)
+@Composable
+private fun PluginDummyScreenInstalledPreview() = AppTheme {
     DI.hardReset()
     DI.initPresenterModule(object : PresentersModule {
         override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {
             override val status = MutableStateFlow(Installed)
         }
     })
-    PluginScreen(PluginDestination(DynamicFeature.qrcodeScanner()))
+    PluginDummyScreen(QRCodeScanDestination)
 }
 
 @OptIn(DebugOnly::class)
 @Preview(showSystemUi = true, device = Devices.PIXEL_6)
 @Composable
-private fun PluginInstallErrorPreview() = AppTheme {
+private fun PluginDummyScreenInstallErrorPreview() = AppTheme {
     DI.hardReset()
     DI.initPresenterModule(object : PresentersModule {
         override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {
             override val status = MutableStateFlow(InstallError)
         }
     })
-    PluginScreen(PluginDestination(DynamicFeature.qrcodeScanner()))
+    PluginDummyScreen(QRCodeScanDestination)
 }
-
-

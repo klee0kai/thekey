@@ -1,33 +1,43 @@
 package com.github.klee0kai.thekey.app.ui.settings.plugin.presenter
 
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.di.identifier.PluginIdentifier
+import com.github.klee0kai.thekey.app.di.updateComponentsSoft
+import com.github.klee0kai.thekey.app.features.model.DynamicFeature
+import com.github.klee0kai.thekey.app.features.model.NotInstalled
+import com.github.klee0kai.thekey.app.features.model.isCompleted
 import com.github.klee0kai.thekey.app.utils.common.launchLatest
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
 class PluginPresenterImpl(
-    val identifier: PluginIdentifier = PluginIdentifier(),
+    val feature: DynamicFeature,
 ) : PluginPresenter {
 
     private val scope = DI.defaultThreadScope()
-    private val manager = DI.dynamicFeaturesManager()
+    private val featuresManager = DI.dynamicFeaturesManager()
+    private val router = DI.router()
 
-    override val feature = flow {
-        manager().features.map { features ->
-            features.firstOrNull { it.feature.moduleName == identifier.name }
-        }.collect(this)
+    override val status = flow {
+        featuresManager()
+            .features
+            .map { features ->
+                features.firstOrNull { it.feature.moduleName == feature.moduleName }
+                    ?.status ?: NotInstalled
+            }
+            .collect(this)
     }
 
     override fun install() = scope.launchLatest("install") {
-        val feature = feature.first()?.feature ?: return@launchLatest
-        manager().install(feature)
-    }
+        featuresManager().install(feature)
+        status.firstOrNull { it.isCompleted }
 
-    override fun uninstall() = scope.launchLatest("install") {
-        val feature = feature.first()?.feature ?: return@launchLatest
-        manager().uninstall(feature)
+        router.showInitDynamicFeatureScreen.value = true
+        delay(1000)
+        DI.updateComponentsSoft()
+        delay(100)
+        router.showInitDynamicFeatureScreen.value = false
     }
 
 }
