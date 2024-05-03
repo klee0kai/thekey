@@ -12,6 +12,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.hardReset
@@ -27,14 +28,14 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.DynamicDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.QRCodeScanDestination
 import com.github.klee0kai.thekey.app.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.app.utils.views.collectAsStateCrossFaded
-import com.github.klee0kai.thekey.app.utils.views.rememberOnScreen
+import com.github.klee0kai.thekey.app.utils.views.rememberOnScreenRef
 import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
 fun DynamicFeatureScreen(dest: DynamicDestination) {
 
-    val presenter = rememberOnScreen { DI.dynamicFeaturePresenter(dest.feature) }
-    val status by presenter.status.collectAsStateCrossFaded(key = Unit, initial = null)
+    val presenter by rememberOnScreenRef { DI.dynamicFeaturePresenter(dest.feature) }
+    val status by presenter!!.status.collectAsStateCrossFaded(key = Unit, initial = null)
 
     ConstraintLayout(
         modifier = Modifier.fillMaxSize(),
@@ -144,7 +145,7 @@ fun DynamicFeatureScreen(dest: DynamicDestination) {
                             )
                         },
                     onClick = {
-                        presenter.install()
+                        presenter?.install()
                     },
                 ) {
                     Text(text = stringResource(id = R.string.install))

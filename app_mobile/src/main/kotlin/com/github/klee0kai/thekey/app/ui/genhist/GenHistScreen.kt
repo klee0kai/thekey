@@ -15,6 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
@@ -30,7 +31,7 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.GenHistDestination
 import com.github.klee0kai.thekey.app.ui.navigation.storageIdentifier
 import com.github.klee0kai.thekey.app.utils.common.Dummy
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
-import com.github.klee0kai.thekey.app.utils.views.rememberOnScreen
+import com.github.klee0kai.thekey.app.utils.views.rememberOnScreenRef
 import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
@@ -38,8 +39,8 @@ fun GenHistScreen(
     dest: GenHistDestination = GenHistDestination(),
 ) {
     val router = LocalRouter.current
-    val presenter = rememberOnScreen { DI.genHistPresenter(dest.storageIdentifier()) }
-    val hist by presenter.histFlow.collectAsState(key = Unit, initial = null)
+    val presenter by rememberOnScreenRef { DI.genHistPresenter(dest.storageIdentifier()) }
+    val hist by presenter!!.histFlow.collectAsState(key = Unit, initial = null)
 
     AppBarStates(
         navigationIcon = {

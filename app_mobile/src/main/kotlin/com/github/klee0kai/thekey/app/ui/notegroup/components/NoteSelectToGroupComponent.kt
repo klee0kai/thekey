@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.NoteGroupIdentifier
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
@@ -23,7 +24,7 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteGroupDestinati
 import com.github.klee0kai.thekey.app.ui.notegroup.presenter.EditNoteGroupsPresenterDummy
 import com.github.klee0kai.thekey.app.utils.common.Dummy
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
-import com.github.klee0kai.thekey.app.utils.views.rememberOnScreen
+import com.github.klee0kai.thekey.app.utils.views.rememberOnScreenRef
 
 
 @Composable
@@ -34,8 +35,8 @@ fun NoteSelectToGroupComponent(
     header: @Composable LazyItemScope.() -> Unit = { Spacer(modifier = Modifier.height(12.dp)) },
     footer: @Composable LazyItemScope.() -> Unit = { Spacer(modifier = Modifier.height(12.dp)) },
 ) {
-    val presenter = rememberOnScreen { DI.editNoteGroupPresenter(dest.identifier()) }
-    val notes by presenter.allNotes.collectAsState(key = Unit, initial = emptyList())
+    val presenter by rememberOnScreenRef { DI.editNoteGroupPresenter(dest.identifier()) }
+    val notes by presenter!!.allNotes.collectAsState(key = Unit, initial = emptyList())
 
     if (notes.isEmpty()) {
         return

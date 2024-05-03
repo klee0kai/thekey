@@ -12,19 +12,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.wear.compose.material.Text
+import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
 import com.github.klee0kai.thekey.app.ui.navigation.model.PluginDestination
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
-import com.github.klee0kai.thekey.app.utils.views.rememberOnScreen
+import com.github.klee0kai.thekey.app.utils.views.rememberOnScreenRef
 
 @Composable
 fun PluginsScreen() {
     val scope = rememberCoroutineScope()
     val router = LocalRouter.current
-    val presenter = rememberOnScreen { DI.pluginsPresenter() }
-    val features by presenter.features.collectAsState(key = Unit, initial = emptyList())
+    val presenter by rememberOnScreenRef { DI.pluginsPresenter() }
+    val features by presenter!!.features.collectAsState(key = Unit, initial = emptyList())
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),

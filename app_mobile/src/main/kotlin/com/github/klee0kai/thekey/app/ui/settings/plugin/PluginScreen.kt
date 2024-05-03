@@ -16,6 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.PluginIdentifier
@@ -26,15 +27,15 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.app.ui.navigation.model.PluginDestination
 import com.github.klee0kai.thekey.app.utils.views.collectAsStateCrossFaded
-import com.github.klee0kai.thekey.app.utils.views.rememberOnScreen
+import com.github.klee0kai.thekey.app.utils.views.rememberOnScreenRef
 
 @Composable
 fun PluginScreen(
     desc: PluginDestination = PluginDestination(),
 ) {
     val router = LocalRouter.current
-    val presenter = rememberOnScreen { DI.pluginPresenter(PluginIdentifier(desc.feature)) }
-    val feature by presenter.feature.collectAsStateCrossFaded(key = Unit, initial = null)
+    val presenter by rememberOnScreenRef { DI.pluginPresenter(PluginIdentifier(desc.feature)) }
+    val feature by presenter!!.feature.collectAsStateCrossFaded(key = Unit, initial = null)
 
     ConstraintLayout(
         modifier = Modifier
@@ -79,8 +80,8 @@ fun PluginScreen(
             },
             onClick = {
                 when {
-                    feature.current?.status?.isInstalled == true -> presenter.uninstall()
-                    else -> presenter.install()
+                    feature.current?.status?.isInstalled == true -> presenter?.uninstall()
+                    else -> presenter?.install()
                 }
             }
         ) {

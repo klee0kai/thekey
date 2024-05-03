@@ -17,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.hardReset
@@ -32,14 +33,14 @@ import com.github.klee0kai.thekey.app.ui.navigationboard.components.StorageNavig
 import com.github.klee0kai.thekey.app.ui.navigationboard.presenter.NavigationBoardPresenterDummy
 import com.github.klee0kai.thekey.app.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.app.utils.views.collectAsStateCrossFaded
-import com.github.klee0kai.thekey.app.utils.views.rememberOnScreen
+import com.github.klee0kai.thekey.app.utils.views.rememberOnScreenRef
 
 @Composable
 fun StorageNavigationBoard(modifier: Modifier = Modifier) {
     val colorScheme = LocalColorScheme.current.navigationBoard
     val router = LocalRouter.current
-    val presenter = rememberOnScreen { DI.navigationBoardPresenter() }
-    val currentStorage by presenter.currentStorage.collectAsStateCrossFaded(key = Unit, initial = null)
+    val presenter by rememberOnScreenRef { DI.navigationBoardPresenter() }
+    val currentStorage by presenter!!.currentStorage.collectAsStateCrossFaded(key = Unit, initial = null)
 
     ConstraintLayout(
         modifier = modifier
