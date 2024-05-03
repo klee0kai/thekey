@@ -21,8 +21,10 @@ import com.github.klee0kai.thekey.app.ui.note.presenter.EditNotePresenter
 import com.github.klee0kai.thekey.app.ui.note.presenter.EditNotePresenterImpl
 import com.github.klee0kai.thekey.app.ui.notegroup.presenter.EditNoteGroupsPresenter
 import com.github.klee0kai.thekey.app.ui.notegroup.presenter.EditNoteGroupsPresenterImpl
-import com.github.klee0kai.thekey.app.ui.settings.plugin.PluginPresenter
-import com.github.klee0kai.thekey.app.ui.settings.plugins.PluginsPresenter
+import com.github.klee0kai.thekey.app.ui.settings.plugin.presenter.PluginPresenter
+import com.github.klee0kai.thekey.app.ui.settings.plugin.presenter.PluginPresenterImpl
+import com.github.klee0kai.thekey.app.ui.settings.plugins.presenter.PluginsPresenter
+import com.github.klee0kai.thekey.app.ui.settings.plugins.presenter.PluginsPresenterImpl
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.presenter.GenPasswPresenter
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.presenter.GenPasswPresenterImpl
 import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenter
@@ -71,10 +73,10 @@ interface PresentersModule {
         EditNoteGroupsPresenterImpl(id)
 
     @Provide(cache = Provide.CacheType.Weak)
-    fun pluginsPresenter(): PluginsPresenter = PluginsPresenter()
+    fun pluginsPresenter(): PluginsPresenter = PluginsPresenterImpl()
 
     @Provide(cache = Provide.CacheType.Weak)
-    fun pluginPresenter(identifier: PluginIdentifier): PluginPresenter = PluginPresenter(identifier)
+    fun pluginPresenter(identifier: PluginIdentifier): PluginPresenter = PluginPresenterImpl(identifier)
 
     @Provide(cache = Provide.CacheType.Weak)
     fun dynamicFeaturePresenter(feature: DynamicFeature): DynamicFeaturePresenter = DynamicFeaturePresenterImpl(feature)

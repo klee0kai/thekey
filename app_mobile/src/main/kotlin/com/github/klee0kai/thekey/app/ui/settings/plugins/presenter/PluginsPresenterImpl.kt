@@ -1,14 +1,14 @@
-package com.github.klee0kai.thekey.app.ui.settings.plugins
+package com.github.klee0kai.thekey.app.ui.settings.plugins.presenter
 
 import com.github.klee0kai.thekey.app.di.DI
 import kotlinx.coroutines.flow.flow
 
-class PluginsPresenter {
+open class PluginsPresenterImpl : PluginsPresenter {
 
     private val scope = DI.defaultThreadScope()
     private val manager = DI.dynamicFeaturesManager()
 
-    val features = flow {
+    override val features = flow {
         manager().features.collect(this)
     }
 
