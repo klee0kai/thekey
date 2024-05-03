@@ -44,6 +44,7 @@ import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import androidx.wear.compose.material.FractionalThreshold
 import androidx.wear.compose.material.rememberSwipeableState
 import androidx.wear.compose.material.swipeable
+import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.NoteIdentifier
@@ -72,12 +73,13 @@ import com.github.klee0kai.thekey.app.utils.views.crossFadeAlpha
 import com.github.klee0kai.thekey.app.utils.views.currentViewSizeState
 import com.github.klee0kai.thekey.app.utils.views.pxToDp
 import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
-import com.github.klee0kai.thekey.app.utils.views.rememberOnScreen
+import com.github.klee0kai.thekey.app.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.app.utils.views.rememberSkeletonModifier
 import com.github.klee0kai.thekey.app.utils.views.rememberTargetCrossFaded
 import com.github.klee0kai.thekey.app.utils.views.toPx
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+
 
 @Composable
 fun EditNoteScreen(
@@ -86,13 +88,13 @@ fun EditNoteScreen(
     val scope = rememberCoroutineScope()
     val navigator = LocalRouter.current
     val view = LocalView.current
-    val presenter = rememberOnScreen {
+    val presenter by rememberOnScreenRef {
         DI.editNotePresenter(dest.identifier()).apply {
             init(dest.tab, dest.note, dest.otpNote)
         }
     }
     val titles = listOf(stringResource(id = R.string.account), stringResource(id = R.string.otp))
-    val state by presenter.state.collectAsState(key = Unit, initial = EditNoteState(isSkeleton = true))
+    val state by presenter!!.state.collectAsState(key = Unit, initial = EditNoteState(isSkeleton = true))
     val isSaveAvailable by rememberTargetCrossFaded { state.isSaveAvailable }
     val isRemoveAvailable by rememberTargetCrossFaded { state.isRemoveAvailable }
     val skeletonModifier by rememberSkeletonModifier { state.isSkeleton }
@@ -109,13 +111,13 @@ fun EditNoteScreen(
     val saveInToolbarAlpha by rememberTargetCrossFaded { viewSize.height in 1.dp..700.dp }
 
     BackHandler(state.otpMethodExpanded || state.otpAlgoExpanded) {
-        presenter.input {
+        presenter?.input {
             copy(otpMethodExpanded = false, otpAlgoExpanded = false)
         }
     }
     LaunchedEffect(key1 = page.current) {
         if (!state.isSkeleton) {
-            presenter.input { copy(page = page.current) }
+            presenter?.input { copy(page = page.current) }
         }
     }
 
@@ -160,7 +162,7 @@ fun EditNoteScreen(
                     )
                 },
             value = state.siteOrIssuer,
-            onValueChange = { presenter.input { copy(siteOrIssuer = it) } },
+            onValueChange = { presenter?.input { copy(siteOrIssuer = it) } },
             label = {
                 val text = if (page.current == Account) R.string.site else R.string.issuer
                 Text(
@@ -186,7 +188,7 @@ fun EditNoteScreen(
                     )
                 },
             value = state.loginOrName,
-            onValueChange = { presenter.input { copy(loginOrName = it) } },
+            onValueChange = { presenter?.input { copy(loginOrName = it) } },
             label = {
                 val text = if (page.current == Account) R.string.login else R.string.name
                 Text(
@@ -218,8 +220,8 @@ fun EditNoteScreen(
             },
             onValueChange = {
                 when (page.current) {
-                    Account -> presenter.input { copy(passw = it) }
-                    Otp -> presenter.input { copy(otpSecret = it) }
+                    Account -> presenter?.input { copy(passw = it) }
+                    Otp -> presenter?.input { copy(otpSecret = it) }
                 }
 
             },
@@ -248,7 +250,7 @@ fun EditNoteScreen(
                             topMargin = 8.dp,
                         )
                     },
-                onClick = { presenter.showHistory() },
+                onClick = { presenter?.showHistory() },
                 content = { Text(text = state.changeTime) }
             )
         }
@@ -273,7 +275,7 @@ fun EditNoteScreen(
                         )
                     },
                 value = state.desc,
-                onValueChange = { presenter.input { copy(desc = it) } },
+                onValueChange = { presenter?.input { copy(desc = it) } },
                 label = { Text(stringResource(R.string.description)) },
             )
         }
@@ -296,11 +298,11 @@ fun EditNoteScreen(
                         )
                     },
                 expanded = state.otpMethodExpanded,
-                onExpandedChange = { presenter.input { copy(otpMethodExpanded = it) } },
+                onExpandedChange = { presenter?.input { copy(otpMethodExpanded = it) } },
                 variants = state.otpMethodVariants,
                 selectedIndex = state.otpMethodSelected,
                 onSelected = { selected ->
-                    presenter.input { copy(otpMethodSelected = selected, otpMethodExpanded = false) }
+                    presenter?.input { copy(otpMethodSelected = selected, otpMethodExpanded = false) }
                 },
                 label = { Text(stringResource(R.string.type)) }
             )
@@ -322,11 +324,11 @@ fun EditNoteScreen(
                         )
                     },
                 expanded = state.otpAlgoExpanded,
-                onExpandedChange = { newExp -> presenter.input { copy(otpAlgoExpanded = newExp) } },
+                onExpandedChange = { newExp -> presenter?.input { copy(otpAlgoExpanded = newExp) } },
                 variants = state.otpAlgoVariants,
                 selectedIndex = state.otpAlgoSelected,
                 onSelected = { selected ->
-                    presenter.input { copy(otpAlgoSelected = selected, otpAlgoExpanded = false) }
+                    presenter?.input { copy(otpAlgoSelected = selected, otpAlgoExpanded = false) }
                 },
                 label = { Text(stringResource(R.string.algorithm)) }
             )
@@ -349,7 +351,7 @@ fun EditNoteScreen(
                     },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 value = state.otpInterval,
-                onValueChange = { presenter.input { copy(otpInterval = it) } },
+                onValueChange = { presenter?.input { copy(otpInterval = it) } },
                 label = { Text(stringResource(R.string.period)) },
             )
 
@@ -372,7 +374,7 @@ fun EditNoteScreen(
                     },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 value = state.otpDigits,
-                onValueChange = { presenter.input { copy(otpDigits = it) } },
+                onValueChange = { presenter?.input { copy(otpDigits = it) } },
                 label = { Text(stringResource(R.string.digits)) },
             )
         }
@@ -399,8 +401,8 @@ fun EditNoteScreen(
             selectedIndex = state.colorGroupSelected,
             variants = state.colorGroupVariants,
             expanded = state.colorGroupExpanded,
-            onExpandedChange = { presenter.input { copy(colorGroupExpanded = it) } },
-            onSelected = { presenter.input { copy(colorGroupSelected = it, colorGroupExpanded = false) } },
+            onExpandedChange = { presenter?.input { copy(colorGroupExpanded = it) } },
+            onSelected = { presenter?.input { copy(colorGroupSelected = it, colorGroupExpanded = false) } },
             label = { Text(stringResource(R.string.group)) }
         )
     }
@@ -438,9 +440,9 @@ fun EditNoteScreen(
                 colors = LocalColorScheme.current.textButtonColors,
                 onClick = {
                     if (page.current == Account) {
-                        presenter.generate()
+                        presenter?.generate()
                     } else {
-                        presenter.scanQRCode()
+                        presenter?.scanQRCode()
                     }
                 }
             ) {
@@ -455,7 +457,7 @@ fun EditNoteScreen(
                     .fillMaxWidth()
                     .alpha(saveInToolbarAlpha.alpha)
                     .alpha(isSaveAvailable.alpha),
-                onClick = { presenter.save() }
+                onClick = { presenter?.save() }
             ) {
                 Text(stringResource(R.string.save))
             }
@@ -475,7 +477,7 @@ fun EditNoteScreen(
                 IconButton(
                     modifier = Modifier
                         .alpha(isRemoveAvailable.alpha),
-                    onClick = { presenter.remove() }
+                    onClick = { presenter?.remove() }
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Delete,
@@ -490,7 +492,7 @@ fun EditNoteScreen(
                     modifier = Modifier
                         .alpha(saveInToolbarAlpha.alpha)
                         .alpha(isSaveAvailable.alpha),
-                    onClick = { presenter.save() }
+                    onClick = { presenter?.save() }
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Done,
@@ -502,6 +504,7 @@ fun EditNoteScreen(
         }
     )
 }
+
 
 @Preview(device = Devices.PIXEL_6, showSystemUi = true)
 @Composable

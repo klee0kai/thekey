@@ -29,6 +29,7 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.withContext
+import java.lang.ref.WeakReference
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -76,6 +77,13 @@ inline fun <T> rememberOnScreen(block: () -> T): T {
         cached.value != null -> cached.value as T
         else -> block().also { cached.value = it }
     }
+}
+
+
+@Composable
+@NonRestartableComposable
+inline fun <T> rememberOnScreenRef(block: () -> T): WeakReference<T> {
+    return WeakReference(rememberOnScreen(block))
 }
 
 @Composable
