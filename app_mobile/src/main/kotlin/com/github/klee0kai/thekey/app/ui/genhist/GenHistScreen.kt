@@ -33,6 +33,7 @@ import com.github.klee0kai.thekey.app.utils.common.Dummy
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
 import com.github.klee0kai.thekey.app.utils.views.rememberOnScreenRef
 import kotlinx.coroutines.flow.MutableStateFlow
+import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
 fun GenHistScreen(
@@ -70,22 +71,20 @@ fun GenHistScreen(
     }
 }
 
-@Preview(
-    showSystemUi = true,
-    device = Devices.PIXEL_6,
-)
+@VisibleForTesting
+@Preview(showSystemUi = true, device = Devices.PIXEL_6)
 @Composable
-private fun GenHistScreenPreview() = AppTheme {
+fun GenHistScreenPreview() = AppTheme {
     DI.initPresenterModule(object : PresentersModule {
         override fun genHistPresenter(storageIdentifier: StorageIdentifier) = object : GenHistPresenter {
             override val histFlow = MutableStateFlow(
                 listOf(
-                    HistPassw(Dummy.dummyId, passw = "#@1"),
-                    HistPassw(Dummy.dummyId, passw = "dsa#$@1"),
-                    HistPassw(Dummy.dummyId, passw = "dsa#d!@"),
+                    HistPassw(Dummy.dummyId, passw = "#@1", isLoaded = true),
+                    HistPassw(Dummy.dummyId, passw = "dsa#$@1", isLoaded = true),
+                    HistPassw(Dummy.dummyId, passw = "dsa#d!@", isLoaded = true),
                     HistPassw(Dummy.dummyId),
                     HistPassw(Dummy.dummyId),
-                    HistPassw(Dummy.dummyId, passw = "d2451"),
+                    HistPassw(Dummy.dummyId, passw = "d2451", isLoaded = true),
                 )
             )
         }

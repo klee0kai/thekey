@@ -34,6 +34,7 @@ import com.github.klee0kai.thekey.app.ui.navigationboard.presenter.NavigationBoa
 import com.github.klee0kai.thekey.app.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.app.utils.views.collectAsStateCrossFaded
 import com.github.klee0kai.thekey.app.utils.views.rememberOnScreenRef
+import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
 fun StorageNavigationBoard(modifier: Modifier = Modifier) {
@@ -106,10 +107,11 @@ fun StorageNavigationBoard(modifier: Modifier = Modifier) {
 }
 
 
+@VisibleForTesting
 @OptIn(DebugOnly::class)
 @Preview(showSystemUi = true, device = Devices.PIXEL_6)
 @Composable
-private fun StorageNavigationBoardPreview() = AppTheme {
+fun StorageNavigationBoardPreview() = AppTheme {
     DI.hardReset()
     DI.initPresenterModule(object : PresentersModule {
         override fun navigationBoardPresenter() = NavigationBoardPresenterDummy(
@@ -126,10 +128,11 @@ private fun StorageNavigationBoardPreview() = AppTheme {
     }
 }
 
+@VisibleForTesting
 @OptIn(DebugOnly::class)
 @Preview(showSystemUi = true, device = Devices.PIXEL_6)
 @Composable
-private fun StorageNavigationBoardNoCurrentPreview() = AppTheme {
+fun StorageNavigationBoardNoCurrentPreview() = AppTheme {
     DI.hardReset()
     DI.initPresenterModule(object : PresentersModule {
         override fun navigationBoardPresenter() = NavigationBoardPresenterDummy(
@@ -145,11 +148,11 @@ private fun StorageNavigationBoardNoCurrentPreview() = AppTheme {
     }
 }
 
-
+@VisibleForTesting
 @OptIn(DebugOnly::class)
 @Preview(showSystemUi = true, device = Devices.PIXEL_6)
 @Composable
-private fun StorageNavigationBoardEmptyPreview() = AppTheme {
+fun StorageNavigationBoardEmptyPreview() = AppTheme {
     DI.hardReset()
     DI.initPresenterModule(object : PresentersModule {
         override fun navigationBoardPresenter() = NavigationBoardPresenterDummy()

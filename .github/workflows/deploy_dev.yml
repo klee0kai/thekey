@@ -74,6 +74,26 @@ jobs:
             ./**/build/reports
             ./**/build/test-results
 
+  app_paparazzi:
+    name: Collect app preview Images
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/prepare
+        with:
+          decrypt_key: ${{ secrets.ENCRYPT_KEY }}
+
+      - name: Test with Gradle
+        continue-on-error: true
+        run: ./gradlew recordPaparazziDebug
+      - name: Upload test artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: screenshots
+          path: |
+            ./app_mobile/src/test/snapshots/images/**
+
+
   mikepenz_report:
     name: Prepare Mikepenz Test Report
     needs: app_tests
