@@ -28,8 +28,6 @@ interface AppRouter : RouterContext, ComposeRouter, SnackRouter, NavBoardRouter,
 
 interface ComposeRouter {
 
-    fun initIfNeed(destination: Destination)
-
     fun navigate(destination: Destination): Flow<Any?>
 
     fun <R> navigate(destination: Destination, clazz: Class<R>): Flow<R?>
