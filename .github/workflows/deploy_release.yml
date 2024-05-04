@@ -45,7 +45,7 @@ jobs:
         run: ./env_build.sh build_term_app
 
       - name: Build Release
-        run: ./env_build.sh build_apk
+        run: ./env_build.sh build_apks
 
       - name: Upload changes artifacts
         uses: actions/upload-artifact@v3
