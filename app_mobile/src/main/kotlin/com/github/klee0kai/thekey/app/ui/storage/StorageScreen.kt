@@ -35,6 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
@@ -62,6 +63,7 @@ import com.github.klee0kai.thekey.app.utils.views.collectAsState
 import com.github.klee0kai.thekey.app.utils.views.hideOnTargetAlpha
 import com.github.klee0kai.thekey.app.utils.views.rememberAlphaAnimate
 import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
+import com.github.klee0kai.thekey.app.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.app.utils.views.rememberTargetCrossFaded
 import kotlinx.coroutines.launch
 
@@ -74,7 +76,7 @@ fun StorageScreen(
     dest: StorageDestination = StorageDestination()
 ) {
     val isEditMode = LocalAppConfig.current.isViewEditMode
-    val presenter = remember { DI.storagePresenter(dest.identifier()) }
+    val presenter by rememberOnScreenRef { DI.storagePresenter(dest.identifier()) }
     val scope = rememberCoroutineScope()
     val router = LocalRouter.current
     val density = LocalDensity.current
@@ -83,7 +85,7 @@ fun StorageScreen(
         stringResource(id = R.string.passw_generate)
     )
     val searchFocusRequester = remember { FocusRequester() }
-    val searchState by presenter.searchState.collectAsState(key = Unit, initial = SearchState())
+    val searchState by presenter!!.searchState.collectAsState(key = Unit, initial = SearchState())
     var dragProgress by remember { mutableFloatStateOf(0f) }
     val pagerState = rememberPagerState(initialPage = dest.selectedPage.coerceIn(titles.indices)) { titles.size }
     val singlePagePagerState = rememberPagerState(initialPage = 0) { 1 }
@@ -118,7 +120,7 @@ fun StorageScreen(
     BackHandler(enabled = searchState.isActive || router.isNavigationBoardIsOpen()) {
         when {
             router.isNavigationBoardIsOpen() -> scope.launch { router.hideNavigationBoard() }
-            searchState.isActive -> presenter.searchFilter(SearchState())
+            searchState.isActive -> presenter?.searchFilter(SearchState())
         }
     }
 
@@ -192,8 +194,8 @@ fun StorageScreen(
                         textModifier = Modifier
                             .focusRequester(searchFocusRequester),
                         searchText = searchState.searchText,
-                        onSearch = { newText -> presenter.searchFilter(SearchState(isActive = true, searchText = newText)) },
-                        onClose = { presenter.searchFilter(SearchState()) }
+                        onSearch = { newText -> presenter?.searchFilter(SearchState(isActive = true, searchText = newText)) },
+                        onClose = { presenter?.searchFilter(SearchState()) }
                     )
                 }
             }
@@ -204,7 +206,7 @@ fun StorageScreen(
                     modifier = Modifier
                         .alpha(targetTitleId.hideOnTargetAlpha(SearchTitleId))
                         .alpha(isAccountPageAlpha),
-                    onClick = { presenter.searchFilter(SearchState(isActive = true)) },
+                    onClick = { presenter?.searchFilter(SearchState(isActive = true)) },
                     content = { Icon(Icons.Filled.Search, contentDescription = null) }
                 )
             }
@@ -215,7 +217,7 @@ fun StorageScreen(
 @Preview(device = Devices.PIXEL_6, showSystemUi = true)
 @Composable
 private fun StorageScreenAccountsPreview() = AppTheme {
-    DI.initPresenterModule(object : PresentersModule() {
+    DI.initPresenterModule(object : PresentersModule {
         override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterDummy()
     })
     StorageScreen(
@@ -226,7 +228,7 @@ private fun StorageScreenAccountsPreview() = AppTheme {
 @Preview(device = Devices.PIXEL_6, showSystemUi = true)
 @Composable
 private fun StorageScreenAccountsSearchPreview() = AppTheme {
-    DI.initPresenterModule(object : PresentersModule() {
+    DI.initPresenterModule(object : PresentersModule {
         override fun storagePresenter(storageIdentifier: StorageIdentifier) =
             StoragePresenterDummy(isSearchActive = true)
     })
@@ -238,7 +240,7 @@ private fun StorageScreenAccountsSearchPreview() = AppTheme {
 @Preview(device = Devices.PIXEL_6, showSystemUi = true)
 @Composable
 private fun StorageScreenGeneratePreview() = AppTheme {
-    DI.initPresenterModule(object : PresentersModule() {
+    DI.initPresenterModule(object : PresentersModule {
         override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterDummy()
     })
     StorageScreen(

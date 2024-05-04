@@ -34,6 +34,7 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.EditStorageDestination
 import com.github.klee0kai.thekey.app.ui.storages.components.GroupsSelectContent
 import com.github.klee0kai.thekey.app.ui.storages.components.StoragesListContent
 import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
+import com.github.klee0kai.thekey.app.utils.views.rememberOnScreen
 
 private const val MainTitleId = 0
 private const val SecondTittleId = 1
@@ -41,7 +42,7 @@ private const val SecondTittleId = 1
 @Preview
 @Composable
 fun StoragesScreen() {
-    val presenter = remember { DI.storagesPresenter() }
+    val presenter = rememberOnScreen { DI.storagesPresenter() }
     val router = LocalRouter.current
     var dragProgress = remember { mutableFloatStateOf(0f) }
     val scaffoldState = rememberSimpleBottomSheetScaffoldState(

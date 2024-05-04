@@ -9,7 +9,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -20,6 +19,7 @@ import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
+import com.github.klee0kai.thekey.app.utils.views.rememberOnScreen
 
 
 @Preview
@@ -30,7 +30,7 @@ fun StoragesListContent(
 ) {
     val navigator = LocalRouter.current
     val scope = rememberCoroutineScope()
-    val presenter = remember { DI.storagesPresenter() }
+    val presenter = rememberOnScreen { DI.storagesPresenter() }
     val storages = presenter.storages()
         .collectAsState(initial = emptyList(), scope.coroutineContext)
     val titleAnimatedAlpha by animateAlphaAsState(showStoragesTitle)

@@ -9,6 +9,8 @@ import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.engine.model.DecryptedOtpNote
 import com.github.klee0kai.thekey.app.engine.model.GenPasswParams
 import com.github.klee0kai.thekey.app.engine.model.isEmpty
+import com.github.klee0kai.thekey.app.features.model.DynamicFeature
+import com.github.klee0kai.thekey.app.features.qrcodeScanner
 import com.github.klee0kai.thekey.app.ui.navigation.model.AlertDialogDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.ConfirmDialogResult
 import com.github.klee0kai.thekey.app.ui.navigation.model.QRCodeScanDestination

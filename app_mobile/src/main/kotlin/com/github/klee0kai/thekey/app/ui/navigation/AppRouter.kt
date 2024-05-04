@@ -11,14 +11,20 @@ import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import com.github.klee0kai.thekey.app.ui.navigation.model.ActivityResult
 import com.github.klee0kai.thekey.app.ui.navigation.model.Destination
+import com.github.klee0kai.thekey.app.ui.navigation.model.LoginDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.NavigateBackstackChange
 import com.github.klee0kai.thekey.app.ui.navigation.model.RequestPermResult
+import com.github.klee0kai.thekey.app.utils.common.SafeContextScope
 import dev.olshevski.navigation.reimagined.NavController
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 
-interface AppRouter : RouterContext, ComposeRouter, SnackRouter, NavBoardRouter, ActivityRouter, PermissionsRouter
+interface AppRouter : RouterContext, ComposeRouter, SnackRouter, NavBoardRouter, ActivityRouter, PermissionsRouter {
+    companion object {
+        val InitDest = LoginDestination
+    }
+}
 
 interface ComposeRouter {
 
@@ -74,6 +80,11 @@ interface PermissionsRouter {
 
 interface RouterContext {
 
+    /**
+     * We show a stub while we initialize DI for a new feature
+     */
+    val showInitDynamicFeatureScreen: MutableStateFlow<Boolean>
+
     val snackbarHostState: SnackbarHostState
     val navBoardState: DrawerState
     val navFullController: NavController<Destination>
@@ -84,7 +95,7 @@ interface RouterContext {
     val backDispatcher: OnBackPressedDispatcher?
     val navChanges: MutableSharedFlow<NavigateBackstackChange>
 
-    val scope: CoroutineScope
+    val scope: SafeContextScope
 
     fun genRequestCode(): Int
 

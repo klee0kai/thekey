@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.ui.scanqr.components
+package com.github.klee0kai.thekey.feature.qrcodescanner.ui.scanqr.components
 
 import android.content.Context
 import androidx.camera.core.ImageAnalysis

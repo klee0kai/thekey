@@ -75,4 +75,20 @@
     <string name="camera_starting">starting...</string>
     <string name="otpnote_is_empty">Otp is Empty</string>
     <string name="confirm_delete_otp">Confirm delete OTP</string>
+    <string name="title_qrcodescanner">QR Code Scanner</string>
+    <string name="desc_qrcodescanner">Scan QR code to add OTP passwords.</string>
+    <string name="settings">Settings</string>
+    <string name="plugins">Plugins</string>
+    <string name="feature">Feature</string>
+    <string name="emty" />
+    <string name="install">Install</string>
+    <string name="uninstall">Uninstall</string>
+    <string name="installing_progress">Installing %1$f</string>
+    <string name="installing">Installing</string>
+    <string name="installed">Installed</string>
+    <string name="install_error">Install Error</string>
+    <string name="other">Other</string>
+    <string name="storage_auto_search">Storages Auto Search</string>
+    <string name="try_again">Try again</string>
+    <string name="buy">Buy</string>
 </resources>

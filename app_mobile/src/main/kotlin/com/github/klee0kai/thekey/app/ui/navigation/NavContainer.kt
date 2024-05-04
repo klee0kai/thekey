@@ -21,7 +21,6 @@ import androidx.compose.material3.SwipeToDismissBoxDefaults
 import androidx.compose.material3.SwipeToDismissBoxState
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.NonRestartableComposable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -29,30 +28,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import com.github.klee0kai.thekey.app.BuildConfig
+import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.designkit.EmptyScreen
 import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
-import com.github.klee0kai.thekey.app.ui.designkit.dialogs.AlertDialogScreen
-import com.github.klee0kai.thekey.app.ui.editstorage.EditStorageScreen
-import com.github.klee0kai.thekey.app.ui.genhist.GenHistScreen
-import com.github.klee0kai.thekey.app.ui.login.LoginScreen
-import com.github.klee0kai.thekey.app.ui.navigation.model.AlertDialogDestination
-import com.github.klee0kai.thekey.app.ui.navigation.model.DesignDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.Destination
-import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteDestination
-import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteGroupDestination
-import com.github.klee0kai.thekey.app.ui.navigation.model.EditStorageDestination
-import com.github.klee0kai.thekey.app.ui.navigation.model.GenHistDestination
-import com.github.klee0kai.thekey.app.ui.navigation.model.LoginDestination
-import com.github.klee0kai.thekey.app.ui.navigation.model.QRCodeScanDestination
-import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
-import com.github.klee0kai.thekey.app.ui.navigation.model.StoragesDestination
 import com.github.klee0kai.thekey.app.ui.navigationboard.StorageNavigationBoard
-import com.github.klee0kai.thekey.app.ui.note.EditNoteScreen
-import com.github.klee0kai.thekey.app.ui.notegroup.EditNoteGroupsScreen
-import com.github.klee0kai.thekey.app.ui.scanqr.ScanQRCodeScreen
-import com.github.klee0kai.thekey.app.ui.storage.StorageScreen
-import com.github.klee0kai.thekey.app.ui.storages.StoragesScreen
 import com.github.klee0kai.thekey.app.utils.views.rememberTickerOf
 import dev.olshevski.navigation.reimagined.AnimatedNavHost
 import dev.olshevski.navigation.reimagined.NavAction
@@ -61,13 +41,10 @@ import dev.olshevski.navigation.reimagined.NavTransitionQueueing
 import dev.olshevski.navigation.reimagined.NavTransitionScope
 import dev.olshevski.navigation.reimagined.NavTransitionSpec
 
-
 @Composable
 fun MainNavContainer() {
     NavBackHandler(LocalRouter.current.navFullController)
-
     LocalRouter.current.collectBackstackChanges()
-
 
     ModalNavigationDrawer(
         drawerState = LocalRouter.current.navBoardState,
@@ -86,7 +63,7 @@ fun MainNavContainer() {
             transitionSpec = customTransitionSpec,
             emptyBackstackPlaceholder = { EmptyScreen() }
         ) { destination ->
-            screenOf(destination = destination)
+            DI.screenResolver().screenOf(destination = destination)
         }
     }
 
@@ -96,7 +73,7 @@ fun MainNavContainer() {
         transitionQueueing = NavTransitionQueueing.QueueAll,
         transitionSpec = customTransitionSpec,
     ) { destination ->
-        screenOf(destination = destination)
+        DI.screenResolver().screenOf(destination = destination)
     }
 
     // snack
@@ -145,26 +122,6 @@ fun SnackContainer() {
                 content = { Snackbar(snackbarData = data) }
             )
         }
-    }
-}
-
-@Composable
-@NonRestartableComposable
-private fun screenOf(destination: Destination) {
-    when (destination) {
-        is LoginDestination -> LoginScreen()
-        is StoragesDestination -> StoragesScreen()
-        is EditStorageDestination -> EditStorageScreen(path = destination.path)
-        is StorageDestination -> StorageScreen(destination)
-        is GenHistDestination -> GenHistScreen(destination)
-        is EditNoteDestination -> EditNoteScreen(destination)
-        is EditNoteGroupDestination -> EditNoteGroupsScreen(destination)
-        is QRCodeScanDestination -> ScanQRCodeScreen()
-
-        is AlertDialogDestination -> AlertDialogScreen(destination)
-
-        // debug
-        is DesignDestination -> if (BuildConfig.DEBUG) EmptyScreen()
     }
 }
 

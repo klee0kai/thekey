@@ -27,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.NoteGroupIdentifier
@@ -48,16 +49,17 @@ import com.github.klee0kai.thekey.app.ui.notegroup.presenter.EditNoteGroupsPrese
 import com.github.klee0kai.thekey.app.ui.notegroup.presenter.selectNote
 import com.github.klee0kai.thekey.app.utils.common.Dummy
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
+import com.github.klee0kai.thekey.app.utils.views.rememberOnScreenRef
 import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
 fun EditNoteGroupsScreen(
     dest: EditNoteGroupDestination = EditNoteGroupDestination(),
 ) {
-    val presenter = remember { DI.editNoteGroupPresenter(dest.identifier()).apply { init() } }
+    val presenter by rememberOnScreenRef { DI.editNoteGroupPresenter(dest.identifier()).apply { init() } }
     val router = LocalRouter.current
     val groupNameFieldFocusRequester = remember { FocusRequester() }
-    val state by presenter.state.collectAsState(key = Unit, initial = EditNoteGroupsState())
+    val state by presenter!!.state.collectAsState(key = Unit, initial = EditNoteGroupsState())
 
     var dragProgress by remember { mutableFloatStateOf(0f) }
     val scaffoldState = rememberSimpleBottomSheetScaffoldState(
@@ -78,10 +80,10 @@ fun EditNoteGroupsScreen(
                     .focusRequester(groupNameFieldFocusRequester),
                 select = state.color,
                 groupName = state.name,
-                onChangeGroupName = { presenter.input { copy(name = it.take(1)) } },
+                onChangeGroupName = { presenter?.input { copy(name = it.take(1)) } },
                 onSelect = {
                     groupNameFieldFocusRequester.freeFocus()
-                    presenter.input { copy(color = it) }
+                    presenter?.input { copy(color = it) }
                 }
             )
         },
@@ -91,7 +93,7 @@ fun EditNoteGroupsScreen(
                     .padding(top = 20.dp)
                     .fillMaxSize(),
                 dest = dest,
-                onSelect = { notePt, selected -> presenter.selectNote(notePt, selected) },
+                onSelect = { notePt, selected -> presenter?.selectNote(notePt, selected) },
                 footer = { Spacer(modifier = Modifier.height(200.dp)) }
             )
         }
@@ -121,7 +123,7 @@ fun EditNoteGroupsScreen(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth(),
-            onClick = { presenter.save() }
+            onClick = { presenter?.save() }
         ) {
             Text(stringResource(R.string.save))
         }
@@ -135,7 +137,7 @@ fun EditNoteGroupsScreen(
 )
 @Composable
 private fun EditNoteGroupsSkeletonPreview() = AppTheme {
-    DI.initPresenterModule(object : PresentersModule() {
+    DI.initPresenterModule(object : PresentersModule {
         override fun editNoteGroupPresenter(id: NoteGroupIdentifier) = object : EditNoteGroupsPresenterDummy() {
             override val state = MutableStateFlow(
                 EditNoteGroupsState(

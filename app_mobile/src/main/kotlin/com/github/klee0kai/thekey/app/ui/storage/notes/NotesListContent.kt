@@ -22,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
@@ -36,6 +37,7 @@ import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenterDummy
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.app.utils.views.animateContentSizeProduction
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
+import com.github.klee0kai.thekey.app.utils.views.rememberOnScreenRef
 
 @Composable
 fun NotesListContent(
@@ -43,10 +45,10 @@ fun NotesListContent(
     args: StorageDestination = StorageDestination(),
     showStoragesTitle: Boolean = true,
 ) {
-    val presenter = remember { DI.storagePresenter(args.identifier()) }
+    val presenter by rememberOnScreenRef { DI.storagePresenter(args.identifier()) }
     val router = LocalRouter.current
-    val storageItems by presenter.filteredItems.collectAsState(key = Unit, initial = null)
-    val groups by presenter.filteredColorGroups.collectAsState(key = Unit, initial = emptyList())
+    val storageItems by presenter!!.filteredItems.collectAsState(key = Unit, initial = null)
+    val groups by presenter!!.filteredColorGroups.collectAsState(key = Unit, initial = emptyList())
     val titleAnimatedAlpha by animateAlphaAsState(showStoragesTitle)
 
     if (storageItems == null) return
@@ -102,7 +104,7 @@ fun NotesListContent(
                                     colorGroups = groups,
                                     selectedGroupId = note.group.id,
                                     onColorGroupSelected = {
-                                        presenter.setColorGroup(notePt = note.ptnote, groupId = it.id)
+                                        presenter?.setColorGroup(notePt = note.ptnote, groupId = it.id)
                                         showMenu = false
                                     },
                                     onEdit = {
@@ -146,7 +148,7 @@ fun NotesListContent(
 @Preview
 @Composable
 private fun NotesListContentPreview() = AppTheme {
-    DI.initPresenterModule(object : PresentersModule() {
+    DI.initPresenterModule(object : PresentersModule {
         override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterDummy()
     })
     NotesListContent(
@@ -157,7 +159,7 @@ private fun NotesListContentPreview() = AppTheme {
 @Preview
 @Composable
 private fun NotesListContentTitlePreview() = AppTheme {
-    DI.initPresenterModule(object : PresentersModule() {
+    DI.initPresenterModule(object : PresentersModule {
         override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterDummy()
     })
     NotesListContent(

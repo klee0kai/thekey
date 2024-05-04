@@ -8,7 +8,8 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.RequestPermResult
 
 open class BaseActivity : ComponentActivity() {
 
-    val router get() = DI.router()
+    protected val scope = DI.mainThreadScope()
+    protected val router get() = DI.router()
 
     override fun onResume() {
         super.onResume()
@@ -27,9 +28,8 @@ open class BaseActivity : ComponentActivity() {
         )
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
         router.onResult(
             RequestPermResult(
                 requestCode = requestCode,

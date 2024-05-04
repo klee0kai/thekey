@@ -5,7 +5,7 @@ import com.github.klee0kai.thekey.app.di.modules.HelpersModule
 import com.github.klee0kai.thekey.app.helpers.path.DummyUserShortPaths
 
 @Module
-abstract class DummyHelpersModule : HelpersModule() {
+abstract class DummyHelpersModule : HelpersModule {
 
     override fun provideUserShortPaths(): DummyUserShortPaths = DummyUserShortPaths()
 

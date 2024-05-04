@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
@@ -42,6 +43,7 @@ import com.github.klee0kai.thekey.app.utils.common.Dummy
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
 import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
+import com.github.klee0kai.thekey.app.utils.views.rememberOnScreenRef
 
 @Composable
 fun NotesContent(
@@ -51,10 +53,10 @@ fun NotesContent(
     scaffoldState: SimpleBottomSheetScaffoldState = simpleBottomSheetScaffoldState(LocalDensity.current),
     onDrag: (Float) -> Unit = {},
 ) {
-    val presenter = remember { DI.storagePresenter(dest.identifier()) }
+    val presenter by rememberOnScreenRef { DI.storagePresenter(dest.identifier()) }
     val router = LocalRouter.current
-    val selectedGroup by presenter.selectedGroupId.collectAsState(key = Unit, initial = null)
-    val groups by presenter.filteredColorGroups.collectAsState(key = Unit, initial = emptyList())
+    val selectedGroup by presenter!!.selectedGroupId.collectAsState(key = Unit, initial = null)
+    val groups by presenter!!.filteredColorGroups.collectAsState(key = Unit, initial = emptyList())
     var dragProgress by remember { mutableFloatStateOf(0f) }
     val addButtonAlpha by animateAlphaAsState(isPageFullyAvailable)
     val addButtonVisible by rememberDerivedStateOf { addButtonAlpha > 0 }
@@ -75,9 +77,9 @@ fun NotesContent(
                 selectedGroup = selectedGroup,
                 onAdd = { router.navigate(dest.createGroup()) },
                 colorGroups = groups,
-                onGroupSelected = { presenter.selectGroup(it.id) },
+                onGroupSelected = { presenter?.selectGroup(it.id) },
                 onGroupEdit = { router.navigate(dest.editGroup(it.id)) },
-                onGroupDelete = { presenter.deleteGroup(it.id) }
+                onGroupDelete = { presenter?.deleteGroup(it.id) }
             )
         },
         sheetContent = {
@@ -101,7 +103,7 @@ fun NotesContent(
 @Preview(device = Devices.PIXEL_6, showSystemUi = true)
 @Composable
 private fun NotesContentPreview() = AppTheme {
-    DI.initPresenterModule(object : PresentersModule() {
+    DI.initPresenterModule(object : PresentersModule {
         override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterDummy()
     })
     StorageScreen(

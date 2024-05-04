@@ -20,6 +20,7 @@ import com.github.klee0kai.thekey.app.di.updateConfig
 import com.github.klee0kai.thekey.app.domain.model.AppConfig
 import com.github.klee0kai.thekey.app.ui.designkit.color.CommonColorScheme
 import com.github.klee0kai.thekey.app.ui.navigation.AppRouter
+import com.github.klee0kai.thekey.app.ui.navigation.screenresolver.ScreenResolver
 import com.valentinilk.shimmer.LocalShimmerTheme
 import com.valentinilk.shimmer.defaultShimmerTheme
 
@@ -52,7 +53,6 @@ fun AppTheme(
             copy(isViewEditMode = isEditMode)
         }
     }
-
 
     if (!view.isInEditMode) {
         SideEffect {

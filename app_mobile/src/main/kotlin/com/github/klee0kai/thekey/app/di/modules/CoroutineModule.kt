@@ -15,43 +15,43 @@ import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
 @Module
-open class CoroutineModule {
+interface CoroutineModule {
 
     @DefaultDispatcher
     @Provide(cache = Provide.CacheType.Strong)
-    open fun defaultExecutor(): Executor {
+    fun defaultExecutor(): Executor {
         return Executors.newFixedThreadPool(5)
     }
 
     @JniDispatcher
     @Provide(cache = Provide.CacheType.Strong)
-    open fun jniDispatcher(): CoroutineDispatcher {
+    fun jniDispatcher(): CoroutineDispatcher {
         return Executors.newFixedThreadPool(5).asCoroutineDispatcher()
     }
 
     @MainDispatcher
-    open fun mainDispatcher(): CoroutineDispatcher = Dispatchers.Main.immediate
+    fun mainDispatcher(): CoroutineDispatcher = Dispatchers.Main.immediate
 
     @IODispatcher
-    open fun ioDispatcher(): CoroutineDispatcher = Dispatchers.IO
+    fun ioDispatcher(): CoroutineDispatcher = Dispatchers.IO
 
     @DefaultDispatcher
-    open fun defaultDispatcher(): CoroutineDispatcher = Dispatchers.Default
+    fun defaultDispatcher(): CoroutineDispatcher = Dispatchers.Default
 
     @MainDispatcher
-    open fun mainThreadScope(
+    fun mainThreadScope(
         @MainDispatcher
         dispatcher: CoroutineDispatcher,
     ): SafeContextScope = SafeContextScope(dispatcher + SupervisorJob())
 
     @IODispatcher
-    open fun ioThreadScope(
+    fun ioThreadScope(
         @IODispatcher
         dispatcher: CoroutineDispatcher,
     ): SafeContextScope = SafeContextScope(dispatcher + SupervisorJob())
 
     @DefaultDispatcher
-    open fun defaultThreadScope(
+    fun defaultThreadScope(
         @DefaultDispatcher
         dispatcher: CoroutineDispatcher,
     ): SafeContextScope = SafeContextScope(dispatcher + SupervisorJob())

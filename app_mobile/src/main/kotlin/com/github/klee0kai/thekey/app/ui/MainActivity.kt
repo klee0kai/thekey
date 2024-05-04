@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.navigation.MainNavContainer
+import com.github.klee0kai.thekey.app.ui.settings.plugin.PluginApplyingOverlay
 
 class MainActivity : BaseActivity() {
 
@@ -11,9 +12,12 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             AppTheme {
-                MainNavContainer()
+                PluginApplyingOverlay {
+                    MainNavContainer()
+                }
             }
         }
     }
+
 
 }
