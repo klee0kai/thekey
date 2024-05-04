@@ -91,7 +91,7 @@ jobs:
         with:
           name: screenshots
           path: |
-            ./app_mobile/src/test/snapshots/images/**
+            ./**/src/test/snapshots/images/**
 
 
   mikepenz_report:

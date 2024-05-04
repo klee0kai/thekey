@@ -18,7 +18,7 @@ tkcore/*build*
 .externalNativeBuild
 .cxx
 
-app_mobile/src/test/snapshots/images/**
+**/src/test/snapshots/images/**
 
 # protected
 local.properties

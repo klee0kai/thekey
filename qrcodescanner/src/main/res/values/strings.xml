@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="camera_permission">Camera permission</string>
+    <string name="camera_error">Camera Error</string>
+    <string name="camera_starting">starting...</string>
+</resources>

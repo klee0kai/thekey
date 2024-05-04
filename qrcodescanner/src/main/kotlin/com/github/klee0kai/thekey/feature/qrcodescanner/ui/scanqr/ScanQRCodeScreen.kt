@@ -18,7 +18,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.hardReset
 import com.github.klee0kai.thekey.app.di.modules.AndroidHelpersModule
@@ -29,9 +28,12 @@ import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
 import com.github.klee0kai.thekey.app.ui.navigation.model.TextProvider
 import com.github.klee0kai.thekey.app.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.app.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.feature.qrcodescanner.R
+import com.github.klee0kai.thekey.feature.qrcodescanner.ui.navigation.cameraPermissions
 import com.github.klee0kai.thekey.feature.qrcodescanner.ui.scanqr.components.CameraPreviewCompose
 import com.github.klee0kai.thekey.feature.qrcodescanner.ui.scanqr.components.qrCodeUserScanner
 import kotlinx.coroutines.launch
+import org.jetbrains.annotations.VisibleForTesting
 
 sealed interface CameraState {
     data object NoState : CameraState
@@ -123,10 +125,11 @@ fun ScanQRCodeScreen() {
     }
 }
 
+@VisibleForTesting
 @OptIn(DebugOnly::class)
 @Preview
 @Composable
-private fun ScanQRCodeScreenNoPermissionPreview() = AppTheme {
+fun ScanQRCodeScreenNoPermissionPreview() = AppTheme {
     DI.hardReset()
     DI.initAndroidHelpersModule(object : AndroidHelpersModule {
         override fun permissionsHelper() = PermissionsHelperDummy(false)
@@ -134,10 +137,11 @@ private fun ScanQRCodeScreenNoPermissionPreview() = AppTheme {
     ScanQRCodeScreen()
 }
 
+@VisibleForTesting
 @OptIn(DebugOnly::class)
 @Preview
 @Composable
-private fun ScanQRCodeScreenPreview() = AppTheme {
+fun ScanQRCodeScreenPreview() = AppTheme {
     DI.hardReset()
     DI.initAndroidHelpersModule(object : AndroidHelpersModule {
         override fun permissionsHelper() = PermissionsHelperDummy(true)
