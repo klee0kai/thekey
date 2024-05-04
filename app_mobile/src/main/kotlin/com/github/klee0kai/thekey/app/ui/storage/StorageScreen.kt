@@ -216,7 +216,7 @@ fun StorageScreen(
 
 @Preview(device = Devices.PIXEL_6, showSystemUi = true)
 @Composable
-private fun StorageScreenAccountsPreview() = AppTheme {
+fun StorageScreenAccountsPreview() = AppTheme {
     DI.initPresenterModule(object : PresentersModule {
         override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterDummy()
     })

@@ -92,6 +92,6 @@ fun SettingScreen() {
     device = Devices.PIXEL_6,
 )
 @Composable
-private fun SettingsScreenPreview() = AppTheme {
+fun SettingsScreenPreview() = AppTheme {
     SettingScreen()
 }

@@ -146,13 +146,13 @@ fun ColoredOtpNoteItem(
 
 @Composable
 @Preview
-private fun ColoredOtpNoteSkeletonPreview() = AppTheme {
+fun ColoredOtpNoteSkeletonPreview() = AppTheme {
     ColoredOtpNoteItem(otp = ColoredOtpNote(isLoaded = false))
 }
 
 @Composable
 @Preview
-private fun ColoredOtpNoteDummyPreview() = AppTheme {
+fun ColoredOtpNoteDummyPreview() = AppTheme {
     ColoredOtpNoteItem(
         otp = ColoredOtpNote(
             issuer = "some.super.site.com",
@@ -168,13 +168,13 @@ private fun ColoredOtpNoteDummyPreview() = AppTheme {
 
 @Composable
 @Preview
-private fun ColoredOtpNoteDummyNoGroupPreview()  = AppTheme {
-        ColoredOtpNoteItem(
-            otp = ColoredOtpNote(
-                issuer = "some.super.site.com",
-                name = "potato",
-                group = ColorGroup(),
-                isLoaded = true,
-            )
+fun ColoredOtpNoteDummyNoGroupPreview() = AppTheme {
+    ColoredOtpNoteItem(
+        otp = ColoredOtpNote(
+            issuer = "some.super.site.com",
+            name = "potato",
+            group = ColorGroup(),
+            isLoaded = true,
         )
+    )
 }

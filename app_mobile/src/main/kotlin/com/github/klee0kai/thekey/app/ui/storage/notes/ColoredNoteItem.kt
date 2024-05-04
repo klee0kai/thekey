@@ -169,13 +169,13 @@ fun ColoredNoteItem(
 
 @Composable
 @Preview
-private fun ColoredNoteSkeleton() = AppTheme {
+fun ColoredNoteSkeleton() = AppTheme {
     ColoredNoteItem(note = ColoredNote(isLoaded = false))
 }
 
 @Composable
 @Preview
-private fun ColoredNoteDummy() = AppTheme {
+fun ColoredNoteDummy() = AppTheme {
     ColoredNoteItem(
         note = ColoredNote(
             site = "some.super.site.com",
@@ -192,7 +192,7 @@ private fun ColoredNoteDummy() = AppTheme {
 
 @Composable
 @Preview
-private fun ColoredNoteDummyNoGroup() = AppTheme {
+fun ColoredNoteDummyNoGroup() = AppTheme {
     ColoredNoteItem(
         note = ColoredNote(
             site = "some.super.site.com",

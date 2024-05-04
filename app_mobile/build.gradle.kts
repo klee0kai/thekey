@@ -7,6 +7,7 @@ plugins {
     kotlin("kapt")
     id("kotlin-parcelize")
     id("brooklyn-plugin")
+    id("app.cash.paparazzi")
 }
 
 val appGroup = "com.github.klee0kai.thekey.app"
@@ -105,6 +106,18 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+            all { test ->
+                test.environment["robolectric.logging.enabled"] = "true"
+                test.maxHeapSize = "4g"
+                if (project.hasProperty("parallel")) {
+                    test.maxParallelForks = Runtime.getRuntime().availableProcessors() / 2
+                }
+            }
         }
     }
     compileOptions {
