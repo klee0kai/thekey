@@ -5,7 +5,7 @@
 #ifndef TKCORE_DEF_HEADER_H
 #define TKCORE_DEF_HEADER_H
 
-#define TERM_VERSION "0.0.3"
+#define TERM_VERSION "0.1.0"
 
 #include <getopt.h>
 #include <iostream>
@@ -13,7 +13,9 @@
 #include <unistd.h>
 #include <cstring>
 #include <memory>
+#include <list>
+#include <functional>
 
-#include <def_header.h>
+#include "key_core.h"
 
 #endif //TKCORE_DEF_HEADER_H

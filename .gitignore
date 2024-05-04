@@ -17,5 +17,8 @@ tkcore/*build*
 /captures
 .externalNativeBuild
 .cxx
+
+# protected
 local.properties
+apkSert.jks
 keystore.properties

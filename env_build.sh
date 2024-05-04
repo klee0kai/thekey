@@ -1,4 +1,8 @@
 #!/bin/bash
+if [ "${CI}" ]; then
+  echo "ci config"
+  set -e
+fi
 
 function read_properties_file() {
   file=$1
@@ -6,7 +10,7 @@ function read_properties_file() {
     echo "$file found."
 
     while IFS='=' read -r key value; do
-      # игнорируем закомментированные строки
+      # ignore commented lines
       if [[ $key == "#"* ]]; then
         continue
       fi
@@ -31,7 +35,7 @@ function create_local_properties_ifneed() {
 }
 
 function download_openssl() {
-  #glone by tag name
+  # clone by tag name
   git clone --depth 1 --branch OpenSSL_1_1_1-stable https://github.com/openssl/openssl.git -o origin ${TR_LIBS}/openssl
 
 }
@@ -73,36 +77,34 @@ function build_openssl_android_all() {
   cd "$WORKSPACE"
 }
 
-function build_apk() {
-  bash ./gradlew assembleRelease
+function build_apks() {
+  bash ./gradlew assemble
   mkdir -p builds
-  cp app/build/outputs/apk/release/app-release.apk builds/app-release.apk
+  find ./app_mobile/build/outputs/apk -name *.apk -exec cp {} ./builds/ \;
 
-   cd "$WORKSPACE"
+  cd "$WORKSPACE"
 }
 
 function build_term_app() {
   mkdir -p builds/${CUR_OS_UNAME}
 
-   cd tkcore
-   rm -rf build
-   mkdir -p build
-   cd build
+  cd tkcore
+  rm -rf build
 
-   cmake ..
-   make
+  cmake -S . -B build
+  cmake --build build --target all -- -j 10
 
-   cd "$WORKSPACE"
+  cd "$WORKSPACE"
 
-   cp tkcore/build/test/tkey_test builds/${CUR_OS_UNAME}/tkey_test
-   cp tkcore/build/term/tkey builds/${CUR_OS_UNAME}/tkey
+  cp $WORKSPACE/tkcore/build/term/tkey builds/${CUR_OS_UNAME}/tkey
 
-   #run tests
-   "./builds/${CUR_OS_UNAME}/tkey_test"
+  # run tests
+  cd $WORKSPACE/tkcore/build/test/testk1 && "./testk1"
+  cd $WORKSPACE/tkcore/build/test/testk2 && "./testk2"
+  cd $WORKSPACE/tkcore/build/test/testk1tok2 && "./testk1tok2"
 
-   cd "$WORKSPACE"
+  cd "$WORKSPACE"
 }
-
 
 read_properties_file ./local.properties
 
@@ -131,8 +133,6 @@ if [ -z "${GLOBAL_PATH}" ]; then
   export GLOBAL_PATH="$PATH"
 fi
 
-
-
 export TR_LIBS=$(realpath ./third_party_libraries)
 export TR_LIBS_BUILD=${TR_LIBS}/build
 export ANDROID_SDK_ROOT=${ANDROID_SDK}
@@ -141,13 +141,11 @@ export ANDROID_NDK_ROOT="${NDK_ROOT}"
 export ANDROID_NDK_HOME="${NDK_ROOT}"
 export ANDROID_NDK_VERSION=$(realpath $NDK_ROOT)
 export ANDROID_API="21"
-export PROTOBUF_VERSION="3.9.0"
 export WORKSPACE=$(pwd)
 export CUR_OS_UNAME=$(uname -sm | sed 's/ /_/g')
-
 
 mkdir -p ${TR_LIBS}
 mkdir -p ${TR_LIBS_BUILD}
 
-# стартуем если сразу указан метод
+# we start immediately if the method is specified
 $1
