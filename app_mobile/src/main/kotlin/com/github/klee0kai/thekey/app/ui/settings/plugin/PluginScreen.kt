@@ -109,7 +109,7 @@ fun PluginScreen(
                 }
             },
             colors = when (featureStatus) {
-                InstallError, Installed, is Installing -> LocalColorScheme.current.textButtonColors
+                InstallError, Installed, is Installing -> LocalColorScheme.current.grayTextButtonColors
                 InstallError, NotInstalled -> ButtonDefaults.textButtonColors()
             }
         ) {
