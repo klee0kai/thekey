@@ -2,7 +2,7 @@ package com.github.klee0kai.thekey.app.ui.designkit.components.appbar
 
 import androidx.compose.foundation.Image
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -34,7 +34,7 @@ private fun AppBarTitlePreview() = AppTheme {
         navigationIcon = {
             IconButton(onClick = { }) {
                 Icon(
-                    Icons.Filled.ArrowBack,
+                    Icons.AutoMirrored.Default.ArrowBack,
                     contentDescription = null,
                 )
             }
