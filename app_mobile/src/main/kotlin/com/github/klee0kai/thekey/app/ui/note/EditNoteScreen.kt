@@ -23,7 +23,6 @@ import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -58,6 +57,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.SecondaryTa
 import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.SecondaryTabsConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.dropdownfields.ColorGroupDropDownField
 import com.github.klee0kai.thekey.app.ui.designkit.components.dropdownfields.DropDownField
+import com.github.klee0kai.thekey.app.ui.designkit.text.AppTextField
 import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteDestination
 import com.github.klee0kai.thekey.app.ui.note.model.EditNoteState
@@ -150,7 +150,7 @@ fun EditNoteScreen(
             colorGroupField,
         ) = createRefs()
 
-        OutlinedTextField(
+        AppTextField(
             modifier = Modifier
                 .then(skeletonModifier)
                 .constrainAs(siteTextField) {
@@ -176,7 +176,7 @@ fun EditNoteScreen(
             }
         )
 
-        OutlinedTextField(
+        AppTextField(
             modifier = Modifier
                 .then(skeletonModifier)
                 .constrainAs(loginTextField) {
@@ -202,7 +202,7 @@ fun EditNoteScreen(
             }
         )
 
-        OutlinedTextField(
+        AppTextField(
             modifier = Modifier
                 .alpha(page.alpha)
                 .then(skeletonModifier)
@@ -259,7 +259,7 @@ fun EditNoteScreen(
         }
 
         if (page.current == Account) {
-            OutlinedTextField(
+            AppTextField(
                 modifier = Modifier
                     .alpha(page.alpha)
                     .then(skeletonModifier)
@@ -336,7 +336,7 @@ fun EditNoteScreen(
                 label = { Text(stringResource(R.string.algorithm)) }
             )
 
-            OutlinedTextField(
+            AppTextField(
                 modifier = Modifier
                     .alpha(page.alpha)
                     .then(skeletonModifier)
@@ -359,7 +359,7 @@ fun EditNoteScreen(
             )
 
 
-            OutlinedTextField(
+            AppTextField(
                 modifier = Modifier
                     .alpha(page.alpha)
                     .then(skeletonModifier)
@@ -440,7 +440,7 @@ fun EditNoteScreen(
                 modifier = Modifier
                     .alpha(page.alpha)
                     .fillMaxWidth(),
-                colors = LocalColorScheme.current.textButtonColors,
+                colors = LocalColorScheme.current.grayTextButtonColors,
                 onClick = {
                     if (page.current == Account) {
                         presenter?.generate()

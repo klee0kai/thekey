@@ -18,7 +18,6 @@ import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -48,6 +47,7 @@ import com.github.klee0kai.thekey.app.helpers.path.removeTKeyFormat
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarStates
+import com.github.klee0kai.thekey.app.ui.designkit.text.AppTextField
 import com.github.klee0kai.thekey.app.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.app.utils.coroutine.awaitSec
 import com.github.klee0kai.thekey.app.utils.views.AutoFillList
@@ -133,7 +133,7 @@ fun EditStorageScreen(
             autofillList,
         ) = createRefs()
 
-        OutlinedTextField(
+        AppTextField(
             modifier = Modifier
                 .onFocusChanged { storagePathFieldFocused = it.isFocused }
                 .constrainAs(pathTextField) {
@@ -164,7 +164,7 @@ fun EditStorageScreen(
             label = { Text(stringResource(R.string.storage_path)) }
         )
 
-        OutlinedTextField(
+        AppTextField(
             modifier = Modifier
                 .constrainAs(nameTextField) {
                     width = Dimension.fillToConstraints
@@ -183,7 +183,7 @@ fun EditStorageScreen(
         )
 
 
-        OutlinedTextField(
+        AppTextField(
             modifier = Modifier
                 .constrainAs(descTextField) {
                     width = Dimension.fillToConstraints
