@@ -32,6 +32,7 @@ import androidx.constraintlayout.compose.Dimension
 import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.di.hardReset
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
@@ -42,11 +43,13 @@ import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.model.GenPasswState
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.presenter.GenPasswPresenter
+import com.github.klee0kai.thekey.app.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.app.utils.common.Dummy
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
 import com.github.klee0kai.thekey.app.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.app.utils.views.rememberTargetCrossFaded
 import kotlinx.coroutines.flow.MutableStateFlow
+import org.jetbrains.annotations.VisibleForTesting
 
 
 @Composable
@@ -260,9 +263,12 @@ fun GenPasswordContent(
 }
 
 
+@OptIn(DebugOnly::class)
+@VisibleForTesting
 @Preview(device = Devices.PIXEL_6, showSystemUi = true)
 @Composable
-private fun GenPasswordContentPreview() = AppTheme {
+fun GenPasswordContentPreview() = AppTheme {
+    DI.hardReset()
     DI.initPresenterModule(object : PresentersModule {
         override fun genPasswPresente(storageIdentifier: StorageIdentifier) = object : GenPasswPresenter {
             override val state = MutableStateFlow(

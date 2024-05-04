@@ -27,6 +27,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.color.KeyColor
 import com.github.klee0kai.thekey.app.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.app.utils.views.skeleton
 import com.github.klee0kai.thekey.app.utils.views.visibleOnTargetAlpha
+import org.jetbrains.annotations.VisibleForTesting
 
 
 @Composable
@@ -144,12 +145,14 @@ fun ColoredOtpNoteItem(
     }
 }
 
+@VisibleForTesting
 @Composable
 @Preview
 fun ColoredOtpNoteSkeletonPreview() = AppTheme {
     ColoredOtpNoteItem(otp = ColoredOtpNote(isLoaded = false))
 }
 
+@VisibleForTesting
 @Composable
 @Preview
 fun ColoredOtpNoteDummyPreview() = AppTheme {
@@ -166,6 +169,7 @@ fun ColoredOtpNoteDummyPreview() = AppTheme {
     )
 }
 
+@VisibleForTesting
 @Composable
 @Preview
 fun ColoredOtpNoteDummyNoGroupPreview() = AppTheme {

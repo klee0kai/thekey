@@ -27,6 +27,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.color.KeyColor
 import com.github.klee0kai.thekey.app.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.app.utils.views.skeleton
 import com.github.klee0kai.thekey.app.utils.views.visibleOnTargetAlpha
+import org.jetbrains.annotations.VisibleForTesting
 
 
 @Composable
@@ -167,12 +168,14 @@ fun ColoredNoteItem(
     }
 }
 
+@VisibleForTesting
 @Composable
 @Preview
 fun ColoredNoteSkeleton() = AppTheme {
     ColoredNoteItem(note = ColoredNote(isLoaded = false))
 }
 
+@VisibleForTesting
 @Composable
 @Preview
 fun ColoredNoteDummy() = AppTheme {
@@ -190,6 +193,7 @@ fun ColoredNoteDummy() = AppTheme {
     )
 }
 
+@VisibleForTesting
 @Composable
 @Preview
 fun ColoredNoteDummyNoGroup() = AppTheme {
