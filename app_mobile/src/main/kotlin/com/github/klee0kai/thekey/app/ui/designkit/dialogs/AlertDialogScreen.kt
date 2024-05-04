@@ -7,11 +7,14 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
+import com.github.klee0kai.thekey.app.ui.designkit.EmptyScreen
 import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
 import com.github.klee0kai.thekey.app.ui.navigation.model.AlertDialogDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.ConfirmDialogResult
+import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
 fun AlertDialogScreen(
@@ -57,8 +60,20 @@ fun AlertDialogScreen(
 
 }
 
+@VisibleForTesting
 @Preview
 @Composable
-private fun AlertDialogPreview() = AppTheme {
+fun AlertDialogPreview() = AppTheme {
     AlertDialogScreen()
 }
+
+
+@VisibleForTesting
+@Preview(showSystemUi = true, device = Devices.PIXEL_6)
+@Composable
+fun AlertDialogInScreenPreview() = AppTheme {
+    EmptyScreen()
+
+    AlertDialogScreen()
+}
+
