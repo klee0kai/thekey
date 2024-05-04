@@ -143,3 +143,6 @@ fun Modifier.animateContentSizeProduction() = run {
     if (DI.config().isViewEditMode) this
     else animateContentSize()
 }
+
+fun Modifier.thenIf(condition: Boolean, block: Modifier.() -> Modifier) =
+    if (condition) block() else this

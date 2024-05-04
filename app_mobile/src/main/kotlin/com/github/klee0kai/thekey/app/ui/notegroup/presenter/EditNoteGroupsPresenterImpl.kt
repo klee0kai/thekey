@@ -80,9 +80,7 @@ open class EditNoteGroupsPresenterImpl(
     override fun input(block: EditNoteGroupsState.() -> EditNoteGroupsState) = scope.launch {
         state.update { oldState ->
             val newState = block(oldState)
-            if (newState.selectedNotes != oldState.selectedNotes) {
-                updateNoteTrigger.emit(Unit)
-            }
+            updateNoteTrigger.emit(Unit)
             newState
         }
     }

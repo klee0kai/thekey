@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -67,7 +67,7 @@ private fun SearchFieldEmptyPreview() = AppTheme {
         navigationIcon = {
             IconButton(onClick = { }) {
                 Icon(
-                    Icons.Filled.ArrowBack,
+                    Icons.AutoMirrored.Default.ArrowBack,
                     contentDescription = null,
                 )
             }
@@ -87,7 +87,7 @@ private fun SearchFieldTextPreview() = AppTheme {
         navigationIcon = {
             IconButton(onClick = { }) {
                 Icon(
-                    Icons.Filled.ArrowBack,
+                    Icons.AutoMirrored.Default.ArrowBack,
                     contentDescription = null,
                 )
             }

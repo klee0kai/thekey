@@ -9,8 +9,6 @@ import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.engine.model.DecryptedOtpNote
 import com.github.klee0kai.thekey.app.engine.model.GenPasswParams
 import com.github.klee0kai.thekey.app.engine.model.isEmpty
-import com.github.klee0kai.thekey.app.features.model.DynamicFeature
-import com.github.klee0kai.thekey.app.features.qrcodeScanner
 import com.github.klee0kai.thekey.app.ui.navigation.model.AlertDialogDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.ConfirmDialogResult
 import com.github.klee0kai.thekey.app.ui.navigation.model.QRCodeScanDestination
@@ -50,6 +48,7 @@ class EditNotePresenterImpl(
     private var originNote: DecryptedNote? = null
     private var originOtpNote: DecryptedOtpNote? = null
     private var colorGroups: List<ColorGroup> = emptyList()
+    private var initArgHash: Int = 0
     override val state = MutableStateFlow(EditNoteState(isSkeleton = true))
 
     override fun init(
@@ -57,10 +56,10 @@ class EditNotePresenterImpl(
         prefilledNote: DecryptedNote?,
         prefilledOtp: DecryptedOtpNote?,
     ) = scope.launch {
-        if (!state.value.isSkeleton) {
-            // already inited
-            return@launch
-        }
+        val newInitArgHash = listOf(tab, prefilledNote, prefilledOtp).hashCode()
+        if (newInitArgHash == initArgHash && !state.value.isSkeleton) return@launch
+        initArgHash = newInitArgHash
+
 
         val isEditMode = identifier.notePtr != 0L || identifier.otpNotePtr != 0L
 
@@ -202,6 +201,7 @@ class EditNotePresenterImpl(
 
                 val error = notesInteractor().saveNote(note, setAll = true)
                 router.back()
+                clean()
             }
 
             EditTabs.Otp -> {
@@ -212,6 +212,7 @@ class EditNotePresenterImpl(
                 }
                 val error = otpNotesInteractor().saveOtpNote(otpNote, setAll = true)
                 router.back()
+                clean()
             }
         }
 
@@ -225,4 +226,6 @@ class EditNotePresenterImpl(
         input { copy(passw = newPassw) }
     }
 
+
+    private fun clean() = input { copy(isSkeleton = true) }
 }

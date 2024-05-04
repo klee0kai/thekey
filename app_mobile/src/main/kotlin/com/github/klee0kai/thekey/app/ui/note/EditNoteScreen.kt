@@ -15,7 +15,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -76,6 +76,7 @@ import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.app.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.app.utils.views.rememberSkeletonModifier
 import com.github.klee0kai.thekey.app.utils.views.rememberTargetCrossFaded
+import com.github.klee0kai.thekey.app.utils.views.thenIf
 import com.github.klee0kai.thekey.app.utils.views.toPx
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -132,12 +133,14 @@ fun EditNoteScreen(
                 start = 16.dp,
                 end = 16.dp
             )
-            .swipeable(
-                state = pageSwipeState,
-                anchors = mapOf(0f to Account, -view.width.toFloat() to Otp),
-                thresholds = { _, _ -> FractionalThreshold(0.2f) },
-                orientation = Orientation.Horizontal
-            ),
+            .thenIf(!state.isEditMode) {
+                swipeable(
+                    state = pageSwipeState,
+                    anchors = mapOf(0f to Account, -view.width.toFloat() to Otp),
+                    thresholds = { _, _ -> FractionalThreshold(0.2f) },
+                    orientation = Orientation.Horizontal
+                )
+            },
     ) {
         val (
             siteTextField, loginTextField,
@@ -468,7 +471,7 @@ fun EditNoteScreen(
         isVisible = scrollState.value <= 30.dp.toPx(),
         navigationIcon = {
             IconButton(onClick = { navigator.back() }) {
-                Icon(Icons.Filled.ArrowBack, contentDescription = null)
+                Icon(Icons.AutoMirrored.Default.ArrowBack, contentDescription = null)
             }
         },
         titleContent = { Text(text = stringResource(id = if (state.isEditMode) R.string.edit else R.string.create)) },
@@ -508,7 +511,7 @@ fun EditNoteScreen(
 
 @Preview(device = Devices.PIXEL_6, showSystemUi = true)
 @Composable
-private fun EditAccountScreenP6SkeletonPreview() = AppTheme {
+private fun CreateAccountScreenP6SkeletonPreview() = AppTheme {
     DI.initPresenterModule(object : PresentersModule {
         override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter = object : EditNotePresenter {
             override val state = MutableStateFlow(
@@ -523,11 +526,47 @@ private fun EditAccountScreenP6SkeletonPreview() = AppTheme {
 
 @Preview(device = Devices.PIXEL_6, showSystemUi = true)
 @Composable
+private fun CreateOTPScreenP6SkeletonPreview() = AppTheme {
+    DI.initPresenterModule(object : PresentersModule {
+        override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter = object : EditNotePresenter {
+            override val state = MutableStateFlow(
+                EditNoteState(
+                    isSkeleton = true,
+                )
+            )
+        }
+    })
+    EditNoteScreen(dest = EditNoteDestination(path = Dummy.unicString, tab = Otp))
+}
+
+
+@Preview(device = Devices.PIXEL_6, showSystemUi = true)
+@Composable
+private fun CreateAccountScreenP6Preview() = AppTheme {
+    DI.initPresenterModule(object : PresentersModule {
+        override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter = object : EditNotePresenter {
+            override val state = MutableStateFlow(
+                EditNoteState(
+                    isSkeleton = false,
+                    siteOrIssuer = "some.site.com",
+                    loginOrName = "myLogin@2",
+                    passw = "123#",
+                )
+            )
+        }
+    })
+    EditNoteScreen(EditNoteDestination(path = Dummy.unicString))
+}
+
+
+@Preview(device = Devices.PIXEL_6, showSystemUi = true)
+@Composable
 private fun EditAccountScreenP6Preview() = AppTheme {
     DI.initPresenterModule(object : PresentersModule {
         override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter = object : EditNotePresenter {
             override val state = MutableStateFlow(
                 EditNoteState(
+                    isEditMode = true,
                     isRemoveAvailable = true,
                     isSkeleton = false,
                     siteOrIssuer = "some.site.com",
@@ -548,6 +587,7 @@ private fun EditAccountScreenSaveP6Preview() = AppTheme {
         override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter = object : EditNotePresenter {
             override val state = MutableStateFlow(
                 EditNoteState(
+                    isEditMode = true,
                     isRemoveAvailable = false,
                     isSkeleton = false,
                     isSaveAvailable = true,
@@ -569,6 +609,7 @@ private fun EditOTPScreenP6SkeletonPreview() = AppTheme {
         override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter = object : EditNotePresenter {
             override val state = MutableStateFlow(
                 EditNoteState(
+                    isEditMode = true,
                     isSkeleton = true,
                 )
             )
@@ -584,6 +625,7 @@ private fun EditOTPScreenP6Preview() = AppTheme(modifier = Modifier) {
         override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter = object : EditNotePresenter {
             override val state = MutableStateFlow(
                 EditNoteState(
+                    isEditMode = true,
                     isRemoveAvailable = true,
                     isSkeleton = false,
                     siteOrIssuer = "some.site.com",

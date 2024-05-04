@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -103,7 +103,7 @@ fun EditNoteGroupsScreen(
         modifier = Modifier,
         navigationIcon = {
             IconButton(onClick = remember { { router.back() } }) {
-                Icon(Icons.Filled.ArrowBack, contentDescription = null)
+                Icon(Icons.AutoMirrored.Default.ArrowBack, contentDescription = null)
             }
         },
         titleContent = { Text(text = stringResource(id = if (state.isEditMode) R.string.edit_group else R.string.create_group)) },

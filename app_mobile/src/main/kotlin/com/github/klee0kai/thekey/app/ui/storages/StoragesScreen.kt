@@ -3,8 +3,8 @@ package com.github.klee0kai.thekey.app.ui.storages
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -86,7 +86,7 @@ fun StoragesScreen() {
         navigationIcon = {
             IconButton(onClick = remember { { router.back() } }) {
                 Icon(
-                    Icons.Filled.ArrowBack,
+                    Icons.AutoMirrored.Default.ArrowBack,
                     contentDescription = null,
                 )
             }
