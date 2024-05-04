@@ -99,7 +99,8 @@ android {
         buildConfig = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.4"
+        //  https://developer.android.com/jetpack/androidx/releases/compose-kotlin
+        kotlinCompilerExtensionVersion = "1.5.10"
     }
     packaging {
         resources {
@@ -154,11 +155,12 @@ dependencies {
     implementation("com.valentinilk.shimmer:compose-shimmer:1.2.0")
 
     // coroutine
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
 
     // stone
     implementation("com.github.klee0kai.stone:android_lib:1.0.6")
     implementation("com.github.klee0kai.stone:kotlin_lib:1.0.6")
+    implementation("androidx.test.ext:junit-ktx:1.1.5")
     kapt("com.github.klee0kai.stone:stone_processor:1.0.6")
 
     // room

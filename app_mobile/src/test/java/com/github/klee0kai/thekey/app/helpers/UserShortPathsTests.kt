@@ -1,7 +1,7 @@
 package com.github.klee0kai.thekey.app.helpers
 
-import com.github.klee0kai.thekey.app.TargetDI
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.di.debug.DebugDI
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
@@ -11,10 +11,9 @@ class UserShortPathsTests {
 
     private val helper by lazy { DI.userShortPaths() }
 
-
     @Before
     fun init() {
-        with(TargetDI) { DI.initDummyModules() }
+        with(DebugDI) { DI.initDummyModules() }
     }
 
 
