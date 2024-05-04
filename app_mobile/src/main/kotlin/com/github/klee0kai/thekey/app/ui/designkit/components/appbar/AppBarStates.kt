@@ -33,6 +33,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.bottomsheet.Simple
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.app.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
+import org.jetbrains.annotations.VisibleForTesting
 
 object AppBarConst {
     val appBarSize = 64.dp // TopAppBarSmallTokens.ContainerHeight
@@ -97,9 +98,10 @@ fun SimpleBottomSheetScaffoldState.rememberMainTitleVisibleFlow(
     return mainTitleVisibility
 }
 
+@VisibleForTesting
 @Composable
 @Preview
-private fun AppBarTitlePreview() = AppTheme {
+fun AppBarTitlePreview1() = AppTheme {
     AppBarStates(
         navigationIcon = {
             IconButton(onClick = { }) {

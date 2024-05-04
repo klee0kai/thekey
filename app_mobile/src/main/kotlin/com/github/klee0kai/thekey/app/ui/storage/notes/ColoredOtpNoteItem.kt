@@ -27,6 +27,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.color.KeyColor
 import com.github.klee0kai.thekey.app.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.app.utils.views.skeleton
 import com.github.klee0kai.thekey.app.utils.views.visibleOnTargetAlpha
+import org.jetbrains.annotations.VisibleForTesting
 
 
 @Composable
@@ -144,15 +145,17 @@ fun ColoredOtpNoteItem(
     }
 }
 
+@VisibleForTesting
 @Composable
 @Preview
-private fun ColoredOtpNoteSkeletonPreview() = AppTheme {
+fun ColoredOtpNoteSkeletonPreview() = AppTheme {
     ColoredOtpNoteItem(otp = ColoredOtpNote(isLoaded = false))
 }
 
+@VisibleForTesting
 @Composable
 @Preview
-private fun ColoredOtpNoteDummyPreview() = AppTheme {
+fun ColoredOtpNoteDummyPreview() = AppTheme {
     ColoredOtpNoteItem(
         otp = ColoredOtpNote(
             issuer = "some.super.site.com",
@@ -166,15 +169,16 @@ private fun ColoredOtpNoteDummyPreview() = AppTheme {
     )
 }
 
+@VisibleForTesting
 @Composable
 @Preview
-private fun ColoredOtpNoteDummyNoGroupPreview()  = AppTheme {
-        ColoredOtpNoteItem(
-            otp = ColoredOtpNote(
-                issuer = "some.super.site.com",
-                name = "potato",
-                group = ColorGroup(),
-                isLoaded = true,
-            )
+fun ColoredOtpNoteDummyNoGroupPreview() = AppTheme {
+    ColoredOtpNoteItem(
+        otp = ColoredOtpNote(
+            issuer = "some.super.site.com",
+            name = "potato",
+            group = ColorGroup(),
+            isLoaded = true,
         )
+    )
 }

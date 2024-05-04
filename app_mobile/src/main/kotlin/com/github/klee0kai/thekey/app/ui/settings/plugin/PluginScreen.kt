@@ -163,7 +163,7 @@ fun PluginScreen(
 @OptIn(DebugOnly::class)
 @Preview(showSystemUi = true, device = Devices.PIXEL_6)
 @Composable
-private fun PluginNotInstalledPreview() = AppTheme {
+fun PluginNotInstalledPreview() = AppTheme {
     DI.hardReset()
     DI.initPresenterModule(object : PresentersModule {
         override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {
@@ -176,7 +176,7 @@ private fun PluginNotInstalledPreview() = AppTheme {
 @OptIn(DebugOnly::class)
 @Preview(showSystemUi = true, device = Devices.PIXEL_6)
 @Composable
-private fun PluginBuyPreview() = AppTheme {
+fun PluginBuyPreview() = AppTheme {
     DI.hardReset()
     DI.initPresenterModule(object : PresentersModule {
         override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {
@@ -195,7 +195,7 @@ private fun PluginBuyPreview() = AppTheme {
 @OptIn(DebugOnly::class)
 @Preview(showSystemUi = true, device = Devices.PIXEL_6)
 @Composable
-private fun PluginInstallingPreview() = AppTheme {
+fun PluginInstallingPreview() = AppTheme {
     DI.hardReset()
     DI.initPresenterModule(object : PresentersModule {
         override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {
@@ -205,11 +205,10 @@ private fun PluginInstallingPreview() = AppTheme {
     PluginScreen(PluginDestination(DynamicFeature.qrcodeScanner()))
 }
 
-
 @OptIn(DebugOnly::class)
 @Preview(showSystemUi = true, device = Devices.PIXEL_6)
 @Composable
-private fun PluginInstalledPreview() = AppTheme {
+fun PluginInstalledPreview() = AppTheme {
     DI.hardReset()
     DI.initPresenterModule(object : PresentersModule {
         override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {
@@ -222,7 +221,7 @@ private fun PluginInstalledPreview() = AppTheme {
 @OptIn(DebugOnly::class)
 @Preview(showSystemUi = true, device = Devices.PIXEL_6)
 @Composable
-private fun PluginInstallErrorPreview() = AppTheme {
+fun PluginInstallErrorPreview() = AppTheme {
     DI.hardReset()
     DI.initPresenterModule(object : PresentersModule {
         override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {

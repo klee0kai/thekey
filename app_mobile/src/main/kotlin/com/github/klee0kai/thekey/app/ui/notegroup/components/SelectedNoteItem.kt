@@ -31,6 +31,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.color.KeyColor
 import com.github.klee0kai.thekey.app.ui.notegroup.model.SelectedNote
 import com.github.klee0kai.thekey.app.utils.common.Dummy
 import com.github.klee0kai.thekey.app.utils.views.animateTargetCrossFaded
+import org.jetbrains.annotations.VisibleForTesting
 
 
 @Composable
@@ -176,9 +177,10 @@ fun SelectedNoteItem(
 }
 
 
+@VisibleForTesting
 @Composable
 @Preview
-private fun ColoredNoteDummy() = AppTheme {
+fun ColoredNoteDummyPreview() = AppTheme {
     SelectedNoteItem(
         note = SelectedNote(
             ptnote = Dummy.dummyId,
@@ -193,9 +195,10 @@ private fun ColoredNoteDummy() = AppTheme {
     )
 }
 
+@VisibleForTesting
 @Composable
 @Preview
-private fun ColoredNoteDummyNoGroup() = AppTheme {
+fun ColoredNoteDummyNoGroupPreview() = AppTheme {
     SelectedNoteItem(
         note = SelectedNote(
             ptnote = Dummy.dummyId,

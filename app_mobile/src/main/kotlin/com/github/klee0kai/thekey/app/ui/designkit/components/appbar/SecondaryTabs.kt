@@ -34,6 +34,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
+import org.jetbrains.annotations.VisibleForTesting
 
 object SecondaryTabsConst {
     val topPadding = 8.dp
@@ -111,9 +112,10 @@ fun SecondaryTabs(
     }
 }
 
+@VisibleForTesting
 @Preview
 @Composable
-private fun SecondaryTabsPreview() = AppTheme {
+fun SecondaryTabsPreview() = AppTheme {
     SecondaryTabs(
         modifier = Modifier
             .padding(top = AppBarConst.appBarSize),

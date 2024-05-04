@@ -33,18 +33,22 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.di.hardReset
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.engine.model.Storage
 import com.github.klee0kai.thekey.app.helpers.path.appendTKeyFormat
 import com.github.klee0kai.thekey.app.helpers.path.removeTKeyFormat
+import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarStates
+import com.github.klee0kai.thekey.app.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.app.utils.coroutine.awaitSec
 import com.github.klee0kai.thekey.app.utils.views.AutoFillList
 import com.github.klee0kai.thekey.app.utils.views.Keyboard
@@ -56,8 +60,8 @@ import com.github.klee0kai.thekey.app.utils.views.onGlobalPositionState
 import com.github.klee0kai.thekey.app.utils.views.rememberOnScreen
 import com.github.klee0kai.thekey.app.utils.views.toTextFieldValue
 import com.github.klee0kai.thekey.app.utils.views.toTransformationText
+import org.jetbrains.annotations.VisibleForTesting
 
-@Preview
 @Composable
 fun EditStorageScreen(
     path: String = "",
@@ -275,4 +279,13 @@ fun EditStorageScreen(
             }
         }
     ) { Text(text = stringResource(id = presenter.titleRes)) }
+}
+
+@OptIn(DebugOnly::class)
+@VisibleForTesting
+@Preview(showSystemUi = true, device = Devices.PIXEL_6)
+@Composable
+fun EditStorageScreenPreview() = AppTheme {
+    DI.hardReset()
+    EditStorageScreen(path = "some/path/to/storage")
 }

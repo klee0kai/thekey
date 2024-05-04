@@ -2,6 +2,7 @@ plugins {
     id("com.android.dynamic-feature")
     id("org.jetbrains.kotlin.android")
     kotlin("kapt")
+    id("app.cash.paparazzi")
 }
 android {
     namespace = "com.github.klee0kai.thekey.feature.qrcodescanner"
@@ -23,7 +24,7 @@ android {
         viewBinding = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.4"
+        kotlinCompilerExtensionVersion = "1.5.10"
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
+import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
 fun FabSimple(
@@ -46,9 +47,10 @@ fun FabSimpleInContainer(
     }
 }
 
+@VisibleForTesting
 @Preview
 @Composable
-private fun FabSimplePreview() = AppTheme {
+fun FabSimplePreview() = AppTheme {
     FabSimple {
         Icon(
             imageVector = Icons.Filled.Add,
@@ -57,9 +59,10 @@ private fun FabSimplePreview() = AppTheme {
     }
 }
 
+@VisibleForTesting
 @Preview
 @Composable
-private fun FabSimpleInContainerPreview() = AppTheme {
+fun FabSimpleInContainerPreview() = AppTheme {
     FabSimpleInContainer {
         Icon(
             imageVector = Icons.Filled.Add,

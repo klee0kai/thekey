@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
+import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
 fun AddCircle(
@@ -62,8 +63,9 @@ fun AddCircle(
     }
 }
 
+@VisibleForTesting
 @Preview
 @Composable
-private fun AddCirclePreview() = AppTheme {
+fun AddCirclePreview() = AppTheme {
     AddCircle()
 }

@@ -7,6 +7,7 @@ plugins {
     kotlin("kapt")
     id("kotlin-parcelize")
     id("brooklyn-plugin")
+    id("app.cash.paparazzi")
 }
 
 val appGroup = "com.github.klee0kai.thekey.app"
@@ -99,11 +100,24 @@ android {
         buildConfig = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.4"
+        //  https://developer.android.com/jetpack/androidx/releases/compose-kotlin
+        kotlinCompilerExtensionVersion = "1.5.10"
     }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+            all { test ->
+                test.environment["robolectric.logging.enabled"] = "true"
+                test.maxHeapSize = "4g"
+                if (project.hasProperty("parallel")) {
+                    test.maxParallelForks = Runtime.getRuntime().availableProcessors() / 2
+                }
+            }
         }
     }
     compileOptions {
@@ -154,11 +168,12 @@ dependencies {
     implementation("com.valentinilk.shimmer:compose-shimmer:1.2.0")
 
     // coroutine
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
 
     // stone
     implementation("com.github.klee0kai.stone:android_lib:1.0.6")
     implementation("com.github.klee0kai.stone:kotlin_lib:1.0.6")
+    implementation("androidx.test.ext:junit-ktx:1.1.5")
     kapt("com.github.klee0kai.stone:stone_processor:1.0.6")
 
     // room

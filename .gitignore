@@ -18,6 +18,8 @@ tkcore/*build*
 .externalNativeBuild
 .cxx
 
+**/src/test/snapshots/images/**
+
 # protected
 local.properties
 apkSert.jks

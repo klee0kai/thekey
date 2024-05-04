@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.di.hardReset
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
@@ -34,10 +35,12 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.app.ui.navigation.note
 import com.github.klee0kai.thekey.app.ui.navigation.otpNote
 import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenterDummy
+import com.github.klee0kai.thekey.app.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.app.utils.views.animateContentSizeProduction
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
 import com.github.klee0kai.thekey.app.utils.views.rememberOnScreenRef
+import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
 fun NotesListContent(
@@ -144,10 +147,12 @@ fun NotesListContent(
     }
 }
 
-
+@OptIn(DebugOnly::class)
+@VisibleForTesting
 @Preview
 @Composable
-private fun NotesListContentPreview() = AppTheme {
+fun NotesListContentPreview() = AppTheme {
+    DI.hardReset()
     DI.initPresenterModule(object : PresentersModule {
         override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterDummy()
     })
@@ -156,9 +161,12 @@ private fun NotesListContentPreview() = AppTheme {
     )
 }
 
+@OptIn(DebugOnly::class)
+@VisibleForTesting
 @Preview
 @Composable
-private fun NotesListContentTitlePreview() = AppTheme {
+fun NotesListContentTitlePreview() = AppTheme {
+    DI.hardReset()
     DI.initPresenterModule(object : PresentersModule {
         override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterDummy()
     })

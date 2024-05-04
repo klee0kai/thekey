@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.color.SurfaceScheme
+import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
 fun GroupCircle(
@@ -74,19 +75,20 @@ fun GroupCircle(
 }
 
 
+@VisibleForTesting
 @Preview
 @Composable
-private fun GroupCirclePreview() = AppTheme {
+fun GroupCirclePreview() = AppTheme {
     GroupCircle(
         name = "AN",
         colorScheme = SurfaceScheme(Color.Magenta, Color.White),
     )
 }
 
-
+@VisibleForTesting
 @Preview
 @Composable
-private fun GroupCircleCheckedPreview() = AppTheme {
+fun GroupCircleCheckedPreview() = AppTheme {
     GroupCircle(
         name = "CH",
         colorScheme = SurfaceScheme(Color.Magenta, Color.White),

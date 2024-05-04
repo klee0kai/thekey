@@ -35,11 +35,11 @@ import com.github.klee0kai.thekey.app.utils.views.accelerateDecelerate
 import com.github.klee0kai.thekey.app.utils.views.pxToDp
 import com.github.klee0kai.thekey.app.utils.views.ratioBetween
 import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
+import org.jetbrains.annotations.VisibleForTesting
 
 internal object SimpleScaffoldConst {
     val dragHandleSize = 48.dp
 }
-
 
 @Composable
 fun SimpleBottomSheetScaffold(
@@ -135,13 +135,14 @@ fun SimpleBottomSheetScaffold(
 }
 
 
+@VisibleForTesting
 @Preview
 @Composable
 fun SimpleBottomSheetScaffoldPreview() = AppTheme {
     SimpleBottomSheetScaffold()
 }
 
-
+@VisibleForTesting
 @Preview
 @Composable
 fun SimpleBottomSheetScaffoldTopContentPreview() = AppTheme {
@@ -157,7 +158,7 @@ fun SimpleBottomSheetScaffoldTopContentPreview() = AppTheme {
     )
 }
 
-
+@VisibleForTesting
 @Preview
 @Composable
 fun SimpleBottomSheetScaffoldTopContent2Preview() = AppTheme {

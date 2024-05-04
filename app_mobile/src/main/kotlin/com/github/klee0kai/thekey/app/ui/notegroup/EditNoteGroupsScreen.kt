@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.di.hardReset
 import com.github.klee0kai.thekey.app.di.identifier.NoteGroupIdentifier
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
@@ -47,10 +48,12 @@ import com.github.klee0kai.thekey.app.ui.notegroup.components.NoteSelectToGroupC
 import com.github.klee0kai.thekey.app.ui.notegroup.model.EditNoteGroupsState
 import com.github.klee0kai.thekey.app.ui.notegroup.presenter.EditNoteGroupsPresenterDummy
 import com.github.klee0kai.thekey.app.ui.notegroup.presenter.selectNote
+import com.github.klee0kai.thekey.app.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.app.utils.common.Dummy
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
 import com.github.klee0kai.thekey.app.utils.views.rememberOnScreenRef
 import kotlinx.coroutines.flow.MutableStateFlow
+import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
 fun EditNoteGroupsScreen(
@@ -131,12 +134,12 @@ fun EditNoteGroupsScreen(
 }
 
 
-@Preview(
-    device = Devices.PIXEL_6,
-    showSystemUi = true,
-)
+@OptIn(DebugOnly::class)
+@VisibleForTesting
+@Preview(device = Devices.PIXEL_6, showSystemUi = true)
 @Composable
-private fun EditNoteGroupsSkeletonPreview() = AppTheme {
+fun EditNoteGroupsSkeletonPreview() = AppTheme {
+    DI.hardReset()
     DI.initPresenterModule(object : PresentersModule {
         override fun editNoteGroupPresenter(id: NoteGroupIdentifier) = object : EditNoteGroupsPresenterDummy() {
             override val state = MutableStateFlow(

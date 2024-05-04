@@ -70,9 +70,6 @@
     <string name="current_storage">Current Storage</string>
     <string name="favorites">Favorites</string>
     <string name="openned">Openned</string>
-    <string name="camera_permission">Camera permission</string>
-    <string name="camera_error">Camera Error</string>
-    <string name="camera_starting">starting...</string>
     <string name="otpnote_is_empty">Otp is Empty</string>
     <string name="confirm_delete_otp">Confirm delete OTP</string>
     <string name="title_qrcodescanner">QR Code Scanner</string>

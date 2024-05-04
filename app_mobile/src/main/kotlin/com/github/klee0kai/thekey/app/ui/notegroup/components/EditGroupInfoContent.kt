@@ -30,6 +30,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.color.transparentColorScheme
 import com.github.klee0kai.thekey.app.ui.designkit.components.LazyListIndicatorIfNeed
 import com.github.klee0kai.thekey.app.ui.designkit.components.buttons.GroupCircle
 import com.github.klee0kai.thekey.app.ui.designkit.components.scrollPosition
+import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
 fun EditGroupInfoContent(
@@ -149,18 +150,19 @@ fun EditGroupInfoContent(
     }
 }
 
-
+@VisibleForTesting
 @Preview
 @Composable
-private fun EditGroupInfoContentPreview() = AppTheme {
+fun EditGroupInfoContentPreview() = AppTheme {
     EditGroupInfoContent(
         forceIndicatorVisible = true,
     )
 }
 
+@VisibleForTesting
 @Preview
 @Composable
-private fun EditGroupInfoContentInBoxPreview() = AppTheme {
+fun EditGroupInfoContentInBoxPreview() = AppTheme {
     Box(modifier = Modifier.fillMaxSize()) {
         EditGroupInfoContent(
             modifier = Modifier.align(Alignment.Center),

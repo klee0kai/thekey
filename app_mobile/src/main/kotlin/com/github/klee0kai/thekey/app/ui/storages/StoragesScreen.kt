@@ -16,10 +16,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
 import com.github.klee0kai.thekey.app.ui.designkit.components.FabSimpleInContainer
 import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarConst
@@ -35,11 +37,11 @@ import com.github.klee0kai.thekey.app.ui.storages.components.GroupsSelectContent
 import com.github.klee0kai.thekey.app.ui.storages.components.StoragesListContent
 import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.app.utils.views.rememberOnScreen
+import org.jetbrains.annotations.VisibleForTesting
 
 private const val MainTitleId = 0
 private const val SecondTittleId = 1
 
-@Preview
 @Composable
 fun StoragesScreen() {
     val presenter = rememberOnScreen { DI.storagesPresenter() }
@@ -103,5 +105,12 @@ fun StoragesScreen() {
         onClick = remember { { router.navigate(EditStorageDestination()) } },
         content = { Icon(Icons.Default.Add, contentDescription = "Add") }
     )
+}
+
+@VisibleForTesting
+@Composable
+@Preview(showSystemUi = true, device = Devices.PIXEL_6)
+fun StoragesScreenPreview() = AppTheme {
+    StoragesScreen()
 }
 

@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
+import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
 fun DropDownField(
@@ -62,9 +63,10 @@ fun DropDownField(
     }
 }
 
+@VisibleForTesting
 @Preview
 @Composable
-private fun DropDownFieldEmptyPreview() = AppTheme {
+fun DropDownFieldEmptyPreview() = AppTheme {
     DropDownField(
         selectedIndex = 0,
         variants = emptyList(),
@@ -72,9 +74,10 @@ private fun DropDownFieldEmptyPreview() = AppTheme {
     )
 }
 
+@VisibleForTesting
 @Preview
 @Composable
-private fun DropDownFieldSelectedPreview() = AppTheme {
+fun DropDownFieldSelectedPreview() = AppTheme {
     DropDownField(
         selectedIndex = 1,
         variants = listOf(
@@ -85,9 +88,10 @@ private fun DropDownFieldSelectedPreview() = AppTheme {
     )
 }
 
+@VisibleForTesting
 @Preview
 @Composable
-private fun DropDownFieldExpandedPreview() = AppTheme {
+fun DropDownFieldExpandedPreview() = AppTheme {
     DropDownField(
         selectedIndex = 1,
         expanded = true,

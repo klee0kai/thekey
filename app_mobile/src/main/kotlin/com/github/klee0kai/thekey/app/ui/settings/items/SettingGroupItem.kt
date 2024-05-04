@@ -15,6 +15,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.utils.views.animateTargetCrossFaded
+import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
 fun SettingGroupItem(
@@ -61,10 +62,10 @@ fun SettingGroupItem(
 
 }
 
-
+@VisibleForTesting
 @Composable
 @Preview
-private fun SettingGroupItemPreview() = AppTheme {
+fun SettingGroupItemPreview() = AppTheme {
     SettingGroupItem(
         text = "My group"
     )

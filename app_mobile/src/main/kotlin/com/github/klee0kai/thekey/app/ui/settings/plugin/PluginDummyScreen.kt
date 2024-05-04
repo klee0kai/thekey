@@ -1,5 +1,6 @@
 package com.github.klee0kai.thekey.app.ui.settings.plugin
 
+import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -162,20 +163,20 @@ fun PluginDummyScreen(dest: DynamicDestination) {
     )
 }
 
-
+@VisibleForTesting
 @OptIn(DebugOnly::class)
 @Preview(showSystemUi = true, device = Devices.PIXEL_6)
 @Composable
-private fun PluginDummyScreenScreenPreview() = AppTheme {
+fun PluginDummyScreenScreenPreview() = AppTheme {
     DI.hardReset()
     PluginDummyScreen(QRCodeScanDestination)
 }
 
-
+@VisibleForTesting
 @OptIn(DebugOnly::class)
 @Preview(showSystemUi = true, device = Devices.PIXEL_6)
 @Composable
-private fun PluginDummyScreenInstallingPreview() = AppTheme {
+fun PluginDummyScreenInstallingPreview() = AppTheme {
     DI.hardReset()
     DI.initPresenterModule(object : PresentersModule {
         override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {
@@ -185,10 +186,11 @@ private fun PluginDummyScreenInstallingPreview() = AppTheme {
     PluginDummyScreen(QRCodeScanDestination)
 }
 
+@VisibleForTesting
 @OptIn(DebugOnly::class)
 @Preview(showSystemUi = true, device = Devices.PIXEL_6)
 @Composable
-private fun PluginDummyScreenInstalledPreview() = AppTheme {
+fun PluginDummyScreenInstalledPreview() = AppTheme {
     DI.hardReset()
     DI.initPresenterModule(object : PresentersModule {
         override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {
@@ -198,10 +200,11 @@ private fun PluginDummyScreenInstalledPreview() = AppTheme {
     PluginDummyScreen(QRCodeScanDestination)
 }
 
+@VisibleForTesting
 @OptIn(DebugOnly::class)
 @Preview(showSystemUi = true, device = Devices.PIXEL_6)
 @Composable
-private fun PluginDummyScreenInstallErrorPreview() = AppTheme {
+fun PluginDummyScreenInstallErrorPreview() = AppTheme {
     DI.hardReset()
     DI.initPresenterModule(object : PresentersModule {
         override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {

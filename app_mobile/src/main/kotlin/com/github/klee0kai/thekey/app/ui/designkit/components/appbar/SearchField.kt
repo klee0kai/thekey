@@ -22,6 +22,7 @@ import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.color.transparentColorScheme
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
+import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
 fun SearchField(
@@ -60,9 +61,10 @@ fun SearchField(
     }
 }
 
+@VisibleForTesting
 @Preview
 @Composable
-private fun SearchFieldEmptyPreview() = AppTheme {
+fun SearchFieldEmptyPreview() = AppTheme {
     AppBarStates(
         navigationIcon = {
             IconButton(onClick = { }) {
@@ -80,9 +82,10 @@ private fun SearchFieldEmptyPreview() = AppTheme {
     }
 }
 
+@VisibleForTesting
 @Preview
 @Composable
-private fun SearchFieldTextPreview() = AppTheme {
+fun SearchFieldTextPreview() = AppTheme {
     AppBarStates(
         navigationIcon = {
             IconButton(onClick = { }) {

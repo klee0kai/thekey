@@ -22,6 +22,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.app.utils.views.ratioBetween
 import kotlinx.parcelize.Parcelize
+import org.jetbrains.annotations.VisibleForTesting
 
 @Parcelize
 data class ScrollPosition(
@@ -111,9 +112,10 @@ fun LazyListIndicatorIfNeed(
     }
 }
 
+@VisibleForTesting
 @Preview
 @Composable
-private fun ListIndicatorVerticalPreview() = AppTheme {
+fun ListIndicatorVerticalPreview() = AppTheme {
     Box(
         modifier = Modifier
             .size(10.dp, 100.dp)
@@ -130,9 +132,10 @@ private fun ListIndicatorVerticalPreview() = AppTheme {
     }
 }
 
+@VisibleForTesting
 @Preview
 @Composable
-private fun ListIndicatorHorizontalPreview() = AppTheme {
+fun ListIndicatorHorizontalPreview() = AppTheme {
     Box(
         modifier = Modifier
             .size(100.dp, 10.dp)
@@ -150,10 +153,10 @@ private fun ListIndicatorHorizontalPreview() = AppTheme {
     }
 }
 
-
+@VisibleForTesting
 @Preview
 @Composable
-private fun ListIndicatorZeroPreview() = AppTheme {
+fun ListIndicatorZeroPreview() = AppTheme {
     Box(
         modifier = Modifier
             .size(100.dp, 10.dp)

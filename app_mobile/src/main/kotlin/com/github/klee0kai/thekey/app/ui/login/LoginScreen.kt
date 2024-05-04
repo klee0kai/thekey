@@ -42,6 +42,7 @@ import com.github.klee0kai.thekey.app.utils.views.collectAsState
 import com.github.klee0kai.thekey.app.utils.views.toAnnotationString
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
 fun LoginScreen() {
@@ -194,9 +195,10 @@ fun LoginScreen() {
 
 }
 
+@VisibleForTesting
 @Preview(device = Devices.PIXEL_6, showSystemUi = true)
 @Composable
-private fun LoginScreePreviewPixel6() = AppTheme {
+fun LoginScreenPreview() = AppTheme {
     DI.initPresenterModule(
         object : PresentersModule {
             override fun loginPresenter(): LoginPresenter {
@@ -209,12 +211,10 @@ private fun LoginScreePreviewPixel6() = AppTheme {
     LoginScreen()
 }
 
-@Preview(
-    device = Devices.TABLET,
-    showSystemUi = true
-)
+@VisibleForTesting
+@Preview(device = Devices.TABLET, showSystemUi = true)
 @Composable
-private fun LoginScreePreview() = AppTheme {
+fun LoginScreenTabletPreview() = AppTheme {
     DI.initPresenterModule(
         object : PresentersModule {
             override fun loginPresenter(): LoginPresenter {

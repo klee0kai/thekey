@@ -57,7 +57,10 @@ interface AppComponent : AppComponentModules, AppComponentProviders {
 
 @DebugOnly
 fun AppComponent.hardReset() {
+    val ctx = DI.ctx()
+
     DI = initAppComponent()
+    DI.ctx(ctx)
 }
 
 fun AppComponent.updateComponentsSoft() {
