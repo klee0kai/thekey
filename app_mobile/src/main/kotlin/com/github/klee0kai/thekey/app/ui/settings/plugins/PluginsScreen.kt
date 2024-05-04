@@ -87,7 +87,7 @@ fun PluginsScreen() {
     device = Devices.PIXEL_6,
 )
 @Composable
-private fun PluginsScreenPreview() = AppTheme {
+fun PluginsScreenPreview() = AppTheme {
     DI.initPresenterModule(object : PresentersModule {
         override fun pluginsPresenter() = object : PluginsPresenter {
             override val features = MutableStateFlow(
