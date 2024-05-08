@@ -31,7 +31,7 @@
         <!-- fix crash https://stackoverflow.com/questions/68153515 -->
         <provider
             android:name="com.google.mlkit.common.internal.MlKitInitProvider"
-            android:authorities=".mlkitinitprovider"
+            android:authorities=".crash_fix"
             tools:node="remove" />
 
     </application>

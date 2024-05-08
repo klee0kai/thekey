@@ -146,6 +146,8 @@ afterEvaluate {
 }
 
 dependencies {
+    implementation(project(":private:feature_firebase"))
+
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     implementation(platform("androidx.compose:compose-bom:2024.05.00"))

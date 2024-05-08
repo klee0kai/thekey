@@ -22,3 +22,7 @@ dependencyResolutionManagement {
 rootProject.name = "TheKey"
 include(":app_mobile")
 include(":qrcodescanner")
+
+if (file("private").exists()) {
+    include(":private:feature_firebase")
+}
