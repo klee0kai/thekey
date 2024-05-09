@@ -4,6 +4,7 @@ plugins {
     kotlin("kapt")
     id("app.cash.paparazzi")
 }
+
 android {
     namespace = "com.github.klee0kai.thekey.feature.qrcodescanner"
     compileSdk = 34

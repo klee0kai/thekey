@@ -1,5 +1,10 @@
 [versions]
 
+agp = "8.4.0"
+kotlin = "1.9.22"
+brooklyn = "0.0.3"
+paparazzi = "1.3.3"
+
 androidx-core = "1.13.1"
 androidx-lifecycle = "2.7.0"
 
@@ -29,6 +34,12 @@ androidx-junit = "1.1.5"
 androidx-espresso = "3.5.1"
 
 [libraries]
+
+agp = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
+kotlin-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlin-serialization = { group = "org.jetbrains.kotlin", name = "kotlin-serialization", version.ref = "kotlin" }
+brooklyn = { group = "com.github.klee0kai.brooklyn", name = "brooklyn-plugin", version.ref = "brooklyn" }
+paparazzi = { group = "app.cash.paparazzi", name = "paparazzi-gradle-plugin", version.ref = "paparazzi" }
 
 androidx-core = { group = "androidx.core", name = "core-ktx", version.ref = "androidx-core" }
 androidx-lifecycle = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "androidx-lifecycle" }
@@ -84,9 +95,10 @@ compose-test = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 
 androidx = ["androidx-core", "androidx-lifecycle"]
 firebase = ["firebase-analytics", "firebase-crashlytics"]
-compose = [ "compose-activity", "compose-ui", "compose-graphics",
+compose = ["compose-activity", "compose-ui", "compose-graphics",
     "compose-m3", "compose-constraintlayout", "compose-wear", "compose-nav", "compose-shimmer"]
 compose-debug = ["compose-preview", "compose-tooling", "compose-manifest"]
 stone = ["stone-android", "stone-kotlin"]
 
 [plugins]
+
