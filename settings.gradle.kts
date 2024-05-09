@@ -16,6 +16,11 @@ dependencyResolutionManagement {
         mavenCentral()
         maven(url = "https://jitpack.io")
     }
+    versionCatalogs {
+        create("libs") {
+            from(files("libs.versions.toml"))
+        }
+    }
 }
 
 

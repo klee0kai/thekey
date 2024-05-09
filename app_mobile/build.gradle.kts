@@ -148,49 +148,34 @@ afterEvaluate {
 dependencies {
     implementation(project(":private:feature_firebase"))
 
-    implementation("androidx.core:core-ktx:1.13.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
-    implementation(platform("androidx.compose:compose-bom:2024.05.00"))
-    implementation("androidx.activity:activity-compose:1.9.0")
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-graphics")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3-android:1.2.1")
-    implementation("androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha13")
-    implementation("androidx.wear.compose:compose-material:1.3.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.7")
+    implementation(libs.androidx.core)
+    implementation(libs.androidx.lifecycle)
 
-    // dynamic features
-    implementation("com.google.mlkit:playstore-dynamic-feature-support:16.0.0-beta2")
+    implementation(libs.compose.bom)
+    implementation(libs.bundles.compose)
+    debugImplementation(libs.bundles.compose.debug)
+    implementation(libs.bundles.androidx)
+    implementation(libs.bundles.stone)
 
-    // compose-navigation-reimagined
-    implementation("dev.olshevski.navigation:reimagined:1.5.0")
+    implementation(libs.jetbrain.immutable)
+    implementation(libs.jetbrain.coroutines)
 
-    // shimmer compose https://github.com/valentinilk/compose-shimmer
-    implementation("com.valentinilk.shimmer:compose-shimmer:1.2.0")
-
-    // coroutine
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
+    implementation(libs.ml.dynamic)
 
     // stone
-    implementation("com.github.klee0kai.stone:android_lib:1.0.6")
-    implementation("com.github.klee0kai.stone:kotlin_lib:1.0.6")
-    implementation("androidx.test.ext:junit-ktx:1.1.5")
-    kapt("com.github.klee0kai.stone:stone_processor:1.0.6")
+    implementation(libs.bundles.stone)
+    kapt(libs.stone.kapt)
 
     // room
-    implementation("androidx.room:room-runtime:2.6.1")
-    kapt("androidx.room:room-compiler:2.6.1")
+    implementation(libs.room.runtime)
+    kapt(libs.room.kapt)
 
     // hummus
-    implementation("com.github.klee0kai.hummus:android_kotlin_hummus:0.0.2")
+    implementation(libs.hummus)
 
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
-
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2024.05.00"))
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    testImplementation(libs.junit)
+    testImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso)
+    androidTestImplementation(libs.compose.test)
 }
