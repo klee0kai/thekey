@@ -19,7 +19,7 @@ brooklyn {
 android {
     namespace = appGroup
     compileSdk = 34
-    dynamicFeatures += setOf(":qrcodescanner")
+    dynamicFeatures += setOf(":dynamic_qrcodescanner")
 
     defaultConfig {
         applicationId = appGroup
