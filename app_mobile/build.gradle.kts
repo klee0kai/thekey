@@ -17,17 +17,10 @@ brooklyn {
 }
 
 android {
-    namespace = appGroup
-    compileSdk = 34
+    defaults(appGroup)
     dynamicFeatures += setOf(":dynamic_qrcodescanner")
 
     defaultConfig {
-        applicationId = appGroup
-        minSdk = 25
-        targetSdk = 34
-        versionCode = 6
-        versionName = "0.1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
@@ -40,7 +33,6 @@ android {
             }
         }
     }
-
 
     signingConfigs.register("release") {
         try {
@@ -99,10 +91,6 @@ android {
         viewBinding = true
         buildConfig = true
     }
-    composeOptions {
-        //  https://developer.android.com/jetpack/androidx/releases/compose-kotlin
-        kotlinCompilerExtensionVersion = "1.5.10"
-    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -120,30 +108,12 @@ android {
             }
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
     kotlinOptions {
         jvmTarget = "17"
     }
 }
 
-afterEvaluate {
-    val kotlinCompileTasks = tasks.filter {
-        it is JavaCompile || it is KotlinCompile
-    }
-    val cmakeTasks = tasks.filter {
-        it is com.android.build.gradle.tasks.ExternalNativeBuildJsonTask ||
-                it is com.android.build.gradle.tasks.ExternalNativeBuildTask
-    }
-
-    cmakeTasks.forEach { cmakeTask ->
-        kotlinCompileTasks.forEach { kotlinTask ->
-            cmakeTask.mustRunAfter(kotlinTask)
-        }
-    }
-}
+brooklynTaskOrdering()
 
 dependencies {
     implementation(project(":private:feature_firebase"))
