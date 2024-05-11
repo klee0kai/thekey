@@ -4,6 +4,6 @@ plugins {
 }
 
 dependencies {
-    implementation(libs.kotlin.plugin)
+    implementation(libs.kotlin.gradle)
     implementation(libs.agp)
 }

@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.konan.properties.Properties
 
 plugins {
@@ -8,6 +7,9 @@ plugins {
     id("kotlin-parcelize")
     id("brooklyn-plugin")
     id("app.cash.paparazzi")
+
+//    id("com.google.gms.google-services")
+//    id ("com.google.firebase.crashlytics")
 }
 
 val appGroup = "com.github.klee0kai.thekey.app"
@@ -123,7 +125,7 @@ dependencies {
 
     implementation(libs.compose.bom)
     implementation(libs.bundles.compose)
-    debugImplementation(libs.bundles.compose.debug)
+    implementation(libs.bundles.compose.debug)
     implementation(libs.bundles.androidx)
     implementation(libs.bundles.stone)
 

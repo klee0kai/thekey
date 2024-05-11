@@ -4,6 +4,8 @@ agp = "8.4.0"
 kotlin = "1.9.22"
 brooklyn = "0.0.3"
 paparazzi = "1.3.3"
+google-services-gradle = "4.4.1"
+crashlytics-gradle = "2.9.9"
 
 androidx-core = "1.13.1"
 androidx-lifecycle = "2.7.0"
@@ -36,10 +38,10 @@ androidx-espresso = "3.5.1"
 [libraries]
 
 agp = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
-kotlin-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
-kotlin-serialization = { group = "org.jetbrains.kotlin", name = "kotlin-serialization", version.ref = "kotlin" }
-brooklyn = { group = "com.github.klee0kai.brooklyn", name = "brooklyn-plugin", version.ref = "brooklyn" }
-paparazzi = { group = "app.cash.paparazzi", name = "paparazzi-gradle-plugin", version.ref = "paparazzi" }
+kotlin-gradle = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlin-serialization-gradle = { group = "org.jetbrains.kotlin", name = "kotlin-serialization", version.ref = "kotlin" }
+brooklyn-gradle = { group = "com.github.klee0kai.brooklyn", name = "brooklyn-plugin", version.ref = "brooklyn" }
+paparazzi-gradle = { group = "app.cash.paparazzi", name = "paparazzi-gradle-plugin", version.ref = "paparazzi" }
 
 androidx-core = { group = "androidx.core", name = "core-ktx", version.ref = "androidx-core" }
 androidx-lifecycle = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "androidx-lifecycle" }
@@ -47,6 +49,8 @@ androidx-lifecycle = { group = "androidx.lifecycle", name = "lifecycle-runtime-k
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
+firebase-crashlytics-gradle = { group = "com.google.firebase", name = "firebase-crashlytics-gradle", version.ref = "crashlytics-gradle" }
+google-services-gradle = { group = "com.google.gms", name = "google-services", version.ref = "google-services-gradle" }
 
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
 compose-activity = { group = "androidx.activity", name = "activity-compose" }

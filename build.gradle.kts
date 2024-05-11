@@ -9,10 +9,12 @@ buildscript {
     }
     dependencies {
         classpath(libs.agp)
-        classpath(libs.kotlin.plugin)
-        classpath(libs.kotlin.serialization)
-        classpath(libs.brooklyn)
-        classpath(libs.paparazzi)
+        classpath(libs.kotlin.gradle)
+        classpath(libs.kotlin.serialization.gradle)
+        classpath(libs.brooklyn.gradle)
+        classpath(libs.paparazzi.gradle)
+        classpath(libs.firebase.crashlytics.gradle)
+        classpath(libs.google.services.gradle)
     }
 }
 

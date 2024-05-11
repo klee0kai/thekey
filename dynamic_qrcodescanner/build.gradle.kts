@@ -35,7 +35,7 @@ dependencies {
     implementation(libs.androidx.lifecycle)
 
     implementation(libs.bundles.compose)
-    debugImplementation(libs.bundles.compose.debug)
+    implementation(libs.bundles.compose.debug)
 
     implementation(libs.jetbrain.immutable)
     implementation(libs.jetbrain.coroutines)
