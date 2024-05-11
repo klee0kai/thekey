@@ -84,7 +84,7 @@ fun SecondaryTabs(
             val selected = selectedTab == index
             val textColor by animateColorAsState(
                 targetValue = if (selected) MaterialTheme.colorScheme.secondary
-                else LocalColorScheme.current.textButtonColors.contentColor,
+                else LocalColorScheme.current.grayTextButtonColors.contentColor,
                 label = "tab title color",
             )
 

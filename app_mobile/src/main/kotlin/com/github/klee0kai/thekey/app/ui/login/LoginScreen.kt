@@ -11,7 +11,6 @@ import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -37,6 +36,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
 import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarStates
+import com.github.klee0kai.thekey.app.ui.designkit.text.AppTextField
 import com.github.klee0kai.thekey.app.ui.login.presenter.LoginPresenter
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
 import com.github.klee0kai.thekey.app.utils.views.toAnnotationString
@@ -109,7 +109,7 @@ fun LoginScreen() {
 
         )
 
-        OutlinedTextField(
+        AppTextField(
             modifier = Modifier
                 .fillMaxWidth(0.9f)
                 .constrainAs(passwTextField) {
@@ -161,7 +161,7 @@ fun LoginScreen() {
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 },
-            colors = LocalColorScheme.current.textButtonColors,
+            colors = LocalColorScheme.current.grayTextButtonColors,
             onClick = {
                 presenter.selectStorage()
             }

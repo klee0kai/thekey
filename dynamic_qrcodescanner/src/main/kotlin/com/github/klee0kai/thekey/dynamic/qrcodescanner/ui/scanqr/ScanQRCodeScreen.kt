@@ -90,7 +90,7 @@ fun ScanQRCodeScreen() {
                         .padding(16.dp)
                         .fillMaxWidth()
                         .align(Alignment.BottomCenter),
-                    colors = LocalColorScheme.current.textButtonColors,
+                    colors = LocalColorScheme.current.grayTextButtonColors,
                     onClick = {
                         scope.launch {
                             permissionHelper.askPermissionsIfNeed(permissionHelper.cameraPermissions(), TextProvider("qrCode"))

@@ -222,7 +222,7 @@ fun GenPasswordContent(
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 },
-            colors = LocalColorScheme.current.textButtonColors,
+            colors = LocalColorScheme.current.grayTextButtonColors,
             onClick = {
                 presenter?.generatePassw()
             },
@@ -238,7 +238,7 @@ fun GenPasswordContent(
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 },
-            colors = LocalColorScheme.current.textButtonColors,
+            colors = LocalColorScheme.current.grayTextButtonColors,
             onClick = { router.navigate(dest.genHist()) }
         ) { Text(stringResource(R.string.hist)) }
 
