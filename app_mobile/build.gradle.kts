@@ -118,7 +118,7 @@ android {
 brooklynTaskOrdering()
 
 dependencies {
-    implementation(project(":private:feature_firebase"))
+    commercialImplementation { project(":private:feature_firebase") }
 
     implementation(libs.androidx.core)
     implementation(libs.androidx.lifecycle)

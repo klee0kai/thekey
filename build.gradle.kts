@@ -18,6 +18,8 @@ buildscript {
     }
 }
 
+Commercial.isCommercialAvailable = file("private").list()?.isNotEmpty() ?: false
+
 subprojects {
     plugins.withId("app.cash.paparazzi") {
         afterEvaluate {

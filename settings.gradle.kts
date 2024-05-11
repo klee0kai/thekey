@@ -28,6 +28,8 @@ rootProject.name = "TheKey"
 include(":app_mobile")
 include(":dynamic_qrcodescanner")
 
-if (file("private").exists()) {
+val isPrivateAvailable = file("private").list()?.isNotEmpty() ?: false
+
+if (isPrivateAvailable) {
     include(":private:feature_firebase")
 }

@@ -13,7 +13,9 @@ fun BaseAppModuleExtension.defaults(namespace: String) {
         versionCode = 6
         versionName = "0.1.0"
     }
-
+    sourceSets.forEach { sourceSet ->
+        sourceSet.commercialSourceSet()
+    }
     composeOptions {
         //  https://developer.android.com/jetpack/androidx/releases/compose-kotlin
         kotlinCompilerExtensionVersion = "1.5.10"
@@ -32,7 +34,9 @@ fun DynamicFeatureExtension.defaults(namespace: String) {
     defaultConfig {
         minSdk = 25
     }
-
+    sourceSets.forEach { sourceSet ->
+        sourceSet.commercialSourceSet()
+    }
     composeOptions {
         //  https://developer.android.com/jetpack/androidx/releases/compose-kotlin
         kotlinCompilerExtensionVersion = "1.5.10"
