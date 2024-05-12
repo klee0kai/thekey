@@ -48,7 +48,7 @@ android {
             }
             externalNativeBuild {
                 cmake {
-                    arguments.add("-DBROOKLYN_FOLDER=release")
+                    arguments.add("-DBROOKLYN_FOLDER=${name}")
                 }
             }
         }
@@ -59,7 +59,7 @@ android {
             signingConfig = signingConfigs["debug"]
             externalNativeBuild {
                 cmake {
-                    arguments.add("-DBROOKLYN_FOLDER=debug")
+                    arguments.add("-DBROOKLYN_FOLDER=${name}")
                 }
             }
         }
