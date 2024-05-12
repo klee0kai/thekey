@@ -30,7 +30,7 @@ jobs:
             ./changes.md
 
 
-  build_and_artifact:
+  build_community_and_artifact:
     name: Build and Artifact
     runs-on: ubuntu-latest
     if: ${{ always() }}
@@ -41,15 +41,42 @@ jobs:
         with:
           decrypt_key: ${{ secrets.ENCRYPT_KEY }}
 
-      - name: Build Release
+      - name: Build Term Release
         run: ./env_build.sh build_term_app
 
-      - name: Build Release
-        run: ./env_build.sh build_apks
+      - name: Build Apk Release
+        run: ./gradlew assembleRelease
 
       - name: Upload changes artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: artifacts
+          name: community_builds
           path: |
             ./builds
+            ./*/build/outputs
+            
+
+  build_commercial_and_artifact:
+    name: Build and Artifact
+    runs-on: ubuntu-latest
+    if: ${{ always() }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Prepare Env
+        uses: ./.github/actions/prepare
+        with:
+          decrypt_key: ${{ secrets.ENCRYPT_KEY }}
+
+      - name: Build Term Release
+        run: ./env_build.sh build_term_app
+
+      - name: Build Community Apk Release
+        run: ./gradlew assembleCommercialRelease
+
+      - name: Upload changes artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: commercial_builds
+          path: |
+            ./builds
+            ./*/build/outputs

@@ -77,14 +77,6 @@ function build_openssl_android_all() {
   cd "$WORKSPACE"
 }
 
-function build_apks() {
-  bash ./gradlew assemble
-  mkdir -p builds
-  find ./*/build/outputs/apk -name *.apk -exec cp {} ./builds/ \;
-
-  cd "$WORKSPACE"
-}
-
 function build_term_app() {
   mkdir -p builds/${CUR_OS_UNAME}
 

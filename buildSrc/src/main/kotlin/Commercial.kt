@@ -13,7 +13,6 @@ object Commercial {
     var isCommercialAvailable = false
 }
 
-
 fun <BuildFeaturesT : BuildFeatures,
         BuildTypeT : BuildType,
         DefaultConfigT : DefaultConfig,
@@ -25,7 +24,6 @@ fun <BuildFeaturesT : BuildFeatures,
         it.commercialSourceSet()
     }
 }
-
 
 fun AndroidSourceSet.commercialSourceSet() {
     when (name) {
