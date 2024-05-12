@@ -14,10 +14,8 @@ jobs:
     name: Run Term Unit Tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/prepare
-        with:
-          decrypt_key: ${{ secrets.ENCRYPT_KEY }}
 
       - name: Build and test
         run: ./env_build.sh build_term_app
@@ -26,10 +24,8 @@ jobs:
     name: Build Android App
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/prepare
-        with:
-          decrypt_key: ${{ secrets.ENCRYPT_KEY }}
 
       - name: Build with Gradle
         run: ./gradlew assemble
@@ -38,10 +34,8 @@ jobs:
     name: Run App Unit Tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/prepare
-        with:
-          decrypt_key: ${{ secrets.ENCRYPT_KEY }}
 
       - name: Test with Gradle
         continue-on-error: true
@@ -58,10 +52,8 @@ jobs:
     name: Run App Unit Tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/prepare
-        with:
-          decrypt_key: ${{ secrets.ENCRYPT_KEY }}
 
       - name: Test with Gradle
         continue-on-error: true
@@ -78,10 +70,8 @@ jobs:
     name: Collect app preview Images
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/prepare
-        with:
-          decrypt_key: ${{ secrets.ENCRYPT_KEY }}
 
       - name: Test with Gradle
         continue-on-error: true
@@ -100,7 +90,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ always() }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Download Test Artifact
         uses: actions/download-artifact@v3
         with:

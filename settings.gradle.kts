@@ -16,9 +16,20 @@ dependencyResolutionManagement {
         mavenCentral()
         maven(url = "https://jitpack.io")
     }
+    versionCatalogs {
+        create("libs") {
+            from(files("libs.versions.toml"))
+        }
+    }
 }
 
 
 rootProject.name = "TheKey"
 include(":app_mobile")
-include(":qrcodescanner")
+include(":dynamic_qrcodescanner")
+
+val isPrivateAvailable = file("private").list()?.isNotEmpty() ?: false
+
+if (isPrivateAvailable) {
+    include(":private:feature_firebase")
+}

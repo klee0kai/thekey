@@ -9,40 +9,68 @@ jobs:
     name: Run Term Unit Tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/prepare
-        with:
-          decrypt_key: ${{ secrets.ENCRYPT_KEY }}
 
       - name: Build and test
         run: ./env_build.sh build_term_app
 
-  app_build:
-    name: Build Android App
+  build_community_and_artifact:
+    name: Build Community apk
     runs-on: ubuntu-latest
+    if: ${{ always() }}
     steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/prepare
-        with:
-          decrypt_key: ${{ secrets.ENCRYPT_KEY }}
+      - uses: actions/checkout@v4
+      - name: Prepare Env
+        uses: ./.github/actions/prepare
 
-      - name: Build with Gradle
-        run: ./env_build.sh build_apks
-      - name: Upload Android Apks artifacts
+      - name: Build Term Release
+        run: ./env_build.sh build_term_app
+
+      - name: Build Community Apk Release
+        run: ./gradlew assembleRelease
+
+      - name: Upload changes artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: android-app
+          name: community_builds
           path: |
             ./builds
+            ./*/build/outputs
+
+  build_commercial_and_artifact:
+    name: Build Commercial apk
+    runs-on: ubuntu-latest
+    if: ${{ always() }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+          token: ${{ secrets.SECRETS_GH_API_TOKEN }}
+
+      - name: Prepare Env
+        uses: ./.github/actions/prepare
+
+      - name: Build Term Release
+        run: ./env_build.sh build_term_app
+
+      - name: Build Commercial Apk Release
+        run: ./gradlew assembleCommercialRelease
+
+      - name: Upload changes artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: commercial_builds
+          path: |
+            ./builds
+            ./*/build/outputs
 
   app_tests:
     name: Run App Unit Tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/prepare
-        with:
-          decrypt_key: ${{ secrets.ENCRYPT_KEY }}
 
       - name: Test with Gradle
         continue-on-error: true
@@ -54,16 +82,14 @@ jobs:
           path: |
             ./**/build/reports
             ./**/build/test-results
-  
+
 
   app_unit_tests:
     name: Run App Unit Tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/prepare
-        with:
-          decrypt_key: ${{ secrets.ENCRYPT_KEY }}
 
       - name: Test with Gradle
         continue-on-error: true
@@ -80,10 +106,8 @@ jobs:
     name: Collect app preview Images
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/prepare
-        with:
-          decrypt_key: ${{ secrets.ENCRYPT_KEY }}
 
       - name: Test with Gradle
         continue-on-error: true
@@ -101,7 +125,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ always() }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Download Test Artifact
         uses: actions/download-artifact@v3
         with:
