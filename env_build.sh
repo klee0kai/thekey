@@ -80,7 +80,7 @@ function build_openssl_android_all() {
 function build_apks() {
   bash ./gradlew assemble
   mkdir -p builds
-  find ./app_mobile/build/outputs/apk -name *.apk -exec cp {} ./builds/ \;
+  find ./*/build/outputs/apk -name *.apk -exec cp {} ./builds/ \;
 
   cd "$WORKSPACE"
 }

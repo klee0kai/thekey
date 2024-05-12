@@ -1,4 +1,4 @@
-import org.jetbrains.kotlin.konan.properties.Properties
+import com.android.build.api.dsl.ApplicationBuildType
 
 plugins {
     id("com.android.application")
@@ -19,7 +19,7 @@ brooklyn {
 }
 
 android {
-    defaults(appGroup)
+    appDefaults(appGroup, project)
     dynamicFeatures += setOf(":dynamic_qrcodescanner")
 
     defaultConfig {
@@ -35,27 +35,8 @@ android {
             }
         }
     }
-
-    signingConfigs.register("release") {
-        try {
-            val keystoreProperties = Properties().apply {
-                File("keystore.properties").inputStream().use { fis ->
-                    load(fis)
-                }
-            }
-            storeFile = file(keystoreProperties.getProperty("storeFile")).also {
-                check(it.exists()) { "storeFile $it no exist" }
-            }
-            storePassword = keystoreProperties.getProperty("storePassword")
-            keyAlias = keystoreProperties.getProperty("keyAlias")
-            keyPassword = keystoreProperties.getProperty("keyPassword")
-        } catch (e: Exception) {
-            println("error to configure signing ${e}")
-        }
-    }
-
     buildTypes {
-        release {
+        val releaseConf: ApplicationBuildType.() -> Unit = {
             isMinifyEnabled = false
             signingConfig = signingConfigs["release"]
             proguardFiles(
@@ -71,7 +52,10 @@ android {
                 }
             }
         }
-        debug {
+        release(releaseConf)
+        commercialRelease(releaseConf)
+
+        val debugConf: ApplicationBuildType.() -> Unit = {
             signingConfig = signingConfigs["debug"]
             externalNativeBuild {
                 cmake {
@@ -79,7 +63,10 @@ android {
                 }
             }
         }
+        debug(debugConf)
+        commercialDebug(debugConf)
     }
+    commercialSourceSets()
 
     externalNativeBuild {
         cmake {

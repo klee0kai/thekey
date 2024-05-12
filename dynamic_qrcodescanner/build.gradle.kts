@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    defaults("com.github.klee0kai.thekey.feature.qrcodescanner")
+    defaults("com.github.klee0kai.thekey.feature.qrcodescanner", project)
     pushDynamicFeature(this)
 
     defaultConfig {
@@ -18,7 +18,12 @@ android {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
+        commercialRelease()
+        debug {  }
+        commercialDebug()
     }
+    commercialSourceSets()
+
     buildFeatures {
         compose = true
         viewBinding = true
