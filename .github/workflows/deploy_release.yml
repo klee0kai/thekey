@@ -37,8 +37,6 @@ jobs:
       - uses: actions/checkout@v4
       - name: Prepare Env
         uses: ./.github/actions/prepare
-        with:
-          decrypt_key: ${{ secrets.ENCRYPT_KEY }}
 
       - name: Build Term Release
         run: ./env_build.sh build_term_app
@@ -62,10 +60,10 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: true
+          token: ${{ secrets.SECRETS_GH_API_TOKEN }}
+
       - name: Prepare Env
         uses: ./.github/actions/prepare
-        with:
-          decrypt_key: ${{ secrets.ENCRYPT_KEY }}
 
       - name: Build Term Release
         run: ./env_build.sh build_term_app

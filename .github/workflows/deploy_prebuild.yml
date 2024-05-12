@@ -12,8 +12,6 @@ jobs:
       - uses: actions/checkout@v4
       - name: Prepare Env
         uses: ./.github/actions/prepare
-        with:
-          decrypt_key: ${{ secrets.ENCRYPT_KEY }}
 
       - name: Download OpenSSL
         run: ./env_build.sh download_openssl
