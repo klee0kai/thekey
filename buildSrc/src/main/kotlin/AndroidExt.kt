@@ -38,7 +38,7 @@ fun <BuildFeaturesT : BuildFeatures,
     signingConfigs.register("release") {
         try {
             val keystoreProperties = Properties().apply {
-                File("keystore.properties").inputStream().use { fis ->
+                File(project.rootProject.projectDir, "keystore.properties").inputStream().use { fis ->
                     load(fis)
                 }
             }

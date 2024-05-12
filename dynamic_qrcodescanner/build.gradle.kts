@@ -1,3 +1,5 @@
+import com.android.build.api.dsl.DynamicFeatureBuildType
+
 plugins {
     id("com.android.dynamic-feature")
     id("org.jetbrains.kotlin.android")
@@ -14,11 +16,12 @@ android {
     }
 
     buildTypes {
-        release {
+        val releaseConf: DynamicFeatureBuildType.() -> Unit = {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
-        commercialRelease()
+        release(releaseConf)
+        commercialRelease(releaseConf)
         debug {  }
         commercialDebug()
     }

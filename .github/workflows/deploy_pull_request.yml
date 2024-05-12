@@ -18,7 +18,7 @@ jobs:
         run: ./env_build.sh build_term_app
 
   build_community_and_artifact:
-    name: Build and Artifact
+    name: Build community apk
     runs-on: ubuntu-latest
     if: ${{ always() }}
     steps:
@@ -31,7 +31,7 @@ jobs:
       - name: Build Term Release
         run: ./env_build.sh build_term_app
 
-      - name: Build Apk Release
+      - name: Build Community Apk Release
         run: ./gradlew assembleRelease
 
       - name: Upload changes artifacts
@@ -43,7 +43,7 @@ jobs:
             ./*/build/outputs
 
   build_commercial_and_artifact:
-    name: Build and Artifact
+    name: Build Commercial apk
     runs-on: ubuntu-latest
     if: ${{ always() }}
     steps:
@@ -58,7 +58,7 @@ jobs:
       - name: Build Term Release
         run: ./env_build.sh build_term_app
 
-      - name: Build Community Apk Release
+      - name: Build Commercial Apk Release
         run: ./gradlew assembleCommercialRelease
 
       - name: Upload changes artifacts
