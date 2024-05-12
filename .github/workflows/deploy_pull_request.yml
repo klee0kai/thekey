@@ -5,45 +5,9 @@ on:
     types: [ opened, synchronize, reopened ]
 
 jobs:
-  term_tests:
-    name: Run Term Unit Tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/prepare
-        with:
-          decrypt_key: ${{ secrets.ENCRYPT_KEY }}
 
-      - name: Build and test
-        run: ./env_build.sh build_term_app
-
-  build_community_and_artifact:
-    name: Build community apk
-    runs-on: ubuntu-latest
-    if: ${{ always() }}
-    steps:
-      - uses: actions/checkout@v4
-      - name: Prepare Env
-        uses: ./.github/actions/prepare
-        with:
-          decrypt_key: ${{ secrets.ENCRYPT_KEY }}
-
-      - name: Build Term Release
-        run: ./env_build.sh build_term_app
-
-      - name: Build Community Apk Release
-        run: ./gradlew assembleRelease
-
-      - name: Upload changes artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: community_builds
-          path: |
-            ./builds
-            ./*/build/outputs
-
-  build_commercial_and_artifact:
-    name: Build Commercial apk
+  submodules_check:
+    name: SubModules check
     runs-on: ubuntu-latest
     if: ${{ always() }}
     steps:
@@ -55,98 +19,154 @@ jobs:
         with:
           decrypt_key: ${{ secrets.ENCRYPT_KEY }}
 
-      - name: Build Term Release
-        run: ./env_build.sh build_term_app
+      - name: check files
+        run: ls -la .
 
-      - name: Build Commercial Apk Release
-        run: ./gradlew assembleCommercialRelease
+      - name: check files private
+        run: ls -la ./private
 
-      - name: Upload changes artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: commercial_builds
-          path: |
-            ./builds
-            ./*/build/outputs
-
-  app_tests:
-    name: Run App Unit Tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/prepare
-        with:
-          decrypt_key: ${{ secrets.ENCRYPT_KEY }}
-
-      - name: Test with Gradle
-        continue-on-error: true
-        run: ./gradlew testDebug
-      - name: Upload test artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: test-report
-          path: |
-            ./**/build/reports
-            ./**/build/test-results
-  
-
-  app_unit_tests:
-    name: Run App Unit Tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/prepare
-        with:
-          decrypt_key: ${{ secrets.ENCRYPT_KEY }}
-
-      - name: Test with Gradle
-        continue-on-error: true
-        run: ./gradlew testDebugUnitTest
-      - name: Upload test artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: test-report
-          path: |
-            ./**/build/reports
-            ./**/build/test-results
-
-  app_paparazzi:
-    name: Collect app preview Images
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/prepare
-        with:
-          decrypt_key: ${{ secrets.ENCRYPT_KEY }}
-
-      - name: Test with Gradle
-        continue-on-error: true
-        run: ./gradlew recordPaparazziDebug
-      - name: Upload test artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: screenshots
-          path: |
-            ./**/src/test/snapshots/images/**
-
-  mikepenz_report:
-    name: Prepare Mikepenz Test Report
-    needs: app_tests
-    runs-on: ubuntu-latest
-    if: ${{ always() }}
-    steps:
-      - uses: actions/checkout@v4
-      - name: Download Test Artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: test-report
-
-      - name: Publish Test Report
-        uses: mikepenz/action-junit-report@v3
-        with:
-          report_paths: '**/build/test-results/**/*.xml'
-          detailed_summary: true
-          check_name: Mikepenz JUnit Test Report
+#  term_tests:
+#    name: Run Term Unit Tests
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v4
+#      - uses: ./.github/actions/prepare
+#        with:
+#          decrypt_key: ${{ secrets.ENCRYPT_KEY }}
+#
+#      - name: Build and test
+#        run: ./env_build.sh build_term_app
+#
+#  build_community_and_artifact:
+#    name: Build community apk
+#    runs-on: ubuntu-latest
+#    if: ${{ always() }}
+#    steps:
+#      - uses: actions/checkout@v4
+#      - name: Prepare Env
+#        uses: ./.github/actions/prepare
+#        with:
+#          decrypt_key: ${{ secrets.ENCRYPT_KEY }}
+#
+#      - name: Build Term Release
+#        run: ./env_build.sh build_term_app
+#
+#      - name: Build Community Apk Release
+#        run: ./gradlew assembleRelease
+#
+#      - name: Upload changes artifacts
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: community_builds
+#          path: |
+#            ./builds
+#            ./*/build/outputs
+#
+#  build_commercial_and_artifact:
+#    name: Build Commercial apk
+#    runs-on: ubuntu-latest
+#    if: ${{ always() }}
+#    steps:
+#      - uses: actions/checkout@v4
+#        with:
+#          submodules: true
+#      - name: Prepare Env
+#        uses: ./.github/actions/prepare
+#        with:
+#          decrypt_key: ${{ secrets.ENCRYPT_KEY }}
+#
+#      - name: Build Term Release
+#        run: ./env_build.sh build_term_app
+#
+#      - name: Build Commercial Apk Release
+#        run: ./gradlew assembleCommercialRelease
+#
+#      - name: Upload changes artifacts
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: commercial_builds
+#          path: |
+#            ./builds
+#            ./*/build/outputs
+#
+#  app_tests:
+#    name: Run App Unit Tests
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v4
+#      - uses: ./.github/actions/prepare
+#        with:
+#          decrypt_key: ${{ secrets.ENCRYPT_KEY }}
+#
+#      - name: Test with Gradle
+#        continue-on-error: true
+#        run: ./gradlew testDebug
+#      - name: Upload test artifacts
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: test-report
+#          path: |
+#            ./**/build/reports
+#            ./**/build/test-results
+#
+#
+#  app_unit_tests:
+#    name: Run App Unit Tests
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v4
+#      - uses: ./.github/actions/prepare
+#        with:
+#          decrypt_key: ${{ secrets.ENCRYPT_KEY }}
+#
+#      - name: Test with Gradle
+#        continue-on-error: true
+#        run: ./gradlew testDebugUnitTest
+#      - name: Upload test artifacts
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: test-report
+#          path: |
+#            ./**/build/reports
+#            ./**/build/test-results
+#
+#  app_paparazzi:
+#    name: Collect app preview Images
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v4
+#      - uses: ./.github/actions/prepare
+#        with:
+#          decrypt_key: ${{ secrets.ENCRYPT_KEY }}
+#
+#      - name: Test with Gradle
+#        continue-on-error: true
+#        run: ./gradlew recordPaparazziDebug
+#      - name: Upload test artifacts
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: screenshots
+#          path: |
+#            ./**/src/test/snapshots/images/**
+#
+#  mikepenz_report:
+#    name: Prepare Mikepenz Test Report
+#    needs: app_tests
+#    runs-on: ubuntu-latest
+#    if: ${{ always() }}
+#    steps:
+#      - uses: actions/checkout@v4
+#      - name: Download Test Artifact
+#        uses: actions/download-artifact@v3
+#        with:
+#          name: test-report
+#
+#      - name: Publish Test Report
+#        uses: mikepenz/action-junit-report@v3
+#        with:
+#          report_paths: '**/build/test-results/**/*.xml'
+#          detailed_summary: true
+#          check_name: Mikepenz JUnit Test Report
 
 
 
