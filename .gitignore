@@ -23,5 +23,3 @@ private
 
 # protected
 local.properties
-apkSert.jks
-keystore.properties

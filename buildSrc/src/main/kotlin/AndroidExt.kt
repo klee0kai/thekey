@@ -1,4 +1,5 @@
 import com.android.build.api.dsl.AndroidResources
+import com.android.build.api.dsl.ApkSigningConfig
 import com.android.build.api.dsl.BuildFeatures
 import com.android.build.api.dsl.BuildType
 import com.android.build.api.dsl.CommonExtension
@@ -9,6 +10,7 @@ import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import java.io.File
+import java.io.IOException
 import java.util.Properties
 
 fun BaseAppModuleExtension.appDefaults(namespace: String, project: Project) {
@@ -37,19 +39,12 @@ fun <BuildFeaturesT : BuildFeatures,
 
     signingConfigs.register("release") {
         try {
-            val keystoreProperties = Properties().apply {
-                File(project.rootProject.projectDir, "keystore.properties").inputStream().use { fis ->
-                    load(fis)
-                }
-            }
-            storeFile = project.rootProject.file(keystoreProperties.getProperty("storeFile")).also {
-                check(it.exists()) { "storeFile $it no exist" }
-            }
-            storePassword = keystoreProperties.getProperty("storePassword")
-            keyAlias = keystoreProperties.getProperty("keyAlias")
-            keyPassword = keystoreProperties.getProperty("keyPassword")
+            signingByConfig("private/keystore.properties", project)
+            println("commercial signing")
         } catch (e: Exception) {
-            println("error to configure signing $e")
+            println("error to configure commercial signing $e")
+            signingByConfig("keystore.properties", project)
+            println("community signing")
         }
     }
 
@@ -61,4 +56,19 @@ fun <BuildFeaturesT : BuildFeatures,
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+}
+
+
+fun ApkSigningConfig.signingByConfig(propertiesFile: String, project: Project) {
+    val keystoreProperties = Properties().apply {
+        File(project.rootProject.projectDir, propertiesFile).inputStream().use { fis ->
+            load(fis)
+        }
+    }
+    storeFile = project.rootProject.file(keystoreProperties.getProperty("storeFile")).also {
+        check(it.exists()) { "storeFile $it no exist" }
+    }
+    storePassword = keystoreProperties.getProperty("storePassword")
+    keyAlias = keystoreProperties.getProperty("keyAlias")
+    keyPassword = keystoreProperties.getProperty("keyPassword")
 }

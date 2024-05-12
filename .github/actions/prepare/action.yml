@@ -15,14 +15,6 @@ runs:
         distribution: 'temurin'
         cache: gradle
 
-    - name: Decrypt files
-      uses: klee0kai/screwdriver@dev
-      with:
-        cmd: "decrypt_file --key ${{ inputs.decrypt_key }} --in_file ./apkSert.jks.encrypted --out_file ./apkSert.jks"
-    - uses: klee0kai/screwdriver@dev
-      with:
-        cmd: "decrypt_file --key ${{ inputs.decrypt_key }} --in_file ./keystore.properties.encrypted --out_file ./keystore.properties"
-
     - name: Installs
       run: sudo apt-get install libprotobuf-dev protobuf-compiler
       shell: bash
