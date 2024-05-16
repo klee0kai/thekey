@@ -29,7 +29,7 @@ namespace key_otp {
     } OtpMethod;
 
     typedef enum OtpAlgo {
-        SHA1, SHA256, SHA512
+        SHA1, SHA256, SHA512, MD5
     } OtpAlgo;
 
     struct OtpInfo {

@@ -6,7 +6,9 @@
 #include <openssl/evp.h>
 #include <cstring>
 #include <openssl/hmac.h>
+#include <openssl/md5.h>
 #include <iostream>
+#include <openssl/sha.h>
 #include "otp.h"
 #include "tools/base32.h"
 
@@ -22,9 +24,10 @@ struct OtpAlgoDetails {
 };
 
 static map<OtpAlgo, const OtpAlgoDetails> algoMap = {
-        {OtpAlgo::SHA1,   {.method = EVP_sha1(), .hmacLen= 160 / 8 /* 20 */  }},
-        {OtpAlgo::SHA256, {.method = EVP_sha256(), .hmacLen= 256 / 8 /* 32 */ }},
-        {OtpAlgo::SHA512, {.method = EVP_sha512(), .hmacLen= 512 / 8 /* 64 */ }}
+        {OtpAlgo::SHA1,   {.method = EVP_sha1(), .hmacLen= SHA_DIGEST_LENGTH}},
+        {OtpAlgo::SHA256, {.method = EVP_sha256(), .hmacLen= SHA256_DIGEST_LENGTH}},
+        {OtpAlgo::SHA512, {.method = EVP_sha512(), .hmacLen= SHA512_DIGEST_LENGTH}},
+        {OtpAlgo::MD5,    {.method = EVP_md5(), .hmacLen= MD5_DIGEST_LENGTH}}
 };
 
 std::string key_otp::generateOtpRaw(
@@ -56,7 +59,7 @@ std::string key_otp::generateOtpRaw(
     );
 
     //  rfc4226 5.4
-    uint64_t offset = hmacResult[19] & 0xf;
+    uint64_t offset = hmacResult[algo.hmacLen - 1] & 0xf;
     uint64_t binCode = (hmacResult[offset] & 0x7f) << 24
                        | (hmacResult[offset + 1] & 0xff) << 16
                        | (hmacResult[offset + 2] & 0xff) << 8
