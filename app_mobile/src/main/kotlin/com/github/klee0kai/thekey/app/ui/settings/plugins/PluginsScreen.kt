@@ -1,6 +1,5 @@
 package com.github.klee0kai.thekey.app.ui.settings.plugins
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -29,8 +28,8 @@ import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
 import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarStates
+import com.github.klee0kai.thekey.app.ui.designkit.settings.Preference
 import com.github.klee0kai.thekey.app.ui.navigation.model.PluginDestination
-import com.github.klee0kai.thekey.app.ui.settings.items.SettingItem
 import com.github.klee0kai.thekey.app.ui.settings.plugins.presenter.PluginsPresenter
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
 import com.github.klee0kai.thekey.app.utils.views.rememberOnScreenRef
@@ -51,10 +50,9 @@ fun PluginsScreen() {
     ) {
         features.forEach { feature ->
             item {
-                SettingItem(
-                    modifier = Modifier
-                        .clickable { router.navigate(PluginDestination(feature = feature.feature)) },
-                    text = stringResource(id = feature.feature.titleRes)
+                Preference(
+                    text = stringResource(id = feature.feature.titleRes),
+                    onClick = { router.navigate(PluginDestination(feature = feature.feature)) }
                 )
             }
         }

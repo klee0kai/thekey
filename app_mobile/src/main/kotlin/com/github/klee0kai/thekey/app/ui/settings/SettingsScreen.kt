@@ -1,6 +1,5 @@
 package com.github.klee0kai.thekey.app.ui.settings
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -22,10 +21,10 @@ import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
 import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarStates
+import com.github.klee0kai.thekey.app.ui.designkit.settings.Preference
+import com.github.klee0kai.thekey.app.ui.designkit.settings.SectionHeader
+import com.github.klee0kai.thekey.app.ui.designkit.settings.SwitchPreference
 import com.github.klee0kai.thekey.app.ui.navigation.model.PluginsDestination
-import com.github.klee0kai.thekey.app.ui.settings.items.SettingGroupItem
-import com.github.klee0kai.thekey.app.ui.settings.items.SettingItem
-import com.github.klee0kai.thekey.app.ui.settings.items.SettingSwitchItem
 import kotlinx.coroutines.launch
 
 @Composable
@@ -39,27 +38,29 @@ fun SettingScreen() {
             .fillMaxSize(),
     ) {
         item {
-            SettingGroupItem(
+            SectionHeader(
                 text = stringResource(id = R.string.storages)
             )
         }
 
         item {
-            SettingSwitchItem(
+            SwitchPreference(
                 text = stringResource(id = R.string.storage_auto_search)
             )
         }
 
         item {
-            SettingGroupItem(
+            SectionHeader(
                 text = stringResource(id = R.string.other)
             )
         }
 
         item {
-            SettingItem(
-                modifier = Modifier.clickable { router.navigate(PluginsDestination) },
+            Preference(
                 text = stringResource(id = R.string.plugins),
+                onClick = {
+                    router.navigate(PluginsDestination)
+                }
             )
         }
 
