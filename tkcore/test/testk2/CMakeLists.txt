@@ -8,6 +8,7 @@ add_executable(testk2
         ${CMAKE_CURRENT_LIST_DIR}/otp/uri_parse_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/otp/uri_export_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/otp/otp_gen_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/otp/otp_algo_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/otp/yaotp_gen_aegis_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/otp/otp_uri_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/otp/auth_migration_test.cpp
