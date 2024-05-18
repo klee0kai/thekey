@@ -5,9 +5,12 @@ package com.github.klee0kai.thekey.app.ui.editstorage
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContent
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -60,6 +63,7 @@ import com.github.klee0kai.thekey.app.utils.views.onGlobalPositionState
 import com.github.klee0kai.thekey.app.utils.views.rememberOnScreen
 import com.github.klee0kai.thekey.app.utils.views.toTextFieldValue
 import com.github.klee0kai.thekey.app.utils.views.toTransformationText
+import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
@@ -119,6 +123,7 @@ fun EditStorageScreen(
             .onGlobalPositionState { contentViewSize = it }
             .pointerInput(Unit) { detectTapGestures { storagePathFieldFocused = false } }
             .fillMaxSize()
+            .windowInsetsPadding(WindowInsets.safeContent)
             .padding(
                 top = 16.dp + AppBarConst.appBarSize,
                 bottom = 16.dp,
@@ -251,7 +256,6 @@ fun EditStorageScreen(
         }
     }
 
-
     AppBarStates(
         isVisible = scrollState.value == 0,
         navigationIcon = {
@@ -283,9 +287,11 @@ fun EditStorageScreen(
 
 @OptIn(DebugOnly::class)
 @VisibleForTesting
-@Preview(showSystemUi = true, device = Devices.PIXEL_6)
+@Preview(device = Devices.PHONE)
 @Composable
-fun EditStorageScreenPreview() = AppTheme {
+fun EditStorageScreenPreview() = EdgeToEdgeTemplate {
     DI.hardResetToPreview()
-    EditStorageScreen(path = "some/path/to/storage")
+    AppTheme {
+        EditStorageScreen(path = "some/path/to/storage")
+    }
 }

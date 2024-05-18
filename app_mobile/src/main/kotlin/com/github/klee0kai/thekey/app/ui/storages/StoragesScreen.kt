@@ -2,8 +2,10 @@
 
 package com.github.klee0kai.thekey.app.ui.storages
 
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.safeContent
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
@@ -16,6 +18,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
@@ -27,6 +30,7 @@ import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
 import com.github.klee0kai.thekey.app.ui.designkit.components.FabSimpleInContainer
+import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppTitleImage
 import com.github.klee0kai.thekey.app.ui.designkit.components.bottomsheet.SimpleBottomSheetScaffold
@@ -35,8 +39,11 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.bottomsheet.topCon
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditStorageDestination
 import com.github.klee0kai.thekey.app.ui.storages.components.GroupsSelectContent
 import com.github.klee0kai.thekey.app.ui.storages.components.StoragesListContent
+import com.github.klee0kai.thekey.app.utils.views.accumulate
 import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.app.utils.views.rememberOnScreen
+import com.github.klee0kai.thekey.app.utils.views.topDp
+import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import org.jetbrains.annotations.VisibleForTesting
 
 private const val MainTitleId = 0
@@ -46,8 +53,14 @@ private const val SecondTittleId = 1
 fun StoragesScreen() {
     val presenter = rememberOnScreen { DI.storagesPresenter() }
     val router = LocalRouter.current
-    var dragProgress = remember { mutableFloatStateOf(0f) }
-    val mainTitleVisibility = true
+    var dragProgress by remember { mutableFloatStateOf(0f) }
+    val mainTitleVisibility by accumulate<Boolean?>(null) { old ->
+        when {
+            dragProgress < 0.1 -> false
+            dragProgress > 0.3 -> true
+            else -> old
+        }
+    }
     val targetTitleId = rememberDerivedStateOf {
         when (mainTitleVisibility) {
             true -> MainTitleId
@@ -55,20 +68,21 @@ fun StoragesScreen() {
             null -> 0
         }
     }
-    val showStoragesTitle by rememberDerivedStateOf { dragProgress.value > 0.1f }
+    val showStoragesTitle by rememberDerivedStateOf { dragProgress > 0.1f }
 
     SideEffect {
         presenter.startup()
     }
 
     SimpleBottomSheetScaffold(
-        topContentSize = 190.dp,
-        onDrag = { dragProgress.floatValue = it },
+        topMargin = AppBarConst.appBarSize + WindowInsets.safeContent.topDp,
+        topContentSize = 170.dp,
+        onDrag = { dragProgress = it },
         topContent = {
             GroupsSelectContent(
                 modifier = Modifier
-                    .alpha(dragProgress.floatValue.topContentAlphaFromDrag())
-                    .offset(y = dragProgress.floatValue.topContentOffsetFromDrag()),
+                    .alpha(dragProgress.topContentAlphaFromDrag())
+                    .offset(y = dragProgress.topContentOffsetFromDrag()),
             )
         },
         sheetContent = {
@@ -105,8 +119,10 @@ fun StoragesScreen() {
 
 @VisibleForTesting
 @Composable
-@Preview(showSystemUi = true, device = Devices.PIXEL_6)
-fun StoragesScreenPreview() = AppTheme {
-    StoragesScreen()
+@Preview(device = Devices.PHONE)
+fun StoragesScreenPreview() = EdgeToEdgeTemplate {
+    AppTheme {
+        StoragesScreen()
+    }
 }
 

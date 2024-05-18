@@ -17,12 +17,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.app.utils.views.rememberOnScreen
+import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 
 
-@Preview
 @Composable
 fun StoragesListContent(
     modifier: Modifier = Modifier,
@@ -35,7 +36,7 @@ fun StoragesListContent(
         .collectAsState(initial = emptyList(), scope.coroutineContext)
     val titleAnimatedAlpha by animateAlphaAsState(showStoragesTitle)
 
-    if (storages.value.isEmpty()){
+    if (storages.value.isEmpty()) {
         // show empty state if need
 
         // should return here so as not to reset the state of the list
@@ -67,3 +68,11 @@ fun StoragesListContent(
     }
 }
 
+
+@Composable
+@Preview
+fun StoragesListContentPreview() = EdgeToEdgeTemplate {
+    AppTheme {
+        StoragesListContent()
+    }
+}
