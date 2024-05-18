@@ -1,7 +1,10 @@
 package com.github.klee0kai.thekey.app.ui.settings.plugins
 
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -33,6 +36,7 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.PluginDestination
 import com.github.klee0kai.thekey.app.ui.settings.plugins.presenter.PluginsPresenter
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
 import com.github.klee0kai.thekey.app.utils.views.rememberOnScreenRef
+import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
@@ -47,6 +51,7 @@ fun PluginsScreen() {
         modifier = Modifier
             .padding(top = AppBarConst.appBarSize)
             .fillMaxSize(),
+        contentPadding = WindowInsets.safeContent.asPaddingValues(),
     ) {
         features.forEach { feature ->
             item {
@@ -80,20 +85,19 @@ fun PluginsScreen() {
 }
 
 
-@Preview(
-    showSystemUi = true,
-    device = Devices.PIXEL_6,
-)
+@Preview(device = Devices.PHONE)
 @Composable
-fun PluginsScreenPreview() = AppTheme {
-    DI.initPresenterModule(object : PresentersModule {
-        override fun pluginsPresenter() = object : PluginsPresenter {
-            override val features = MutableStateFlow(
-                DynamicFeature
-                    .allFeatures()
-                    .map { InstallDynamicFeature(it) }
-            )
-        }
-    })
-    PluginsScreen()
+fun PluginsScreenPreview() = EdgeToEdgeTemplate {
+    AppTheme {
+        DI.initPresenterModule(object : PresentersModule {
+            override fun pluginsPresenter() = object : PluginsPresenter {
+                override val features = MutableStateFlow(
+                    DynamicFeature
+                        .allFeatures()
+                        .map { InstallDynamicFeature(it) }
+                )
+            }
+        })
+        PluginsScreen()
+    }
 }

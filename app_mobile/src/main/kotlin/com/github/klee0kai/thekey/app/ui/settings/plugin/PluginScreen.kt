@@ -1,8 +1,11 @@
 package com.github.klee0kai.thekey.app.ui.settings.plugin
 
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContent
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ButtonDefaults
@@ -42,6 +45,7 @@ import com.github.klee0kai.thekey.app.ui.settings.plugin.presenter.PluginPresent
 import com.github.klee0kai.thekey.app.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
 import com.github.klee0kai.thekey.app.utils.views.rememberOnScreenRef
+import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
@@ -55,6 +59,7 @@ fun PluginScreen(
     ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
+            .windowInsetsPadding(WindowInsets.safeContent)
             .padding(
                 top = 16.dp + AppBarConst.appBarSize,
                 bottom = 16.dp,
@@ -161,74 +166,84 @@ fun PluginScreen(
 }
 
 @OptIn(DebugOnly::class)
-@Preview(showSystemUi = true, device = Devices.PIXEL_6)
+@Preview(device = Devices.PHONE)
 @Composable
-fun PluginNotInstalledPreview() = AppTheme {
-    DI.hardResetToPreview()
-    DI.initPresenterModule(object : PresentersModule {
-        override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {
-            override val status = MutableStateFlow(NotInstalled)
-        }
-    })
-    PluginScreen(PluginDestination(DynamicFeature.qrcodeScanner()))
+fun PluginNotInstalledPreview() = EdgeToEdgeTemplate {
+    AppTheme {
+        DI.hardResetToPreview()
+        DI.initPresenterModule(object : PresentersModule {
+            override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {
+                override val status = MutableStateFlow(NotInstalled)
+            }
+        })
+        PluginScreen(PluginDestination(DynamicFeature.qrcodeScanner()))
+    }
 }
 
 @OptIn(DebugOnly::class)
-@Preview(showSystemUi = true, device = Devices.PIXEL_6)
+@Preview(device = Devices.PHONE)
 @Composable
-fun PluginBuyPreview() = AppTheme {
-    DI.hardResetToPreview()
-    DI.initPresenterModule(object : PresentersModule {
-        override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {
-            override val status = MutableStateFlow(NotInstalled)
-        }
-    })
-    PluginScreen(
-        PluginDestination(
-            DynamicFeature
-                .qrcodeScanner()
-                .copy(purchase = "purchase")
+fun PluginBuyPreview() = EdgeToEdgeTemplate {
+    AppTheme {
+        DI.hardResetToPreview()
+        DI.initPresenterModule(object : PresentersModule {
+            override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {
+                override val status = MutableStateFlow(NotInstalled)
+            }
+        })
+        PluginScreen(
+            PluginDestination(
+                DynamicFeature
+                    .qrcodeScanner()
+                    .copy(purchase = "purchase")
+            )
         )
-    )
+    }
 }
 
 @OptIn(DebugOnly::class)
-@Preview(showSystemUi = true, device = Devices.PIXEL_6)
+@Preview(device = Devices.PHONE)
 @Composable
-fun PluginInstallingPreview() = AppTheme {
-    DI.hardResetToPreview()
-    DI.initPresenterModule(object : PresentersModule {
-        override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {
-            override val status = MutableStateFlow(Installing(0.3f))
-        }
-    })
-    PluginScreen(PluginDestination(DynamicFeature.qrcodeScanner()))
+fun PluginInstallingPreview() = EdgeToEdgeTemplate {
+    AppTheme {
+        DI.hardResetToPreview()
+        DI.initPresenterModule(object : PresentersModule {
+            override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {
+                override val status = MutableStateFlow(Installing(0.3f))
+            }
+        })
+        PluginScreen(PluginDestination(DynamicFeature.qrcodeScanner()))
+    }
 }
 
 @OptIn(DebugOnly::class)
-@Preview(showSystemUi = true, device = Devices.PIXEL_6)
+@Preview(device = Devices.PHONE)
 @Composable
-fun PluginInstalledPreview() = AppTheme {
-    DI.hardResetToPreview()
-    DI.initPresenterModule(object : PresentersModule {
-        override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {
-            override val status = MutableStateFlow(Installed)
-        }
-    })
-    PluginScreen(PluginDestination(DynamicFeature.qrcodeScanner()))
+fun PluginInstalledPreview() = EdgeToEdgeTemplate {
+    AppTheme {
+        DI.hardResetToPreview()
+        DI.initPresenterModule(object : PresentersModule {
+            override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {
+                override val status = MutableStateFlow(Installed)
+            }
+        })
+        PluginScreen(PluginDestination(DynamicFeature.qrcodeScanner()))
+    }
 }
 
 @OptIn(DebugOnly::class)
-@Preview(showSystemUi = true, device = Devices.PIXEL_6)
+@Preview(device = Devices.PHONE)
 @Composable
-fun PluginInstallErrorPreview() = AppTheme {
-    DI.hardResetToPreview()
-    DI.initPresenterModule(object : PresentersModule {
-        override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {
-            override val status = MutableStateFlow(InstallError)
-        }
-    })
-    PluginScreen(PluginDestination(DynamicFeature.qrcodeScanner()))
+fun PluginInstallErrorPreview() = EdgeToEdgeTemplate {
+    AppTheme {
+        DI.hardResetToPreview()
+        DI.initPresenterModule(object : PresentersModule {
+            override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {
+                override val status = MutableStateFlow(InstallError)
+            }
+        })
+        PluginScreen(PluginDestination(DynamicFeature.qrcodeScanner()))
+    }
 }
 
 

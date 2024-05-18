@@ -1,7 +1,10 @@
 package com.github.klee0kai.thekey.app.ui.settings
 
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -25,6 +28,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.settings.Preference
 import com.github.klee0kai.thekey.app.ui.designkit.settings.SectionHeader
 import com.github.klee0kai.thekey.app.ui.designkit.settings.SwitchPreference
 import com.github.klee0kai.thekey.app.ui.navigation.model.PluginsDestination
+import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.launch
 
 @Composable
@@ -36,6 +40,7 @@ fun SettingScreen() {
         modifier = Modifier
             .padding(top = AppBarConst.appBarSize)
             .fillMaxSize(),
+        contentPadding = WindowInsets.safeContent.asPaddingValues(),
     ) {
         item {
             SectionHeader(
@@ -88,11 +93,10 @@ fun SettingScreen() {
 }
 
 
-@Preview(
-    showSystemUi = true,
-    device = Devices.PIXEL_6,
-)
+@Preview(device = Devices.PHONE)
 @Composable
-fun SettingsScreenPreview() = AppTheme {
-    SettingScreen()
+fun SettingsScreenPreview() = EdgeToEdgeTemplate {
+    AppTheme {
+        SettingScreen()
+    }
 }
