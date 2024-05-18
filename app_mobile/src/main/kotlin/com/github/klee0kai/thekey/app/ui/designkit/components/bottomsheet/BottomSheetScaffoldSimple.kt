@@ -3,6 +3,7 @@
 package com.github.klee0kai.thekey.app.ui.designkit.components.bottomsheet
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -18,6 +19,7 @@ import androidx.compose.material3.BottomSheetScaffoldState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
@@ -83,54 +85,56 @@ fun SimpleBottomSheetScaffold(
             .accelerateDecelerate()
     }
 
-    BottomSheetScaffold(
-        modifier = modifier,
-        scaffoldState = scaffoldState,
-        sheetPeekHeight = sheetMinSize,
-        sheetMaxWidth = view.width.pxToDp(),
-        contentColor = colorScheme.onBackground,
-        containerColor = colorScheme.background,
-        content = { innerPadding ->
-            Box(
-                modifier = Modifier
-                    .padding(innerPadding)
-                    .padding(top = topMargin)
-                    .fillMaxWidth()
-                    .height(topContentSize)
-            ) {
-                topContent.invoke()
-            }
-        },
-        sheetShape = BottomSheetDefaults.ExpandedShape,
-        sheetDragHandle = {
-            Box(
-                modifier = Modifier
-                    .height(dragHandleSize),
-                contentAlignment = Alignment.Center
-            ) {
+    CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
+        BottomSheetScaffold(
+            modifier = modifier,
+            scaffoldState = scaffoldState,
+            sheetPeekHeight = sheetMinSize,
+            sheetMaxWidth = view.width.pxToDp(),
+            contentColor = colorScheme.onBackground,
+            containerColor = colorScheme.background,
+            content = { innerPadding ->
                 Box(
                     modifier = Modifier
-                        .size(width = 48.dp, height = 4.dp)
-                        .background(
-                            color = colorScheme.onSurface.copy(alpha = 0.4f * dragAlpha),
-                            shape = RoundedCornerShape(2.dp)
-                        )
+                        .padding(innerPadding)
+                        .padding(top = topMargin)
+                        .fillMaxWidth()
+                        .height(topContentSize)
+                ) {
+                    topContent.invoke()
+                }
+            },
+            sheetShape = BottomSheetDefaults.ExpandedShape,
+            sheetDragHandle = {
+                Box(
+                    modifier = Modifier
+                        .height(dragHandleSize),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(width = 48.dp, height = 4.dp)
+                            .background(
+                                color = colorScheme.onSurface.copy(alpha = 0.4f * dragAlpha),
+                                shape = RoundedCornerShape(2.dp)
+                            )
+                    )
+                }
+            },
+            sheetContainerColor = colorScheme.surface,
+            sheetContentColor = colorScheme.onSurface,
+            sheetContent = {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(sheetMaxSize),
+                    content = {
+                        sheetContent.invoke()
+                    }
                 )
             }
-        },
-        sheetContainerColor = colorScheme.surface,
-        sheetContentColor = colorScheme.onSurface,
-        sheetContent = {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(sheetMaxSize),
-                content = {
-                    sheetContent.invoke()
-                }
-            )
-        }
-    )
+        )
+    }
 }
 
 
