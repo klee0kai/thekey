@@ -15,21 +15,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.NonRestartableComposable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
-import com.github.klee0kai.thekey.app.ui.designkit.components.bottomsheet.SimpleBottomSheetScaffoldState
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.app.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
@@ -75,27 +70,6 @@ fun AppBarStates(
         },
         navigationIcon = navigationIcon ?: {},
     )
-}
-
-@Composable
-@NonRestartableComposable
-fun SimpleBottomSheetScaffoldState.rememberMainTitleVisibleFlow(
-    hideTitleOffset: Dp = 10.dp,
-    showTitleOffset: Dp = 30.dp,
-): State<Boolean?> {
-    val mainTitleVisibility = remember { mutableStateOf<Boolean?>(null) }
-    val scaffoldTopOffset = runCatching {
-        with(LocalDensity.current) {
-            scaffoldState.bottomSheetState.requireOffset().toDp()
-        }
-    }.getOrNull()
-
-    when {
-        scaffoldTopOffset == null -> mainTitleVisibility.value = null
-        scaffoldTopOffset < appBarSize + hideTitleOffset -> mainTitleVisibility.value = false
-        scaffoldTopOffset > appBarSize + showTitleOffset -> mainTitleVisibility.value = true
-    }
-    return mainTitleVisibility
 }
 
 @VisibleForTesting

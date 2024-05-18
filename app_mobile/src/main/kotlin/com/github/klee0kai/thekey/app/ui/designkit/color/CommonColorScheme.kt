@@ -20,6 +20,7 @@ interface CommonColorScheme {
         @Composable get
     val transparentTextFieldColors: TextFieldColors
         @Composable get
+    val hintTextColor: Color
 
     val noColor: SurfaceScheme
     val violet: SurfaceScheme

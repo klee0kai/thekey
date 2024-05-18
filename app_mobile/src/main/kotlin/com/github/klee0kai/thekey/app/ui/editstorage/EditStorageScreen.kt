@@ -1,19 +1,20 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.github.klee0kai.thekey.app.ui.editstorage
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContent
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Done
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -39,7 +40,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.di.hardReset
+import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.engine.model.Storage
 import com.github.klee0kai.thekey.app.helpers.path.appendTKeyFormat
@@ -52,14 +53,14 @@ import com.github.klee0kai.thekey.app.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.app.utils.coroutine.awaitSec
 import com.github.klee0kai.thekey.app.utils.views.AutoFillList
 import com.github.klee0kai.thekey.app.utils.views.Keyboard
-import com.github.klee0kai.thekey.app.utils.views.ViewPositionPx
-import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
-import com.github.klee0kai.thekey.app.utils.views.currentViewSizeState
+import com.github.klee0kai.thekey.app.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.app.utils.views.isIme
 import com.github.klee0kai.thekey.app.utils.views.keyboardAsState
-import com.github.klee0kai.thekey.app.utils.views.onGlobalPositionState
+import com.github.klee0kai.thekey.app.utils.views.minInsets
 import com.github.klee0kai.thekey.app.utils.views.rememberOnScreen
 import com.github.klee0kai.thekey.app.utils.views.toTextFieldValue
 import com.github.klee0kai.thekey.app.utils.views.toTransformationText
+import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
@@ -75,13 +76,10 @@ fun EditStorageScreen(
     var storagePathTextValue by remember { mutableStateOf(TextFieldValue()) }
     var storagePathFieldFocused by remember { mutableStateOf<Boolean>(false) }
     var storagePathVariants by remember { mutableStateOf<List<String>>(emptyList()) }
-    var contentViewSize by remember { mutableStateOf<ViewPositionPx?>(null) }
     val keyboardState by keyboardAsState()
-    val viewSize by currentViewSizeState()
     val scrollState = rememberScrollState()
 
-    val bottomSaveButton = viewSize.height > 500.dp
-    val saveInToolbarAlpha by animateAlphaAsState(!bottomSaveButton)
+    val bottomSaveButton by animateTargetCrossFaded(!WindowInsets.isIme)
 
     LaunchedEffect(Unit) {
         storage = presenter.storageInfo.awaitSec() ?: return@LaunchedEffect
@@ -115,16 +113,12 @@ fun EditStorageScreen(
 
     ConstraintLayout(optimizationLevel = 0,
         modifier = Modifier
+            .imePadding()
             .verticalScroll(scrollState)
-            .onGlobalPositionState { contentViewSize = it }
             .pointerInput(Unit) { detectTapGestures { storagePathFieldFocused = false } }
             .fillMaxSize()
-            .padding(
-                top = 16.dp + AppBarConst.appBarSize,
-                bottom = 16.dp,
-                start = 16.dp,
-                end = 16.dp
-            )
+            .windowInsetsPadding(WindowInsets.safeContent.minInsets(16.dp))
+            .padding(top = AppBarConst.appBarSize)
     ) {
         val (
             pathTextField,
@@ -232,6 +226,7 @@ fun EditStorageScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .windowInsetsPadding(WindowInsets.safeContent)
             .padding(
                 top = 16.dp + AppBarConst.appBarSize,
                 bottom = 16.dp,
@@ -239,18 +234,18 @@ fun EditStorageScreen(
                 end = 16.dp
             ),
     ) {
-        if (bottomSaveButton) {
+        if (bottomSaveButton.current) {
             FilledTonalButton(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .alpha(bottomSaveButton.alpha),
                 onClick = { presenter.save(storage) }
             ) {
                 Text(stringResource(R.string.save))
             }
         }
     }
-
 
     AppBarStates(
         isVisible = scrollState.value == 0,
@@ -265,9 +260,9 @@ fun EditStorageScreen(
             }
         },
         actions = {
-            if (saveInToolbarAlpha > 0) {
+            if (!bottomSaveButton.current) {
                 IconButton(
-                    modifier = Modifier.alpha(saveInToolbarAlpha),
+                    modifier = Modifier.alpha(bottomSaveButton.alpha),
                     onClick = { presenter.save(storage) }
                 ) {
                     Icon(
@@ -283,9 +278,11 @@ fun EditStorageScreen(
 
 @OptIn(DebugOnly::class)
 @VisibleForTesting
-@Preview(showSystemUi = true, device = Devices.PIXEL_6)
+@Preview(device = Devices.PHONE)
 @Composable
-fun EditStorageScreenPreview() = AppTheme {
-    DI.hardReset()
-    EditStorageScreen(path = "some/path/to/storage")
+fun EditStorageScreenPreview() = EdgeToEdgeTemplate {
+    DI.hardResetToPreview()
+    AppTheme {
+        EditStorageScreen(path = "some/path/to/storage")
+    }
 }

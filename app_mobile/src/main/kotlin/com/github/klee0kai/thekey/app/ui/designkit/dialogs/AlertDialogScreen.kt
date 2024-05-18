@@ -14,6 +14,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.EmptyScreen
 import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
 import com.github.klee0kai.thekey.app.ui.navigation.model.AlertDialogDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.ConfirmDialogResult
+import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
@@ -69,11 +70,13 @@ fun AlertDialogPreview() = AppTheme {
 
 
 @VisibleForTesting
-@Preview(showSystemUi = true, device = Devices.PIXEL_6)
+@Preview(device = Devices.PHONE)
 @Composable
-fun AlertDialogInScreenPreview() = AppTheme {
-    EmptyScreen()
+fun AlertDialogInScreenPreview() = EdgeToEdgeTemplate {
+    AppTheme {
+        EmptyScreen()
 
-    AlertDialogScreen()
+        AlertDialogScreen()
+    }
 }
 

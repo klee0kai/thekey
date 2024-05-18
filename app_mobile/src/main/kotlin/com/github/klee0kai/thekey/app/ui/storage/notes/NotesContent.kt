@@ -3,8 +3,11 @@
 package com.github.klee0kai.thekey.app.ui.storage.notes
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.safeContent
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -16,20 +19,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.di.hardReset
+import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
 import com.github.klee0kai.thekey.app.ui.designkit.components.FabSimpleInContainer
 import com.github.klee0kai.thekey.app.ui.designkit.components.bottomsheet.SimpleBottomSheetScaffold
-import com.github.klee0kai.thekey.app.ui.designkit.components.bottomsheet.SimpleBottomSheetScaffoldState
-import com.github.klee0kai.thekey.app.ui.designkit.components.bottomsheet.simpleBottomSheetScaffoldState
 import com.github.klee0kai.thekey.app.ui.designkit.components.bottomsheet.topContentAlphaFromDrag
 import com.github.klee0kai.thekey.app.ui.designkit.components.bottomsheet.topContentOffsetFromDrag
 import com.github.klee0kai.thekey.app.ui.navigation.createGroup
@@ -46,14 +48,15 @@ import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
 import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.app.utils.views.rememberOnScreenRef
+import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
 fun NotesContent(
     modifier: Modifier = Modifier,
     dest: StorageDestination = StorageDestination(),
+    topMargin: Dp = 0.dp,
     isPageFullyAvailable: Boolean = false,
-    scaffoldState: SimpleBottomSheetScaffoldState = simpleBottomSheetScaffoldState(LocalDensity.current),
     onDrag: (Float) -> Unit = {},
 ) {
     val presenter by rememberOnScreenRef { DI.storagePresenter(dest.identifier()) }
@@ -67,7 +70,8 @@ fun NotesContent(
 
     SimpleBottomSheetScaffold(
         modifier = modifier,
-        simpleBottomSheetScaffoldState = scaffoldState,
+        topContentSize = 170.dp,
+        topMargin = topMargin,
         onDrag = {
             dragProgress = it
             onDrag.invoke(it)
@@ -96,7 +100,9 @@ fun NotesContent(
 
     if (addButtonVisible) {
         FabSimpleInContainer(
-            modifier = Modifier.alpha(addButtonAlpha),
+            modifier = Modifier
+                .windowInsetsPadding(WindowInsets.safeContent)
+                .alpha(addButtonAlpha),
             onClick = { router.navigate(dest.note()) },
             content = { Icon(Icons.Default.Add, contentDescription = "Add") }
         )
@@ -105,14 +111,16 @@ fun NotesContent(
 
 @OptIn(DebugOnly::class)
 @VisibleForTesting
-@Preview(device = Devices.PIXEL_6, showSystemUi = true)
+@Preview(device = Devices.PHONE)
 @Composable
-fun NotesContentPreview() = AppTheme {
-    DI.hardReset()
-    DI.initPresenterModule(object : PresentersModule {
-        override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterDummy()
-    })
-    StorageScreen(
-        dest = StorageDestination(path = Dummy.unicString, version = 2)
-    )
+fun NotesContentPreview() = EdgeToEdgeTemplate {
+    AppTheme {
+        DI.hardResetToPreview()
+        DI.initPresenterModule(object : PresentersModule {
+            override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterDummy()
+        })
+        StorageScreen(
+            dest = StorageDestination(path = Dummy.unicString, version = 2)
+        )
+    }
 }

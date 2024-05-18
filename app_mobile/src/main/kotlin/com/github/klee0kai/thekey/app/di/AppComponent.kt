@@ -10,6 +10,7 @@ import com.github.klee0kai.stone.annotations.component.RunGc
 import com.github.klee0kai.stone.annotations.module.BindInstance
 import com.github.klee0kai.thekey.app.BuildConfig
 import com.github.klee0kai.thekey.app.di.debug.DebugDI
+import com.github.klee0kai.thekey.app.di.debug.DebugDI.initDummyModules
 import com.github.klee0kai.thekey.app.di.dependencies.AppComponentProviders
 import com.github.klee0kai.thekey.app.di.identifier.NoteGroupIdentifier
 import com.github.klee0kai.thekey.app.di.identifier.NoteIdentifier
@@ -56,11 +57,12 @@ interface AppComponent : AppComponentModules, AppComponentProviders {
 }
 
 @DebugOnly
-fun AppComponent.hardReset() {
+fun AppComponent.hardResetToPreview() {
     val ctx = DI.ctx()
 
     DI = initAppComponent()
     DI.ctx(ctx)
+    DI.initDummyModules()
 }
 
 fun AppComponent.updateComponentsSoft() {

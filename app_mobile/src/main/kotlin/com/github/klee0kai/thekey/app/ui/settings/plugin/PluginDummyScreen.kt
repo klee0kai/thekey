@@ -1,9 +1,12 @@
 package com.github.klee0kai.thekey.app.ui.settings.plugin
 
 import androidx.annotation.VisibleForTesting
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContent
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ButtonDefaults
@@ -25,7 +28,7 @@ import androidx.constraintlayout.compose.Dimension
 import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.di.hardReset
+import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.features.model.DynamicFeature
 import com.github.klee0kai.thekey.app.features.model.InstallError
@@ -43,7 +46,9 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.QRCodeScanDestination
 import com.github.klee0kai.thekey.app.ui.settings.plugin.presenter.PluginPresenter
 import com.github.klee0kai.thekey.app.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
+import com.github.klee0kai.thekey.app.utils.views.minInsets
 import com.github.klee0kai.thekey.app.utils.views.rememberOnScreenRef
+import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
@@ -56,12 +61,8 @@ fun PluginDummyScreen(dest: DynamicDestination) {
     ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
-            .padding(
-                top = 16.dp + AppBarConst.appBarSize,
-                bottom = 16.dp,
-                start = 16.dp,
-                end = 16.dp
-            ),
+            .windowInsetsPadding(WindowInsets.safeContent.minInsets(16.dp))
+            .padding(top = AppBarConst.appBarSize),
     ) {
         val (
             descField,
@@ -165,51 +166,59 @@ fun PluginDummyScreen(dest: DynamicDestination) {
 
 @VisibleForTesting
 @OptIn(DebugOnly::class)
-@Preview(showSystemUi = true, device = Devices.PIXEL_6)
+@Preview(device = Devices.PHONE)
 @Composable
-fun PluginDummyScreenScreenPreview() = AppTheme {
-    DI.hardReset()
-    PluginDummyScreen(QRCodeScanDestination)
+fun PluginDummyScreenScreenPreview() = EdgeToEdgeTemplate {
+    AppTheme {
+        DI.hardResetToPreview()
+        PluginDummyScreen(QRCodeScanDestination)
+    }
 }
 
 @VisibleForTesting
 @OptIn(DebugOnly::class)
-@Preview(showSystemUi = true, device = Devices.PIXEL_6)
+@Preview(device = Devices.PHONE)
 @Composable
-fun PluginDummyScreenInstallingPreview() = AppTheme {
-    DI.hardReset()
-    DI.initPresenterModule(object : PresentersModule {
-        override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {
-            override val status = MutableStateFlow(Installing(progress = 0.6f))
-        }
-    })
-    PluginDummyScreen(QRCodeScanDestination)
+fun PluginDummyScreenInstallingPreview() = EdgeToEdgeTemplate {
+    AppTheme {
+        DI.hardResetToPreview()
+        DI.initPresenterModule(object : PresentersModule {
+            override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {
+                override val status = MutableStateFlow(Installing(progress = 0.6f))
+            }
+        })
+        PluginDummyScreen(QRCodeScanDestination)
+    }
 }
 
 @VisibleForTesting
 @OptIn(DebugOnly::class)
-@Preview(showSystemUi = true, device = Devices.PIXEL_6)
+@Preview(device = Devices.PHONE)
 @Composable
-fun PluginDummyScreenInstalledPreview() = AppTheme {
-    DI.hardReset()
-    DI.initPresenterModule(object : PresentersModule {
-        override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {
-            override val status = MutableStateFlow(Installed)
-        }
-    })
-    PluginDummyScreen(QRCodeScanDestination)
+fun PluginDummyScreenInstalledPreview() = EdgeToEdgeTemplate {
+    AppTheme {
+        DI.hardResetToPreview()
+        DI.initPresenterModule(object : PresentersModule {
+            override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {
+                override val status = MutableStateFlow(Installed)
+            }
+        })
+        PluginDummyScreen(QRCodeScanDestination)
+    }
 }
 
 @VisibleForTesting
 @OptIn(DebugOnly::class)
-@Preview(showSystemUi = true, device = Devices.PIXEL_6)
+@Preview(device = Devices.PHONE)
 @Composable
-fun PluginDummyScreenInstallErrorPreview() = AppTheme {
-    DI.hardReset()
-    DI.initPresenterModule(object : PresentersModule {
-        override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {
-            override val status = MutableStateFlow(InstallError)
-        }
-    })
-    PluginDummyScreen(QRCodeScanDestination)
+fun PluginDummyScreenInstallErrorPreview() = EdgeToEdgeTemplate {
+    AppTheme {
+        DI.hardResetToPreview()
+        DI.initPresenterModule(object : PresentersModule {
+            override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {
+                override val status = MutableStateFlow(InstallError)
+            }
+        })
+        PluginDummyScreen(QRCodeScanDestination)
+    }
 }

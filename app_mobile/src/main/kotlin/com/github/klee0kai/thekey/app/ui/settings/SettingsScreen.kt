@@ -1,8 +1,10 @@
 package com.github.klee0kai.thekey.app.ui.settings
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -22,10 +24,12 @@ import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
 import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarStates
+import com.github.klee0kai.thekey.app.ui.designkit.settings.Preference
+import com.github.klee0kai.thekey.app.ui.designkit.settings.SectionHeader
+import com.github.klee0kai.thekey.app.ui.designkit.settings.SwitchPreference
 import com.github.klee0kai.thekey.app.ui.navigation.model.PluginsDestination
-import com.github.klee0kai.thekey.app.ui.settings.items.SettingGroupItem
-import com.github.klee0kai.thekey.app.ui.settings.items.SettingItem
-import com.github.klee0kai.thekey.app.ui.settings.items.SettingSwitchItem
+import com.github.klee0kai.thekey.app.utils.views.truncate
+import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.launch
 
 @Composable
@@ -37,29 +41,34 @@ fun SettingScreen() {
         modifier = Modifier
             .padding(top = AppBarConst.appBarSize)
             .fillMaxSize(),
+        contentPadding = WindowInsets.safeContent
+            .truncate(right = true, left = true)
+            .asPaddingValues(),
     ) {
         item {
-            SettingGroupItem(
+            SectionHeader(
                 text = stringResource(id = R.string.storages)
             )
         }
 
         item {
-            SettingSwitchItem(
+            SwitchPreference(
                 text = stringResource(id = R.string.storage_auto_search)
             )
         }
 
         item {
-            SettingGroupItem(
+            SectionHeader(
                 text = stringResource(id = R.string.other)
             )
         }
 
         item {
-            SettingItem(
-                modifier = Modifier.clickable { router.navigate(PluginsDestination) },
+            Preference(
                 text = stringResource(id = R.string.plugins),
+                onClick = {
+                    router.navigate(PluginsDestination)
+                }
             )
         }
 
@@ -68,7 +77,7 @@ fun SettingScreen() {
 
     AppBarStates(
         navigationIcon = {
-            IconButton(onClick = { scope.launch { router.showNavigationBoard() } }) {
+            IconButton(onClick = { scope.launch { router.back() } }) {
                 Icon(
                     Icons.AutoMirrored.Default.ArrowBack,
                     contentDescription = null,
@@ -87,11 +96,10 @@ fun SettingScreen() {
 }
 
 
-@Preview(
-    showSystemUi = true,
-    device = Devices.PIXEL_6,
-)
+@Preview(device = Devices.PHONE)
 @Composable
-fun SettingsScreenPreview() = AppTheme {
-    SettingScreen()
+fun SettingsScreenPreview() = EdgeToEdgeTemplate {
+    AppTheme {
+        SettingScreen()
+    }
 }

@@ -6,8 +6,11 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContent
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
@@ -38,7 +41,7 @@ import androidx.compose.ui.unit.dp
 import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.di.hardReset
+import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
@@ -50,8 +53,6 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppTitleIma
 import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.SearchField
 import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.SecondaryTabs
 import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.SecondaryTabsConst
-import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.rememberMainTitleVisibleFlow
-import com.github.klee0kai.thekey.app.ui.designkit.components.bottomsheet.simpleBottomSheetScaffoldState
 import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.GenPasswordContent
@@ -60,6 +61,7 @@ import com.github.klee0kai.thekey.app.ui.storage.notes.NotesContent
 import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenterDummy
 import com.github.klee0kai.thekey.app.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.app.utils.common.Dummy
+import com.github.klee0kai.thekey.app.utils.views.accumulate
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
 import com.github.klee0kai.thekey.app.utils.views.hideOnTargetAlpha
@@ -67,6 +69,8 @@ import com.github.klee0kai.thekey.app.utils.views.rememberAlphaAnimate
 import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.app.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.app.utils.views.rememberTargetCrossFaded
+import com.github.klee0kai.thekey.app.utils.views.topDp
+import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.launch
 import org.jetbrains.annotations.VisibleForTesting
 
@@ -94,16 +98,15 @@ fun StorageScreen(
     val singlePagePagerState = rememberPagerState(initialPage = 0) { 1 }
     val pagerStateFiltered by rememberDerivedStateOf { if (searchState.isActive) singlePagePagerState else pagerState }
     val secondaryTabsHeight by rememberDerivedStateOf { if (searchState.isActive) 0.dp else SecondaryTabsConst.allHeight }
-    val accountScaffoldState by rememberDerivedStateOf {
-        simpleBottomSheetScaffoldState(
-            density = density,
-            topContentSize = secondaryTabsHeight + 170.dp,
-            appBarSize = AppBarConst.appBarSize
-        )
-    }
     val isAccountTab by rememberDerivedStateOf { pagerState.currentPage == 0 && pagerState.currentPageOffsetFraction == 0f }
     val isAccountPageAlpha by animateAlphaAsState(boolean = isAccountTab)
-    val accountTitleVisibility = accountScaffoldState.rememberMainTitleVisibleFlow()
+    val accountTitleVisibility by accumulate<Boolean?>(init = null) { old ->
+        when {
+            dragProgress < 0.1 -> false
+            dragProgress > 0.3 -> true
+            else -> old
+        }
+    }
     val tabsAlpha by rememberAlphaAnimate {
         when {
             searchState.isActive -> false
@@ -115,7 +118,7 @@ fun StorageScreen(
     val targetTitleId by rememberTargetCrossFaded {
         when {
             searchState.isActive -> SearchTitleId
-            !isAccountTab || accountTitleVisibility.value == true -> MainTitleId
+            !isAccountTab || accountTitleVisibility == true -> MainTitleId
             else -> SecondTittleId
         }
     }
@@ -142,16 +145,16 @@ fun StorageScreen(
                 when (page) {
                     0 -> NotesContent(
                         modifier = Modifier
-                            .animateContentSize()
-                            .padding(top = secondaryTabsHeight),
+                            .animateContentSize(),
+                        topMargin = secondaryTabsHeight + AppBarConst.appBarSize + WindowInsets.safeContent.topDp,
                         onDrag = { dragProgress = it },
                         dest = dest,
                         isPageFullyAvailable = isAccountTab && !searchState.isActive,
-                        scaffoldState = accountScaffoldState
                     )
 
                     1 -> GenPasswordContent(
                         modifier = Modifier
+                            .windowInsetsPadding(WindowInsets.safeContent)
                             .padding(top = AppBarConst.appBarSize + SecondaryTabsConst.allHeight),
                         dest = dest,
                     )
@@ -163,7 +166,7 @@ fun StorageScreen(
     if (tabsAlpha > 0f) {
         SecondaryTabs(
             modifier = Modifier
-                .padding(top = AppBarConst.appBarSize)
+                .padding(top = AppBarConst.appBarSize + WindowInsets.safeContent.topDp)
                 .alpha(tabsAlpha),
             titles = titles,
             selectedTab = pagerState.currentPage,
@@ -219,43 +222,49 @@ fun StorageScreen(
 
 @OptIn(DebugOnly::class)
 @VisibleForTesting
-@Preview(device = Devices.PIXEL_6, showSystemUi = true)
+@Preview(device = Devices.PHONE)
 @Composable
-fun StorageScreenAccountsPreview() = AppTheme {
-    DI.hardReset()
-    DI.initPresenterModule(object : PresentersModule {
-        override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterDummy()
-    })
-    StorageScreen(
-        dest = StorageDestination(path = Dummy.unicString, version = 2)
-    )
+fun StorageScreenAccountsPreview() = EdgeToEdgeTemplate {
+    AppTheme {
+        DI.hardResetToPreview()
+        DI.initPresenterModule(object : PresentersModule {
+            override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterDummy()
+        })
+        StorageScreen(
+            dest = StorageDestination(path = Dummy.unicString, version = 2)
+        )
+    }
 }
 
 @OptIn(DebugOnly::class)
 @VisibleForTesting
-@Preview(device = Devices.PIXEL_6, showSystemUi = true)
+@Preview(device = Devices.PHONE)
 @Composable
-fun StorageScreenAccountsSearchPreview() = AppTheme {
-    DI.hardReset()
-    DI.initPresenterModule(object : PresentersModule {
-        override fun storagePresenter(storageIdentifier: StorageIdentifier) =
-            StoragePresenterDummy(isSearchActive = true)
-    })
-    StorageScreen(
-        dest = StorageDestination(path = Dummy.unicString, version = 2)
-    )
+fun StorageScreenAccountsSearchPreview() = EdgeToEdgeTemplate {
+    AppTheme {
+        DI.hardResetToPreview()
+        DI.initPresenterModule(object : PresentersModule {
+            override fun storagePresenter(storageIdentifier: StorageIdentifier) =
+                StoragePresenterDummy(isSearchActive = true)
+        })
+        StorageScreen(
+            dest = StorageDestination(path = Dummy.unicString, version = 2)
+        )
+    }
 }
 
 @OptIn(DebugOnly::class)
 @VisibleForTesting
-@Preview(device = Devices.PIXEL_6, showSystemUi = true)
+@Preview(device = Devices.PHONE)
 @Composable
-fun StorageScreenGeneratePreview() = AppTheme {
-    DI.hardReset()
-    DI.initPresenterModule(object : PresentersModule {
-        override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterDummy()
-    })
-    StorageScreen(
-        dest = StorageDestination(path = Dummy.unicString, version = 2, selectedPage = 1)
-    )
+fun StorageScreenGeneratePreview() = EdgeToEdgeTemplate {
+    AppTheme {
+        DI.hardResetToPreview()
+        DI.initPresenterModule(object : PresentersModule {
+            override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterDummy()
+        })
+        StorageScreen(
+            dest = StorageDestination(path = Dummy.unicString, version = 2, selectedPage = 1)
+        )
+    }
 }

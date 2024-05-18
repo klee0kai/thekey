@@ -60,6 +60,16 @@ fun <T : R, R> Flow<T>.collectAsState(
 }
 
 @Composable
+fun <T> accumulate(init: T, calculation: (old: T) -> T): State<T> {
+    val state = remember { mutableStateOf(init) }
+    val newState = calculation(state.value)
+    if (newState != state.value) {
+        state.value = calculation(state.value)
+    }
+    return state
+}
+
+@Composable
 fun <T> rememberDerivedStateOf(calculation: () -> T) = remember {
     derivedStateOf(calculation)
 }

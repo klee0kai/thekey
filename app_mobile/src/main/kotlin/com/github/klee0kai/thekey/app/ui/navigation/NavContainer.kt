@@ -8,10 +8,12 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContent
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Snackbar
@@ -33,6 +35,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.EmptyScreen
 import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
 import com.github.klee0kai.thekey.app.ui.navigation.model.Destination
 import com.github.klee0kai.thekey.app.ui.navigationboard.StorageNavigationBoard
+import com.github.klee0kai.thekey.app.utils.views.minInsets
 import com.github.klee0kai.thekey.app.utils.views.rememberTickerOf
 import dev.olshevski.navigation.reimagined.AnimatedNavHost
 import dev.olshevski.navigation.reimagined.NavAction
@@ -49,11 +52,7 @@ fun MainNavContainer() {
     ModalNavigationDrawer(
         drawerState = LocalRouter.current.navBoardState,
         drawerContent = {
-            StorageNavigationBoard(
-                modifier = Modifier
-                    .fillMaxWidth(0.7f)
-                    .fillMaxHeight()
-            )
+            StorageNavigationBoard()
         }
     ) {
         // screens
@@ -104,11 +103,14 @@ fun SnackContainer() {
         return
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
         SnackbarHost(
             hostState = snackbarHostState,
             modifier = Modifier
-                .padding(start = 16.dp, end = 16.dp, bottom = 46.dp)
+                .windowInsetsPadding(WindowInsets.safeContent.minInsets(16.dp))
+                .padding(bottom = 30.dp)
                 .alpha(swipeAlpha)
                 .align(Alignment.BottomCenter)
         ) { data ->

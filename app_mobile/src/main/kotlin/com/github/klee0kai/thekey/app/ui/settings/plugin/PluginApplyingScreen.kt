@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
+import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 
 @Composable
 fun PluginApplyingScreen(
@@ -41,8 +42,10 @@ fun PluginApplyingScreen(
 }
 
 @VisibleForTesting
-@Preview(showSystemUi = true, device = Devices.PIXEL_6)
+@Preview(device = Devices.PHONE)
 @Composable
-fun PluginApplyingScreenPreview() = AppTheme {
-    PluginApplyingScreen()
+fun PluginApplyingScreenPreview() = EdgeToEdgeTemplate {
+    AppTheme {
+        PluginApplyingScreen()
+    }
 }
