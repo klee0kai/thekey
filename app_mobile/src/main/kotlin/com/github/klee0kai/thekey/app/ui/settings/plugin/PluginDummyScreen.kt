@@ -46,6 +46,7 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.QRCodeScanDestination
 import com.github.klee0kai.thekey.app.ui.settings.plugin.presenter.PluginPresenter
 import com.github.klee0kai.thekey.app.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
+import com.github.klee0kai.thekey.app.utils.views.minInsets
 import com.github.klee0kai.thekey.app.utils.views.rememberOnScreenRef
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -60,13 +61,8 @@ fun PluginDummyScreen(dest: DynamicDestination) {
     ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
-            .windowInsetsPadding(WindowInsets.safeContent)
-            .padding(
-                top = 16.dp + AppBarConst.appBarSize,
-                bottom = 16.dp,
-                start = 16.dp,
-                end = 16.dp
-            ),
+            .windowInsetsPadding(WindowInsets.safeContent.minInsets(16.dp))
+            .padding(top = AppBarConst.appBarSize),
     ) {
         val (
             descField,

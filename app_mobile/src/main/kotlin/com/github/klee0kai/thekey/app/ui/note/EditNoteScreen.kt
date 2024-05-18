@@ -74,6 +74,7 @@ import com.github.klee0kai.thekey.app.utils.views.TargetAlpha
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
 import com.github.klee0kai.thekey.app.utils.views.crossFadeAlpha
 import com.github.klee0kai.thekey.app.utils.views.currentViewSizeState
+import com.github.klee0kai.thekey.app.utils.views.minInsets
 import com.github.klee0kai.thekey.app.utils.views.pxToDp
 import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.app.utils.views.rememberOnScreenRef
@@ -132,13 +133,8 @@ fun EditNoteScreen(
             .verticalScroll(scrollState)
             .fillMaxSize()
             .defaultMinSize(minHeight = view.height.pxToDp())
-            .windowInsetsPadding(WindowInsets.safeContent)
-            .padding(
-                top = 16.dp + AppBarConst.appBarSize + pagerHeight,
-                bottom = 16.dp,
-                start = 16.dp,
-                end = 16.dp
-            )
+            .windowInsetsPadding(WindowInsets.safeContent.minInsets(16.dp))
+            .padding(top = AppBarConst.appBarSize + pagerHeight)
             .thenIf(!state.isEditMode) {
                 swipeable(
                     state = pageSwipeState,

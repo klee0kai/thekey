@@ -1,16 +1,13 @@
 package com.github.klee0kai.thekey.app.utils.views
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContent
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
-import androidx.compose.ui.unit.dp
+import kotlin.math.max
 
 
 val WindowInsets.bottomDp
@@ -31,6 +28,39 @@ val WindowInsets.endDp
     @Composable
     get() = getRight(LocalDensity.current, LocalLayoutDirection.current).pxToDp()
 
+fun WindowInsets.minInsets(all: Dp) = minInsets(all, all, all, all)
+
+fun WindowInsets.minInsets(vertical: Dp, horizontal: Dp) = minInsets(
+    top = vertical,
+    bottom = vertical,
+    right = horizontal,
+    left = horizontal
+)
+
+fun WindowInsets.minInsets(
+    top: Dp,
+    bottom: Dp,
+    left: Dp,
+    right: Dp,
+) = object : WindowInsets {
+    private val original = this@minInsets
+    override fun getBottom(density: Density): Int = with(density) {
+        max(original.getBottom(density), bottom.roundToPx())
+    }
+
+    override fun getLeft(density: Density, layoutDirection: LayoutDirection): Int = with(density) {
+        max(original.getLeft(density, layoutDirection), left.roundToPx())
+    }
+
+    override fun getRight(density: Density, layoutDirection: LayoutDirection): Int = with(density) {
+        max(original.getRight(density, layoutDirection), right.roundToPx())
+    }
+
+    override fun getTop(density: Density): Int = with(density) {
+        max(original.getTop(density), top.roundToPx())
+    }
+}
+
 fun WindowInsets.truncate(
     top: Boolean = false,
     bottom: Boolean = false,
@@ -50,16 +80,3 @@ fun WindowInsets.truncate(
     override fun getTop(density: Density): Int =
         if (!top) original.getTop(density) else 0
 }
-
-@Composable
-fun Modifier.safeContentPadding(
-    top: Boolean = true,
-    bottom: Boolean = true,
-    start: Boolean = true,
-    end: Boolean = true,
-): Modifier = padding(
-    top = if (top) WindowInsets.safeContent.topDp else 0.dp,
-    bottom = if (bottom) WindowInsets.safeContent.bottomDp else 0.dp,
-    start = if (start) WindowInsets.safeContent.startDp else 0.dp,
-    end = if (end) WindowInsets.safeContent.endDp else 0.dp,
-)

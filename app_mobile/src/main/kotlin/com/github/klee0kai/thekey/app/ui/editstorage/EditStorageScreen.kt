@@ -59,6 +59,7 @@ import com.github.klee0kai.thekey.app.utils.views.ViewPositionPx
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.app.utils.views.currentViewSizeState
 import com.github.klee0kai.thekey.app.utils.views.keyboardAsState
+import com.github.klee0kai.thekey.app.utils.views.minInsets
 import com.github.klee0kai.thekey.app.utils.views.onGlobalPositionState
 import com.github.klee0kai.thekey.app.utils.views.rememberOnScreen
 import com.github.klee0kai.thekey.app.utils.views.toTextFieldValue
@@ -123,13 +124,8 @@ fun EditStorageScreen(
             .onGlobalPositionState { contentViewSize = it }
             .pointerInput(Unit) { detectTapGestures { storagePathFieldFocused = false } }
             .fillMaxSize()
-            .windowInsetsPadding(WindowInsets.safeContent)
-            .padding(
-                top = 16.dp + AppBarConst.appBarSize,
-                bottom = 16.dp,
-                start = 16.dp,
-                end = 16.dp
-            )
+            .windowInsetsPadding(WindowInsets.safeContent.minInsets(16.dp))
+            .padding(top = AppBarConst.appBarSize)
     ) {
         val (
             pathTextField,

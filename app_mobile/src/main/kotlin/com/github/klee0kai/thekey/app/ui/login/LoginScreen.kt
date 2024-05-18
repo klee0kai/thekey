@@ -5,7 +5,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
@@ -45,8 +44,8 @@ import com.github.klee0kai.thekey.app.ui.designkit.text.AppTextField
 import com.github.klee0kai.thekey.app.ui.login.presenter.LoginPresenter
 import com.github.klee0kai.thekey.app.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
+import com.github.klee0kai.thekey.app.utils.views.minInsets
 import com.github.klee0kai.thekey.app.utils.views.toAnnotationString
-import com.github.klee0kai.thekey.app.utils.views.truncate
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -84,7 +83,7 @@ fun LoginScreen() {
 
     ConstraintLayout(
         modifier = Modifier
-            .padding(16.dp)
+            .windowInsetsPadding(WindowInsets.safeContent.minInsets(16.dp))
             .fillMaxSize()
     ) {
         val (
@@ -127,7 +126,6 @@ fun LoginScreen() {
 
         AppTextField(
             modifier = Modifier
-                .windowInsetsPadding(WindowInsets.safeContent.truncate(bottom = true))
                 .fillMaxWidth()
                 .constrainAs(passwTextField) {
                     linkTo(
@@ -148,7 +146,6 @@ fun LoginScreen() {
             text = currentStorageState.name,
             style = MaterialTheme.typography.labelSmall,
             modifier = Modifier
-                .windowInsetsPadding(WindowInsets.safeContent.truncate(bottom = true, top = true))
                 .constrainAs(storageName) {
                     linkTo(
                         start = passwTextField.start,
@@ -163,20 +160,18 @@ fun LoginScreen() {
             text = shortStoragePath,
             style = MaterialTheme.typography.labelSmall,
             modifier = Modifier
-                .windowInsetsPadding(WindowInsets.safeContent.truncate(bottom = true, top = true))
                 .constrainAs(storagePath) {
-                linkTo(
-                    start = passwTextField.start,
-                    end = passwTextField.end,
-                    bias = 1f,
-                )
-                top.linkTo(storageName.bottom, 8.dp)
-            }
+                    linkTo(
+                        start = passwTextField.start,
+                        end = passwTextField.end,
+                        bias = 1f,
+                    )
+                    top.linkTo(storageName.bottom, 8.dp)
+                }
         )
 
         TextButton(
             modifier = Modifier
-                .windowInsetsPadding(WindowInsets.safeContent.truncate(bottom = true))
                 .fillMaxWidth()
                 .constrainAs(storagesButton) {
                     bottom.linkTo(loginButton.top, margin = 12.dp)
@@ -193,7 +188,6 @@ fun LoginScreen() {
 
         FilledTonalButton(
             modifier = Modifier
-                .windowInsetsPadding(WindowInsets.safeContent.truncate(top = true))
                 .fillMaxWidth()
                 .constrainAs(loginButton) {
                     bottom.linkTo(parent.bottom)
@@ -207,7 +201,6 @@ fun LoginScreen() {
             Text(stringResource(R.string.login))
         }
     }
-
 
 
 }
