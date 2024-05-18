@@ -2,9 +2,12 @@ package com.github.klee0kai.thekey.app.ui.login
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContent
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.FilledTonalButton
@@ -42,6 +45,8 @@ import com.github.klee0kai.thekey.app.ui.login.presenter.LoginPresenter
 import com.github.klee0kai.thekey.app.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
 import com.github.klee0kai.thekey.app.utils.views.toAnnotationString
+import com.github.klee0kai.thekey.app.utils.views.truncate
+import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.jetbrains.annotations.VisibleForTesting
@@ -113,7 +118,8 @@ fun LoginScreen() {
 
         AppTextField(
             modifier = Modifier
-                .fillMaxWidth(0.9f)
+                .windowInsetsPadding(WindowInsets.safeContent.truncate(bottom = true))
+                .fillMaxWidth()
                 .constrainAs(passwTextField) {
                     linkTo(
                         start = parent.start,
@@ -132,20 +138,24 @@ fun LoginScreen() {
         Text(
             text = currentStorageState.name,
             style = MaterialTheme.typography.labelSmall,
-            modifier = Modifier.constrainAs(storageName) {
-                linkTo(
-                    start = passwTextField.start,
-                    end = passwTextField.end,
-                    bias = 0f,
-                )
-                top.linkTo(passwTextField.bottom, 16.dp)
-            }
+            modifier = Modifier
+                .windowInsetsPadding(WindowInsets.safeContent.truncate(bottom = true, top = true))
+                .constrainAs(storageName) {
+                    linkTo(
+                        start = passwTextField.start,
+                        end = passwTextField.end,
+                        bias = 0f,
+                    )
+                    top.linkTo(passwTextField.bottom, 16.dp)
+                }
         )
 
         Text(
             text = shortStoragePath,
             style = MaterialTheme.typography.labelSmall,
-            modifier = Modifier.constrainAs(storagePath) {
+            modifier = Modifier
+                .windowInsetsPadding(WindowInsets.safeContent.truncate(bottom = true, top = true))
+                .constrainAs(storagePath) {
                 linkTo(
                     start = passwTextField.start,
                     end = passwTextField.end,
@@ -157,6 +167,7 @@ fun LoginScreen() {
 
         TextButton(
             modifier = Modifier
+                .windowInsetsPadding(WindowInsets.safeContent.truncate(bottom = true))
                 .fillMaxWidth()
                 .constrainAs(storagesButton) {
                     bottom.linkTo(loginButton.top, margin = 12.dp)
@@ -173,6 +184,7 @@ fun LoginScreen() {
 
         FilledTonalButton(
             modifier = Modifier
+                .windowInsetsPadding(WindowInsets.safeContent.truncate(top = true))
                 .fillMaxWidth()
                 .constrainAs(loginButton) {
                     bottom.linkTo(parent.bottom)
@@ -199,39 +211,40 @@ fun LoginScreen() {
 
 @OptIn(DebugOnly::class)
 @VisibleForTesting
-@Preview(
-    device = Devices.PIXEL_6,
-    showSystemUi = true
-)
+@Preview(device = Devices.PIXEL_6)
 @Composable
-fun LoginScreenPreview() = AppTheme {
-    DI.hardResetToPreview()
-    DI.initPresenterModule(
-        object : PresentersModule {
-            override fun loginPresenter(): LoginPresenter {
-                return object : LoginPresenter {
-                    override val currentStorageFlow = MutableStateFlow(ColoredStorage(path = "/app_folder/some_path", name = "editModeStorage"))
+fun LoginScreenPreview() = EdgeToEdgeTemplate {
+    AppTheme {
+        DI.hardResetToPreview()
+        DI.initPresenterModule(
+            object : PresentersModule {
+                override fun loginPresenter(): LoginPresenter {
+                    return object : LoginPresenter {
+                        override val currentStorageFlow = MutableStateFlow(ColoredStorage(path = "/app_folder/some_path", name = "editModeStorage"))
+                    }
                 }
             }
-        }
-    )
-    LoginScreen()
+        )
+        LoginScreen()
+    }
 }
 
 @OptIn(DebugOnly::class)
 @VisibleForTesting
-@Preview(device = Devices.TABLET, showSystemUi = true)
+@Preview(device = Devices.TABLET)
 @Composable
-fun LoginScreenTabletPreview() = AppTheme {
-    DI.hardResetToPreview()
-    DI.initPresenterModule(
-        object : PresentersModule {
-            override fun loginPresenter(): LoginPresenter {
-                return object : LoginPresenter {
-                    override val currentStorageFlow = MutableStateFlow(ColoredStorage(path = "/app_folder/some_path", name = "editModeStorage"))
+fun LoginScreenTabletPreview() = EdgeToEdgeTemplate {
+    AppTheme {
+        DI.hardResetToPreview()
+        DI.initPresenterModule(
+            object : PresentersModule {
+                override fun loginPresenter(): LoginPresenter {
+                    return object : LoginPresenter {
+                        override val currentStorageFlow = MutableStateFlow(ColoredStorage(path = "/app_folder/some_path", name = "editModeStorage"))
+                    }
                 }
             }
-        }
-    )
-    LoginScreen()
+        )
+        LoginScreen()
+    }
 }
