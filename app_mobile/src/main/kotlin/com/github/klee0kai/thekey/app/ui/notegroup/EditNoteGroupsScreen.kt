@@ -1,7 +1,10 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.github.klee0kai.thekey.app.ui.notegroup
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -9,6 +12,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -38,7 +42,6 @@ import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
 import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.app.ui.designkit.components.bottomsheet.SimpleBottomSheetScaffold
-import com.github.klee0kai.thekey.app.ui.designkit.components.bottomsheet.rememberSimpleBottomSheetScaffoldState
 import com.github.klee0kai.thekey.app.ui.designkit.components.bottomsheet.topContentAlphaFromDrag
 import com.github.klee0kai.thekey.app.ui.designkit.components.bottomsheet.topContentOffsetFromDrag
 import com.github.klee0kai.thekey.app.ui.navigation.identifier
@@ -65,18 +68,14 @@ fun EditNoteGroupsScreen(
     val state by presenter!!.state.collectAsState(key = Unit, initial = EditNoteGroupsState())
 
     var dragProgress by remember { mutableFloatStateOf(0f) }
-    val scaffoldState = rememberSimpleBottomSheetScaffoldState(
-        topContentSize = 190.dp,
-        appBarSize = AppBarConst.appBarSize
-    )
 
     SimpleBottomSheetScaffold(
-        simpleBottomSheetScaffoldState = scaffoldState,
+        topContentSize = 190.dp,
         onDrag = { dragProgress = it },
         topContent = {
             EditGroupInfoContent(
                 modifier = Modifier
-                    .height(scaffoldState.topContentSize)
+                    .fillMaxHeight()
                     .alpha(dragProgress.topContentAlphaFromDrag())
                     .offset(y = dragProgress.topContentOffsetFromDrag()),
                 groupNameFieldModifier = Modifier

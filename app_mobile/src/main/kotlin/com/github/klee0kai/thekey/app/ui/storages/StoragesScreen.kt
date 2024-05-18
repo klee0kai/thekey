@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.github.klee0kai.thekey.app.ui.storages
 
 import androidx.compose.foundation.layout.fillMaxSize
@@ -5,6 +7,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -24,12 +27,9 @@ import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
 import com.github.klee0kai.thekey.app.ui.designkit.components.FabSimpleInContainer
-import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppTitleImage
-import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.rememberMainTitleVisibleFlow
 import com.github.klee0kai.thekey.app.ui.designkit.components.bottomsheet.SimpleBottomSheetScaffold
-import com.github.klee0kai.thekey.app.ui.designkit.components.bottomsheet.rememberSimpleBottomSheetScaffoldState
 import com.github.klee0kai.thekey.app.ui.designkit.components.bottomsheet.topContentAlphaFromDrag
 import com.github.klee0kai.thekey.app.ui.designkit.components.bottomsheet.topContentOffsetFromDrag
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditStorageDestination
@@ -47,11 +47,7 @@ fun StoragesScreen() {
     val presenter = rememberOnScreen { DI.storagesPresenter() }
     val router = LocalRouter.current
     var dragProgress = remember { mutableFloatStateOf(0f) }
-    val scaffoldState = rememberSimpleBottomSheetScaffoldState(
-        topContentSize = 190.dp,
-        appBarSize = AppBarConst.appBarSize
-    )
-    val mainTitleVisibility by scaffoldState.rememberMainTitleVisibleFlow()
+    val mainTitleVisibility = true
     val targetTitleId = rememberDerivedStateOf {
         when (mainTitleVisibility) {
             true -> MainTitleId
@@ -66,7 +62,7 @@ fun StoragesScreen() {
     }
 
     SimpleBottomSheetScaffold(
-        simpleBottomSheetScaffoldState = scaffoldState,
+        topContentSize = 190.dp,
         onDrag = { dragProgress.floatValue = it },
         topContent = {
             GroupsSelectContent(

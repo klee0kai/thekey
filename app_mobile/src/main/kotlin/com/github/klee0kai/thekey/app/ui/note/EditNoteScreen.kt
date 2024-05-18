@@ -7,10 +7,13 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContent
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -78,6 +81,8 @@ import com.github.klee0kai.thekey.app.utils.views.rememberSkeletonModifier
 import com.github.klee0kai.thekey.app.utils.views.rememberTargetCrossFaded
 import com.github.klee0kai.thekey.app.utils.views.thenIf
 import com.github.klee0kai.thekey.app.utils.views.toPx
+import com.github.klee0kai.thekey.app.utils.views.topDp
+import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
@@ -127,6 +132,7 @@ fun EditNoteScreen(
             .verticalScroll(scrollState)
             .fillMaxSize()
             .defaultMinSize(minHeight = view.height.pxToDp())
+            .windowInsetsPadding(WindowInsets.safeContent)
             .padding(
                 top = 16.dp + AppBarConst.appBarSize + pagerHeight,
                 bottom = 16.dp,
@@ -412,7 +418,7 @@ fun EditNoteScreen(
 
     SecondaryTabs(
         modifier = Modifier
-            .padding(top = AppBarConst.appBarSize),
+            .padding(top = AppBarConst.appBarSize + WindowInsets.safeContent.topDp),
         isVisible = !state.isEditMode && scrollState.value <= 0,
         titles = titles,
         selectedTab = page.current.ordinal,
@@ -426,6 +432,7 @@ fun EditNoteScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .windowInsetsPadding(WindowInsets.safeContent)
             .padding(
                 top = 16.dp + AppBarConst.appBarSize + pagerHeight,
                 bottom = 16.dp,
@@ -509,127 +516,141 @@ fun EditNoteScreen(
 }
 
 
-@Preview(device = Devices.PIXEL_6, showSystemUi = true)
+@Preview(device = Devices.PHONE)
 @Composable
-fun CreateAccountScreenP6SkeletonPreview() = AppTheme {
-    DI.initPresenterModule(object : PresentersModule {
-        override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter = object : EditNotePresenter {
-            override val state = MutableStateFlow(
-                EditNoteState(
-                    isSkeleton = true,
+fun CreateAccountScreenP6SkeletonPreview() = EdgeToEdgeTemplate {
+    AppTheme {
+        DI.initPresenterModule(object : PresentersModule {
+            override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter = object : EditNotePresenter {
+                override val state = MutableStateFlow(
+                    EditNoteState(
+                        isSkeleton = true,
+                    )
                 )
-            )
-        }
-    })
-    EditNoteScreen(dest = EditNoteDestination(path = Dummy.unicString))
+            }
+        })
+        EditNoteScreen(dest = EditNoteDestination(path = Dummy.unicString))
+    }
 }
 
-@Preview(device = Devices.PIXEL_6, showSystemUi = true)
+@Preview(device = Devices.PHONE)
 @Composable
-fun CreateOTPScreenP6SkeletonPreview() = AppTheme {
-    DI.initPresenterModule(object : PresentersModule {
-        override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter = object : EditNotePresenter {
-            override val state = MutableStateFlow(
-                EditNoteState(
-                    isSkeleton = true,
+fun CreateOTPScreenP6SkeletonPreview() = EdgeToEdgeTemplate {
+    AppTheme {
+        DI.initPresenterModule(object : PresentersModule {
+            override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter = object : EditNotePresenter {
+                override val state = MutableStateFlow(
+                    EditNoteState(
+                        isSkeleton = true,
+                    )
                 )
-            )
-        }
-    })
-    EditNoteScreen(dest = EditNoteDestination(path = Dummy.unicString, tab = Otp))
+            }
+        })
+        EditNoteScreen(dest = EditNoteDestination(path = Dummy.unicString, tab = Otp))
+    }
 }
 
-@Preview(device = Devices.PIXEL_6, showSystemUi = true)
+@Preview(device = Devices.PHONE)
 @Composable
-fun CreateAccountScreenP6Preview() = AppTheme {
-    DI.initPresenterModule(object : PresentersModule {
-        override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter = object : EditNotePresenter {
-            override val state = MutableStateFlow(
-                EditNoteState(
-                    isSkeleton = false,
-                    siteOrIssuer = "some.site.com",
-                    loginOrName = "myLogin@2",
-                    passw = "123#",
+fun CreateAccountScreenP6Preview() = EdgeToEdgeTemplate {
+    AppTheme {
+        DI.initPresenterModule(object : PresentersModule {
+            override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter = object : EditNotePresenter {
+                override val state = MutableStateFlow(
+                    EditNoteState(
+                        isSkeleton = false,
+                        siteOrIssuer = "some.site.com",
+                        loginOrName = "myLogin@2",
+                        passw = "123#",
+                    )
                 )
-            )
-        }
-    })
-    EditNoteScreen(EditNoteDestination(path = Dummy.unicString))
+            }
+        })
+        EditNoteScreen(EditNoteDestination(path = Dummy.unicString))
+    }
 }
 
-@Preview(device = Devices.PIXEL_6, showSystemUi = true)
+@Preview(device = Devices.PHONE)
 @Composable
-fun EditAccountScreenP6Preview() = AppTheme {
-    DI.initPresenterModule(object : PresentersModule {
-        override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter = object : EditNotePresenter {
-            override val state = MutableStateFlow(
-                EditNoteState(
-                    isEditMode = true,
-                    isRemoveAvailable = true,
-                    isSkeleton = false,
-                    siteOrIssuer = "some.site.com",
-                    loginOrName = "myLogin@2",
-                    passw = "123#",
+fun EditAccountScreenP6Preview() = EdgeToEdgeTemplate {
+    AppTheme {
+        DI.initPresenterModule(object : PresentersModule {
+            override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter = object : EditNotePresenter {
+                override val state = MutableStateFlow(
+                    EditNoteState(
+                        isEditMode = true,
+                        isRemoveAvailable = true,
+                        isSkeleton = false,
+                        siteOrIssuer = "some.site.com",
+                        loginOrName = "myLogin@2",
+                        passw = "123#",
+                    )
                 )
-            )
-        }
-    })
-    EditNoteScreen(EditNoteDestination(path = Dummy.unicString))
+            }
+        })
+        EditNoteScreen(EditNoteDestination(path = Dummy.unicString))
+    }
 }
 
-@Preview(device = Devices.PIXEL_6, showSystemUi = true)
+@Preview(device = Devices.PHONE)
 @Composable
-fun EditAccountScreenSaveP6Preview() = AppTheme {
-    DI.initPresenterModule(object : PresentersModule {
-        override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter = object : EditNotePresenter {
-            override val state = MutableStateFlow(
-                EditNoteState(
-                    isEditMode = true,
-                    isRemoveAvailable = false,
-                    isSkeleton = false,
-                    isSaveAvailable = true,
-                    siteOrIssuer = "some.site.com",
-                    loginOrName = "myLogin@2",
-                    passw = "123#",
+fun EditAccountScreenSaveP6Preview() = EdgeToEdgeTemplate {
+    AppTheme {
+        DI.initPresenterModule(object : PresentersModule {
+            override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter = object : EditNotePresenter {
+                override val state = MutableStateFlow(
+                    EditNoteState(
+                        isEditMode = true,
+                        isRemoveAvailable = false,
+                        isSkeleton = false,
+                        isSaveAvailable = true,
+                        siteOrIssuer = "some.site.com",
+                        loginOrName = "myLogin@2",
+                        passw = "123#",
+                    )
                 )
-            )
-        }
-    })
-    EditNoteScreen(EditNoteDestination(path = Dummy.unicString))
+            }
+        })
+        EditNoteScreen(EditNoteDestination(path = Dummy.unicString))
+    }
 }
 
-@Preview(device = Devices.PIXEL_6, showSystemUi = true)
+@Preview(device = Devices.PHONE)
 @Composable
-fun EditOTPScreenP6SkeletonPreview() = AppTheme {
-    DI.initPresenterModule(object : PresentersModule {
-        override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter = object : EditNotePresenter {
-            override val state = MutableStateFlow(
-                EditNoteState(
-                    isEditMode = true,
-                    isSkeleton = true,
+fun EditOTPScreenP6SkeletonPreview() = EdgeToEdgeTemplate {
+    AppTheme {
+        DI.initPresenterModule(object : PresentersModule {
+            override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter = object : EditNotePresenter {
+                override val state = MutableStateFlow(
+                    EditNoteState(
+                        isEditMode = true,
+                        isSkeleton = true,
+                    )
                 )
-            )
-        }
-    })
-    EditNoteScreen(dest = EditNoteDestination(path = Dummy.unicString, tab = Otp))
+            }
+        })
+        EditNoteScreen(dest = EditNoteDestination(path = Dummy.unicString, tab = Otp))
+    }
 }
 
-@Preview(device = Devices.PIXEL_6, showSystemUi = true)
+@Preview(device = Devices.PHONE)
 @Composable
-fun EditOTPScreenP6Preview() = AppTheme(modifier = Modifier) {
-    DI.initPresenterModule(object : PresentersModule {
-        override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter = object : EditNotePresenter {
-            override val state = MutableStateFlow(
-                EditNoteState(
-                    isEditMode = true,
-                    isRemoveAvailable = true,
-                    isSkeleton = false,
-                    siteOrIssuer = "some.site.com",
-                    loginOrName = "myLogin@2",
-                    otpSecret = "Ot#SecteXA",
+fun EditOTPScreenP6Preview() = EdgeToEdgeTemplate {
+    AppTheme {
+        DI.initPresenterModule(object : PresentersModule {
+            override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter = object : EditNotePresenter {
+                override val state = MutableStateFlow(
+                    EditNoteState(
+                        isEditMode = true,
+                        isRemoveAvailable = true,
+                        isSkeleton = false,
+                        siteOrIssuer = "some.site.com",
+                        loginOrName = "myLogin@2",
+                        otpSecret = "Ot#SecteXA",
+                    )
                 )
-            )
-        }
-    })
-    EditNoteScreen(dest = EditNoteDestination(path = Dummy.unicString, tab = Otp))
+            }
+        })
+        EditNoteScreen(dest = EditNoteDestination(path = Dummy.unicString, tab = Otp))
+    }
 }
