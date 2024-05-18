@@ -166,7 +166,7 @@ fun StorageScreen(
     if (tabsAlpha > 0f) {
         SecondaryTabs(
             modifier = Modifier
-                .padding(top = AppBarConst.appBarSize+WindowInsets.safeContent.topDp)
+                .padding(top = AppBarConst.appBarSize + WindowInsets.safeContent.topDp)
                 .alpha(tabsAlpha),
             titles = titles,
             selectedTab = pagerState.currentPage,
@@ -238,29 +238,33 @@ fun StorageScreenAccountsPreview() = EdgeToEdgeTemplate {
 
 @OptIn(DebugOnly::class)
 @VisibleForTesting
-@Preview(device = Devices.PIXEL_6, showSystemUi = true)
+@Preview(device = Devices.PHONE)
 @Composable
-fun StorageScreenAccountsSearchPreview() = AppTheme {
-    DI.hardResetToPreview()
-    DI.initPresenterModule(object : PresentersModule {
-        override fun storagePresenter(storageIdentifier: StorageIdentifier) =
-            StoragePresenterDummy(isSearchActive = true)
-    })
-    StorageScreen(
-        dest = StorageDestination(path = Dummy.unicString, version = 2)
-    )
+fun StorageScreenAccountsSearchPreview() = EdgeToEdgeTemplate {
+    AppTheme {
+        DI.hardResetToPreview()
+        DI.initPresenterModule(object : PresentersModule {
+            override fun storagePresenter(storageIdentifier: StorageIdentifier) =
+                StoragePresenterDummy(isSearchActive = true)
+        })
+        StorageScreen(
+            dest = StorageDestination(path = Dummy.unicString, version = 2)
+        )
+    }
 }
 
 @OptIn(DebugOnly::class)
 @VisibleForTesting
-@Preview(device = Devices.PIXEL_6, showSystemUi = true)
+@Preview(device = Devices.PHONE)
 @Composable
-fun StorageScreenGeneratePreview() = AppTheme {
-    DI.hardResetToPreview()
-    DI.initPresenterModule(object : PresentersModule {
-        override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterDummy()
-    })
-    StorageScreen(
-        dest = StorageDestination(path = Dummy.unicString, version = 2, selectedPage = 1)
-    )
+fun StorageScreenGeneratePreview() = EdgeToEdgeTemplate {
+    AppTheme {
+        DI.hardResetToPreview()
+        DI.initPresenterModule(object : PresentersModule {
+            override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterDummy()
+        })
+        StorageScreen(
+            dest = StorageDestination(path = Dummy.unicString, version = 2, selectedPage = 1)
+        )
+    }
 }

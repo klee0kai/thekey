@@ -39,6 +39,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.app.ui.designkit.preview.PreviewDevices
 import com.github.klee0kai.thekey.app.utils.views.toPx
+import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.launch
 import kotlin.math.max
 
@@ -277,12 +278,16 @@ fun AboutScreen() {
 
 
 @Composable
-@Preview(device = Devices.PIXEL_6, showSystemUi = true)
-fun AboutScreenPreview() = AppTheme { AboutScreen() }
+@Preview(device = Devices.PHONE)
+fun AboutScreenPreview() = EdgeToEdgeTemplate {
+    AppTheme { AboutScreen() }
+}
 
 @Composable
-@Preview(device = PreviewDevices.PNOTE_LAND, showSystemUi = true)
-fun AboutScreenLandPreview() = AppTheme { AboutScreen() }
+@Preview(device = PreviewDevices.PNOTE_LAND)
+fun AboutScreenLandPreview() = EdgeToEdgeTemplate {
+    AppTheme { AboutScreen() }
+}
 
 
 

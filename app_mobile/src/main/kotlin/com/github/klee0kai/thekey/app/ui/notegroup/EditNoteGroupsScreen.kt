@@ -4,12 +4,15 @@ package com.github.klee0kai.thekey.app.ui.notegroup
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContent
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -55,6 +58,8 @@ import com.github.klee0kai.thekey.app.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.app.utils.common.Dummy
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
 import com.github.klee0kai.thekey.app.utils.views.rememberOnScreenRef
+import com.github.klee0kai.thekey.app.utils.views.topDp
+import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.jetbrains.annotations.VisibleForTesting
 
@@ -71,6 +76,7 @@ fun EditNoteGroupsScreen(
 
     SimpleBottomSheetScaffold(
         topContentSize = 190.dp,
+        topMargin = AppBarConst.appBarSize + WindowInsets.safeContent.topDp,
         onDrag = { dragProgress = it },
         topContent = {
             EditGroupInfoContent(
@@ -114,6 +120,7 @@ fun EditNoteGroupsScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .windowInsetsPadding(WindowInsets.safeContent)
             .padding(
                 top = 16.dp + AppBarConst.appBarSize,
                 bottom = 16.dp,
@@ -135,19 +142,21 @@ fun EditNoteGroupsScreen(
 
 @OptIn(DebugOnly::class)
 @VisibleForTesting
-@Preview(device = Devices.PIXEL_6, showSystemUi = true)
+@Preview(device = Devices.PHONE)
 @Composable
-fun EditNoteGroupsSkeletonPreview() = AppTheme {
-    DI.hardResetToPreview()
-    DI.initPresenterModule(object : PresentersModule {
-        override fun editNoteGroupPresenter(id: NoteGroupIdentifier) = object : EditNoteGroupsPresenterDummy() {
-            override val state = MutableStateFlow(
-                EditNoteGroupsState(
-                    isSkeleton = true,
-                    isEditMode = false,
+fun EditNoteGroupsSkeletonPreview() = EdgeToEdgeTemplate {
+    AppTheme {
+        DI.hardResetToPreview()
+        DI.initPresenterModule(object : PresentersModule {
+            override fun editNoteGroupPresenter(id: NoteGroupIdentifier) = object : EditNoteGroupsPresenterDummy() {
+                override val state = MutableStateFlow(
+                    EditNoteGroupsState(
+                        isSkeleton = true,
+                        isEditMode = false,
+                    )
                 )
-            )
-        }
-    })
-    EditNoteGroupsScreen(dest = EditNoteGroupDestination(groupId = Dummy.dummyId))
+            }
+        })
+        EditNoteGroupsScreen(dest = EditNoteGroupDestination(groupId = Dummy.dummyId))
+    }
 }

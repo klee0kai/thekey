@@ -265,7 +265,7 @@ fun GenPasswordContent(
 
 @OptIn(DebugOnly::class)
 @VisibleForTesting
-@Preview(device = Devices.PIXEL_6, showSystemUi = true)
+@Preview(device = Devices.PHONE)
 @Composable
 fun GenPasswordContentPreview() = AppTheme {
     DI.hardResetToPreview()

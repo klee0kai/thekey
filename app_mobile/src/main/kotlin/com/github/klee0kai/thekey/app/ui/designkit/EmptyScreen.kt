@@ -22,7 +22,7 @@ fun EmptyScreen() {
 }
 
 @VisibleForTesting
-@Preview(device = Devices.PIXEL_6)
+@Preview(device = Devices.PHONE)
 @Composable
 fun EmptyScreenPreview() = EdgeToEdgeTemplate {
     AppTheme {

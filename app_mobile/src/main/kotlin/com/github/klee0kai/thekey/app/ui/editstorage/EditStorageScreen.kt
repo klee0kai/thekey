@@ -84,7 +84,7 @@ fun EditStorageScreen(
     val viewSize by currentViewSizeState()
     val scrollState = rememberScrollState()
 
-    val bottomSaveButton = viewSize.height > 500.dp
+    val bottomSaveButton = true// viewSize.height > 500.dp
     val saveInToolbarAlpha by animateAlphaAsState(!bottomSaveButton)
 
     LaunchedEffect(Unit) {
@@ -237,6 +237,7 @@ fun EditStorageScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .windowInsetsPadding(WindowInsets.safeContent)
             .padding(
                 top = 16.dp + AppBarConst.appBarSize,
                 bottom = 16.dp,

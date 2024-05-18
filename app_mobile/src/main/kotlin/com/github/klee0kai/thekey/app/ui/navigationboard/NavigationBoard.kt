@@ -166,7 +166,7 @@ fun StorageNavigationBoard(modifier: Modifier = Modifier) {
 
 @VisibleForTesting
 @OptIn(DebugOnly::class)
-@Preview(device = Devices.PIXEL_6)
+@Preview(device = Devices.PHONE)
 @Composable
 fun StorageNavigationBoardPreview() = EdgeToEdgeTemplate {
     AppTheme {
