@@ -36,6 +36,7 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.PluginDestination
 import com.github.klee0kai.thekey.app.ui.settings.plugins.presenter.PluginsPresenter
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
 import com.github.klee0kai.thekey.app.utils.views.rememberOnScreenRef
+import com.github.klee0kai.thekey.app.utils.views.truncate
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -51,7 +52,9 @@ fun PluginsScreen() {
         modifier = Modifier
             .padding(top = AppBarConst.appBarSize)
             .fillMaxSize(),
-        contentPadding = WindowInsets.safeContent.asPaddingValues(),
+        contentPadding = WindowInsets.safeContent
+            .truncate(right = true, left = true)
+            .asPaddingValues(),
     ) {
         features.forEach { feature ->
             item {

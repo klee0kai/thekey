@@ -94,4 +94,5 @@
     <string name="version">Version: %1$s</string>
     <string name="developer">Developer</string>
     <string name="designer">Designer</string>
+    <string name="done">Done</string>
 </resources>

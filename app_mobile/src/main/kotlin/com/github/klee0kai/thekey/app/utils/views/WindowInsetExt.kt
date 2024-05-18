@@ -1,8 +1,13 @@
+@file:OptIn(ExperimentalLayoutApi::class)
+
 package com.github.klee0kai.thekey.app.utils.views
 
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
@@ -27,6 +32,10 @@ val WindowInsets.startDp
 val WindowInsets.endDp
     @Composable
     get() = getRight(LocalDensity.current, LocalLayoutDirection.current).pxToDp()
+
+val WindowInsets.Companion.isIme: Boolean
+    @Composable
+    get() = if (LocalInspectionMode.current) false else isImeVisible
 
 fun WindowInsets.minInsets(all: Dp) = minInsets(all, all, all, all)
 

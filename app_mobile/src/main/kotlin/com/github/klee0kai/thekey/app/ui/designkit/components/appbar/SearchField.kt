@@ -10,7 +10,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -20,7 +19,6 @@ import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
 import com.github.klee0kai.thekey.app.ui.designkit.text.AppTextField
-import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
 import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
@@ -30,7 +28,6 @@ fun SearchField(
     onSearch: (String) -> Unit = {},
     onClose: () -> Unit = {},
 ) {
-    val searchCloseAlpha by animateAlphaAsState(boolean = searchText.isNotBlank())
 
     Box {
         AppTextField(
@@ -48,15 +45,12 @@ fun SearchField(
             colors = LocalColorScheme.current.transparentTextFieldColors,
         )
 
-        if (searchCloseAlpha > 0) {
-            IconButton(
-                modifier = Modifier
-                    .align(Alignment.CenterEnd)
-                    .alpha(searchCloseAlpha),
-                onClick = { onClose.invoke() },
-                content = { Icon(Icons.Filled.Close, contentDescription = null) }
-            )
-        }
+        IconButton(
+            modifier = Modifier
+                .align(Alignment.CenterEnd),
+            onClick = { onClose.invoke() },
+            content = { Icon(Icons.Filled.Close, contentDescription = null) }
+        )
     }
 }
 

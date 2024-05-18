@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
@@ -22,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -39,11 +41,14 @@ import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
 import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarStates
+import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.DoneIconButton
 import com.github.klee0kai.thekey.app.ui.designkit.preview.PreviewDevices
 import com.github.klee0kai.thekey.app.ui.designkit.text.AppTextField
 import com.github.klee0kai.thekey.app.ui.login.presenter.LoginPresenter
 import com.github.klee0kai.thekey.app.utils.annotations.DebugOnly
+import com.github.klee0kai.thekey.app.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
+import com.github.klee0kai.thekey.app.utils.views.isIme
 import com.github.klee0kai.thekey.app.utils.views.minInsets
 import com.github.klee0kai.thekey.app.utils.views.toAnnotationString
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
@@ -59,6 +64,7 @@ fun LoginScreen() {
     val pathInputHelper = remember { DI.pathInputHelper() }
     val currentStorageState by presenter.currentStorageFlow.collectAsState(Unit, initial = ColoredStorage())
     var passwordInputText by remember { mutableStateOf("") }
+    val imeVisible by animateTargetCrossFaded(WindowInsets.isIme)
 
     val shortStoragePath = with(pathInputHelper) {
         currentStorageState.path
@@ -78,11 +84,21 @@ fun LoginScreen() {
             IconButton(onClick = { scope.launch { router.showNavigationBoard() } }) {
                 Icon(Icons.Filled.Menu, contentDescription = null)
             }
+        },
+        actions = {
+            if (imeVisible.current) {
+                DoneIconButton(
+                    modifier = Modifier.alpha(imeVisible.alpha),
+                    onClick = { presenter.login(passwordInputText) }
+                )
+            }
         }
+
     )
 
     ConstraintLayout(
         modifier = Modifier
+            .imePadding()
             .windowInsetsPadding(WindowInsets.safeContent.minInsets(16.dp))
             .fillMaxSize()
     ) {
@@ -92,20 +108,23 @@ fun LoginScreen() {
             storagesButton, loginButton
         ) = createRefs()
 
-        Image(
-            painter = painterResource(id = R.drawable.logo_big),
-            contentDescription = stringResource(id = R.string.app_name),
-            modifier = Modifier
-                .constrainAs(logoIcon) {
-                    linkTo(
-                        start = parent.start,
-                        top = parent.top,
-                        end = parent.end,
-                        bottom = appDesc.top,
-                        verticalBias = 0.7f,
-                    )
-                }
-        )
+        if (!imeVisible.current) {
+            Image(
+                painter = painterResource(id = R.drawable.logo_big),
+                contentDescription = stringResource(id = R.string.app_name),
+                modifier = Modifier
+                    .alpha(imeVisible.alpha)
+                    .constrainAs(logoIcon) {
+                        linkTo(
+                            start = parent.start,
+                            top = parent.top,
+                            end = parent.end,
+                            bottom = appDesc.top,
+                            verticalBias = 0.7f,
+                        )
+                    }
+            )
+        }
 
         Text(
             text = stringResource(id = R.string.app_login_description),
@@ -170,35 +189,37 @@ fun LoginScreen() {
                 }
         )
 
-        TextButton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .constrainAs(storagesButton) {
-                    bottom.linkTo(loginButton.top, margin = 12.dp)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                },
-            colors = LocalColorScheme.current.grayTextButtonColors,
-            onClick = {
-                presenter.selectStorage()
+        if (!imeVisible.current) {
+            TextButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .alpha(imeVisible.alpha)
+                    .constrainAs(storagesButton) {
+                        bottom.linkTo(loginButton.top, margin = 12.dp)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    },
+                colors = LocalColorScheme.current.grayTextButtonColors,
+                onClick = {
+                    presenter.selectStorage()
+                }
+            ) {
+                Text(stringResource(R.string.storages))
             }
-        ) {
-            Text(stringResource(R.string.storages))
-        }
 
-        FilledTonalButton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .constrainAs(loginButton) {
-                    bottom.linkTo(parent.bottom)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                },
-            onClick = {
-                presenter.login(passwordInputText)
+            FilledTonalButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .alpha(imeVisible.alpha)
+                    .constrainAs(loginButton) {
+                        bottom.linkTo(parent.bottom)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    },
+                onClick = { presenter.login(passwordInputText) }
+            ) {
+                Text(stringResource(R.string.login))
             }
-        ) {
-            Text(stringResource(R.string.login))
         }
     }
 

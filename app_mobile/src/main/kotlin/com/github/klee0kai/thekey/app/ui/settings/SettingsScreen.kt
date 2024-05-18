@@ -28,6 +28,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.settings.Preference
 import com.github.klee0kai.thekey.app.ui.designkit.settings.SectionHeader
 import com.github.klee0kai.thekey.app.ui.designkit.settings.SwitchPreference
 import com.github.klee0kai.thekey.app.ui.navigation.model.PluginsDestination
+import com.github.klee0kai.thekey.app.utils.views.truncate
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.launch
 
@@ -40,7 +41,9 @@ fun SettingScreen() {
         modifier = Modifier
             .padding(top = AppBarConst.appBarSize)
             .fillMaxSize(),
-        contentPadding = WindowInsets.safeContent.asPaddingValues(),
+        contentPadding = WindowInsets.safeContent
+            .truncate(right = true, left = true)
+            .asPaddingValues(),
     ) {
         item {
             SectionHeader(
