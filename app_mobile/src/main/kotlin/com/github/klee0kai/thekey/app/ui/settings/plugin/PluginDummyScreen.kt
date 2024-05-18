@@ -25,7 +25,7 @@ import androidx.constraintlayout.compose.Dimension
 import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.di.hardReset
+import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.features.model.DynamicFeature
 import com.github.klee0kai.thekey.app.features.model.InstallError
@@ -168,7 +168,7 @@ fun PluginDummyScreen(dest: DynamicDestination) {
 @Preview(showSystemUi = true, device = Devices.PIXEL_6)
 @Composable
 fun PluginDummyScreenScreenPreview() = AppTheme {
-    DI.hardReset()
+    DI.hardResetToPreview()
     PluginDummyScreen(QRCodeScanDestination)
 }
 
@@ -177,7 +177,7 @@ fun PluginDummyScreenScreenPreview() = AppTheme {
 @Preview(showSystemUi = true, device = Devices.PIXEL_6)
 @Composable
 fun PluginDummyScreenInstallingPreview() = AppTheme {
-    DI.hardReset()
+    DI.hardResetToPreview()
     DI.initPresenterModule(object : PresentersModule {
         override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {
             override val status = MutableStateFlow(Installing(progress = 0.6f))
@@ -191,7 +191,7 @@ fun PluginDummyScreenInstallingPreview() = AppTheme {
 @Preview(showSystemUi = true, device = Devices.PIXEL_6)
 @Composable
 fun PluginDummyScreenInstalledPreview() = AppTheme {
-    DI.hardReset()
+    DI.hardResetToPreview()
     DI.initPresenterModule(object : PresentersModule {
         override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {
             override val status = MutableStateFlow(Installed)
@@ -205,7 +205,7 @@ fun PluginDummyScreenInstalledPreview() = AppTheme {
 @Preview(showSystemUi = true, device = Devices.PIXEL_6)
 @Composable
 fun PluginDummyScreenInstallErrorPreview() = AppTheme {
-    DI.hardReset()
+    DI.hardResetToPreview()
     DI.initPresenterModule(object : PresentersModule {
         override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {
             override val status = MutableStateFlow(InstallError)

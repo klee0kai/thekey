@@ -39,7 +39,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.di.hardReset
+import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.engine.model.Storage
 import com.github.klee0kai.thekey.app.helpers.path.appendTKeyFormat
@@ -286,6 +286,6 @@ fun EditStorageScreen(
 @Preview(showSystemUi = true, device = Devices.PIXEL_6)
 @Composable
 fun EditStorageScreenPreview() = AppTheme {
-    DI.hardReset()
+    DI.hardResetToPreview()
     EditStorageScreen(path = "some/path/to/storage")
 }

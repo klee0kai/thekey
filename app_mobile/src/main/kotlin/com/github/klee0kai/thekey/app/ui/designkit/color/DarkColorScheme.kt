@@ -47,6 +47,8 @@ class DarkColorScheme : CommonColorScheme {
             disabledTextColor = Color.Transparent,
         )
 
+    override val hintTextColor = Color(0xFFA9A9A9)
+
 
     override val noColor = SurfaceScheme(grayColor, whiteColor)
     override val violet = SurfaceScheme(Color(0xFF837AE8), whiteColor)

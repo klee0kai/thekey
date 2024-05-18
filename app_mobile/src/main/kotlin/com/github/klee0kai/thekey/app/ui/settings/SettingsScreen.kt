@@ -69,7 +69,7 @@ fun SettingScreen() {
 
     AppBarStates(
         navigationIcon = {
-            IconButton(onClick = { scope.launch { router.showNavigationBoard() } }) {
+            IconButton(onClick = { scope.launch { router.back() } }) {
                 Icon(
                     Icons.AutoMirrored.Default.ArrowBack,
                     contentDescription = null,

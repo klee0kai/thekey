@@ -6,10 +6,14 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
@@ -20,12 +24,13 @@ import androidx.constraintlayout.compose.Dimension
 import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.di.hardReset
+import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
+import com.github.klee0kai.thekey.app.ui.navigation.model.AboutDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.SettingsDestination
 import com.github.klee0kai.thekey.app.ui.navigationboard.components.CurrentStorageHeader
 import com.github.klee0kai.thekey.app.ui.navigationboard.components.DefaultHeader
@@ -34,12 +39,14 @@ import com.github.klee0kai.thekey.app.ui.navigationboard.presenter.NavigationBoa
 import com.github.klee0kai.thekey.app.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.app.utils.views.collectAsStateCrossFaded
 import com.github.klee0kai.thekey.app.utils.views.rememberOnScreenRef
+import kotlinx.coroutines.launch
 import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
 fun StorageNavigationBoard(modifier: Modifier = Modifier) {
     val colorScheme = LocalColorScheme.current.navigationBoard
     val router = LocalRouter.current
+    val scope = rememberCoroutineScope()
     val presenter by rememberOnScreenRef { DI.navigationBoardPresenter() }
     val currentStorage by presenter!!.currentStorage.collectAsStateCrossFaded(key = Unit, initial = null)
 
@@ -52,6 +59,7 @@ fun StorageNavigationBoard(modifier: Modifier = Modifier) {
             headerLayout,
             storagesListLayout,
             settingsButtonField,
+            aboutButtonField,
         ) = createRefs()
 
         if (currentStorage.current != null) {
@@ -87,22 +95,61 @@ fun StorageNavigationBoard(modifier: Modifier = Modifier) {
                 },
         )
 
-        TextButton(
+
+        IconButton(
             modifier = Modifier
-                .constrainAs(settingsButtonField) {
-                    width = Dimension.fillToConstraints
+                .defaultMinSize(64.dp, 64.dp)
+                .constrainAs(aboutButtonField) {
+                    horizontalChainWeight = 1f
+
                     linkTo(
                         top = headerLayout.bottom,
                         bottom = parent.bottom,
                         start = parent.start,
+                        end = settingsButtonField.start,
+                        verticalBias = 1f,
+                    )
+                },
+            onClick = {
+                scope.launch {
+                    router.navigate(AboutDestination)
+                    router.hideNavigationBoard()
+                }
+            },
+        ) {
+            Icon(
+                Icons.Default.Info,
+                contentDescription = stringResource(id = R.string.about)
+            )
+        }
+
+
+        IconButton(
+            modifier = Modifier
+                .defaultMinSize(64.dp, 64.dp)
+                .constrainAs(settingsButtonField) {
+                    horizontalChainWeight = 1f
+                    linkTo(
+                        top = headerLayout.bottom,
+                        bottom = parent.bottom,
+                        start = aboutButtonField.end,
                         end = parent.end,
                         verticalBias = 1f,
                     )
                 },
-            onClick = { router.navigate(SettingsDestination) },
+            onClick = {
+                scope.launch {
+                    router.navigate(SettingsDestination)
+                    router.hideNavigationBoard()
+                }
+            }
         ) {
-            Text(text = stringResource(id = R.string.settings))
+            Icon(
+                Icons.Default.Settings,
+                contentDescription = stringResource(id = R.string.about)
+            )
         }
+
     }
 }
 
@@ -112,7 +159,7 @@ fun StorageNavigationBoard(modifier: Modifier = Modifier) {
 @Preview(showSystemUi = true, device = Devices.PIXEL_6)
 @Composable
 fun StorageNavigationBoardPreview() = AppTheme {
-    DI.hardReset()
+    DI.hardResetToPreview()
     DI.initPresenterModule(object : PresentersModule {
         override fun navigationBoardPresenter() = NavigationBoardPresenterDummy(
             hasCurrentStorage = true,
@@ -133,7 +180,7 @@ fun StorageNavigationBoardPreview() = AppTheme {
 @Preview(showSystemUi = true, device = Devices.PIXEL_6)
 @Composable
 fun StorageNavigationBoardNoCurrentPreview() = AppTheme {
-    DI.hardReset()
+    DI.hardResetToPreview()
     DI.initPresenterModule(object : PresentersModule {
         override fun navigationBoardPresenter() = NavigationBoardPresenterDummy(
             hasFavorites = true,
@@ -153,7 +200,7 @@ fun StorageNavigationBoardNoCurrentPreview() = AppTheme {
 @Preview(showSystemUi = true, device = Devices.PIXEL_6)
 @Composable
 fun StorageNavigationBoardEmptyPreview() = AppTheme {
-    DI.hardReset()
+    DI.hardResetToPreview()
     DI.initPresenterModule(object : PresentersModule {
         override fun navigationBoardPresenter() = NavigationBoardPresenterDummy()
     })

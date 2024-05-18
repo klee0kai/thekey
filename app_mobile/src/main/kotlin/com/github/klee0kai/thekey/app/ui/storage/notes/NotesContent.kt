@@ -21,7 +21,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.di.hardReset
+import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
@@ -108,7 +108,7 @@ fun NotesContent(
 @Preview(device = Devices.PIXEL_6, showSystemUi = true)
 @Composable
 fun NotesContentPreview() = AppTheme {
-    DI.hardReset()
+    DI.hardResetToPreview()
     DI.initPresenterModule(object : PresentersModule {
         override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterDummy()
     })

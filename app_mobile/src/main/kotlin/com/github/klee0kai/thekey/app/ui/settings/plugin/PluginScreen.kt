@@ -24,7 +24,7 @@ import androidx.constraintlayout.compose.Dimension
 import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.di.hardReset
+import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.features.model.DynamicFeature
 import com.github.klee0kai.thekey.app.features.model.InstallError
@@ -164,7 +164,7 @@ fun PluginScreen(
 @Preview(showSystemUi = true, device = Devices.PIXEL_6)
 @Composable
 fun PluginNotInstalledPreview() = AppTheme {
-    DI.hardReset()
+    DI.hardResetToPreview()
     DI.initPresenterModule(object : PresentersModule {
         override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {
             override val status = MutableStateFlow(NotInstalled)
@@ -177,7 +177,7 @@ fun PluginNotInstalledPreview() = AppTheme {
 @Preview(showSystemUi = true, device = Devices.PIXEL_6)
 @Composable
 fun PluginBuyPreview() = AppTheme {
-    DI.hardReset()
+    DI.hardResetToPreview()
     DI.initPresenterModule(object : PresentersModule {
         override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {
             override val status = MutableStateFlow(NotInstalled)
@@ -196,7 +196,7 @@ fun PluginBuyPreview() = AppTheme {
 @Preview(showSystemUi = true, device = Devices.PIXEL_6)
 @Composable
 fun PluginInstallingPreview() = AppTheme {
-    DI.hardReset()
+    DI.hardResetToPreview()
     DI.initPresenterModule(object : PresentersModule {
         override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {
             override val status = MutableStateFlow(Installing(0.3f))
@@ -209,7 +209,7 @@ fun PluginInstallingPreview() = AppTheme {
 @Preview(showSystemUi = true, device = Devices.PIXEL_6)
 @Composable
 fun PluginInstalledPreview() = AppTheme {
-    DI.hardReset()
+    DI.hardResetToPreview()
     DI.initPresenterModule(object : PresentersModule {
         override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {
             override val status = MutableStateFlow(Installed)
@@ -222,7 +222,7 @@ fun PluginInstalledPreview() = AppTheme {
 @Preview(showSystemUi = true, device = Devices.PIXEL_6)
 @Composable
 fun PluginInstallErrorPreview() = AppTheme {
-    DI.hardReset()
+    DI.hardResetToPreview()
     DI.initPresenterModule(object : PresentersModule {
         override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {
             override val status = MutableStateFlow(InstallError)

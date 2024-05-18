@@ -89,4 +89,9 @@
     <string name="storage_auto_search">Storages Auto Search</string>
     <string name="try_again">Try again</string>
     <string name="buy">Buy</string>
+    <string name="about">About</string>
+    <string name="make_operations">Make operations</string>
+    <string name="version">Version: %1$s</string>
+    <string name="developer">Developer</string>
+    <string name="designer">Designer</string>
 </resources>

@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.di.hardReset
+import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
@@ -152,7 +152,7 @@ fun NotesListContent(
 @Preview
 @Composable
 fun NotesListContentPreview() = AppTheme {
-    DI.hardReset()
+    DI.hardResetToPreview()
     DI.initPresenterModule(object : PresentersModule {
         override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterDummy()
     })
@@ -166,7 +166,7 @@ fun NotesListContentPreview() = AppTheme {
 @Preview
 @Composable
 fun NotesListContentTitlePreview() = AppTheme {
-    DI.hardReset()
+    DI.hardResetToPreview()
     DI.initPresenterModule(object : PresentersModule {
         override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterDummy()
     })
