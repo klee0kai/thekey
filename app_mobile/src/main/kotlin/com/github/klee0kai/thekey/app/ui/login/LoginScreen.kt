@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
@@ -38,6 +39,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
 import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.app.ui.designkit.text.AppTextField
 import com.github.klee0kai.thekey.app.ui.login.presenter.LoginPresenter
+import com.github.klee0kai.thekey.app.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
 import com.github.klee0kai.thekey.app.utils.views.toAnnotationString
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -195,10 +197,15 @@ fun LoginScreen() {
 
 }
 
+@OptIn(DebugOnly::class)
 @VisibleForTesting
-@Preview(device = Devices.PIXEL_6, showSystemUi = true)
+@Preview(
+    device = Devices.PIXEL_6,
+    showSystemUi = true
+)
 @Composable
 fun LoginScreenPreview() = AppTheme {
+    DI.hardResetToPreview()
     DI.initPresenterModule(
         object : PresentersModule {
             override fun loginPresenter(): LoginPresenter {
@@ -211,10 +218,12 @@ fun LoginScreenPreview() = AppTheme {
     LoginScreen()
 }
 
+@OptIn(DebugOnly::class)
 @VisibleForTesting
 @Preview(device = Devices.TABLET, showSystemUi = true)
 @Composable
 fun LoginScreenTabletPreview() = AppTheme {
+    DI.hardResetToPreview()
     DI.initPresenterModule(
         object : PresentersModule {
             override fun loginPresenter(): LoginPresenter {

@@ -9,6 +9,7 @@ crashlytics-gradle = "2.9.9"
 
 androidx-core = "1.13.1"
 androidx-lifecycle = "2.7.0"
+androidx-activity = "1.9.0"
 
 firebase-bom = "33.0.0"
 
@@ -44,6 +45,8 @@ brooklyn-gradle = { group = "com.github.klee0kai.brooklyn", name = "brooklyn-plu
 paparazzi-gradle = { group = "app.cash.paparazzi", name = "paparazzi-gradle-plugin", version.ref = "paparazzi" }
 
 androidx-core = { group = "androidx.core", name = "core-ktx", version.ref = "androidx-core" }
+# https://developer.android.com/jetpack/androidx/releases/activity
+androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "androidx-activity" }
 androidx-lifecycle = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "androidx-lifecycle" }
 
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
@@ -97,7 +100,7 @@ compose-test = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 
 [bundles]
 
-androidx = ["androidx-core", "androidx-lifecycle"]
+androidx = ["androidx-core", "androidx-lifecycle", "androidx-activity"]
 firebase = ["firebase-analytics", "firebase-crashlytics"]
 compose = ["compose-activity", "compose-ui", "compose-graphics",
     "compose-m3", "compose-constraintlayout", "compose-wear", "compose-nav", "compose-shimmer"]

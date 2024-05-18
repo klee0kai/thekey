@@ -39,11 +39,9 @@ android {
 dependencies {
     implementation(project(":app_mobile"))
 
-    implementation(libs.androidx.core)
-    implementation(libs.androidx.lifecycle)
-
     implementation(libs.bundles.compose)
     implementation(libs.bundles.compose.debug)
+    implementation(libs.bundles.androidx)
 
     implementation(libs.jetbrain.immutable)
     implementation(libs.jetbrain.coroutines)

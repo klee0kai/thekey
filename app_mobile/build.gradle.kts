@@ -107,9 +107,6 @@ brooklynTaskOrdering()
 dependencies {
     commercialImplementation { project(":private:feature_firebase") }
 
-    implementation(libs.androidx.core)
-    implementation(libs.androidx.lifecycle)
-
     implementation(libs.compose.bom)
     implementation(libs.bundles.compose)
     implementation(libs.bundles.compose.debug)
