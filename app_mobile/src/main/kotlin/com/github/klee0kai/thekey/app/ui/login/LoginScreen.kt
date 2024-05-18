@@ -40,6 +40,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
 import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarStates
+import com.github.klee0kai.thekey.app.ui.designkit.preview.PreviewDevices
 import com.github.klee0kai.thekey.app.ui.designkit.text.AppTextField
 import com.github.klee0kai.thekey.app.ui.login.presenter.LoginPresenter
 import com.github.klee0kai.thekey.app.utils.annotations.DebugOnly
@@ -72,6 +73,14 @@ fun LoginScreen() {
             router.isNavigationBoardIsOpen() -> scope.launch { router.hideNavigationBoard() }
         }
     }
+
+    AppBarStates(
+        navigationIcon = {
+            IconButton(onClick = { scope.launch { router.showNavigationBoard() } }) {
+                Icon(Icons.Filled.Menu, contentDescription = null)
+            }
+        }
+    )
 
     ConstraintLayout(
         modifier = Modifier
@@ -199,19 +208,13 @@ fun LoginScreen() {
         }
     }
 
-    AppBarStates(
-        navigationIcon = {
-            IconButton(onClick = { scope.launch { router.showNavigationBoard() } }) {
-                Icon(Icons.Filled.Menu, contentDescription = null)
-            }
-        }
-    )
+
 
 }
 
 @OptIn(DebugOnly::class)
 @VisibleForTesting
-@Preview(device = Devices.PIXEL_6)
+@Preview(device = Devices.PHONE)
 @Composable
 fun LoginScreenPreview() = EdgeToEdgeTemplate {
     AppTheme {
@@ -229,9 +232,30 @@ fun LoginScreenPreview() = EdgeToEdgeTemplate {
     }
 }
 
+
 @OptIn(DebugOnly::class)
 @VisibleForTesting
-@Preview(device = Devices.TABLET)
+@Preview(device = PreviewDevices.PNOTE_LAND)
+@Composable
+fun LoginLangScreenPreview() = EdgeToEdgeTemplate {
+    AppTheme {
+        DI.hardResetToPreview()
+        DI.initPresenterModule(
+            object : PresentersModule {
+                override fun loginPresenter(): LoginPresenter {
+                    return object : LoginPresenter {
+                        override val currentStorageFlow = MutableStateFlow(ColoredStorage(path = "/app_folder/some_path", name = "editModeStorage"))
+                    }
+                }
+            }
+        )
+        LoginScreen()
+    }
+}
+
+@OptIn(DebugOnly::class)
+@VisibleForTesting
+@Preview(device = Devices.PHONE)
 @Composable
 fun LoginScreenTabletPreview() = EdgeToEdgeTemplate {
     AppTheme {

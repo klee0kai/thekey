@@ -8,7 +8,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -49,11 +48,7 @@ fun MainNavContainer() {
     ModalNavigationDrawer(
         drawerState = LocalRouter.current.navBoardState,
         drawerContent = {
-            StorageNavigationBoard(
-                modifier = Modifier
-                    .fillMaxWidth(0.7f)
-                    .fillMaxHeight()
-            )
+            StorageNavigationBoard()
         }
     ) {
         // screens

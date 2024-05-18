@@ -1,11 +1,14 @@
 package com.github.klee0kai.thekey.app.ui.navigationboard
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.safeContent
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
@@ -39,6 +42,8 @@ import com.github.klee0kai.thekey.app.ui.navigationboard.presenter.NavigationBoa
 import com.github.klee0kai.thekey.app.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.app.utils.views.collectAsStateCrossFaded
 import com.github.klee0kai.thekey.app.utils.views.rememberOnScreenRef
+import com.github.klee0kai.thekey.app.utils.views.truncate
+import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.launch
 import org.jetbrains.annotations.VisibleForTesting
 
@@ -52,7 +57,8 @@ fun StorageNavigationBoard(modifier: Modifier = Modifier) {
 
     ConstraintLayout(
         modifier = modifier
-            .fillMaxSize()
+            .width(300.dp)
+            .fillMaxHeight()
             .background(colorScheme.bodyContentColor),
     ) {
         val (
@@ -68,6 +74,7 @@ fun StorageNavigationBoard(modifier: Modifier = Modifier) {
                     .fillMaxWidth()
                     .defaultMinSize(minHeight = 150.dp)
                     .background(colorScheme.headerContainerColor)
+                    .windowInsetsPadding(WindowInsets.safeDrawing.truncate(bottom = true))
                     .constrainAs(headerLayout) { },
                 storage = currentStorage.current ?: ColoredStorage(),
             )
@@ -77,6 +84,7 @@ fun StorageNavigationBoard(modifier: Modifier = Modifier) {
                     .fillMaxWidth()
                     .defaultMinSize(minHeight = 150.dp)
                     .background(colorScheme.headerContainerColor)
+                    .windowInsetsPadding(WindowInsets.safeDrawing.truncate(bottom = true))
                     .constrainAs(headerLayout) { },
             )
         }
@@ -99,6 +107,7 @@ fun StorageNavigationBoard(modifier: Modifier = Modifier) {
         IconButton(
             modifier = Modifier
                 .defaultMinSize(64.dp, 64.dp)
+                .windowInsetsPadding(WindowInsets.safeContent.truncate(top = true))
                 .constrainAs(aboutButtonField) {
                     horizontalChainWeight = 1f
 
@@ -127,6 +136,7 @@ fun StorageNavigationBoard(modifier: Modifier = Modifier) {
         IconButton(
             modifier = Modifier
                 .defaultMinSize(64.dp, 64.dp)
+                .windowInsetsPadding(WindowInsets.safeContent.truncate(top = true))
                 .constrainAs(settingsButtonField) {
                     horizontalChainWeight = 1f
                     linkTo(
@@ -156,59 +166,64 @@ fun StorageNavigationBoard(modifier: Modifier = Modifier) {
 
 @VisibleForTesting
 @OptIn(DebugOnly::class)
-@Preview(showSystemUi = true, device = Devices.PIXEL_6)
+@Preview(device = Devices.PIXEL_6)
 @Composable
-fun StorageNavigationBoardPreview() = AppTheme {
-    DI.hardResetToPreview()
-    DI.initPresenterModule(object : PresentersModule {
-        override fun navigationBoardPresenter() = NavigationBoardPresenterDummy(
-            hasCurrentStorage = true,
-            hasFavorites = true,
-        )
-    })
-    Box(
-        modifier = Modifier
-            .fillMaxHeight()
-            .fillMaxWidth(0.7f)
-    ) {
+fun StorageNavigationBoardPreview() = EdgeToEdgeTemplate {
+    AppTheme {
+        DI.hardResetToPreview()
+        DI.initPresenterModule(object : PresentersModule {
+            override fun navigationBoardPresenter() = NavigationBoardPresenterDummy(
+                hasCurrentStorage = true,
+                hasFavorites = true,
+            )
+        })
+        StorageNavigationBoard()
+    }
+}
+
+
+@VisibleForTesting
+@OptIn(DebugOnly::class)
+@Preview(device = Devices.PHONE)
+@Composable
+fun StorageNavigationBoardNoCurrentPreview() = EdgeToEdgeTemplate {
+    AppTheme {
+        DI.hardResetToPreview()
+        DI.initPresenterModule(object : PresentersModule {
+            override fun navigationBoardPresenter() = NavigationBoardPresenterDummy(
+                hasFavorites = true,
+            )
+        })
+
         StorageNavigationBoard()
     }
 }
 
 @VisibleForTesting
 @OptIn(DebugOnly::class)
-@Preview(showSystemUi = true, device = Devices.PIXEL_6)
+@Preview(device = Devices.PHONE)
 @Composable
-fun StorageNavigationBoardNoCurrentPreview() = AppTheme {
-    DI.hardResetToPreview()
-    DI.initPresenterModule(object : PresentersModule {
-        override fun navigationBoardPresenter() = NavigationBoardPresenterDummy(
-            hasFavorites = true,
-        )
-    })
-    Box(
-        modifier = Modifier
-            .fillMaxHeight()
-            .fillMaxWidth(0.7f)
-    ) {
+fun StorageNavigationBoardEmptyPreview() = EdgeToEdgeTemplate {
+    AppTheme {
+        DI.hardResetToPreview()
+        DI.initPresenterModule(object : PresentersModule {
+            override fun navigationBoardPresenter() = NavigationBoardPresenterDummy()
+        })
         StorageNavigationBoard()
     }
 }
 
+
 @VisibleForTesting
 @OptIn(DebugOnly::class)
-@Preview(showSystemUi = true, device = Devices.PIXEL_6)
+@Preview(device = Devices.TABLET)
 @Composable
-fun StorageNavigationBoardEmptyPreview() = AppTheme {
-    DI.hardResetToPreview()
-    DI.initPresenterModule(object : PresentersModule {
-        override fun navigationBoardPresenter() = NavigationBoardPresenterDummy()
-    })
-    Box(
-        modifier = Modifier
-            .fillMaxHeight()
-            .fillMaxWidth(0.7f)
-    ) {
+fun StorageNavigationBoardTabletPreview() = EdgeToEdgeTemplate {
+    AppTheme {
+        DI.hardResetToPreview()
+        DI.initPresenterModule(object : PresentersModule {
+            override fun navigationBoardPresenter() = NavigationBoardPresenterDummy()
+        })
         StorageNavigationBoard()
     }
 }
