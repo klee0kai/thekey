@@ -25,6 +25,7 @@ import com.github.klee0kai.thekey.app.ui.notegroup.presenter.EditNoteGroupsPrese
 import com.github.klee0kai.thekey.app.utils.common.Dummy
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
 import com.github.klee0kai.thekey.app.utils.views.rememberOnScreenRef
+import org.jetbrains.annotations.VisibleForTesting
 
 
 @Composable
@@ -64,6 +65,7 @@ fun NoteSelectToGroupComponent(
     }
 }
 
+@VisibleForTesting
 @Preview
 @Composable
 fun NoteSelectToGroupComponentPreview() = AppTheme {

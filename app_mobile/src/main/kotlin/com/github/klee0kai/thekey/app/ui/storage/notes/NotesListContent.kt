@@ -4,8 +4,11 @@ package com.github.klee0kai.thekey.app.ui.storage.notes
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.MaterialTheme
@@ -25,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
@@ -34,10 +38,16 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.app.ui.navigation.note
 import com.github.klee0kai.thekey.app.ui.navigation.otpNote
 import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenterDummy
+import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenterLongListDummy
+import com.github.klee0kai.thekey.app.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.app.utils.views.animateContentSizeProduction
+import com.github.klee0kai.thekey.app.utils.views.bottomDp
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
 import com.github.klee0kai.thekey.app.utils.views.rememberOnScreenRef
+import de.drick.compose.edgetoedgepreviewlib.CameraCutoutMode
+import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
+import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
 fun NotesListContent(
@@ -57,6 +67,7 @@ fun NotesListContent(
         modifier = modifier
             .fillMaxSize()
             .animateContentSizeProduction(),
+        contentPadding = PaddingValues(bottom = WindowInsets.safeContent.bottomDp)
     ) {
         item {
             Text(
@@ -144,25 +155,59 @@ fun NotesListContent(
     }
 }
 
-
+@OptIn(DebugOnly::class)
+@VisibleForTesting
 @Preview
 @Composable
-private fun NotesListContentPreview() = AppTheme {
-    DI.initPresenterModule(object : PresentersModule {
-        override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterDummy()
-    })
-    NotesListContent(
-        showStoragesTitle = false,
-    )
+fun NotesListContentPreview() = EdgeToEdgeTemplate(
+    isStatusBarVisible = false,
+    cameraCutoutMode = CameraCutoutMode.None,
+) {
+    AppTheme {
+        DI.hardResetToPreview()
+        DI.initPresenterModule(object : PresentersModule {
+            override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterDummy()
+        })
+        NotesListContent(
+            showStoragesTitle = false,
+        )
+    }
 }
 
+@OptIn(DebugOnly::class)
+@VisibleForTesting
 @Preview
 @Composable
-private fun NotesListContentTitlePreview() = AppTheme {
-    DI.initPresenterModule(object : PresentersModule {
-        override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterDummy()
-    })
-    NotesListContent(
-        showStoragesTitle = true,
-    )
+fun NotesLongListContentPreview() = EdgeToEdgeTemplate(
+    isStatusBarVisible = false,
+    cameraCutoutMode = CameraCutoutMode.None,
+) {
+    AppTheme {
+        DI.hardResetToPreview()
+        DI.initPresenterModule(object : PresentersModule {
+            override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterLongListDummy(notesCount = 20)
+        })
+        NotesListContent(
+            showStoragesTitle = false,
+        )
+    }
+}
+
+@OptIn(DebugOnly::class)
+@VisibleForTesting
+@Preview
+@Composable
+fun NotesListContentTitlePreview() = EdgeToEdgeTemplate(
+    isStatusBarVisible = false,
+    cameraCutoutMode = CameraCutoutMode.None,
+) {
+    AppTheme {
+        DI.hardResetToPreview()
+        DI.initPresenterModule(object : PresentersModule {
+            override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterDummy()
+        })
+        NotesListContent(
+            showStoragesTitle = true,
+        )
+    }
 }

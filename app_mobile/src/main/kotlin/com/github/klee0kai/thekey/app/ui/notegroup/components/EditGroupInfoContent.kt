@@ -12,9 +12,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,10 +24,11 @@ import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
 import com.github.klee0kai.thekey.app.ui.designkit.color.KeyColor
-import com.github.klee0kai.thekey.app.ui.designkit.color.transparentColorScheme
 import com.github.klee0kai.thekey.app.ui.designkit.components.LazyListIndicatorIfNeed
 import com.github.klee0kai.thekey.app.ui.designkit.components.buttons.GroupCircle
 import com.github.klee0kai.thekey.app.ui.designkit.components.scrollPosition
+import com.github.klee0kai.thekey.app.ui.designkit.text.AppTextField
+import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
 fun EditGroupInfoContent(
@@ -124,7 +123,7 @@ fun EditGroupInfoContent(
             }
         }
 
-        OutlinedTextField(
+        AppTextField(
             modifier = groupNameFieldModifier
                 .wrapContentHeight()
                 .width(224.dp)
@@ -142,25 +141,26 @@ fun EditGroupInfoContent(
                 },
 
             label = { Text(modifier = Modifier, text = stringResource(R.string.group_symbol)) },
-            colors = TextFieldDefaults.transparentColorScheme(),
             value = groupName,
-            onValueChange = onChangeGroupName
+            onValueChange = onChangeGroupName,
+            colors = LocalColorScheme.current.transparentTextFieldColors,
         )
     }
 }
 
-
+@VisibleForTesting
 @Preview
 @Composable
-private fun EditGroupInfoContentPreview() = AppTheme {
+fun EditGroupInfoContentPreview() = AppTheme {
     EditGroupInfoContent(
         forceIndicatorVisible = true,
     )
 }
 
+@VisibleForTesting
 @Preview
 @Composable
-private fun EditGroupInfoContentInBoxPreview() = AppTheme {
+fun EditGroupInfoContentInBoxPreview() = AppTheme {
     Box(modifier = Modifier.fillMaxSize()) {
         EditGroupInfoContent(
             modifier = Modifier.align(Alignment.Center),

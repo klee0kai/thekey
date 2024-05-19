@@ -6,7 +6,6 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -15,6 +14,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
+import com.github.klee0kai.thekey.app.ui.designkit.text.AppTextField
+import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
 fun DropDownField(
@@ -31,7 +32,7 @@ fun DropDownField(
         onExpandedChange = onExpandedChange,
         modifier = modifier,
     ) {
-        OutlinedTextField(
+        AppTextField(
             modifier = Modifier
                 .menuAnchor(),
             readOnly = true,
@@ -62,9 +63,10 @@ fun DropDownField(
     }
 }
 
+@VisibleForTesting
 @Preview
 @Composable
-private fun DropDownFieldEmptyPreview() = AppTheme {
+fun DropDownFieldEmptyPreview() = AppTheme {
     DropDownField(
         selectedIndex = 0,
         variants = emptyList(),
@@ -72,9 +74,10 @@ private fun DropDownFieldEmptyPreview() = AppTheme {
     )
 }
 
+@VisibleForTesting
 @Preview
 @Composable
-private fun DropDownFieldSelectedPreview() = AppTheme {
+fun DropDownFieldSelectedPreview() = AppTheme {
     DropDownField(
         selectedIndex = 1,
         variants = listOf(
@@ -85,9 +88,10 @@ private fun DropDownFieldSelectedPreview() = AppTheme {
     )
 }
 
+@VisibleForTesting
 @Preview
 @Composable
-private fun DropDownFieldExpandedPreview() = AppTheme {
+fun DropDownFieldExpandedPreview() = AppTheme {
     DropDownField(
         selectedIndex = 1,
         expanded = true,

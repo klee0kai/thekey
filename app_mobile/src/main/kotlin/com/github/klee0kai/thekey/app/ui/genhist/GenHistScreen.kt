@@ -1,7 +1,10 @@
 package com.github.klee0kai.thekey.app.ui.genhist
 
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContent
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -32,7 +35,9 @@ import com.github.klee0kai.thekey.app.ui.navigation.storageIdentifier
 import com.github.klee0kai.thekey.app.utils.common.Dummy
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
 import com.github.klee0kai.thekey.app.utils.views.rememberOnScreenRef
+import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.flow.MutableStateFlow
+import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
 fun GenHistScreen(
@@ -53,13 +58,14 @@ fun GenHistScreen(
         },
     ) { Text(text = stringResource(id = R.string.gen_history)) }
 
-    ConstraintLayout(
-        modifier = Modifier
-            .padding(top = AppBarConst.appBarSize)
-            .fillMaxSize()
-    ) {
+    ConstraintLayout {
+        LazyColumn(
+            modifier = Modifier
+                .windowInsetsPadding(WindowInsets.safeContent)
+                .padding(top = AppBarConst.appBarSize)
+                .fillMaxSize()
 
-        LazyColumn {
+        ) {
             hist?.forEach { passw ->
                 item {
                     HistPasswItem(passw = passw)
@@ -70,25 +76,25 @@ fun GenHistScreen(
     }
 }
 
-@Preview(
-    showSystemUi = true,
-    device = Devices.PIXEL_6,
-)
+@VisibleForTesting
+@Preview(device = Devices.PHONE)
 @Composable
-private fun GenHistScreenPreview() = AppTheme {
-    DI.initPresenterModule(object : PresentersModule {
-        override fun genHistPresenter(storageIdentifier: StorageIdentifier) = object : GenHistPresenter {
-            override val histFlow = MutableStateFlow(
-                listOf(
-                    HistPassw(Dummy.dummyId, passw = "#@1"),
-                    HistPassw(Dummy.dummyId, passw = "dsa#$@1"),
-                    HistPassw(Dummy.dummyId, passw = "dsa#d!@"),
-                    HistPassw(Dummy.dummyId),
-                    HistPassw(Dummy.dummyId),
-                    HistPassw(Dummy.dummyId, passw = "d2451"),
+fun GenHistScreenPreview() = EdgeToEdgeTemplate {
+    AppTheme {
+        DI.initPresenterModule(object : PresentersModule {
+            override fun genHistPresenter(storageIdentifier: StorageIdentifier) = object : GenHistPresenter {
+                override val histFlow = MutableStateFlow(
+                    listOf(
+                        HistPassw(Dummy.dummyId, passw = "#@1", isLoaded = true),
+                        HistPassw(Dummy.dummyId, passw = "dsa#$@1", isLoaded = true),
+                        HistPassw(Dummy.dummyId, passw = "dsa#d!@", isLoaded = true),
+                        HistPassw(Dummy.dummyId),
+                        HistPassw(Dummy.dummyId),
+                        HistPassw(Dummy.dummyId, passw = "d2451", isLoaded = true),
+                    )
                 )
-            )
-        }
-    })
-    GenHistScreen()
+            }
+        })
+        GenHistScreen()
+    }
 }

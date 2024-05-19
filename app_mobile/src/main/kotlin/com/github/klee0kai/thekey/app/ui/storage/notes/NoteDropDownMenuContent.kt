@@ -21,6 +21,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
 import com.github.klee0kai.thekey.app.ui.designkit.color.KeyColor
 import com.github.klee0kai.thekey.app.ui.designkit.components.buttons.GroupCircle
 import com.github.klee0kai.thekey.app.utils.common.Dummy
+import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
 fun ColumnScope.NoteDropDownMenuContent(
@@ -61,9 +62,10 @@ fun ColumnScope.NoteDropDownMenuContent(
 }
 
 
+@VisibleForTesting
 @Preview
 @Composable
-private fun NoteDropDownMenuWithGroupsPreview() = AppTheme {
+fun NoteDropDownMenuWithGroupsPreview() = AppTheme {
     Column {
         NoteDropDownMenuContent(
             selectedGroupId = 1L,
@@ -81,9 +83,10 @@ private fun NoteDropDownMenuWithGroupsPreview() = AppTheme {
 }
 
 
+@VisibleForTesting
 @Preview
 @Composable
-private fun NoteDropDownMenuNoPreview() = AppTheme {
+fun NoteDropDownMenuNoPreview() = AppTheme {
     Column {
         NoteDropDownMenuContent()
     }

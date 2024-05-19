@@ -1,5 +1,6 @@
 package com.github.klee0kai.thekey.app.ui.settings.plugin
 
+import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -11,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
+import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 
 @Composable
 fun PluginApplyingScreen(
@@ -39,8 +41,11 @@ fun PluginApplyingScreen(
     }
 }
 
-@Preview(showSystemUi = true, device = Devices.PIXEL_6)
+@VisibleForTesting
+@Preview(device = Devices.PHONE)
 @Composable
-private fun PluginApplyingScreenPreview() = AppTheme {
-    PluginApplyingScreen()
+fun PluginApplyingScreenPreview() = EdgeToEdgeTemplate {
+    AppTheme {
+        PluginApplyingScreen()
+    }
 }

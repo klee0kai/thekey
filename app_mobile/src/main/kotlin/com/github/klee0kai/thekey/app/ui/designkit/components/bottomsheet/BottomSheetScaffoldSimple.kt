@@ -15,7 +15,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.BottomSheetScaffold
+import androidx.compose.material3.BottomSheetScaffoldState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -26,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
@@ -35,37 +38,37 @@ import com.github.klee0kai.thekey.app.utils.views.accelerateDecelerate
 import com.github.klee0kai.thekey.app.utils.views.pxToDp
 import com.github.klee0kai.thekey.app.utils.views.ratioBetween
 import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
+import org.jetbrains.annotations.VisibleForTesting
 
 internal object SimpleScaffoldConst {
     val dragHandleSize = 48.dp
 }
 
-
 @Composable
 fun SimpleBottomSheetScaffold(
     modifier: Modifier = Modifier,
-    simpleBottomSheetScaffoldState: SimpleBottomSheetScaffoldState = rememberSimpleBottomSheetScaffoldState(),
+    topContentSize: Dp = 190.dp,
+    topMargin: Dp = 0.dp,
+    scaffoldState: BottomSheetScaffoldState = rememberBottomSheetScaffoldState(),
     onDrag: (Float) -> Unit = {},
     topContent: @Composable () -> Unit = {},
     sheetContent: @Composable () -> Unit = {},
 ) {
     val view = LocalView.current
     val colorScheme = LocalColorScheme.current.androidColorScheme
-    val appBarSize = simpleBottomSheetScaffoldState.appBarSize
-    val topContentSize = simpleBottomSheetScaffoldState.topContentSize
     val dragProgress = remember { mutableFloatStateOf(0f) }
 
     val viewHeight = view.height.pxToDp()
-    val sheetMinSize = remember(viewHeight, simpleBottomSheetScaffoldState) { maxOf(viewHeight - appBarSize - topContentSize, 0.dp) }
-    val sheetMaxSize = remember(viewHeight, simpleBottomSheetScaffoldState) { maxOf(viewHeight - appBarSize, 0.dp) }
+    val sheetMinSize = remember(viewHeight, topMargin, topContentSize) { maxOf(viewHeight - topMargin - topContentSize, 0.dp) }
+    val sheetMaxSize = remember(viewHeight, topMargin) { maxOf(viewHeight - topMargin, 0.dp) }
 
     val scaffoldTopOffset = runCatching {
-        simpleBottomSheetScaffoldState.scaffoldState.bottomSheetState.requireOffset().pxToDp()
+        scaffoldState.bottomSheetState.requireOffset().pxToDp()
     }.getOrElse { 0.dp }
 
     scaffoldTopOffset.ratioBetween(
-        start = appBarSize,
-        end = appBarSize + topContentSize
+        start = topMargin,
+        end = topMargin + topContentSize
     ).coerceIn(0f, 1f)
         .also { newDrag ->
             if (newDrag != dragProgress.floatValue) {
@@ -85,7 +88,7 @@ fun SimpleBottomSheetScaffold(
     CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
         BottomSheetScaffold(
             modifier = modifier,
-            scaffoldState = simpleBottomSheetScaffoldState.scaffoldState,
+            scaffoldState = scaffoldState,
             sheetPeekHeight = sheetMinSize,
             sheetMaxWidth = view.width.pxToDp(),
             contentColor = colorScheme.onBackground,
@@ -94,7 +97,7 @@ fun SimpleBottomSheetScaffold(
                 Box(
                     modifier = Modifier
                         .padding(innerPadding)
-                        .padding(top = appBarSize)
+                        .padding(top = topMargin)
                         .fillMaxWidth()
                         .height(topContentSize)
                 ) {
@@ -135,13 +138,14 @@ fun SimpleBottomSheetScaffold(
 }
 
 
+@VisibleForTesting
 @Preview
 @Composable
 fun SimpleBottomSheetScaffoldPreview() = AppTheme {
     SimpleBottomSheetScaffold()
 }
 
-
+@VisibleForTesting
 @Preview
 @Composable
 fun SimpleBottomSheetScaffoldTopContentPreview() = AppTheme {
@@ -157,13 +161,13 @@ fun SimpleBottomSheetScaffoldTopContentPreview() = AppTheme {
     )
 }
 
-
+@VisibleForTesting
 @Preview
 @Composable
 fun SimpleBottomSheetScaffoldTopContent2Preview() = AppTheme {
-    val state = rememberSimpleBottomSheetScaffoldState(topContentSize = 190.dp, appBarSize = AppBarConst.appBarSize)
     SimpleBottomSheetScaffold(
-        simpleBottomSheetScaffoldState = state,
+        topContentSize = 190.dp,
+        topMargin = AppBarConst.appBarSize,
         topContent = {
             Box(
                 modifier = Modifier

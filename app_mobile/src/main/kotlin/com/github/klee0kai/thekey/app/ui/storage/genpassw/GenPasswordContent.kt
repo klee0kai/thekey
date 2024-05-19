@@ -32,6 +32,7 @@ import androidx.constraintlayout.compose.Dimension
 import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
@@ -42,11 +43,13 @@ import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.model.GenPasswState
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.presenter.GenPasswPresenter
+import com.github.klee0kai.thekey.app.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.app.utils.common.Dummy
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
 import com.github.klee0kai.thekey.app.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.app.utils.views.rememberTargetCrossFaded
 import kotlinx.coroutines.flow.MutableStateFlow
+import org.jetbrains.annotations.VisibleForTesting
 
 
 @Composable
@@ -219,7 +222,7 @@ fun GenPasswordContent(
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 },
-            colors = LocalColorScheme.current.textButtonColors,
+            colors = LocalColorScheme.current.grayTextButtonColors,
             onClick = {
                 presenter?.generatePassw()
             },
@@ -235,7 +238,7 @@ fun GenPasswordContent(
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 },
-            colors = LocalColorScheme.current.textButtonColors,
+            colors = LocalColorScheme.current.grayTextButtonColors,
             onClick = { router.navigate(dest.genHist()) }
         ) { Text(stringResource(R.string.hist)) }
 
@@ -260,9 +263,12 @@ fun GenPasswordContent(
 }
 
 
-@Preview(device = Devices.PIXEL_6, showSystemUi = true)
+@OptIn(DebugOnly::class)
+@VisibleForTesting
+@Preview(device = Devices.PHONE)
 @Composable
-private fun GenPasswordContentPreview() = AppTheme {
+fun GenPasswordContentPreview() = AppTheme {
+    DI.hardResetToPreview()
     DI.initPresenterModule(object : PresentersModule {
         override fun genPasswPresente(storageIdentifier: StorageIdentifier) = object : GenPasswPresenter {
             override val state = MutableStateFlow(

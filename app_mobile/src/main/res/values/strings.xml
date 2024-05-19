@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">TheKey</string>
+    <string name="title_qrcodescanner">QR Code Scanner</string>
+    <string name="desc_qrcodescanner">Scan QR code to add OTP passwords.</string>
+
     <string name="login">Login</string>
     <string name="password">Password</string>
     <string name="app_login_description">Create and remember your passport for your key masster storage</string>
@@ -70,13 +73,8 @@
     <string name="current_storage">Current Storage</string>
     <string name="favorites">Favorites</string>
     <string name="openned">Openned</string>
-    <string name="camera_permission">Camera permission</string>
-    <string name="camera_error">Camera Error</string>
-    <string name="camera_starting">starting...</string>
     <string name="otpnote_is_empty">Otp is Empty</string>
     <string name="confirm_delete_otp">Confirm delete OTP</string>
-    <string name="title_qrcodescanner">QR Code Scanner</string>
-    <string name="desc_qrcodescanner">Scan QR code to add OTP passwords.</string>
     <string name="settings">Settings</string>
     <string name="plugins">Plugins</string>
     <string name="feature">Feature</string>
@@ -91,4 +89,10 @@
     <string name="storage_auto_search">Storages Auto Search</string>
     <string name="try_again">Try again</string>
     <string name="buy">Buy</string>
+    <string name="about">About</string>
+    <string name="make_operations">Make operations</string>
+    <string name="version">Version: %1$s</string>
+    <string name="developer">Developer</string>
+    <string name="designer">Designer</string>
+    <string name="done">Done</string>
 </resources>

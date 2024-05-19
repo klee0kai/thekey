@@ -8,15 +8,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.navigationboard.presenter.NavigationBoardPresenterDummy
+import com.github.klee0kai.thekey.app.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
 import com.github.klee0kai.thekey.app.utils.views.rememberOnScreenRef
 
@@ -37,7 +40,8 @@ fun StorageNavigationMapList(
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 16.dp, top = 30.dp, bottom = 4.dp),
+                        .padding(start = 16.dp, top = 30.dp, bottom = 4.dp)
+                        .alpha(0.4f),
                     text = stringResource(id = R.string.openned)
                 )
             }
@@ -56,7 +60,8 @@ fun StorageNavigationMapList(
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 16.dp, top = 30.dp, bottom = 4.dp),
+                        .padding(start = 16.dp, top = 30.dp, bottom = 4.dp)
+                        .alpha(0.4f),
                     text = stringResource(id = R.string.favorites)
                 )
             }
@@ -74,9 +79,11 @@ fun StorageNavigationMapList(
 }
 
 
+@OptIn(DebugOnly::class)
 @Preview
 @Composable
 private fun NavigationMapListPreview() = AppTheme {
+    DI.hardResetToPreview()
     DI.initPresenterModule(object : PresentersModule {
         override fun navigationBoardPresenter() = NavigationBoardPresenterDummy(
             hasOpened = true,

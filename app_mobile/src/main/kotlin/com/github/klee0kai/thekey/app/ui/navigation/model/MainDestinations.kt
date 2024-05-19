@@ -110,6 +110,9 @@ data class EditNoteGroupDestination(
 ) : Destination
 
 @Parcelize
+data object AboutDestination : Destination
+
+@Parcelize
 data object SettingsDestination : Destination
 
 @Parcelize
@@ -122,3 +125,4 @@ data class PluginDestination(
 
 @Parcelize
 data object QRCodeScanDestination : DynamicDestination(DynamicFeature.qrcodeScanner())
+

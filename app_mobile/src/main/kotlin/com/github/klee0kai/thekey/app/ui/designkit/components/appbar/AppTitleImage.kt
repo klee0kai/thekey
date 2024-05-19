@@ -14,6 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
+import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
 fun AppTitleImage(
@@ -27,9 +28,10 @@ fun AppTitleImage(
     )
 }
 
+@VisibleForTesting
 @Composable
 @Preview
-private fun AppBarTitlePreview() = AppTheme {
+fun AppBarTitlePreview2() = AppTheme {
     AppBarStates(
         navigationIcon = {
             IconButton(onClick = { }) {

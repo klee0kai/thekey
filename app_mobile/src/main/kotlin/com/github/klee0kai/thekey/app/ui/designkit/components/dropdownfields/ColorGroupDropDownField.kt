@@ -7,7 +7,6 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -18,6 +17,7 @@ import com.github.klee0kai.thekey.app.domain.model.ColorGroup
 import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
 import com.github.klee0kai.thekey.app.ui.designkit.color.KeyColor
 import com.github.klee0kai.thekey.app.ui.designkit.components.buttons.GroupCircle
+import com.github.klee0kai.thekey.app.ui.designkit.text.AppTextField
 
 @Preview
 @Composable
@@ -35,7 +35,7 @@ fun ColorGroupDropDownField(
         onExpandedChange = onExpandedChange,
         modifier = modifier,
     ) {
-        OutlinedTextField(
+        AppTextField(
             modifier = Modifier
                 .menuAnchor(),
             readOnly = true,
