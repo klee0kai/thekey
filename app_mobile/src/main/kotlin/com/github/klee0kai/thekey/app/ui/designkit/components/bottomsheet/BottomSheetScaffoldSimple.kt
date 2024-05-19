@@ -17,7 +17,6 @@ import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.BottomSheetScaffoldState
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -47,6 +46,7 @@ internal object SimpleScaffoldConst {
 @Composable
 fun SimpleBottomSheetScaffold(
     modifier: Modifier = Modifier,
+    topContentModifier: Modifier = Modifier,
     topContentSize: Dp = 190.dp,
     topMargin: Dp = 0.dp,
     scaffoldState: BottomSheetScaffoldState = rememberSafeBottomSheetScaffoldState(),
@@ -95,7 +95,7 @@ fun SimpleBottomSheetScaffold(
             containerColor = colorScheme.background,
             content = { innerPadding ->
                 Box(
-                    modifier = Modifier
+                    modifier = topContentModifier
                         .padding(innerPadding)
                         .padding(top = topMargin)
                         .fillMaxWidth()

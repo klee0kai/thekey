@@ -24,7 +24,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -69,7 +68,6 @@ fun GenPasswordContent(
 
     ConstraintLayout(
         modifier = modifier
-            .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
@@ -265,7 +263,7 @@ fun GenPasswordContent(
 
 @OptIn(DebugOnly::class)
 @VisibleForTesting
-@Preview(device = Devices.PHONE)
+@Preview
 @Composable
 fun GenPasswordContentPreview() = AppTheme {
     DI.hardResetToPreview()
