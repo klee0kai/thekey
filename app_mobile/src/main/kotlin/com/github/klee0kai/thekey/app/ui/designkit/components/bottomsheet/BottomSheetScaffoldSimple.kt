@@ -49,7 +49,7 @@ fun SimpleBottomSheetScaffold(
     modifier: Modifier = Modifier,
     topContentSize: Dp = 190.dp,
     topMargin: Dp = 0.dp,
-    scaffoldState: BottomSheetScaffoldState = rememberBottomSheetScaffoldState(),
+    scaffoldState: BottomSheetScaffoldState = rememberSafeBottomSheetScaffoldState(),
     onDrag: (Float) -> Unit = {},
     topContent: @Composable () -> Unit = {},
     sheetContent: @Composable () -> Unit = {},
