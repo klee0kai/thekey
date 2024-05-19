@@ -6,7 +6,6 @@ import com.android.build.api.dsl.CommonExtension
 import com.android.build.api.dsl.DefaultConfig
 import com.android.build.api.dsl.Installation
 import com.android.build.api.dsl.ProductFlavor
-import org.gradle.api.Project
 import org.gradle.api.artifacts.dsl.DependencyHandler
 
 object Commercial {

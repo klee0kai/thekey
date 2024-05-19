@@ -10,7 +10,6 @@ import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import java.io.File
-import java.io.IOException
 import java.util.Properties
 
 fun BaseAppModuleExtension.appDefaults(namespace: String, project: Project) {
@@ -18,8 +17,8 @@ fun BaseAppModuleExtension.appDefaults(namespace: String, project: Project) {
     defaultConfig {
         applicationId = namespace
         targetSdk = 34
-        versionCode = 6
-        versionName = "0.1.0"
+        versionCode = 7
+        versionName = "0.1.1"
     }
 }
 
