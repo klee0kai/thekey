@@ -12,15 +12,15 @@ import com.github.klee0kai.thekey.app.BuildConfig
 import com.github.klee0kai.thekey.app.di.debug.DebugDI
 import com.github.klee0kai.thekey.app.di.debug.DebugDI.initDummyModules
 import com.github.klee0kai.thekey.app.di.dependencies.AppComponentProviders
-import com.github.klee0kai.thekey.app.di.identifier.NoteGroupIdentifier
-import com.github.klee0kai.thekey.app.di.identifier.NoteIdentifier
-import com.github.klee0kai.thekey.app.di.identifier.PluginIdentifier
-import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
-import com.github.klee0kai.thekey.app.di.wrap.AppWrappersStone
 import com.github.klee0kai.thekey.app.domain.model.AppConfig
 import com.github.klee0kai.thekey.app.features.allFeatures
-import com.github.klee0kai.thekey.app.features.model.DynamicFeature
 import com.github.klee0kai.thekey.app.features.model.findApi
+import com.github.klee0kai.thekey.core.di.identifiers.NoteGroupIdentifier
+import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
+import com.github.klee0kai.thekey.core.di.identifiers.PluginIdentifier
+import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
+import com.github.klee0kai.thekey.core.di.wrap.AppWrappersStone
+import com.github.klee0kai.thekey.core.feature.model.DynamicFeature
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 
 var DI: AppComponent = initAppComponent()

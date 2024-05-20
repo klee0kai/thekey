@@ -46,7 +46,6 @@ import androidx.wear.compose.material.swipeable
 import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.di.identifier.NoteIdentifier
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
@@ -67,6 +66,7 @@ import com.github.klee0kai.thekey.app.ui.note.model.EditTabs.Account
 import com.github.klee0kai.thekey.app.ui.note.model.EditTabs.Otp
 import com.github.klee0kai.thekey.app.ui.note.model.initTab
 import com.github.klee0kai.thekey.app.ui.note.presenter.EditNotePresenter
+import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
 import com.github.klee0kai.thekey.core.utils.common.Dummy
 import com.github.klee0kai.thekey.core.utils.views.TargetAlpha
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded

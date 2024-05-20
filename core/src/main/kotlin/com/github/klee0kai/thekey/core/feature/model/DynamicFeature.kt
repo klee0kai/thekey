@@ -1,8 +1,7 @@
-package com.github.klee0kai.thekey.app.features.model
+package com.github.klee0kai.thekey.core.feature.model
 
 import android.os.Parcelable
 import androidx.annotation.StringRes
-import com.github.klee0kai.thekey.core.utils.common.JvmReflection
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -16,8 +15,3 @@ data class DynamicFeature(
     companion object;
 }
 
-fun DynamicFeature.findApi(): FeatureLibApi? = with(JvmReflection) {
-    featureLibApiClass?.let {
-        createNew<FeatureLibApi>(it)
-    }
-}

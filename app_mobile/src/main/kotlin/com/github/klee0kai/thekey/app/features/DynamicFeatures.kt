@@ -1,7 +1,7 @@
 package com.github.klee0kai.thekey.app.features
 
 import com.github.klee0kai.thekey.app.R
-import com.github.klee0kai.thekey.app.features.model.DynamicFeature
+import com.github.klee0kai.thekey.core.feature.model.DynamicFeature
 
 fun DynamicFeature.Companion.allFeatures() = listOf(
     qrcodeScanner(),

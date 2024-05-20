@@ -1,10 +1,10 @@
 package com.github.klee0kai.thekey.app.data.repositories.storage
 
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.domain.model.ColoredOtpNote
 import com.github.klee0kai.thekey.app.domain.model.coloredNote
 import com.github.klee0kai.thekey.app.engine.model.DecryptedOtpNote
+import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 

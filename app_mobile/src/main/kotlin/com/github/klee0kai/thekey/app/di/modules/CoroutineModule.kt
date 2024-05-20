@@ -2,10 +2,10 @@ package com.github.klee0kai.thekey.app.di.modules
 
 import com.github.klee0kai.stone.annotations.module.Module
 import com.github.klee0kai.stone.annotations.module.Provide
-import com.github.klee0kai.thekey.app.di.DefaultDispatcher
-import com.github.klee0kai.thekey.app.di.IODispatcher
-import com.github.klee0kai.thekey.app.di.JniDispatcher
-import com.github.klee0kai.thekey.app.di.MainDispatcher
+import com.github.klee0kai.thekey.core.di.DefaultDispatcher
+import com.github.klee0kai.thekey.core.di.IODispatcher
+import com.github.klee0kai.thekey.core.di.JniDispatcher
+import com.github.klee0kai.thekey.core.di.MainDispatcher
 import com.github.klee0kai.thekey.core.utils.common.SafeContextScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers

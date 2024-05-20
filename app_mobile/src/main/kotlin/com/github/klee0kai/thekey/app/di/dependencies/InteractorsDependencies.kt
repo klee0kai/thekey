@@ -1,12 +1,12 @@
 package com.github.klee0kai.thekey.app.di.dependencies
 
-import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
-import com.github.klee0kai.thekey.app.di.wrap.AsyncCoroutineProvide
 import com.github.klee0kai.thekey.app.domain.FindStoragesInteractor
 import com.github.klee0kai.thekey.app.domain.GroupsInteractor
 import com.github.klee0kai.thekey.app.domain.LoginInteractor
 import com.github.klee0kai.thekey.app.domain.NotesInteractor
 import com.github.klee0kai.thekey.app.domain.OtpNotesInteractor
+import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
+import com.github.klee0kai.thekey.core.di.wrap.AsyncCoroutineProvide
 
 interface InteractorsDependencies {
 

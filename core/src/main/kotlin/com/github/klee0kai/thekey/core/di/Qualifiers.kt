@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.di
+package com.github.klee0kai.thekey.core.di
 
 import javax.inject.Qualifier
 

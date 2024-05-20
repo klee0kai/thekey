@@ -1,8 +1,5 @@
 package com.github.klee0kai.thekey.app.ui.navigation
 
-import com.github.klee0kai.thekey.app.di.identifier.NoteGroupIdentifier
-import com.github.klee0kai.thekey.app.di.identifier.NoteIdentifier
-import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.engine.model.DecryptedOtpNote
@@ -11,6 +8,9 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteGroupDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.GenHistDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
+import com.github.klee0kai.thekey.core.di.identifiers.NoteGroupIdentifier
+import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
+import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 
 fun Storage.dest() = StorageDestination(version = version, path = path)
 

@@ -25,8 +25,6 @@ import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.features.allFeatures
-import com.github.klee0kai.thekey.app.features.model.DynamicFeature
-import com.github.klee0kai.thekey.app.features.model.InstallDynamicFeature
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
 import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarConst
@@ -34,6 +32,8 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarState
 import com.github.klee0kai.thekey.app.ui.designkit.settings.Preference
 import com.github.klee0kai.thekey.app.ui.navigation.model.PluginDestination
 import com.github.klee0kai.thekey.app.ui.settings.plugins.presenter.PluginsPresenter
+import com.github.klee0kai.thekey.core.feature.model.DynamicFeature
+import com.github.klee0kai.thekey.core.feature.model.InstallDynamicFeature
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.core.utils.views.truncate

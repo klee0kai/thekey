@@ -30,12 +30,6 @@ import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
-import com.github.klee0kai.thekey.app.features.model.DynamicFeature
-import com.github.klee0kai.thekey.app.features.model.InstallError
-import com.github.klee0kai.thekey.app.features.model.Installed
-import com.github.klee0kai.thekey.app.features.model.Installing
-import com.github.klee0kai.thekey.app.features.model.NotInstalled
-import com.github.klee0kai.thekey.app.features.model.isNotInstalled
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
@@ -44,6 +38,12 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarState
 import com.github.klee0kai.thekey.app.ui.navigation.model.DynamicDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.QRCodeScanDestination
 import com.github.klee0kai.thekey.app.ui.settings.plugin.presenter.PluginPresenter
+import com.github.klee0kai.thekey.core.feature.model.DynamicFeature
+import com.github.klee0kai.thekey.core.feature.model.InstallError
+import com.github.klee0kai.thekey.core.feature.model.Installed
+import com.github.klee0kai.thekey.core.feature.model.Installing
+import com.github.klee0kai.thekey.core.feature.model.NotInstalled
+import com.github.klee0kai.thekey.core.feature.model.isNotInstalled
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.minInsets

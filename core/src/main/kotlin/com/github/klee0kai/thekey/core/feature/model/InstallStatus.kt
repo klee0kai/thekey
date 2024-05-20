@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.features.model
+package com.github.klee0kai.thekey.core.feature.model
 
 import android.os.Parcelable
 import androidx.compose.runtime.Stable

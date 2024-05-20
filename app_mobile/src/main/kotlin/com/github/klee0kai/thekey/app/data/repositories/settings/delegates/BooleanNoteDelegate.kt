@@ -1,7 +1,7 @@
 package com.github.klee0kai.thekey.app.data.repositories.settings.delegates
 
 import com.github.klee0kai.thekey.app.data.room.dao.SettingDao
-import com.github.klee0kai.thekey.app.di.wrap.AsyncCoroutineProvide
+import com.github.klee0kai.thekey.core.di.wrap.AsyncCoroutineProvide
 import kotlinx.coroutines.CoroutineScope
 
 class BooleanNoteDelegate(

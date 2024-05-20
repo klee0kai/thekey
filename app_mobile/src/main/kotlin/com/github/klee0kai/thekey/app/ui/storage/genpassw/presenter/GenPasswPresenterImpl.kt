@@ -5,11 +5,11 @@ import android.content.ClipboardManager
 import android.content.Context.CLIPBOARD_SERVICE
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.ui.navigation.createNoteDest
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.model.GenPasswState
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.model.toGenParams
+import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.utils.common.launchLatest
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update

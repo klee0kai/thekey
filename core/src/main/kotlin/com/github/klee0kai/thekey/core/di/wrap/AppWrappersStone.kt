@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.di.wrap
+package com.github.klee0kai.thekey.core.di.wrap
 
 import com.github.klee0kai.stone.annotations.wrappers.WrappersCreator
 import com.github.klee0kai.stone.wrappers.creators.ProviderWrapper
