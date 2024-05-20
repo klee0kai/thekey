@@ -39,16 +39,9 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.stone.type.wrappers.getValue
-import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
-import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarConst
-import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarStates
-import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppTitleImage
-import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.SearchField
-import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.SecondaryTabs
-import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.SecondaryTabsConst
 import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.GenPasswordContent
@@ -59,6 +52,12 @@ import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalAppConfig
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
+import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
+import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
+import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppTitleImage
+import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.SearchField
+import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.SecondaryTabs
+import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.SecondaryTabsConst
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.common.Dummy
 import com.github.klee0kai.thekey.core.utils.views.accumulate
@@ -75,6 +74,7 @@ import com.github.klee0kai.thekey.core.utils.views.truncate
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.launch
 import org.jetbrains.annotations.VisibleForTesting
+import com.github.klee0kai.thekey.core.R as CoreR
 
 private const val SearchTitleId = 0
 private const val MainTitleId = 1
@@ -90,8 +90,8 @@ fun StorageScreen(
     val router = LocalRouter.current
     val density = LocalDensity.current
     val titles = listOf(
-        stringResource(id = R.string.accounts),
-        stringResource(id = R.string.passw_generate)
+        stringResource(id = CoreR.string.accounts),
+        stringResource(id = CoreR.string.passw_generate)
     )
     val searchFocusRequester = remember { FocusRequester() }
     val searchState by presenter!!.searchState.collectAsState(key = Unit, initial = SearchState())
@@ -201,7 +201,7 @@ fun StorageScreen(
                         modifier = Modifier.alpha(targetTitleId.alpha),
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.Bold,
-                        text = stringResource(id = R.string.accounts)
+                        text = stringResource(id = CoreR.string.accounts)
                     )
                 }
 

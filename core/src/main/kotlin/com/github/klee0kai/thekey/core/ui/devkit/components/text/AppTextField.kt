@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.ui.designkit.text
+package com.github.klee0kai.thekey.core.ui.devkit.components.text
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding

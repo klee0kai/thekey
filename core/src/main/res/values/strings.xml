@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">TheKey</string>
     <string name="title">Title</string>
     <string name="description">Description</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="done">Done</string>
+    <string name="search">Search</string>
+    <string name="create">Create</string>
+    <string name="edit">Edit</string>
+    <string name="accounts">Accounts</string>
+    <string name="passw_generate">Generate</string>
 </resources>

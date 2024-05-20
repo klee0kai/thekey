@@ -1,8 +1,8 @@
 package com.github.klee0kai.thekey.app.paparazzi.designkit
 
 import com.github.klee0kai.thekey.app.paparazzi.BasePaparazzi
-import com.github.klee0kai.thekey.app.ui.designkit.text.AppTextEmptyFieldPreview
-import com.github.klee0kai.thekey.app.ui.designkit.text.AppTextFieldPreview
+import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextEmptyFieldPreview
+import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextFieldPreview
 import org.junit.Test
 
 class AppTextFieldScreens : BasePaparazzi() {

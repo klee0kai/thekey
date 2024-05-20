@@ -30,8 +30,6 @@ import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.features.qrcodeScanner
-import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarConst
-import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.app.ui.navigation.model.PluginDestination
 import com.github.klee0kai.thekey.app.ui.settings.plugin.presenter.PluginPresenter
 import com.github.klee0kai.thekey.core.feature.model.DynamicFeature
@@ -42,12 +40,15 @@ import com.github.klee0kai.thekey.core.feature.model.NotInstalled
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
+import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
+import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.minInsets
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.flow.MutableStateFlow
+import com.github.klee0kai.thekey.core.R as CoreR
 
 @Composable
 fun PluginScreen(
@@ -120,7 +121,7 @@ fun PluginScreen(
                     id = when (featureStatus) {
                         InstallError -> R.string.try_again
                         Installed -> R.string.uninstall
-                        is Installing -> R.string.cancel
+                        is Installing -> CoreR.string.cancel
                         NotInstalled ->
                             if (dest.feature.purchase.isBlank()) {
                                 R.string.install

@@ -40,13 +40,13 @@ import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.domain.model.ColoredStorage
-import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarStates
-import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.DoneIconButton
-import com.github.klee0kai.thekey.app.ui.designkit.text.AppTextField
 import com.github.klee0kai.thekey.app.ui.login.presenter.LoginPresenter
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
+import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
+import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DoneIconButton
+import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextField
 import com.github.klee0kai.thekey.core.ui.devkit.preview.PreviewDevices
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
@@ -58,6 +58,7 @@ import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.jetbrains.annotations.VisibleForTesting
+import com.github.klee0kai.thekey.core.R as CoreR
 
 @Composable
 fun LoginScreen() {
@@ -113,8 +114,8 @@ fun LoginScreen() {
 
         if (!imeVisible.current) {
             Image(
-                painter = painterResource(id = R.drawable.logo_big),
-                contentDescription = stringResource(id = R.string.app_name),
+                painter = painterResource(id = CoreR.drawable.logo_big),
+                contentDescription = stringResource(id = CoreR.string.app_name),
                 modifier = Modifier
                     .alpha(imeVisible.alpha)
                     .constrainAs(logoIcon) {

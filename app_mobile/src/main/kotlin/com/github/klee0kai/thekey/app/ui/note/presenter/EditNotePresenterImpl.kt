@@ -9,7 +9,6 @@ import com.github.klee0kai.thekey.app.engine.model.DecryptedOtpNote
 import com.github.klee0kai.thekey.app.engine.model.GenPasswParams
 import com.github.klee0kai.thekey.app.engine.model.isEmpty
 import com.github.klee0kai.thekey.app.ui.navigation.model.QRCodeScanDestination
-import com.github.klee0kai.thekey.core.ui.navigation.navigate
 import com.github.klee0kai.thekey.app.ui.navigation.storage
 import com.github.klee0kai.thekey.app.ui.note.model.EditNoteState
 import com.github.klee0kai.thekey.app.ui.note.model.EditNoteState.Companion.otpAlgoVariants
@@ -23,6 +22,7 @@ import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
 import com.github.klee0kai.thekey.core.ui.navigation.model.AlertDialogDestination
 import com.github.klee0kai.thekey.core.ui.navigation.model.ConfirmDialogResult
 import com.github.klee0kai.thekey.core.ui.navigation.model.TextProvider
+import com.github.klee0kai.thekey.core.ui.navigation.navigate
 import com.github.klee0kai.thekey.core.utils.common.TimeFormats
 import com.github.klee0kai.thekey.core.utils.common.launchLatest
 import com.github.klee0kai.thekey.core.utils.common.launchLatestSafe
@@ -32,6 +32,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import com.github.klee0kai.thekey.core.R as CoreR
 
 class EditNotePresenterImpl(
     val identifier: NoteIdentifier,
@@ -153,7 +154,7 @@ class EditNotePresenterImpl(
                             appendLine("${note.site} - ${note.login}")
                         }),
                         confirm = TextProvider(R.string.delete),
-                        reject = TextProvider(R.string.cancel),
+                        reject = TextProvider(CoreR.string.cancel),
                     )
                 ).last()
                 if (deleteConfirm == ConfirmDialogResult.CONFIRMED) {
@@ -172,7 +173,7 @@ class EditNotePresenterImpl(
                             appendLine("${otp.issuer} - ${otp.name}")
                         }),
                         confirm = TextProvider(R.string.delete),
-                        reject = TextProvider(R.string.cancel),
+                        reject = TextProvider(CoreR.string.cancel),
                     )
                 ).last()
                 if (deleteConfirm == ConfirmDialogResult.CONFIRMED) {

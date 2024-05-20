@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
 
-package com.github.klee0kai.thekey.app.ui.designkit.components.appbar
+package com.github.klee0kai.thekey.core.ui.devkit.components.appbar
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope

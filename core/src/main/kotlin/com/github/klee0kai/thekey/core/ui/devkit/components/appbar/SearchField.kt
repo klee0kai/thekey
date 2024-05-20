@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.ui.designkit.components.appbar
+package com.github.klee0kai.thekey.core.ui.devkit.components.appbar
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,10 +15,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.github.klee0kai.thekey.app.R
-import com.github.klee0kai.thekey.app.ui.designkit.text.AppTextField
+import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
+import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextField
 import org.jetbrains.annotations.VisibleForTesting
 
 @Composable

@@ -20,11 +20,11 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.wear.compose.material.Text
 import com.github.klee0kai.thekey.app.R
-import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarConst
-import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.app.ui.navigation.model.PluginsDestination
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
+import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
+import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.core.ui.devkit.components.settings.Preference
 import com.github.klee0kai.thekey.core.ui.devkit.components.settings.SectionHeader
 import com.github.klee0kai.thekey.core.ui.devkit.components.settings.SwitchPreference

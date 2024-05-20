@@ -47,14 +47,8 @@ import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
-import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarConst
-import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarStates
-import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.DoneIconButton
-import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.SecondaryTabs
-import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.SecondaryTabsConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.dropdownfields.ColorGroupDropDownField
 import com.github.klee0kai.thekey.app.ui.designkit.components.dropdownfields.DropDownField
-import com.github.klee0kai.thekey.app.ui.designkit.text.AppTextField
 import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteDestination
 import com.github.klee0kai.thekey.app.ui.note.model.EditNoteState
@@ -67,6 +61,12 @@ import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
+import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
+import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
+import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DoneIconButton
+import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.SecondaryTabs
+import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.SecondaryTabsConst
+import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextField
 import com.github.klee0kai.thekey.core.utils.common.Dummy
 import com.github.klee0kai.thekey.core.utils.views.TargetAlpha
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
@@ -85,6 +85,7 @@ import com.github.klee0kai.thekey.core.utils.views.topDp
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import com.github.klee0kai.thekey.core.R as CoreR
 
 
 @Composable
@@ -450,7 +451,7 @@ fun EditNoteScreen(
                     }
                 }
             ) {
-                val textRes = if (page.current == Account) R.string.passw_generate else R.string.qr_code_scan
+                val textRes = if (page.current == Account) CoreR.string.passw_generate else R.string.qr_code_scan
                 Text(stringResource(textRes))
             }
         }
@@ -475,7 +476,7 @@ fun EditNoteScreen(
                 Icon(Icons.AutoMirrored.Default.ArrowBack, contentDescription = null)
             }
         },
-        titleContent = { Text(text = stringResource(id = if (state.isEditMode) R.string.edit else R.string.create)) },
+        titleContent = { Text(text = stringResource(id = if (state.isEditMode) CoreR.string.edit else CoreR.string.create)) },
         actions = {
             if (isRemoveAvailable.current) {
                 IconButton(
