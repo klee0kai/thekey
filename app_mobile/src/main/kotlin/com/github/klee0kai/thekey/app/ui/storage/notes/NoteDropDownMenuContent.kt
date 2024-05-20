@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.domain.ColorGroup
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
@@ -21,7 +22,6 @@ import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import com.github.klee0kai.thekey.core.ui.devkit.components.buttons.GroupCircle
 import com.github.klee0kai.thekey.core.utils.common.Dummy
 import org.jetbrains.annotations.VisibleForTesting
-import com.github.klee0kai.thekey.core.R as CoreR
 
 @Composable
 fun ColumnScope.NoteDropDownMenuContent(
@@ -56,7 +56,7 @@ fun ColumnScope.NoteDropDownMenuContent(
 
     DropdownMenuItem(
         modifier = Modifier.align(Alignment.End),
-        text = { Text(text = stringResource(id = CoreR.string.edit)) },
+        text = { Text(text = stringResource(id = R.string.edit)) },
         onClick = onEdit
     )
 }

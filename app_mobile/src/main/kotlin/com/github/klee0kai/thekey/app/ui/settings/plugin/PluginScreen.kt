@@ -48,7 +48,6 @@ import com.github.klee0kai.thekey.core.utils.views.minInsets
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.flow.MutableStateFlow
-import com.github.klee0kai.thekey.core.R as CoreR
 
 @Composable
 fun PluginScreen(
@@ -121,7 +120,7 @@ fun PluginScreen(
                     id = when (featureStatus) {
                         InstallError -> R.string.try_again
                         Installed -> R.string.uninstall
-                        is Installing -> CoreR.string.cancel
+                        is Installing -> R.string.cancel
                         NotInstalled ->
                             if (dest.feature.purchase.isBlank()) {
                                 R.string.install

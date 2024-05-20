@@ -32,7 +32,6 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import com.github.klee0kai.thekey.core.R as CoreR
 
 class EditNotePresenterImpl(
     val identifier: NoteIdentifier,
@@ -154,7 +153,7 @@ class EditNotePresenterImpl(
                             appendLine("${note.site} - ${note.login}")
                         }),
                         confirm = TextProvider(R.string.delete),
-                        reject = TextProvider(CoreR.string.cancel),
+                        reject = TextProvider(R.string.cancel),
                     )
                 ).last()
                 if (deleteConfirm == ConfirmDialogResult.CONFIRMED) {
@@ -173,7 +172,7 @@ class EditNotePresenterImpl(
                             appendLine("${otp.issuer} - ${otp.name}")
                         }),
                         confirm = TextProvider(R.string.delete),
-                        reject = TextProvider(CoreR.string.cancel),
+                        reject = TextProvider(R.string.cancel),
                     )
                 ).last()
                 if (deleteConfirm == ConfirmDialogResult.CONFIRMED) {

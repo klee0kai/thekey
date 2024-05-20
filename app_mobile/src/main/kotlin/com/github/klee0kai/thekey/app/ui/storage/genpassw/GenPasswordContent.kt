@@ -49,7 +49,6 @@ import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.core.utils.views.rememberTargetCrossFaded
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.jetbrains.annotations.VisibleForTesting
-import com.github.klee0kai.thekey.core.R as CoreR
 
 
 @Composable
@@ -226,7 +225,7 @@ fun GenPasswordContent(
                 presenter?.generatePassw()
             },
         ) {
-            Text(stringResource(CoreR.string.passw_generate))
+            Text(stringResource(R.string.passw_generate))
         }
 
         TextButton(

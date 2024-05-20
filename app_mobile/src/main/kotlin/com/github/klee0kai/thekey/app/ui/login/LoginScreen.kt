@@ -115,7 +115,7 @@ fun LoginScreen() {
         if (!imeVisible.current) {
             Image(
                 painter = painterResource(id = CoreR.drawable.logo_big),
-                contentDescription = stringResource(id = CoreR.string.app_name),
+                contentDescription = stringResource(id = R.string.app_name),
                 modifier = Modifier
                     .alpha(imeVisible.alpha)
                     .constrainAs(logoIcon) {

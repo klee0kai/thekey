@@ -85,7 +85,6 @@ import com.github.klee0kai.thekey.core.utils.views.topDp
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import com.github.klee0kai.thekey.core.R as CoreR
 
 
 @Composable
@@ -451,7 +450,7 @@ fun EditNoteScreen(
                     }
                 }
             ) {
-                val textRes = if (page.current == Account) CoreR.string.passw_generate else R.string.qr_code_scan
+                val textRes = if (page.current == Account) R.string.passw_generate else R.string.qr_code_scan
                 Text(stringResource(textRes))
             }
         }
@@ -476,7 +475,7 @@ fun EditNoteScreen(
                 Icon(Icons.AutoMirrored.Default.ArrowBack, contentDescription = null)
             }
         },
-        titleContent = { Text(text = stringResource(id = if (state.isEditMode) CoreR.string.edit else CoreR.string.create)) },
+        titleContent = { Text(text = stringResource(id = if (state.isEditMode) R.string.edit else R.string.create)) },
         actions = {
             if (isRemoveAvailable.current) {
                 IconButton(

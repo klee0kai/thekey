@@ -39,6 +39,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.stone.type.wrappers.getValue
+import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
@@ -74,7 +75,6 @@ import com.github.klee0kai.thekey.core.utils.views.truncate
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.launch
 import org.jetbrains.annotations.VisibleForTesting
-import com.github.klee0kai.thekey.core.R as CoreR
 
 private const val SearchTitleId = 0
 private const val MainTitleId = 1
@@ -90,8 +90,8 @@ fun StorageScreen(
     val router = LocalRouter.current
     val density = LocalDensity.current
     val titles = listOf(
-        stringResource(id = CoreR.string.accounts),
-        stringResource(id = CoreR.string.passw_generate)
+        stringResource(id = R.string.accounts),
+        stringResource(id = R.string.passw_generate)
     )
     val searchFocusRequester = remember { FocusRequester() }
     val searchState by presenter!!.searchState.collectAsState(key = Unit, initial = SearchState())
@@ -201,7 +201,7 @@ fun StorageScreen(
                         modifier = Modifier.alpha(targetTitleId.alpha),
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.Bold,
-                        text = stringResource(id = CoreR.string.accounts)
+                        text = stringResource(id = R.string.accounts)
                     )
                 }
 
