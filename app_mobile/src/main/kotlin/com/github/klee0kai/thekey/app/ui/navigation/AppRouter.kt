@@ -9,11 +9,11 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
-import com.github.klee0kai.thekey.app.ui.navigation.model.ActivityResult
-import com.github.klee0kai.thekey.app.ui.navigation.model.Destination
 import com.github.klee0kai.thekey.app.ui.navigation.model.LoginDestination
-import com.github.klee0kai.thekey.app.ui.navigation.model.NavigateBackstackChange
-import com.github.klee0kai.thekey.app.ui.navigation.model.RequestPermResult
+import com.github.klee0kai.thekey.core.ui.navigation.model.ActivityResult
+import com.github.klee0kai.thekey.core.ui.navigation.model.Destination
+import com.github.klee0kai.thekey.core.ui.navigation.model.NavigateBackstackChange
+import com.github.klee0kai.thekey.core.ui.navigation.model.RequestPermResult
 import com.github.klee0kai.thekey.core.utils.common.SafeContextScope
 import dev.olshevski.navigation.reimagined.NavController
 import kotlinx.coroutines.flow.Flow

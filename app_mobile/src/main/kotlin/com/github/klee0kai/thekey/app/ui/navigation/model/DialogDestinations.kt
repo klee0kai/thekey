@@ -1,12 +1,10 @@
 package com.github.klee0kai.thekey.app.ui.navigation.model
 
 import androidx.annotation.DrawableRes
-import androidx.compose.runtime.Stable
 import com.github.klee0kai.thekey.app.R
+import com.github.klee0kai.thekey.core.ui.navigation.model.DialogDestination
+import com.github.klee0kai.thekey.core.ui.navigation.model.TextProvider
 import kotlinx.parcelize.Parcelize
-
-@Stable
-interface DialogDestination : Destination
 
 @Parcelize
 data class AlertDialogDestination(

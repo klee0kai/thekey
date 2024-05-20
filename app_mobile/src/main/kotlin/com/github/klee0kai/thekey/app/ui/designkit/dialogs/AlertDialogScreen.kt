@@ -13,7 +13,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.EmptyScreen
 import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
 import com.github.klee0kai.thekey.app.ui.navigation.model.AlertDialogDestination
-import com.github.klee0kai.thekey.app.ui.navigation.model.ConfirmDialogResult
+import com.github.klee0kai.thekey.core.ui.navigation.model.ConfirmDialogResult
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import org.jetbrains.annotations.VisibleForTesting
 

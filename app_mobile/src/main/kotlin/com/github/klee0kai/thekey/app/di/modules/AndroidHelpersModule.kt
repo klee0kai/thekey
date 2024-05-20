@@ -9,8 +9,8 @@ import com.github.klee0kai.thekey.app.features.DynamicFeaturesManagerGooglePlay
 import com.github.klee0kai.thekey.app.perm.PermissionsHelper
 import com.github.klee0kai.thekey.app.ui.navigation.AppRouter
 import com.github.klee0kai.thekey.app.ui.navigation.impl.AppRouterImp
-import com.github.klee0kai.thekey.app.ui.navigation.screenresolver.ScreenResolver
 import com.github.klee0kai.thekey.app.ui.navigation.screenresolver.ScreenResolverImpl
+import com.github.klee0kai.thekey.core.ui.navigation.screenresolver.ScreenResolver
 
 @Module
 interface AndroidHelpersModule {

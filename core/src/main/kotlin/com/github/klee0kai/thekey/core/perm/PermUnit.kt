@@ -1,6 +1,6 @@
-package com.github.klee0kai.thekey.app.perm
+package com.github.klee0kai.thekey.core.perm
 
-import com.github.klee0kai.thekey.app.ui.navigation.model.TextProvider
+import com.github.klee0kai.thekey.core.ui.navigation.model.TextProvider
 import kotlinx.coroutines.flow.Flow
 
 interface PermUnit {

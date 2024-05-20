@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.ui.navigation.model
+package com.github.klee0kai.thekey.core.ui.navigation.model
 
 import android.app.Activity
 import android.content.Intent

@@ -8,10 +8,8 @@ import androidx.compose.material3.SnackbarHostState
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.navigation.AppRouter
 import com.github.klee0kai.thekey.app.ui.navigation.RouterContext
-import com.github.klee0kai.thekey.app.ui.navigation.model.Destination
-import com.github.klee0kai.thekey.app.ui.navigation.model.EmptyDestination
-import com.github.klee0kai.thekey.app.ui.navigation.model.LoginDestination
-import com.github.klee0kai.thekey.app.ui.navigation.model.NavigateBackstackChange
+import com.github.klee0kai.thekey.core.ui.navigation.model.Destination
+import com.github.klee0kai.thekey.core.ui.navigation.model.NavigateBackstackChange
 import dev.olshevski.navigation.reimagined.NavController
 import dev.olshevski.navigation.reimagined.navController
 import kotlinx.coroutines.flow.MutableSharedFlow

@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.perm.model
+package com.github.klee0kai.thekey.core.perm.model
 
 import android.os.Parcelable
 import androidx.annotation.StringRes

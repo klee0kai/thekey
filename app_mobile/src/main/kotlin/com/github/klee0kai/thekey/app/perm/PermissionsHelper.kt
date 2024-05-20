@@ -4,7 +4,8 @@ import android.os.Build
 import com.github.klee0kai.thekey.app.perm.impl.ManageStoragePermUnit
 import com.github.klee0kai.thekey.app.perm.impl.SimplePermUnit
 import com.github.klee0kai.thekey.app.perm.impl.SimplePermUnit.Companion.WriteExternalStorage
-import com.github.klee0kai.thekey.app.ui.navigation.model.TextProvider
+import com.github.klee0kai.thekey.core.perm.PermUnit
+import com.github.klee0kai.thekey.core.ui.navigation.model.TextProvider
 import kotlinx.coroutines.flow.last
 
 open class PermissionsHelper {
