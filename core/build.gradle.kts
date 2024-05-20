@@ -2,6 +2,7 @@ plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
     id("kotlin-parcelize")
+    kotlin("kapt")
 }
 
 android {
@@ -40,11 +41,13 @@ dependencies {
 
     implementation(libs.ml.dynamic)
 
-
     implementation(libs.jetbrain.immutable)
     implementation(libs.jetbrain.coroutines)
 
     implementation(libs.hummus)
+
+    implementation(libs.bundles.stone)
+    kapt(libs.stone.kapt)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso)

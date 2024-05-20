@@ -1,6 +1,6 @@
 package com.github.klee0kai.thekey.app.di
 
-import com.github.klee0kai.thekey.app.domain.model.AppConfig
+import com.github.klee0kai.thekey.core.domain.model.AppConfig
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock

@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-//import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.core.di.CoreDI
 import com.github.klee0kai.thekey.core.utils.common.ObjHolder
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
@@ -150,9 +150,8 @@ fun rememberSkeletonModifier(
 
 @Composable
 fun Modifier.animateContentSizeProduction() = run {
-//    TODO()
-//    if (DI.config().isViewEditMode) this
-    /*else*/ animateContentSize()
+    if (CoreDI.config().isViewEditMode) this
+    else animateContentSize()
 }
 
 fun Modifier.thenIf(condition: Boolean, block: Modifier.() -> Modifier) =
