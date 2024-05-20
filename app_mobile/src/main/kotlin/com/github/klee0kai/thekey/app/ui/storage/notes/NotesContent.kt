@@ -6,6 +6,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
@@ -31,6 +32,7 @@ import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
 import com.github.klee0kai.thekey.app.ui.designkit.components.FabSimpleInContainer
+import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.bottomsheet.SimpleBottomSheetScaffold
 import com.github.klee0kai.thekey.app.ui.designkit.components.bottomsheet.topContentAlphaFromDrag
 import com.github.klee0kai.thekey.app.ui.designkit.components.bottomsheet.topContentOffsetFromDrag
@@ -48,6 +50,7 @@ import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.app.utils.views.collectAsState
 import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.app.utils.views.rememberOnScreenRef
+import com.github.klee0kai.thekey.app.utils.views.topDp
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import org.jetbrains.annotations.VisibleForTesting
 
@@ -55,7 +58,7 @@ import org.jetbrains.annotations.VisibleForTesting
 fun NotesContent(
     modifier: Modifier = Modifier,
     dest: StorageDestination = StorageDestination(),
-    topMargin: Dp = 0.dp,
+    secondaryTabsHeight: Dp = 0.dp,
     isPageFullyAvailable: Boolean = false,
     onDrag: (Float) -> Unit = {},
 ) {
@@ -70,8 +73,9 @@ fun NotesContent(
 
     SimpleBottomSheetScaffold(
         modifier = modifier,
-        topContentSize = 170.dp,
-        topMargin = topMargin,
+        topContentSize = 170.dp + AppBarConst.appBarSize,
+        topContentModifier = Modifier.padding(top = AppBarConst.appBarSize),
+        topMargin = secondaryTabsHeight + WindowInsets.safeContent.topDp,
         onDrag = {
             dragProgress = it
             onDrag.invoke(it)
