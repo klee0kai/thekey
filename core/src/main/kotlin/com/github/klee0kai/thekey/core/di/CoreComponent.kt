@@ -34,7 +34,7 @@ var CoreDI: CoreComponent = initCoreComponent()
         AppWrappersStone::class,
     ],
 )
-interface CoreComponent {
+interface CoreComponent : CoreDependencyProvider, CoreComponentModules {
 
     @BindInstance(cache = BindInstance.CacheType.Weak)
     fun ctx(ctx: Context? = null): Context
