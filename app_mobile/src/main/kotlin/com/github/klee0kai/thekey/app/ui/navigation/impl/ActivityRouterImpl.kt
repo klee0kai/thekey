@@ -1,8 +1,8 @@
 package com.github.klee0kai.thekey.app.ui.navigation.impl
 
 import android.content.Intent
-import com.github.klee0kai.thekey.app.ui.navigation.ActivityRouter
-import com.github.klee0kai.thekey.app.ui.navigation.RouterContext
+import com.github.klee0kai.thekey.core.ui.navigation.ActivityRouter
+import com.github.klee0kai.thekey.core.ui.navigation.RouterContext
 import com.github.klee0kai.thekey.core.ui.navigation.model.ActivityResult
 import com.github.klee0kai.thekey.core.utils.coroutine.shareLatest
 import com.github.klee0kai.thekey.core.utils.coroutine.singleEventFlow

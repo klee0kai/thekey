@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.ui.navigation
+package com.github.klee0kai.thekey.core.ui.navigation
 
 import android.content.Intent
 import androidx.activity.ComponentActivity
@@ -9,7 +9,6 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
-import com.github.klee0kai.thekey.app.ui.navigation.model.LoginDestination
 import com.github.klee0kai.thekey.core.ui.navigation.model.ActivityResult
 import com.github.klee0kai.thekey.core.ui.navigation.model.Destination
 import com.github.klee0kai.thekey.core.ui.navigation.model.NavigateBackstackChange
@@ -20,11 +19,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 
-interface AppRouter : RouterContext, ComposeRouter, SnackRouter, NavBoardRouter, ActivityRouter, PermissionsRouter {
-    companion object {
-        val InitDest = LoginDestination
-    }
-}
+interface AppRouter : RouterContext, ComposeRouter, SnackRouter, NavBoardRouter, ActivityRouter, PermissionsRouter
 
 interface ComposeRouter {
 

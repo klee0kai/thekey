@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.features
+package com.github.klee0kai.thekey.core.feature
 
 import com.github.klee0kai.thekey.core.feature.model.DynamicFeature
 import com.github.klee0kai.thekey.core.feature.model.InstallDynamicFeature

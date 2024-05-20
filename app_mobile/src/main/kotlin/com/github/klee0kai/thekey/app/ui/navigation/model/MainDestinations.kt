@@ -11,6 +11,10 @@ import com.github.klee0kai.thekey.core.ui.navigation.model.DynamicDestination
 import kotlinx.parcelize.Parcelize
 
 
+object MainDestinations {
+    val InitDest = LoginDestination
+}
+
 @Parcelize
 data object EmptyDestination : Destination
 

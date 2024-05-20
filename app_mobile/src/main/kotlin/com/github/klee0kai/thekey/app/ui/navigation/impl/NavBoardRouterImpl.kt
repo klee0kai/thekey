@@ -1,7 +1,7 @@
 package com.github.klee0kai.thekey.app.ui.navigation.impl
 
-import com.github.klee0kai.thekey.app.ui.navigation.NavBoardRouter
-import com.github.klee0kai.thekey.app.ui.navigation.RouterContext
+import com.github.klee0kai.thekey.core.ui.navigation.NavBoardRouter
+import com.github.klee0kai.thekey.core.ui.navigation.RouterContext
 
 class NavBoardRouterImpl(
     val context: RouterContext

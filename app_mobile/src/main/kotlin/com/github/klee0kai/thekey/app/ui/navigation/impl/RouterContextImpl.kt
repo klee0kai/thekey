@@ -6,8 +6,8 @@ import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.SnackbarHostState
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.ui.navigation.AppRouter
-import com.github.klee0kai.thekey.app.ui.navigation.RouterContext
+import com.github.klee0kai.thekey.core.ui.navigation.RouterContext
+import com.github.klee0kai.thekey.app.ui.navigation.model.MainDestinations
 import com.github.klee0kai.thekey.core.ui.navigation.model.Destination
 import com.github.klee0kai.thekey.core.ui.navigation.model.NavigateBackstackChange
 import dev.olshevski.navigation.reimagined.NavController
@@ -25,8 +25,8 @@ class RouterContextImpl : RouterContext {
 
     override val snackbarHostState: SnackbarHostState = SnackbarHostState()
     override val navBoardState: DrawerState = DrawerState(DrawerValue.Closed)
-    override val navFullController: NavController<Destination> = navController(AppRouter.InitDest)
-    override val navScreensController: NavController<Destination> = navController(AppRouter.InitDest)
+    override val navFullController: NavController<Destination> = navController(MainDestinations.InitDest)
+    override val navScreensController: NavController<Destination> = navController(MainDestinations.InitDest)
     override val navDialogsController: NavController<Destination> = navController(emptyList())
 
     override val navChanges = MutableSharedFlow<NavigateBackstackChange>(replay = 1)

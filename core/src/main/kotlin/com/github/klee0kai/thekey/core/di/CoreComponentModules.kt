@@ -22,8 +22,9 @@ interface CoreComponentModules {
 
     /* set origin factories */
     @Init
-    fun initCoreIneractorsModule(unteractors: CoreInteractorsModule)
+    fun initCoreInteractorsModule(interactorsModule: CoreInteractorsModule)
 
     @Init
     fun initThemeModule(themeModule: ThemeModule)
+
 }

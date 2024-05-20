@@ -9,6 +9,7 @@ import android.content.pm.PackageInstaller
 import android.os.Build
 import androidx.core.content.ContextCompat
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.core.feature.DynamicFeaturesManager
 import com.github.klee0kai.thekey.core.feature.model.DynamicFeature
 import com.github.klee0kai.thekey.core.utils.common.JvmReflection
 import com.github.klee0kai.thekey.core.utils.common.launchSafe

@@ -3,8 +3,8 @@ package com.github.klee0kai.thekey.app.ui.navigation.impl
 import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.ui.navigation.PermissionsRouter
-import com.github.klee0kai.thekey.app.ui.navigation.RouterContext
+import com.github.klee0kai.thekey.core.ui.navigation.PermissionsRouter
+import com.github.klee0kai.thekey.core.ui.navigation.RouterContext
 import com.github.klee0kai.thekey.core.ui.navigation.model.RequestPermResult
 import com.github.klee0kai.thekey.core.utils.coroutine.shareLatest
 import com.github.klee0kai.thekey.core.utils.coroutine.singleEventFlow

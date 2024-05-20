@@ -3,8 +3,8 @@ package com.github.klee0kai.thekey.app.ui.navigation.impl
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.NonRestartableComposable
-import com.github.klee0kai.thekey.app.ui.navigation.ComposeRouter
-import com.github.klee0kai.thekey.app.ui.navigation.RouterContext
+import com.github.klee0kai.thekey.core.ui.navigation.ComposeRouter
+import com.github.klee0kai.thekey.core.ui.navigation.RouterContext
 import com.github.klee0kai.thekey.core.ui.navigation.model.Destination
 import com.github.klee0kai.thekey.core.ui.navigation.model.DialogDestination
 import com.github.klee0kai.thekey.core.ui.navigation.model.NavigateBackstackChange

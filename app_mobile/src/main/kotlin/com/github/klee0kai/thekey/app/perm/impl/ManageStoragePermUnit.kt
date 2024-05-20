@@ -7,7 +7,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.ui.navigation.navigate
+import com.github.klee0kai.thekey.core.ui.navigation.navigate
 import com.github.klee0kai.thekey.app.ui.navigation.navigateManageExternalStorage
 import com.github.klee0kai.thekey.core.perm.PermUnit
 import com.github.klee0kai.thekey.core.ui.navigation.model.AlertDialogDestination
