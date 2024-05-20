@@ -2,8 +2,8 @@ package com.github.klee0kai.thekey.core.domain
 
 import com.github.klee0kai.thekey.core.domain.model.feature.model.DynamicFeature
 
-interface BillingInteractor {
+open class BillingInteractor {
 
-    fun isAvailable(feature: DynamicFeature): Boolean = false
+   open fun isAvailable(feature: DynamicFeature): Boolean = false
 
 }

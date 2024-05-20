@@ -8,6 +8,6 @@ import com.github.klee0kai.thekey.core.domain.BillingInteractor
 interface CoreInteractorsModule {
 
     @Provide(cache = Provide.CacheType.Weak)
-    fun billingInteractor(): BillingInteractor = object : BillingInteractor {}
+    fun billingInteractor(): BillingInteractor = BillingInteractor()
 
 }

@@ -126,6 +126,7 @@ fun AppComponent.updateComponentsSoft() {
 
     DynamicFeature
         .allFeatures()
+        .filter { it.isCommunity || billingInteractor().isAvailable(it) }
         .forEach { feature ->
             with(feature.findApi() ?: return@forEach) {
                 initDI()
