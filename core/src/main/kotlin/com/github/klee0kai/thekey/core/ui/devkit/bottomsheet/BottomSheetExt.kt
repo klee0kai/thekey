@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.ui.designkit.components.bottomsheet
+package com.github.klee0kai.thekey.core.ui.devkit.bottomsheet
 
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.core.utils.views.accelerateDecelerate

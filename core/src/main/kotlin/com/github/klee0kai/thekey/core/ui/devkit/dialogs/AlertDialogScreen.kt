@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.ui.designkit.dialogs
+package com.github.klee0kai.thekey.core.ui.devkit.dialogs
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
@@ -9,8 +9,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
-import com.github.klee0kai.thekey.app.ui.designkit.EmptyScreen
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
+import com.github.klee0kai.thekey.core.ui.devkit.EmptyScreen
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.navigation.model.AlertDialogDestination
 import com.github.klee0kai.thekey.core.ui.navigation.model.ConfirmDialogResult

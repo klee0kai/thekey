@@ -4,9 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import com.github.klee0kai.thekey.app.BuildConfig
 import com.github.klee0kai.thekey.app.ui.about.AboutScreen
-import com.github.klee0kai.thekey.app.ui.designkit.DesignScreen
-import com.github.klee0kai.thekey.app.ui.designkit.EmptyScreen
-import com.github.klee0kai.thekey.app.ui.designkit.dialogs.AlertDialogScreen
 import com.github.klee0kai.thekey.app.ui.editstorage.EditStorageScreen
 import com.github.klee0kai.thekey.app.ui.genhist.GenHistScreen
 import com.github.klee0kai.thekey.app.ui.login.LoginScreen
@@ -30,6 +27,9 @@ import com.github.klee0kai.thekey.app.ui.settings.plugin.PluginScreen
 import com.github.klee0kai.thekey.app.ui.settings.plugins.PluginsScreen
 import com.github.klee0kai.thekey.app.ui.storage.StorageScreen
 import com.github.klee0kai.thekey.app.ui.storages.StoragesScreen
+import com.github.klee0kai.thekey.core.ui.devkit.DesignScreen
+import com.github.klee0kai.thekey.core.ui.devkit.EmptyScreen
+import com.github.klee0kai.thekey.core.ui.devkit.dialogs.AlertDialogScreen
 import com.github.klee0kai.thekey.core.ui.navigation.model.AlertDialogDestination
 import com.github.klee0kai.thekey.core.ui.navigation.model.Destination
 import com.github.klee0kai.thekey.core.ui.navigation.model.DynamicDestination

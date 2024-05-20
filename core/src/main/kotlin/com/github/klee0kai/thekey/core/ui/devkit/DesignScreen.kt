@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.ui.designkit
+package com.github.klee0kai.thekey.core.ui.devkit
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
