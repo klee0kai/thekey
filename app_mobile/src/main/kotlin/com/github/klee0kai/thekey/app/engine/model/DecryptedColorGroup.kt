@@ -3,7 +3,7 @@ package com.github.klee0kai.thekey.app.engine.model
 import android.os.Parcelable
 import com.github.klee0kai.brooklyn.JniPojo
 import com.github.klee0kai.thekey.app.domain.model.ColorGroup
-import com.github.klee0kai.thekey.app.ui.designkit.color.KeyColor
+import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import kotlinx.parcelize.Parcelize
 
 @JniPojo

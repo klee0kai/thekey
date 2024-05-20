@@ -5,11 +5,11 @@ import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.ui.navigation.model.AlertDialogDestination
 import com.github.klee0kai.thekey.app.ui.navigation.navigate
 import com.github.klee0kai.thekey.app.ui.navigation.navigateAppSettings
 import com.github.klee0kai.thekey.core.perm.PermUnit
 import com.github.klee0kai.thekey.core.perm.model.SimplePerm
+import com.github.klee0kai.thekey.core.ui.navigation.model.AlertDialogDestination
 import com.github.klee0kai.thekey.core.ui.navigation.model.ConfirmDialogResult
 import com.github.klee0kai.thekey.core.ui.navigation.model.TextProvider
 import com.github.klee0kai.thekey.core.utils.coroutine.shareLatest

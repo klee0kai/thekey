@@ -12,7 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.EmptyScreen
 import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
-import com.github.klee0kai.thekey.app.ui.navigation.model.AlertDialogDestination
+import com.github.klee0kai.thekey.core.ui.navigation.model.AlertDialogDestination
 import com.github.klee0kai.thekey.core.ui.navigation.model.ConfirmDialogResult
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import org.jetbrains.annotations.VisibleForTesting
@@ -26,8 +26,8 @@ fun AlertDialogScreen(
 
     AlertDialog(
         icon = {
-            if (dest.iconRes != null) {
-                Icon(painterResource(dest.iconRes), "")
+            dest.iconRes?.let { iconRes ->
+                Icon(painterResource(iconRes), "")
             }
         },
         title = {
@@ -49,11 +49,11 @@ fun AlertDialogScreen(
             }
         },
         dismissButton = {
-            if (dest.reject != null) {
+            dest.reject?.let { reject ->
                 TextButton(
                     onClick = { router.backWithResult(ConfirmDialogResult.REJECTED) }
                 ) {
-                    Text(dest.reject.text(resources))
+                    Text(reject.text(resources))
                 }
             }
         }

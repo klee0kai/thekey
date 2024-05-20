@@ -10,7 +10,6 @@ import com.github.klee0kai.thekey.app.di.modules.HelpersModule
 import com.github.klee0kai.thekey.app.di.modules.InteractorsModule
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.di.modules.RepositoriesModule
-import com.github.klee0kai.thekey.app.di.modules.ThemeModule
 
 interface AppComponentModules {
 
@@ -24,8 +23,6 @@ interface AppComponentModules {
     fun repositories(): RepositoriesModule
     fun engine(): EngineModule
     fun databases(): DBModule
-    fun theme(): ThemeModule
-
 
     /* get origin factories */
 
@@ -52,10 +49,6 @@ interface AppComponentModules {
 
     @ModuleOriginFactory
     fun databasesFactory(): DBModule
-
-    @ModuleOriginFactory
-    fun themeFactory(): ThemeModule
-
 
     /* override */
     @Init

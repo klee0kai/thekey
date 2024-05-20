@@ -14,10 +14,10 @@ import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.isDebugInspectorInfoEnabled
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.di.updateConfig
-import com.github.klee0kai.thekey.core.domain.model.AppConfig
-import com.github.klee0kai.thekey.app.ui.designkit.color.CommonColorScheme
 import com.github.klee0kai.thekey.app.ui.navigation.AppRouter
+import com.github.klee0kai.thekey.core.di.updateConfig
+import com.github.klee0kai.thekey.core.domain.model.AppConfig
+import com.github.klee0kai.thekey.core.ui.devkit.color.CommonColorScheme
 import com.valentinilk.shimmer.LocalShimmerTheme
 import com.valentinilk.shimmer.defaultShimmerTheme
 

@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.ui.designkit.color
+package com.github.klee0kai.thekey.core.ui.devkit.color
 
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ColorScheme

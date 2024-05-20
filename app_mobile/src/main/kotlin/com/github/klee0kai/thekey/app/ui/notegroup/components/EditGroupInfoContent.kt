@@ -23,11 +23,11 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
-import com.github.klee0kai.thekey.app.ui.designkit.color.KeyColor
 import com.github.klee0kai.thekey.app.ui.designkit.components.LazyListIndicatorIfNeed
 import com.github.klee0kai.thekey.app.ui.designkit.components.buttons.GroupCircle
 import com.github.klee0kai.thekey.app.ui.designkit.components.scrollPosition
 import com.github.klee0kai.thekey.app.ui.designkit.text.AppTextField
+import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import org.jetbrains.annotations.VisibleForTesting
 
 @Composable

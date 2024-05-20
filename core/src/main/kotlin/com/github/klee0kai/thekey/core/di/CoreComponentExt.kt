@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.di
+package com.github.klee0kai.thekey.core.di
 
 import com.github.klee0kai.thekey.core.domain.model.AppConfig
 import kotlinx.coroutines.runBlocking
@@ -7,12 +7,12 @@ import kotlinx.coroutines.sync.withLock
 
 private val configMutex by lazy { Mutex() }
 
-fun AppComponent.updateConfig(block: AppConfig.() -> AppConfig) = runBlocking {
+fun CoreComponent.updateConfig(block: AppConfig.() -> AppConfig) = runBlocking {
     configMutex.withLock {
-        DI.config()
+        config()
             .block()
             .let {
-                DI.config(it)
+                config(it)
             }
     }
 }
