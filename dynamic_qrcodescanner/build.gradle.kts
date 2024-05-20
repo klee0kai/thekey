@@ -22,8 +22,12 @@ android {
         }
         release(releaseConf)
         commercialRelease(releaseConf)
-        debug {  }
-        commercialDebug()
+
+        val debugConf: DynamicFeatureBuildType.() -> Unit = {
+            isDebuggable = true
+        }
+        debug(debugConf)
+        commercialDebug(debugConf)
     }
     commercialSourceSets()
 
