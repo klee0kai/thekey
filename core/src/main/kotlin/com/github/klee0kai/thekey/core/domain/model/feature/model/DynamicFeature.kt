@@ -11,6 +11,7 @@ data class DynamicFeature(
     @StringRes val descRes: Int = 0,
     val featureLibApiClass: String? = null,
     val purchase: String = "",
+    val isCommunity: Boolean = false,
 ) : Parcelable {
     companion object;
 }

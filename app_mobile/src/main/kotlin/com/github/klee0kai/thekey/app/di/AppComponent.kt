@@ -135,6 +135,8 @@ fun AppComponent.updateComponentsSoft() {
 
 private fun initAppComponent() = Stone.createComponent(AppComponent::class.java).apply {
     ext(CoreDI)
+    with(CommercialDIInit) { initDI() }
+
     initCoreAndroidHelpersModule(CoreAndroidHelpersModuleFactory())
     config(AppConfig(isDebug = BuildConfig.DEBUG))
     updateComponentsSoft()

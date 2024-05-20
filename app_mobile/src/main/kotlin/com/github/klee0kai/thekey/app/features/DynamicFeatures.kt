@@ -15,5 +15,6 @@ fun DynamicFeature.Companion.qrcodeScanner() = DynamicFeature(
     titleRes = R.string.title_qrcodescanner,
     descRes = R.string.desc_qrcodescanner,
     featureLibApiClass = "com.github.klee0kai.thekey.dynamic.qrcodescanner.QRCodeScannerImpl",
+    isCommunity = true,
 )
 

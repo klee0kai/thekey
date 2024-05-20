@@ -107,6 +107,7 @@ brooklynTaskOrdering()
 
 dependencies {
     commercialImplementation { project(":private:feature_firebase") }
+    commercialImplementation { project(":private:feature_billing") }
     implementation(project(":core"))
 
     implementation(libs.compose.bom)
