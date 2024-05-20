@@ -32,8 +32,8 @@ import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
-import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
-import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
+import com.github.klee0kai.thekey.core.utils.views.animateAlphaAsState
+import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 import org.jetbrains.annotations.VisibleForTesting
 
 object SecondaryTabsConst {

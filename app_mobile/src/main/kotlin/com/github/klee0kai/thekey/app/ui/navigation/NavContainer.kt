@@ -35,8 +35,8 @@ import com.github.klee0kai.thekey.app.ui.designkit.EmptyScreen
 import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
 import com.github.klee0kai.thekey.app.ui.navigation.model.Destination
 import com.github.klee0kai.thekey.app.ui.navigationboard.StorageNavigationBoard
-import com.github.klee0kai.thekey.app.utils.views.minInsets
-import com.github.klee0kai.thekey.app.utils.views.rememberTickerOf
+import com.github.klee0kai.thekey.core.utils.views.minInsets
+import com.github.klee0kai.thekey.core.utils.views.rememberTickerOf
 import dev.olshevski.navigation.reimagined.AnimatedNavHost
 import dev.olshevski.navigation.reimagined.NavAction
 import dev.olshevski.navigation.reimagined.NavBackHandler

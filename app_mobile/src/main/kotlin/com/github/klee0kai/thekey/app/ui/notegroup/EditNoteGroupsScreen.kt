@@ -54,11 +54,11 @@ import com.github.klee0kai.thekey.app.ui.notegroup.components.NoteSelectToGroupC
 import com.github.klee0kai.thekey.app.ui.notegroup.model.EditNoteGroupsState
 import com.github.klee0kai.thekey.app.ui.notegroup.presenter.EditNoteGroupsPresenterDummy
 import com.github.klee0kai.thekey.app.ui.notegroup.presenter.selectNote
-import com.github.klee0kai.thekey.app.utils.annotations.DebugOnly
-import com.github.klee0kai.thekey.app.utils.common.Dummy
-import com.github.klee0kai.thekey.app.utils.views.collectAsState
-import com.github.klee0kai.thekey.app.utils.views.rememberOnScreenRef
-import com.github.klee0kai.thekey.app.utils.views.topDp
+import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
+import com.github.klee0kai.thekey.core.utils.common.Dummy
+import com.github.klee0kai.thekey.core.utils.views.collectAsState
+import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
+import com.github.klee0kai.thekey.core.utils.views.topDp
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.jetbrains.annotations.VisibleForTesting

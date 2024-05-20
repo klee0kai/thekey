@@ -38,7 +38,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
 import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.app.ui.designkit.preview.PreviewDevices
-import com.github.klee0kai.thekey.app.utils.views.toPx
+import com.github.klee0kai.thekey.core.utils.views.toPx
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.launch
 import kotlin.math.max

@@ -39,10 +39,10 @@ import com.github.klee0kai.thekey.app.ui.navigationboard.components.CurrentStora
 import com.github.klee0kai.thekey.app.ui.navigationboard.components.DefaultHeader
 import com.github.klee0kai.thekey.app.ui.navigationboard.components.StorageNavigationMapList
 import com.github.klee0kai.thekey.app.ui.navigationboard.presenter.NavigationBoardPresenterDummy
-import com.github.klee0kai.thekey.app.utils.annotations.DebugOnly
-import com.github.klee0kai.thekey.app.utils.views.collectAsStateCrossFaded
-import com.github.klee0kai.thekey.app.utils.views.rememberOnScreenRef
-import com.github.klee0kai.thekey.app.utils.views.truncate
+import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
+import com.github.klee0kai.thekey.core.utils.views.collectAsStateCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
+import com.github.klee0kai.thekey.core.utils.views.truncate
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.launch
 import org.jetbrains.annotations.VisibleForTesting

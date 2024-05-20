@@ -28,7 +28,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.settings.Preference
 import com.github.klee0kai.thekey.app.ui.designkit.settings.SectionHeader
 import com.github.klee0kai.thekey.app.ui.designkit.settings.SwitchPreference
 import com.github.klee0kai.thekey.app.ui.navigation.model.PluginsDestination
-import com.github.klee0kai.thekey.app.utils.views.truncate
+import com.github.klee0kai.thekey.core.utils.views.truncate
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.launch
 

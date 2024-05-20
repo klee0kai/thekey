@@ -23,9 +23,9 @@ import com.github.klee0kai.thekey.app.ui.note.model.decryptedNote
 import com.github.klee0kai.thekey.app.ui.note.model.decryptedOtpNote
 import com.github.klee0kai.thekey.app.ui.note.model.isValid
 import com.github.klee0kai.thekey.app.ui.note.model.updateWith
-import com.github.klee0kai.thekey.app.utils.common.TimeFormats
-import com.github.klee0kai.thekey.app.utils.common.launchLatest
-import com.github.klee0kai.thekey.app.utils.common.launchLatestSafe
+import com.github.klee0kai.thekey.core.utils.common.TimeFormats
+import com.github.klee0kai.thekey.core.utils.common.launchLatest
+import com.github.klee0kai.thekey.core.utils.common.launchLatestSafe
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull

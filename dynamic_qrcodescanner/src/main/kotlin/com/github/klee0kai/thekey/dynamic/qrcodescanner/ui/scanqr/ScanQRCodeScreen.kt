@@ -26,8 +26,8 @@ import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
 import com.github.klee0kai.thekey.app.ui.navigation.model.TextProvider
-import com.github.klee0kai.thekey.app.utils.annotations.DebugOnly
-import com.github.klee0kai.thekey.app.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
+import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.dynamic.qrcodescanner.ui.navigation.cameraPermissions
 import com.github.klee0kai.thekey.dynamic.qrcodescanner.ui.scanqr.components.CameraPreviewCompose
 import com.github.klee0kai.thekey.dynamic.qrcodescanner.ui.scanqr.components.qrCodeUserScanner

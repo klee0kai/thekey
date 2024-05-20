@@ -42,12 +42,12 @@ import com.github.klee0kai.thekey.app.ui.navigation.note
 import com.github.klee0kai.thekey.app.ui.storage.StorageScreen
 import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenterDummy
 import com.github.klee0kai.thekey.app.ui.storages.components.GroupsSelectContent
-import com.github.klee0kai.thekey.app.utils.annotations.DebugOnly
-import com.github.klee0kai.thekey.app.utils.common.Dummy
-import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
-import com.github.klee0kai.thekey.app.utils.views.collectAsState
-import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
-import com.github.klee0kai.thekey.app.utils.views.rememberOnScreenRef
+import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
+import com.github.klee0kai.thekey.core.utils.common.Dummy
+import com.github.klee0kai.thekey.core.utils.views.animateAlphaAsState
+import com.github.klee0kai.thekey.core.utils.views.collectAsState
+import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
+import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import org.jetbrains.annotations.VisibleForTesting
 

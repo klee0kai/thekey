@@ -4,7 +4,7 @@ import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.domain.model.ColoredOtpNote
 import com.github.klee0kai.thekey.app.engine.model.DecryptedOtpNote
-import com.github.klee0kai.thekey.app.utils.common.launchLatest
+import com.github.klee0kai.thekey.core.utils.common.launchLatest
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow

@@ -35,7 +35,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.LazyListIndicatorI
 import com.github.klee0kai.thekey.app.ui.designkit.components.buttons.AddCircle
 import com.github.klee0kai.thekey.app.ui.designkit.components.buttons.GroupCircle
 import com.github.klee0kai.thekey.app.ui.designkit.components.scrollPosition
-import com.github.klee0kai.thekey.app.utils.common.Dummy
+import com.github.klee0kai.thekey.core.utils.common.Dummy
 
 @Composable
 fun GroupsSelectContent(

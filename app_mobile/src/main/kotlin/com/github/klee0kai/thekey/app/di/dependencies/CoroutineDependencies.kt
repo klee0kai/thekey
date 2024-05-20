@@ -4,7 +4,7 @@ import com.github.klee0kai.thekey.app.di.DefaultDispatcher
 import com.github.klee0kai.thekey.app.di.IODispatcher
 import com.github.klee0kai.thekey.app.di.JniDispatcher
 import com.github.klee0kai.thekey.app.di.MainDispatcher
-import com.github.klee0kai.thekey.app.utils.common.SafeContextScope
+import com.github.klee0kai.thekey.core.utils.common.SafeContextScope
 import kotlinx.coroutines.CoroutineDispatcher
 import java.util.concurrent.Executor
 

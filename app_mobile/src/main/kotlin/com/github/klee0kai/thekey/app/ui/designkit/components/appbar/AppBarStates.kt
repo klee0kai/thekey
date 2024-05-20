@@ -25,9 +25,9 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
-import com.github.klee0kai.thekey.app.utils.views.animateAlphaAsState
-import com.github.klee0kai.thekey.app.utils.views.animateTargetCrossFaded
-import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
+import com.github.klee0kai.thekey.core.utils.views.animateAlphaAsState
+import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 import org.jetbrains.annotations.VisibleForTesting
 
 object AppBarConst {

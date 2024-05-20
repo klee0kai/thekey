@@ -8,8 +8,8 @@ import com.github.klee0kai.thekey.app.ui.navigation.RouterContext
 import com.github.klee0kai.thekey.app.ui.navigation.model.Destination
 import com.github.klee0kai.thekey.app.ui.navigation.model.DialogDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.NavigateBackstackChange
-import com.github.klee0kai.thekey.app.utils.coroutine.awaitSec
-import com.github.klee0kai.thekey.app.utils.coroutine.shareLatest
+import com.github.klee0kai.thekey.core.utils.coroutine.awaitSec
+import com.github.klee0kai.thekey.core.utils.coroutine.shareLatest
 import dev.olshevski.navigation.reimagined.NavAction
 import dev.olshevski.navigation.reimagined.navEntry
 import dev.olshevski.navigation.reimagined.pop

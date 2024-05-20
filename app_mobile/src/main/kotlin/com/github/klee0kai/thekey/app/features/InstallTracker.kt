@@ -9,7 +9,7 @@ import com.github.klee0kai.thekey.app.features.model.InstallStatus
 import com.github.klee0kai.thekey.app.features.model.Installed
 import com.github.klee0kai.thekey.app.features.model.Installing
 import com.github.klee0kai.thekey.app.features.model.NotInstalled
-import com.github.klee0kai.thekey.app.utils.common.launchSafe
+import com.github.klee0kai.thekey.core.utils.common.launchSafe
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update

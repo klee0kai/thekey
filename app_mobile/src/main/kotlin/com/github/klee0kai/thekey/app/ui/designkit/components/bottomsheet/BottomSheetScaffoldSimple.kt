@@ -34,10 +34,10 @@ import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
 import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.app.ui.designkit.components.bottomsheet.SimpleScaffoldConst.dragHandleSize
-import com.github.klee0kai.thekey.app.utils.views.accelerateDecelerate
-import com.github.klee0kai.thekey.app.utils.views.pxToDp
-import com.github.klee0kai.thekey.app.utils.views.ratioBetween
-import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
+import com.github.klee0kai.thekey.core.utils.views.accelerateDecelerate
+import com.github.klee0kai.thekey.core.utils.views.pxToDp
+import com.github.klee0kai.thekey.core.utils.views.ratioBetween
+import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 import org.jetbrains.annotations.VisibleForTesting
 
 internal object SimpleScaffoldConst {

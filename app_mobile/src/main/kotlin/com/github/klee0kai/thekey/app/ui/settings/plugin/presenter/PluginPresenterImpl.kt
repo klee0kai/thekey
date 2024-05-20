@@ -5,7 +5,7 @@ import com.github.klee0kai.thekey.app.di.updateComponentsSoft
 import com.github.klee0kai.thekey.app.features.model.DynamicFeature
 import com.github.klee0kai.thekey.app.features.model.NotInstalled
 import com.github.klee0kai.thekey.app.features.model.isCompleted
-import com.github.klee0kai.thekey.app.utils.common.launchLatest
+import com.github.klee0kai.thekey.core.utils.common.launchLatest
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow

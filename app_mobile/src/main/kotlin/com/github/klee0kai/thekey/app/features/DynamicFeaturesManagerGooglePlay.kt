@@ -2,7 +2,7 @@ package com.github.klee0kai.thekey.app.features
 
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.features.model.DynamicFeature
-import com.github.klee0kai.thekey.app.utils.common.launchSafe
+import com.github.klee0kai.thekey.core.utils.common.launchSafe
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import com.google.android.play.core.splitinstall.SplitInstallRequest
 import com.google.android.play.core.splitinstall.SplitInstallStateUpdatedListener

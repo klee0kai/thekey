@@ -2,7 +2,7 @@ package com.github.klee0kai.thekey.app.features.model
 
 import android.os.Parcelable
 import androidx.annotation.StringRes
-import com.github.klee0kai.thekey.app.utils.common.JvmReflection
+import com.github.klee0kai.thekey.core.utils.common.JvmReflection
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

@@ -21,7 +21,7 @@ import com.github.klee0kai.thekey.app.domain.model.AppConfig
 import com.github.klee0kai.thekey.app.features.allFeatures
 import com.github.klee0kai.thekey.app.features.model.DynamicFeature
 import com.github.klee0kai.thekey.app.features.model.findApi
-import com.github.klee0kai.thekey.app.utils.annotations.DebugOnly
+import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 
 var DI: AppComponent = initAppComponent()
     private set

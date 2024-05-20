@@ -44,10 +44,10 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarState
 import com.github.klee0kai.thekey.app.ui.navigation.model.DynamicDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.QRCodeScanDestination
 import com.github.klee0kai.thekey.app.ui.settings.plugin.presenter.PluginPresenter
-import com.github.klee0kai.thekey.app.utils.annotations.DebugOnly
-import com.github.klee0kai.thekey.app.utils.views.collectAsState
-import com.github.klee0kai.thekey.app.utils.views.minInsets
-import com.github.klee0kai.thekey.app.utils.views.rememberOnScreenRef
+import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
+import com.github.klee0kai.thekey.core.utils.views.collectAsState
+import com.github.klee0kai.thekey.core.utils.views.minInsets
+import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.flow.MutableStateFlow
 

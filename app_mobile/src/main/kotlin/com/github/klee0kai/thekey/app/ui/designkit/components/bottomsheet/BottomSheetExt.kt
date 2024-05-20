@@ -1,8 +1,8 @@
 package com.github.klee0kai.thekey.app.ui.designkit.components.bottomsheet
 
 import androidx.compose.ui.unit.dp
-import com.github.klee0kai.thekey.app.utils.views.accelerateDecelerate
-import com.github.klee0kai.thekey.app.utils.views.ratioBetween
+import com.github.klee0kai.thekey.core.utils.views.accelerateDecelerate
+import com.github.klee0kai.thekey.core.utils.views.ratioBetween
 
 fun Float.topContentAlphaFromDrag() =
     ratioBetween(0.3f, 0.9f)

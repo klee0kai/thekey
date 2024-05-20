@@ -6,7 +6,7 @@ import com.github.klee0kai.thekey.app.domain.model.ColoredNote
 import com.github.klee0kai.thekey.app.ui.designkit.color.KeyColor
 import com.github.klee0kai.thekey.app.ui.storage.model.SearchState
 import com.github.klee0kai.thekey.app.ui.storage.model.storageItem
-import com.github.klee0kai.thekey.app.utils.common.Dummy
+import com.github.klee0kai.thekey.core.utils.common.Dummy
 import kotlinx.coroutines.flow.MutableStateFlow
 
 open class StoragePresenterLongListDummy(

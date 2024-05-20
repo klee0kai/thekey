@@ -20,7 +20,7 @@ import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
 import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
 import com.github.klee0kai.thekey.app.ui.designkit.color.KeyColor
 import com.github.klee0kai.thekey.app.ui.designkit.components.buttons.GroupCircle
-import com.github.klee0kai.thekey.app.utils.common.Dummy
+import com.github.klee0kai.thekey.core.utils.common.Dummy
 import org.jetbrains.annotations.VisibleForTesting
 
 @Composable

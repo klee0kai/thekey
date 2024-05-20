@@ -106,6 +106,7 @@ brooklynTaskOrdering()
 
 dependencies {
     commercialImplementation { project(":private:feature_firebase") }
+    implementation(project(":core"))
 
     implementation(libs.compose.bom)
     implementation(libs.bundles.compose)
@@ -118,15 +119,12 @@ dependencies {
 
     implementation(libs.ml.dynamic)
 
-    // stone
     implementation(libs.bundles.stone)
     kapt(libs.stone.kapt)
 
-    // room
     implementation(libs.room.runtime)
     kapt(libs.room.kapt)
 
-    // hummus
     implementation(libs.hummus)
 
     testImplementation(libs.junit)

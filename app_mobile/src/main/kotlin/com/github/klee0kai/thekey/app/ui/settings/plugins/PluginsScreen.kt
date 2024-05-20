@@ -34,9 +34,9 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarState
 import com.github.klee0kai.thekey.app.ui.designkit.settings.Preference
 import com.github.klee0kai.thekey.app.ui.navigation.model.PluginDestination
 import com.github.klee0kai.thekey.app.ui.settings.plugins.presenter.PluginsPresenter
-import com.github.klee0kai.thekey.app.utils.views.collectAsState
-import com.github.klee0kai.thekey.app.utils.views.rememberOnScreenRef
-import com.github.klee0kai.thekey.app.utils.views.truncate
+import com.github.klee0kai.thekey.core.utils.views.collectAsState
+import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
+import com.github.klee0kai.thekey.core.utils.views.truncate
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch

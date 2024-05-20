@@ -19,7 +19,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
-import com.github.klee0kai.thekey.app.utils.views.toAnnotationString
+import com.github.klee0kai.thekey.core.utils.views.toAnnotationString
 
 
 @Preview

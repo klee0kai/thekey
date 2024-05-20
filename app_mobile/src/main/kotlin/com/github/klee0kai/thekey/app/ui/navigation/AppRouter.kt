@@ -14,7 +14,7 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.Destination
 import com.github.klee0kai.thekey.app.ui.navigation.model.LoginDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.NavigateBackstackChange
 import com.github.klee0kai.thekey.app.ui.navigation.model.RequestPermResult
-import com.github.klee0kai.thekey.app.utils.common.SafeContextScope
+import com.github.klee0kai.thekey.core.utils.common.SafeContextScope
 import dev.olshevski.navigation.reimagined.NavController
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow

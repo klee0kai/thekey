@@ -39,10 +39,10 @@ import com.github.klee0kai.thekey.app.ui.designkit.components.bottomsheet.topCon
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditStorageDestination
 import com.github.klee0kai.thekey.app.ui.storages.components.GroupsSelectContent
 import com.github.klee0kai.thekey.app.ui.storages.components.StoragesListContent
-import com.github.klee0kai.thekey.app.utils.views.accumulate
-import com.github.klee0kai.thekey.app.utils.views.rememberDerivedStateOf
-import com.github.klee0kai.thekey.app.utils.views.rememberOnScreen
-import com.github.klee0kai.thekey.app.utils.views.topDp
+import com.github.klee0kai.thekey.core.utils.views.accumulate
+import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
+import com.github.klee0kai.thekey.core.utils.views.rememberOnScreen
+import com.github.klee0kai.thekey.core.utils.views.topDp
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import org.jetbrains.annotations.VisibleForTesting
 

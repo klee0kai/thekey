@@ -2,7 +2,7 @@ package com.github.klee0kai.thekey.app.helpers.path
 
 import android.os.Environment
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.utils.common.runForEach
+import com.github.klee0kai.thekey.core.utils.common.runForEach
 import java.io.File
 import java.util.Locale
 

@@ -38,6 +38,7 @@ android {
 
 dependencies {
     implementation(project(":app_mobile"))
+    implementation(project(":core"))
 
     implementation(libs.bundles.compose)
     implementation(libs.bundles.compose.debug)
