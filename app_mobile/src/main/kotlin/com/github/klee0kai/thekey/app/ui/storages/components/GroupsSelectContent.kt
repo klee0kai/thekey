@@ -30,11 +30,11 @@ import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
-import com.github.klee0kai.thekey.app.ui.designkit.components.LazyListIndicatorIfNeed
-import com.github.klee0kai.thekey.app.ui.designkit.components.buttons.AddCircle
-import com.github.klee0kai.thekey.app.ui.designkit.components.buttons.GroupCircle
-import com.github.klee0kai.thekey.app.ui.designkit.components.scrollPosition
 import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
+import com.github.klee0kai.thekey.core.ui.devkit.components.LazyListIndicatorIfNeed
+import com.github.klee0kai.thekey.core.ui.devkit.components.buttons.AddCircle
+import com.github.klee0kai.thekey.core.ui.devkit.components.buttons.GroupCircle
+import com.github.klee0kai.thekey.core.ui.devkit.components.scrollPosition
 import com.github.klee0kai.thekey.core.utils.common.Dummy
 
 @Composable

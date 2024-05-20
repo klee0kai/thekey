@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.ui.designkit.components
+package com.github.klee0kai.thekey.core.ui.devkit.components
 
 import android.os.Parcelable
 import androidx.compose.foundation.background

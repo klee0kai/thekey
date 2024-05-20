@@ -6,6 +6,6 @@ import com.github.klee0kai.thekey.core.ui.navigation.model.Destination
 interface ScreenResolver {
 
     @Composable
-    fun screenOf(destination: Destination)
+    fun screenOf(destination: Destination) = Unit
 
 }

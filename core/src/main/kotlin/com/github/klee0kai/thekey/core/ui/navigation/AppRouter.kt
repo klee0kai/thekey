@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedDispatcher
 import androidx.annotation.StringRes
 import androidx.compose.material3.DrawerState
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
@@ -18,58 +19,59 @@ import dev.olshevski.navigation.reimagined.NavController
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.emptyFlow
 
 interface AppRouter : RouterContext, ComposeRouter, SnackRouter, NavBoardRouter, ActivityRouter, PermissionsRouter
 
 interface ComposeRouter {
 
-    fun navigate(destination: Destination): Flow<Any?>
+    fun navigate(destination: Destination): Flow<Any?> = emptyFlow()
 
-    fun <R> navigate(destination: Destination, clazz: Class<R>): Flow<R?>
+    fun <R> navigate(destination: Destination, clazz: Class<R>): Flow<R?> = emptyFlow()
 
-    fun <R> backWithResult(result: R, exitFromApp: Boolean = false): Boolean
+    fun <R> backWithResult(result: R, exitFromApp: Boolean = false): Boolean = false
 
-    suspend fun awaitScreenClose(destination: Destination)
+    suspend fun awaitScreenClose(destination: Destination) = Unit
 
-    fun back()
+    fun back() = Unit
 
     @Composable
-    fun collectBackstackChanges()
+    fun collectBackstackChanges() = Unit
 
 }
 
 interface SnackRouter {
 
-    suspend fun snack(message: String, duration: SnackbarDuration = SnackbarDuration.Short): SnackbarResult
+    suspend fun snack(message: String, duration: SnackbarDuration = SnackbarDuration.Short): SnackbarResult = SnackbarResult.Dismissed
 
-    suspend fun snack(@StringRes message: Int, duration: SnackbarDuration = SnackbarDuration.Short)
+    suspend fun snack(@StringRes message: Int, duration: SnackbarDuration = SnackbarDuration.Short) = Unit
 
 }
 
 interface NavBoardRouter {
 
-    fun isNavigationBoardIsOpen(): Boolean
+    fun isNavigationBoardIsOpen(): Boolean = false
 
-    suspend fun showNavigationBoard()
+    suspend fun showNavigationBoard() = Unit
 
-    suspend fun hideNavigationBoard()
+    suspend fun hideNavigationBoard() = Unit
 
 }
 
 
 interface ActivityRouter {
 
-    fun navigate(intent: Intent): Flow<ActivityResult>
+    fun navigate(intent: Intent): Flow<ActivityResult> = emptyFlow()
 
-    fun onResult(result: ActivityResult)
+    fun onResult(result: ActivityResult) = Unit
 
 }
 
 interface PermissionsRouter {
 
-    fun askPermissions(perms: Array<String>): Flow<Boolean>
+    fun askPermissions(perms: Array<String>): Flow<Boolean> = emptyFlow()
 
-    fun onResult(result: RequestPermResult)
+    fun onResult(result: RequestPermResult) = Unit
 
 }
 
@@ -78,21 +80,21 @@ interface RouterContext {
     /**
      * We show a stub while we initialize DI for a new feature
      */
-    val showInitDynamicFeatureScreen: MutableStateFlow<Boolean>
+    val showInitDynamicFeatureScreen: MutableStateFlow<Boolean> get() = MutableStateFlow(false)
 
-    val snackbarHostState: SnackbarHostState
-    val navBoardState: DrawerState
-    val navFullController: NavController<Destination>
-    val navScreensController: NavController<Destination>
-    val navDialogsController: NavController<Destination>
-    val activity: ComponentActivity?
+    val snackbarHostState: SnackbarHostState get() = SnackbarHostState()
+    val navBoardState: DrawerState get() = DrawerState(DrawerValue.Closed)
+    val navFullController: NavController<Destination> get() = TODO()
+    val navScreensController: NavController<Destination> get() = TODO()
+    val navDialogsController: NavController<Destination> get() = TODO()
+    val activity: ComponentActivity? get() = TODO()
 
-    val backDispatcher: OnBackPressedDispatcher?
-    val navChanges: MutableSharedFlow<NavigateBackstackChange>
+    val backDispatcher: OnBackPressedDispatcher? get() = TODO()
+    val navChanges: MutableSharedFlow<NavigateBackstackChange> get() = TODO()
 
-    val scope: SafeContextScope
+    val scope: SafeContextScope get() = TODO()
 
-    fun genRequestCode(): Int
+    fun genRequestCode(): Int = -1
 
 }
 

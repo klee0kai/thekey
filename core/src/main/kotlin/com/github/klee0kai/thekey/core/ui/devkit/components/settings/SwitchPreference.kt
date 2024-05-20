@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.ui.designkit.settings
+package com.github.klee0kai.thekey.core.ui.devkit.components.settings
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row

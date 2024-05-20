@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalFoundationApi::class)
 
-package com.github.klee0kai.thekey.app.ui.designkit.components.buttons
+package com.github.klee0kai.thekey.core.ui.devkit.components.buttons
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background

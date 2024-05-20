@@ -94,4 +94,7 @@ fun CoreComponent.hardResetToPreview() {
     CoreDI.config(config)
 }
 
-private fun initCoreComponent() = Stone.createComponent(CoreComponent::class.java)
+private fun initCoreComponent() = Stone.createComponent(CoreComponent::class.java).apply {
+    config(AppConfig())
+
+}

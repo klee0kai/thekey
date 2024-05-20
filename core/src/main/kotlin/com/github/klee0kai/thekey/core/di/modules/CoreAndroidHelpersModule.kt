@@ -10,12 +10,12 @@ import com.github.klee0kai.thekey.core.ui.navigation.screenresolver.ScreenResolv
 interface CoreAndroidHelpersModule {
 
     @Provide(cache = Provide.CacheType.Weak)
-    fun screenResolver(): ScreenResolver = TODO()
+    fun screenResolver(): ScreenResolver = object : ScreenResolver {}
 
     @Provide(cache = Provide.CacheType.Weak)
-    fun router(): AppRouter = TODO()
+    fun router(): AppRouter = object : AppRouter {}
 
     @Provide(cache = Provide.CacheType.Strong)
-    fun dynamicFeaturesManager(): DynamicFeaturesManager = TODO()
+    fun dynamicFeaturesManager(): DynamicFeaturesManager = object : DynamicFeaturesManager {}
 
 }
