@@ -21,14 +21,14 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.wear.compose.material.Text
 import com.github.klee0kai.stone.type.wrappers.getValue
-import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.features.allFeatures
 import com.github.klee0kai.thekey.app.ui.navigation.model.PluginDestination
 import com.github.klee0kai.thekey.app.ui.settings.plugins.presenter.PluginsPresenter
-import com.github.klee0kai.thekey.core.feature.model.DynamicFeature
-import com.github.klee0kai.thekey.core.feature.model.InstallDynamicFeature
+import com.github.klee0kai.thekey.core.R
+import com.github.klee0kai.thekey.core.domain.model.feature.model.DynamicFeature
+import com.github.klee0kai.thekey.core.domain.model.feature.model.InstallDynamicFeature
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst

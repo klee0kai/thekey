@@ -19,7 +19,7 @@ import com.github.klee0kai.thekey.core.di.modules.CoreInteractorsModule
 import com.github.klee0kai.thekey.core.di.modules.ThemeModule
 import com.github.klee0kai.thekey.core.di.wrap.AppWrappersStone
 import com.github.klee0kai.thekey.core.domain.model.AppConfig
-import com.github.klee0kai.thekey.core.feature.model.DynamicFeature
+import com.github.klee0kai.thekey.core.domain.model.feature.model.DynamicFeature
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 
 

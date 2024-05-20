@@ -1,9 +1,6 @@
 package com.github.klee0kai.thekey.app.ui.note.presenter
 
-import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.domain.model.ColorGroup
-import com.github.klee0kai.thekey.app.domain.model.noGroup
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.engine.model.DecryptedOtpNote
 import com.github.klee0kai.thekey.app.engine.model.GenPasswParams
@@ -18,7 +15,10 @@ import com.github.klee0kai.thekey.app.ui.note.model.decryptedNote
 import com.github.klee0kai.thekey.app.ui.note.model.decryptedOtpNote
 import com.github.klee0kai.thekey.app.ui.note.model.isValid
 import com.github.klee0kai.thekey.app.ui.note.model.updateWith
+import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
+import com.github.klee0kai.thekey.core.domain.ColorGroup
+import com.github.klee0kai.thekey.core.domain.noGroup
 import com.github.klee0kai.thekey.core.ui.navigation.model.AlertDialogDestination
 import com.github.klee0kai.thekey.core.ui.navigation.model.ConfirmDialogResult
 import com.github.klee0kai.thekey.core.ui.navigation.model.TextProvider

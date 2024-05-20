@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.core.feature.model
+package com.github.klee0kai.thekey.core.domain.model.feature.model
 
 import android.os.Parcelable
 import androidx.annotation.StringRes

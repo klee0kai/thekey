@@ -2,9 +2,9 @@ package com.github.klee0kai.thekey.app.ui.settings.plugin.presenter
 
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.updateComponentsSoft
-import com.github.klee0kai.thekey.core.feature.model.DynamicFeature
-import com.github.klee0kai.thekey.core.feature.model.NotInstalled
-import com.github.klee0kai.thekey.core.feature.model.isCompleted
+import com.github.klee0kai.thekey.core.domain.model.feature.model.DynamicFeature
+import com.github.klee0kai.thekey.core.domain.model.feature.model.NotInstalled
+import com.github.klee0kai.thekey.core.domain.model.feature.model.isCompleted
 import com.github.klee0kai.thekey.core.utils.common.launchLatest
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull

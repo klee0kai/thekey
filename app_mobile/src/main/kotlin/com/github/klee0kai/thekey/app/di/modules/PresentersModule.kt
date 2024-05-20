@@ -26,7 +26,7 @@ import com.github.klee0kai.thekey.app.ui.storages.StoragesPresenter
 import com.github.klee0kai.thekey.core.di.identifiers.NoteGroupIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
-import com.github.klee0kai.thekey.core.feature.model.DynamicFeature
+import com.github.klee0kai.thekey.core.domain.model.feature.model.DynamicFeature
 
 @Module
 interface PresentersModule {

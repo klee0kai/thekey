@@ -5,14 +5,14 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
-import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.core.ui.navigation.navigate
 import com.github.klee0kai.thekey.app.ui.navigation.navigateManageExternalStorage
+import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.perm.PermUnit
 import com.github.klee0kai.thekey.core.ui.navigation.model.AlertDialogDestination
 import com.github.klee0kai.thekey.core.ui.navigation.model.ConfirmDialogResult
 import com.github.klee0kai.thekey.core.ui.navigation.model.TextProvider
+import com.github.klee0kai.thekey.core.ui.navigation.navigate
 import com.github.klee0kai.thekey.core.utils.coroutine.shareLatest
 import com.github.klee0kai.thekey.core.utils.coroutine.singleEventFlow
 import kotlinx.coroutines.flow.Flow

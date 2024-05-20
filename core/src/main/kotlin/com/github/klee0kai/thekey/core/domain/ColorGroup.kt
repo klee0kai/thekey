@@ -1,8 +1,8 @@
-package com.github.klee0kai.thekey.app.domain.model
+package com.github.klee0kai.thekey.core.domain
 
 import android.os.Parcelable
-import com.github.klee0kai.thekey.app.R
-import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.core.R
+import com.github.klee0kai.thekey.core.di.CoreDI
 import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import kotlinx.parcelize.Parcelize
 
@@ -18,4 +18,4 @@ data class ColorGroup(
 }
 
 fun ColorGroup.Companion.noGroup(): ColorGroup =
-    ColorGroup(name = DI.ctx().resources.getString(R.string.no), keyColor = KeyColor.NOCOLOR)
+    ColorGroup(name = CoreDI.ctx().resources.getString(R.string.no), keyColor = KeyColor.NOCOLOR)

@@ -44,11 +44,8 @@ import androidx.wear.compose.material.FractionalThreshold
 import androidx.wear.compose.material.rememberSwipeableState
 import androidx.wear.compose.material.swipeable
 import com.github.klee0kai.stone.type.wrappers.getValue
-import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
-import com.github.klee0kai.thekey.app.ui.designkit.components.dropdownfields.ColorGroupDropDownField
-import com.github.klee0kai.thekey.app.ui.designkit.components.dropdownfields.DropDownField
 import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteDestination
 import com.github.klee0kai.thekey.app.ui.note.model.EditNoteState
@@ -57,6 +54,7 @@ import com.github.klee0kai.thekey.app.ui.note.model.EditTabs.Account
 import com.github.klee0kai.thekey.app.ui.note.model.EditTabs.Otp
 import com.github.klee0kai.thekey.app.ui.note.model.initTab
 import com.github.klee0kai.thekey.app.ui.note.presenter.EditNotePresenter
+import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
@@ -66,6 +64,8 @@ import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DoneIconButton
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.SecondaryTabs
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.SecondaryTabsConst
+import com.github.klee0kai.thekey.core.ui.devkit.components.dropdownfields.ColorGroupDropDownField
+import com.github.klee0kai.thekey.core.ui.devkit.components.dropdownfields.DropDownField
 import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextField
 import com.github.klee0kai.thekey.core.utils.common.Dummy
 import com.github.klee0kai.thekey.core.utils.views.TargetAlpha

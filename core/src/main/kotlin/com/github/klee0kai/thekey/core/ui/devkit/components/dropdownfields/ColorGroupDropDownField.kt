@@ -1,6 +1,6 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
 
-package com.github.klee0kai.thekey.app.ui.designkit.components.dropdownfields
+package com.github.klee0kai.thekey.core.ui.devkit.components.dropdownfields
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DropdownMenuItem
@@ -13,13 +13,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.github.klee0kai.thekey.app.domain.model.ColorGroup
+import com.github.klee0kai.thekey.core.domain.ColorGroup
+import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import com.github.klee0kai.thekey.core.ui.devkit.components.buttons.GroupCircle
 import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextField
 
-@Preview
 @Composable
 fun ColorGroupDropDownField(
     modifier: Modifier = Modifier,
@@ -81,4 +81,10 @@ fun ColorGroupDropDownField(
             }
         }
     }
+}
+
+@Composable
+@Preview
+fun ColorGroupDropDownFieldPreview() = AppTheme {
+    ColorGroupDropDownField()
 }

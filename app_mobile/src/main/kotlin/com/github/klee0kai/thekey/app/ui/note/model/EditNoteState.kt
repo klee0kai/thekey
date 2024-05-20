@@ -1,12 +1,12 @@
 package com.github.klee0kai.thekey.app.ui.note.model
 
 import android.os.Parcelable
-import com.github.klee0kai.thekey.app.domain.model.ColorGroup
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.engine.model.DecryptedOtpNote
 import com.github.klee0kai.thekey.app.engine.model.OtpAlgo
 import com.github.klee0kai.thekey.app.engine.model.OtpMethod
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteDestination
+import com.github.klee0kai.thekey.core.domain.ColorGroup
 import kotlinx.parcelize.Parcelize
 import java.text.DateFormat
 import java.util.Date

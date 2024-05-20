@@ -1,8 +1,8 @@
 package com.github.klee0kai.thekey.app.ui.storage.presenter
 
-import com.github.klee0kai.thekey.app.domain.model.ColorGroup
 import com.github.klee0kai.thekey.app.ui.storage.model.SearchState
 import com.github.klee0kai.thekey.app.ui.storage.model.StorageItem
+import com.github.klee0kai.thekey.core.domain.ColorGroup
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

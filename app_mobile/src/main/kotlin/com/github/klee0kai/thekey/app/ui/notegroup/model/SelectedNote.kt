@@ -1,9 +1,9 @@
 package com.github.klee0kai.thekey.app.ui.notegroup.model
 
 import android.os.Parcelable
-import com.github.klee0kai.thekey.app.domain.model.ColorGroup
 import com.github.klee0kai.thekey.app.domain.model.ColoredNote
-import com.github.klee0kai.thekey.app.domain.model.noGroup
+import com.github.klee0kai.thekey.core.domain.ColorGroup
+import com.github.klee0kai.thekey.core.domain.noGroup
 import kotlinx.parcelize.Parcelize
 
 

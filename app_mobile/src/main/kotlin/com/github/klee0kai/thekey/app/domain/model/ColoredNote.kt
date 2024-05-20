@@ -2,6 +2,8 @@ package com.github.klee0kai.thekey.app.domain.model
 
 import android.os.Parcelable
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
+import com.github.klee0kai.thekey.core.domain.ColorGroup
+import com.github.klee0kai.thekey.core.domain.noGroup
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

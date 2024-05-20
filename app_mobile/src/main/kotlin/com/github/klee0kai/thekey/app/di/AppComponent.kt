@@ -30,7 +30,7 @@ import com.github.klee0kai.thekey.core.di.identifiers.PluginIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.di.wrap.AppWrappersStone
 import com.github.klee0kai.thekey.core.domain.model.AppConfig
-import com.github.klee0kai.thekey.core.feature.model.DynamicFeature
+import com.github.klee0kai.thekey.core.domain.model.feature.model.DynamicFeature
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 
 var DI: AppComponent = initAppComponent()
