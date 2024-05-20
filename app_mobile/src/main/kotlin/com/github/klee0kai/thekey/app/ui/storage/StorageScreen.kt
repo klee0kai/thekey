@@ -65,11 +65,13 @@ import com.github.klee0kai.thekey.core.utils.views.accumulate
 import com.github.klee0kai.thekey.core.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.hideOnTargetAlpha
+import com.github.klee0kai.thekey.core.utils.views.minInsets
 import com.github.klee0kai.thekey.core.utils.views.rememberAlphaAnimate
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.core.utils.views.rememberTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.topDp
+import com.github.klee0kai.thekey.core.utils.views.truncate
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.launch
 import org.jetbrains.annotations.VisibleForTesting
@@ -146,7 +148,7 @@ fun StorageScreen(
                     0 -> NotesContent(
                         modifier = Modifier
                             .animateContentSize(),
-                        topMargin = secondaryTabsHeight + AppBarConst.appBarSize + WindowInsets.safeContent.topDp,
+                        secondaryTabsHeight = secondaryTabsHeight,
                         onDrag = { dragProgress = it },
                         dest = dest,
                         isPageFullyAvailable = isAccountTab && !searchState.isActive,
@@ -154,8 +156,16 @@ fun StorageScreen(
 
                     1 -> GenPasswordContent(
                         modifier = Modifier
-                            .windowInsetsPadding(WindowInsets.safeContent)
-                            .padding(top = AppBarConst.appBarSize + SecondaryTabsConst.allHeight),
+                            .windowInsetsPadding(
+                                WindowInsets.safeContent
+                                    .minInsets(16.dp)
+                                    .truncate(top = true)
+                            )
+                            .padding(
+                                top = WindowInsets.safeContent.topDp + AppBarConst.appBarSize // system bar + app bar
+                                        + SecondaryTabsConst.allHeight // tabs
+                                        + 16.dp // space
+                            ),
                         dest = dest,
                     )
                 }

@@ -56,6 +56,7 @@ android {
         commercialRelease(releaseConf)
 
         val debugConf: ApplicationBuildType.() -> Unit = {
+            isDebuggable = true
             signingConfig = signingConfigs["debug"]
             externalNativeBuild {
                 cmake {
