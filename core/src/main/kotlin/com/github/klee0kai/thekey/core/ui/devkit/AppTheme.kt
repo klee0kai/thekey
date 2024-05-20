@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.ui.designkit
+package com.github.klee0kai.thekey.core.ui.devkit
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -13,11 +13,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.isDebugInspectorInfoEnabled
-import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
+import com.github.klee0kai.thekey.core.di.CoreDI
 import com.github.klee0kai.thekey.core.di.updateConfig
 import com.github.klee0kai.thekey.core.domain.model.AppConfig
 import com.github.klee0kai.thekey.core.ui.devkit.color.CommonColorScheme
+import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
 import com.valentinilk.shimmer.LocalShimmerTheme
 import com.valentinilk.shimmer.defaultShimmerTheme
 
@@ -31,12 +31,12 @@ fun AppTheme(
     content: @Composable () -> Unit
 ) {
     LocalConfiguration.current
-    DI.ctx(LocalContext.current)
+    CoreDI.ctx(LocalContext.current)
     val view = LocalView.current
 
     val isEditMode = view.isInEditMode || LocalInspectionMode.current || isDebugInspectorInfoEnabled
-    val colorScheme = remember { DI.theme().colorScheme() }
-    val typeScheme = remember { DI.theme().typeScheme() }
+    val colorScheme = remember { CoreDI.theme().colorScheme() }
+    val typeScheme = remember { CoreDI.theme().typeScheme() }
     val shimmer = remember {
         defaultShimmerTheme.copy(
             shaderColors = listOf(
@@ -47,16 +47,16 @@ fun AppTheme(
         )
     }
     remember {
-        DI.updateConfig {
+        CoreDI.updateConfig {
             copy(isViewEditMode = isEditMode)
         }
     }
 
     CompositionLocalProvider(
-        LocalRouter provides DI.router(),
+        LocalRouter provides CoreDI.router(),
         LocalShimmerTheme provides shimmer,
-        LocalColorScheme provides DI.theme().colorScheme(),
-        LocalAppConfig provides DI.config(),
+        LocalColorScheme provides CoreDI.theme().colorScheme(),
+        LocalAppConfig provides CoreDI.config(),
     ) {
         MaterialTheme(
             colorScheme = colorScheme.androidColorScheme,

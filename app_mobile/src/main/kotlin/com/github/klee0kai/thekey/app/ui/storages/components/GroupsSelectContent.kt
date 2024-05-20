@@ -28,8 +28,8 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.domain.model.ColorGroup
-import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
-import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
+import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
+import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.app.ui.designkit.components.LazyListIndicatorIfNeed
 import com.github.klee0kai.thekey.app.ui.designkit.components.buttons.AddCircle
 import com.github.klee0kai.thekey.app.ui.designkit.components.buttons.GroupCircle
