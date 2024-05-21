@@ -1,12 +1,12 @@
 package com.github.klee0kai.thekey.app.ui.login.presenter
 
-import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.app.ui.navigation.dest
 import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.StoragesDestination
-import com.github.klee0kai.thekey.app.ui.navigation.navigate
+import com.github.klee0kai.thekey.core.R
+import com.github.klee0kai.thekey.core.ui.navigation.navigate
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow

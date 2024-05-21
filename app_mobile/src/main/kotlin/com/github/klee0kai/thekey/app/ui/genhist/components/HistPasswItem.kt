@@ -14,9 +14,9 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.github.klee0kai.thekey.app.domain.model.HistPassw
-import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
-import com.github.klee0kai.thekey.app.utils.views.animateTargetCrossFaded
-import com.github.klee0kai.thekey.app.utils.views.skeleton
+import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
+import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.skeleton
 
 @Composable
 fun HistPasswItem(

@@ -31,17 +31,18 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.wear.compose.material.Text
 import com.github.klee0kai.thekey.app.BuildConfig
-import com.github.klee0kai.thekey.app.R
-import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
-import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
-import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
-import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarConst
-import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarStates
-import com.github.klee0kai.thekey.app.ui.designkit.preview.PreviewDevices
-import com.github.klee0kai.thekey.app.utils.views.toPx
+import com.github.klee0kai.thekey.core.R
+import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
+import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
+import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
+import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
+import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
+import com.github.klee0kai.thekey.core.ui.devkit.preview.PreviewDevices
+import com.github.klee0kai.thekey.core.utils.views.toPx
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.launch
 import kotlin.math.max
+import com.github.klee0kai.thekey.app.R as AppR
 
 @Composable
 fun AboutScreen() {
@@ -95,7 +96,7 @@ fun AboutScreen() {
                     )
                 }
                 .paint(
-                    painterResource(id = R.drawable.bg_metallic),
+                    painterResource(id = AppR.drawable.bg_metallic),
                     contentScale = ContentScale.FillBounds
                 )
         )
@@ -118,7 +119,7 @@ fun AboutScreen() {
                 val keyCountMultiplied = keysCount * 0.8f
                 item {
                     Image(
-                        painterResource(id = R.drawable.key_to_right),
+                        painterResource(id = AppR.drawable.key_to_right),
                         modifier = Modifier.alpha(
                             ((keyCountMultiplied - index) / keyCountMultiplied)
                                 .coerceIn(0f, 0.7f)
@@ -148,7 +149,7 @@ fun AboutScreen() {
         )
 
         Image(
-            painterResource(id = R.drawable.secure),
+            painterResource(id = AppR.drawable.secure),
             modifier = Modifier
                 .wrapContentSize()
                 .constrainAs(secureField) {

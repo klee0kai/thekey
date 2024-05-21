@@ -25,6 +25,7 @@ dependencyResolutionManagement {
 
 
 rootProject.name = "TheKey"
+include(":core")
 include(":app_mobile")
 include(":dynamic_qrcodescanner")
 
@@ -32,4 +33,5 @@ val isPrivateAvailable = file("private").list()?.isNotEmpty() ?: false
 
 if (isPrivateAvailable) {
     include(":private:feature_firebase")
+    include(":private:feature_billing")
 }

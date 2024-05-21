@@ -1,11 +1,11 @@
 package com.github.klee0kai.thekey.app.paparazzi.designkit
 
 import com.github.klee0kai.thekey.app.paparazzi.BasePaparazzi
-import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarTitlePreview1
-import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarTitlePreview2
-import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.SearchFieldEmptyPreview
-import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.SearchFieldTextPreview
-import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.SecondaryTabsPreview
+import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarTitlePreview1
+import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarTitlePreview2
+import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.SearchFieldEmptyPreview
+import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.SearchFieldTextPreview
+import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.SecondaryTabsPreview
 import org.junit.Test
 
 class AppBarScreens : BasePaparazzi() {

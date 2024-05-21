@@ -16,9 +16,9 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.domain.model.ColoredStorage
-import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
-import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
-import com.github.klee0kai.thekey.app.utils.views.toAnnotationString
+import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
+import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
+import com.github.klee0kai.thekey.core.utils.views.toAnnotationString
 
 
 @Composable

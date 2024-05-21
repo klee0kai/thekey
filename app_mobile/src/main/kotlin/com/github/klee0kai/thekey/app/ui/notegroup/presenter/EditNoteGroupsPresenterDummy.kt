@@ -4,7 +4,7 @@ package com.github.klee0kai.thekey.app.ui.notegroup.presenter
 
 import com.github.klee0kai.thekey.app.ui.notegroup.model.EditNoteGroupsState
 import com.github.klee0kai.thekey.app.ui.notegroup.model.SelectedNote
-import com.github.klee0kai.thekey.app.utils.common.Dummy
+import com.github.klee0kai.thekey.core.utils.common.Dummy
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow

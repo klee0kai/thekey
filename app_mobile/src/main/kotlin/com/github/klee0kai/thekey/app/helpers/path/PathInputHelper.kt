@@ -7,7 +7,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.withStyle
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.utils.common.runForEach
+import com.github.klee0kai.thekey.core.utils.common.runForEach
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import java.io.File

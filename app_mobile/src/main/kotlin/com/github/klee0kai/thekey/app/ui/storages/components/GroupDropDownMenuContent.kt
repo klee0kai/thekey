@@ -9,8 +9,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.github.klee0kai.thekey.app.R
-import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
+import com.github.klee0kai.thekey.core.R
+import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 
 @Composable
 fun ColumnScope.GroupDropDownMenuContent(

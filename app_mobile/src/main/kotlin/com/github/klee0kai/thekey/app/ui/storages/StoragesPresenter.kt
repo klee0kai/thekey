@@ -1,10 +1,10 @@
 package com.github.klee0kai.thekey.app.ui.storages
 
-import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.domain.model.ColorGroup
 import com.github.klee0kai.thekey.app.domain.model.ColoredStorage
-import com.github.klee0kai.thekey.app.ui.navigation.model.TextProvider
+import com.github.klee0kai.thekey.core.R
+import com.github.klee0kai.thekey.core.domain.ColorGroup
+import com.github.klee0kai.thekey.core.ui.navigation.model.TextProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow

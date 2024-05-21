@@ -3,13 +3,13 @@ package com.github.klee0kai.thekey.app.ui.navigation.impl
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.NonRestartableComposable
-import com.github.klee0kai.thekey.app.ui.navigation.ComposeRouter
-import com.github.klee0kai.thekey.app.ui.navigation.RouterContext
-import com.github.klee0kai.thekey.app.ui.navigation.model.Destination
-import com.github.klee0kai.thekey.app.ui.navigation.model.DialogDestination
-import com.github.klee0kai.thekey.app.ui.navigation.model.NavigateBackstackChange
-import com.github.klee0kai.thekey.app.utils.coroutine.awaitSec
-import com.github.klee0kai.thekey.app.utils.coroutine.shareLatest
+import com.github.klee0kai.thekey.core.ui.navigation.ComposeRouter
+import com.github.klee0kai.thekey.core.ui.navigation.RouterContext
+import com.github.klee0kai.thekey.core.ui.navigation.model.Destination
+import com.github.klee0kai.thekey.core.ui.navigation.model.DialogDestination
+import com.github.klee0kai.thekey.core.ui.navigation.model.NavigateBackstackChange
+import com.github.klee0kai.thekey.core.utils.coroutine.awaitSec
+import com.github.klee0kai.thekey.core.utils.coroutine.shareLatest
 import dev.olshevski.navigation.reimagined.NavAction
 import dev.olshevski.navigation.reimagined.navEntry
 import dev.olshevski.navigation.reimagined.pop
@@ -51,8 +51,8 @@ class ComposeRouterImpl(context: RouterContext) : ComposeRouter, RouterContext b
                     }
                     destClosed || destinationLost
                 }
-            if (result.closedDestination?.first == navEntry.id && clazz.isInstance(result.closedDestination.second)) {
-                emit(result.closedDestination.second as R)
+            if (result.closedDestination != null && result.closedDestination?.first == navEntry.id && clazz.isInstance(result.closedDestination!!.second)) {
+                emit(result.closedDestination!!.second as R)
             }
         }.shareLatest(scope, clazz)
     }

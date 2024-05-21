@@ -5,8 +5,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.ui.navigation.model.ActivityResult
-import com.github.klee0kai.thekey.app.ui.navigation.model.RequestPermResult
+import com.github.klee0kai.thekey.core.ui.navigation.model.ActivityResult
+import com.github.klee0kai.thekey.core.ui.navigation.model.RequestPermResult
 
 open class BaseActivity : ComponentActivity() {
 

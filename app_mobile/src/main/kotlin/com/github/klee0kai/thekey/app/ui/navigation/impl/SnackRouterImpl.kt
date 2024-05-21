@@ -3,8 +3,8 @@ package com.github.klee0kai.thekey.app.ui.navigation.impl
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarResult
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.ui.navigation.RouterContext
-import com.github.klee0kai.thekey.app.ui.navigation.SnackRouter
+import com.github.klee0kai.thekey.core.ui.navigation.RouterContext
+import com.github.klee0kai.thekey.core.ui.navigation.SnackRouter
 
 class SnackRouterImpl(val context: RouterContext) : SnackRouter, RouterContext by context {
 

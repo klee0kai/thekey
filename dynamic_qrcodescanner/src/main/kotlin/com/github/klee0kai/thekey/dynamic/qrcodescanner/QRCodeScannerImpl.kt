@@ -8,8 +8,8 @@ import com.github.klee0kai.thekey.dynamic.qrcodescanner.di.AndroidHelpersModuleQ
 class QRCodeScannerImpl : FeatureLibApi {
 
     override fun AppComponent.initDI() {
-        initAndroidHelpersModule(
-            AndroidHelpersModuleQRExt(androidHelpersFactory())
+        initCoreAndroidHelpersModule(
+            AndroidHelpersModuleQRExt(coreAndroidHelpersModuleFactory())
         )
     }
 

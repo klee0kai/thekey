@@ -1,13 +1,13 @@
 package com.github.klee0kai.thekey.app.engine.storage
 
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
 import com.github.klee0kai.thekey.app.engine.model.DecryptedColorGroup
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.engine.model.DecryptedOtpNote
 import com.github.klee0kai.thekey.app.engine.model.DecryptedPassw
 import com.github.klee0kai.thekey.app.engine.model.GenPasswParams
 import com.github.klee0kai.thekey.app.engine.model.Storage
+import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import kotlinx.coroutines.withContext
 
 class CryptStorageSuspended(

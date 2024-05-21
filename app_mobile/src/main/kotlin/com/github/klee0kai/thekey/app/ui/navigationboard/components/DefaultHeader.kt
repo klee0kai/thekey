@@ -9,8 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.github.klee0kai.thekey.app.R
-import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
+import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
+import com.github.klee0kai.thekey.core.R as CoreR
 
 @Composable
 fun DefaultHeader(
@@ -23,7 +23,7 @@ fun DefaultHeader(
             modifier = Modifier
                 .defaultMinSize(minHeight = 100.dp, minWidth = 100.dp)
                 .padding(start = 16.dp, end = 16.dp, top = 30.dp, bottom = 30.dp),
-            painter = painterResource(id = R.drawable.logo_big),
+            painter = painterResource(id = CoreR.drawable.logo_big),
             contentDescription = "key",
         )
     }

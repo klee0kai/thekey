@@ -1,9 +1,5 @@
 package com.github.klee0kai.thekey.app.di.dependencies
 
-import com.github.klee0kai.thekey.app.di.identifier.NoteGroupIdentifier
-import com.github.klee0kai.thekey.app.di.identifier.NoteIdentifier
-import com.github.klee0kai.thekey.app.di.identifier.StorageIdentifier
-import com.github.klee0kai.thekey.app.features.model.DynamicFeature
 import com.github.klee0kai.thekey.app.ui.editstorage.CreateStoragePresenter
 import com.github.klee0kai.thekey.app.ui.genhist.presenter.GenHistPresenter
 import com.github.klee0kai.thekey.app.ui.login.presenter.LoginPresenter
@@ -15,6 +11,10 @@ import com.github.klee0kai.thekey.app.ui.settings.plugins.presenter.PluginsPrese
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.presenter.GenPasswPresenter
 import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenter
 import com.github.klee0kai.thekey.app.ui.storages.StoragesPresenter
+import com.github.klee0kai.thekey.core.di.identifiers.NoteGroupIdentifier
+import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
+import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
+import com.github.klee0kai.thekey.core.domain.model.feature.model.DynamicFeature
 
 interface PresentersDependencies {
 

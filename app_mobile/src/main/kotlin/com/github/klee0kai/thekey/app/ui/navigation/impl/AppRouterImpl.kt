@@ -1,13 +1,12 @@
 package com.github.klee0kai.thekey.app.ui.navigation.impl
 
-import com.github.klee0kai.thekey.app.ui.navigation.ActivityRouter
-import com.github.klee0kai.thekey.app.ui.navigation.AppRouter
-import com.github.klee0kai.thekey.app.ui.navigation.ComposeRouter
-import com.github.klee0kai.thekey.app.ui.navigation.NavBoardRouter
-import com.github.klee0kai.thekey.app.ui.navigation.PermissionsRouter
-import com.github.klee0kai.thekey.app.ui.navigation.RouterContext
-import com.github.klee0kai.thekey.app.ui.navigation.SnackRouter
-import kotlinx.coroutines.flow.MutableStateFlow
+import com.github.klee0kai.thekey.core.ui.navigation.ActivityRouter
+import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
+import com.github.klee0kai.thekey.core.ui.navigation.ComposeRouter
+import com.github.klee0kai.thekey.core.ui.navigation.NavBoardRouter
+import com.github.klee0kai.thekey.core.ui.navigation.PermissionsRouter
+import com.github.klee0kai.thekey.core.ui.navigation.RouterContext
+import com.github.klee0kai.thekey.core.ui.navigation.SnackRouter
 
 open class AppRouterImp(
     private val ctx: RouterContext = RouterContextImpl()

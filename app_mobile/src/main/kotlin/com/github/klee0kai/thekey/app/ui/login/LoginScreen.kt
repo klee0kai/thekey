@@ -35,29 +35,30 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.domain.model.ColoredStorage
-import com.github.klee0kai.thekey.app.ui.designkit.AppTheme
-import com.github.klee0kai.thekey.app.ui.designkit.LocalColorScheme
-import com.github.klee0kai.thekey.app.ui.designkit.LocalRouter
-import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.AppBarStates
-import com.github.klee0kai.thekey.app.ui.designkit.components.appbar.DoneIconButton
-import com.github.klee0kai.thekey.app.ui.designkit.preview.PreviewDevices
-import com.github.klee0kai.thekey.app.ui.designkit.text.AppTextField
 import com.github.klee0kai.thekey.app.ui.login.presenter.LoginPresenter
-import com.github.klee0kai.thekey.app.utils.annotations.DebugOnly
-import com.github.klee0kai.thekey.app.utils.views.animateTargetCrossFaded
-import com.github.klee0kai.thekey.app.utils.views.collectAsState
-import com.github.klee0kai.thekey.app.utils.views.isIme
-import com.github.klee0kai.thekey.app.utils.views.minInsets
-import com.github.klee0kai.thekey.app.utils.views.toAnnotationString
+import com.github.klee0kai.thekey.core.R
+import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
+import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
+import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
+import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
+import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DoneIconButton
+import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextField
+import com.github.klee0kai.thekey.core.ui.devkit.preview.PreviewDevices
+import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
+import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.collectAsState
+import com.github.klee0kai.thekey.core.utils.views.isIme
+import com.github.klee0kai.thekey.core.utils.views.minInsets
+import com.github.klee0kai.thekey.core.utils.views.toAnnotationString
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.jetbrains.annotations.VisibleForTesting
+import com.github.klee0kai.thekey.core.R as CoreR
 
 @Composable
 fun LoginScreen() {
@@ -113,7 +114,7 @@ fun LoginScreen() {
 
         if (!imeVisible.current) {
             Image(
-                painter = painterResource(id = R.drawable.logo_big),
+                painter = painterResource(id = CoreR.drawable.logo_big),
                 contentDescription = stringResource(id = R.string.app_name),
                 modifier = Modifier
                     .alpha(imeVisible.alpha)

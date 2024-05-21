@@ -1,10 +1,10 @@
 package com.github.klee0kai.thekey.app.paparazzi.setting
 
 import com.github.klee0kai.thekey.app.paparazzi.BasePaparazzi
-import com.github.klee0kai.thekey.app.ui.designkit.settings.PreferencePreview
-import com.github.klee0kai.thekey.app.ui.designkit.settings.SectionHeaderPreview
-import com.github.klee0kai.thekey.app.ui.designkit.settings.SwitchPreferencePreview
 import com.github.klee0kai.thekey.app.ui.settings.SettingsScreenPreview
+import com.github.klee0kai.thekey.core.ui.devkit.components.settings.PreferencePreview
+import com.github.klee0kai.thekey.core.ui.devkit.components.settings.SectionHeaderPreview
+import com.github.klee0kai.thekey.core.ui.devkit.components.settings.SwitchPreferencePreview
 import org.junit.Test
 
 class SettingScreens : BasePaparazzi() {
