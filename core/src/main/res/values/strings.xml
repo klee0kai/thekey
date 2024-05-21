@@ -18,6 +18,9 @@
     <string name="title_qrcodescanner">QR Code Scanner</string>
     <string name="desc_qrcodescanner">Scan QR code to add OTP passwords.</string>
 
+    <string name="title_autofill">Autofill manager</string>
+    <string name="desc_autofill">Password autofill manager</string>
+
     <string name="login">Login</string>
     <string name="password">Password</string>
     <string name="app_login_description">Create and remember your passport for your key masster storage</string>

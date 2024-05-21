@@ -21,6 +21,9 @@ brooklyn {
 android {
     appDefaults(appGroup, project)
     dynamicFeatures += setOf(":dynamic_qrcodescanner")
+    if (Commercial.isCommercialAvailable) {
+        dynamicFeatures += setOf(":private:dynamic_autofill")
+    }
 
     defaultConfig {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
