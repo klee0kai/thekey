@@ -10,6 +10,7 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
+import com.github.klee0kai.thekey.core.ui.navigation.deeplink.DeeplinkHandler
 import com.github.klee0kai.thekey.core.ui.navigation.model.ActivityResult
 import com.github.klee0kai.thekey.core.ui.navigation.model.Destination
 import com.github.klee0kai.thekey.core.ui.navigation.model.NavigateBackstackChange
@@ -21,7 +22,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.emptyFlow
 
-interface AppRouter : RouterContext, ComposeRouter, SnackRouter, NavBoardRouter, ActivityRouter, PermissionsRouter
+interface AppRouter : RouterContext, DeeplinkRouter, ComposeRouter, SnackRouter, NavBoardRouter, ActivityRouter, PermissionsRouter
 
 interface ComposeRouter {
 
@@ -72,6 +73,14 @@ interface PermissionsRouter {
     fun askPermissions(perms: Array<String>): Flow<Boolean> = emptyFlow()
 
     fun onResult(result: RequestPermResult) = Unit
+
+}
+
+interface DeeplinkRouter {
+
+    fun handleDeeplink(intent: Intent) = Unit
+
+    fun configDeeplinks(block: DeeplinkHandler.() -> Unit) = Unit
 
 }
 

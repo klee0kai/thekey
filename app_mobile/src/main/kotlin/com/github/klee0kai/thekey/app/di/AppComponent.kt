@@ -21,6 +21,7 @@ import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.di.modules.RepositoriesModule
 import com.github.klee0kai.thekey.app.features.allFeatures
 import com.github.klee0kai.thekey.app.features.model.findApi
+import com.github.klee0kai.thekey.app.ui.navigation.deeplink.configMainDeeplinks
 import com.github.klee0kai.thekey.core.di.CoreComponent
 import com.github.klee0kai.thekey.core.di.CoreDI
 import com.github.klee0kai.thekey.core.di.hardResetToPreview
@@ -124,14 +125,28 @@ fun AppComponent.updateComponentsSoft() {
         with(DebugDI) { initDI() }
     }
 
-    DynamicFeature
+    val availableFeatures = DynamicFeature
         .allFeatures()
         .filter { it.isCommunity || billingInteractor().isAvailable(it) }
-        .forEach { feature ->
-            with(feature.findApi() ?: return@forEach) {
-                initDI()
-            }
-        }
+        .mapNotNull { it.findApi() }
+
+    availableFeatures
+        .forEach { feature -> with(feature) { initDI() } }
+}
+
+fun AppComponent.configRouting() {
+    val availableFeatures = DynamicFeature
+        .allFeatures()
+        .filter { it.isCommunity || billingInteractor().isAvailable(it) }
+        .mapNotNull { it.findApi() }
+
+    // init new deeplinks routing
+    router().configDeeplinks {
+        availableFeatures
+            .forEach { feature -> with(feature) { configDeeplinks() } }
+
+        configMainDeeplinks()
+    }
 }
 
 private fun initAppComponent() = Stone.createComponent(AppComponent::class.java).apply {
