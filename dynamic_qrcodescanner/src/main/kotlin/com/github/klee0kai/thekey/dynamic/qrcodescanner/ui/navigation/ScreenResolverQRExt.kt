@@ -7,7 +7,7 @@ import com.github.klee0kai.thekey.core.ui.navigation.screenresolver.ScreenResolv
 import com.github.klee0kai.thekey.dynamic.qrcodescanner.ui.scanqr.ScanQRCodeScreen
 
 class ScreenResolverQRExt(
-    private val origin: ScreenResolver
+    private val origin: ScreenResolver,
 ) : ScreenResolver by origin {
 
     @Composable

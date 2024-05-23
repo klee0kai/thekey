@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.core.utils.common
+package com.github.klee0kai.thekey.core.utils.delegates
 
 import java.lang.ref.WeakReference
 import kotlin.properties.ReadWriteProperty

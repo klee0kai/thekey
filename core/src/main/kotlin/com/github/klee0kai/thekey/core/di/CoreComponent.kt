@@ -96,5 +96,4 @@ fun CoreComponent.hardResetToPreview() {
 
 private fun initCoreComponent() = Stone.createComponent(CoreComponent::class.java).apply {
     config(AppConfig())
-
 }
