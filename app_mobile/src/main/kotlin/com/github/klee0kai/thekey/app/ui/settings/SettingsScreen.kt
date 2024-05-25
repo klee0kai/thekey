@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.wear.compose.material.Text
+import com.github.klee0kai.thekey.app.ui.navigation.model.AutoFillSettingsDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.PluginsDestination
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
@@ -60,6 +61,15 @@ fun SettingScreen() {
         item {
             SectionHeader(
                 text = stringResource(id = R.string.other)
+            )
+        }
+
+        item {
+            Preference(
+                text = stringResource(id = R.string.title_autofill),
+                onClick = {
+                    router.navigate(AutoFillSettingsDestination)
+                }
             )
         }
 

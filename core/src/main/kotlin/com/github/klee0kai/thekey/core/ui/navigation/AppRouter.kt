@@ -26,9 +26,9 @@ interface AppRouter : RouterContext, DeeplinkRouter, ComposeRouter, SnackRouter,
 
 interface ComposeRouter {
 
-    fun navigate(destination: Destination): Flow<Any?> = emptyFlow()
+    fun navigate(vararg destination: Destination): Flow<Any?> = emptyFlow()
 
-    fun <R> navigate(destination: Destination, clazz: Class<R>): Flow<R?> = emptyFlow()
+    fun <R> navigate(vararg destinations: Destination, resultClazz: Class<R>): Flow<R?> = emptyFlow()
 
     fun <R> backWithResult(result: R, exitFromApp: Boolean = false): Boolean = false
 
@@ -107,6 +107,6 @@ interface RouterContext {
 
 }
 
-inline fun <reified R> ComposeRouter.navigate(destination: Destination): Flow<R?> =
-    navigate(destination, R::class.java)
+inline fun <reified R> ComposeRouter.navigate(vararg destination: Destination): Flow<R?> =
+    navigate(destinations = destination, resultClazz = R::class.java)
 
