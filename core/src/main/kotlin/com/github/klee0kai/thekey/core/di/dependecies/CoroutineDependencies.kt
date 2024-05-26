@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.di.dependencies
+package com.github.klee0kai.thekey.core.di.dependecies
 
 import com.github.klee0kai.thekey.core.di.DefaultDispatcher
 import com.github.klee0kai.thekey.core.di.IODispatcher
