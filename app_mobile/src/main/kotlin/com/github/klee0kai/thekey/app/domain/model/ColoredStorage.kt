@@ -11,5 +11,10 @@ data class ColoredStorage(
     val description: String = "",
     val version: Int = 0,
     val colorGroup: KeyColor? = null
-
 ) : Parcelable
+
+
+fun ColoredStorage.filterBy(filter: String): Boolean {
+    return path.contains(filter, ignoreCase = true)
+            || name.contains(filter, ignoreCase = true)
+}

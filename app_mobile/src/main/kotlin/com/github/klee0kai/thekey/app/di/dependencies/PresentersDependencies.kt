@@ -10,7 +10,7 @@ import com.github.klee0kai.thekey.app.ui.settings.plugin.presenter.PluginPresent
 import com.github.klee0kai.thekey.app.ui.settings.plugins.presenter.PluginsPresenter
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.presenter.GenPasswPresenter
 import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenter
-import com.github.klee0kai.thekey.app.ui.storages.StoragesPresenter
+import com.github.klee0kai.thekey.app.ui.storages.presenter.StoragesPresenter
 import com.github.klee0kai.thekey.core.di.identifiers.NoteGroupIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier

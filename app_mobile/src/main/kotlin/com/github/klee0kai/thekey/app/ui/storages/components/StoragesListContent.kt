@@ -16,12 +16,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.di.hardResetToPreview
+import com.github.klee0kai.thekey.app.di.modules.PresentersModule
+import com.github.klee0kai.thekey.app.ui.storages.presenter.StoragesPresenterDummy
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
+import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreen
-import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 
 
 @Composable
@@ -32,7 +35,7 @@ fun StoragesListContent(
     val navigator = LocalRouter.current
     val scope = rememberCoroutineScope()
     val presenter = rememberOnScreen { DI.storagesPresenter() }
-    val storages = presenter.storages()
+    val storages = presenter.filteredStorages
         .collectAsState(initial = emptyList(), scope.coroutineContext)
     val titleAnimatedAlpha by animateAlphaAsState(showStoragesTitle)
 
@@ -69,9 +72,15 @@ fun StoragesListContent(
 }
 
 
+@OptIn(DebugOnly::class)
 @Composable
 @Preview
-fun StoragesListContentPreview() = EdgeToEdgeTemplate {
+fun StoragesListContentPreview() {
+    DI.hardResetToPreview()
+    DI.initPresenterModule(object : PresentersModule {
+        override fun storagesPresenter() = StoragesPresenterDummy()
+    })
+
     AppTheme {
         StoragesListContent()
     }

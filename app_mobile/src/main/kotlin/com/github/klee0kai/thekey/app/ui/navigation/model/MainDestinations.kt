@@ -8,12 +8,13 @@ import com.github.klee0kai.thekey.app.ui.note.model.EditTabs
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.domain.model.feature.model.DynamicFeature
 import com.github.klee0kai.thekey.core.ui.navigation.model.Destination
+import com.github.klee0kai.thekey.core.ui.navigation.model.DialogDestination
 import com.github.klee0kai.thekey.core.ui.navigation.model.DynamicDestination
 import kotlinx.parcelize.Parcelize
 
 
 object MainDestinations {
-    val InitDest = LoginDestination
+    val InitDest = AutoFillSettingsDestination
 }
 
 @Parcelize
@@ -24,6 +25,9 @@ data object LoginDestination : Destination
 
 @Parcelize
 data object StoragesDestination : Destination
+
+@Parcelize
+data object SelectStorageDialogDestination : DialogDestination
 
 @Parcelize
 data class EditStorageDestination(

@@ -22,7 +22,8 @@ import com.github.klee0kai.thekey.app.ui.storage.genpassw.presenter.GenPasswPres
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.presenter.GenPasswPresenterImpl
 import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenter
 import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenterImpl
-import com.github.klee0kai.thekey.app.ui.storages.StoragesPresenter
+import com.github.klee0kai.thekey.app.ui.storages.presenter.StoragesPresenter
+import com.github.klee0kai.thekey.app.ui.storages.presenter.StoragesPresenterImpl
 import com.github.klee0kai.thekey.core.di.identifiers.NoteGroupIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
@@ -38,7 +39,7 @@ interface PresentersModule {
     fun navigationBoardPresenter(): NavigationBoardPresenter = NavigationBoardPresenterImpl()
 
     @Provide(cache = Provide.CacheType.Weak)
-    fun storagesPresenter(): StoragesPresenter = StoragesPresenter()
+    fun storagesPresenter(): StoragesPresenter = StoragesPresenterImpl()
 
     @Provide(cache = Provide.CacheType.Weak)
     fun editStoragePresenter(storageIdentifier: StorageIdentifier?): CreateStoragePresenter {

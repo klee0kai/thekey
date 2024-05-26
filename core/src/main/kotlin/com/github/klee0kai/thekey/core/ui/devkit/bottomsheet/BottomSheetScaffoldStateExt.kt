@@ -47,7 +47,6 @@ object BottomSheetScaffoldStateExt {
 
 }
 
-
 @Parcelize
 data class SimpleBottomSheetScaffoldParcelable(
     val sheetValue: SheetValue,
@@ -56,6 +55,7 @@ data class SimpleBottomSheetScaffoldParcelable(
 @Composable
 @NonRestartableComposable
 fun rememberSafeBottomSheetScaffoldState(
+    initialValue: SheetValue = SheetValue.PartiallyExpanded,
     skipPartiallyExpanded: Boolean = false,
     confirmValueChange: (SheetValue) -> Boolean = { true },
     skipHiddenState: Boolean = true,
@@ -73,7 +73,7 @@ fun rememberSafeBottomSheetScaffoldState(
             bottomSheetState = SheetState(
                 skipPartiallyExpanded = skipPartiallyExpanded,
                 density = density,
-                initialValue = SheetValue.PartiallyExpanded,
+                initialValue = initialValue,
                 confirmValueChange = confirmValueChange,
                 skipHiddenState = skipHiddenState,
             ),
