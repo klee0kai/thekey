@@ -1,5 +1,6 @@
 package com.github.klee0kai.thekey.app.ui.settings
 
+import android.os.Build
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -64,13 +65,15 @@ fun SettingScreen() {
             )
         }
 
-        item {
-            Preference(
-                text = stringResource(id = R.string.title_autofill),
-                onClick = {
-                    router.navigate(AutoFillSettingsDestination)
-                }
-            )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            item {
+                Preference(
+                    text = stringResource(id = R.string.title_autofill),
+                    onClick = {
+                        router.navigate(AutoFillSettingsDestination)
+                    }
+                )
+            }
         }
 
         item {

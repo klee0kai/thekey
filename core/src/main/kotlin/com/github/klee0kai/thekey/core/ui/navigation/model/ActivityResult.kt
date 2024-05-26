@@ -8,11 +8,12 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class ActivityResult(
     val requestCode: Int,
-    val resultCode: Int,
-    val data: Intent?,
+    val resultCode: Int? = null,
+    val data: Intent? = null,
+    val error: Throwable? = null,
 ) : Parcelable {
 
-    val isOk get() = resultCode == Activity.RESULT_OK
+    val isOk get() = resultCode == Activity.RESULT_OK && error == null
     val isCanceled get() = resultCode == Activity.RESULT_CANCELED
 
 }
