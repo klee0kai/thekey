@@ -21,6 +21,9 @@ data class ColorGroupEntry(
 
     @ColumnInfo(name = "color_group")
     val colorGroup: Int,
+
+    @ColumnInfo(name = "favorite")
+    val isFavorite: Boolean,
 ) : Parcelable
 
 
@@ -31,15 +34,16 @@ fun ColorGroupEntry.toColorGroup() =
         keyColor = KeyColor.entries
             .getOrElse(colorGroup) {
                 KeyColor.TURQUOISE
-            }
+            },
+        isFavorite = isFavorite,
     )
 
 
 fun ColorGroup.toColorGroupEntry(
     id: Long? = null
-) =
-    ColorGroupEntry(
-        id = id ?: 0L,
-        name = name,
-        colorGroup = keyColor.ordinal
-    )
+) = ColorGroupEntry(
+    id = id ?: 0L,
+    name = name,
+    colorGroup = keyColor.ordinal,
+    isFavorite = isFavorite,
+)

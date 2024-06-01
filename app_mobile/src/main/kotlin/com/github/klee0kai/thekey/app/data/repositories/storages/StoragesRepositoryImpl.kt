@@ -49,9 +49,10 @@ class StoragesRepositoryImpl : StoragesRepository {
         }
     }.flowOn(DI.ioDispatcher())
 
-    override fun addColorGroup(colorGroup: ColorGroup): Job = scope.launch {
-        colorGroupsDao().update(colorGroup.toColorGroupEntry())
+    override fun setColorGroup(colorGroup: ColorGroup) = scope.async {
+        val id = colorGroupsDao().update(colorGroup.toColorGroupEntry())
         updateTicker.emit(Unit)
+        colorGroupsDao().get(id)?.toColorGroup() ?: ColorGroup()
     }
 
     override fun deleteColorGroup(id: Long): Job = scope.launch {
@@ -65,7 +66,15 @@ class StoragesRepositoryImpl : StoragesRepository {
 
     override fun setStorage(storage: ColoredStorage): Job = scope.launch {
         val cachedStorage = storagesDao().get(storage.path)
-        storagesDao().insertOrUpdate(storage.toStorageEntry(id = cachedStorage?.id))
+        storagesDao().update(storage.toStorageEntry(id = cachedStorage?.id))
+        updateTicker.emit(Unit)
+    }
+
+    override fun setStoragesGroup(storagePaths: List<String>, groupId: Long) = scope.launch {
+        storagePaths.forEach { path ->
+            val cachedStorage = storagesDao().get(path) ?: return@forEach
+            storagesDao().update(cachedStorage.copy(coloredGroupId = groupId))
+        }
         updateTicker.emit(Unit)
     }
 

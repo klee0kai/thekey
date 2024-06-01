@@ -38,6 +38,14 @@ data class EditStorageDestination(
 ) : Destination
 
 @Parcelize
+data class EditStorageGroupDestination(
+    /**
+     * group id
+     */
+    val groupId: Long? = null,
+) : Destination
+
+@Parcelize
 data object DesignDestination : Destination
 
 @Parcelize

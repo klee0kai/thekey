@@ -79,7 +79,7 @@ class EditStoragePresenterImpl(
     override fun remove() = scope.launch {
         val path = originStorage?.path ?: return@launch
         rep().deleteStorage(path)
-        launch { router.snack(R.string.storage_deleted) }
+        router.snack(R.string.storage_deleted)
         router.back()
         clean()
     }
@@ -96,7 +96,7 @@ class EditStoragePresenterImpl(
         }
 
         rep().setStorage(storage)
-        launch { router.snack(R.string.storage_saved) }
+        router.snack(R.string.storage_saved)
         router.back()
         clean()
     }

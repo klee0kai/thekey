@@ -12,6 +12,7 @@ import com.github.klee0kai.thekey.core.di.dependecies.CoreDependencyProvider
 import com.github.klee0kai.thekey.core.di.identifiers.NoteGroupIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.PluginIdentifier
+import com.github.klee0kai.thekey.core.di.identifiers.StorageGroupIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.di.wrap.AppWrappersStone
 import com.github.klee0kai.thekey.core.domain.model.AppConfig
@@ -27,6 +28,7 @@ var CoreDI: CoreComponent = initCoreComponent()
         StorageIdentifier::class,
         NoteIdentifier::class,
         NoteGroupIdentifier::class,
+        StorageGroupIdentifier::class,
         PluginIdentifier::class,
         DynamicFeature::class,
     ],

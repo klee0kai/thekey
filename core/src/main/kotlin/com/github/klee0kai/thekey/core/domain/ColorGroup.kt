@@ -11,6 +11,7 @@ data class ColorGroup(
     val id: Long = 0,
     val name: String = "",
     val keyColor: KeyColor = KeyColor.NOCOLOR,
+    val isFavorite: Boolean = false,
 
     val isLoaded: Boolean = false,
 ) : Parcelable {

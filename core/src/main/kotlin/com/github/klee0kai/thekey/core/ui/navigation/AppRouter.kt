@@ -16,7 +16,11 @@ import com.github.klee0kai.thekey.core.ui.navigation.model.Destination
 import com.github.klee0kai.thekey.core.ui.navigation.model.NavigateBackstackChange
 import com.github.klee0kai.thekey.core.ui.navigation.model.RequestPermResult
 import com.github.klee0kai.thekey.core.utils.common.SafeContextScope
+import com.github.klee0kai.thekey.core.utils.coroutine.completeAsync
+import com.github.klee0kai.thekey.core.utils.coroutine.emptyJob
 import dev.olshevski.navigation.reimagined.NavController
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,9 +47,9 @@ interface ComposeRouter {
 
 interface SnackRouter {
 
-    suspend fun snack(message: String, duration: SnackbarDuration = SnackbarDuration.Short): SnackbarResult = SnackbarResult.Dismissed
+    fun snack(message: String, duration: SnackbarDuration = SnackbarDuration.Short): Deferred<SnackbarResult> = completeAsync(SnackbarResult.Dismissed)
 
-    suspend fun snack(@StringRes message: Int, duration: SnackbarDuration = SnackbarDuration.Short) = Unit
+    fun snack(@StringRes message: Int, duration: SnackbarDuration = SnackbarDuration.Short): Job = emptyJob()
 
 }
 

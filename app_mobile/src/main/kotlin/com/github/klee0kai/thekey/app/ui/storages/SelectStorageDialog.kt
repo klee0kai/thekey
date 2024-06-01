@@ -6,12 +6,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,6 +29,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
@@ -40,6 +43,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.rememberSafeBottomS
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
+import com.github.klee0kai.thekey.core.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreen
 import com.github.klee0kai.thekey.core.utils.views.topDp
@@ -77,7 +81,17 @@ fun SelectStorageDialog() = Box(modifier = Modifier.fillMaxSize()) {
             StoragesListContent(
                 modifier = Modifier
                     .fillMaxSize(),
-                showStoragesTitle = showStoragesTitle,
+                header = {
+                    val titleAnimatedAlpha by animateAlphaAsState(showStoragesTitle)
+
+                    Text(
+                        text = stringResource(id = R.string.storages),
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier
+                            .padding(start = 16.dp, top = 4.dp, bottom = 22.dp)
+                            .alpha(titleAnimatedAlpha)
+                    )
+                },
             )
         }
 

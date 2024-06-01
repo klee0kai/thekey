@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
@@ -16,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
+import com.github.klee0kai.thekey.core.utils.views.horizontal
 import com.github.klee0kai.thekey.core.utils.views.minInsets
 import com.github.klee0kai.thekey.core.utils.views.truncate
 import org.jetbrains.annotations.VisibleForTesting
@@ -27,6 +29,8 @@ fun SwitchPreference(
     checked: Boolean = false,
     onCheckedChange: (Boolean) -> Unit = {}
 ) {
+    val safeContentPadding = WindowInsets.safeContent.asPaddingValues()
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -45,11 +49,7 @@ fun SwitchPreference(
         Spacer(modifier = Modifier.weight(1f))
         Switch(
             modifier = Modifier
-                .windowInsetsPadding(
-                    WindowInsets.safeContent
-                        .minInsets(16.dp)
-                        .truncate(top = true, bottom = true)
-                ),
+                .padding(horizontal = safeContentPadding.horizontal(minValue = 16.dp)),
             checked = checked,
             onCheckedChange = onCheckedChange
         )

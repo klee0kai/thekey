@@ -27,6 +27,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import com.github.klee0kai.thekey.core.ui.devkit.components.LazyListIndicatorIfNeed
 import com.github.klee0kai.thekey.core.ui.devkit.components.buttons.GroupCircle
 import com.github.klee0kai.thekey.core.ui.devkit.components.scrollPosition
+import com.github.klee0kai.thekey.core.ui.devkit.components.settings.SwitchPreference
 import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextField
 import org.jetbrains.annotations.VisibleForTesting
 
@@ -37,8 +38,11 @@ fun EditGroupInfoContent(
     groupName: String = "",
     select: KeyColor = KeyColor.NOCOLOR,
     forceIndicatorVisible: Boolean = false,
+    favoriteVisible: Boolean = false,
+    favoriteChecked: Boolean = false,
     onChangeGroupName: (String) -> Unit = {},
     onSelect: (KeyColor) -> Unit = {},
+    onFavoriteChecked: (Boolean) -> Unit = {},
 ) {
     val colorScheme = LocalColorScheme.current
     val lazyListState = rememberLazyListState()
@@ -47,17 +51,23 @@ fun EditGroupInfoContent(
         modifier = modifier
             .fillMaxWidth()
     ) {
-        val (groupsHint, groupsList, indicator, groupNameField) = createRefs()
+        val (
+            groupsHintField,
+            groupsListField,
+            indicatorField,
+            groupNameField,
+            favoriteSwitchField,
+        ) = createRefs()
 
         Text(
             text = stringResource(id = R.string.select_color),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
-            modifier = Modifier.constrainAs(groupsHint) {
+            modifier = Modifier.constrainAs(groupsHintField) {
                 linkTo(
                     start = parent.start,
                     top = parent.top,
-                    bottom = groupsList.top,
+                    bottom = groupsListField.top,
                     end = parent.end,
                     horizontalBias = 0f,
                     topMargin = 16.dp,
@@ -73,11 +83,11 @@ fun EditGroupInfoContent(
             horizontal = true,
             modifier = Modifier
                 .size(52.dp, 4.dp)
-                .constrainAs(indicator) {
+                .constrainAs(indicatorField) {
                     linkTo(
                         start = parent.start,
                         end = parent.end,
-                        top = groupsList.bottom,
+                        top = groupsListField.bottom,
                         bottom = parent.bottom,
                         verticalBias = 0f,
                     )
@@ -89,9 +99,9 @@ fun EditGroupInfoContent(
             modifier = Modifier
                 .wrapContentHeight()
                 .fillMaxWidth()
-                .constrainAs(groupsList) {
+                .constrainAs(groupsListField) {
                     linkTo(
-                        top = groupsHint.bottom,
+                        top = groupsHintField.bottom,
                         start = parent.start,
                         bottom = groupNameField.top,
                         end = parent.end,
@@ -131,8 +141,8 @@ fun EditGroupInfoContent(
                     linkTo(
                         start = parent.start,
                         end = parent.end,
-                        top = groupsList.bottom,
-                        bottom = parent.bottom,
+                        top = groupsListField.bottom,
+                        bottom = if (favoriteVisible) favoriteSwitchField.top else parent.bottom,
                         verticalBias = 0f,
                         horizontalBias = 0f,
                         startMargin = 16.dp,
@@ -145,6 +155,27 @@ fun EditGroupInfoContent(
             onValueChange = onChangeGroupName,
             colors = LocalColorScheme.current.transparentTextFieldColors,
         )
+
+        if (favoriteVisible) {
+            SwitchPreference(
+                modifier = Modifier
+                    .wrapContentHeight()
+                    .constrainAs(favoriteSwitchField) {
+                        linkTo(
+                            start = parent.start,
+                            end = parent.end,
+                            top = groupNameField.bottom,
+                            bottom = parent.bottom,
+                            verticalBias = 0f,
+                            topMargin = 8.dp
+                        )
+                    },
+                text = stringResource(id = R.string.favorite),
+                checked = favoriteChecked,
+                onCheckedChange = onFavoriteChecked,
+            )
+        }
+
     }
 }
 
@@ -154,6 +185,16 @@ fun EditGroupInfoContent(
 fun EditGroupInfoContentPreview() = AppTheme {
     EditGroupInfoContent(
         forceIndicatorVisible = true,
+    )
+}
+
+@VisibleForTesting
+@Preview
+@Composable
+fun EditGroupInfoContentFavoritePreview() = AppTheme {
+    EditGroupInfoContent(
+        forceIndicatorVisible = true,
+        favoriteVisible = true,
     )
 }
 

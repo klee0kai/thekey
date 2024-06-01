@@ -6,10 +6,12 @@ import com.github.klee0kai.thekey.app.engine.model.DecryptedOtpNote
 import com.github.klee0kai.thekey.app.engine.model.Storage
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteGroupDestination
+import com.github.klee0kai.thekey.app.ui.navigation.model.EditStorageGroupDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.GenHistDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.core.di.identifiers.NoteGroupIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
+import com.github.klee0kai.thekey.core.di.identifiers.StorageGroupIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 
 fun Storage.dest() = StorageDestination(version = version, path = path)
@@ -60,6 +62,11 @@ fun EditNoteDestination.identifier() =
         notePtr = note?.ptnote ?: 0L,
         otpNotePtr = otpNote?.ptnote ?: 0L,
     )
+
+fun EditStorageGroupDestination.identifier() = StorageGroupIdentifier(
+    groupId = groupId
+)
+
 
 fun StorageDestination.createGroup() =
     EditNoteGroupDestination(StorageIdentifier(path, version))

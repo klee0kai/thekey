@@ -8,16 +8,17 @@ import com.github.klee0kai.thekey.app.data.room.entry.ColorGroupEntry
 
 @Dao
 interface ColorGroupDao {
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun update(entry: ColorGroupEntry)
+    fun update(entry: ColorGroupEntry): Long
 
     @Query("SELECT * FROM $TABLE_NAME WHERE id = :id")
-    operator fun get(id: Int): ColorGroupEntry?
+    operator fun get(id: Long): ColorGroupEntry?
 
     @Query("SELECT * FROM $TABLE_NAME")
     fun getAll(): List<ColorGroupEntry>
 
-    @Query("DELETE  FROM ${TABLE_NAME} WHERE id = :id")
+    @Query("DELETE  FROM $TABLE_NAME WHERE id = :id")
     fun delete(id: Long)
 
     companion object {

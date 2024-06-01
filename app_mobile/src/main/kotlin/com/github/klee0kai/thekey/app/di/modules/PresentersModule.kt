@@ -22,10 +22,13 @@ import com.github.klee0kai.thekey.app.ui.storage.genpassw.presenter.GenPasswPres
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.presenter.GenPasswPresenterImpl
 import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenter
 import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenterImpl
+import com.github.klee0kai.thekey.app.ui.storagegroup.presenter.EditStoragesGroupPresenter
+import com.github.klee0kai.thekey.app.ui.storagegroup.presenter.EditStoragesGroupsPresenterImpl
 import com.github.klee0kai.thekey.app.ui.storages.presenter.StoragesPresenter
 import com.github.klee0kai.thekey.app.ui.storages.presenter.StoragesPresenterImpl
 import com.github.klee0kai.thekey.core.di.identifiers.NoteGroupIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
+import com.github.klee0kai.thekey.core.di.identifiers.StorageGroupIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.domain.model.feature.model.DynamicFeature
 
@@ -47,6 +50,10 @@ interface PresentersModule {
     @Provide(cache = Provide.CacheType.Weak)
     fun storagePresenter(storageIdentifier: StorageIdentifier): StoragePresenter =
         StoragePresenterImpl(storageIdentifier)
+
+    @Provide(cache = Provide.CacheType.Weak)
+    fun editStorageGroupPresenter(storageIdentifier: StorageGroupIdentifier): EditStoragesGroupPresenter =
+        EditStoragesGroupsPresenterImpl(storageIdentifier)
 
     @Provide(cache = Provide.CacheType.Weak)
     fun genPasswPresente(storageIdentifier: StorageIdentifier): GenPasswPresenter =

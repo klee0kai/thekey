@@ -58,7 +58,7 @@
     <string name="no_name">No name</string>
     <string name="no_site">No site</string>
     <string name="edit_group">Edit group</string>
-    <string name="create_group">Create group</string>
+    <string name="create_storages_group">Create group</string>
     <string name="select_color">Select color</string>
     <string name="group_name">Group name</string>
     <string name="group_symbol">Group symbol</string>
@@ -102,5 +102,8 @@
     <string name="developer">Developer</string>
     <string name="designer">Designer</string>
     <string name="storage_deleted">Storage has been deleted</string>
+    <string name="color_group_deleted">Color group has been deleted</string>
     <string name="storage_saved">Storage has been saved</string>
+    <string name="edit_storages_group">Edit storages group</string>
+    <string name="favorite">Favorite</string>
 </resources>

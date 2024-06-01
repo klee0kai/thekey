@@ -16,10 +16,11 @@ interface StoragesRepository {
 
     fun findStorage(path: String): Deferred<ColoredStorage?> = completeAsync(null)
     fun setStorage(storage: ColoredStorage): Job = emptyJob()
+    fun setStoragesGroup(storagePaths: List<String>, groupId: Long): Job = emptyJob()
     fun deleteStorage(path: String): Job = emptyJob()
 
 
-    fun addColorGroup(colorGroup: ColorGroup): Job = emptyJob()
+    fun setColorGroup(colorGroup: ColorGroup): Deferred<ColorGroup> = completeAsync(ColorGroup())
     fun deleteColorGroup(id: Long): Job = emptyJob()
 
 }
