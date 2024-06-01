@@ -3,6 +3,7 @@
 package com.github.klee0kai.thekey.app.ui.storages
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,6 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
@@ -37,6 +39,7 @@ import com.github.klee0kai.thekey.app.ui.storages.components.StoragesListContent
 import com.github.klee0kai.thekey.app.ui.storages.presenter.StoragesPresenterDummy
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
+import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.BottomSheetBigDialog
 import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.rememberSafeBottomSheetScaffoldState
@@ -45,7 +48,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
-import com.github.klee0kai.thekey.core.utils.views.rememberOnScreen
+import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.core.utils.views.topDp
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.delay
@@ -54,7 +57,9 @@ import org.jetbrains.annotations.VisibleForTesting
 @Composable
 fun SelectStorageDialog() = Box(modifier = Modifier.fillMaxSize()) {
     val router = LocalRouter.current
-    val presenter = rememberOnScreen { DI.storagesPresenter().apply { init() } }
+    val colorScheme = LocalColorScheme.current
+
+    val presenter by rememberOnScreenRef { DI.storagesPresenter().apply { init() } }
     val scaffoldState = rememberSafeBottomSheetScaffoldState(
         initialValue = SheetValue.PartiallyExpanded,
         skipHiddenState = false,
@@ -70,17 +75,14 @@ fun SelectStorageDialog() = Box(modifier = Modifier.fillMaxSize()) {
     }
     Box(
         modifier = Modifier
-            .background(Color.Gray.copy(alpha = ((1f - dragProgress) + 0.4f).coerceIn(0f, 1f)))
-            .pointerInput(Unit) { router.back() }
+            .background(colorScheme.androidColorScheme.background.copy(alpha = ((1f - dragProgress) + 0.4f).coerceIn(0f, 1f)))
+            .pointerInput(Unit) { detectTapGestures { router.back() } },
     ) {
-        BottomSheetBigDialog(
-            topMargin = AppBarConst.appBarSize + WindowInsets.safeContent.topDp,
-            scaffoldState = scaffoldState,
-            onDrag = { dragProgress = it }
-        ) {
+        BottomSheetBigDialog(topMargin = AppBarConst.appBarSize + WindowInsets.safeContent.topDp, scaffoldState = scaffoldState, onDrag = { dragProgress = it }) {
             StoragesListContent(
                 modifier = Modifier
-                    .fillMaxSize(),
+                    .fillMaxSize()
+                    .pointerInput(Unit) { detectTapGestures { /*ignore click inside */ } },
                 header = {
                     val titleAnimatedAlpha by animateAlphaAsState(showStoragesTitle)
 
