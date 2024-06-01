@@ -1,5 +1,6 @@
 package com.github.klee0kai.thekey.core.utils.coroutine
 
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Deferred
@@ -20,6 +21,8 @@ fun <T> CoroutineScope.asyncResult(
 }
 
 fun emptyJob(): Job = Job().also { it.complete() }
+
+fun <T> completeAsync(result: T): Deferred<T> = CompletableDeferred(value = result)
 
 suspend inline fun <reified T> Deferred<T>.awaitSec(): T? = withTimeoutOrNull(1000) {
     await()

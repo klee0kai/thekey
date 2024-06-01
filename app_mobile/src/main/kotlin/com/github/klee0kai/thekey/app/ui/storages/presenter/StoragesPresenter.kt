@@ -28,7 +28,7 @@ interface StoragesPresenter {
 
     fun selectGroup(groupId: Long): Job = emptyJob()
 
-    fun setColorGroup(notePt: Long, groupId: Long): Job = emptyJob()
+    fun setColorGroup(storagePath: String, groupId: Long): Job = emptyJob()
 
     fun deleteGroup(id: Long): Job = emptyJob()
 

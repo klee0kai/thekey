@@ -55,7 +55,7 @@ fun ColoredStorageItem(
                 .size(2.dp, 24.dp)
                 .background(
                     color = storage.colorGroup
-                        ?.let { colorScheme.surfaceScheme(it).surfaceColor }
+                        ?.let { colorScheme.surfaceScheme(it.keyColor).surfaceColor }
                         ?: Color.Transparent,
                     shape = RoundedCornerShape(1.dp)
                 )

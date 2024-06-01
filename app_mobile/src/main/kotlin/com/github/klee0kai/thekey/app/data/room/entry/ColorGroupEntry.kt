@@ -26,6 +26,7 @@ data class ColorGroupEntry(
 
 fun ColorGroupEntry.toColorGroup() =
     ColorGroup(
+        id = id,
         name = name,
         keyColor = KeyColor.entries
             .getOrElse(colorGroup) {

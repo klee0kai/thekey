@@ -8,8 +8,9 @@ import com.github.klee0kai.thekey.app.data.room.entry.StorageFileEntry
 
 @Dao
 interface StorageFilesDao {
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(entry: StorageFileEntry)
+    fun insertOrUpdate(entry: StorageFileEntry)
 
     @Query("SELECT COUNT(*)>0 FROM $TABLE_NAME WHERE path = :file")
     fun exist(file: String?): Boolean

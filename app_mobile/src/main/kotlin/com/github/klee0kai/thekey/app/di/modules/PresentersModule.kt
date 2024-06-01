@@ -2,8 +2,8 @@ package com.github.klee0kai.thekey.app.di.modules
 
 import com.github.klee0kai.stone.annotations.module.Module
 import com.github.klee0kai.stone.annotations.module.Provide
-import com.github.klee0kai.thekey.app.ui.editstorage.CreateStoragePresenter
-import com.github.klee0kai.thekey.app.ui.editstorage.EditStoragePresenter
+import com.github.klee0kai.thekey.app.ui.editstorage.presenter.EditStoragePresenter
+import com.github.klee0kai.thekey.app.ui.editstorage.presenter.EditStoragePresenterImpl
 import com.github.klee0kai.thekey.app.ui.genhist.presenter.GenHistPresenter
 import com.github.klee0kai.thekey.app.ui.genhist.presenter.GenHistPresenterImpl
 import com.github.klee0kai.thekey.app.ui.login.presenter.LoginPresenter
@@ -42,13 +42,7 @@ interface PresentersModule {
     fun storagesPresenter(): StoragesPresenter = StoragesPresenterImpl()
 
     @Provide(cache = Provide.CacheType.Weak)
-    fun editStoragePresenter(storageIdentifier: StorageIdentifier?): CreateStoragePresenter {
-        return if (storageIdentifier?.path == null) {
-            CreateStoragePresenter()
-        } else {
-            EditStoragePresenter(storageIdentifier.path)
-        }
-    }
+    fun editStoragePresenter(storageIdentifier: StorageIdentifier?): EditStoragePresenter = EditStoragePresenterImpl(storageIdentifier)
 
     @Provide(cache = Provide.CacheType.Weak)
     fun storagePresenter(storageIdentifier: StorageIdentifier): StoragePresenter =

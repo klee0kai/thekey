@@ -23,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,6 +41,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
+import com.github.klee0kai.thekey.core.utils.views.rememberOnScreen
 import com.github.klee0kai.thekey.core.utils.views.topDp
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.delay
@@ -48,6 +50,7 @@ import org.jetbrains.annotations.VisibleForTesting
 @Composable
 fun SelectStorageDialog() = Box(modifier = Modifier.fillMaxSize()) {
     val router = LocalRouter.current
+    val presenter = rememberOnScreen { DI.storagesPresenter().apply { init() } }
     val scaffoldState = rememberSafeBottomSheetScaffoldState(
         initialValue = SheetValue.PartiallyExpanded,
         skipHiddenState = false,
@@ -61,33 +64,37 @@ fun SelectStorageDialog() = Box(modifier = Modifier.fillMaxSize()) {
         }
         router.back()
     }
-
-
-    BottomSheetBigDialog(
-        topMargin = AppBarConst.appBarSize + WindowInsets.safeContent.topDp,
-        scaffoldState = scaffoldState,
-        onDrag = { dragProgress = it }
+    Box(
+        modifier = Modifier
+            .background(Color.Gray.copy(alpha = ((1f - dragProgress) + 0.4f).coerceIn(0f, 1f)))
+            .pointerInput(Unit) { router.back() }
     ) {
-        StoragesListContent(
-            modifier = Modifier
-                .fillMaxSize(),
-            showStoragesTitle = showStoragesTitle,
+        BottomSheetBigDialog(
+            topMargin = AppBarConst.appBarSize + WindowInsets.safeContent.topDp,
+            scaffoldState = scaffoldState,
+            onDrag = { dragProgress = it }
+        ) {
+            StoragesListContent(
+                modifier = Modifier
+                    .fillMaxSize(),
+                showStoragesTitle = showStoragesTitle,
+            )
+        }
+
+
+        AppBarStates(
+            modifier = Modifier.alpha(1f - dragProgress),
+            navigationIcon = {
+                IconButton(onClick = remember { { router.back() } }) {
+                    Icon(
+                        Icons.AutoMirrored.Default.ArrowBack,
+                        contentDescription = null,
+                    )
+                }
+            },
+            titleContent = { Text(text = stringResource(id = R.string.storages)) },
         )
     }
-
-
-    AppBarStates(
-        modifier = Modifier.alpha(1f - dragProgress),
-        navigationIcon = {
-            IconButton(onClick = remember { { router.back() } }) {
-                Icon(
-                    Icons.AutoMirrored.Default.ArrowBack,
-                    contentDescription = null,
-                )
-            }
-        },
-        titleContent = { Text(text = stringResource(id = R.string.storages)) },
-    )
 
 }
 

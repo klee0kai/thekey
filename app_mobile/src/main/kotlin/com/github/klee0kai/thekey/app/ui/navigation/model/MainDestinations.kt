@@ -14,7 +14,7 @@ import kotlinx.parcelize.Parcelize
 
 
 object MainDestinations {
-    val InitDest = AutoFillSettingsDestination
+    val InitDest = LoginDestination
 }
 
 @Parcelize

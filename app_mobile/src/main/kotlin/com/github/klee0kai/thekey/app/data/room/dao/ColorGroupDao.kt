@@ -17,6 +17,9 @@ interface ColorGroupDao {
     @Query("SELECT * FROM $TABLE_NAME")
     fun getAll(): List<ColorGroupEntry>
 
+    @Query("DELETE  FROM ${TABLE_NAME} WHERE id = :id")
+    fun delete(id: Long)
+
     companion object {
         const val TABLE_NAME = "color_group"
     }

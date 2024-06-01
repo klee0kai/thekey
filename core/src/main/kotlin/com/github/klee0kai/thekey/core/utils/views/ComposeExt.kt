@@ -127,7 +127,7 @@ fun Modifier.skeleton(
 }
 
 @Composable
-fun rememberSkeletonModifier(
+fun animateSkeletonModifier(
     color: Color = MaterialTheme.colorScheme.inverseSurface,
     isSkeleton: () -> Boolean,
 ): State<Modifier> {

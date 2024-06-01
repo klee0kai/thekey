@@ -101,4 +101,6 @@
     <string name="version">Version: %1$s</string>
     <string name="developer">Developer</string>
     <string name="designer">Designer</string>
+    <string name="storage_deleted">Storage has been deleted</string>
+    <string name="storage_saved">Storage has been saved</string>
 </resources>

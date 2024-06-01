@@ -16,7 +16,7 @@ import timber.log.Timber
 class LoginPresenterImpl : LoginPresenter {
 
     private val scope = DI.defaultThreadScope()
-    private val storagesRep = DI.foundStoragesRepositoryLazy()
+    private val storagesRep = DI.storagesRepositoryLazy()
     private val settingsRep = DI.settingsRepositoryLazy()
     private val loginInteractor = DI.loginInteractorLazy()
     private val router = DI.router()

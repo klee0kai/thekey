@@ -19,7 +19,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -61,6 +60,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
+import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DeleteIconButton
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DoneIconButton
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.SecondaryTabs
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.SecondaryTabsConst
@@ -69,6 +69,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.components.dropdownfields.DropD
 import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextField
 import com.github.klee0kai.thekey.core.utils.common.Dummy
 import com.github.klee0kai.thekey.core.utils.views.TargetAlpha
+import com.github.klee0kai.thekey.core.utils.views.animateSkeletonModifier
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.crossFadeAlpha
@@ -77,7 +78,6 @@ import com.github.klee0kai.thekey.core.utils.views.minInsets
 import com.github.klee0kai.thekey.core.utils.views.pxToDp
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
-import com.github.klee0kai.thekey.core.utils.views.rememberSkeletonModifier
 import com.github.klee0kai.thekey.core.utils.views.rememberTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.thenIf
 import com.github.klee0kai.thekey.core.utils.views.toPx
@@ -103,7 +103,7 @@ fun EditNoteScreen(
     val state by presenter!!.state.collectAsState(key = Unit, initial = EditNoteState(isSkeleton = true))
     val isSaveAvailable by rememberTargetCrossFaded { state.isSaveAvailable }
     val isRemoveAvailable by rememberTargetCrossFaded { state.isRemoveAvailable }
-    val skeletonModifier by rememberSkeletonModifier { state.isSkeleton }
+    val skeletonModifier by animateSkeletonModifier { state.isSkeleton }
 
     val pagerHeight = if (!state.isEditMode) SecondaryTabsConst.allHeight else 0.dp
 
@@ -478,17 +478,11 @@ fun EditNoteScreen(
         titleContent = { Text(text = stringResource(id = if (state.isEditMode) R.string.edit else R.string.create)) },
         actions = {
             if (isRemoveAvailable.current) {
-                IconButton(
+                DeleteIconButton(
                     modifier = Modifier
                         .alpha(isRemoveAvailable.alpha),
                     onClick = { presenter?.remove() }
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Delete,
-                        contentDescription = stringResource(id = R.string.remove),
-                        tint = LocalColorScheme.current.deleteColor
-                    )
-                }
+                )
             }
 
             if (imeIsVisibleAnimated.current && isSaveAvailable.current) {

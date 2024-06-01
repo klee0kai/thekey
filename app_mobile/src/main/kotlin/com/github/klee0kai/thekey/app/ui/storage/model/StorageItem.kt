@@ -25,7 +25,7 @@ fun StorageItem.filterBy(filter: String): Boolean {
 fun StorageItem.sortableFlatText(): String {
     val site = note?.site ?: otp?.issuer ?: ""
     val login = note?.login ?: otp?.name ?: ""
-    return site + login
+    return "$site-$login"
 }
 
 fun ColoredNote.storageItem() = StorageItem(note = this)

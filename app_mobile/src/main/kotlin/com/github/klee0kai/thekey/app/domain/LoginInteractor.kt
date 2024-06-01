@@ -11,7 +11,7 @@ class LoginInteractor {
 
     private val scope = DI.defaultThreadScope()
     private val rep = DI.loginedRepLazy()
-    private val storagesRep = DI.foundStoragesRepositoryLazy()
+    private val storagesRep = DI.storagesRepositoryLazy()
 
     val logginedStorages = flow {
         val foundStorageRep = storagesRep()

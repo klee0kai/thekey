@@ -3,6 +3,7 @@
 package com.github.klee0kai.thekey.core.utils.views
 
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.runtime.Composable
@@ -12,6 +13,7 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
 import kotlin.math.max
 
 
@@ -23,15 +25,14 @@ val WindowInsets.topDp
     @Composable
     get() = getTop(LocalDensity.current).pxToDp()
 
-
 val WindowInsets.startDp
     @Composable
     get() = getLeft(LocalDensity.current, LocalLayoutDirection.current).pxToDp()
 
-
 val WindowInsets.endDp
     @Composable
     get() = getRight(LocalDensity.current, LocalLayoutDirection.current).pxToDp()
+
 
 val WindowInsets.Companion.isIme: Boolean
     @Composable
@@ -45,6 +46,9 @@ fun WindowInsets.minInsets(vertical: Dp, horizontal: Dp) = minInsets(
     right = horizontal,
     left = horizontal
 )
+
+fun PaddingValues.horizontal(minValue: Dp = 0.dp) =
+    maxOf(calculateLeftPadding(LayoutDirection.Ltr), minValue)
 
 fun WindowInsets.minInsets(
     top: Dp,
@@ -89,3 +93,5 @@ fun WindowInsets.truncate(
     override fun getTop(density: Density): Int =
         if (!top) original.getTop(density) else 0
 }
+
+

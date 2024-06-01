@@ -4,30 +4,31 @@ import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.engine.model.DecryptedOtpNote
 import com.github.klee0kai.thekey.app.ui.note.model.EditNoteState
 import com.github.klee0kai.thekey.app.ui.note.model.EditTabs
+import com.github.klee0kai.thekey.core.utils.coroutine.emptyJob
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.emptyFlow
 
 interface EditNotePresenter {
 
-    val state: Flow<EditNoteState> get() = flow { }
+    val state: Flow<EditNoteState> get() = emptyFlow()
 
     fun init(
         tab: EditTabs? = null,
         prefilledNote: DecryptedNote? = null,
         prefilledOtp: DecryptedOtpNote? = null,
-    ): Job = Job()
+    ): Job = emptyJob()
 
-    fun input(block: EditNoteState.() -> EditNoteState): Job = Job()
+    fun input(block: EditNoteState.() -> EditNoteState): Job = emptyJob()
 
-    fun showHistory(): Job = Job()
+    fun showHistory(): Job = emptyJob()
 
-    fun remove(): Job = Job()
+    fun remove(): Job = emptyJob()
 
-    fun scanQRCode(): Job = Job()
+    fun scanQRCode(): Job = emptyJob()
 
-    fun save(): Job = Job()
+    fun save(): Job = emptyJob()
 
-    fun generate(): Job = Job()
+    fun generate(): Job = emptyJob()
 
 }

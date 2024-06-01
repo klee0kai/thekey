@@ -1,6 +1,6 @@
 package com.github.klee0kai.thekey.app.di.dependencies
 
-import com.github.klee0kai.thekey.app.ui.editstorage.CreateStoragePresenter
+import com.github.klee0kai.thekey.app.ui.editstorage.presenter.EditStoragePresenter
 import com.github.klee0kai.thekey.app.ui.genhist.presenter.GenHistPresenter
 import com.github.klee0kai.thekey.app.ui.login.presenter.LoginPresenter
 import com.github.klee0kai.thekey.app.ui.navigationboard.presenter.NavigationBoardPresenter
@@ -24,7 +24,7 @@ interface PresentersDependencies {
 
     fun storagesPresenter(): StoragesPresenter
 
-    fun editStoragePresenter(identifier: StorageIdentifier? = null): CreateStoragePresenter
+    fun editStoragePresenter(identifier: StorageIdentifier? = null): EditStoragePresenter
 
     fun storagePresenter(identifier: StorageIdentifier): StoragePresenter
 
