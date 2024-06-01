@@ -47,7 +47,8 @@ class LoginPresenterImpl : LoginPresenter {
             return@launch
         }
         runCatching {
-            val storage = currentStorageFlow.first()
+            var storage = currentStorageFlow.first()
+            if (storage.version == 0) storage = storage.copy(version = settingsRep().newStorageVersion())
             loginInteractor()
                 .login(storage.identifier(), passw)
                 .await()
