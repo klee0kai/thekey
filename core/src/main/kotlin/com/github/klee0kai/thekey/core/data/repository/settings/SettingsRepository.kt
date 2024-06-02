@@ -1,18 +1,18 @@
-package com.github.klee0kai.thekey.app.data.repositories.settings
+package com.github.klee0kai.thekey.core.data.repository.settings
 
-import com.github.klee0kai.thekey.app.data.repositories.settings.delegates.BooleanNoteDelegate
-import com.github.klee0kai.thekey.app.data.repositories.settings.delegates.IntNoteDelegate
-import com.github.klee0kai.thekey.app.data.repositories.settings.delegates.StringNoteDelegate
-import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.core.data.repository.settings.delegates.BooleanNoteDelegate
+import com.github.klee0kai.thekey.core.data.repository.settings.delegates.IntNoteDelegate
+import com.github.klee0kai.thekey.core.data.repository.settings.delegates.StringNoteDelegate
+import com.github.klee0kai.thekey.core.di.CoreDI
 import java.io.File
 
 class SettingsRepository {
 
-    private val settingsDao = DI.settingDaoLazy()
-    private val scope = DI.ioThreadScope()
+    private val settingsDao = CoreDI.settingDaoLazy()
+    private val scope = CoreDI.ioThreadScope()
 
     val currentStoragePath = stringDelegate(SETTING_DEFAULT_STORAGE_PATH) {
-        File(DI.ctx().applicationInfo?.dataDir, "keys.ckey").path
+        File(CoreDI.ctx().applicationInfo?.dataDir, "keys.ckey").path
     }
 
     val newStorageVersion = intDelegate(SETTING_DEFAULT_STORAGE_VERSION) { 2 }

@@ -7,6 +7,8 @@ import com.github.klee0kai.thekey.core.domain.model.AppConfig
 
 @Dependencies
 interface CoreDependencyProvider :
+    CoreDBDependencies,
+    CoreRepositoryDependencies,
     CoreAndroidHelpersDependencies,
     CoreInteractorsDependencies,
     CoroutineDependencies {

@@ -49,6 +49,9 @@ dependencies {
     implementation(libs.bundles.stone)
     kapt(libs.stone.kapt)
 
+    implementation(libs.room.runtime)
+    kapt(libs.room.kapt)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso)
 }

@@ -1,7 +1,7 @@
-package com.github.klee0kai.thekey.app.data.repositories.settings.delegates
+package com.github.klee0kai.thekey.core.data.repository.settings.delegates
 
-import com.github.klee0kai.thekey.app.data.room.dao.SettingDao
-import com.github.klee0kai.thekey.app.data.room.entry.SettingPairEntry
+import com.github.klee0kai.thekey.core.data.room.dao.SettingDao
+import com.github.klee0kai.thekey.core.data.room.entry.SettingPairEntry
 import com.github.klee0kai.thekey.core.di.wrap.AsyncCoroutineProvide
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred

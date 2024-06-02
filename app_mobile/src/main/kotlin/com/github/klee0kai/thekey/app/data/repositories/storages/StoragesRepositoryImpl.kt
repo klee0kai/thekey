@@ -1,11 +1,11 @@
 package com.github.klee0kai.thekey.app.data.repositories.storages
 
-import com.github.klee0kai.thekey.app.data.room.entry.toColorGroup
-import com.github.klee0kai.thekey.app.data.room.entry.toColorGroupEntry
-import com.github.klee0kai.thekey.app.data.room.entry.toColoredStorage
-import com.github.klee0kai.thekey.app.data.room.entry.toStorageEntry
+import com.github.klee0kai.thekey.app.data.mapping.toColoredStorage
+import com.github.klee0kai.thekey.app.data.mapping.toStorageEntry
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.domain.model.ColoredStorage
+import com.github.klee0kai.thekey.core.data.room.entry.toColorGroup
+import com.github.klee0kai.thekey.core.data.room.entry.toColorGroupEntry
 import com.github.klee0kai.thekey.core.domain.ColorGroup
 import com.github.klee0kai.thekey.core.utils.coroutine.onTicks
 import kotlinx.coroutines.Job

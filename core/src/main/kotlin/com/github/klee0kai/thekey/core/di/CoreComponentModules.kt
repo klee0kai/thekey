@@ -3,7 +3,9 @@ package com.github.klee0kai.thekey.core.di
 import com.github.klee0kai.stone.annotations.component.Init
 import com.github.klee0kai.stone.annotations.component.ModuleOriginFactory
 import com.github.klee0kai.thekey.core.di.modules.CoreAndroidHelpersModule
+import com.github.klee0kai.thekey.core.di.modules.CoreDBModule
 import com.github.klee0kai.thekey.core.di.modules.CoreInteractorsModule
+import com.github.klee0kai.thekey.core.di.modules.CoreRepositoryModule
 import com.github.klee0kai.thekey.core.di.modules.CoroutineModule
 import com.github.klee0kai.thekey.core.di.modules.ThemeModule
 
@@ -11,6 +13,8 @@ interface CoreComponentModules {
 
     /* get module */
     fun theme(): ThemeModule
+    fun coreDBModule(): CoreDBModule
+    fun coreRepositoryModule(): CoreRepositoryModule
     fun coreAndroidHelpersModule(): CoreAndroidHelpersModule
     fun coreInteractorsModule(): CoreInteractorsModule
     fun coroutinesModule(): CoroutineModule

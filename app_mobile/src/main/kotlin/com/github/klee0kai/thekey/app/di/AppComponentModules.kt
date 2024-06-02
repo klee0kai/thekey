@@ -3,7 +3,6 @@ package com.github.klee0kai.thekey.app.di
 import com.github.klee0kai.stone.annotations.component.Init
 import com.github.klee0kai.stone.annotations.component.ModuleOriginFactory
 import com.github.klee0kai.thekey.app.di.modules.AndroidHelpersModule
-import com.github.klee0kai.thekey.app.di.modules.DBModule
 import com.github.klee0kai.thekey.app.di.modules.EngineModule
 import com.github.klee0kai.thekey.app.di.modules.HelpersModule
 import com.github.klee0kai.thekey.app.di.modules.InteractorsModule
@@ -19,7 +18,6 @@ interface AppComponentModules {
     fun interactors(): InteractorsModule
     fun repositories(): RepositoriesModule
     fun engine(): EngineModule
-    fun databases(): DBModule
 
     /* get origin factories */
     @ModuleOriginFactory
@@ -39,9 +37,6 @@ interface AppComponentModules {
 
     @ModuleOriginFactory
     fun engineFactory(): EngineModule
-
-    @ModuleOriginFactory
-    fun databasesFactory(): DBModule
 
     /* override */
     @Init

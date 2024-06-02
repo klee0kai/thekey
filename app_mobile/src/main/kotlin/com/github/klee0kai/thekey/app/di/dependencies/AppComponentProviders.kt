@@ -6,5 +6,4 @@ interface AppComponentProviders :
     HelperDependencies,
     InteractorsDependencies,
     RepositoriesDependencies,
-    EngineDependencies,
-    DBDependencies
+    EngineDependencies
