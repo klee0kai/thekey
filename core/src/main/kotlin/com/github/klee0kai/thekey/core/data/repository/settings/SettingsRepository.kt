@@ -6,7 +6,7 @@ import com.github.klee0kai.thekey.core.data.repository.settings.delegates.String
 import com.github.klee0kai.thekey.core.di.CoreDI
 import java.io.File
 
-class SettingsRepository {
+open class SettingsRepository {
 
     private val settingsDao = CoreDI.settingDaoLazy()
     private val scope = CoreDI.ioThreadScope()
@@ -22,21 +22,23 @@ class SettingsRepository {
     val genPasswIncludeSpecSymbols = booleanDelegate(SETTING_GEN_PASS_INCLUDE_SPEC_SYMBOLS) { false }
 
 
-    private fun stringDelegate(
+    protected fun stringDelegate(
         settingId: Int,
         defaultValue: () -> String
     ) = StringNoteDelegate(settingsDao, scope, settingId, defaultValue)
 
-    private fun intDelegate(
+    protected fun intDelegate(
         settingId: Int,
         defaultValue: () -> Int
     ) = IntNoteDelegate(settingsDao, scope, settingId, defaultValue)
 
-    private fun booleanDelegate(
+    protected fun booleanDelegate(
         settingId: Int,
         defaultValue: () -> Boolean
     ) = BooleanNoteDelegate(settingsDao, scope, settingId, defaultValue)
 
+
+    // check with AutoFillSettingsRepository
     companion object {
         private const val SETTING_DEFAULT_STORAGE_PATH = 944
         private const val SETTING_DEFAULT_STORAGE_VERSION = 432

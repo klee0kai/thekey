@@ -28,7 +28,7 @@ fun <T> singleEventFlow(
 }.flowOn(coroutineContext)
 
 suspend fun Flow<Unit>.onTicks(block: suspend () -> Unit) {
-    merge(flowOf(Unit)).collect {
+    merge(this, flowOf(Unit)).collect {
         block()
     }
 }
