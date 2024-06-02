@@ -36,6 +36,7 @@ dependencies {
     implementation(libs.compose.bom)
     implementation(libs.bundles.compose)
     implementation(libs.bundles.compose.debug)
+    implementation(libs.bundles.compose.glance)// TODO remove
     implementation(libs.bundles.androidx)
     implementation(libs.bundles.stone)
 
