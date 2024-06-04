@@ -38,6 +38,24 @@ fun DeeplinkHandler.routeAction(
             alias != null && intent.component?.className != alias -> false
             else -> with(block) { handle(intent) }
         }
+    })
+}
 
+
+fun DeeplinkHandler.routeUri(
+    scheme: String? = null,
+    domain: String? = null,
+    path: String? = null,
+    block: DeeplinkCaseHandler,
+) {
+    handlers.add(DeeplinkCaseHandler { intent ->
+        val uri = intent.data
+        when {
+            uri == null -> false
+            scheme != null && uri.scheme != scheme -> false
+            domain != null && uri.host != domain -> false
+            path != null && uri.path != path -> false
+            else -> with(block) { handle(intent) }
+        }
     })
 }
