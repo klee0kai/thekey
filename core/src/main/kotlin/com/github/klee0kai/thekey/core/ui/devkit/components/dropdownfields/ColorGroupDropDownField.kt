@@ -15,7 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.core.domain.ColorGroup
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
-import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
+import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import com.github.klee0kai.thekey.core.ui.devkit.components.buttons.GroupCircle
 import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextField
@@ -30,6 +30,8 @@ fun ColorGroupDropDownField(
     onSelected: (Int) -> Unit = {},
     label: (@Composable () -> Unit)? = null,
 ) {
+    val theme = LocalTheme.current
+
     ExposedDropdownMenuBox(
         expanded = expanded,
         onExpandedChange = onExpandedChange,
@@ -45,7 +47,7 @@ fun ColorGroupDropDownField(
                 GroupCircle(
                     modifier = Modifier
                         .padding(4.dp),
-                    colorScheme = LocalColorScheme.current.surfaceScheme(
+                    colorScheme = theme.colorScheme.surfaceSchemas.surfaceScheme(
                         variants.getOrNull(selectedIndex)?.keyColor ?: KeyColor.NOCOLOR
                     ),
                 )
@@ -71,7 +73,7 @@ fun ColorGroupDropDownField(
                         GroupCircle(
                             modifier = Modifier
                                 .padding(4.dp),
-                            colorScheme = LocalColorScheme.current.surfaceScheme(item.keyColor),
+                            colorScheme = theme.colorScheme.surfaceSchemas.surfaceScheme(item.keyColor),
                             checked = index == selectedIndex,
                             onClick = { onSelected(index) },
                         )

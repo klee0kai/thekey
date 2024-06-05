@@ -38,7 +38,7 @@ fun FavoriteStorageItem(
         storage.path
             .shortPath()
             .toAnnotationString()
-            .coloredPath()
+//   TODO         .coloredPath()
     }
 
     ConstraintLayout(

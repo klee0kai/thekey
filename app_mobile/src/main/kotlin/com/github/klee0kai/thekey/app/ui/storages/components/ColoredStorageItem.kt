@@ -18,18 +18,14 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.domain.model.ColoredStorage
+import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.utils.views.toAnnotationString
 
 
-@Preview
 @Composable
 fun ColoredStorageItem(
-    storage: ColoredStorage = ColoredStorage(
-        path = "path",
-        name = "name",
-        description = "description"
-    ),
+    storage: ColoredStorage = ColoredStorage(),
     onClick: () -> Unit = {}
 ) {
     val colorScheme = LocalColorScheme.current
@@ -39,7 +35,7 @@ fun ColoredStorageItem(
         storage.path
             .shortPath()
             .toAnnotationString()
-            .coloredPath()
+//   TODO         .coloredPath()
     }
 
     ConstraintLayout(
@@ -55,7 +51,7 @@ fun ColoredStorageItem(
                 .size(2.dp, 24.dp)
                 .background(
                     color = storage.colorGroup
-                        ?.let { colorScheme.surfaceScheme(it.keyColor).surfaceColor }
+                        ?.let { colorScheme.surfaceSchemas.surfaceScheme(it.keyColor).surfaceColor }
                         ?: Color.Transparent,
                     shape = RoundedCornerShape(1.dp)
                 )
@@ -106,4 +102,17 @@ fun ColoredStorageItem(
                 }
         )
     }
+}
+
+
+@Preview
+@Composable
+fun ColoredStorageItemPreview() = AppTheme {
+    ColoredStorageItem(
+        storage = ColoredStorage(
+            path = "path",
+            name = "name",
+            description = "description"
+        ),
+    )
 }

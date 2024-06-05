@@ -8,6 +8,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
@@ -15,7 +16,8 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
-import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
+import com.github.klee0kai.thekey.core.utils.views.grayColors
+import com.github.klee0kai.thekey.core.utils.views.transparentColors
 
 @Composable
 fun AppTextField(
@@ -37,7 +39,7 @@ fun AppTextField(
     singleLine: Boolean = false,
     maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
     minLines: Int = 1,
-    colors: TextFieldColors = LocalColorScheme.current.grayTextFieldColors
+    colors: TextFieldColors = TextFieldDefaults.grayColors(),
 ) {
     TextField(
         modifier = modifier,
@@ -83,7 +85,7 @@ fun AppTextField(
     singleLine: Boolean = false,
     maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
     minLines: Int = 1,
-    colors: TextFieldColors = LocalColorScheme.current.grayTextFieldColors
+    colors: TextFieldColors = TextFieldDefaults.grayColors(),
 ) {
     TextField(
         modifier = modifier,
@@ -155,7 +157,7 @@ fun AppTransparentTextFieldPreview() = AppTheme {
             label = {
                 Text(text = "label")
             },
-            colors = LocalColorScheme.current.transparentTextFieldColors,
+            colors = TextFieldDefaults.transparentColors(),
         )
     }
 }
@@ -172,7 +174,7 @@ fun AppTransparentTextEmptyFieldPreview() = AppTheme {
             label = {
                 Text(text = "label")
             },
-            colors = LocalColorScheme.current.transparentTextFieldColors,
+            colors = TextFieldDefaults.transparentColors(),
         )
     }
 }

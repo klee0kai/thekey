@@ -63,7 +63,7 @@ fun SelectedStorageItem(
             modifier = Modifier
                 .size(2.dp, 24.dp)
                 .background(
-                    color = colorScheme.surfaceScheme(storage.group.keyColor).surfaceColor,
+                    color = colorScheme.surfaceSchemas.surfaceScheme(storage.group.keyColor).surfaceColor,
                     shape = RoundedCornerShape(2.dp),
                 )
                 .constrainAs(colorGroupField) {

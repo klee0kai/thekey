@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,13 +23,14 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
-import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
+import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import com.github.klee0kai.thekey.core.ui.devkit.components.LazyListIndicatorIfNeed
 import com.github.klee0kai.thekey.core.ui.devkit.components.buttons.GroupCircle
 import com.github.klee0kai.thekey.core.ui.devkit.components.scrollPosition
 import com.github.klee0kai.thekey.core.ui.devkit.components.settings.SwitchPreference
 import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextField
+import com.github.klee0kai.thekey.core.utils.views.transparentColors
 import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
@@ -44,7 +46,7 @@ fun EditGroupInfoContent(
     onSelect: (KeyColor) -> Unit = {},
     onFavoriteChecked: (Boolean) -> Unit = {},
 ) {
-    val colorScheme = LocalColorScheme.current
+    val theme = LocalTheme.current
     val lazyListState = rememberLazyListState()
 
     ConstraintLayout(
@@ -126,7 +128,7 @@ fun EditGroupInfoContent(
                             ),
                         buttonSize = 56.dp,
                         checked = color == select,
-                        colorScheme = colorScheme.surfaceScheme(color),
+                        colorScheme = theme.colorScheme.surfaceSchemas.surfaceScheme(color),
                         onClick = { onSelect(color) },
                     )
                 }
@@ -153,7 +155,7 @@ fun EditGroupInfoContent(
             label = { Text(modifier = Modifier, text = stringResource(R.string.group_symbol)) },
             value = groupName,
             onValueChange = onChangeGroupName,
-            colors = LocalColorScheme.current.transparentTextFieldColors,
+            colors = TextFieldDefaults.transparentColors(),
         )
 
         if (favoriteVisible) {

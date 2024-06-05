@@ -67,7 +67,7 @@ fun SelectedNoteItem(
             modifier = Modifier
                 .size(2.dp, 24.dp)
                 .background(
-                    color = colorScheme.surfaceScheme(note.group.keyColor).surfaceColor,
+                    color = colorScheme.surfaceSchemas.surfaceScheme(note.group.keyColor).surfaceColor,
                     shape = RoundedCornerShape(2.dp),
                 )
                 .constrainAs(colorGroupField) {

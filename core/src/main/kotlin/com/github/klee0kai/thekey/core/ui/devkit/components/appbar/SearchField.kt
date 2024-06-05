@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,8 +18,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
-import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextField
+import com.github.klee0kai.thekey.core.utils.views.transparentColors
 import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
@@ -42,7 +43,7 @@ fun SearchField(
             },
             value = searchText,
             onValueChange = { onSearch(it) },
-            colors = LocalColorScheme.current.transparentTextFieldColors,
+            colors = TextFieldDefaults.transparentColors(),
         )
 
         IconButton(

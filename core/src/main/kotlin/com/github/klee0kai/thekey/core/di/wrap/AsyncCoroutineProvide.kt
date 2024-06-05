@@ -7,13 +7,15 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 
 class AsyncCoroutineProvide<T>(
-    call: Ref<T>
+    provider: suspend () -> T
 ) {
+
+    constructor(call: Ref<T>) : this(provider = { call.get() })
 
     @OptIn(DelicateCoroutinesApi::class)
     private val asyncValue =
         GlobalScope.async(Dispatchers.Default) {
-            call.get()
+            provider.invoke()
         }
 
     suspend fun get(): T = asyncValue.await()

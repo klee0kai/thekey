@@ -74,7 +74,7 @@ fun LoginScreen() {
         currentStorageState.path
             .shortPath()
             .toAnnotationString()
-            .coloredPath()
+//     TODO       .coloredPath()
     }
 
     BackHandler(enabled = router.isNavigationBoardIsOpen()) {

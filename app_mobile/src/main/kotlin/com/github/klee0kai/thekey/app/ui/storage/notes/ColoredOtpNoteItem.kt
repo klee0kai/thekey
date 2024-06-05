@@ -78,7 +78,7 @@ fun ColoredOtpNoteItem(
                 .alpha(skeleton.visibleOnTargetAlpha(false))
                 .size(2.dp, 24.dp)
                 .background(
-                    color = colorScheme.surfaceScheme(animatedNote.current.group.keyColor).surfaceColor,
+                    color = colorScheme.surfaceSchemas.surfaceScheme(animatedNote.current.group.keyColor).surfaceColor,
                     shape = RoundedCornerShape(2.dp),
                 )
                 .constrainAs(colorGroupField) {
