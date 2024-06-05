@@ -6,7 +6,7 @@ import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
-interface CommonColorScheme {
+interface ColorScheme {
 
     val isDarkScheme: Boolean get() = false
 

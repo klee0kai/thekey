@@ -16,13 +16,13 @@ import androidx.compose.ui.platform.isDebugInspectorInfoEnabled
 import com.github.klee0kai.thekey.core.di.CoreDI
 import com.github.klee0kai.thekey.core.di.updateConfig
 import com.github.klee0kai.thekey.core.domain.model.AppConfig
-import com.github.klee0kai.thekey.core.ui.devkit.color.CommonColorScheme
+import com.github.klee0kai.thekey.core.ui.devkit.color.ColorScheme
 import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
 import com.valentinilk.shimmer.LocalShimmerTheme
 import com.valentinilk.shimmer.defaultShimmerTheme
 
 val LocalRouter = compositionLocalOf<AppRouter> { error("no router") }
-val LocalColorScheme = compositionLocalOf<CommonColorScheme> { error("no color scheme") }
+val LocalColorScheme = compositionLocalOf<ColorScheme> { error("no color scheme") }
 val LocalAppConfig = compositionLocalOf<AppConfig> { error("no app config") }
 
 @Composable

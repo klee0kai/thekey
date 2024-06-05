@@ -7,7 +7,7 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
-class DarkColorScheme : CommonColorScheme {
+class DarkColorScheme : ColorScheme {
 
     override val isDarkScheme: Boolean = true
 
