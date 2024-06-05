@@ -33,7 +33,8 @@ internal object DarkColorCollection {
 
 fun darkCommonColorScheme() = CommonColorScheme(
     isDark = true,
-    deleteColor = Color.Black,
+    deleteColor = coral.surfaceColor,
+    windowBackgroundColor = background,
     navigationBoard = NavigationBoardColors(
         headerContainerColor = Color(0xFF3A3D52),
         bodyContentColor = Color(0xFF1C1D27),

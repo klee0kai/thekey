@@ -2,6 +2,9 @@
 <resources>
 
     <style name="Theme.TheKey" parent="android:Theme.Material.Light.NoActionBar">
+    </style>
+
+    <style name="Theme.TheKey.Transparent" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="background">@android:color/transparent</item>

@@ -18,7 +18,7 @@ import java.util.Locale
 
 class PathInputHelper {
 
-    private val theme = AsyncCoroutineProvide { DI.theme().themeManager().theme.first() }
+    private val theme = AsyncCoroutineProvide { DI.themeManager().theme.first() }
     private val shortPaths by lazy { DI.userShortPaths() }
     private val dirFileNameFilter = FilenameFilter { dir, name -> File(dir, name).isDirectory }
 

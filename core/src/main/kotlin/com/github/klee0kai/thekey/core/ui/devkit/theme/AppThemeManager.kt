@@ -12,6 +12,6 @@ interface AppThemeManager {
     /**
      * when changing the theme, theme modifiers are applied by their identifiers
      */
-    fun modify(id: String, theme: AppTheme.() -> AppTheme = { this }) = Unit
+    fun modify(id: String, modifier: AppTheme.() -> AppTheme = { this }) = Unit
 
 }

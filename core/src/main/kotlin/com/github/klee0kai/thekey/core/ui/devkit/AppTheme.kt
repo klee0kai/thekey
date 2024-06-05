@@ -5,7 +5,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,10 +38,8 @@ fun AppTheme(
     val view = LocalView.current
 
     val isEditMode = view.isInEditMode || LocalInspectionMode.current || isDebugInspectorInfoEnabled
-    val themeManager = remember { CoreDI.theme().themeManager() }
-    val theme by themeManager.theme.collectAsState(key = Unit, initial = null)
-    theme ?: return
-
+    val themeManager = remember { CoreDI.themeManager() }
+    val themeState = themeManager.theme.collectAsState(key = Unit, initial = null)
     val shimmer = remember {
         defaultShimmerTheme.copy(
             shaderColors = listOf(
@@ -57,22 +54,23 @@ fun AppTheme(
             copy(isViewEditMode = isEditMode)
         }
     }
+    val theme = themeState.value ?: return
 
     CompositionLocalProvider(
         LocalTheme provides theme!!,
         LocalRouter provides CoreDI.router(),
         LocalShimmerTheme provides shimmer,
-        LocalColorScheme provides theme!!.colorScheme,
+        LocalColorScheme provides theme.colorScheme,
         LocalAppConfig provides CoreDI.config(),
     ) {
         MaterialTheme(
-            colorScheme = theme!!.colorScheme.androidColorScheme,
-            typography = theme!!.typeScheme.typography,
-            shapes = theme!!.shapes,
+            colorScheme = theme.colorScheme.androidColorScheme,
+            typography = theme.typeScheme.typography,
+            shapes = theme.shapes,
         ) {
             Surface(
                 modifier = modifier,
-                color = MaterialTheme.colorScheme.background,
+                color = theme.colorScheme.windowBackgroundColor,
                 contentColor = MaterialTheme.colorScheme.onBackground,
             ) {
                 content.invoke()

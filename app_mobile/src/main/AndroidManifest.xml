@@ -29,6 +29,14 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ui.MainTranparentActivity"
+            android:configChanges="orientation|keyboard|keyboardHidden|screenLayout|screenSize"
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.TheKey.Transparent"
+            android:windowSoftInputMode="adjustResize" />
+
+
         <!-- fix crash https://stackoverflow.com/questions/68153515 -->
         <provider
             android:name="com.google.mlkit.common.internal.MlKitInitProvider"

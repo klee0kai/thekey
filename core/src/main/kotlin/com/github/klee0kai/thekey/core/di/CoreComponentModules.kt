@@ -7,12 +7,10 @@ import com.github.klee0kai.thekey.core.di.modules.CoreDBModule
 import com.github.klee0kai.thekey.core.di.modules.CoreInteractorsModule
 import com.github.klee0kai.thekey.core.di.modules.CoreRepositoryModule
 import com.github.klee0kai.thekey.core.di.modules.CoroutineModule
-import com.github.klee0kai.thekey.core.di.modules.ThemeModule
 
 interface CoreComponentModules {
 
     /* get module */
-    fun theme(): ThemeModule
     fun coreDBModule(): CoreDBModule
     fun coreRepositoryModule(): CoreRepositoryModule
     fun coreAndroidHelpersModule(): CoreAndroidHelpersModule
@@ -20,8 +18,6 @@ interface CoreComponentModules {
     fun coroutinesModule(): CoroutineModule
 
     /* get origin factories */
-    @ModuleOriginFactory
-    fun themeFactory(): ThemeModule
 
     @ModuleOriginFactory
     fun coreAndroidHelpersModuleFactory(): CoreAndroidHelpersModule
@@ -33,8 +29,6 @@ interface CoreComponentModules {
     fun coroutinesModuleFactory(): CoroutineModule
 
     /* set origin factories */
-    @Init
-    fun initThemeModule(themeModule: ThemeModule)
 
     @Init
     fun initCoreAndroidHelpersModule(themeModule: CoreAndroidHelpersModule)
