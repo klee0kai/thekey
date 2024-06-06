@@ -6,8 +6,9 @@ import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.SnackbarHostState
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.core.ui.navigation.RouterContext
 import com.github.klee0kai.thekey.app.ui.navigation.model.MainDestinations
+import com.github.klee0kai.thekey.core.di.identifiers.ActivityIdentifier
+import com.github.klee0kai.thekey.core.ui.navigation.RouterContext
 import com.github.klee0kai.thekey.core.ui.navigation.model.Destination
 import com.github.klee0kai.thekey.core.ui.navigation.model.NavigateBackstackChange
 import dev.olshevski.navigation.reimagined.NavController
@@ -16,7 +17,9 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.random.Random
 
-class RouterContextImpl : RouterContext {
+class RouterContextImpl(
+    override val activityIdentifier: ActivityIdentifier?
+) : RouterContext {
 
     override val showInitDynamicFeatureScreen = MutableStateFlow(false)
 

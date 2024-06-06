@@ -10,6 +10,7 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
+import com.github.klee0kai.thekey.core.di.identifiers.ActivityIdentifier
 import com.github.klee0kai.thekey.core.ui.navigation.deeplink.DeeplinkRoute
 import com.github.klee0kai.thekey.core.ui.navigation.model.ActivityResult
 import com.github.klee0kai.thekey.core.ui.navigation.model.Destination
@@ -96,6 +97,8 @@ interface RouterContext {
      * We show a stub while we initialize DI for a new feature
      */
     val showInitDynamicFeatureScreen: MutableStateFlow<Boolean> get() = MutableStateFlow(false)
+
+    val activityIdentifier: ActivityIdentifier? get() = null
 
     val snackbarHostState: SnackbarHostState get() = SnackbarHostState()
     val navBoardState: DrawerState get() = DrawerState(DrawerValue.Closed)

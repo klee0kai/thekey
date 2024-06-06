@@ -14,7 +14,7 @@ open class CoreAndroidHelpersModuleFactory : CoreAndroidHelpersModule {
 
     override fun screenResolver(): ScreenResolver = ScreenResolverImpl()
 
-    override fun router(activity: ActivityIdentifier?) = AppRouterImp()
+    override fun router(activity: ActivityIdentifier?) = AppRouterImp(activity)
 
     override fun dynamicFeaturesManager(): DynamicFeaturesManager = when {
         BuildConfig.DEBUG -> DynamicFeaturesManagerDebug()
