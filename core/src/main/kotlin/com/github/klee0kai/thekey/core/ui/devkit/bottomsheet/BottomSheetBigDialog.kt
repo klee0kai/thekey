@@ -39,6 +39,8 @@ import org.jetbrains.annotations.VisibleForTesting
 @Composable
 fun BottomSheetBigDialog(
     modifier: Modifier = Modifier,
+    sheetDragHandleModifier: Modifier = Modifier,
+    sheetModifier: Modifier = Modifier,
     topMargin: Dp = 0.dp,
     sheetPeekHeight: Dp = 400.dp,
     scaffoldState: BottomSheetScaffoldState = rememberSafeBottomSheetScaffoldState(skipHiddenState = false),
@@ -86,8 +88,9 @@ fun BottomSheetBigDialog(
             sheetShape = BottomSheetDefaults.ExpandedShape,
             sheetDragHandle = {
                 Box(
-                    modifier = Modifier
-                        .height(dragHandleSize),
+                    modifier = sheetDragHandleModifier
+                        .height(dragHandleSize)
+                        .fillMaxWidth(),
                     contentAlignment = Alignment.Center
                 ) {
                     Box(
@@ -104,7 +107,7 @@ fun BottomSheetBigDialog(
             sheetContentColor = colorScheme.onSurface,
             sheetContent = {
                 Box(
-                    modifier = Modifier
+                    modifier = sheetModifier
                         .fillMaxWidth()
                         .height(viewHeight - topMargin),
                     content = {
