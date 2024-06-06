@@ -9,7 +9,7 @@ import com.github.klee0kai.thekey.core.ui.navigation.NavBoardRouter
 import com.github.klee0kai.thekey.core.ui.navigation.PermissionsRouter
 import com.github.klee0kai.thekey.core.ui.navigation.RouterContext
 import com.github.klee0kai.thekey.core.ui.navigation.SnackRouter
-import com.github.klee0kai.thekey.core.ui.navigation.deeplink.DeeplinkHandler
+import com.github.klee0kai.thekey.core.ui.navigation.deeplink.DeeplinkRoute
 
 open class AppRouterImp(
     private val ctx: RouterContext = RouterContextImpl()
@@ -39,16 +39,16 @@ open class AppRouterImp(
 
     override val scope get() = ctx.scope
 
-    private var deeplinkHandler = DeeplinkHandler()
+    private var deeplinkRoute = DeeplinkRoute()
 
     override fun genRequestCode(): Int = ctx.genRequestCode()
 
     override fun handleDeeplink(intent: Intent) {
-        deeplinkHandler.handle(intent, this)
+        deeplinkRoute.processDeeplink(intent, this)
     }
 
-    override fun configDeeplinks(block: DeeplinkHandler.() -> Unit) {
-        deeplinkHandler = DeeplinkHandler().apply(block)
+    override fun configDeeplinks(block: DeeplinkRoute.() -> Unit) {
+        block.invoke(deeplinkRoute)
     }
 
 }

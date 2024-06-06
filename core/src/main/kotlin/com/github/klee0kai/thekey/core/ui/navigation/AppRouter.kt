@@ -10,7 +10,7 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
-import com.github.klee0kai.thekey.core.ui.navigation.deeplink.DeeplinkHandler
+import com.github.klee0kai.thekey.core.ui.navigation.deeplink.DeeplinkRoute
 import com.github.klee0kai.thekey.core.ui.navigation.model.ActivityResult
 import com.github.klee0kai.thekey.core.ui.navigation.model.Destination
 import com.github.klee0kai.thekey.core.ui.navigation.model.NavigateBackstackChange
@@ -84,7 +84,7 @@ interface DeeplinkRouter {
 
     fun handleDeeplink(intent: Intent) = Unit
 
-    fun configDeeplinks(block: DeeplinkHandler.() -> Unit) = Unit
+    fun configDeeplinks(block: DeeplinkRoute.() -> Unit) = Unit
 
 }
 
