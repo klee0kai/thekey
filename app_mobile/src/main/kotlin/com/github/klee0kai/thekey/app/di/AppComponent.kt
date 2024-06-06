@@ -15,6 +15,7 @@ import com.github.klee0kai.thekey.app.ui.navigation.deeplink.configMainDeeplinks
 import com.github.klee0kai.thekey.core.di.CoreComponent
 import com.github.klee0kai.thekey.core.di.CoreDI
 import com.github.klee0kai.thekey.core.di.hardResetToPreview
+import com.github.klee0kai.thekey.core.di.identifiers.ActivityIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.NoteGroupIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.PluginIdentifier
@@ -30,6 +31,7 @@ var DI: AppComponent = initAppComponent()
 
 @Component(
     identifiers = [
+        ActivityIdentifier::class,
         StorageIdentifier::class,
         NoteIdentifier::class,
         NoteGroupIdentifier::class,
@@ -77,14 +79,16 @@ fun AppComponent.updateComponentsSoft() {
         .forEach { feature -> with(feature) { initDI() } }
 }
 
-fun AppComponent.configRouting() {
+fun AppComponent.configRouting(
+    activityIdentifier: ActivityIdentifier? = null,
+) {
     val availableFeatures = DynamicFeature
         .allFeatures()
         .filter { it.isCommunity || billingInteractor().isAvailable(it) }
         .mapNotNull { it.findApi() }
 
     // init new deeplinks routing
-    router().configDeeplinks {
+    router(activityIdentifier).configDeeplinks {
         availableFeatures
             .forEach { feature -> with(feature) { configDeeplinks() } }
 

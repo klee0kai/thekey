@@ -9,6 +9,7 @@ import com.github.klee0kai.stone.annotations.component.GcWeakScope
 import com.github.klee0kai.stone.annotations.component.RunGc
 import com.github.klee0kai.stone.annotations.module.BindInstance
 import com.github.klee0kai.thekey.core.di.dependecies.CoreDependencyProvider
+import com.github.klee0kai.thekey.core.di.identifiers.ActivityIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.NoteGroupIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.PluginIdentifier
@@ -25,6 +26,7 @@ var CoreDI: CoreComponent = initCoreComponent()
 
 @Component(
     identifiers = [
+        ActivityIdentifier::class,
         StorageIdentifier::class,
         NoteIdentifier::class,
         NoteGroupIdentifier::class,

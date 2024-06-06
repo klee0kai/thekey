@@ -40,6 +40,8 @@ interface ComposeRouter {
 
     fun back() = Unit
 
+    fun resetStack(vararg destinations: Destination) = Unit
+
     @Composable
     fun collectBackstackChanges() = Unit
 
@@ -82,7 +84,7 @@ interface PermissionsRouter {
 
 interface DeeplinkRouter {
 
-    fun handleDeeplink(intent: Intent) = Unit
+    fun handleDeeplink(intent: Intent): Boolean = false
 
     fun configDeeplinks(block: DeeplinkRoute.() -> Unit) = Unit
 

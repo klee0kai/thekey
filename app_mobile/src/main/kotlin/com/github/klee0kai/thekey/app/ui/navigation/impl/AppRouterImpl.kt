@@ -43,9 +43,9 @@ open class AppRouterImp(
 
     override fun genRequestCode(): Int = ctx.genRequestCode()
 
-    override fun handleDeeplink(intent: Intent) {
+    override fun handleDeeplink(intent: Intent) =
         deeplinkRoute.processDeeplink(intent, this)
-    }
+
 
     override fun configDeeplinks(block: DeeplinkRoute.() -> Unit) {
         block.invoke(deeplinkRoute)

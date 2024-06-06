@@ -82,6 +82,11 @@ class ComposeRouterImpl(context: RouterContext) : ComposeRouter, RouterContext b
         backDispatcher?.onBackPressed()
     }
 
+    override fun resetStack(vararg destinations: Destination) {
+        val navEntries = destinations.map { navEntry(it) }.toList()
+        navFullController.setNewBackstack(navEntries)
+    }
+
     @Composable
     @NonRestartableComposable
     override fun collectBackstackChanges() {

@@ -14,6 +14,7 @@ import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.isDebugInspectorInfoEnabled
 import com.github.klee0kai.thekey.core.di.CoreDI
+import com.github.klee0kai.thekey.core.di.identifiers.ActivityIdentifier
 import com.github.klee0kai.thekey.core.di.updateConfig
 import com.github.klee0kai.thekey.core.domain.model.AppConfig
 import com.github.klee0kai.thekey.core.ui.devkit.color.CommonColorScheme
@@ -31,6 +32,7 @@ val LocalAppConfig = compositionLocalOf<AppConfig> { error("no app config") }
 @Composable
 fun AppTheme(
     modifier: Modifier = Modifier,
+    activityIdentifier: ActivityIdentifier? = null,
     content: @Composable () -> Unit
 ) {
     LocalConfiguration.current
@@ -38,7 +40,8 @@ fun AppTheme(
     val view = LocalView.current
 
     val isEditMode = view.isInEditMode || LocalInspectionMode.current || isDebugInspectorInfoEnabled
-    val themeManager = remember { CoreDI.themeManager() }
+    val themeManager = CoreDI.themeManager(activityIdentifier)
+    val router = CoreDI.router(activityIdentifier)
     val themeState = themeManager.theme.collectAsState(key = Unit, initial = null)
     val shimmer = remember {
         defaultShimmerTheme.copy(
@@ -57,8 +60,8 @@ fun AppTheme(
     val theme = themeState.value ?: return
 
     CompositionLocalProvider(
-        LocalTheme provides theme!!,
-        LocalRouter provides CoreDI.router(),
+        LocalTheme provides theme,
+        LocalRouter provides router,
         LocalShimmerTheme provides shimmer,
         LocalColorScheme provides theme.colorScheme,
         LocalAppConfig provides CoreDI.config(),
