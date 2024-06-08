@@ -22,3 +22,5 @@ fun ColoredStorage.filterBy(filter: String): Boolean {
 fun ColoredStorage.sortableFlatText(): String {
     return "${path}-${name}-${description}"
 }
+
+fun ColoredStorage.isValid() = path.isNotBlank() && version > 0
