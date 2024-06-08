@@ -29,3 +29,11 @@ void JvmFindStorageEngine::findStorages(const std::string &folder, const JvmFind
     });
 }
 
+int JvmFindStorageEngine::storageVersion(const std::string &path) {
+    auto storage = thekey::storage(path);
+    if (storage) {
+        return storage->storageVersion;
+    } else {
+        return 0;
+    }
+}

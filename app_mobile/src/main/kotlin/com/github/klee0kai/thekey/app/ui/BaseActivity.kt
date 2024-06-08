@@ -17,6 +17,8 @@ open class BaseActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        DI.activity(this)
+
         enableEdgeToEdge()
     }
 

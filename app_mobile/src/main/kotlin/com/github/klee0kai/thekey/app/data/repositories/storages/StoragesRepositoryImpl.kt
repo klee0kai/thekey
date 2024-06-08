@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.io.File
 
 class StoragesRepositoryImpl : StoragesRepository {
@@ -52,7 +53,7 @@ class StoragesRepositoryImpl : StoragesRepository {
     override fun setColorGroup(colorGroup: ColorGroup) = scope.async {
         val id = colorGroupsDao().update(colorGroup.toColorGroupEntry())
         updateTicker.emit(Unit)
-        colorGroupsDao().get(id)?.toColorGroup() ?: ColorGroup()
+        colorGroupsDao()[id]?.toColorGroup() ?: ColorGroup()
     }
 
     override fun deleteColorGroup(id: Long): Job = scope.launch {
@@ -65,6 +66,8 @@ class StoragesRepositoryImpl : StoragesRepository {
     }
 
     override fun setStorage(storage: ColoredStorage): Job = scope.launch {
+        if (storage.version <= 0) Timber.e("incorrect storage version ${storage.version}")
+
         val cachedStorage = storagesDao().get(storage.path)
         storagesDao().update(storage.toStorageEntry(id = cachedStorage?.id))
         updateTicker.emit(Unit)

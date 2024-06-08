@@ -44,7 +44,8 @@ class LoginInteractor {
         otpNotesInteractor().loadOtpNotes()
         groupsInteractor().loadGroups()
         rep().logined(identifier)
-        Unit
+
+        identifier
     }
 
     fun unlogin(identifier: StorageIdentifier) = scope.async {

@@ -23,6 +23,7 @@ class EditStoragePresenterImpl(
     private val scope = DI.defaultThreadScope()
     private val router = DI.router()
     private val rep = DI.storagesRepositoryLazy()
+    private val settingsRep = DI.settingsRepositoryLazy()
     private val appFolder by lazy { DI.ctx().applicationInfo.dataDir }
 
     private var originStorage: ColoredStorage? = null
@@ -86,7 +87,7 @@ class EditStoragePresenterImpl(
 
     override fun save() = scope.launch {
         val curState = state.value
-        var storage = curState.storage(originStorage ?: ColoredStorage())
+        var storage = curState.storage(originStorage ?: ColoredStorage(version = settingsRep().newStorageVersion()))
         if (storage.path.isBlank()) {
             storage = storage.copy(
                 path = File(appFolder, curState.name)
