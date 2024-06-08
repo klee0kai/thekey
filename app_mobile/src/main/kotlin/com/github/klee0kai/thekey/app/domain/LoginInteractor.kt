@@ -12,6 +12,7 @@ class LoginInteractor {
     private val scope = DI.defaultThreadScope()
     private val rep = DI.loginedRepLazy()
     private val storagesRep = DI.storagesRepositoryLazy()
+    private val settingsRep = DI.settingsRepositoryLazy()
 
     val logginedStorages = flow {
         val foundStorageRep = storagesRep()
@@ -24,7 +25,10 @@ class LoginInteractor {
             }.collect(this)
     }
 
-    fun login(identifier: StorageIdentifier, passw: String) = scope.async {
+    fun login(storageIdentifier: StorageIdentifier, passw: String) = scope.async {
+        var identifier = storageIdentifier
+        if (identifier.version == 0) identifier = identifier.copy(version = settingsRep().newStorageVersion())
+
         val engine = DI.cryptStorageEngineSafeLazy(identifier)
         val notesInteractor = DI.notesInteractorLazy(identifier)
         val otpNotesInteractor = DI.otpNotesInteractorLazy(identifier)
