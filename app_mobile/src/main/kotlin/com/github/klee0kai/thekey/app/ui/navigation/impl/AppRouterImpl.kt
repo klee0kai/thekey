@@ -11,6 +11,7 @@ import com.github.klee0kai.thekey.core.ui.navigation.PermissionsRouter
 import com.github.klee0kai.thekey.core.ui.navigation.RouterContext
 import com.github.klee0kai.thekey.core.ui.navigation.SnackRouter
 import com.github.klee0kai.thekey.core.ui.navigation.deeplink.DeeplinkRoute
+import com.github.klee0kai.thekey.core.ui.navigation.model.Destination
 
 open class AppRouterImp(
     override val activityIdentifier: ActivityIdentifier?,
@@ -45,12 +46,16 @@ open class AppRouterImp(
 
     override fun genRequestCode(): Int = ctx.genRequestCode()
 
-    override fun handleDeeplink(intent: Intent) =
+    override suspend fun handleDeeplink(intent: Intent) =
         deeplinkRoute.processDeeplink(intent, this)
 
 
     override fun configDeeplinks(block: DeeplinkRoute.() -> Unit) {
         block.invoke(deeplinkRoute)
+    }
+
+    override fun initDestination(dest: Destination) {
+        ctx.initDestination(dest)
     }
 
 }

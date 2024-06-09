@@ -3,6 +3,7 @@
 package com.github.klee0kai.thekey.app.ui.note
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -58,6 +59,7 @@ import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
+import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DeleteIconButton
@@ -94,6 +96,7 @@ fun EditNoteScreen(
     val scope = rememberCoroutineScope()
     val navigator = LocalRouter.current
     val view = LocalView.current
+    val theme = LocalTheme.current
     val presenter by rememberOnScreenRef {
         DI.editNotePresenter(dest.identifier()).apply {
             init(dest.tab, dest.note, dest.otpNote)
@@ -128,6 +131,7 @@ fun EditNoteScreen(
 
     ConstraintLayout(
         modifier = Modifier
+            .background(theme.colorScheme.androidColorScheme.background)
             .imePadding()
             .verticalScroll(scrollState)
             .fillMaxSize()

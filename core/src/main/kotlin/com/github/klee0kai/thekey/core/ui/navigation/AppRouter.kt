@@ -85,7 +85,7 @@ interface PermissionsRouter {
 
 interface DeeplinkRouter {
 
-    fun handleDeeplink(intent: Intent): Boolean = false
+    suspend fun handleDeeplink(intent: Intent): Boolean = false
 
     fun configDeeplinks(block: DeeplinkRoute.() -> Unit) = Unit
 
@@ -114,6 +114,7 @@ interface RouterContext {
 
     fun genRequestCode(): Int = -1
 
+    fun initDestination(dest: Destination) = Unit
 }
 
 inline fun <reified R> ComposeRouter.navigate(vararg destination: Destination): Flow<R?> =

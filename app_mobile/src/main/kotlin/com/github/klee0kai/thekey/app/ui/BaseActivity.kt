@@ -8,12 +8,14 @@ import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.core.di.identifiers.ActivityIdentifier
 import com.github.klee0kai.thekey.core.ui.navigation.model.ActivityResult
 import com.github.klee0kai.thekey.core.ui.navigation.model.RequestPermResult
+import kotlinx.coroutines.cancelChildren
 
 open class BaseActivity : ComponentActivity() {
 
     protected val scope = DI.mainThreadScope()
-    protected val router get() = DI.router()
     protected val activityIdentifier get() = ActivityIdentifier(this::class.qualifiedName)
+    protected val router get() = DI.router(activityIdentifier)
+    protected val themeManager get() = DI.themeManager(activityIdentifier)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +49,11 @@ open class BaseActivity : ComponentActivity() {
                 grantResults = grantResults.toList()
             )
         )
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        scope.coroutineContext.cancelChildren()
     }
 
 }

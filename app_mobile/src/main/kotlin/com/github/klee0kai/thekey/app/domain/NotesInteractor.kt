@@ -8,6 +8,7 @@ import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.utils.common.launchLatest
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
@@ -30,6 +31,8 @@ class NotesInteractor(
             }
         }.collect(this)
     }
+
+    val loadedNotes = notes.filter { list -> list.all { it.isLoaded } }
 
     fun loadNotes() = scope.launchLatest("load_notes") { rep().loadNotes() }
 

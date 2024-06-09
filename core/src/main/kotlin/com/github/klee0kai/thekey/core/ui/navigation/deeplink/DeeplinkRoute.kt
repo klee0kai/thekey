@@ -6,7 +6,7 @@ import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
 
 fun interface DeeplinkCaseHandler {
 
-    fun AppRouter.handle(intent: Intent): Boolean
+    suspend fun AppRouter.handle(intent: Intent): Boolean
 
 }
 
@@ -14,7 +14,7 @@ open class DeeplinkRoute {
 
     private val handlers = mutableListOf<DeeplinkCaseHandler>()
 
-    fun processDeeplink(intent: Intent, router: AppRouter): Boolean {
+    suspend fun processDeeplink(intent: Intent, router: AppRouter): Boolean {
         if (handlers.any { with(it) { router.handle(intent) } }) {
             return true
         }
