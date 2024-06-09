@@ -20,3 +20,18 @@ data class DecryptedNote(
 
 fun DecryptedNote.isEmpty(): Boolean =
     site.isEmpty() && login.isEmpty() && passw.isEmpty() && desc.isEmpty()
+
+fun DecryptedNote.merge(note: DecryptedNote?) =
+    if (note != null) {
+        DecryptedNote(
+            ptnote = if (ptnote != 0L) ptnote else note.ptnote,
+            site = site.ifBlank { note.site },
+            login = login.ifBlank { note.login },
+            passw = passw.ifBlank { note.passw },
+            desc = desc.ifBlank { note.desc },
+            chTime = if (chTime != 0L) chTime else note.chTime,
+            colorGroupId = if (colorGroupId != 0L) colorGroupId else note.colorGroupId,
+        )
+    } else {
+        this
+    }

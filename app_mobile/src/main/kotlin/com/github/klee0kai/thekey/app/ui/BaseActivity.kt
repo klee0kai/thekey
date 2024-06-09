@@ -20,6 +20,7 @@ open class BaseActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         DI.activity(this)
+        DI.ctx(applicationContext)
 
         enableEdgeToEdge()
     }
@@ -27,6 +28,7 @@ open class BaseActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
         DI.activity(this)
+        DI.ctx(applicationContext)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

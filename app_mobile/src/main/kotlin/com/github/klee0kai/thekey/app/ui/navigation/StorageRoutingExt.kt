@@ -34,11 +34,8 @@ fun StorageDestination.note(notePtr: Long = 0) =
 fun StorageDestination.otpNote(notePtr: Long = 0) =
     EditNoteDestination(storageVersion = version, path = path, otpNote = DecryptedOtpNote(ptnote = notePtr))
 
-fun StorageDestination.createNoteDest(prefilled: DecryptedNote) =
-    EditNoteDestination(storageVersion = version, path = path, note = prefilled)
-
-fun StorageIdentifier.createNoteDest(prefilled: DecryptedNote) =
-    EditNoteDestination(storageVersion = version, path = path, note = prefilled)
+fun StorageIdentifier.editNoteDest(prefilled: DecryptedNote, isIgnoreDelete: Boolean = false) =
+    EditNoteDestination(storageVersion = version, path = path, note = prefilled, isIgnoreRemove = isIgnoreDelete)
 
 fun StorageDestination.genHist() =
     GenHistDestination(storageVersion = version, path = path)

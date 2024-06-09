@@ -5,6 +5,7 @@ import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.engine.model.DecryptedOtpNote
 import com.github.klee0kai.thekey.app.engine.model.GenPasswParams
 import com.github.klee0kai.thekey.app.engine.model.isEmpty
+import com.github.klee0kai.thekey.app.engine.model.merge
 import com.github.klee0kai.thekey.app.ui.navigation.model.QRCodeScanDestination
 import com.github.klee0kai.thekey.app.ui.navigation.storage
 import com.github.klee0kai.thekey.app.ui.note.model.EditNoteState
@@ -85,7 +86,7 @@ class EditNotePresenterImpl(
         var prefilledOtp = prefilledOtp
         if (identifier.notePtr != 0L) {
             originNote = notesInteractor().note(identifier.notePtr).await()
-            prefilledNote = originNote
+            prefilledNote = prefilledNote?.merge(originNote) ?: originNote
         }
         if (identifier.otpNotePtr != 0L) {
             originOtpNote = otpNotesInteractor().otpNote(identifier.otpNotePtr).await()
@@ -94,8 +95,8 @@ class EditNotePresenterImpl(
 
         colorGroupUpdate.join()
 
-        state.update {
-            var newState = it
+        input {
+            var newState = this
             if (prefilledNote != null) {
                 newState = newState.updateWith(
                     note = prefilledNote,
@@ -104,16 +105,10 @@ class EditNotePresenterImpl(
                 )
             }
             if (prefilledOtp != null) {
-                newState = newState.updateWith(
-                    otp = prefilledOtp,
-                )
+                newState = newState.updateWith(otp = prefilledOtp)
             }
-            newState = newState.copy(
-                isRemoveAvailable = isEditMode,
-                isSkeleton = false,
-            )
 
-            newState
+            newState.copy(isSkeleton = false)
         }
     }
 

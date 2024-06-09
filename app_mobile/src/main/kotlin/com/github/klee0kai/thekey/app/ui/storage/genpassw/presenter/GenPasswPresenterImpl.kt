@@ -5,7 +5,7 @@ import android.content.ClipboardManager
 import android.content.Context.CLIPBOARD_SERVICE
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
-import com.github.klee0kai.thekey.app.ui.navigation.createNoteDest
+import com.github.klee0kai.thekey.app.ui.navigation.editNoteDest
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.model.GenPasswState
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.model.toGenParams
 import com.github.klee0kai.thekey.core.R
@@ -53,7 +53,7 @@ open class GenPasswPresenterImpl(
     }
 
     override fun saveAsNewNote() = scope.launchLatest("save") {
-        router.navigate(storageIdentifier.createNoteDest(DecryptedNote(passw = state.value.passw)))
+        router.navigate(storageIdentifier.editNoteDest(DecryptedNote(passw = state.value.passw)))
     }
 
     override fun input(block: GenPasswState.() -> GenPasswState) = scope.launchLatest("input") {

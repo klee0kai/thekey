@@ -91,6 +91,11 @@ data class EditNoteDestination(
      * opened tab
      */
     val tab: EditTabs = EditTabs.Account,
+
+    /**
+     * Prevent delete note
+     */
+    val isIgnoreRemove: Boolean = false,
 ) : Destination
 
 

@@ -105,7 +105,7 @@ fun EditNoteScreen(
     val titles = listOf(stringResource(id = R.string.account), stringResource(id = R.string.otp))
     val state by presenter!!.state.collectAsState(key = Unit, initial = EditNoteState(isSkeleton = true))
     val isSaveAvailable by rememberTargetCrossFaded { state.isSaveAvailable }
-    val isRemoveAvailable by rememberTargetCrossFaded { state.isRemoveAvailable }
+    val isRemoveAvailable by rememberTargetCrossFaded { state.isRemoveAvailable && !dest.isIgnoreRemove }
     val skeletonModifier by animateSkeletonModifier { state.isSkeleton }
 
     val pagerHeight = if (!state.isEditMode) SecondaryTabsConst.allHeight else 0.dp
