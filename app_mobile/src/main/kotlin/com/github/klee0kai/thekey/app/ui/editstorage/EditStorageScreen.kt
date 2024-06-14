@@ -1,9 +1,11 @@
 package com.github.klee0kai.thekey.app.ui.editstorage
 
-import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
@@ -14,244 +16,195 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.hardResetToPreview
-import com.github.klee0kai.thekey.app.engine.model.Storage
-import com.github.klee0kai.thekey.app.helpers.path.appendTKeyFormat
-import com.github.klee0kai.thekey.app.helpers.path.removeTKeyFormat
+import com.github.klee0kai.thekey.app.di.modules.PresentersModule
+import com.github.klee0kai.thekey.app.ui.editstorage.model.EditStorageState
+import com.github.klee0kai.thekey.app.ui.editstorage.presenter.EditStoragePresenter
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
+import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
+import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DeleteIconButton
+import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DoneIconButton
+import com.github.klee0kai.thekey.core.ui.devkit.components.dropdownfields.ColorGroupDropDownField
 import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextField
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
-import com.github.klee0kai.thekey.core.utils.coroutine.awaitSec
-import com.github.klee0kai.thekey.core.utils.views.AutoFillList
-import com.github.klee0kai.thekey.core.utils.views.Keyboard
+import com.github.klee0kai.thekey.core.utils.views.animateSkeletonModifier
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.collectAsState
+import com.github.klee0kai.thekey.core.utils.views.horizontal
 import com.github.klee0kai.thekey.core.utils.views.isIme
 import com.github.klee0kai.thekey.core.utils.views.keyboardAsState
-import com.github.klee0kai.thekey.core.utils.views.minInsets
-import com.github.klee0kai.thekey.core.utils.views.rememberOnScreen
-import com.github.klee0kai.thekey.core.utils.views.toTextFieldValue
-import com.github.klee0kai.thekey.core.utils.views.toTransformationText
+import com.github.klee0kai.thekey.core.utils.views.pxToDp
+import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
+import com.github.klee0kai.thekey.core.utils.views.rememberTargetCrossFaded
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
 fun EditStorageScreen(
     path: String = "",
 ) {
-    val navigator = rememberOnScreen { DI.router() }
-    val presenter = rememberOnScreen { DI.editStoragePresenter(StorageIdentifier(path)) }
-    val pathInputHelper = rememberOnScreen { DI.pathInputHelper() }
-    val userShortPathHelper = rememberOnScreen { DI.userShortPaths() }
-    var storage by remember { mutableStateOf(Storage()) }
+    val router = LocalRouter.current
+    val view = LocalView.current
+    val presenter by rememberOnScreenRef { DI.editStoragePresenter(StorageIdentifier(path)).apply { init() } }
 
-    var storagePathTextValue by remember { mutableStateOf(TextFieldValue()) }
-    var storagePathFieldFocused by remember { mutableStateOf<Boolean>(false) }
-    var storagePathVariants by remember { mutableStateOf<List<String>>(emptyList()) }
+    val state by presenter!!.state.collectAsState(key = Unit, initial = EditStorageState(isSkeleton = false))
     val keyboardState by keyboardAsState()
     val scrollState = rememberScrollState()
+    val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
 
-    val bottomSaveButton by animateTargetCrossFaded(!WindowInsets.isIme)
+    val imeIsVisibleAnimated by animateTargetCrossFaded(WindowInsets.isIme)
+    val isSaveAvailable by rememberTargetCrossFaded { state.isSaveAvailable }
+    val isRemoveAvailable by rememberTargetCrossFaded { state.isRemoveAvailable }
+    val skeletonModifier by animateSkeletonModifier { state.isSkeleton }
 
-    LaunchedEffect(Unit) {
-        storage = presenter.storageInfo.awaitSec() ?: return@LaunchedEffect
-        storagePathTextValue = userShortPathHelper.shortPathName(storage.path)
-            .removeTKeyFormat()
-            .toTextFieldValue()
-    }
-    LaunchedEffect(keyboardState) {
-        if (keyboardState == Keyboard.Closed) {
-            storagePathFieldFocused = false
-        }
-    }
-    LaunchedEffect(storagePathTextValue.text) {
-        with(pathInputHelper) {
-            storage = storage.copy(
-                path = storagePathTextValue.text
-                    .absolutePath()
-                    ?.appendTKeyFormat()
-                    ?: ""
-            )
-            storagePathTextValue.text
-                .pathVariables()
-                .collect {
-                    storagePathVariants = it
-                }
-        }
-    }
-    BackHandler(enabled = storagePathFieldFocused) {
-        storagePathFieldFocused = false
-    }
-
-    ConstraintLayout(optimizationLevel = 0,
+    ConstraintLayout(
         modifier = Modifier
             .imePadding()
             .verticalScroll(scrollState)
-            .pointerInput(Unit) { detectTapGestures { storagePathFieldFocused = false } }
             .fillMaxSize()
-            .windowInsetsPadding(WindowInsets.safeContent.minInsets(16.dp))
-            .padding(top = AppBarConst.appBarSize)
+            .defaultMinSize(minHeight = view.height.pxToDp()),
     ) {
         val (
-            pathTextField,
             nameTextField,
             descTextField,
-            autofillList,
+            colorGroupField,
         ) = createRefs()
 
         AppTextField(
             modifier = Modifier
-                .onFocusChanged { storagePathFieldFocused = it.isFocused }
-                .constrainAs(pathTextField) {
-                    width = Dimension.fillToConstraints
-                    linkTo(
-                        start = parent.start,
-                        top = parent.top,
-                        end = parent.end,
-                        bottom = parent.bottom,
-                        verticalBias = 0f,
-                        topMargin = 8.dp,
-                    )
-                },
-            visualTransformation = { input ->
-                with(pathInputHelper) {
-                    input.coloredPath()
-                        .toTransformationText()
-                }
-            },
-            value = storagePathTextValue,
-            onValueChange = {
-                with(pathInputHelper) {
-                    storagePathFieldFocused = true
-                    storagePathTextValue = it
-                        .pathInputMask()
-                }
-            },
-            label = { Text(stringResource(R.string.storage_path)) }
-        )
-
-        AppTextField(
-            modifier = Modifier
+                .then(skeletonModifier)
                 .constrainAs(nameTextField) {
                     width = Dimension.fillToConstraints
                     linkTo(
-                        top = pathTextField.bottom,
+                        top = parent.top,
                         start = parent.start,
                         end = parent.end,
                         bottom = parent.bottom,
                         verticalBias = 0f,
-                        topMargin = 8.dp,
+                        topMargin = 8.dp + AppBarConst.appBarSize + safeContentPaddings.calculateTopPadding(),
+                        startMargin = safeContentPaddings.horizontal(minValue = 16.dp),
+                        endMargin = safeContentPaddings.horizontal(minValue = 16.dp),
                     )
                 },
-            value = storage.name,
-            onValueChange = { storage = storage.copy(name = it) },
+            value = state.name,
+            onValueChange = { presenter?.input { copy(name = it) } },
             label = { Text(stringResource(R.string.storage_name)) }
         )
 
 
         AppTextField(
             modifier = Modifier
+                .then(skeletonModifier)
                 .constrainAs(descTextField) {
                     width = Dimension.fillToConstraints
                     linkTo(
                         top = nameTextField.bottom,
-                        start = parent.start,
-                        end = parent.end,
+                        start = nameTextField.start,
+                        end = nameTextField.end,
                         bottom = parent.bottom,
                         verticalBias = 0f,
                         topMargin = 8.dp,
                     )
                 },
-            value = storage.description,
-            onValueChange = { storage = storage.copy(description = it) },
+            value = state.desc,
+            onValueChange = { presenter?.input { copy(desc = it) } },
             label = { Text(stringResource(R.string.storage_description)) }
         )
 
 
-        AutoFillList(
-            modifier = Modifier.constrainAs(autofillList) {
-                height = Dimension.wrapContent
-                width = Dimension.fillToConstraints
-                linkTo(
-                    start = pathTextField.start,
-                    end = pathTextField.end,
-                    top = pathTextField.bottom,
-                    bottom = parent.bottom,
-                    verticalBias = 0f,
-                    bottomMargin = 16.dp
-                )
-            },
-            isVisible = storagePathFieldFocused,
-            variants = storagePathVariants,
-            onSelected = { selected ->
-                with(pathInputHelper) {
-                    if (selected == null) return@AutoFillList
-                    storagePathTextValue = storagePathTextValue.text
-                        .folderSelected(selected)
-                        .toTextFieldValue()
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .windowInsetsPadding(WindowInsets.safeContent)
+                .padding(bottom = 16.dp, start = 16.dp, end = 16.dp),
+        ) {
+            if (!imeIsVisibleAnimated.current) {
+                FilledTonalButton(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .fillMaxWidth()
+                        .alpha(imeIsVisibleAnimated.alpha),
+                    onClick = { presenter?.save() }
+                ) {
+                    Text(stringResource(R.string.save))
                 }
             }
+        }
+
+
+        ColorGroupDropDownField(
+            modifier = Modifier
+                .then(skeletonModifier)
+                .fillMaxWidth(0.5f)
+                .constrainAs(colorGroupField) {
+                    linkTo(
+                        top = descTextField.bottom,
+                        start = descTextField.start,
+                        end = descTextField.end,
+                        bottom = parent.bottom,
+                        verticalBias = 0f,
+                        horizontalBias = 0f,
+                        topMargin = 8.dp,
+                    )
+                },
+            selectedIndex = state.colorGroupSelected,
+            variants = state.colorGroupVariants,
+            expanded = state.colorGroupExpanded,
+            onExpandedChange = { presenter?.input { copy(colorGroupExpanded = it) } },
+            onSelected = { presenter?.input { copy(colorGroupSelected = it, colorGroupExpanded = false) } },
+            label = { Text(stringResource(R.string.group)) }
         )
     }
 
 
-    Box(
+    Column(
         modifier = Modifier
             .fillMaxSize()
-            .windowInsetsPadding(WindowInsets.safeContent)
-            .padding(
-                top = 16.dp + AppBarConst.appBarSize,
-                bottom = 16.dp,
-                start = 16.dp,
-                end = 16.dp
-            ),
+            .padding(bottom = safeContentPaddings.calculateBottomPadding() + 16.dp)
+            .padding(horizontal = safeContentPaddings.horizontal(minValue = 16.dp)),
     ) {
-        if (bottomSaveButton.current) {
+        Spacer(modifier = Modifier.weight(1f))
+        if (!imeIsVisibleAnimated.current && isSaveAvailable.current) {
             FilledTonalButton(
                 modifier = Modifier
-                    .align(Alignment.BottomCenter)
                     .fillMaxWidth()
-                    .alpha(bottomSaveButton.alpha),
-                onClick = { presenter.save(storage) }
-            ) {
-                Text(stringResource(R.string.save))
-            }
+                    .alpha(imeIsVisibleAnimated.alpha)
+                    .alpha(isSaveAvailable.alpha),
+                onClick = { presenter?.save() }
+            ) { Text(stringResource(R.string.save)) }
         }
     }
+
 
     AppBarStates(
         isVisible = scrollState.value == 0,
         navigationIcon = {
             IconButton(onClick = {
-                navigator.back()
+                router.back()
             }) {
                 Icon(
                     Icons.AutoMirrored.Default.ArrowBack,
@@ -259,21 +212,27 @@ fun EditStorageScreen(
                 )
             }
         },
+        titleContent = {
+            Text(text = stringResource(id = if (state.isEditMode) R.string.edit_storage else R.string.create_storage))
+        },
         actions = {
-            if (!bottomSaveButton.current) {
-                IconButton(
-                    modifier = Modifier.alpha(bottomSaveButton.alpha),
-                    onClick = { presenter.save(storage) }
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Done,
-                        contentDescription = stringResource(id = R.string.save),
-                        tint = MaterialTheme.colorScheme.onBackground
-                    )
-                }
+            if (isRemoveAvailable.current) {
+                DeleteIconButton(
+                    modifier = Modifier
+                        .alpha(isRemoveAvailable.alpha),
+                    onClick = { presenter?.remove() }
+                )
+            }
+
+            if (imeIsVisibleAnimated.current && isSaveAvailable.current) {
+                DoneIconButton(
+                    modifier = Modifier.alpha(imeIsVisibleAnimated.alpha),
+                    onClick = { presenter?.save() }
+                )
             }
         }
-    ) { Text(text = stringResource(id = presenter.titleRes)) }
+    )
+
 }
 
 @OptIn(DebugOnly::class)
@@ -282,6 +241,17 @@ fun EditStorageScreen(
 @Composable
 fun EditStorageScreenPreview() = EdgeToEdgeTemplate {
     DI.hardResetToPreview()
+    DI.initPresenterModule(object : PresentersModule {
+
+        override fun editStoragePresenter(storageIdentifier: StorageIdentifier?) = object : EditStoragePresenter {
+            override val state = MutableStateFlow(
+                EditStorageState(
+                    isSkeleton = false,
+                    isSaveAvailable = true,
+                )
+            )
+        }
+    })
     AppTheme {
         EditStorageScreen(path = "some/path/to/storage")
     }

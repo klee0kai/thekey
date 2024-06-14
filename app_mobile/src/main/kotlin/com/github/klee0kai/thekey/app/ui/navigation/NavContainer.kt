@@ -3,6 +3,8 @@
 package com.github.klee0kai.thekey.app.ui.navigation
 
 import androidx.compose.animation.ContentTransform
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -35,6 +37,7 @@ import com.github.klee0kai.thekey.app.ui.navigationboard.StorageNavigationBoard
 import com.github.klee0kai.thekey.core.ui.devkit.EmptyScreen
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.navigation.model.Destination
+import com.github.klee0kai.thekey.core.ui.navigation.model.DialogDestination
 import com.github.klee0kai.thekey.core.utils.views.minInsets
 import com.github.klee0kai.thekey.core.utils.views.rememberTickerOf
 import dev.olshevski.navigation.reimagined.AnimatedNavHost
@@ -71,6 +74,7 @@ fun MainNavContainer() {
         controller = LocalRouter.current.navDialogsController,
         transitionQueueing = NavTransitionQueueing.QueueAll,
         transitionSpec = customTransitionSpec,
+        emptyBackstackPlaceholder = { Box(modifier = Modifier.fillMaxSize()) }
     ) { destination ->
         DI.screenResolver().screenOf(destination = destination)
     }
@@ -130,15 +134,19 @@ fun SnackContainer() {
 
 private val customTransitionSpec = object : NavTransitionSpec<Destination> {
 
-    override fun NavTransitionScope.getContentTransform(
-        action: NavAction,
-        from: Destination,
-        to: Destination
-    ): ContentTransform {
-        return when {
-            else -> crossfade()
-        }
+    override fun NavTransitionScope.getContentTransform(action: NavAction, from: Destination, to: Destination): ContentTransform {
+        return crossfade()
+    }
+
+    override fun NavTransitionScope.fromEmptyBackstack(action: NavAction, to: Destination): ContentTransform {
+        return crossfade()
+    }
+
+    override fun NavTransitionScope.toEmptyBackstack(action: NavAction, from: Destination): ContentTransform {
+        return crossfade()
     }
 
     private fun crossfade() = fadeIn(tween()) togetherWith fadeOut(tween())
+
+    private fun none() = EnterTransition.None togetherWith ExitTransition.None
 }

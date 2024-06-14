@@ -12,10 +12,12 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.DesignDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteGroupDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditStorageDestination
+import com.github.klee0kai.thekey.app.ui.navigation.model.EditStorageGroupDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.GenHistDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.LoginDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.PluginDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.PluginsDestination
+import com.github.klee0kai.thekey.app.ui.navigation.model.SelectStorageDialogDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.SettingsDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.StoragesDestination
@@ -26,6 +28,8 @@ import com.github.klee0kai.thekey.app.ui.settings.plugin.PluginDummyScreen
 import com.github.klee0kai.thekey.app.ui.settings.plugin.PluginScreen
 import com.github.klee0kai.thekey.app.ui.settings.plugins.PluginsScreen
 import com.github.klee0kai.thekey.app.ui.storage.StorageScreen
+import com.github.klee0kai.thekey.app.ui.storagegroup.EditStorageGroupsScreen
+import com.github.klee0kai.thekey.app.ui.storages.SelectStorageDialog
 import com.github.klee0kai.thekey.app.ui.storages.StoragesScreen
 import com.github.klee0kai.thekey.core.ui.devkit.DesignScreen
 import com.github.klee0kai.thekey.core.ui.devkit.EmptyScreen
@@ -48,6 +52,7 @@ class ScreenResolverImpl : ScreenResolver {
             is PluginDestination -> PluginScreen(destination)
             is StoragesDestination -> StoragesScreen()
             is EditStorageDestination -> EditStorageScreen(path = destination.path)
+            is EditStorageGroupDestination -> EditStorageGroupsScreen(destination)
             is StorageDestination -> StorageScreen(destination)
             is GenHistDestination -> GenHistScreen(destination)
             is EditNoteDestination -> EditNoteScreen(destination)
@@ -55,6 +60,7 @@ class ScreenResolverImpl : ScreenResolver {
 
             // dialogs
             is AlertDialogDestination -> AlertDialogScreen(destination)
+            is SelectStorageDialogDestination -> SelectStorageDialog()
 
             // dynamic features
             is DynamicDestination -> PluginDummyScreen(destination)

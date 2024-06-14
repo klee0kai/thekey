@@ -24,11 +24,7 @@ import com.github.klee0kai.thekey.core.utils.views.toAnnotationString
 @Composable
 fun FavoriteStorageItem(
     modifier: Modifier = Modifier,
-    storage: ColoredStorage = ColoredStorage(
-        path = "path",
-        name = "name",
-        description = "description"
-    ),
+    storage: ColoredStorage = ColoredStorage(),
     onClick: () -> Unit = {}
 ) {
     val colorScheme = LocalColorScheme.current
@@ -38,7 +34,7 @@ fun FavoriteStorageItem(
         storage.path
             .shortPath()
             .toAnnotationString()
-            .coloredPath()
+            .coloredPath(accentColor = colorScheme.androidColorScheme.primary)
     }
 
     ConstraintLayout(

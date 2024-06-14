@@ -74,6 +74,7 @@ fun <T> rememberDerivedStateOf(calculation: () -> T) = remember {
     derivedStateOf(calculation)
 }
 
+@Deprecated("use rememberOnScreenRef")
 @Composable
 @NonRestartableComposable
 inline fun <T> rememberOnScreen(block: () -> T): T {
@@ -127,7 +128,7 @@ fun Modifier.skeleton(
 }
 
 @Composable
-fun rememberSkeletonModifier(
+fun animateSkeletonModifier(
     color: Color = MaterialTheme.colorScheme.inverseSurface,
     isSkeleton: () -> Boolean,
 ): State<Modifier> {

@@ -19,9 +19,14 @@ class ActivityRouterImpl(
 
     override fun navigate(intent: Intent): Flow<ActivityResult> = singleEventFlow {
         val reqCode = genRequestCode()
-        activity?.startActivityForResult(intent, reqCode)
-
-        results.first { it.requestCode == reqCode }
+        val result = runCatching {
+            activity?.startActivityForResult(intent, reqCode)
+        }
+        if (result.isSuccess) {
+            results.first { it.requestCode == reqCode }
+        } else {
+            ActivityResult(reqCode, error = result.exceptionOrNull())
+        }
     }.shareLatest(scope)
 
     override fun onResult(result: ActivityResult) {

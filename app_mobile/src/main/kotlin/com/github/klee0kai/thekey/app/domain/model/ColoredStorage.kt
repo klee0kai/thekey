@@ -1,7 +1,7 @@
 package com.github.klee0kai.thekey.app.domain.model
 
 import android.os.Parcelable
-import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
+import com.github.klee0kai.thekey.core.domain.ColorGroup
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -10,6 +10,17 @@ data class ColoredStorage(
     val name: String = "",
     val description: String = "",
     val version: Int = 0,
-    val colorGroup: KeyColor? = null
-
+    val colorGroup: ColorGroup? = null
 ) : Parcelable
+
+
+fun ColoredStorage.filterBy(filter: String): Boolean {
+    return path.contains(filter, ignoreCase = true)
+            || name.contains(filter, ignoreCase = true)
+}
+
+fun ColoredStorage.sortableFlatText(): String {
+    return "${path}-${name}-${description}"
+}
+
+fun ColoredStorage.isValid() = path.isNotBlank() && version > 0

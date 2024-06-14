@@ -16,6 +16,7 @@ import dev.olshevski.navigation.reimagined.pop
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
@@ -26,12 +27,14 @@ import timber.log.Timber
 
 class ComposeRouterImpl(context: RouterContext) : ComposeRouter, RouterContext by context {
 
-    override fun navigate(destination: Destination): Flow<Any?> = navigate(destination, Any::class.java)
+    override fun navigate(vararg destination: Destination): Flow<Any?> = navigate(destinations = destination, resultClazz = Any::class.java)
 
-    override fun <R> navigate(destination: Destination, clazz: Class<R>): Flow<R> = navFullController.run {
-        val navEntry = navEntry(destination)
+    override fun <R> navigate(vararg destinations: Destination, resultClazz: Class<R>): Flow<R> = navFullController.run {
+        if (destinations.isEmpty()) return@run emptyFlow()
+        val navEntries = destinations.map { navEntry(it) }.toList()
+        val navEntry = navEntries.last()
         setNewBackstack(
-            entries = backstack.entries + navEntry,
+            entries = backstack.entries + navEntries,
             action = NavAction.Navigate
         )
         return flow<R> {
@@ -51,10 +54,10 @@ class ComposeRouterImpl(context: RouterContext) : ComposeRouter, RouterContext b
                     }
                     destClosed || destinationLost
                 }
-            if (result.closedDestination != null && result.closedDestination?.first == navEntry.id && clazz.isInstance(result.closedDestination!!.second)) {
+            if (result.closedDestination != null && result.closedDestination?.first == navEntry.id && resultClazz.isInstance(result.closedDestination!!.second)) {
                 emit(result.closedDestination!!.second as R)
             }
-        }.shareLatest(scope, clazz)
+        }.shareLatest(scope, resultClazz)
     }
 
     override fun <R> backWithResult(result: R, exitFromApp: Boolean): Boolean = navFullController.run {
@@ -76,7 +79,16 @@ class ComposeRouterImpl(context: RouterContext) : ComposeRouter, RouterContext b
     }
 
     override fun back() {
-        backDispatcher?.onBackPressed()
+        scope.launch {
+            backDispatcher?.onBackPressed()
+        }
+    }
+
+    override fun resetStack(vararg destinations: Destination) {
+        scope.launch {
+            val navEntries = destinations.map { navEntry(it) }.toList()
+            navFullController.setNewBackstack(navEntries)
+        }
     }
 
     @Composable

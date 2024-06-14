@@ -44,6 +44,7 @@ import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
+import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DoneIconButton
 import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextField
@@ -64,6 +65,7 @@ import com.github.klee0kai.thekey.core.R as CoreR
 fun LoginScreen() {
     val scope = rememberCoroutineScope()
     val router = LocalRouter.current
+    val theme = LocalTheme.current
     val presenter = remember { DI.loginPresenter() }
     val pathInputHelper = remember { DI.pathInputHelper() }
     val currentStorageState by presenter.currentStorageFlow.collectAsState(Unit, initial = ColoredStorage())
@@ -74,7 +76,7 @@ fun LoginScreen() {
         currentStorageState.path
             .shortPath()
             .toAnnotationString()
-            .coloredPath()
+            .coloredPath(accentColor = theme.colorScheme.androidColorScheme.primary)
     }
 
     BackHandler(enabled = router.isNavigationBoardIsOpen()) {

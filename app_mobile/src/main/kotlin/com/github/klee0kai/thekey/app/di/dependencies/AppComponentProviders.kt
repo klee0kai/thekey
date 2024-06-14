@@ -4,8 +4,6 @@ interface AppComponentProviders :
     PresentersDependencies,
     AndroidHelpersDependencies,
     HelperDependencies,
-    CoroutineDependencies,
     InteractorsDependencies,
     RepositoriesDependencies,
-    EngineDependencies,
-    DBDependencies
+    EngineDependencies

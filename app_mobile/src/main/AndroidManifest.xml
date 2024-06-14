@@ -19,6 +19,7 @@
             android:name=".ui.MainActivity"
             android:configChanges="orientation|keyboard|keyboardHidden|screenLayout|screenSize"
             android:exported="true"
+            android:launchMode="singleTask"
             android:theme="@style/Theme.TheKey"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
@@ -27,6 +28,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".ui.MainTranparentActivity"
+            android:configChanges="orientation|keyboard|keyboardHidden|screenLayout|screenSize"
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.TheKey.Transparent"
+            android:windowSoftInputMode="adjustResize" />
+
 
         <!-- fix crash https://stackoverflow.com/questions/68153515 -->
         <provider

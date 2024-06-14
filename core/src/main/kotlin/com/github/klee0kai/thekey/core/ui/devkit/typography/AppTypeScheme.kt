@@ -5,45 +5,53 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.github.klee0kai.thekey.core.ui.devkit.typography.RegularAppTypeScheme.hintText
+import com.github.klee0kai.thekey.core.ui.devkit.typography.RegularAppTypeScheme.labelLarge
+import com.github.klee0kai.thekey.core.ui.devkit.typography.RegularAppTypeScheme.normalText
+import com.github.klee0kai.thekey.core.ui.devkit.typography.RegularAppTypeScheme.titleLarge
+import com.github.klee0kai.thekey.core.ui.devkit.typography.RegularAppTypeScheme.titleText
 
-class AppTypeScheme : TypeScheme {
+internal object RegularAppTypeScheme {
+    val appFontFamily = FontFamily.SansSerif
 
-    private val appFontFamily = FontFamily.SansSerif
-
-    private val titleLarge = TextStyle(
+    val titleLarge = TextStyle(
         fontFamily = appFontFamily,
         fontSize = 16.sp,
         lineHeight = 21.sp,
         fontWeight = FontWeight.Bold,
     )
 
-    private val titleText = TextStyle(
+    val titleText = TextStyle(
         fontFamily = appFontFamily,
         fontSize = 20.sp,
         lineHeight = 23.sp,
     )
 
-    private val normalText = TextStyle(
+    val normalText = TextStyle(
         fontFamily = appFontFamily,
         fontSize = 14.sp,
         lineHeight = 18.sp,
     )
 
-    private val hintText = TextStyle(
+    val hintText = TextStyle(
         fontFamily = appFontFamily,
         fontSize = 12.sp,
         lineHeight = 14.sp,
         fontWeight = FontWeight.Medium
     )
 
-    private val labelLarge = TextStyle(
+    val labelLarge = TextStyle(
         fontFamily = appFontFamily,
         fontSize = 14.sp,
         lineHeight = 16.sp,
         fontWeight = FontWeight.Bold,
     )
 
-    override val typography = Typography(
+
+}
+
+fun regularAppTypeScheme() = TypeScheme(
+    typography = Typography(
         displayLarge = titleText,
         displayMedium = titleText,
         displaySmall = titleText,
@@ -60,12 +68,9 @@ class AppTypeScheme : TypeScheme {
         bodyMedium = normalText,
         bodySmall = hintText,
 
-        /**
-         * labelLarge using in Button
-         */
         labelLarge = labelLarge,
         labelMedium = normalText,
         labelSmall = hintText,
+    )
+)
 
-        )
-}

@@ -1,6 +1,6 @@
 [versions]
 
-agp = "8.4.0"
+agp = "8.4.1"
 kotlin = "1.9.22"
 brooklyn = "0.0.3"
 paparazzi = "1.3.3"
@@ -19,6 +19,7 @@ compose-wear = "1.3.1"
 compose-nav = "1.5.0"
 compose-shimmer = "1.2.0"
 compose-EdgeToEdge = "0.3.0"
+compose-glance = "1.0.0" # https://developer.android.com/jetpack/androidx/releases/glance
 
 ml-dynamic = "16.0.0-beta2"
 ml-barcode = "17.2.0"
@@ -28,7 +29,7 @@ ml-vision = "1.4.0-alpha05"
 jetbrain-immutable = "0.3.7"
 jetbrain-coroutines = "1.8.0"
 
-stone = "1.0.6"
+stone = "1.0.7"
 hummus = "0.0.2"
 
 room = "2.6.1"
@@ -66,6 +67,9 @@ compose-wear = { group = "androidx.wear.compose", name = "compose-material", ver
 compose-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 compose-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 compose-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+
+compose-glance-widget = { group = "androidx.glance", name = "glance-appwidget", version.ref = "compose-glance" }
+compose-glance-m3 = { group = "androidx.glance", name = "glance-material3", version.ref = "compose-glance" }
 
 # https://github.com/timo-drick/compose_libraries/blob/main/edge_to_edge_preview_lib/README.md
 compose-EdgeToEdge = { group = "de.drick.compose", name = "edge-to-edge-preview", version.ref = "compose-EdgeToEdge" }
@@ -109,6 +113,7 @@ firebase = ["firebase-analytics", "firebase-crashlytics"]
 compose = ["compose-activity", "compose-ui", "compose-graphics",
     "compose-m3", "compose-constraintlayout", "compose-wear", "compose-nav", "compose-shimmer"]
 compose-debug = ["compose-preview", "compose-tooling", "compose-manifest", "compose-EdgeToEdge"]
+compose-glance = ["compose-glance-widget", "compose-glance-m3"]
 stone = ["stone-android", "stone-kotlin"]
 
 [plugins]

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">TheKey</string>
+    <string name="app_name">The Key</string>
     <string name="title">Title</string>
     <string name="description">Description</string>
     <string name="ok">OK</string>
@@ -17,6 +17,9 @@
 
     <string name="title_qrcodescanner">QR Code Scanner</string>
     <string name="desc_qrcodescanner">Scan QR code to add OTP passwords.</string>
+
+    <string name="title_autofill">Autofill manager</string>
+    <string name="desc_autofill">Password autofill manager</string>
 
     <string name="login">Login</string>
     <string name="password">Password</string>
@@ -55,7 +58,7 @@
     <string name="no_name">No name</string>
     <string name="no_site">No site</string>
     <string name="edit_group">Edit group</string>
-    <string name="create_group">Create group</string>
+    <string name="create_storages_group">Create group</string>
     <string name="select_color">Select color</string>
     <string name="group_name">Group name</string>
     <string name="group_symbol">Group symbol</string>
@@ -98,4 +101,10 @@
     <string name="version">Version: %1$s</string>
     <string name="developer">Developer</string>
     <string name="designer">Designer</string>
+    <string name="storage_deleted">Storage has been deleted</string>
+    <string name="color_group_deleted">Color group has been deleted</string>
+    <string name="storage_saved">Storage has been saved</string>
+    <string name="edit_storages_group">Edit storages group</string>
+    <string name="favorite">Favorite</string>
+    <string name="more">More</string>
 </resources>

@@ -34,4 +34,5 @@ val isPrivateAvailable = file("private").list()?.isNotEmpty() ?: false
 if (isPrivateAvailable) {
     include(":private:feature_firebase")
     include(":private:feature_billing")
+    include(":private:dynamic_autofill")
 }

@@ -2,11 +2,13 @@ package com.github.klee0kai.thekey.app.ui.navigation.model
 
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.engine.model.DecryptedOtpNote
+import com.github.klee0kai.thekey.app.features.autofill
 import com.github.klee0kai.thekey.app.features.qrcodeScanner
 import com.github.klee0kai.thekey.app.ui.note.model.EditTabs
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.domain.model.feature.model.DynamicFeature
 import com.github.klee0kai.thekey.core.ui.navigation.model.Destination
+import com.github.klee0kai.thekey.core.ui.navigation.model.DialogDestination
 import com.github.klee0kai.thekey.core.ui.navigation.model.DynamicDestination
 import kotlinx.parcelize.Parcelize
 
@@ -25,11 +27,22 @@ data object LoginDestination : Destination
 data object StoragesDestination : Destination
 
 @Parcelize
+data object SelectStorageDialogDestination : DialogDestination
+
+@Parcelize
 data class EditStorageDestination(
     /**
      * storage path
      */
     val path: String = ""
+) : Destination
+
+@Parcelize
+data class EditStorageGroupDestination(
+    /**
+     * group id
+     */
+    val groupId: Long? = null,
 ) : Destination
 
 @Parcelize
@@ -78,6 +91,11 @@ data class EditNoteDestination(
      * opened tab
      */
     val tab: EditTabs = EditTabs.Account,
+
+    /**
+     * Prevent delete note
+     */
+    val isIgnoreRemove: Boolean = false,
 ) : Destination
 
 
@@ -122,4 +140,7 @@ data class PluginDestination(
 
 @Parcelize
 data object QRCodeScanDestination : DynamicDestination(DynamicFeature.qrcodeScanner())
+
+@Parcelize
+data object AutoFillSettingsDestination : DynamicDestination(DynamicFeature.autofill())
 

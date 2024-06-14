@@ -19,6 +19,11 @@ fun Number.ratioBetween(start: Number, end: Number): Float {
     return passed / len
 }
 
+fun Float.progressTo(start: Dp, end: Dp): Dp {
+    val distance = end - start
+    return start + distance * this
+}
+
 fun Float.accelerateDecelerate(): Float =
     AccelerateDecelerateInterpolator().getInterpolation(this)
 

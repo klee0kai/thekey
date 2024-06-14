@@ -2,10 +2,10 @@ package com.github.klee0kai.thekey.core.ui.devkit.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
+import com.github.klee0kai.thekey.core.utils.views.horizontal
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import org.jetbrains.annotations.VisibleForTesting
 
@@ -42,11 +43,13 @@ fun FabSimpleInContainer(
     onClick: () -> Unit = {},
     content: @Composable () -> Unit = {},
 ) {
+    val safeContentPadding = WindowInsets.safeContent.asPaddingValues()
+
     Box(
         modifier = modifier
             .fillMaxSize()
-            .windowInsetsPadding(WindowInsets.safeContent)
-            .padding(bottom = 56.dp, end = 16.dp),
+            .padding(bottom = safeContentPadding.calculateBottomPadding() + 30.dp)
+            .padding(end = safeContentPadding.horizontal(minValue = 16.dp)),
         contentAlignment = Alignment.BottomEnd
     ) {
         FabSimple(onClick, content)

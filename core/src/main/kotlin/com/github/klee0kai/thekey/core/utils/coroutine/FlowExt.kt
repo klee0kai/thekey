@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
@@ -25,6 +26,12 @@ fun <T> singleEventFlow(
     val result = block()
     send(result)
 }.flowOn(coroutineContext)
+
+suspend fun Flow<Unit>.onTicks(block: suspend () -> Unit) {
+    merge(this, flowOf(Unit)).collect {
+        block()
+    }
+}
 
 inline fun <reified T> Flow<T>.triggerOn(flow2: Flow<Any>) = flow<T> {
     val mergeObj = object {}

@@ -10,30 +10,38 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
+import com.github.klee0kai.thekey.core.di.identifiers.ActivityIdentifier
+import com.github.klee0kai.thekey.core.ui.navigation.deeplink.DeeplinkRoute
 import com.github.klee0kai.thekey.core.ui.navigation.model.ActivityResult
 import com.github.klee0kai.thekey.core.ui.navigation.model.Destination
 import com.github.klee0kai.thekey.core.ui.navigation.model.NavigateBackstackChange
 import com.github.klee0kai.thekey.core.ui.navigation.model.RequestPermResult
 import com.github.klee0kai.thekey.core.utils.common.SafeContextScope
+import com.github.klee0kai.thekey.core.utils.coroutine.completeAsync
+import com.github.klee0kai.thekey.core.utils.coroutine.emptyJob
 import dev.olshevski.navigation.reimagined.NavController
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.emptyFlow
 
-interface AppRouter : RouterContext, ComposeRouter, SnackRouter, NavBoardRouter, ActivityRouter, PermissionsRouter
+interface AppRouter : RouterContext, DeeplinkRouter, ComposeRouter, SnackRouter, NavBoardRouter, ActivityRouter, PermissionsRouter
 
 interface ComposeRouter {
 
-    fun navigate(destination: Destination): Flow<Any?> = emptyFlow()
+    fun navigate(vararg destination: Destination): Flow<Any?> = emptyFlow()
 
-    fun <R> navigate(destination: Destination, clazz: Class<R>): Flow<R?> = emptyFlow()
+    fun <R> navigate(vararg destinations: Destination, resultClazz: Class<R>): Flow<R?> = emptyFlow()
 
     fun <R> backWithResult(result: R, exitFromApp: Boolean = false): Boolean = false
 
     suspend fun awaitScreenClose(destination: Destination) = Unit
 
     fun back() = Unit
+
+    fun resetStack(vararg destinations: Destination) = Unit
 
     @Composable
     fun collectBackstackChanges() = Unit
@@ -42,9 +50,9 @@ interface ComposeRouter {
 
 interface SnackRouter {
 
-    suspend fun snack(message: String, duration: SnackbarDuration = SnackbarDuration.Short): SnackbarResult = SnackbarResult.Dismissed
+    fun snack(message: String, duration: SnackbarDuration = SnackbarDuration.Short): Deferred<SnackbarResult> = completeAsync(SnackbarResult.Dismissed)
 
-    suspend fun snack(@StringRes message: Int, duration: SnackbarDuration = SnackbarDuration.Short) = Unit
+    fun snack(@StringRes message: Int, duration: SnackbarDuration = SnackbarDuration.Short): Job = emptyJob()
 
 }
 
@@ -75,12 +83,22 @@ interface PermissionsRouter {
 
 }
 
+interface DeeplinkRouter {
+
+    suspend fun handleDeeplink(intent: Intent): Boolean = false
+
+    fun configDeeplinks(block: DeeplinkRoute.() -> Unit) = Unit
+
+}
+
 interface RouterContext {
 
     /**
      * We show a stub while we initialize DI for a new feature
      */
     val showInitDynamicFeatureScreen: MutableStateFlow<Boolean> get() = MutableStateFlow(false)
+
+    val activityIdentifier: ActivityIdentifier? get() = null
 
     val snackbarHostState: SnackbarHostState get() = SnackbarHostState()
     val navBoardState: DrawerState get() = DrawerState(DrawerValue.Closed)
@@ -96,8 +114,9 @@ interface RouterContext {
 
     fun genRequestCode(): Int = -1
 
+    fun initDestination(dest: Destination) = Unit
 }
 
-inline fun <reified R> ComposeRouter.navigate(destination: Destination): Flow<R?> =
-    navigate(destination, R::class.java)
+inline fun <reified R> ComposeRouter.navigate(vararg destination: Destination): Flow<R?> =
+    navigate(destinations = destination, resultClazz = R::class.java)
 

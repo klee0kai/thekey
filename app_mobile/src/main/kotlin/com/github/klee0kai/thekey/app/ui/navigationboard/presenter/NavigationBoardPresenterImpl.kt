@@ -11,7 +11,7 @@ class NavigationBoardPresenterImpl : NavigationBoardPresenter {
     private val scope = DI.defaultThreadScope()
     private val router = DI.router()
     private val loginInteractor = DI.loginInteractorLazy()
-    private val foundStoragesRep = DI.foundStoragesRepositoryLazy()
+    private val foundStoragesRep = DI.storagesRepositoryLazy()
 
     override val currentStorage = flow<ColoredStorage?> {
         router.navChanges

@@ -15,3 +15,8 @@ abstract class DynamicDestination(
 
 @Stable
 interface DialogDestination : Destination
+
+@Stable
+abstract class DialogDynamicDestination(
+    feature: DynamicFeature
+) : DialogDestination, DynamicDestination(feature)

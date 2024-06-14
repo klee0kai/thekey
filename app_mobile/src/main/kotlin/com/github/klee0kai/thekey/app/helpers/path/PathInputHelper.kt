@@ -1,5 +1,6 @@
 package com.github.klee0kai.thekey.app.helpers.path
 
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextRange
@@ -16,14 +17,15 @@ import java.util.Locale
 
 class PathInputHelper {
 
-    private val colorScheme by lazy { DI.theme().colorScheme() }
     private val shortPaths by lazy { DI.userShortPaths() }
     private val dirFileNameFilter = FilenameFilter { dir, name -> File(dir, name).isDirectory }
 
 
-    fun AnnotatedString.coloredPath() = buildAnnotatedString {
+    fun AnnotatedString.coloredPath(
+        accentColor: Color = Color.Blue,
+    ) = buildAnnotatedString {
         val input = this@coloredPath
-        val coloredSpanStyle = SpanStyle(color = colorScheme.androidColorScheme.primary)
+        val coloredSpanStyle = SpanStyle(color = accentColor)
         shortPaths.shortPaths.runForEach {
             listOf(short, shortFromRoot, absolutePath).forEach { coloredPath ->
                 if (input.startsWith("$coloredPath/")) {

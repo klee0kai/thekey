@@ -116,7 +116,7 @@ fun GroupsSelectContent(
                     GroupCircle(
                         name = group.name,
                         buttonSize = 56.dp,
-                        colorScheme = colorScheme.surfaceScheme(group.keyColor),
+                        colorScheme = colorScheme.surfaceSchemas.surfaceScheme(group.keyColor),
                         checked = group.id == selectedGroup,
                         modifier = Modifier
                             .padding(

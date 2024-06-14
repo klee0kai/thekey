@@ -1,17 +1,24 @@
 package com.github.klee0kai.thekey.app.ui.navigation.impl
 
+import android.content.Intent
+import com.github.klee0kai.thekey.core.di.identifiers.ActivityIdentifier
 import com.github.klee0kai.thekey.core.ui.navigation.ActivityRouter
 import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
 import com.github.klee0kai.thekey.core.ui.navigation.ComposeRouter
+import com.github.klee0kai.thekey.core.ui.navigation.DeeplinkRouter
 import com.github.klee0kai.thekey.core.ui.navigation.NavBoardRouter
 import com.github.klee0kai.thekey.core.ui.navigation.PermissionsRouter
 import com.github.klee0kai.thekey.core.ui.navigation.RouterContext
 import com.github.klee0kai.thekey.core.ui.navigation.SnackRouter
+import com.github.klee0kai.thekey.core.ui.navigation.deeplink.DeeplinkRoute
+import com.github.klee0kai.thekey.core.ui.navigation.model.Destination
 
 open class AppRouterImp(
-    private val ctx: RouterContext = RouterContextImpl()
+    override val activityIdentifier: ActivityIdentifier?,
+    private val ctx: RouterContext = RouterContextImpl(activityIdentifier)
 ) : AppRouter,
     ComposeRouter by ComposeRouterImpl(ctx),
+    DeeplinkRouter,
     SnackRouter by SnackRouterImpl(ctx),
     NavBoardRouter by NavBoardRouterImpl(ctx),
     ActivityRouter by ActivityRouterImpl(ctx),
@@ -35,9 +42,23 @@ open class AppRouterImp(
 
     override val scope get() = ctx.scope
 
+    private var deeplinkRoute = DeeplinkRoute()
+
     override fun genRequestCode(): Int = ctx.genRequestCode()
 
-}    
+    override suspend fun handleDeeplink(intent: Intent) =
+        deeplinkRoute.processDeeplink(intent, this)
+
+
+    override fun configDeeplinks(block: DeeplinkRoute.() -> Unit) {
+        block.invoke(deeplinkRoute)
+    }
+
+    override fun initDestination(dest: Destination) {
+        ctx.initDestination(dest)
+    }
+
+}
         
     
 

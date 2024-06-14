@@ -14,20 +14,25 @@ import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.isDebugInspectorInfoEnabled
 import com.github.klee0kai.thekey.core.di.CoreDI
+import com.github.klee0kai.thekey.core.di.identifiers.ActivityIdentifier
 import com.github.klee0kai.thekey.core.di.updateConfig
 import com.github.klee0kai.thekey.core.domain.model.AppConfig
 import com.github.klee0kai.thekey.core.ui.devkit.color.CommonColorScheme
+import com.github.klee0kai.thekey.core.ui.devkit.theme.AppTheme
 import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
+import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.valentinilk.shimmer.LocalShimmerTheme
 import com.valentinilk.shimmer.defaultShimmerTheme
 
 val LocalRouter = compositionLocalOf<AppRouter> { error("no router") }
 val LocalColorScheme = compositionLocalOf<CommonColorScheme> { error("no color scheme") }
+val LocalTheme = compositionLocalOf<AppTheme> { error("no theme") }
 val LocalAppConfig = compositionLocalOf<AppConfig> { error("no app config") }
 
 @Composable
 fun AppTheme(
     modifier: Modifier = Modifier,
+    activityIdentifier: ActivityIdentifier? = null,
     content: @Composable () -> Unit
 ) {
     LocalConfiguration.current
@@ -35,8 +40,9 @@ fun AppTheme(
     val view = LocalView.current
 
     val isEditMode = view.isInEditMode || LocalInspectionMode.current || isDebugInspectorInfoEnabled
-    val colorScheme = remember { CoreDI.theme().colorScheme() }
-    val typeScheme = remember { CoreDI.theme().typeScheme() }
+    val themeManager = CoreDI.themeManager(activityIdentifier)
+    val router = CoreDI.router(activityIdentifier)
+    val themeState = themeManager.theme.collectAsState(key = Unit, initial = null)
     val shimmer = remember {
         defaultShimmerTheme.copy(
             shaderColors = listOf(
@@ -51,20 +57,23 @@ fun AppTheme(
             copy(isViewEditMode = isEditMode)
         }
     }
+    val theme = themeState.value ?: return
 
     CompositionLocalProvider(
-        LocalRouter provides CoreDI.router(),
+        LocalTheme provides theme,
+        LocalRouter provides router,
         LocalShimmerTheme provides shimmer,
-        LocalColorScheme provides CoreDI.theme().colorScheme(),
+        LocalColorScheme provides theme.colorScheme,
         LocalAppConfig provides CoreDI.config(),
     ) {
         MaterialTheme(
-            colorScheme = colorScheme.androidColorScheme,
-            typography = typeScheme.typography,
+            colorScheme = theme.colorScheme.androidColorScheme,
+            typography = theme.typeScheme.typography,
+            shapes = theme.shapes,
         ) {
             Surface(
                 modifier = modifier,
-                color = MaterialTheme.colorScheme.background,
+                color = theme.colorScheme.windowBackgroundColor,
                 contentColor = MaterialTheme.colorScheme.onBackground,
             ) {
                 content.invoke()

@@ -2,8 +2,8 @@ package com.github.klee0kai.thekey.app.di.modules
 
 import com.github.klee0kai.stone.annotations.module.Module
 import com.github.klee0kai.stone.annotations.module.Provide
-import com.github.klee0kai.thekey.app.ui.editstorage.CreateStoragePresenter
-import com.github.klee0kai.thekey.app.ui.editstorage.EditStoragePresenter
+import com.github.klee0kai.thekey.app.ui.editstorage.presenter.EditStoragePresenter
+import com.github.klee0kai.thekey.app.ui.editstorage.presenter.EditStoragePresenterImpl
 import com.github.klee0kai.thekey.app.ui.genhist.presenter.GenHistPresenter
 import com.github.klee0kai.thekey.app.ui.genhist.presenter.GenHistPresenterImpl
 import com.github.klee0kai.thekey.app.ui.login.presenter.LoginPresenter
@@ -22,9 +22,13 @@ import com.github.klee0kai.thekey.app.ui.storage.genpassw.presenter.GenPasswPres
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.presenter.GenPasswPresenterImpl
 import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenter
 import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenterImpl
-import com.github.klee0kai.thekey.app.ui.storages.StoragesPresenter
+import com.github.klee0kai.thekey.app.ui.storagegroup.presenter.EditStoragesGroupPresenter
+import com.github.klee0kai.thekey.app.ui.storagegroup.presenter.EditStoragesGroupsPresenterImpl
+import com.github.klee0kai.thekey.app.ui.storages.presenter.StoragesPresenter
+import com.github.klee0kai.thekey.app.ui.storages.presenter.StoragesPresenterImpl
 import com.github.klee0kai.thekey.core.di.identifiers.NoteGroupIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
+import com.github.klee0kai.thekey.core.di.identifiers.StorageGroupIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.domain.model.feature.model.DynamicFeature
 
@@ -38,20 +42,18 @@ interface PresentersModule {
     fun navigationBoardPresenter(): NavigationBoardPresenter = NavigationBoardPresenterImpl()
 
     @Provide(cache = Provide.CacheType.Weak)
-    fun storagesPresenter(): StoragesPresenter = StoragesPresenter()
+    fun storagesPresenter(): StoragesPresenter = StoragesPresenterImpl()
 
     @Provide(cache = Provide.CacheType.Weak)
-    fun editStoragePresenter(storageIdentifier: StorageIdentifier?): CreateStoragePresenter {
-        return if (storageIdentifier?.path == null) {
-            CreateStoragePresenter()
-        } else {
-            EditStoragePresenter(storageIdentifier.path)
-        }
-    }
+    fun editStoragePresenter(storageIdentifier: StorageIdentifier?): EditStoragePresenter = EditStoragePresenterImpl(storageIdentifier)
 
     @Provide(cache = Provide.CacheType.Weak)
     fun storagePresenter(storageIdentifier: StorageIdentifier): StoragePresenter =
         StoragePresenterImpl(storageIdentifier)
+
+    @Provide(cache = Provide.CacheType.Weak)
+    fun editStorageGroupPresenter(storageIdentifier: StorageGroupIdentifier): EditStoragesGroupPresenter =
+        EditStoragesGroupsPresenterImpl(storageIdentifier)
 
     @Provide(cache = Provide.CacheType.Weak)
     fun genPasswPresente(storageIdentifier: StorageIdentifier): GenPasswPresenter =

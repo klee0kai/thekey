@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -104,9 +103,7 @@ fun NotesContent(
 
     if (addButtonVisible) {
         FabSimpleInContainer(
-            modifier = Modifier
-                .windowInsetsPadding(WindowInsets.safeContent)
-                .alpha(addButtonAlpha),
+            modifier = Modifier.alpha(addButtonAlpha),
             onClick = { router.navigate(dest.note()) },
             content = { Icon(Icons.Default.Add, contentDescription = "Add") }
         )

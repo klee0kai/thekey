@@ -5,27 +5,34 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.core.di.identifiers.ActivityIdentifier
 import com.github.klee0kai.thekey.core.ui.navigation.model.ActivityResult
 import com.github.klee0kai.thekey.core.ui.navigation.model.RequestPermResult
+import kotlinx.coroutines.cancelChildren
 
 open class BaseActivity : ComponentActivity() {
 
     protected val scope = DI.mainThreadScope()
-    protected val router get() = DI.router()
+    protected val activityIdentifier get() = ActivityIdentifier(this::class.qualifiedName)
+    protected val router get() = DI.router(activityIdentifier)
+    protected val themeManager get() = DI.themeManager(activityIdentifier)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        DI.activity(this)
+        DI.ctx(applicationContext)
+
         enableEdgeToEdge()
     }
 
     override fun onResume() {
         super.onResume()
         DI.activity(this)
+        DI.ctx(applicationContext)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
         router.onResult(
             ActivityResult(
                 requestCode = requestCode,
@@ -44,6 +51,11 @@ open class BaseActivity : ComponentActivity() {
                 grantResults = grantResults.toList()
             )
         )
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        scope.coroutineContext.cancelChildren()
     }
 
 }

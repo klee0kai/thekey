@@ -1,7 +1,8 @@
 package com.github.klee0kai.thekey.core.di.wrap
 
 import com.github.klee0kai.stone.annotations.wrappers.WrappersCreator
-import com.github.klee0kai.stone.wrappers.creators.ProviderWrapper
+import com.github.klee0kai.stone.wrappers.creators.CircleWrapper
+import kotlinx.coroutines.runBlocking
 import javax.inject.Provider
 
 @WrappersCreator(
@@ -9,7 +10,7 @@ import javax.inject.Provider
         AsyncCoroutineProvide::class
     ]
 )
-class AppWrappersStone : ProviderWrapper {
+class AppWrappersStone : CircleWrapper {
 
     override fun <Wr : Any?, T : Any?> wrap(
         wrapperCl: Class<Wr>,
@@ -17,6 +18,13 @@ class AppWrappersStone : ProviderWrapper {
     ): Wr? {
         return when {
             wrapperCl == AsyncCoroutineProvide::class.java -> AsyncCoroutineProvide { originalProvider.get() } as Wr
+            else -> null
+        }
+    }
+
+    override fun <Wr : Any?, T : Any?> unwrap(wrapperCl: Class<Wr>?, objectType: Class<T>?, wrapper: Wr): T? {
+        return when {
+            wrapperCl == AsyncCoroutineProvide::class.java -> runBlocking { (wrapper as AsyncCoroutineProvide<T>).get() }
             else -> null
         }
     }

@@ -45,7 +45,7 @@ fun ColumnScope.NoteDropDownMenuContent(
                         bottom = 8.dp
                     ),
                 name = group.name,
-                colorScheme = colorScheme.surfaceScheme(group.keyColor),
+                colorScheme = colorScheme.surfaceSchemas.surfaceScheme(group.keyColor),
                 checked = group.id == selectedGroupId,
                 onClick = { onColorGroupSelected.invoke(group) },
             )

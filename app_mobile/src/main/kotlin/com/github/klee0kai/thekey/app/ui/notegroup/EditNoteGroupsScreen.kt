@@ -114,7 +114,7 @@ fun EditNoteGroupsScreen(
                 Icon(Icons.AutoMirrored.Default.ArrowBack, contentDescription = null)
             }
         },
-        titleContent = { Text(text = stringResource(id = if (state.isEditMode) R.string.edit_group else R.string.create_group)) },
+        titleContent = { Text(text = stringResource(id = if (state.isEditMode) R.string.edit_group else R.string.create_storages_group)) },
     )
 
     Box(

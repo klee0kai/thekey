@@ -1,63 +1,60 @@
 package com.github.klee0kai.thekey.core.ui.devkit.color
 
 import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.TextFieldColors
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import com.github.klee0kai.thekey.core.ui.devkit.color.DarkColorCollection.background
+import com.github.klee0kai.thekey.core.ui.devkit.color.DarkColorCollection.blackColor
+import com.github.klee0kai.thekey.core.ui.devkit.color.DarkColorCollection.coral
+import com.github.klee0kai.thekey.core.ui.devkit.color.DarkColorCollection.lightBackground
+import com.github.klee0kai.thekey.core.ui.devkit.color.DarkColorCollection.noColor
+import com.github.klee0kai.thekey.core.ui.devkit.color.DarkColorCollection.orange
+import com.github.klee0kai.thekey.core.ui.devkit.color.DarkColorCollection.pink
+import com.github.klee0kai.thekey.core.ui.devkit.color.DarkColorCollection.turquoise
+import com.github.klee0kai.thekey.core.ui.devkit.color.DarkColorCollection.violet
+import com.github.klee0kai.thekey.core.ui.devkit.color.DarkColorCollection.whiteColor
 
-class DarkColorScheme : CommonColorScheme {
+internal object DarkColorCollection {
+    val lightBackground = Color(0xFF242738)
+    val background = Color(0xFF1B1D2D)
 
-    override val isDarkScheme: Boolean = true
+    val blackColor = Color.Black
+    val whiteColor = Color.White
+    val grayColor = Color(0xFFB7B7B7)
 
-    private val lightBackground = Color(0xFF242738)
-    private val background = Color(0xFF1B1D2D)
 
-    private val blackColor = Color.Black
-    private val whiteColor = Color.White
-    private val grayColor = Color(0xFFB7B7B7)
+    val noColor = SurfaceScheme(grayColor, whiteColor)
+    val violet = SurfaceScheme(Color(0xFF837AE8), whiteColor)
+    val turquoise = SurfaceScheme(Color(0xFF7AE8E8), whiteColor)
+    val pink = SurfaceScheme(Color(0xFFE87AD6), whiteColor)
+    val orange = SurfaceScheme(Color(0xFFDC8938), whiteColor)
+    val coral = SurfaceScheme(Color(0xFFE87A7A), whiteColor)
+}
 
-    override val deleteColor: Color = Color.Red
-    override val navigationBoard = NavigationBoardColors(
+fun darkCommonColorScheme() = CommonColorScheme(
+    isDark = true,
+    deleteColor = coral.surfaceColor,
+    windowBackgroundColor = background,
+    navigationBoard = NavigationBoardColors(
         headerContainerColor = Color(0xFF3A3D52),
         bodyContentColor = Color(0xFF1C1D27),
-    )
-    override val grayTextButtonColors = ButtonColors(
+    ),
+    grayTextButtonColors = ButtonColors(
         contentColor = Color(0xffB7B7B7),
         containerColor = Color.Transparent,
         disabledContainerColor = Color(0xffB7B7B7),
         disabledContentColor = Color.Transparent,
-    )
-
-    override val grayTextFieldColors: TextFieldColors
-        @Composable get() = TextFieldDefaults.colors().copy(
-            focusedIndicatorColor = Color.Transparent,
-            errorIndicatorColor = Color.Transparent,
-            disabledIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-        )
-
-    override val transparentTextFieldColors: TextFieldColors
-        @Composable get() = grayTextFieldColors.copy(
-            disabledContainerColor = Color.Transparent,
-            errorContainerColor = Color.Transparent,
-            focusedContainerColor = Color.Transparent,
-            unfocusedContainerColor = Color.Transparent,
-            disabledTextColor = Color.Transparent,
-        )
-
-    override val hintTextColor = Color(0xFFA9A9A9)
-
-
-    override val noColor = SurfaceScheme(grayColor, whiteColor)
-    override val violet = SurfaceScheme(Color(0xFF837AE8), whiteColor)
-    override val turquoise = SurfaceScheme(Color(0xFF7AE8E8), whiteColor)
-    override val pink = SurfaceScheme(Color(0xFFE87AD6), whiteColor)
-    override val orange = SurfaceScheme(Color(0xFFDC8938), whiteColor)
-    override val coral = SurfaceScheme(Color(0xFFE87A7A), whiteColor)
-
-    override val androidColorScheme = darkColorScheme(
+    ),
+    hintTextColor = Color(0xFFA9A9A9),
+    surfaceSchemas = SurfaceSchemas(
+        noColor = noColor,
+        violet = violet,
+        turquoise = turquoise,
+        pink = pink,
+        orange = orange,
+        coral = coral,
+    ),
+    androidColorScheme = darkColorScheme(
         primary = turquoise.surfaceColor,
         onPrimary = whiteColor,
         secondary = orange.surfaceColor,
@@ -83,17 +80,4 @@ class DarkColorScheme : CommonColorScheme {
         inverseSurface = whiteColor,
         inverseOnSurface = blackColor,
     )
-
-    override val colorsGroupCollection = listOf(violet, turquoise, pink, orange, coral)
-
-    override fun surfaceScheme(group: KeyColor): SurfaceScheme =
-        when (group) {
-            KeyColor.NOCOLOR -> noColor
-            KeyColor.VIOLET -> violet
-            KeyColor.TURQUOISE -> turquoise
-            KeyColor.PINK -> pink
-            KeyColor.ORANGE -> orange
-            KeyColor.CORAL -> coral
-        }
-
-}
+)

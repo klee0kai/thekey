@@ -6,8 +6,9 @@ import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.SnackbarHostState
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.core.ui.navigation.RouterContext
 import com.github.klee0kai.thekey.app.ui.navigation.model.MainDestinations
+import com.github.klee0kai.thekey.core.di.identifiers.ActivityIdentifier
+import com.github.klee0kai.thekey.core.ui.navigation.RouterContext
 import com.github.klee0kai.thekey.core.ui.navigation.model.Destination
 import com.github.klee0kai.thekey.core.ui.navigation.model.NavigateBackstackChange
 import dev.olshevski.navigation.reimagined.NavController
@@ -16,7 +17,11 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.random.Random
 
-class RouterContextImpl : RouterContext {
+class RouterContextImpl(
+    override val activityIdentifier: ActivityIdentifier?
+) : RouterContext {
+
+    private var initDestination: Destination = MainDestinations.InitDest
 
     override val showInitDynamicFeatureScreen = MutableStateFlow(false)
 
@@ -25,14 +30,18 @@ class RouterContextImpl : RouterContext {
 
     override val snackbarHostState: SnackbarHostState = SnackbarHostState()
     override val navBoardState: DrawerState = DrawerState(DrawerValue.Closed)
-    override val navFullController: NavController<Destination> = navController(MainDestinations.InitDest)
-    override val navScreensController: NavController<Destination> = navController(MainDestinations.InitDest)
-    override val navDialogsController: NavController<Destination> = navController(emptyList())
+    override val navFullController: NavController<Destination> by lazy { navController(initDestination) }
+    override val navScreensController: NavController<Destination> by lazy { navController(initDestination) }
+    override val navDialogsController: NavController<Destination> by lazy { navController(emptyList()) }
 
     override val navChanges = MutableSharedFlow<NavigateBackstackChange>(replay = 1)
     override val scope = DI.mainThreadScope()
 
     private var _reqCodeCounter = Random.nextInt(1000) + 1
     override fun genRequestCode(): Int = _reqCodeCounter++
+
+    override fun initDestination(dest: Destination) {
+        initDestination = dest
+    }
 
 }
