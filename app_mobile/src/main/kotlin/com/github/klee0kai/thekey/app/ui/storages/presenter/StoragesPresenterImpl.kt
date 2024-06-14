@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 open class StoragesPresenterImpl : StoragesPresenter {
 
     private val rep = DI.storagesRepositoryLazy()
+    private val interactor = DI.storagesInteractorLazy()
     private val router = DI.router()
     private val scope = DI.defaultThreadScope()
 
@@ -22,7 +23,7 @@ open class StoragesPresenterImpl : StoragesPresenter {
     override val selectedGroupId = MutableStateFlow<Long?>(null)
 
     private val sortedStorages = flow {
-        rep().allStorages
+        interactor().allStorages
             .map { list -> list.sortedBy { storage -> storage.sortableFlatText() } }
             .collect(this)
     }

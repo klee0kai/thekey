@@ -101,7 +101,7 @@ fun SelectStorageDialog() = Box(modifier = Modifier.fillMaxSize()) {
         AppBarStates(
             modifier = Modifier.alpha(1f - dragProgress),
             navigationIcon = {
-                IconButton(onClick = remember { { router.back() } }) {
+                IconButton(onClick = { router.back() }) {
                     Icon(
                         Icons.AutoMirrored.Default.ArrowBack,
                         contentDescription = null,

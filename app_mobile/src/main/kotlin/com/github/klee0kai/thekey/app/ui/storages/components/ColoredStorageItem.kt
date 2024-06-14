@@ -39,7 +39,7 @@ fun ColoredStorageItem(
         storage.path
             .shortPath()
             .toAnnotationString()
-//   TODO         .coloredPath()
+            .coloredPath(accentColor = colorScheme.androidColorScheme.primary)
     }
 
     ConstraintLayout(

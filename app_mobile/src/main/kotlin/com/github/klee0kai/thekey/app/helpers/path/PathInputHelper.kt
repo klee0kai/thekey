@@ -1,5 +1,6 @@
 package com.github.klee0kai.thekey.app.helpers.path
 
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextRange
@@ -7,9 +8,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.withStyle
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.core.di.wrap.AsyncCoroutineProvide
 import com.github.klee0kai.thekey.core.utils.common.runForEach
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import java.io.File
@@ -18,14 +17,15 @@ import java.util.Locale
 
 class PathInputHelper {
 
-    private val theme = AsyncCoroutineProvide { DI.themeManager().theme.first() }
     private val shortPaths by lazy { DI.userShortPaths() }
     private val dirFileNameFilter = FilenameFilter { dir, name -> File(dir, name).isDirectory }
 
 
-    suspend fun AnnotatedString.coloredPath() = buildAnnotatedString {
+    fun AnnotatedString.coloredPath(
+        accentColor: Color = Color.Blue,
+    ) = buildAnnotatedString {
         val input = this@coloredPath
-        val coloredSpanStyle = SpanStyle(color = theme().colorScheme.androidColorScheme.primary)
+        val coloredSpanStyle = SpanStyle(color = accentColor)
         shortPaths.shortPaths.runForEach {
             listOf(short, shortFromRoot, absolutePath).forEach { coloredPath ->
                 if (input.startsWith("$coloredPath/")) {
