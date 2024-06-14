@@ -49,7 +49,7 @@ fun <BuildFeaturesT : BuildFeatures,
 
     composeOptions {
         //  https://developer.android.com/jetpack/androidx/releases/compose-kotlin
-        kotlinCompilerExtensionVersion = "1.5.10"
+        kotlinCompilerExtensionVersion = "1.5.14"
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
