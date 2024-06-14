@@ -24,7 +24,14 @@ class StoragesInteractor {
             .collect(this)
     }
 
-    fun findStorage(path: String) = scope.async { rep().findStorage(path).await()?.updateVersion() }
+    fun findStorage(path: String, mockNew: Boolean = false) = scope.async {
+        var storage = rep().findStorage(path).await()?.updateVersion()
+        if (storage == null && mockNew) {
+            val newStorageVers = settings().newStorageVersion()
+            storage = ColoredStorage(version = newStorageVers, path = path)
+        }
+        storage
+    }
 
     fun setStorage(storage: ColoredStorage) = scope.launch { rep().setStorage(storage).join() }
 

@@ -7,9 +7,11 @@ import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.StoragesDestination
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.ui.navigation.navigate
+import com.github.klee0kai.thekey.core.utils.coroutine.coldStateFlow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -21,13 +23,11 @@ class LoginPresenterImpl : LoginPresenter {
     private val loginInteractor = DI.loginInteractorLazy()
     private val router = DI.router()
 
-    override val currentStorageFlow = flow<ColoredStorage> {
+    override val currentStorageFlow = coldStateFlow<ColoredStorage> {
         val storagePath = settingsRep().currentStoragePath()
-        val newStorageVers = settingsRep().newStorageVersion()
-        val storage = storagesInteractor().findStorage(storagePath).await()
-            ?: ColoredStorage(version = newStorageVers, path = storagePath)
-        emit(storage)
-    }
+        val storage = storagesInteractor().findStorage(storagePath, mockNew = true).await()
+        result.update { storage }
+    }.filterNotNull()
 
     override fun selectStorage() = scope.launch {
         val selectedStorage = router
