@@ -89,7 +89,6 @@ fun NotesContent(
                 colorGroups = groups,
                 onGroupSelected = { presenter?.selectGroup(it.id) },
                 onGroupEdit = { router.navigate(dest.editGroup(it.id)) },
-                onGroupDelete = { presenter?.deleteGroup(it.id) }
             )
         },
         sheetContent = {

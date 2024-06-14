@@ -45,7 +45,6 @@ fun GroupsSelectContent(
     onAdd: () -> Unit = {},
     onGroupSelected: (ColorGroup) -> Unit = {},
     onGroupEdit: (ColorGroup) -> Unit = {},
-    onGroupDelete: (ColorGroup) -> Unit = {},
 ) {
     val colorScheme = LocalColorScheme.current
     val lazyListState = rememberLazyListState()
@@ -134,7 +133,6 @@ fun GroupsSelectContent(
                             ) {
                                 GroupDropDownMenuContent(
                                     onEdit = { onGroupEdit(group) },
-                                    onDelete = { onGroupDelete(group) },
                                 )
                             }
                         }

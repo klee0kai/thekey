@@ -32,7 +32,8 @@ open class StoragesPresenterDummy(
                     ColoredStorage(
                         path = "appFolder/storage${index}.ckey",
                         name = "social-${index}",
-                        description = "social sites storage"
+                        description = "social sites storage",
+                        version = 1,
                     ),
                 )
             }

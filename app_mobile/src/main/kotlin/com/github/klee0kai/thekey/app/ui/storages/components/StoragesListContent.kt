@@ -17,6 +17,7 @@ import com.github.klee0kai.thekey.app.ui.storages.presenter.StoragesPresenterDum
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
+import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 
 
@@ -29,8 +30,7 @@ fun StoragesListContent(
     val navigator = LocalRouter.current
     val scope = rememberCoroutineScope()
     val presenter by rememberOnScreenRef { DI.storagesPresenter() }
-    val storages = presenter!!.filteredStorages
-        .collectAsState(initial = emptyList(), scope.coroutineContext)
+    val storages = presenter!!.filteredStorages.collectAsState(key = Unit, initial = emptyList())
 
     if (storages.value.isEmpty()) {
         // show empty state if need

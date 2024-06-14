@@ -71,7 +71,7 @@ fun StoragesScreen() {
     val groups by presenter!!.filteredColorGroups.collectAsState(key = Unit, initial = emptyList())
 
     val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
-    var dragProgress by remember { mutableFloatStateOf(0f) }
+    var dragProgress by remember { mutableFloatStateOf(1f) }
     val mainTitleVisibility by accumulate<Boolean?>(null) { old ->
         when {
             dragProgress < 0.1 -> false
@@ -89,7 +89,7 @@ fun StoragesScreen() {
     val showStoragesTitle by rememberTargetCrossFaded { dragProgress > 0.1f }
 
     SimpleBottomSheetScaffold(
-        topMargin = AppBarConst.appBarSize + WindowInsets.safeContent.topDp,
+        topMargin = AppBarConst.appBarSize + safeContentPaddings.calculateTopPadding(),
         topContentSize = 170.dp,
         onDrag = { dragProgress = it },
         topContent = {
@@ -142,7 +142,7 @@ fun StoragesScreen() {
     )
 
     FabSimpleInContainer(
-        onClick = remember { { router.navigate(EditStorageDestination()) } },
+        onClick = { router.navigate(EditStorageDestination()) },
         content = { Icon(Icons.Default.Add, contentDescription = "Add") }
     )
 }
