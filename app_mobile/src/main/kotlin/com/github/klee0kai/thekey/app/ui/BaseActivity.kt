@@ -12,8 +12,9 @@ import kotlinx.coroutines.cancelChildren
 
 open class BaseActivity : ComponentActivity() {
 
+    protected open val activityIdentifier: ActivityIdentifier? get() = ActivityIdentifier(this::class.qualifiedName)
+
     protected val scope = DI.mainThreadScope()
-    protected val activityIdentifier get() = ActivityIdentifier(this::class.qualifiedName)
     protected val router get() = DI.router(activityIdentifier)
     protected val themeManager get() = DI.themeManager(activityIdentifier)
 

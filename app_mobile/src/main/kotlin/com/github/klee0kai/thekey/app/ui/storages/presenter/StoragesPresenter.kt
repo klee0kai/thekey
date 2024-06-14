@@ -3,6 +3,7 @@ package com.github.klee0kai.thekey.app.ui.storages.presenter
 import com.github.klee0kai.thekey.app.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.app.ui.storage.model.SearchState
 import com.github.klee0kai.thekey.core.domain.ColorGroup
+import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
 import com.github.klee0kai.thekey.core.utils.coroutine.emptyJob
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
@@ -31,5 +32,9 @@ interface StoragesPresenter {
     fun setColorGroup(storagePath: String, groupId: Long): Job = emptyJob()
 
     fun deleteGroup(id: Long): Job = emptyJob()
+
+    fun exportStorage(storagePath: String, router: AppRouter): Job = emptyJob()
+
+    fun editStorage(storagePath: String, router: AppRouter): Job = emptyJob()
 
 }

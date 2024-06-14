@@ -107,4 +107,5 @@
     <string name="edit_storages_group">Edit storages group</string>
     <string name="favorite">Favorite</string>
     <string name="more">More</string>
+    <string name="export">Export</string>
 </resources>

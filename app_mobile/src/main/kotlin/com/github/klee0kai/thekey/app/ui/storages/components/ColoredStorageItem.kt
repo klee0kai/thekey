@@ -1,7 +1,10 @@
+@file:OptIn(ExperimentalFoundationApi::class)
+
 package com.github.klee0kai.thekey.app.ui.storages.components
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
@@ -30,7 +33,9 @@ import com.github.klee0kai.thekey.core.utils.views.toAnnotationString
 @Composable
 fun ColoredStorageItem(
     storage: ColoredStorage = ColoredStorage(),
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
+    onLongClick: (() -> Unit)? = null,
+    overlayContent: @Composable () -> Unit = {},
 ) {
     val colorScheme = LocalColorScheme.current
     val pathInputHelper = remember { DI.pathInputHelper() }
@@ -46,7 +51,10 @@ fun ColoredStorageItem(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .clickable(onClick = onClick)
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = onLongClick,
+            )
     ) {
         val (colorGroupField, pathField, descriptionField, errorIconField) = createRefs()
 
@@ -124,6 +132,8 @@ fun ColoredStorageItem(
                 }
             )
         }
+
+        overlayContent()
     }
 }
 

@@ -41,6 +41,7 @@ import com.github.klee0kai.thekey.app.ui.storages.presenter.StoragesPresenterDum
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
+import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.SimpleBottomSheetScaffold
 import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.topContentAlphaFromDrag
 import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.topContentOffsetFromDrag
@@ -54,7 +55,6 @@ import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.core.utils.views.rememberTargetCrossFaded
-import com.github.klee0kai.thekey.core.utils.views.topDp
 import com.github.klee0kai.thekey.core.utils.views.visibleOnTargetAlpha
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import org.jetbrains.annotations.VisibleForTesting
@@ -65,6 +65,7 @@ private const val SecondTittleId = 1
 @Composable
 fun StoragesScreen() {
     val router = LocalRouter.current
+    val theme = LocalTheme.current
     val presenter by rememberOnScreenRef { DI.storagesPresenter().apply { init() } }
 
     val selectedGroup by presenter!!.selectedGroupId.collectAsState(key = Unit, initial = null)
@@ -107,6 +108,8 @@ fun StoragesScreen() {
         sheetContent = {
             StoragesListContent(
                 modifier = Modifier.fillMaxSize(),
+                onEdit = { presenter?.editStorage(storagePath = it.path, router) },
+                onExport = { presenter?.exportStorage(storagePath = it.path, router) },
                 header = {
                     Text(
                         text = stringResource(id = R.string.storages),
@@ -118,7 +121,7 @@ fun StoragesScreen() {
                 },
                 footer = {
                     Spacer(modifier = Modifier.height(safeContentPaddings.calculateBottomPadding()))
-                }
+                },
             )
         }
     )
