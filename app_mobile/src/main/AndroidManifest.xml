@@ -54,6 +54,13 @@
             android:authorities=".crash_fix"
             tools:node="remove" />
 
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            tools:node="remove"
+            tools:ignore="MissingClass"
+            android:authorities="com.github.klee0kai.thekey.app.androidx-startup" />
+
+
     </application>
 
 </manifest>

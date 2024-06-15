@@ -15,7 +15,7 @@ import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.di.wrap.AppWrappersStone
 import com.github.klee0kai.thekey.core.domain.model.feature.model.DynamicFeature
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
-import com.github.klee0kai.thekey.dynamic.findstorage.di.deps.FindStoragesProviders
+import com.github.klee0kai.thekey.dynamic.findstorage.di.deps.FSProviders
 
 var FindStorageDI: FindStorageComponent = initFindStorageComponent()
     private set
@@ -34,7 +34,7 @@ var FindStorageDI: FindStorageComponent = initFindStorageComponent()
         AppWrappersStone::class,
     ],
 )
-interface FindStorageComponent : FindStoragesProviders, FindStoragesModules, CoreDependencyProvider {
+interface FindStorageComponent : FSProviders, FindStoragesModules, CoreDependencyProvider {
 
 }
 

@@ -1,17 +1,28 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.github.klee0kai.thekey.app.ui.storages
+package com.github.klee0kai.thekey.dynamic.findstorage.ui.storages
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -27,23 +38,25 @@ import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
+import com.github.klee0kai.thekey.app.ui.navigation.model.EditStorageDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditStorageGroupDestination
 import com.github.klee0kai.thekey.app.ui.storages.components.GroupsSelectContent
+import com.github.klee0kai.thekey.app.ui.storages.components.InstallExternalSearchPromo
+import com.github.klee0kai.thekey.app.ui.storages.components.StoragesListContent
 import com.github.klee0kai.thekey.app.ui.storages.presenter.StoragesPresenterDummy
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.domain.model.externalStorages
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
+import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
-import com.github.klee0kai.thekey.core.ui.devkit.LocalScreenResolver
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.SimpleBottomSheetScaffold
 import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.topContentAlphaFromDrag
 import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.topContentOffsetFromDrag
+import com.github.klee0kai.thekey.core.ui.devkit.components.FabSimpleInContainer
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppTitleImage
-import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesButtonsWidgetId
-import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesListWidgetId
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.accumulate
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
@@ -51,25 +64,27 @@ import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.isIme
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
+import com.github.klee0kai.thekey.core.utils.views.rememberTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.visibleOnTargetAlpha
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import org.jetbrains.annotations.VisibleForTesting
 import com.github.klee0kai.thekey.core.R as CoreR
+
 
 private const val MainTitleId = 0
 private const val SecondTittleId = 1
 
 @Composable
-fun StoragesScreen() {
+fun FSStoragesScreen() {
     val router = LocalRouter.current
     val theme = LocalTheme.current
-    val screenResolver = LocalScreenResolver.current
-    val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
-
     val presenter by rememberOnScreenRef { DI.storagesPresenter().apply { init() } }
 
     val selectedGroup by presenter!!.selectedGroupId.collectAsState(key = Unit, initial = null)
     val groups by presenter!!.filteredColorGroups.collectAsState(key = Unit, initial = emptyList())
+    val isHasPermissions by rememberTargetCrossFaded { selectedGroup == ColorGroup.externalStorages().id }
 
+    val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
     var dragProgress by remember { mutableFloatStateOf(1f) }
     val mainTitleVisibility by accumulate<Boolean?>(null) { old ->
         when {
@@ -85,8 +100,7 @@ fun StoragesScreen() {
             null -> 0
         }
     }
-    val isExtStorageSelected by rememberDerivedStateOf { selectedGroup == ColorGroup.externalStorages().id }
-    val showStoragesTitle by rememberDerivedStateOf { dragProgress > 0.1f }
+    val showStoragesTitle by rememberTargetCrossFaded { dragProgress > 0.1f }
     val imeIsVisibleAnimated by animateTargetCrossFaded(WindowInsets.isIme)
 
     SimpleBottomSheetScaffold(
@@ -106,22 +120,69 @@ fun StoragesScreen() {
             )
         },
         sheetContent = {
-            screenResolver.widget(
-                modifier = Modifier,
-                widgetId = StoragesListWidgetId(
-                    isExtStorageSelected = isExtStorageSelected,
-                    isShowStoragesTitle = showStoragesTitle,
-                ),
-            )
+            if (!isHasPermissions.current) {
+                StoragesListContent(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .alpha(isHasPermissions.alpha),
+                    onEdit = { presenter?.editStorage(storagePath = it.path, router) },
+                    onExport = { presenter?.exportStorage(storagePath = it.path, router) },
+                    header = {
+                        Text(
+                            text = stringResource(id = CoreR.string.storages),
+                            style = MaterialTheme.typography.titleMedium,
+                            modifier = Modifier
+                                .padding(start = 16.dp, top = 4.dp, bottom = 22.dp)
+                                .alpha(showStoragesTitle.visibleOnTargetAlpha(true))
+                        )
+                    },
+                    footer = {
+                        Spacer(modifier = Modifier.height(safeContentPaddings.calculateBottomPadding()))
+                    },
+                )
+            } else {
+                InstallExternalSearchPromo()
+            }
         }
     )
 
-    screenResolver.widget(
-        modifier = Modifier,
-        widgetId = StoragesButtonsWidgetId(
-            isExtStorageSelected = isExtStorageSelected,
-        )
-    )
+    if (isHasPermissions.current) {
+        Column(
+            modifier = Modifier
+                .alpha(isHasPermissions.alpha)
+                .fillMaxWidth()
+                .windowInsetsPadding(WindowInsets.safeContent)
+                .padding(
+                    bottom = 16.dp,
+                    start = 16.dp,
+                    end = 16.dp
+                ),
+        ) {
+            Spacer(modifier = Modifier.weight(1f))
+            if (!imeIsVisibleAnimated.current) {
+                TextButton(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    colors = LocalColorScheme.current.grayTextButtonColors,
+                    onClick = { presenter?.importStorage(router) }
+                ) {
+                    val textRes = CoreR.string.import_storage
+                    Text(stringResource(textRes))
+                }
+            }
+
+            if (!imeIsVisibleAnimated.current) {
+                FilledTonalButton(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .alpha(imeIsVisibleAnimated.alpha),
+                    onClick = { presenter?.installAutoSearchPlugin() }
+                ) {
+                    Text(stringResource(CoreR.string.install))
+                }
+            }
+        }
+    }
 
     AppBarStates(
         titleId = targetTitleId,
@@ -141,14 +202,20 @@ fun StoragesScreen() {
         },
     )
 
-
+    if (!isHasPermissions.current) {
+        FabSimpleInContainer(
+            modifier = Modifier.alpha(isHasPermissions.alpha),
+            onClick = { router.navigate(EditStorageDestination()) },
+            content = { Icon(Icons.Default.Add, contentDescription = "Add") }
+        )
+    }
 }
 
 @OptIn(DebugOnly::class)
 @VisibleForTesting
 @Composable
 @Preview(device = Devices.PHONE)
-fun StoragesScreenPreview() = EdgeToEdgeTemplate {
+fun FSStoragesScreenPreview() = EdgeToEdgeTemplate {
     AppTheme {
         DI.hardResetToPreview()
         DI.initPresenterModule(object : PresentersModule {
@@ -160,7 +227,7 @@ fun StoragesScreenPreview() = EdgeToEdgeTemplate {
             }
         })
 
-        StoragesScreen()
+        FSStoragesScreen()
     }
 }
 

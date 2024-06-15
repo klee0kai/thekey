@@ -20,6 +20,7 @@ import com.github.klee0kai.thekey.core.domain.model.AppConfig
 import com.github.klee0kai.thekey.core.ui.devkit.color.CommonColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.theme.AppTheme
 import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
+import com.github.klee0kai.thekey.core.ui.navigation.screenresolver.ScreenResolver
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.valentinilk.shimmer.LocalShimmerTheme
 import com.valentinilk.shimmer.defaultShimmerTheme
@@ -28,6 +29,7 @@ val LocalRouter = compositionLocalOf<AppRouter> { error("no router") }
 val LocalColorScheme = compositionLocalOf<CommonColorScheme> { error("no color scheme") }
 val LocalTheme = compositionLocalOf<AppTheme> { error("no theme") }
 val LocalAppConfig = compositionLocalOf<AppConfig> { error("no app config") }
+val LocalScreenResolver = compositionLocalOf<ScreenResolver> { error("no screen resolver") }
 
 @Composable
 fun AppTheme(
@@ -65,6 +67,7 @@ fun AppTheme(
         LocalShimmerTheme provides shimmer,
         LocalColorScheme provides theme.colorScheme,
         LocalAppConfig provides CoreDI.config(),
+        LocalScreenResolver provides CoreDI.screenResolver(),
     ) {
         MaterialTheme(
             colorScheme = theme.colorScheme.androidColorScheme,
