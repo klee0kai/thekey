@@ -132,7 +132,8 @@ namespace thekey_v2 {
     private:
 
         // ---- context ------
-        int fd;
+        int storageFileDescriptor;
+        int singleDescriptorMode;
         std::string storagePath;
         std::string tempStoragePath; // predict file write. (protect broken bits)
         std::shared_ptr<CryptContext> ctx;
@@ -149,6 +150,8 @@ namespace thekey_v2 {
 
         virtual ~KeyStorageV2();
 
+        virtual void setSingleDescriptorMode(const int &mode);
+
         virtual int readAll();
 
         virtual StorageInfo info();
@@ -156,6 +159,8 @@ namespace thekey_v2 {
         virtual int save();
 
         virtual int save(const std::string &path);
+
+        virtual int save(const int &fd);
 
         virtual int saveNewPassw(
                 const std::string &path,
@@ -351,6 +356,8 @@ namespace thekey_v2 {
     int createStorage(const thekey::Storage &storage);
 
     std::shared_ptr<KeyStorageV2> storage(const std::string &path, const std::string &passw);
+
+    std::shared_ptr<KeyStorageV2> storage(const int &fd, const std::string &path, const std::string &passw);
 
     std::shared_ptr<CryptContext> cryptContext(
             const std::string &passw,

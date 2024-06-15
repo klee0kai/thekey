@@ -11,7 +11,8 @@ import com.github.klee0kai.thekey.app.engine.model.Storage
 
 @JniMirror
 class K2Storage(
-    val storagePath: String
+    val storagePath: String,
+    val fileDescriptor: Int? = null,
 ) : CryptStorage {
 
     init {

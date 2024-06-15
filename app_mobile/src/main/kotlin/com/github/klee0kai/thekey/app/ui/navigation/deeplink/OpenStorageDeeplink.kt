@@ -4,6 +4,7 @@ import android.content.Intent
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.MainActivity
 import com.github.klee0kai.thekey.app.ui.navigation.model.LoginDestination
+import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.ui.navigation.deeplink.DeeplinkRoute
 import com.github.klee0kai.thekey.core.ui.navigation.deeplink.action
 import com.github.klee0kai.thekey.core.ui.navigation.deeplink.activity
@@ -15,16 +16,25 @@ fun DeeplinkRoute.openStorageDeeplink() {
             handle { intent ->
                 val url = intent.data ?: return@handle false
                 val engine = DI.findStorageEngineLazy()
-                val storage = DI.ctx()
+                val fd = DI.ctx()
                     .contentResolver
-                    .openFileDescriptor(url, "r", null)
-                    ?.use {
-                        engine().storageInfoFromDescriptor(it.fd)
-                    }
+                    .openFileDescriptor(url, "rw", null)
+                    ?: return@handle false
+
+                val storage = engine().storageInfoFromDescriptor(fd.fd)
+
                 if (storage == null) {
                     snack(CoreR.string.storage_file_incorrect)
                 } else {
-                    resetStack(LoginDestination(url.toString()))
+                    resetStack(
+                        LoginDestination(
+                            StorageIdentifier(
+                                path = url.toString(),
+                                version = storage.version,
+                                fileDescriptor = fd.detachFd(),
+                            )
+                        )
+                    )
                 }
                 true
             }

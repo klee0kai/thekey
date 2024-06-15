@@ -22,10 +22,7 @@ data object EmptyDestination : Destination
 
 @Parcelize
 data class LoginDestination(
-    /**
-     * spec storage path or default
-     */
-    val path: String = "",
+    val identifier: StorageIdentifier = StorageIdentifier(),
 ) : Destination
 
 @Parcelize

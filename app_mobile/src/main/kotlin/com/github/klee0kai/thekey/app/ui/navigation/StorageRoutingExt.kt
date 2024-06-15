@@ -8,7 +8,6 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteGroupDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditStorageGroupDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.GenHistDestination
-import com.github.klee0kai.thekey.app.ui.navigation.model.LoginDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.core.di.identifiers.NoteGroupIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
@@ -28,9 +27,6 @@ fun StorageIdentifier.dest() = StorageDestination(version = version, path = path
 
 fun StorageDestination.identifier() =
     StorageIdentifier(version = version, path = path)
-
-fun LoginDestination.identifier() =
-    StorageIdentifier(version = 0, path = path ?: "")
 
 fun StorageDestination.note(notePtr: Long = 0) =
     EditNoteDestination(storageVersion = version, path = path, note = DecryptedNote(ptnote = notePtr))

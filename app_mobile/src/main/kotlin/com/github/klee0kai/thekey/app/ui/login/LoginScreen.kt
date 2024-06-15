@@ -41,7 +41,6 @@ import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.app.ui.login.presenter.LoginPresenter
-import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.LoginDestination
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
@@ -73,7 +72,7 @@ fun LoginScreen(
     val scope = rememberCoroutineScope()
     val router = LocalRouter.current
     val theme = LocalTheme.current
-    val presenter by rememberOnScreenRef { DI.loginPresenter(dest.identifier()) }
+    val presenter by rememberOnScreenRef { DI.loginPresenter(dest.identifier) }
     val pathInputHelper = remember { DI.pathInputHelper() }
     val currentStorageState by presenter!!.currentStorageFlow.collectAsState(Unit, initial = ColoredStorage())
     var passwordInputText by remember { mutableStateOf("") }
@@ -206,7 +205,7 @@ fun LoginScreen(
         )
 
         if (!imeVisible.current) {
-            if (dest.path.isBlank()) {
+            if (dest.identifier.path.isBlank()) {
                 TextButton(
                     modifier = Modifier
                         .fillMaxWidth()
