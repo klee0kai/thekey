@@ -21,6 +21,9 @@
     <string name="title_autofill">Autofill manager</string>
     <string name="desc_autofill">Password autofill manager</string>
 
+    <string name="title_findstorages">Find storages</string>
+    <string name="desc_findstorages">Search for encrypted storage throughout the phone</string>
+
     <string name="login">Login</string>
     <string name="password">Password</string>
     <string name="app_login_description">Create and remember your passport for your key masster storage</string>
