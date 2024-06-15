@@ -15,6 +15,8 @@ namespace thekey {
 
     std::shared_ptr<Storage> storage(const std::string &path);
 
+    std::shared_ptr<Storage> storage(const int &fd);
+
 }
 
 #endif //THEKEY_KEY_FIND_H

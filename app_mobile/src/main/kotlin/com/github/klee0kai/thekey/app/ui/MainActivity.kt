@@ -17,7 +17,7 @@ open class MainActivity : BaseActivity() {
     override val activityIdentifier: ActivityIdentifier? get() = null
 
     init {
-        router.initDestination(LoginDestination)
+        router.initDestination(LoginDestination())
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

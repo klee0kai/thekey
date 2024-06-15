@@ -15,7 +15,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class LoginPresenterImpl : LoginPresenter {
+class LoginPresenterImpl(
+    overridedPath: String = "",
+) : LoginPresenter {
 
     private val scope = DI.defaultThreadScope()
     private val storagesInteractor = DI.storagesInteractorLazy()
@@ -24,7 +26,7 @@ class LoginPresenterImpl : LoginPresenter {
     private val router = DI.router()
 
     override val currentStorageFlow = coldStateFlow<ColoredStorage> {
-        val storagePath = settingsRep().currentStoragePath()
+        val storagePath = overridedPath.takeIf { it.isNotBlank() } ?: settingsRep().currentStoragePath()
         val storage = storagesInteractor().findStorage(storagePath, mockNew = true).await()
         result.update { storage }
     }.filterNotNull()

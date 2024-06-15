@@ -36,7 +36,7 @@ import com.github.klee0kai.thekey.core.domain.model.feature.model.DynamicFeature
 interface PresentersModule {
 
     @Provide(cache = Provide.CacheType.Weak)
-    open fun loginPresenter(): LoginPresenter = LoginPresenterImpl()
+    open fun loginPresenter(storageIdentifier: StorageIdentifier): LoginPresenter = LoginPresenterImpl(storageIdentifier.path)
 
     @Provide(cache = Provide.CacheType.Weak)
     fun navigationBoardPresenter(): NavigationBoardPresenter = NavigationBoardPresenterImpl()

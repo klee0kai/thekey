@@ -45,7 +45,7 @@ class ScreenResolverImpl : ScreenResolver {
     @Composable
     override fun screenOf(destination: Destination) {
         when (destination) {
-            is LoginDestination -> LoginScreen()
+            is LoginDestination -> LoginScreen(destination)
             is SettingsDestination -> SettingScreen()
             is AboutDestination -> AboutScreen()
             is PluginsDestination -> PluginsScreen()

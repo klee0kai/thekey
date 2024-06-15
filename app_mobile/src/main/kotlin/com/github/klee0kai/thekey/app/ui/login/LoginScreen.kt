@@ -35,12 +35,16 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.app.ui.login.presenter.LoginPresenter
+import com.github.klee0kai.thekey.app.ui.navigation.identifier
+import com.github.klee0kai.thekey.app.ui.navigation.model.LoginDestination
 import com.github.klee0kai.thekey.core.R
+import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
@@ -54,6 +58,7 @@ import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.isIme
 import com.github.klee0kai.thekey.core.utils.views.minInsets
+import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.core.utils.views.toAnnotationString
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -62,13 +67,15 @@ import org.jetbrains.annotations.VisibleForTesting
 import com.github.klee0kai.thekey.core.R as CoreR
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(
+    dest: LoginDestination = LoginDestination(),
+) {
     val scope = rememberCoroutineScope()
     val router = LocalRouter.current
     val theme = LocalTheme.current
-    val presenter = remember { DI.loginPresenter() }
+    val presenter by rememberOnScreenRef { DI.loginPresenter(dest.identifier()) }
     val pathInputHelper = remember { DI.pathInputHelper() }
-    val currentStorageState by presenter.currentStorageFlow.collectAsState(Unit, initial = ColoredStorage())
+    val currentStorageState by presenter!!.currentStorageFlow.collectAsState(Unit, initial = ColoredStorage())
     var passwordInputText by remember { mutableStateOf("") }
     val imeVisible by animateTargetCrossFaded(WindowInsets.isIme)
 
@@ -95,7 +102,7 @@ fun LoginScreen() {
             if (imeVisible.current) {
                 DoneIconButton(
                     modifier = Modifier.alpha(imeVisible.alpha),
-                    onClick = { presenter.login(passwordInputText) }
+                    onClick = { presenter?.login(passwordInputText) }
                 )
             }
         }
@@ -167,9 +174,7 @@ fun LoginScreen() {
             label = { Text(stringResource(R.string.password)) },
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
             keyboardActions = KeyboardActions(
-                onDone = {
-                    presenter.login(passwordInputText)
-                })
+                onDone = { presenter?.login(passwordInputText) })
         )
 
         Text(
@@ -201,21 +206,21 @@ fun LoginScreen() {
         )
 
         if (!imeVisible.current) {
-            TextButton(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .alpha(imeVisible.alpha)
-                    .constrainAs(storagesButton) {
-                        bottom.linkTo(loginButton.top, margin = 12.dp)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                    },
-                colors = LocalColorScheme.current.grayTextButtonColors,
-                onClick = {
-                    presenter.selectStorage()
+            if (dest.path.isBlank()) {
+                TextButton(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .alpha(imeVisible.alpha)
+                        .constrainAs(storagesButton) {
+                            bottom.linkTo(loginButton.top, margin = 12.dp)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                        },
+                    colors = LocalColorScheme.current.grayTextButtonColors,
+                    onClick = { presenter?.selectStorage() }
+                ) {
+                    Text(stringResource(R.string.storages))
                 }
-            ) {
-                Text(stringResource(R.string.storages))
             }
 
             FilledTonalButton(
@@ -227,7 +232,7 @@ fun LoginScreen() {
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                     },
-                onClick = { presenter.login(passwordInputText) }
+                onClick = { presenter?.login(passwordInputText) }
             ) {
                 Text(stringResource(R.string.login))
             }
@@ -246,7 +251,7 @@ fun LoginScreenPreview() = EdgeToEdgeTemplate {
         DI.hardResetToPreview()
         DI.initPresenterModule(
             object : PresentersModule {
-                override fun loginPresenter(): LoginPresenter {
+                override fun loginPresenter(storageIdentifier: StorageIdentifier): LoginPresenter {
                     return object : LoginPresenter {
                         override val currentStorageFlow = MutableStateFlow(ColoredStorage(path = "/app_folder/some_path", name = "editModeStorage"))
                     }
@@ -267,7 +272,7 @@ fun LoginLangScreenPreview() = EdgeToEdgeTemplate {
         DI.hardResetToPreview()
         DI.initPresenterModule(
             object : PresentersModule {
-                override fun loginPresenter(): LoginPresenter {
+                override fun loginPresenter(storageIdentifier: StorageIdentifier): LoginPresenter {
                     return object : LoginPresenter {
                         override val currentStorageFlow = MutableStateFlow(ColoredStorage(path = "/app_folder/some_path", name = "editModeStorage"))
                     }
@@ -287,7 +292,7 @@ fun LoginScreenTabletPreview() = EdgeToEdgeTemplate {
         DI.hardResetToPreview()
         DI.initPresenterModule(
             object : PresentersModule {
-                override fun loginPresenter(): LoginPresenter {
+                override fun loginPresenter(storageIdentifier: StorageIdentifier): LoginPresenter {
                     return object : LoginPresenter {
                         override val currentStorageFlow = MutableStateFlow(ColoredStorage(path = "/app_folder/some_path", name = "editModeStorage"))
                     }

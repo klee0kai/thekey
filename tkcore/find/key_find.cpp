@@ -16,8 +16,19 @@ using namespace thekey;
 using namespace thekey_v1;
 using namespace thekey_v2;
 
+
 std::shared_ptr<Storage> thekey::storage(const std::string &path) {
     int fd = open(path.c_str(), O_RDONLY | O_CLOEXEC);
+    if (fd == -1) return {};
+    auto storage = thekey::storage(fd);
+    if (storage) {
+        storage->file = path;
+    }
+    close(fd);
+    return storage;
+}
+
+std::shared_ptr<Storage> thekey::storage(const int &fd) {
     if (fd == -1) return {};
 
     char headerRaw[MAX(sizeof(thekey_v1::StorageHeaderShort), sizeof(thekey_v2::StorageHeaderShort))];
@@ -35,18 +46,15 @@ std::shared_ptr<Storage> thekey::storage(const std::string &path) {
 
     switch (version) {
         case 1: {
-            auto storage = thekey_v1::storage(fd, path);
-            close(fd);
+            auto storage = thekey_v1::storage(fd,"");
             return storage;
         }
         case 2: {
-            auto storage = thekey_v2::storage(fd, path);
-            close(fd);
+            auto storage = thekey_v2::storage(fd,"");
             return storage;
         }
         default:
             keyError = KEY_STORAGE_VERSION_NOT_SUPPORT;
-            close(fd);
             return {};
     }
 }

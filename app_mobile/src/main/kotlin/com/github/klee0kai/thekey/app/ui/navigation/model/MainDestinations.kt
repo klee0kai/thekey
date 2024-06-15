@@ -14,14 +14,19 @@ import kotlinx.parcelize.Parcelize
 
 
 object MainDestinations {
-    val InitDest = LoginDestination
+    val InitDest = LoginDestination()
 }
 
 @Parcelize
 data object EmptyDestination : Destination
 
 @Parcelize
-data object LoginDestination : Destination
+data class LoginDestination(
+    /**
+     * spec storage path or default
+     */
+    val path: String = "",
+) : Destination
 
 @Parcelize
 data object StoragesDestination : Destination

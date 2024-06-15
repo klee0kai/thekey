@@ -51,3 +51,17 @@ std::shared_ptr<JvmStorageInfo> JvmFindStorageEngine::storageInfo(const std::str
         return {};
     }
 }
+
+std::shared_ptr<JvmStorageInfo> JvmFindStorageEngine::storageInfoFromDescriptor(const int &fd) {
+    auto storage = thekey::storage(fd);
+    if (storage) {
+        return std::make_shared<JvmStorageInfo>(JvmStorageInfo{
+                .path = storage->file,
+                .name = storage->name,
+                .description = storage->description,
+                .version = int(storage->storageVersion)
+        });
+    } else {
+        return {};
+    }
+}
