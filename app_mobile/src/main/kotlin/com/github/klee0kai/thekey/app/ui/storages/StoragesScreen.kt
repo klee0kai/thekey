@@ -2,22 +2,27 @@
 
 package com.github.klee0kai.thekey.app.ui.storages
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -36,10 +41,13 @@ import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditStorageDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditStorageGroupDestination
 import com.github.klee0kai.thekey.app.ui.storages.components.GroupsSelectContent
+import com.github.klee0kai.thekey.app.ui.storages.components.InstallExternalSearchPromo
 import com.github.klee0kai.thekey.app.ui.storages.components.StoragesListContent
 import com.github.klee0kai.thekey.app.ui.storages.presenter.StoragesPresenterDummy
-import com.github.klee0kai.thekey.core.R
+import com.github.klee0kai.thekey.core.domain.ColorGroup
+import com.github.klee0kai.thekey.core.domain.externalStorages
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
+import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.SimpleBottomSheetScaffold
@@ -51,13 +59,16 @@ import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppTitleImage
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.accumulate
+import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
+import com.github.klee0kai.thekey.core.utils.views.isIme
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.core.utils.views.rememberTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.visibleOnTargetAlpha
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import org.jetbrains.annotations.VisibleForTesting
+import com.github.klee0kai.thekey.core.R as CoreR
 
 private const val MainTitleId = 0
 private const val SecondTittleId = 1
@@ -70,6 +81,7 @@ fun StoragesScreen() {
 
     val selectedGroup by presenter!!.selectedGroupId.collectAsState(key = Unit, initial = null)
     val groups by presenter!!.filteredColorGroups.collectAsState(key = Unit, initial = emptyList())
+    val isExtStorageSelected by rememberTargetCrossFaded { selectedGroup == ColorGroup.externalStorages().id }
 
     val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
     var dragProgress by remember { mutableFloatStateOf(1f) }
@@ -88,6 +100,7 @@ fun StoragesScreen() {
         }
     }
     val showStoragesTitle by rememberTargetCrossFaded { dragProgress > 0.1f }
+    val imeIsVisibleAnimated by animateTargetCrossFaded(WindowInsets.isIme)
 
     SimpleBottomSheetScaffold(
         topMargin = AppBarConst.appBarSize + safeContentPaddings.calculateTopPadding(),
@@ -106,30 +119,74 @@ fun StoragesScreen() {
             )
         },
         sheetContent = {
-            StoragesListContent(
-                modifier = Modifier.fillMaxSize(),
-                onEdit = { presenter?.editStorage(storagePath = it.path, router) },
-                onExport = { presenter?.exportStorage(storagePath = it.path, router) },
-                header = {
-                    Text(
-                        text = stringResource(id = R.string.storages),
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier
-                            .padding(start = 16.dp, top = 4.dp, bottom = 22.dp)
-                            .alpha(showStoragesTitle.visibleOnTargetAlpha(true))
-                    )
-                },
-                footer = {
-                    Spacer(modifier = Modifier.height(safeContentPaddings.calculateBottomPadding()))
-                },
-            )
+            if (!isExtStorageSelected.current) {
+                StoragesListContent(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .alpha(isExtStorageSelected.alpha),
+                    onEdit = { presenter?.editStorage(storagePath = it.path, router) },
+                    onExport = { presenter?.exportStorage(storagePath = it.path, router) },
+                    header = {
+                        Text(
+                            text = stringResource(id = CoreR.string.storages),
+                            style = MaterialTheme.typography.titleMedium,
+                            modifier = Modifier
+                                .padding(start = 16.dp, top = 4.dp, bottom = 22.dp)
+                                .alpha(showStoragesTitle.visibleOnTargetAlpha(true))
+                        )
+                    },
+                    footer = {
+                        Spacer(modifier = Modifier.height(safeContentPaddings.calculateBottomPadding()))
+                    },
+                )
+            } else {
+                InstallExternalSearchPromo()
+            }
         }
     )
+
+    if (isExtStorageSelected.current) {
+        Column(
+            modifier = Modifier
+                .alpha(isExtStorageSelected.alpha)
+                .fillMaxWidth()
+                .windowInsetsPadding(WindowInsets.safeContent)
+                .padding(
+                    bottom = 16.dp,
+                    start = 16.dp,
+                    end = 16.dp
+                ),
+        ) {
+            Spacer(modifier = Modifier.weight(1f))
+            if (!imeIsVisibleAnimated.current) {
+                TextButton(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    colors = LocalColorScheme.current.grayTextButtonColors,
+                    onClick = { presenter?.importStorage(router) }
+                ) {
+                    val textRes = CoreR.string.import_storage
+                    Text(stringResource(textRes))
+                }
+            }
+
+            if (!imeIsVisibleAnimated.current) {
+                FilledTonalButton(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .alpha(imeIsVisibleAnimated.alpha),
+                    onClick = { presenter?.installAutoSearchPlugin() }
+                ) {
+                    Text(stringResource(CoreR.string.install))
+                }
+            }
+        }
+    }
 
     AppBarStates(
         titleId = targetTitleId,
         navigationIcon = {
-            IconButton(onClick = remember { { router.back() } }) {
+            IconButton(onClick = { router.back() }) {
                 Icon(
                     Icons.AutoMirrored.Default.ArrowBack,
                     contentDescription = null,
@@ -139,15 +196,18 @@ fun StoragesScreen() {
         titleContent = { titleId ->
             when (titleId) {
                 MainTitleId -> AppTitleImage()
-                SecondTittleId -> Text(text = stringResource(id = R.string.storages))
+                SecondTittleId -> Text(text = stringResource(id = CoreR.string.storages))
             }
         },
     )
 
-    FabSimpleInContainer(
-        onClick = { router.navigate(EditStorageDestination()) },
-        content = { Icon(Icons.Default.Add, contentDescription = "Add") }
-    )
+    if (!isExtStorageSelected.current) {
+        FabSimpleInContainer(
+            modifier = Modifier.alpha(isExtStorageSelected.alpha),
+            onClick = { router.navigate(EditStorageDestination()) },
+            content = { Icon(Icons.Default.Add, contentDescription = "Add") }
+        )
+    }
 }
 
 @OptIn(DebugOnly::class)
@@ -155,16 +215,17 @@ fun StoragesScreen() {
 @Composable
 @Preview(device = Devices.PHONE)
 fun StoragesScreenPreview() = EdgeToEdgeTemplate {
-    DI.hardResetToPreview()
-    DI.initPresenterModule(object : PresentersModule {
-        override fun storagesPresenter() = object : StoragesPresenterDummy(
-            groupsCount = 3,
-            storagesCount = 3,
-        ) {
-
-        }
-    })
     AppTheme {
+        DI.hardResetToPreview()
+        DI.initPresenterModule(object : PresentersModule {
+            override fun storagesPresenter() = object : StoragesPresenterDummy(
+                groupsCount = 3,
+                storagesCount = 3,
+            ) {
+
+            }
+        })
+
         StoragesScreen()
     }
 }

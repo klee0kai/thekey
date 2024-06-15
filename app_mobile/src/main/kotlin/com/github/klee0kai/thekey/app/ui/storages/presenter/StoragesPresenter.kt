@@ -37,4 +37,8 @@ interface StoragesPresenter {
 
     fun editStorage(storagePath: String, router: AppRouter): Job = emptyJob()
 
+    fun importStorage(appRouter: AppRouter): Job = emptyJob()
+
+    fun installAutoSearchPlugin(): Job = emptyJob()
+
 }

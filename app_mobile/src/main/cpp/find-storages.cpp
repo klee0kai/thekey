@@ -37,3 +37,17 @@ int JvmFindStorageEngine::storageVersion(const std::string &path) {
         return 0;
     }
 }
+
+std::shared_ptr<JvmStorageInfo> JvmFindStorageEngine::storageInfo(const std::string &path) {
+    auto storage = thekey::storage(path);
+    if (storage) {
+        return std::make_shared<JvmStorageInfo>(JvmStorageInfo{
+                .path = storage->file,
+                .name = storage->name,
+                .description = storage->description,
+                .version = int(storage->storageVersion)
+        });
+    } else {
+        return {};
+    }
+}

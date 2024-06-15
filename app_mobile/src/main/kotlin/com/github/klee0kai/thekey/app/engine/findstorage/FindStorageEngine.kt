@@ -21,6 +21,8 @@ open class FindStorageEngine {
 
     open external fun storageVersion(path: String): Int
 
+    open external fun storageInfo(path: String): Storage?
+
 }
 
 fun FindStorageEngine.findStoragesFlow(folder: String): Flow<Storage> = callbackFlow {

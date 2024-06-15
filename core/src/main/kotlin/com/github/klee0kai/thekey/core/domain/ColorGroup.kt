@@ -20,3 +20,17 @@ data class ColorGroup(
 
 fun ColorGroup.Companion.noGroup(): ColorGroup =
     ColorGroup(name = CoreDI.ctx().resources.getString(R.string.no), keyColor = KeyColor.NOCOLOR)
+
+fun ColorGroup.Companion.externalStorages(): ColorGroup =
+    ColorGroup(
+        id = -2,
+        name = CoreDI.ctx().resources.getString(R.string.ext),
+        keyColor = KeyColor.TURQUOISE
+    )
+
+fun ColorGroup.Companion.otpNotes(): ColorGroup =
+    ColorGroup(
+        id = -3,
+        name = CoreDI.ctx().resources.getString(R.string.ext),
+        keyColor = KeyColor.TURQUOISE
+    )

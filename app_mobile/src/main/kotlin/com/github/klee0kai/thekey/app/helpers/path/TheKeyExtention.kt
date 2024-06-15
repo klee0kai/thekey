@@ -1,6 +1,7 @@
 package com.github.klee0kai.thekey.app.helpers.path
 
 const val tKeyFormat = ".ckey"
+const val tKeyExtension = "ckey"
 
 fun String.appendTKeyFormat(): String {
     val path = this

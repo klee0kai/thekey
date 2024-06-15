@@ -92,8 +92,11 @@
     <string name="installing">Installing</string>
     <string name="installed">Installed</string>
     <string name="install_error">Install Error</string>
+    <string name="install_storage_search">Install storage search plugin</string>
+    <string name="install_storage_search_hint">find encrypted storage throughout your phone</string>
     <string name="other">Other</string>
     <string name="storage_auto_search">Storages Auto Search</string>
+    <string name="import_storage">Import storage</string>
     <string name="try_again">Try again</string>
     <string name="buy">Buy</string>
     <string name="about">About</string>
@@ -105,7 +108,10 @@
     <string name="color_group_deleted">Color group has been deleted</string>
     <string name="storage_saved">Storage has been saved</string>
     <string name="edit_storages_group">Edit storages group</string>
+    <string name="storage_file_incorrect">Storage file is incorrect</string>
+    <string name="storage_imported">Storage has been imported</string>
     <string name="favorite">Favorite</string>
     <string name="more">More</string>
     <string name="export">Export</string>
+    <string name="ext">EXT</string>
 </resources>

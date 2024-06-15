@@ -16,9 +16,11 @@ class ShortPath(
 
 open class UserShortPaths {
 
+    open val appPath: String = DI.ctx().applicationInfo.dataDir
+
     open val shortPaths by lazy {
         listOf(
-            ShortPath("appdata", DI.ctx().applicationInfo.dataDir),
+            ShortPath("appdata", appPath),
             ShortPath(
                 "phoneStorage",
                 Environment.getExternalStorageDirectory().absolutePath
@@ -35,6 +37,10 @@ open class UserShortPaths {
         get() = shortPaths
             .map { it.short }
             .toTypedArray()
+
+    open fun isExternal(path: String): Boolean {
+        return !path.startsWith(appPath)
+    }
 
     open fun shortPathName(originAbsolutePath: String): String {
         if (originAbsolutePath.isBlank()) {

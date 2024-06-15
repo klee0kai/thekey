@@ -21,6 +21,9 @@ open class SettingsRepository {
     val genPasswIncludeSymbols = booleanDelegate(SETTING_GEN_PASS_INCLUDE_EN) { false }
     val genPasswIncludeSpecSymbols = booleanDelegate(SETTING_GEN_PASS_INCLUDE_SPEC_SYMBOLS) { false }
 
+    val externalStoragesGroup = booleanDelegate(SETTING_EXTERNAL_STORAGES_GROUP) { true }
+    val otpNotesGroup = booleanDelegate(SETTING_OTP_NOTES_GROUP) { true }
+
 
     protected fun stringDelegate(
         settingId: Int,
@@ -45,6 +48,8 @@ open class SettingsRepository {
         private const val SETTING_GEN_PASS_LEN = 247
         private const val SETTING_GEN_PASS_INCLUDE_EN = 43
         private const val SETTING_GEN_PASS_INCLUDE_SPEC_SYMBOLS = 44
+        private const val SETTING_EXTERNAL_STORAGES_GROUP = 55
+        private const val SETTING_OTP_NOTES_GROUP = 55
     }
 
 }
