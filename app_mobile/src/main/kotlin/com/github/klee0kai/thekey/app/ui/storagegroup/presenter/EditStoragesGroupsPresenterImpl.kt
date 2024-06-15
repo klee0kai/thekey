@@ -6,7 +6,7 @@ import com.github.klee0kai.thekey.app.ui.storagegroup.model.colorGroup
 import com.github.klee0kai.thekey.app.ui.storagegroup.model.selected
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.StorageGroupIdentifier
-import com.github.klee0kai.thekey.core.domain.ColorGroup
+import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import com.github.klee0kai.thekey.core.utils.common.launchSafe
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -49,7 +49,7 @@ open class EditStoragesGroupsPresenterImpl(
         val selectedStorages = rep()
             .allStorages
             .firstOrNull()
-            ?.filter { it.colorGroup?.id != null && it.colorGroup.id == originalGroup?.id }
+            ?.filter { it.colorGroup?.id != null && it.colorGroup?.id == originalGroup?.id }
             ?.map { it.path }
             ?: emptyList()
 

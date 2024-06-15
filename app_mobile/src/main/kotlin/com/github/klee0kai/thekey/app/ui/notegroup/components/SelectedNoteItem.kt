@@ -25,7 +25,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.github.klee0kai.thekey.app.ui.notegroup.model.SelectedNote
 import com.github.klee0kai.thekey.core.R
-import com.github.klee0kai.thekey.core.domain.ColorGroup
+import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor

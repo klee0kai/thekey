@@ -1,7 +1,7 @@
 package com.github.klee0kai.thekey.app.ui.login.presenter
 
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.domain.model.ColoredStorage
+import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.app.ui.navigation.dest
 import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.StoragesDestination

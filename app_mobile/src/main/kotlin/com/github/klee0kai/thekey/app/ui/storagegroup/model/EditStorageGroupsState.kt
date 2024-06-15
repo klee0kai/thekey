@@ -1,7 +1,7 @@
 package com.github.klee0kai.thekey.app.ui.storagegroup.model
 
 import android.os.Parcelable
-import com.github.klee0kai.thekey.core.domain.ColorGroup
+import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import kotlinx.parcelize.Parcelize
 

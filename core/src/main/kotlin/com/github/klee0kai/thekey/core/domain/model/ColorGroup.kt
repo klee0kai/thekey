@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.core.domain
+package com.github.klee0kai.thekey.core.domain.model
 
 import android.os.Parcelable
 import com.github.klee0kai.thekey.core.R

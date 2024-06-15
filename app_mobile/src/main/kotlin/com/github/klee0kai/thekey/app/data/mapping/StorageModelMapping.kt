@@ -1,9 +1,9 @@
 package com.github.klee0kai.thekey.app.data.mapping
 
-import com.github.klee0kai.thekey.app.domain.model.ColoredStorage
+import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.app.engine.model.Storage
 import com.github.klee0kai.thekey.core.data.room.entry.StorageFileEntry
-import com.github.klee0kai.thekey.core.domain.ColorGroup
+import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 
 
 fun StorageFileEntry.toStorage(): Storage = this.run {

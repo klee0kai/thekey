@@ -1,6 +1,6 @@
 package com.github.klee0kai.thekey.app.ui.login.presenter
 
-import com.github.klee0kai.thekey.app.domain.model.ColoredStorage
+import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.core.utils.coroutine.emptyJob
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow

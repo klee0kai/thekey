@@ -1,7 +1,7 @@
 package com.github.klee0kai.thekey.app.domain
 
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.domain.model.ColoredStorage
+import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.flow

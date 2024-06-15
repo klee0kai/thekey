@@ -1,8 +1,8 @@
 package com.github.klee0kai.thekey.app.ui.genhist.presenter
 
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.domain.model.HistPassw
-import com.github.klee0kai.thekey.app.domain.model.histPasww
+import com.github.klee0kai.thekey.core.domain.model.HistPassw
+import com.github.klee0kai.thekey.app.engine.model.histPasww
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn

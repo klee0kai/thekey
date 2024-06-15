@@ -1,6 +1,6 @@
 package com.github.klee0kai.thekey.app.ui.navigation
 
-import com.github.klee0kai.thekey.app.domain.model.ColoredStorage
+import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.engine.model.DecryptedOtpNote
 import com.github.klee0kai.thekey.app.engine.model.Storage

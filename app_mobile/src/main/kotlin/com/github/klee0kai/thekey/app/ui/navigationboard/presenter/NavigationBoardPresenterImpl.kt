@@ -1,7 +1,7 @@
 package com.github.klee0kai.thekey.app.ui.navigationboard.presenter
 
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.domain.model.ColoredStorage
+import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map

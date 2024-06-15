@@ -8,7 +8,7 @@ import com.github.klee0kai.thekey.app.ui.storage.model.group
 import com.github.klee0kai.thekey.app.ui.storage.model.sortableFlatText
 import com.github.klee0kai.thekey.app.ui.storage.model.storageItem
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
-import com.github.klee0kai.thekey.core.domain.ColorGroup
+import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow

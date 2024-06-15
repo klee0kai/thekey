@@ -28,7 +28,7 @@ import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
-import com.github.klee0kai.thekey.app.domain.model.ColoredStorage
+import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.app.ui.navigation.model.AboutDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.SettingsDestination
 import com.github.klee0kai.thekey.app.ui.navigationboard.components.CurrentStorageHeader

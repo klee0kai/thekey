@@ -2,6 +2,8 @@ package com.github.klee0kai.thekey.app.engine.model
 
 import android.os.Parcelable
 import com.github.klee0kai.brooklyn.JniPojo
+import com.github.klee0kai.thekey.core.domain.model.ColoredOtpNote
+import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import kotlinx.parcelize.Parcelize
 
 @JniPojo
@@ -60,3 +62,14 @@ enum class OtpAlgo(val code: Int) {
 
 fun DecryptedOtpNote.isEmpty(): Boolean =
     issuer.isEmpty() && name.isEmpty() && secret.isEmpty() && url.isEmpty()
+
+
+fun DecryptedOtpNote.coloredNote(
+    group: ColorGroup? = null,
+    isLoaded: Boolean = false,
+) = ColoredOtpNote(
+    ptnote = ptnote,
+
+    group = group ?: ColorGroup(id = colorGroupId),
+    isLoaded = isLoaded,
+)

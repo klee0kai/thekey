@@ -1,7 +1,7 @@
 package com.github.klee0kai.thekey.app.data.repositories.storages
 
-import com.github.klee0kai.thekey.app.domain.model.ColoredStorage
-import com.github.klee0kai.thekey.core.domain.ColorGroup
+import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
+import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.utils.coroutine.completeAsync
 import com.github.klee0kai.thekey.core.utils.coroutine.emptyJob
 import kotlinx.coroutines.Deferred

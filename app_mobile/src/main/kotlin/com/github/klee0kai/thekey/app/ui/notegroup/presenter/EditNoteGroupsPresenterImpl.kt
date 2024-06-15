@@ -7,7 +7,7 @@ import com.github.klee0kai.thekey.app.ui.notegroup.model.SelectedNote
 import com.github.klee0kai.thekey.app.ui.notegroup.model.selected
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.NoteGroupIdentifier
-import com.github.klee0kai.thekey.core.domain.ColorGroup
+import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import com.github.klee0kai.thekey.core.utils.common.launchLatest
 import com.github.klee0kai.thekey.core.utils.common.launchSafe

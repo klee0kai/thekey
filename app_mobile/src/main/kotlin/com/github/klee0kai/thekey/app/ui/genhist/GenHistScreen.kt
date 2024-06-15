@@ -21,7 +21,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
-import com.github.klee0kai.thekey.app.domain.model.HistPassw
+import com.github.klee0kai.thekey.core.domain.model.HistPassw
 import com.github.klee0kai.thekey.app.ui.genhist.components.HistPasswItem
 import com.github.klee0kai.thekey.app.ui.genhist.presenter.GenHistPresenter
 import com.github.klee0kai.thekey.app.ui.navigation.model.GenHistDestination

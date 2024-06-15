@@ -2,15 +2,15 @@ package com.github.klee0kai.thekey.app.ui.storages.presenter
 
 import com.github.klee0kai.thekey.app.data.mapping.toColoredStorage
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.domain.model.filterBy
-import com.github.klee0kai.thekey.app.domain.model.sortableFlatText
+import com.github.klee0kai.thekey.core.domain.model.filterBy
+import com.github.klee0kai.thekey.core.domain.model.sortableFlatText
 import com.github.klee0kai.thekey.app.helpers.path.tKeyExtension
 import com.github.klee0kai.thekey.app.ui.navigation.createFileIntent
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditStorageDestination
 import com.github.klee0kai.thekey.app.ui.navigation.openFileIntent
 import com.github.klee0kai.thekey.app.ui.storage.model.SearchState
-import com.github.klee0kai.thekey.core.domain.ColorGroup
-import com.github.klee0kai.thekey.core.domain.externalStorages
+import com.github.klee0kai.thekey.core.domain.model.ColorGroup
+import com.github.klee0kai.thekey.core.domain.model.externalStorages
 import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
 import com.github.klee0kai.thekey.core.utils.file.createNewWithSuffix
 import kotlinx.coroutines.flow.MutableStateFlow

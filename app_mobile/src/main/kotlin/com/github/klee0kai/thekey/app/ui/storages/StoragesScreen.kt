@@ -44,8 +44,8 @@ import com.github.klee0kai.thekey.app.ui.storages.components.GroupsSelectContent
 import com.github.klee0kai.thekey.app.ui.storages.components.InstallExternalSearchPromo
 import com.github.klee0kai.thekey.app.ui.storages.components.StoragesListContent
 import com.github.klee0kai.thekey.app.ui.storages.presenter.StoragesPresenterDummy
-import com.github.klee0kai.thekey.core.domain.ColorGroup
-import com.github.klee0kai.thekey.core.domain.externalStorages
+import com.github.klee0kai.thekey.core.domain.model.ColorGroup
+import com.github.klee0kai.thekey.core.domain.model.externalStorages
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
