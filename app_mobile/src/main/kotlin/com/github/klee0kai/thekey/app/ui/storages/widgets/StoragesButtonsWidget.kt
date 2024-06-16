@@ -58,7 +58,8 @@ fun StoragesButtonsWidget(
             if (!imeIsVisibleAnimated.current) {
                 TextButton(
                     modifier = Modifier
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .padding(bottom = 12.dp),
                     colors = LocalColorScheme.current.grayTextButtonColors,
                     onClick = { presenter?.importStorage(router) }
                 ) {
