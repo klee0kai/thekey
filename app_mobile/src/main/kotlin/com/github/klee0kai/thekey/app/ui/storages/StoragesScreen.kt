@@ -48,6 +48,7 @@ import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.accumulate
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
+import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.isIme
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
@@ -60,9 +61,9 @@ private const val SecondTittleId = 1
 
 @Composable
 fun StoragesScreen() {
-    val router = LocalRouter.current
-    val theme = LocalTheme.current
-    val screenResolver = LocalScreenResolver.current
+    val router by LocalRouter.currentRef
+    val theme by LocalTheme.currentRef
+    val screenResolver by LocalScreenResolver.currentRef
     val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
 
     val presenter by rememberOnScreenRef { DI.storagesPresenter().apply { init() } }
@@ -100,13 +101,13 @@ fun StoragesScreen() {
                     .offset(y = dragProgress.topContentOffsetFromDrag()),
                 colorGroups = groups,
                 selectedGroup = selectedGroup,
-                onAdd = { router.navigate(EditStorageGroupDestination()) },
-                onGroupEdit = { router.navigate(EditStorageGroupDestination(it.id)) },
+                onAdd = { router?.navigate(EditStorageGroupDestination()) },
+                onGroupEdit = { router?.navigate(EditStorageGroupDestination(it.id)) },
                 onGroupSelected = { presenter?.selectGroup(it.id) },
             )
         },
         sheetContent = {
-            screenResolver.widget(
+            screenResolver?.widget(
                 modifier = Modifier,
                 widgetId = StoragesListWidgetId(
                     isExtStorageSelected = isExtStorageSelected,
@@ -116,7 +117,7 @@ fun StoragesScreen() {
         }
     )
 
-    screenResolver.widget(
+    screenResolver?.widget(
         modifier = Modifier,
         widgetId = StoragesButtonsWidgetId(
             isExtStorageSelected = isExtStorageSelected,
@@ -126,7 +127,7 @@ fun StoragesScreen() {
     AppBarStates(
         titleId = targetTitleId,
         navigationIcon = {
-            IconButton(onClick = { router.back() }) {
+            IconButton(onClick = { router?.back() }) {
                 Icon(
                     Icons.AutoMirrored.Default.ArrowBack,
                     contentDescription = null,
@@ -140,8 +141,6 @@ fun StoragesScreen() {
             }
         },
     )
-
-
 }
 
 @OptIn(DebugOnly::class)

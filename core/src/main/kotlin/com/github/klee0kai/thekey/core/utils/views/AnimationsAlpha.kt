@@ -97,7 +97,7 @@ fun <T> SwipeProgress<T>.crossFadeAlpha(): TargetAlpha<T> = when {
 }
 
 @Composable
-inline fun <T> animateTargetCrossFaded(target: T, progress: Float = 1f): State<TargetAlpha<T>> {
+inline fun <T> animateTargetCrossFaded(target: T): State<TargetAlpha<T>> {
     val targetAlphaState = remember { mutableStateOf(TargetAlpha(target, target, 1f)) }
     var targetAlpha by targetAlphaState
     var velocity by remember { mutableFloatStateOf(0f) }

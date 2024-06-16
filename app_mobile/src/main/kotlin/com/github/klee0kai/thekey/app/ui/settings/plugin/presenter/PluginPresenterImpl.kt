@@ -48,7 +48,7 @@ open class PluginPresenterImpl(
         delay(1000)
         DI.updateComponentsSoft()
         DI.configRouting()
-        delay(100)
+        delay(1000)
         showInitDynamicFeatureScreen.value = false
     }
 

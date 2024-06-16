@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocal
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.NonRestartableComposable
 import androidx.compose.runtime.State
@@ -157,3 +158,6 @@ fun Modifier.animateContentSizeProduction() = run {
 
 fun Modifier.thenIf(condition: Boolean, block: Modifier.() -> Modifier) =
     if (condition) block() else this
+
+val <T> CompositionLocal<T>.currentRef
+    @Composable get() = rememberOnScreenRef { current }
