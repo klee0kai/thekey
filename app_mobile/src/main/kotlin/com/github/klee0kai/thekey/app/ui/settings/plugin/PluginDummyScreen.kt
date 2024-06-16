@@ -107,8 +107,8 @@ fun PluginDummyScreen(dest: DynamicDestination) {
                     },
                 onClick = {
                     when (featureStatus) {
-                        NotInstalled, InstallError -> presenter?.install()
-                        Installed, is Installing -> presenter?.uninstall()
+                        NotInstalled, InstallError -> presenter?.install(router)
+                        Installed, is Installing -> presenter?.uninstall(router)
                     }
                 },
                 colors = when (featureStatus) {

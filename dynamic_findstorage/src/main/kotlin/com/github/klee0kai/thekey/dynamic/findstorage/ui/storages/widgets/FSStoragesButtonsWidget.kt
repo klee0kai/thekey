@@ -34,9 +34,9 @@ import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.isIme
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
+import com.github.klee0kai.thekey.dynamic.findstorage.R
 import com.github.klee0kai.thekey.dynamic.findstorage.di.FSDI
 import com.github.klee0kai.thekey.dynamic.findstorage.di.hardResetToPreview
-import com.github.klee0kai.thekey.core.R as CoreR
 
 @Composable
 fun FSStoragesButtonsWidget(
@@ -75,7 +75,7 @@ fun FSStoragesButtonsWidget(
                     colors = LocalColorScheme.current.grayTextButtonColors,
                     onClick = { presenter?.importStorage(router) }
                 ) {
-                    val textRes = CoreR.string.import_storage
+                    val textRes = R.string.import_storage
                     Text(stringResource(textRes))
                 }
 
@@ -85,7 +85,7 @@ fun FSStoragesButtonsWidget(
                         .alpha(imeIsVisibleAnimated.alpha),
                     onClick = { presenter?.requestPermissions(router) }
                 ) {
-                    Text(stringResource(CoreR.string.grant_permissions))
+                    Text(stringResource(R.string.grant_permissions))
                 }
             }
         }

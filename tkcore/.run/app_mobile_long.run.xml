@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="app_mobile" type="AndroidRunConfigurationType" factoryName="Android App" singleton="true">
+  <configuration default="false" name="app_mobile_long" type="AndroidRunConfigurationType" factoryName="Android App" singleton="true">
     <module name="TheKey.app_mobile.main" />
     <option name="DEPLOY" value="true" />
     <option name="DEPLOY_APK_FROM_BUNDLE" value="true" />
@@ -9,7 +9,7 @@
     <option name="ALL_USERS" value="false" />
     <option name="ALWAYS_INSTALL_WITH_PM" value="true" />
     <option name="CLEAR_APP_STORAGE" value="false" />
-    <option name="DYNAMIC_FEATURES_DISABLED_LIST" value="TheKey.dynamic_qrcodescanner" />
+    <option name="DYNAMIC_FEATURES_DISABLED_LIST" value="TheKey.dynamic_findstorage,TheKey.dynamic_qrcodescanner,TheKey.private.dynamic_autofill" />
     <option name="ACTIVITY_EXTRA_FLAGS" value="" />
     <option name="MODE" value="default_activity" />
     <option name="CLEAR_LOGCAT" value="false" />
@@ -63,8 +63,8 @@
     <option name="SEARCH_ACTIVITY_IN_GLOBAL_SCOPE" value="false" />
     <option name="SKIP_ACTIVITY_VALIDATION" value="false" />
     <method v="2">
+      <option name="Gradle.BeforeRunTask" enabled="false" tasks="pushFeatureDebug" externalProjectPath="$PROJECT_DIR$" vmOptions="" scriptParameters="" />
       <option name="Android.Gradle.BeforeRunTask" enabled="true" />
-      <option name="Gradle.BeforeRunTask" enabled="true" tasks="pushFeatureDebug" externalProjectPath="$PROJECT_DIR$" vmOptions="" scriptParameters="" />
     </method>
   </configuration>
 </component>

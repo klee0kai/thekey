@@ -116,5 +116,4 @@
     <string name="more">More</string>
     <string name="export">Export</string>
     <string name="ext">EXT</string>
-    <string name="grant_rights_hint">Grant permissions to the storage to search for tkey files</string>
 </resources>

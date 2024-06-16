@@ -79,7 +79,7 @@ class DynamicFeaturesManagerDebug : DynamicFeaturesManager {
             IntentFilter().apply {
                 addAction(INSTALL_ACTION)
             },
-            ContextCompat.RECEIVER_EXPORTED
+            ContextCompat.RECEIVER_EXPORTED,
         )
     }
 

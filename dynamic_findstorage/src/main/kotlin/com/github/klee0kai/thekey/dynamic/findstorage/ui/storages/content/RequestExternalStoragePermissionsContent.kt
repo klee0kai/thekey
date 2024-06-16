@@ -13,7 +13,6 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.dynamic.findstorage.R
-import com.github.klee0kai.thekey.core.R as CoreR
 
 
 @Composable
@@ -41,7 +40,7 @@ fun RequestExternalStoragePermissionsContent() {
         )
 
         Text(
-            text = stringResource(id = CoreR.string.grant_rights_hint),
+            text = stringResource(id = R.string.grant_rights_hint),
             style = theme.typeScheme.typography.labelSmall,
             modifier = Modifier
                 .alpha(0.4f)

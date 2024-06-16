@@ -2,6 +2,7 @@ package com.github.klee0kai.thekey.app.ui.storages.presenter
 
 import com.github.klee0kai.thekey.app.data.mapping.toColoredStorage
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.features.findStorage
 import com.github.klee0kai.thekey.app.helpers.path.tKeyExtension
 import com.github.klee0kai.thekey.app.ui.navigation.createFileIntent
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditStorageDestination
@@ -9,6 +10,7 @@ import com.github.klee0kai.thekey.app.ui.navigation.openFileIntent
 import com.github.klee0kai.thekey.app.ui.storage.model.SearchState
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.domain.model.externalStorages
+import com.github.klee0kai.thekey.core.domain.model.feature.model.DynamicFeature
 import com.github.klee0kai.thekey.core.domain.model.filterBy
 import com.github.klee0kai.thekey.core.domain.model.sortableFlatText
 import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
@@ -32,6 +34,7 @@ import com.github.klee0kai.thekey.core.R as CoreR
 open class StoragesPresenterImpl : StoragesPresenter {
 
     private val ctx = DI.ctx()
+    private val installFindStoragePresenter = DI.pluginPresenter(DynamicFeature.findStorage())
     private val rep = DI.storagesRepositoryLazy()
     private val interactor = DI.storagesInteractorLazy()
     private val settings = DI.settingsRepositoryLazy()
@@ -39,6 +42,8 @@ open class StoragesPresenterImpl : StoragesPresenter {
     private val shortPath = DI.userShortPaths()
     private val engine = DI.findStorageEngineLazy()
     private val dateFormat by lazy { SimpleDateFormat.getDateInstance() }
+
+    override val installAutoSearchStatus = installFindStoragePresenter.status
 
     override val searchState = MutableStateFlow(SearchState())
     override val selectedGroupId = MutableStateFlow<Long?>(null)
@@ -150,8 +155,7 @@ open class StoragesPresenterImpl : StoragesPresenter {
         }
     }
 
-    override fun installAutoSearchPlugin() = scope.launch {
-
-    }
+    override fun installAutoSearchPlugin(appRouter: AppRouter) =
+        installFindStoragePresenter.install(appRouter)
 
 }

@@ -1,15 +1,19 @@
 package com.github.klee0kai.thekey.app.ui.storages.presenter
 
-import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.app.ui.storage.model.SearchState
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
+import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
+import com.github.klee0kai.thekey.core.domain.model.feature.model.InstallStatus
 import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
 import com.github.klee0kai.thekey.core.utils.coroutine.emptyJob
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.emptyFlow
 
 interface StoragesPresenter {
+
+    val installAutoSearchStatus: Flow<InstallStatus> get() = emptyFlow()
 
     val searchState: Flow<SearchState>
         get() = MutableStateFlow(SearchState())
@@ -39,6 +43,6 @@ interface StoragesPresenter {
 
     fun importStorage(appRouter: AppRouter): Job = emptyJob()
 
-    fun installAutoSearchPlugin(): Job = emptyJob()
+    fun installAutoSearchPlugin(appRouter: AppRouter): Job = emptyJob()
 
 }

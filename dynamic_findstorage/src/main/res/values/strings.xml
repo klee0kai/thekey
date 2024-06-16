@@ -2,5 +2,9 @@
 <resources>
 
     <string name="grant_rights">Grant rights</string>
+    <string name="grant_rights_hint">Grant permissions to the storage to search for tkey files</string>
     <string name="find_external_storage_purpose">To Find external master storages need:</string>
+    <string name="import_storage">Import Storage</string>
+    <string name="grant_permissions">Grant permissions</string>
+    <string name="storages">Storages</string>
 </resources>

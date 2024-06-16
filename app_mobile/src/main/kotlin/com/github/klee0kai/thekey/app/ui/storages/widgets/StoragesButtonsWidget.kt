@@ -72,7 +72,7 @@ fun StoragesButtonsWidget(
                     modifier = Modifier
                         .fillMaxWidth()
                         .alpha(imeIsVisibleAnimated.alpha),
-                    onClick = { presenter?.installAutoSearchPlugin() }
+                    onClick = { presenter?.installAutoSearchPlugin(router) }
                 ) {
                     Text(stringResource(R.string.install))
                 }
