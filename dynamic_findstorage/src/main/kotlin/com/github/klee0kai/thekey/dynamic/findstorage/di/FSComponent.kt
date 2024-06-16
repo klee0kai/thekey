@@ -4,6 +4,7 @@ import com.github.klee0kai.stone.KotlinWrappersStone
 import com.github.klee0kai.stone.Stone
 import com.github.klee0kai.stone.annotations.component.Component
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.di.dependencies.AppComponentProviders
 import com.github.klee0kai.thekey.core.di.CoreDI
 import com.github.klee0kai.thekey.core.di.dependecies.CoreDependencyProvider
 import com.github.klee0kai.thekey.core.di.hardResetToPreview
@@ -11,13 +12,14 @@ import com.github.klee0kai.thekey.core.di.identifiers.ActivityIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.NoteGroupIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.PluginIdentifier
+import com.github.klee0kai.thekey.core.di.identifiers.StorageGroupIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.di.wrap.AppWrappersStone
 import com.github.klee0kai.thekey.core.domain.model.feature.model.DynamicFeature
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.dynamic.findstorage.di.deps.FSProviders
 
-var FindStorageDI: FindStorageComponent = initFindStorageComponent()
+var FSDI: FindStorageComponent = initFindStorageComponent()
     private set
 
 @Component(
@@ -26,6 +28,7 @@ var FindStorageDI: FindStorageComponent = initFindStorageComponent()
         StorageIdentifier::class,
         NoteIdentifier::class,
         NoteGroupIdentifier::class,
+        StorageGroupIdentifier::class,
         PluginIdentifier::class,
         DynamicFeature::class,
     ],
@@ -34,16 +37,17 @@ var FindStorageDI: FindStorageComponent = initFindStorageComponent()
         AppWrappersStone::class,
     ],
 )
-interface FindStorageComponent : FSProviders, FindStoragesModules, CoreDependencyProvider {
+interface FindStorageComponent : FSProviders, FSModules, AppComponentProviders, CoreDependencyProvider {
 
 }
 
 @DebugOnly
 fun FindStorageComponent.hardResetToPreview() {
     DI.hardResetToPreview()
-    FindStorageDI = initFindStorageComponent()
+    FSDI = initFindStorageComponent()
 }
 
 private fun initFindStorageComponent() = Stone.createComponent(FindStorageComponent::class.java).apply {
     initCoreDeps(CoreDI)
+    initAppDeps(DI)
 }

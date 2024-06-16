@@ -1,24 +1,26 @@
 package com.github.klee0kai.thekey.dynamic.findstorage.ui.navigation
 
 import androidx.compose.runtime.Composable
-import com.github.klee0kai.thekey.app.ui.editstorage.EditStorageScreen
-import com.github.klee0kai.thekey.app.ui.navigation.model.EditStorageDestination
-import com.github.klee0kai.thekey.app.ui.navigation.model.StoragesDestination
-import com.github.klee0kai.thekey.app.ui.storages.StoragesScreen
-import com.github.klee0kai.thekey.core.ui.navigation.model.Destination
+import androidx.compose.ui.Modifier
+import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesButtonsWidgetId
+import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesListWidgetId
+import com.github.klee0kai.thekey.core.ui.navigation.model.WidgetId
 import com.github.klee0kai.thekey.core.ui.navigation.screenresolver.ScreenResolver
+import com.github.klee0kai.thekey.dynamic.findstorage.ui.storages.widgets.FSStoragesButtonsWidget
+import com.github.klee0kai.thekey.dynamic.findstorage.ui.storages.widgets.FSStoragesListWidget
 
 class FSScreenResolverExt(
     private val origin: ScreenResolver,
 ) : ScreenResolver by origin {
 
     @Composable
-    override fun screenOf(destination: Destination) {
-        when (destination) {
-            is StoragesDestination -> StoragesScreen()
-            is EditStorageDestination -> EditStorageScreen(path = destination.path)
+    override fun widget(modifier: Modifier, widgetId: WidgetId) {
+        when (widgetId) {
+            is StoragesListWidgetId -> FSStoragesListWidget(widgetId)
+            is StoragesButtonsWidgetId -> FSStoragesButtonsWidget(widgetId)
 
-            else -> origin.screenOf(destination)
+            else -> origin.widget(modifier, widgetId)
         }
     }
+
 }

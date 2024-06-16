@@ -32,8 +32,8 @@ import com.github.klee0kai.thekey.app.ui.storage.StorageScreen
 import com.github.klee0kai.thekey.app.ui.storagegroup.EditStorageGroupsScreen
 import com.github.klee0kai.thekey.app.ui.storages.SelectStorageDialog
 import com.github.klee0kai.thekey.app.ui.storages.StoragesScreen
-import com.github.klee0kai.thekey.app.ui.storages.components.StoragesButtonsWidget
-import com.github.klee0kai.thekey.app.ui.storages.components.StoragesListWidget
+import com.github.klee0kai.thekey.app.ui.storages.widgets.StoragesButtonsWidget
+import com.github.klee0kai.thekey.app.ui.storages.widgets.StoragesListWidget
 import com.github.klee0kai.thekey.core.ui.devkit.DesignScreen
 import com.github.klee0kai.thekey.core.ui.devkit.EmptyScreen
 import com.github.klee0kai.thekey.core.ui.devkit.dialogs.AlertDialogScreen

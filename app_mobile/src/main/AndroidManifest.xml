@@ -2,10 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission
-        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <application
@@ -56,9 +52,9 @@
 
         <provider
             android:name="androidx.startup.InitializationProvider"
-            tools:node="remove"
+            android:authorities="com.github.klee0kai.thekey.app.androidx-startup"
             tools:ignore="MissingClass"
-            android:authorities="com.github.klee0kai.thekey.app.androidx-startup" />
+            tools:node="remove" />
 
 
     </application>

@@ -93,7 +93,12 @@ fun ScanQRCodeScreen() {
                     colors = LocalColorScheme.current.grayTextButtonColors,
                     onClick = {
                         scope.launch {
-                            permissionHelper.askPermissionsIfNeed(permissionHelper.cameraPermissions(), TextProvider("qrCode"))
+                            with(permissionHelper) {
+                                router.askPermissionsIfNeed(
+                                    perms = permissionHelper.cameraPermissions(),
+                                    purpose = TextProvider("qrCode")
+                                )
+                            }
                             permGranded = permissionHelper.checkPermissions(permissionHelper.cameraPermissions())
                         }
                     }

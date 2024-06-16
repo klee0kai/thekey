@@ -23,7 +23,7 @@ fun DynamicFeature.Companion.findStorage() = DynamicFeature(
     moduleName = "findstorage",
     titleRes = R.string.title_findstorages,
     descRes = R.string.desc_findstorages,
-    featureLibApiClass = "com.github.klee0kai.thekey.dynamic.qrcodescanner.FindStorageImpl",
+    featureLibApiClass = "com.github.klee0kai.thekey.dynamic.findstorage.FindStorageImpl",
     isCommunity = true,
 )
 

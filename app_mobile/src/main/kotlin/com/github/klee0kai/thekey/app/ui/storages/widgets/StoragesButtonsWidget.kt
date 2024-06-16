@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.ui.storages.components
+package com.github.klee0kai.thekey.app.ui.storages.widgets
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -40,7 +40,7 @@ fun StoragesButtonsWidget(
     val theme = LocalTheme.current
     val isExtStorageSelected by animateTargetCrossFaded(target = widget.isExtStorageSelected)
     val imeIsVisibleAnimated by animateTargetCrossFaded(WindowInsets.isIme)
-    val presenter by rememberOnScreenRef { DI.storagesPresenter().apply { init() } }
+    val presenter by rememberOnScreenRef { DI.storagesPresenter() }
 
     if (isExtStorageSelected.current) {
         Column(

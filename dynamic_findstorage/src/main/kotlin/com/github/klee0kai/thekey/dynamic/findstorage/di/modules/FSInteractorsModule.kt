@@ -5,7 +5,7 @@ import com.github.klee0kai.stone.annotations.module.Provide
 import com.github.klee0kai.thekey.dynamic.findstorage.domain.FindStorageInteractor
 
 @Module
-interface FindStoragesInteractorsModule {
+interface FSInteractorsModule {
 
     @Provide(cache = Provide.CacheType.Weak)
     fun findStoragesInteractor(): FindStorageInteractor

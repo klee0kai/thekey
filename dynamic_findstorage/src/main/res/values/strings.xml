@@ -2,4 +2,5 @@
 <resources>
 
     <string name="grant_rights">Grant rights</string>
+    <string name="find_external_storage_purpose">To Find external master storages need:</string>
 </resources>

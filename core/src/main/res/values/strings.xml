@@ -54,7 +54,6 @@
     <string name="manageExnternalStorage">Manage external storage</string>
     <string name="reject">Reject</string>
     <string name="go_to_settings">Go To settings</string>
-    <string name="find_external_storage_purpose">To Find external master storages need:</string>
     <string name="copied_to_clipboard">Copied to clipboard</string>
     <string name="gen_history">Gen Password History</string>
     <string name="note_is_empty">Note is empty</string>
