@@ -11,6 +11,7 @@ import com.github.klee0kai.thekey.dynamic.findstorage.di.FSDI
 import com.github.klee0kai.thekey.dynamic.findstorage.perm.writeStoragePermissions
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
 class FSStoragesPresenterImpl(
@@ -21,7 +22,7 @@ class FSStoragesPresenterImpl(
     private val perm = FSDI.permissionsHelper()
     private val interactor = FSDI.findStoragesInteractorLazy()
 
-    override val isStoragesSearchingProgress = MutableStateFlow(false)
+    override val isStoragesSearchingProgress = flow { interactor().searchState.collect(this) }
 
     override val isPermissionGranted = coldStateFlow {
         result.value = perm.checkPermissions(perm.writeStoragePermissions())
@@ -40,9 +41,7 @@ class FSStoragesPresenterImpl(
     }
 
     override fun searchStorages() = scope.launchIfNotStarted("search") {
-        isStoragesSearchingProgress.value = true
         interactor().findStoragesIfNeed(force = true)
-        isStoragesSearchingProgress.value = false
     }
 
 }
