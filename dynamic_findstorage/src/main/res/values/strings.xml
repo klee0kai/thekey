@@ -7,4 +7,5 @@
     <string name="import_storage">Import Storage</string>
     <string name="grant_permissions">Grant permissions</string>
     <string name="storages">Storages</string>
+    <string name="strorage_searching">Storage searching...</string>
 </resources>

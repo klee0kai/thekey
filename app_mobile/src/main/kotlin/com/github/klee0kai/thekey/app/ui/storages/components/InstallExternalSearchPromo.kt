@@ -17,10 +17,12 @@ import com.github.klee0kai.thekey.core.R as CoreR
 
 
 @Composable
-fun InstallExternalSearchPromo() {
+fun InstallExternalSearchPromo(
+    modifier: Modifier = Modifier,
+) {
     val theme = LocalTheme.current
     ConstraintLayout(
-        modifier = Modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize()
     ) {
         val (titleField, hintField) = createRefs()
 

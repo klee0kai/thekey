@@ -21,48 +21,69 @@ import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.storages.components.InstallExternalSearchPromo
 import com.github.klee0kai.thekey.app.ui.storages.components.StoragesListContent
 import com.github.klee0kai.thekey.core.R
+import com.github.klee0kai.thekey.core.domain.model.feature.model.isInstalled
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
-import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesListWidgetId
+import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesListWidgetState
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.core.utils.views.visibleOnTargetAlpha
 
 @Composable
-fun StoragesListWidget(widget: StoragesListWidgetId = StoragesListWidgetId()) {
+fun StoragesListWidget(
+    modifier: Modifier = Modifier,
+    state: StoragesListWidgetState = StoragesListWidgetState(),
+) {
     val router = LocalRouter.current
     val theme = LocalTheme.current
     val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
-
-    val isExtStorageSelected by animateTargetCrossFaded(target = widget.isExtStorageSelected)
-    val showStoragesTitle by animateTargetCrossFaded(target = widget.isShowStoragesTitle)
     val presenter by rememberOnScreenRef { DI.storagesPresenter() }
+    val isFindStoragesNoteInstalled by presenter!!.installAutoSearchStatus.collectAsState(key = Unit, initial = null)
 
-    if (!isExtStorageSelected.current) {
-        StoragesListContent(
-            modifier = Modifier
-                .fillMaxSize()
-                .alpha(isExtStorageSelected.alpha),
-            onEdit = { presenter?.editStorage(storagePath = it.path, router) },
-            onExport = { presenter?.exportStorage(storagePath = it.path, router) },
-            header = {
-                Text(
-                    text = stringResource(id = R.string.storages),
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier
-                        .padding(start = 16.dp, top = 4.dp, bottom = 22.dp)
-                        .alpha(showStoragesTitle.visibleOnTargetAlpha(true))
-                )
-            },
-            footer = {
-                Spacer(modifier = Modifier.height(safeContentPaddings.calculateBottomPadding()))
-            },
-        )
-    } else {
-        InstallExternalSearchPromo()
+    val isShowInstallPluginPromo by animateTargetCrossFaded(
+        target = isFindStoragesNoteInstalled?.let {
+            state.isExtStorageSelected && !it.isInstalled
+        },
+        skipStates = listOf(null),
+    )
+    val showStoragesTitle by animateTargetCrossFaded(target = state.isShowStoragesTitle)
+
+    when {
+        isShowInstallPluginPromo.current == null -> Unit
+        isShowInstallPluginPromo.current == true -> {
+            InstallExternalSearchPromo(
+                modifier = modifier
+                    .alpha(isShowInstallPluginPromo.alpha),
+            )
+        }
+
+        else -> {
+            StoragesListContent(
+                modifier = modifier
+                    .fillMaxSize()
+                    .alpha(isShowInstallPluginPromo.alpha),
+                onEdit = { presenter?.editStorage(storagePath = it.path, router) },
+                onExport = { presenter?.exportStorage(storagePath = it.path, router) },
+                header = {
+                    Text(
+                        text = stringResource(id = R.string.storages),
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier
+                            .padding(start = 16.dp, top = 4.dp, bottom = 22.dp)
+                            .alpha(showStoragesTitle.visibleOnTargetAlpha(true))
+                    )
+                },
+                footer = {
+                    Spacer(modifier = modifier.height(safeContentPaddings.calculateBottomPadding()))
+                },
+            )
+        }
+
     }
+
 }
 
 
@@ -70,7 +91,7 @@ fun StoragesListWidget(widget: StoragesListWidgetId = StoragesListWidgetId()) {
 @Preview
 fun StoragesListWidgetPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     StoragesListWidget(
-        StoragesListWidgetId(
+        state = StoragesListWidgetState(
             isExtStorageSelected = true,
         )
     )

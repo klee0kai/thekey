@@ -34,15 +34,17 @@ import com.github.klee0kai.thekey.app.ui.storages.SelectStorageDialog
 import com.github.klee0kai.thekey.app.ui.storages.StoragesScreen
 import com.github.klee0kai.thekey.app.ui.storages.widgets.StoragesButtonsWidget
 import com.github.klee0kai.thekey.app.ui.storages.widgets.StoragesListWidget
+import com.github.klee0kai.thekey.app.ui.storages.widgets.StoragesStatusBarWidget
 import com.github.klee0kai.thekey.core.ui.devkit.DesignScreen
 import com.github.klee0kai.thekey.core.ui.devkit.EmptyScreen
 import com.github.klee0kai.thekey.core.ui.devkit.dialogs.AlertDialogScreen
 import com.github.klee0kai.thekey.core.ui.navigation.model.AlertDialogDestination
 import com.github.klee0kai.thekey.core.ui.navigation.model.Destination
 import com.github.klee0kai.thekey.core.ui.navigation.model.DynamicDestination
-import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesButtonsWidgetId
-import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesListWidgetId
-import com.github.klee0kai.thekey.core.ui.navigation.model.WidgetId
+import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesButtonsWidgetState
+import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesListWidgetState
+import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesStatusBarWidgetState
+import com.github.klee0kai.thekey.core.ui.navigation.model.WidgetState
 import com.github.klee0kai.thekey.core.ui.navigation.screenresolver.ScreenResolver
 import timber.log.Timber
 
@@ -81,10 +83,14 @@ class ScreenResolverImpl : ScreenResolver {
     }
 
     @Composable
-    override fun widget(modifier: Modifier, widgetId: WidgetId) {
-        when (widgetId) {
-            is StoragesListWidgetId -> StoragesListWidget(widgetId)
-            is StoragesButtonsWidgetId -> StoragesButtonsWidget(widgetId)
+    override fun widget(
+        modifier: Modifier,
+        widgetState: WidgetState,
+    ) {
+        when (widgetState) {
+            is StoragesListWidgetState -> StoragesListWidget(modifier, widgetState)
+            is StoragesButtonsWidgetState -> StoragesButtonsWidget(modifier, widgetState)
+            is StoragesStatusBarWidgetState -> StoragesStatusBarWidget(modifier, widgetState)
         }
     }
 

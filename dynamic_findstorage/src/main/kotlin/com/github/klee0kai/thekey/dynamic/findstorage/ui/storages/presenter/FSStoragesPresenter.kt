@@ -9,8 +9,13 @@ import kotlinx.coroutines.flow.emptyFlow
 
 interface FSStoragesPresenter : StoragesPresenter {
 
+    val isStoragesSearchingProgress: Flow<Boolean> get() = emptyFlow()
+
     val isPermissionGranted: Flow<Boolean> get() = emptyFlow()
 
+
     fun requestPermissions(appRouter: AppRouter): Job = emptyJob()
+
+    fun searchStorages(): Job = emptyJob()
 
 }

@@ -32,7 +32,8 @@ import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.components.FabSimpleInContainer
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
-import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesButtonsWidgetId
+import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesButtonsWidgetState
+import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesListWidgetState
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
@@ -44,23 +45,30 @@ import com.github.klee0kai.thekey.dynamic.findstorage.di.hardResetToPreview
 import com.github.klee0kai.thekey.dynamic.findstorage.di.modules.FSPresentersModule
 import com.github.klee0kai.thekey.dynamic.findstorage.ui.storages.presenter.FSStoragesPresenter
 import kotlinx.coroutines.flow.MutableStateFlow
-import timber.log.Timber
 
 @Composable
 fun FSStoragesButtonsWidget(
-    widget: StoragesButtonsWidgetId = StoragesButtonsWidgetId()
-) = Box(modifier = Modifier.fillMaxSize()) {
+    modifier: Modifier = Modifier,
+    widget: StoragesButtonsWidgetState = StoragesButtonsWidgetState(),
+    parent: @Composable (modifier: Modifier, state: StoragesListWidgetState) -> Unit = { _, _ -> },
+) = Box(modifier = modifier.fillMaxSize()) {
     val router = LocalRouter.current
     val theme = LocalTheme.current
     val presenter by rememberOnScreenRef { FSDI.fsStoragesPresenter() }
 
     val imeIsVisibleAnimated by animateTargetCrossFaded(WindowInsets.isIme)
     val isPermissionsGranted by presenter!!.isPermissionGranted.collectAsState(key = Unit, initial = null)
-    val isExtStorageSelected by animateTargetCrossFaded(target = widget.isExtStorageSelected)
+    val isStorageSearching by presenter!!.isStoragesSearchingProgress.collectAsState(key = Unit, initial = false)
+
+    val isExtStorageSelected by animateTargetCrossFaded(
+        target = widget.isExtStorageSelected,
+    )
     val showPermissionAnimated by animateTargetCrossFaded(
         target = isPermissionsGranted?.let { widget.isExtStorageSelected && !it },
         skipStates = listOf(null),
     )
+    val showSearchExt = isExtStorageSelected.current && showPermissionAnimated.current == false
+    val hideSearchWhileSearching by animateTargetCrossFaded(target = showSearchExt && isStorageSearching)
 
     when {
         showPermissionAnimated.current == null -> Unit
@@ -101,11 +109,15 @@ fun FSStoragesButtonsWidget(
             }
         }
 
+        hideSearchWhileSearching.current -> {
+            // no button. Searching already started
+        }
+
         else -> {
-            val showSearchExt = isExtStorageSelected.current && showPermissionAnimated.current == false
             FabSimpleInContainer(
                 modifier = Modifier
                     .alpha(showPermissionAnimated.alpha)
+                    .alpha(hideSearchWhileSearching.alpha)
                     .alpha(imeIsVisibleAnimated.alpha),
                 square = showSearchExt,
                 containerColor = if (showSearchExt) {
@@ -115,7 +127,7 @@ fun FSStoragesButtonsWidget(
                 },
                 onClick = {
                     if (showSearchExt) {
-                        presenter?.importStorage(router)
+                        presenter?.searchStorages()
                     } else {
                         router.navigate(EditStorageDestination())
                     }
@@ -151,7 +163,7 @@ fun FSStoragesButtonsNotGrantedPreview() = AppTheme(theme = DefaultThemes.darkTh
         }
     })
     FSStoragesButtonsWidget(
-        widget = StoragesButtonsWidgetId(
+        widget = StoragesButtonsWidgetState(
             isExtStorageSelected = true,
         )
     )
@@ -169,7 +181,7 @@ fun FSStoragesButtonsGrantedPreview() = AppTheme(theme = DefaultThemes.darkTheme
         }
     })
     FSStoragesButtonsWidget(
-        widget = StoragesButtonsWidgetId(
+        widget = StoragesButtonsWidgetState(
             isExtStorageSelected = true,
         )
     )

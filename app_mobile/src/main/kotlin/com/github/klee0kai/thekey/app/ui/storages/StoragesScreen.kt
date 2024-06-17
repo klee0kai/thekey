@@ -11,7 +11,6 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -19,7 +18,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -41,10 +39,10 @@ import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.topContentAlphaFrom
 import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.topContentOffsetFromDrag
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
-import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppTitleImage
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
-import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesButtonsWidgetId
-import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesListWidgetId
+import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesButtonsWidgetState
+import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesListWidgetState
+import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesStatusBarWidgetState
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.accumulate
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
@@ -55,10 +53,6 @@ import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import org.jetbrains.annotations.VisibleForTesting
-import com.github.klee0kai.thekey.core.R as CoreR
-
-private const val MainTitleId = 0
-private const val SecondTittleId = 1
 
 @Composable
 fun StoragesScreen() {
@@ -73,18 +67,11 @@ fun StoragesScreen() {
     val groups by presenter!!.filteredColorGroups.collectAsState(key = Unit, initial = emptyList())
 
     var dragProgress by remember { mutableFloatStateOf(1f) }
-    val mainTitleVisibility by accumulate<Boolean?>(null) { old ->
+    val titleContentExpanded by accumulate<Boolean?>(null) { old ->
         when {
-            dragProgress < 0.1 -> false
-            dragProgress > 0.3 -> true
+            dragProgress < 0.1 -> true
+            dragProgress > 0.3 -> false
             else -> old
-        }
-    }
-    val targetTitleId = rememberDerivedStateOf {
-        when (mainTitleVisibility) {
-            true -> MainTitleId
-            false -> SecondTittleId
-            null -> 0
         }
     }
     val isExtStorageSelected by rememberDerivedStateOf { selectedGroup == ColorGroup.externalStorages().id }
@@ -110,7 +97,7 @@ fun StoragesScreen() {
         sheetContent = {
             screenResolver?.widget(
                 modifier = Modifier,
-                widgetId = StoragesListWidgetId(
+                widgetState = StoragesListWidgetState(
                     isExtStorageSelected = isExtStorageSelected,
                     isShowStoragesTitle = showStoragesTitle,
                 ),
@@ -120,13 +107,12 @@ fun StoragesScreen() {
 
     screenResolver?.widget(
         modifier = Modifier,
-        widgetId = StoragesButtonsWidgetId(
+        widgetState = StoragesButtonsWidgetState(
             isExtStorageSelected = isExtStorageSelected,
         )
     )
 
     AppBarStates(
-        titleId = targetTitleId,
         navigationIcon = {
             IconButton(onClick = { router?.back() }) {
                 Icon(
@@ -135,11 +121,13 @@ fun StoragesScreen() {
                 )
             }
         },
-        titleContent = { titleId ->
-            when (titleId) {
-                MainTitleId -> AppTitleImage()
-                SecondTittleId -> Text(text = stringResource(id = CoreR.string.storages))
-            }
+        titleContent = {
+            screenResolver?.widget(
+                modifier = Modifier,
+                widgetState = StoragesStatusBarWidgetState(
+                    isContentExpanded = titleContentExpanded
+                )
+            )
         },
     )
 }

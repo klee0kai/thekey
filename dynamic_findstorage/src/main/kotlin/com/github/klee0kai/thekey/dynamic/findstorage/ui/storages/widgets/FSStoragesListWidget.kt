@@ -1,48 +1,30 @@
 package com.github.klee0kai.thekey.dynamic.findstorage.ui.storages.widgets
 
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContent
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.github.klee0kai.stone.type.wrappers.getValue
-import com.github.klee0kai.thekey.app.ui.storages.components.StoragesListContent
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
-import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
-import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
-import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesListWidgetId
+import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesListWidgetState
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
-import com.github.klee0kai.thekey.core.utils.views.visibleOnTargetAlpha
-import com.github.klee0kai.thekey.dynamic.findstorage.R
 import com.github.klee0kai.thekey.dynamic.findstorage.di.FSDI
 import com.github.klee0kai.thekey.dynamic.findstorage.ui.storages.content.RequestExternalStoragePermissionsContent
 
 @Composable
-fun FSStoragesListWidget(widget: StoragesListWidgetId = StoragesListWidgetId()) {
-    val router = LocalRouter.current
-    val theme = LocalTheme.current
-    val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
-    val isExtStorageSelected by animateTargetCrossFaded(target = widget.isExtStorageSelected)
-    val showStoragesTitle by animateTargetCrossFaded(target = widget.isShowStoragesTitle)
+fun FSStoragesListWidget(
+    modifier: Modifier = Modifier,
+    state: StoragesListWidgetState = StoragesListWidgetState(),
+    parent: @Composable (modifier: Modifier, state: StoragesListWidgetState) -> Unit = { _, _ -> },
+) {
     val presenter by rememberOnScreenRef { FSDI.fsStoragesPresenter() }
     val isPermissionsGranted by presenter!!.isPermissionGranted.collectAsState(key = Unit, initial = null)
 
     val showPermissionAnimated by animateTargetCrossFaded(
-        target = widget.isExtStorageSelected && isPermissionsGranted == false
+        target = state.isExtStorageSelected && isPermissionsGranted == false
     )
 
     when (showPermissionAnimated.current) {
@@ -51,24 +33,9 @@ fun FSStoragesListWidget(widget: StoragesListWidgetId = StoragesListWidgetId()) 
         }
 
         false -> {
-            StoragesListContent(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .alpha(isExtStorageSelected.alpha),
-                onEdit = { presenter?.editStorage(storagePath = it.path, router) },
-                onExport = { presenter?.exportStorage(storagePath = it.path, router) },
-                header = {
-                    Text(
-                        text = stringResource(id = R.string.storages),
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier
-                            .padding(start = 16.dp, top = 4.dp, bottom = 22.dp)
-                            .alpha(showStoragesTitle.visibleOnTargetAlpha(true))
-                    )
-                },
-                footer = {
-                    Spacer(modifier = Modifier.height(safeContentPaddings.calculateBottomPadding()))
-                },
+            parent.invoke(
+                modifier = modifier,
+                state = state
             )
         }
     }
@@ -79,7 +46,7 @@ fun FSStoragesListWidget(widget: StoragesListWidgetId = StoragesListWidgetId()) 
 @Preview
 fun FSStoragesListWidgetPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     FSStoragesListWidget(
-        StoragesListWidgetId(
+        state = StoragesListWidgetState(
             isExtStorageSelected = true,
         )
     )

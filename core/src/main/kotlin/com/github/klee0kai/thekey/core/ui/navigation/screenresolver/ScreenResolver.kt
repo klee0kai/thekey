@@ -3,7 +3,7 @@ package com.github.klee0kai.thekey.core.ui.navigation.screenresolver
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.github.klee0kai.thekey.core.ui.navigation.model.Destination
-import com.github.klee0kai.thekey.core.ui.navigation.model.WidgetId
+import com.github.klee0kai.thekey.core.ui.navigation.model.WidgetState
 
 interface ScreenResolver {
 
@@ -13,7 +13,7 @@ interface ScreenResolver {
     @Composable
     fun widget(
         modifier: Modifier,
-        widgetId: WidgetId,
+        widgetState: WidgetState,
     ) = Unit
 
 }

@@ -50,6 +50,23 @@ fun SafeContextScope.launchLatest(
     singleRunJobs[key] = curJob;
 }
 
+fun SafeContextScope.launchIfNotStarted(
+    key: String,
+    context: CoroutineContext = EmptyCoroutineContext,
+    block: suspend CoroutineScope.() -> Unit
+): Job {
+    val latest = singleRunJobs[key]
+    if (latest?.isActive == true) return latest
+    latest?.cancel()
+
+    return launch(context = context) {
+        block()
+    }.also { curJob ->
+        singleRunJobs[key] = curJob;
+    }
+}
+
+
 fun SafeContextScope.launchLatestSafe(
     key: String,
     context: CoroutineContext = EmptyCoroutineContext,

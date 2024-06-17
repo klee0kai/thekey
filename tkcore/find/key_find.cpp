@@ -46,11 +46,11 @@ std::shared_ptr<Storage> thekey::storage(const int &fd) {
 
     switch (version) {
         case 1: {
-            auto storage = thekey_v1::storage(fd,"");
+            auto storage = thekey_v1::storage(fd, "");
             return storage;
         }
         case 2: {
-            auto storage = thekey_v2::storage(fd,"");
+            auto storage = thekey_v2::storage(fd, "");
             return storage;
         }
         default:
@@ -85,8 +85,12 @@ void thekey::findStorages(
         auto storageInfo = storage(filePath);
         if (storageInfo && foundStorageCallback) foundStorageCallback(*storageInfo);
     } else {
-        for (const auto &entry: fs::directory_iterator(filePath)) {
-            findStorages(entry.path().string(), foundStorageCallback);
+        try {
+            for (const auto &entry: fs::directory_iterator(filePath)) {
+                findStorages(entry.path().string(), foundStorageCallback);
+            }
+        } catch (const std::exception &exc) {
+            // ignore perm error
         }
     }
 }

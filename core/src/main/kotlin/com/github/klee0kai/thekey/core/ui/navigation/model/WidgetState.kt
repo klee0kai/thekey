@@ -5,16 +5,22 @@ import androidx.compose.runtime.Stable
 import kotlinx.parcelize.Parcelize
 
 @Stable
-interface WidgetId : Parcelable
+interface WidgetState : Parcelable
 
 @Parcelize
-data class StoragesListWidgetId(
+data class StoragesListWidgetState(
     val isExtStorageSelected: Boolean = false,
     val isShowStoragesTitle: Boolean = false,
-) : WidgetId
+) : WidgetState
 
 @Parcelize
-data class StoragesButtonsWidgetId(
+data class StoragesButtonsWidgetState(
     val isExtStorageSelected: Boolean = false,
-) : WidgetId
+) : WidgetState
+
+
+@Parcelize
+data class StoragesStatusBarWidgetState(
+    val isContentExpanded: Boolean? = null,
+) : WidgetState
 
