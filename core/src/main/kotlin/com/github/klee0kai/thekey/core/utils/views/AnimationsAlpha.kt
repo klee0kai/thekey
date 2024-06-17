@@ -97,12 +97,21 @@ fun <T> SwipeProgress<T>.crossFadeAlpha(): TargetAlpha<T> = when {
 }
 
 @Composable
-inline fun <T> animateTargetCrossFaded(target: T): State<TargetAlpha<T>> {
+inline fun <T> animateTargetCrossFaded(
+    target: T,
+    skipStates: List<T> = emptyList(),
+): State<TargetAlpha<T>> {
     val targetAlphaState = remember { mutableStateOf(TargetAlpha(target, target, 1f)) }
     var targetAlpha by targetAlphaState
     var velocity by remember { mutableFloatStateOf(0f) }
 
     LaunchedEffect(key1 = target) {
+        if (targetAlpha.current in skipStates) {
+            targetAlpha = TargetAlpha(target, target, 1f)
+            velocity = 0f
+            return@LaunchedEffect
+        }
+
         targetAlpha = targetAlpha.copy(next = target)
         if (targetAlpha.current != target) {
             animate(

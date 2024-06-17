@@ -2,6 +2,7 @@ package com.github.klee0kai.thekey.core.data.repository.settings
 
 import com.github.klee0kai.thekey.core.data.repository.settings.delegates.BooleanNoteDelegate
 import com.github.klee0kai.thekey.core.data.repository.settings.delegates.IntNoteDelegate
+import com.github.klee0kai.thekey.core.data.repository.settings.delegates.LongNoteDelegate
 import com.github.klee0kai.thekey.core.data.repository.settings.delegates.StringNoteDelegate
 import com.github.klee0kai.thekey.core.di.CoreDI
 import java.io.File
@@ -35,13 +36,21 @@ open class SettingsRepository {
         defaultValue: () -> Int
     ) = IntNoteDelegate(settingsDao, scope, settingId, defaultValue)
 
+    protected fun longDelegate(
+        settingId: Int,
+        defaultValue: () -> Long
+    ) = LongNoteDelegate(settingsDao, scope, settingId, defaultValue)
+
     protected fun booleanDelegate(
         settingId: Int,
         defaultValue: () -> Boolean
     ) = BooleanNoteDelegate(settingsDao, scope, settingId, defaultValue)
 
 
-    // check with AutoFillSettingsRepository
+    /**
+     * check with
+     * [SettingsRepository] / [AutoFillSettingsRepository] / [FindStorageSettingsRepository]
+     */
     companion object {
         private const val SETTING_DEFAULT_STORAGE_PATH = 944
         private const val SETTING_DEFAULT_STORAGE_VERSION = 432
