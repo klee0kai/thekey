@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 
 @Composable
 fun SelectedStorage(
@@ -37,7 +38,7 @@ fun SelectedStorage(
 
 @Preview
 @Composable
-fun SelectedStoragePreview() = AppTheme {
+fun SelectedStoragePreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     SelectedStorage(
         modifier = Modifier.fillMaxWidth(),
         coloredStorage = ColoredStorage(path = "/app_folder/some_path", name = "editModeStorage")

@@ -38,6 +38,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.core.ui.devkit.preview.PreviewDevices
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.views.toPx
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.launch
@@ -281,13 +282,13 @@ fun AboutScreen() {
 @Composable
 @Preview(device = Devices.PHONE)
 fun AboutScreenPreview() = EdgeToEdgeTemplate {
-    AppTheme { AboutScreen() }
+    AppTheme(theme = DefaultThemes.darkTheme) { AboutScreen() }
 }
 
 @Composable
 @Preview(device = PreviewDevices.PNOTE_LAND)
 fun AboutScreenLandPreview() = EdgeToEdgeTemplate {
-    AppTheme { AboutScreen() }
+    AppTheme(theme = DefaultThemes.darkTheme) { AboutScreen() }
 }
 
 

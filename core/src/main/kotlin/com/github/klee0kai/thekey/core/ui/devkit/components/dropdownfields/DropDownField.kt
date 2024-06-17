@@ -15,6 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextField
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
@@ -66,7 +67,7 @@ fun DropDownField(
 @VisibleForTesting
 @Preview
 @Composable
-fun DropDownFieldEmptyPreview() = AppTheme {
+fun DropDownFieldEmptyPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     DropDownField(
         selectedIndex = 0,
         variants = emptyList(),
@@ -77,7 +78,7 @@ fun DropDownFieldEmptyPreview() = AppTheme {
 @VisibleForTesting
 @Preview
 @Composable
-fun DropDownFieldSelectedPreview() = AppTheme {
+fun DropDownFieldSelectedPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     DropDownField(
         selectedIndex = 1,
         variants = listOf(
@@ -91,7 +92,7 @@ fun DropDownFieldSelectedPreview() = AppTheme {
 @VisibleForTesting
 @Preview
 @Composable
-fun DropDownFieldExpandedPreview() = AppTheme {
+fun DropDownFieldExpandedPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     DropDownField(
         selectedIndex = 1,
         expanded = true,

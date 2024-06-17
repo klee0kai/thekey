@@ -28,6 +28,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.components.FabSimpleInContainer
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesButtonsWidgetId
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
@@ -131,7 +132,7 @@ fun FSStoragesButtonsWidget(
 @OptIn(DebugOnly::class)
 @Composable
 @Preview
-fun FSStoragesButtonsWidgetPreview() = AppTheme {
+fun FSStoragesButtonsWidgetPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     FSDI.hardResetToPreview()
     FSStoragesButtonsWidget(
         widget = StoragesButtonsWidgetId(

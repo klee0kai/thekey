@@ -11,6 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 
 @Composable
 fun ColumnScope.StorageDropDownMenuContent(
@@ -37,7 +38,7 @@ fun ColumnScope.StorageDropDownMenuContent(
 
 @Preview
 @Composable
-private fun NoteDropDownMenuWithGroupsPreview() = AppTheme {
+private fun NoteDropDownMenuWithGroupsPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     Column {
         StorageDropDownMenuContent(
             onExport = {},

@@ -35,6 +35,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.components.LazyListIndicatorIfN
 import com.github.klee0kai.thekey.core.ui.devkit.components.buttons.AddCircle
 import com.github.klee0kai.thekey.core.ui.devkit.components.buttons.GroupCircle
 import com.github.klee0kai.thekey.core.ui.devkit.components.scrollPosition
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.common.Dummy
 
 @Composable
@@ -163,7 +164,7 @@ fun GroupsSelectContent(
 
 @Preview
 @Composable
-private fun GroupsSelectContentPreview() = AppTheme {
+private fun GroupsSelectContentPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     GroupsSelectContent(
         selectedGroup = 1L,
         colorGroups = listOf(

@@ -16,6 +16,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.views.grayColors
 import com.github.klee0kai.thekey.core.utils.views.transparentColors
 
@@ -114,7 +115,7 @@ fun AppTextField(
 
 @Composable
 @Preview
-fun AppTextFieldPreview() = AppTheme {
+fun AppTextFieldPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     Box(
         modifier = Modifier.padding(10.dp)
     ) {
@@ -130,7 +131,7 @@ fun AppTextFieldPreview() = AppTheme {
 
 @Composable
 @Preview
-fun AppTextEmptyFieldPreview() = AppTheme {
+fun AppTextEmptyFieldPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     Box(
         modifier = Modifier.padding(10.dp)
     ) {
@@ -147,7 +148,7 @@ fun AppTextEmptyFieldPreview() = AppTheme {
 
 @Composable
 @Preview
-fun AppTransparentTextFieldPreview() = AppTheme {
+fun AppTransparentTextFieldPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     Box(
         modifier = Modifier.padding(10.dp)
     ) {
@@ -164,7 +165,7 @@ fun AppTransparentTextFieldPreview() = AppTheme {
 
 @Composable
 @Preview
-fun AppTransparentTextEmptyFieldPreview() = AppTheme {
+fun AppTransparentTextEmptyFieldPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     Box(
         modifier = Modifier.padding(10.dp)
     ) {

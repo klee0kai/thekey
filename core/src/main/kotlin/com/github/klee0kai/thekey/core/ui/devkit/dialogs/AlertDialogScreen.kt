@@ -12,6 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.EmptyScreen
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.ui.navigation.model.AlertDialogDestination
 import com.github.klee0kai.thekey.core.ui.navigation.model.ConfirmDialogResult
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
@@ -64,7 +65,7 @@ fun AlertDialogScreen(
 @VisibleForTesting
 @Preview
 @Composable
-fun AlertDialogPreview() = AppTheme {
+fun AlertDialogPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     AlertDialogScreen()
 }
 
@@ -73,7 +74,7 @@ fun AlertDialogPreview() = AppTheme {
 @Preview(device = Devices.PHONE)
 @Composable
 fun AlertDialogInScreenPreview() = EdgeToEdgeTemplate {
-    AppTheme {
+    AppTheme(theme = DefaultThemes.darkTheme) {
         EmptyScreen()
 
         AlertDialogScreen()

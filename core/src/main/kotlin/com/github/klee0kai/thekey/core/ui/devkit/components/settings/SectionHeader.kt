@@ -12,6 +12,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.views.minInsets
 import com.github.klee0kai.thekey.core.utils.views.truncate
 import org.jetbrains.annotations.VisibleForTesting
@@ -39,7 +40,7 @@ fun SectionHeader(
 @Preview
 @VisibleForTesting
 @Composable
-fun SectionHeaderPreview() = AppTheme {
+fun SectionHeaderPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     SectionHeader(text = "Some Section")
 }
 

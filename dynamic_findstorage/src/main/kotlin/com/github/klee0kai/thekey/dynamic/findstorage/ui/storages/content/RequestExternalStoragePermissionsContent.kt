@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.dynamic.findstorage.R
 
 
@@ -64,6 +65,6 @@ fun RequestExternalStoragePermissionsContent() {
 
 @Composable
 @Preview(device = Devices.PHONE)
-fun RequestExternalStoragePermissionsPreview() = AppTheme {
+fun RequestExternalStoragePermissionsPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     RequestExternalStoragePermissionsContent()
 }

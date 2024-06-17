@@ -30,6 +30,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.components.buttons.GroupCircle
 import com.github.klee0kai.thekey.core.ui.devkit.components.scrollPosition
 import com.github.klee0kai.thekey.core.ui.devkit.components.settings.SwitchPreference
 import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextField
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.views.transparentColors
 import org.jetbrains.annotations.VisibleForTesting
 
@@ -184,7 +185,7 @@ fun EditGroupInfoContent(
 @VisibleForTesting
 @Preview
 @Composable
-fun EditGroupInfoContentPreview() = AppTheme {
+fun EditGroupInfoContentPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     EditGroupInfoContent(
         forceIndicatorVisible = true,
     )
@@ -193,7 +194,7 @@ fun EditGroupInfoContentPreview() = AppTheme {
 @VisibleForTesting
 @Preview
 @Composable
-fun EditGroupInfoContentFavoritePreview() = AppTheme {
+fun EditGroupInfoContentFavoritePreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     EditGroupInfoContent(
         forceIndicatorVisible = true,
         favoriteVisible = true,
@@ -203,7 +204,7 @@ fun EditGroupInfoContentFavoritePreview() = AppTheme {
 @VisibleForTesting
 @Preview
 @Composable
-fun EditGroupInfoContentInBoxPreview() = AppTheme {
+fun EditGroupInfoContentInBoxPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     Box(modifier = Modifier.fillMaxSize()) {
         EditGroupInfoContent(
             modifier = Modifier.align(Alignment.Center),

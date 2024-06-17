@@ -43,6 +43,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.ui.navigation.model.DynamicDestination
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
@@ -169,7 +170,7 @@ fun PluginDummyScreen(dest: DynamicDestination) {
 @Preview(device = Devices.PHONE)
 @Composable
 fun PluginDummyScreenScreenPreview() = EdgeToEdgeTemplate {
-    AppTheme {
+    AppTheme(theme = DefaultThemes.darkTheme) {
         DI.hardResetToPreview()
         PluginDummyScreen(QRCodeScanDestination)
     }
@@ -180,7 +181,7 @@ fun PluginDummyScreenScreenPreview() = EdgeToEdgeTemplate {
 @Preview(device = Devices.PHONE)
 @Composable
 fun PluginDummyScreenInstallingPreview() = EdgeToEdgeTemplate {
-    AppTheme {
+    AppTheme(theme = DefaultThemes.darkTheme) {
         DI.hardResetToPreview()
         DI.initPresenterModule(object : PresentersModule {
             override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {
@@ -196,7 +197,7 @@ fun PluginDummyScreenInstallingPreview() = EdgeToEdgeTemplate {
 @Preview(device = Devices.PHONE)
 @Composable
 fun PluginDummyScreenInstalledPreview() = EdgeToEdgeTemplate {
-    AppTheme {
+    AppTheme(theme = DefaultThemes.darkTheme) {
         DI.hardResetToPreview()
         DI.initPresenterModule(object : PresentersModule {
             override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {
@@ -212,7 +213,7 @@ fun PluginDummyScreenInstalledPreview() = EdgeToEdgeTemplate {
 @Preview(device = Devices.PHONE)
 @Composable
 fun PluginDummyScreenInstallErrorPreview() = EdgeToEdgeTemplate {
-    AppTheme {
+    AppTheme(theme = DefaultThemes.darkTheme) {
         DI.hardResetToPreview()
         DI.initPresenterModule(object : PresentersModule {
             override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {

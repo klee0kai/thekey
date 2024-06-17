@@ -14,9 +14,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.core.R
+import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.app.R as AppR
 
 @Composable
@@ -117,7 +118,7 @@ fun CurrentStorageHeader(
 
 @Preview
 @Composable
-fun CurrentStorageHeaderPreview() = AppTheme {
+fun CurrentStorageHeaderPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     CurrentStorageHeader(
         storage = ColoredStorage(path = "phoneStorage/Documents/pet.ckey", name = "petprojects")
     )

@@ -48,6 +48,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DeleteIconBut
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DoneIconButton
 import com.github.klee0kai.thekey.core.ui.devkit.components.dropdownfields.ColorGroupDropDownField
 import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextField
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.animateSkeletonModifier
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
@@ -252,7 +253,7 @@ fun EditStorageScreenPreview() = EdgeToEdgeTemplate {
             )
         }
     })
-    AppTheme {
+    AppTheme(theme = DefaultThemes.darkTheme) {
         EditStorageScreen(path = "some/path/to/storage")
     }
 }

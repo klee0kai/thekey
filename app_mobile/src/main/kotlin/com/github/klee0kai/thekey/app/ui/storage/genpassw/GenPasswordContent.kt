@@ -42,6 +42,7 @@ import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.common.Dummy
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
@@ -265,7 +266,7 @@ fun GenPasswordContent(
 @VisibleForTesting
 @Preview
 @Composable
-fun GenPasswordContentPreview() = AppTheme {
+fun GenPasswordContentPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     DI.hardResetToPreview()
     DI.initPresenterModule(object : PresentersModule {
         override fun genPasswPresente(storageIdentifier: StorageIdentifier) = object : GenPasswPresenter {

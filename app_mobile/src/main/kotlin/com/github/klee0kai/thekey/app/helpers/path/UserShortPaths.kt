@@ -16,7 +16,7 @@ class ShortPath(
 
 open class UserShortPaths {
 
-    open val appPath: String = DI.ctx().applicationInfo.dataDir
+    open val appPath: String by lazy { DI.ctx().applicationInfo.dataDir }
 
     open val shortPaths by lazy {
         listOf(

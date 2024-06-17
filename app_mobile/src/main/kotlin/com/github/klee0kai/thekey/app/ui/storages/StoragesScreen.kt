@@ -42,6 +42,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.topContentOffsetFro
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppTitleImage
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesButtonsWidgetId
 import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesListWidgetId
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
@@ -148,7 +149,7 @@ fun StoragesScreen() {
 @Composable
 @Preview(device = Devices.PHONE)
 fun StoragesScreenPreview() = EdgeToEdgeTemplate {
-    AppTheme {
+    AppTheme(theme = DefaultThemes.darkTheme) {
         DI.hardResetToPreview()
         DI.initPresenterModule(object : PresentersModule {
             override fun storagesPresenter() = object : StoragesPresenterDummy(

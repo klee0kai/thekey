@@ -35,7 +35,8 @@ val LocalScreenResolver = compositionLocalOf<ScreenResolver> { error("no screen 
 fun AppTheme(
     modifier: Modifier = Modifier,
     activityIdentifier: ActivityIdentifier? = null,
-    content: @Composable () -> Unit
+    theme: AppTheme? = null,
+    content: @Composable () -> Unit,
 ) {
     LocalConfiguration.current
     CoreDI.ctx(LocalContext.current)
@@ -44,7 +45,7 @@ fun AppTheme(
     val isEditMode = view.isInEditMode || LocalInspectionMode.current || isDebugInspectorInfoEnabled
     val themeManager = CoreDI.themeManager(activityIdentifier)
     val router = CoreDI.router(activityIdentifier)
-    val themeState = themeManager.theme.collectAsState(key = Unit, initial = null)
+    val themeState = themeManager.theme.collectAsState(key = Unit, initial = theme)
     val shimmer = remember {
         defaultShimmerTheme.copy(
             shaderColors = listOf(
@@ -59,24 +60,24 @@ fun AppTheme(
             copy(isViewEditMode = isEditMode)
         }
     }
-    val theme = themeState.value ?: return
+    val appTheme = theme ?: themeState.value ?: return
 
     CompositionLocalProvider(
-        LocalTheme provides theme,
+        LocalTheme provides appTheme,
         LocalRouter provides router,
         LocalShimmerTheme provides shimmer,
-        LocalColorScheme provides theme.colorScheme,
+        LocalColorScheme provides appTheme.colorScheme,
         LocalAppConfig provides CoreDI.config(),
         LocalScreenResolver provides CoreDI.screenResolver(),
     ) {
         MaterialTheme(
-            colorScheme = theme.colorScheme.androidColorScheme,
-            typography = theme.typeScheme.typography,
-            shapes = theme.shapes,
+            colorScheme = appTheme.colorScheme.androidColorScheme,
+            typography = appTheme.typeScheme.typography,
+            shapes = appTheme.shapes,
         ) {
             Surface(
                 modifier = modifier,
-                color = theme.colorScheme.windowBackgroundColor,
+                color = appTheme.colorScheme.windowBackgroundColor,
                 contentColor = MaterialTheme.colorScheme.onBackground,
             ) {
                 content.invoke()

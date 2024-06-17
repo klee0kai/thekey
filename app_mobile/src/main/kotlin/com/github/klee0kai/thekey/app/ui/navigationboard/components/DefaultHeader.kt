@@ -10,6 +10,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.R as CoreR
 
 @Composable
@@ -32,6 +33,6 @@ fun DefaultHeader(
 
 @Preview
 @Composable
-fun DefaultHeaderPreview() = AppTheme {
+fun DefaultHeaderPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     DefaultHeader()
 }

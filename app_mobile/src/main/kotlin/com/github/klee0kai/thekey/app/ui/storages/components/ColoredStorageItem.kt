@@ -27,6 +27,7 @@ import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.core.domain.model.isValid
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.views.toAnnotationString
 
 
@@ -140,7 +141,7 @@ fun ColoredStorageItem(
 
 @Preview
 @Composable
-fun ColoredStorageItemPreview() = AppTheme {
+fun ColoredStorageItemPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     ColoredStorageItem(
         storage = ColoredStorage(
             path = "path",
@@ -153,7 +154,7 @@ fun ColoredStorageItemPreview() = AppTheme {
 
 @Preview
 @Composable
-fun ColoredStorageNotValidItemPreview() = AppTheme {
+fun ColoredStorageNotValidItemPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     ColoredStorageItem(
         storage = ColoredStorage(
             path = "path",

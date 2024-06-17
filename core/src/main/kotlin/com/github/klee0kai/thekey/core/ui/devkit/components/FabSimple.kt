@@ -27,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.views.horizontal
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import org.jetbrains.annotations.VisibleForTesting
@@ -77,7 +78,7 @@ fun FabSimpleInContainer(
 @VisibleForTesting
 @Preview
 @Composable
-fun FabSimplePreview() = AppTheme {
+fun FabSimplePreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     FabSimple {
         Icon(
             imageVector = Icons.Filled.Add,
@@ -89,7 +90,7 @@ fun FabSimplePreview() = AppTheme {
 @VisibleForTesting
 @Preview
 @Composable
-fun FabSimpleSquarePreview() = AppTheme {
+fun FabSimpleSquarePreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     FabSimple(
         square = true,
     ) {
@@ -104,7 +105,7 @@ fun FabSimpleSquarePreview() = AppTheme {
 @Preview(device = Devices.PHONE)
 @Composable
 fun FabSimpleInContainerPreview() = EdgeToEdgeTemplate {
-    AppTheme {
+    AppTheme(theme = DefaultThemes.darkTheme) {
         val primaryColor = MaterialTheme.colorScheme.primaryContainer
         val secondaryColor = MaterialTheme.colorScheme.secondaryContainer
         var color by remember { mutableStateOf(secondaryColor) }

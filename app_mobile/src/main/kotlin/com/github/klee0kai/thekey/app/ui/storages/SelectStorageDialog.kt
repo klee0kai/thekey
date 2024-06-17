@@ -45,6 +45,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.BottomSheetBigDialo
 import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.rememberSafeBottomSheetScaffoldState
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
@@ -123,7 +124,7 @@ fun SelectStorageDialogPreview() = EdgeToEdgeTemplate {
     DI.initPresenterModule(object : PresentersModule {
         override fun storagesPresenter() = StoragesPresenterDummy()
     })
-    AppTheme {
+    AppTheme(theme = DefaultThemes.darkTheme) {
         Box(modifier = Modifier.background(Color.Yellow)) {
             SelectStorageDialog()
         }

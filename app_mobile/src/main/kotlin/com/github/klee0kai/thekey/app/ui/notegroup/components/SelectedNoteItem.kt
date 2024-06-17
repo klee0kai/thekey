@@ -29,6 +29,7 @@ import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.common.Dummy
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import org.jetbrains.annotations.VisibleForTesting
@@ -180,7 +181,7 @@ fun SelectedNoteItem(
 @VisibleForTesting
 @Composable
 @Preview
-fun ColoredNoteDummyPreview() = AppTheme {
+fun ColoredNoteDummyPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     SelectedNoteItem(
         note = SelectedNote(
             ptnote = Dummy.dummyId,
@@ -198,7 +199,7 @@ fun ColoredNoteDummyPreview() = AppTheme {
 @VisibleForTesting
 @Composable
 @Preview
-fun ColoredNoteDummyNoGroupPreview() = AppTheme {
+fun ColoredNoteDummyNoGroupPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     SelectedNoteItem(
         note = SelectedNote(
             ptnote = Dummy.dummyId,

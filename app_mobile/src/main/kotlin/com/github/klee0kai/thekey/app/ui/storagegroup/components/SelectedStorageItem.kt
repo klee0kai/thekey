@@ -27,6 +27,7 @@ import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import org.jetbrains.annotations.VisibleForTesting
 
@@ -176,7 +177,7 @@ fun SelectedStorageItem(
 @VisibleForTesting
 @Composable
 @Preview
-fun SelectStorageDummyPreview() = AppTheme {
+fun SelectStorageDummyPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     SelectedStorageItem(
         storage = SelectedStorage(
             path = "somePath1",
@@ -193,7 +194,7 @@ fun SelectStorageDummyPreview() = AppTheme {
 @VisibleForTesting
 @Composable
 @Preview
-fun SelectStorageDummyNoGroupPreview() = AppTheme {
+fun SelectStorageDummyNoGroupPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     SelectedStorageItem(
         storage = SelectedStorage(
             path = "somePath1",

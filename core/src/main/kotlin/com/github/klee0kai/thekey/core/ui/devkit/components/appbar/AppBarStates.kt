@@ -25,6 +25,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
@@ -75,7 +76,7 @@ fun AppBarStates(
 @VisibleForTesting
 @Composable
 @Preview
-fun AppBarTitlePreview1() = AppTheme {
+fun AppBarTitlePreview1() = AppTheme(theme = DefaultThemes.darkTheme) {
     AppBarStates(
         navigationIcon = {
             IconButton(onClick = { }) {

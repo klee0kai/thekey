@@ -21,6 +21,7 @@ import com.github.klee0kai.thekey.app.ui.storages.components.StoragesListContent
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesListWidgetId
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
@@ -76,7 +77,7 @@ fun FSStoragesListWidget(widget: StoragesListWidgetId = StoragesListWidgetId()) 
 
 @Composable
 @Preview
-fun FSStoragesListWidgetPreview() = AppTheme {
+fun FSStoragesListWidgetPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     FSStoragesListWidget(
         StoragesListWidgetId(
             isExtStorageSelected = true,

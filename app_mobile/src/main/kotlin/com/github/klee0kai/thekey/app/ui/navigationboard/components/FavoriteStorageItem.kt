@@ -18,6 +18,7 @@ import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.views.toAnnotationString
 
 
@@ -94,7 +95,7 @@ fun FavoriteStorageItem(
 
 @Preview
 @Composable
-private fun FavoriteStorageItemPreview() = AppTheme {
+private fun FavoriteStorageItemPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     FavoriteStorageItem(
         storage = ColoredStorage(
             path = "phoneStorage/Documents/business.ckey",
@@ -105,7 +106,7 @@ private fun FavoriteStorageItemPreview() = AppTheme {
 
 @Preview(widthDp = 200)
 @Composable
-private fun FavoriteStorageItemShortPreview() = AppTheme {
+private fun FavoriteStorageItemShortPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     FavoriteStorageItem(
         storage = ColoredStorage(
             path = "phoneStorage/Documents/business.ckey",
@@ -116,7 +117,7 @@ private fun FavoriteStorageItemShortPreview() = AppTheme {
 
 @Preview(widthDp = 250)
 @Composable
-private fun FavoriteStorageItemShort2Preview() = AppTheme {
+private fun FavoriteStorageItemShort2Preview() = AppTheme(theme = DefaultThemes.darkTheme) {
     FavoriteStorageItem(
         storage = ColoredStorage(
             path = "phoneStorage/Documents/business.ckey",

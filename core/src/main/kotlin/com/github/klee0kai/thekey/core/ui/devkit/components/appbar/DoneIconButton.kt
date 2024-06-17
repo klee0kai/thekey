@@ -11,6 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
@@ -33,7 +34,7 @@ fun DoneIconButton(
 @VisibleForTesting
 @Preview
 @Composable
-fun DoneButtonPreview() = AppTheme {
+fun DoneButtonPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     AppBarStates(
         actions = {
             DoneIconButton()

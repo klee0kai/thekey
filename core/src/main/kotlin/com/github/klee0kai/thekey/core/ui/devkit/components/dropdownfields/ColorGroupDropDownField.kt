@@ -19,6 +19,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import com.github.klee0kai.thekey.core.ui.devkit.components.buttons.GroupCircle
 import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextField
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 
 @Composable
 fun ColorGroupDropDownField(
@@ -87,6 +88,6 @@ fun ColorGroupDropDownField(
 
 @Composable
 @Preview
-fun ColorGroupDropDownFieldPreview() = AppTheme {
+fun ColorGroupDropDownFieldPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     ColorGroupDropDownField()
 }

@@ -30,6 +30,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.SimpleScaffoldConst.dragHandleSize
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.views.accelerateDecelerate
 import com.github.klee0kai.thekey.core.utils.views.pxToDp
 import com.github.klee0kai.thekey.core.utils.views.ratioBetween
@@ -123,7 +124,7 @@ fun BottomSheetBigDialog(
 @VisibleForTesting
 @Preview
 @Composable
-fun BottomSheetBigDialogPreview() = AppTheme {
+fun BottomSheetBigDialogPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     Box(modifier = Modifier.background(Color.Yellow)) {
         BottomSheetBigDialog(
             topMargin = AppBarConst.appBarSize

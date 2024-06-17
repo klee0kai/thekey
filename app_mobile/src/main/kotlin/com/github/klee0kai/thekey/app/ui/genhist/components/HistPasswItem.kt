@@ -15,6 +15,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.github.klee0kai.thekey.core.domain.model.HistPassw
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.skeleton
 
@@ -60,7 +61,7 @@ fun HistPasswItem(
 
 @Preview
 @Composable
-private fun HistPasswItemSkeletonPreview() = AppTheme {
+private fun HistPasswItemSkeletonPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     HistPasswItem(
         passw = HistPassw(isLoaded = false)
     )
@@ -68,7 +69,7 @@ private fun HistPasswItemSkeletonPreview() = AppTheme {
 
 @Preview
 @Composable
-private fun HistPasswItemPreview() = AppTheme {
+private fun HistPasswItemPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     HistPasswItem(
         passw = HistPassw(
             passw = "#1@@134",

@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.views.horizontal
 import com.github.klee0kai.thekey.core.utils.views.minInsets
 import com.github.klee0kai.thekey.core.utils.views.truncate
@@ -60,7 +61,7 @@ fun SwitchPreference(
 @Preview
 @VisibleForTesting
 @Composable
-fun SwitchPreferencePreview() = AppTheme {
+fun SwitchPreferencePreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     SwitchPreference(
         text = "Some Switch",
     )
