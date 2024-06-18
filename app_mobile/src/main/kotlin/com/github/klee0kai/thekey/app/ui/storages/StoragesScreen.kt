@@ -137,17 +137,16 @@ fun StoragesScreen() {
 @Composable
 @Preview(device = Devices.PHONE)
 fun StoragesScreenPreview() = EdgeToEdgeTemplate {
+    DI.hardResetToPreview()
+    DI.initPresenterModule(object : PresentersModule {
+        override fun storagesPresenter() = object : StoragesPresenterDummy(
+            groupsCount = 3,
+            storagesCount = 3,
+        ) {
+
+        }
+    })
     AppTheme(theme = DefaultThemes.darkTheme) {
-        DI.hardResetToPreview()
-        DI.initPresenterModule(object : PresentersModule {
-            override fun storagesPresenter() = object : StoragesPresenterDummy(
-                groupsCount = 3,
-                storagesCount = 3,
-            ) {
-
-            }
-        })
-
         StoragesScreen()
     }
 }

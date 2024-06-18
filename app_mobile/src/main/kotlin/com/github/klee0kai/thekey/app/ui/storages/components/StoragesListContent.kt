@@ -19,10 +19,11 @@ import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
-import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.app.ui.storages.presenter.StoragesPresenterDummy
+import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
@@ -93,7 +94,7 @@ fun StoragesListContentPreview() {
         override fun storagesPresenter() = StoragesPresenterDummy()
     })
 
-    AppTheme {
+    AppTheme(theme = DefaultThemes.darkTheme) {
         StoragesListContent(
             onExport = {},
             onEdit = {},

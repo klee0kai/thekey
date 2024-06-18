@@ -33,6 +33,7 @@ import com.github.klee0kai.thekey.core.utils.views.toAnnotationString
 
 @Composable
 fun ColoredStorageItem(
+    modifier: Modifier = Modifier,
     storage: ColoredStorage = ColoredStorage(),
     onClick: () -> Unit = {},
     onLongClick: (() -> Unit)? = null,
@@ -49,7 +50,7 @@ fun ColoredStorageItem(
     }
 
     ConstraintLayout(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight()
             .combinedClickable(

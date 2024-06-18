@@ -18,19 +18,25 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.di.hardResetToPreview
+import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.ui.storages.components.InstallExternalSearchPromo
 import com.github.klee0kai.thekey.app.ui.storages.components.StoragesListContent
+import com.github.klee0kai.thekey.app.ui.storages.presenter.StoragesPresenter
 import com.github.klee0kai.thekey.core.R
+import com.github.klee0kai.thekey.core.domain.model.feature.model.NotInstalled
 import com.github.klee0kai.thekey.core.domain.model.feature.model.isInstalled
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesListWidgetState
+import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.core.utils.views.visibleOnTargetAlpha
+import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
 fun StoragesListWidget(
@@ -87,12 +93,21 @@ fun StoragesListWidget(
 }
 
 
+@OptIn(DebugOnly::class)
 @Composable
 @Preview
-fun StoragesListWidgetPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
-    StoragesListWidget(
-        state = StoragesListWidgetState(
-            isExtStorageSelected = true,
+fun StoragesListWidgetPreview() {
+    DI.hardResetToPreview()
+    DI.initPresenterModule(object : PresentersModule {
+        override fun storagesPresenter() = object : StoragesPresenter {
+            override val installAutoSearchStatus = MutableStateFlow(NotInstalled)
+        }
+    })
+    AppTheme(theme = DefaultThemes.darkTheme) {
+        StoragesListWidget(
+            state = StoragesListWidgetState(
+                isExtStorageSelected = true,
+            )
         )
-    )
+    }
 }
