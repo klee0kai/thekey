@@ -5,10 +5,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.runtime.Composable
@@ -23,6 +23,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
@@ -57,7 +58,7 @@ fun PopupMenuPreview() = DebugDarkPreview(
             modifier = Modifier
                 .focusRequester(focusRequester)
                 .fillMaxWidth()
-                .padding(20.dp)
+                .padding(horizontal = 20.dp)
                 .onGlobalPositionState(textFieldPos),
             value = "some text",
         )
@@ -76,7 +77,7 @@ fun PopupMenuPreview() = DebugDarkPreview(
             modifier = Modifier
                 .background(Color.Red)
                 .height(300.dp)
-                .fillMaxWidth(0.7f),
+                .fillMaxWidth(0.6f),
         )
     }
 }
@@ -85,30 +86,30 @@ fun PopupMenuPreview() = DebugDarkPreview(
 fun PopupMenuInRoot(
     visible: Boolean,
     positionAnchor: State<ViewPositionPx?>,
-    horizontalBias: Float = 0.7f,
+    horizontalBias: Float = 1f,
     onDismissRequest: (() -> Unit)? = null,
     content: @Composable BoxScope.() -> Unit = {},
 ) {
     val overlayContainer = LocalOverlayProvider.current
     val density = LocalDensity.current
     val view = LocalView.current
+    val bias = if (LocalLayoutDirection.current == LayoutDirection.Ltr) horizontalBias else 1f - horizontalBias
     val anchor = positionAnchor.value?.toDp(density) ?: return
     val contentPosPx = remember { mutableStateOf<ViewPositionPx?>(null) }
     val offset by rememberDerivedStateOf {
         with(density) {
             val contentPoxDp = contentPosPx.value?.toDp(density) ?: return@rememberDerivedStateOf DpOffset(0.dp, 0.dp)
-
             when {
                 view.height.toDp() < anchor.globalPos.y + anchor.size.height + contentPoxDp.size.height -> {
                     DpOffset(
-                        x = anchor.globalPos.x + (anchor.size.width - contentPoxDp.size.width) * horizontalBias,
+                        x = anchor.globalPos.x + (anchor.size.width - contentPoxDp.size.width) * bias,
                         y = anchor.globalPos.y - contentPoxDp.size.height,
                     )
                 }
 
                 else -> {
                     DpOffset(
-                        x = anchor.globalPos.x + (anchor.size.width - contentPoxDp.size.width) * horizontalBias,
+                        x = anchor.globalPos.x + (anchor.size.width - contentPoxDp.size.width) * bias,
                         y = anchor.globalPos.y + anchor.size.height,
                     )
                 }
@@ -121,11 +122,11 @@ fun PopupMenuInRoot(
         overlayContainer.Overlay {
             Box(
                 modifier = Modifier
-                    .thenIf(contentPosPx.value == null) { alpha(0f) }
-                    .alpha(visibleAnimated.alpha)
                     .sizeIn(maxWidth = anchor.size.width)
                     .onGlobalPositionState(contentPosPx)
-                    .offset(offset.x, offset.y),
+                    .absoluteOffset(offset.x, offset.y)
+                    .thenIf(contentPosPx.value == null) { alpha(0f) }
+                    .alpha(visibleAnimated.alpha),
             ) {
                 content()
             }
