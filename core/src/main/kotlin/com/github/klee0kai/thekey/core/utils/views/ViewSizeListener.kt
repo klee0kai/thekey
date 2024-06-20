@@ -2,6 +2,8 @@ package com.github.klee0kai.thekey.core.utils.views
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.NonRestartableComposable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -12,6 +14,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.DpSize
@@ -30,6 +33,11 @@ data class ViewPositionDp(
     val size: DpSize,
 )
 
+@Composable
+@NonRestartableComposable
+fun rememberViewPosition() = remember { mutableStateOf<ViewPositionPx?>(null) }
+
+
 fun Modifier.onGlobalPositionState(
     onChange: (ViewPositionPx) -> Unit
 ) = onGloballyPositioned { layoutCoordinates ->
@@ -44,8 +52,12 @@ fun Modifier.onGlobalPositionState(
     }
 }
 
+fun Modifier.onGlobalPositionState(state: MutableState<in ViewPositionPx>) = onGlobalPositionState { state.value = it }
+
 @Composable
-fun ViewPositionPx.toDp() = with(LocalDensity.current) {
+fun ViewPositionPx.toDp() = toDp(LocalDensity.current)
+
+fun ViewPositionPx.toDp(density: Density) = with(density) {
     ViewPositionDp(
         globalPos = DpOffset(globalPos.x.toDp(), globalPos.y.toDp()),
         size = DpSize(size.width.toDp(), size.height.toDp())
@@ -56,7 +68,6 @@ fun ViewPositionPx.toDp() = with(LocalDensity.current) {
 fun IntSize.pxToDp() = with(LocalDensity.current) {
     DpSize(width.toDp(), height.toDp())
 }
-
 
 @Composable
 fun Float.pxToDp(): Dp {

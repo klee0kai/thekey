@@ -9,6 +9,7 @@ import com.github.klee0kai.thekey.app.ui.navigation.MainNavContainer
 import com.github.klee0kai.thekey.app.ui.navigation.model.EmptyDestination
 import com.github.klee0kai.thekey.app.ui.settings.plugin.PluginApplyingOverlay
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
+import com.github.klee0kai.thekey.core.ui.devkit.overlay.OverlayContainer
 import com.github.klee0kai.thekey.core.ui.devkit.theme.modifyTransparent
 import kotlinx.coroutines.launch
 
@@ -29,7 +30,9 @@ class MainTranparentActivity : BaseActivity() {
             setContent {
                 AppTheme(activityIdentifier = activityIdentifier) {
                     PluginApplyingOverlay {
-                        MainNavContainer()
+                        OverlayContainer {
+                            MainNavContainer()
+                        }
                     }
                 }
             }

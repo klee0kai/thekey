@@ -10,6 +10,7 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.LoginDestination
 import com.github.klee0kai.thekey.app.ui.settings.plugin.PluginApplyingOverlay
 import com.github.klee0kai.thekey.core.di.identifiers.ActivityIdentifier
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
+import com.github.klee0kai.thekey.core.ui.devkit.overlay.OverlayContainer
 import kotlinx.coroutines.launch
 
 open class MainActivity : BaseActivity() {
@@ -28,7 +29,9 @@ open class MainActivity : BaseActivity() {
         setContent {
             AppTheme {
                 PluginApplyingOverlay {
-                    MainNavContainer()
+                    OverlayContainer {
+                        MainNavContainer()
+                    }
                 }
             }
         }
