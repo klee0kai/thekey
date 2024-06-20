@@ -13,7 +13,7 @@ val LocalOverlayProvider = compositionLocalOf<OverlayProvider> { error("overlay 
 fun interface OverlayProvider {
 
     @Composable
-    fun Overlay(block: @Composable () -> Unit)
+    fun Overlay(key: Any, block: @Composable () -> Unit)
 
 }
 
@@ -21,10 +21,20 @@ fun interface OverlayProvider {
 fun OverlayContainer(
     content: @Composable () -> Unit,
 ) {
+    var overlayKey by remember { mutableStateOf<Any?>(null) }
     var overlay by remember { mutableStateOf<(@Composable () -> Unit)?>(null) }
+//    LaunchedEffect(overlay.hashCode()) {
+//        delay(100)
+//        overlay = null
+//    }
 
     CompositionLocalProvider(
-        LocalOverlayProvider provides OverlayProvider { block -> overlay = block },
+        LocalOverlayProvider provides OverlayProvider { key, block ->
+            if (key != overlayKey) {
+                overlay = block
+                overlayKey = key
+            }
+        },
     ) {
         content()
 

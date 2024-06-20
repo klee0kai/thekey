@@ -3,10 +3,12 @@
 package com.github.klee0kai.thekey.core.utils.views
 
 import androidx.compose.animation.core.AnimationConstants.DefaultDurationMillis
+import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animate
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
@@ -50,9 +52,11 @@ fun <T> TargetAlpha<T>.visibleOnTargetAlpha(vararg targetsToVisible: T): Float {
 @Composable
 inline fun animateAlphaAsState(
     boolean: Boolean,
+    animationSpec: AnimationSpec<Float> = spring<Float>(),
     label: String = "",
 ) = animateFloatAsState(
     targetValue = if (boolean) 1f else 0f,
+    animationSpec = animationSpec,
     label = label
 )
 

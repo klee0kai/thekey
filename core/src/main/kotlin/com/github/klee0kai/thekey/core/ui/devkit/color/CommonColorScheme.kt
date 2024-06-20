@@ -11,6 +11,7 @@ data class CommonColorScheme(
     val deleteColor: Color,
     val windowBackgroundColor: Color,
     val navigationBoard: NavigationBoardColors,
+    val popupMenu: PopupMenuColors,
     val grayTextButtonColors: ButtonColors,
     val hintTextColor: Color,
     val surfaceSchemas: SurfaceSchemas,

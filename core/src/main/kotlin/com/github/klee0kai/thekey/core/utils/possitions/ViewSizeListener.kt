@@ -1,5 +1,7 @@
-package com.github.klee0kai.thekey.core.utils.views
+package com.github.klee0kai.thekey.core.utils.possitions
 
+import androidx.compose.foundation.layout.absoluteOffset
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -23,16 +25,6 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import kotlin.math.roundToInt
 
-data class ViewPositionPx(
-    val globalPos: IntOffset,
-    val size: IntSize,
-)
-
-data class ViewPositionDp(
-    val globalPos: DpOffset,
-    val size: DpSize,
-)
-
 @Composable
 @NonRestartableComposable
 fun rememberViewPosition() = remember { mutableStateOf<ViewPositionPx?>(null) }
@@ -53,6 +45,11 @@ fun Modifier.onGlobalPositionState(
 }
 
 fun Modifier.onGlobalPositionState(state: MutableState<in ViewPositionPx>) = onGlobalPositionState { state.value = it }
+
+fun Modifier.placeTo(viewPositionDp: ViewPositionDp) = this
+    .size(width = viewPositionDp.size.width, height = viewPositionDp.size.height)
+    .absoluteOffset(x = viewPositionDp.globalPos.x, y = viewPositionDp.globalPos.y)
+
 
 @Composable
 fun ViewPositionPx.toDp() = toDp(LocalDensity.current)
