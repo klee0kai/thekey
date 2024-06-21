@@ -29,10 +29,10 @@ import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
 fun GroupCircle(
+    colorScheme: SurfaceScheme,
     modifier: Modifier = Modifier,
     buttonSize: Dp = 48.dp,
     name: String = "",
-    colorScheme: SurfaceScheme,
     checked: Boolean = false,
     onClick: (() -> Unit)? = null,
     onLongClick: (() -> Unit)? = null,

@@ -19,10 +19,10 @@ data class FSEditStorageState(
     val desc: String = "",
 
     val storagePathVariants: List<String> = emptyList(),
-    val storagePathFieldFocused: Boolean = false,
+    val storagePathFieldExpanded: Boolean = false,
 
     val colorGroupExpanded: Boolean = false,
-    val colorGroupSelected: Int = 0,
+    val colorGroupSelectedIndex: Int = 0,
     val colorGroupVariants: List<ColorGroup> = emptyList(),
 
     ) : Parcelable
@@ -31,7 +31,7 @@ fun FSEditStorageState.storage(origin: ColoredStorage = ColoredStorage()) =
     origin.copy(
         name = name,
         description = desc,
-        colorGroup = colorGroupVariants.getOrNull(colorGroupSelected)
+        colorGroup = colorGroupVariants.getOrNull(colorGroupSelectedIndex)
     )
 
 fun FSEditStorageState.updateWith(
@@ -41,7 +41,7 @@ fun FSEditStorageState.updateWith(
     name = storage?.name ?: "",
     desc = storage?.description ?: "",
     colorGroupVariants = colorGroups,
-    colorGroupSelected = colorGroups
+    colorGroupSelectedIndex = colorGroups
         .indexOfFirst { storage?.colorGroup?.id == it.id }
         .takeIf { it >= 0 } ?: 0,
 )

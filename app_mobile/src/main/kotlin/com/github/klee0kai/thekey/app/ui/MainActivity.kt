@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.configRouting
 import com.github.klee0kai.thekey.app.ui.navigation.MainNavContainer
-import com.github.klee0kai.thekey.app.ui.navigation.model.DesignDestination
+import com.github.klee0kai.thekey.app.ui.navigation.model.LoginDestination
 import com.github.klee0kai.thekey.app.ui.settings.plugin.PluginApplyingOverlay
 import com.github.klee0kai.thekey.core.di.identifiers.ActivityIdentifier
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
@@ -18,7 +18,7 @@ open class MainActivity : BaseActivity() {
     override val activityIdentifier: ActivityIdentifier? get() = null
 
     init {
-        router.initDestination(DesignDestination)
+        router.initDestination(LoginDestination())
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

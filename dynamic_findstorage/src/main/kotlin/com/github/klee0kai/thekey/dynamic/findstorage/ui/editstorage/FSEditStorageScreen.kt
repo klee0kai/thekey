@@ -1,7 +1,11 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.github.klee0kai.thekey.dynamic.findstorage.ui.editstorage
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -18,6 +22,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -29,7 +35,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
@@ -47,7 +52,9 @@ import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DeleteIconButton
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DoneIconButton
-import com.github.klee0kai.thekey.core.ui.devkit.components.dropdownfields.ColorGroupDropDownField
+import com.github.klee0kai.thekey.core.ui.devkit.components.buttons.GroupCircle
+import com.github.klee0kai.thekey.core.ui.devkit.components.dropdownfields.AutoFillGroupHandler
+import com.github.klee0kai.thekey.core.ui.devkit.components.dropdownfields.AutoFillList
 import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextField
 import com.github.klee0kai.thekey.core.ui.devkit.popup.PopupMenu
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
@@ -55,15 +62,12 @@ import com.github.klee0kai.thekey.core.utils.common.Dummy
 import com.github.klee0kai.thekey.core.utils.possitions.onGlobalPositionState
 import com.github.klee0kai.thekey.core.utils.possitions.pxToDp
 import com.github.klee0kai.thekey.core.utils.possitions.rememberViewPosition
-import com.github.klee0kai.thekey.core.utils.views.AutoFillList
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
-import com.github.klee0kai.thekey.core.utils.views.Keyboard
 import com.github.klee0kai.thekey.core.utils.views.animateSkeletonModifier
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.horizontal
 import com.github.klee0kai.thekey.core.utils.views.isIme
-import com.github.klee0kai.thekey.core.utils.views.keyboardAsState
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.core.utils.views.rememberTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.toTextFieldValue
@@ -75,6 +79,7 @@ import com.github.klee0kai.thekey.dynamic.findstorage.di.modules.FSPresentersMod
 import com.github.klee0kai.thekey.dynamic.findstorage.ui.editstorage.model.FSEditStorageState
 import com.github.klee0kai.thekey.dynamic.findstorage.ui.editstorage.presenter.FSEditStoragePresenter
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.filterIsInstance
 import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
@@ -87,7 +92,6 @@ fun FSEditStorageScreen(
     val presenter by rememberOnScreenRef { FSDI.fsEditStoragePresenter(StorageIdentifier(path)).apply { init() } }
     val pathInputHelper = remember { FSDI.pathInputHelper() }
     val state by presenter!!.state.collectAsState(key = Unit, initial = FSEditStorageState(isSkeleton = false))
-    val keyboardState by keyboardAsState()
     val scrollState = rememberScrollState()
     val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
 
@@ -96,14 +100,22 @@ fun FSEditStorageScreen(
     val isRemoveAvailable by rememberTargetCrossFaded { state.isRemoveAvailable }
     val skeletonModifier by animateSkeletonModifier { state.isSkeleton }
     val storagePathPosition = rememberViewPosition()
+    val groupSelectPosition = rememberViewPosition()
+    val groupInteractionSource = remember { MutableInteractionSource() }
+    val pathInteractionSource = remember { MutableInteractionSource() }
 
-    LaunchedEffect(keyboardState) {
-        if (keyboardState == Keyboard.Closed) {
-            presenter?.input { copy(storagePathFieldFocused = false) }
+    LaunchedEffect(Unit) {
+        groupInteractionSource.interactions.filterIsInstance<PressInteraction.Press>().collect {
+            presenter?.input { copy(colorGroupExpanded = !colorGroupExpanded) }
         }
     }
-    BackHandler(enabled = state.storagePathFieldFocused) {
-        presenter?.input { copy(storagePathFieldFocused = false) }
+    LaunchedEffect(Unit) {
+        pathInteractionSource.interactions.filterIsInstance<PressInteraction.Press>().collect {
+            presenter?.input { copy(storagePathFieldExpanded = !storagePathFieldExpanded) }
+        }
+    }
+    BackHandler(enabled = state.storagePathFieldExpanded || state.colorGroupExpanded) {
+        presenter?.input { copy(storagePathFieldExpanded = false, colorGroupExpanded = false) }
     }
     ConstraintLayout(
         modifier = Modifier
@@ -122,7 +134,6 @@ fun FSEditStorageScreen(
         AppTextField(
             modifier = Modifier
                 .onGlobalPositionState(storagePathPosition)
-                .onFocusChanged { presenter?.input { copy(storagePathFieldFocused = true) } }
                 .constrainAs(pathTextField) {
                     width = Dimension.fillToConstraints
                     linkTo(
@@ -147,41 +158,36 @@ fun FSEditStorageScreen(
                 with(pathInputHelper) {
                     presenter?.input {
                         copy(
-                            storagePathFieldFocused = true,
+                            storagePathFieldExpanded = true,
                             pathNoExt = it.pathInputMask(),
                         )
                     }
                 }
             },
+            interactionSource = pathInteractionSource,
             label = { Text(stringResource(R.string.storage_path)) }
         )
 
         PopupMenu(
-            visible = state.storagePathFieldFocused,
+            visible = state.storagePathFieldExpanded,
             positionAnchor = storagePathPosition,
-            onDismissRequest = { presenter?.input { copy(storagePathFieldFocused = false) } }
+            onDismissRequest = { presenter?.input { copy(storagePathFieldExpanded = false) } }
         ) {
             AutoFillList(
                 modifier = Modifier
                     .background(theme.colorScheme.popupMenu.shadowColor)
                     .padding(top = 10.dp, bottom = 10.dp)
                     .fillMaxWidth(),
-                isVisible = state.storagePathFieldFocused,
+                isVisible = state.storagePathFieldExpanded,
                 variants = state.storagePathVariants,
                 onSelected = { selected ->
                     with(pathInputHelper) {
                         if (selected == null) return@AutoFillList
-                        presenter?.input {
-                            copy(
-                                pathNoExt = path.folderSelected(selected)
-                                    .toTextFieldValue()
-                            )
-                        }
+                        presenter?.input { copy(pathNoExt = path.folderSelected(selected).toTextFieldValue()) }
                     }
                 }
             )
         }
-
 
         AppTextField(
             modifier = Modifier
@@ -224,8 +230,6 @@ fun FSEditStorageScreen(
             label = { Text(stringResource(R.string.storage_description)) }
         )
 
-
-
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -245,8 +249,10 @@ fun FSEditStorageScreen(
             }
         }
 
-        ColorGroupDropDownField(
+
+        AppTextField(
             modifier = Modifier
+                .onGlobalPositionState(groupSelectPosition)
                 .then(skeletonModifier)
                 .fillMaxWidth(0.5f)
                 .constrainAs(colorGroupField) {
@@ -260,15 +266,47 @@ fun FSEditStorageScreen(
                         topMargin = 8.dp,
                     )
                 },
-            selectedIndex = state.colorGroupSelected,
-            variants = state.colorGroupVariants,
-            expanded = state.colorGroupExpanded,
-            onExpandedChange = { presenter?.input { copy(colorGroupExpanded = it) } },
-            onSelected = { presenter?.input { copy(colorGroupSelected = it, colorGroupExpanded = false) } },
+            interactionSource = groupInteractionSource,
+            readOnly = true,
+            singleLine = true,
+            value = state.colorGroupVariants.getOrNull(state.colorGroupSelectedIndex)?.name ?: "",
+            leadingIcon = {
+                GroupCircle(
+                    modifier = Modifier
+                        .padding(4.dp),
+                    colorScheme = theme.colorScheme.surfaceSchemas.surfaceScheme(
+                        state.colorGroupVariants.getOrNull(state.colorGroupSelectedIndex)?.keyColor ?: KeyColor.NOCOLOR
+                    ),
+                )
+            },
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = state.colorGroupExpanded) },
+            onValueChange = { },
             label = { Text(stringResource(R.string.group)) }
         )
-    }
 
+
+        PopupMenu(
+            visible = state.colorGroupExpanded,
+            positionAnchor = groupSelectPosition,
+            onDismissRequest = { presenter?.input { copy(colorGroupExpanded = false) } }
+        ) {
+            AutoFillGroupHandler(
+                modifier = Modifier
+                    .background(theme.colorScheme.popupMenu.shadowColor)
+                    .padding(top = 10.dp, bottom = 10.dp)
+                    .fillMaxWidth(),
+                variants = state.colorGroupVariants,
+                onSelected = { _, idx ->
+                    presenter?.input {
+                        copy(
+                            colorGroupSelectedIndex = idx,
+                            colorGroupExpanded = false,
+                        )
+                    }
+                }
+            )
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -287,7 +325,6 @@ fun FSEditStorageScreen(
             ) { Text(stringResource(R.string.save)) }
         }
     }
-
 
     AppBarStates(
         isVisible = scrollState.value == 0,
@@ -355,7 +392,7 @@ fun FSEditStorageScreenSelectPathPreview() = DebugDarkScreenPreview {
                     isSkeleton = false,
                     isSaveAvailable = true,
                     storagePathVariants = listOf("/appdata", "/phoneData"),
-                    storagePathFieldFocused = true,
+                    storagePathFieldExpanded = false,
                     colorGroupExpanded = true,
                     colorGroupVariants = listOf(
                         ColorGroup(Dummy.dummyId, keyColor = KeyColor.ORANGE),

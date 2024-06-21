@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.core.utils.views
+package com.github.klee0kai.thekey.core.ui.devkit.components.dropdownfields
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,19 +15,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
+import com.github.klee0kai.thekey.core.utils.views.DebugDarkContentPreview
+import com.github.klee0kai.thekey.core.utils.views.animateAlphaAsState
+import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 
 @Composable
 fun AutoFillList(
     modifier: Modifier = Modifier,
     isVisible: Boolean = false,
+    surface: Color = LocalTheme.current.colorScheme.popupMenu.surfaceColor,
     variants: List<String> = emptyList(),
     onSelected: (String?) -> Unit = {},
 ) {
-    val theme = LocalTheme.current
     val variantsListAlpha by animateAlphaAsState(isVisible && variants.isNotEmpty())
     val notVisible = rememberDerivedStateOf { variantsListAlpha <= 0 }
 
@@ -37,10 +41,7 @@ fun AutoFillList(
         modifier = modifier
             .alpha(variantsListAlpha)
             .heightIn(0.dp, 200.dp)
-            .background(
-                color = theme.colorScheme.popupMenu.surfaceColor,
-                shape = RoundedCornerShape(16.dp)
-            ),
+            .background(color = surface, shape = RoundedCornerShape(16.dp)),
     ) {
         item {
             Spacer(modifier = Modifier.height(8.dp))
