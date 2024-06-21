@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -42,6 +43,7 @@ import com.github.klee0kai.thekey.core.utils.possitions.rememberViewPosition
 import com.github.klee0kai.thekey.core.utils.possitions.toDp
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkPreview
 import com.github.klee0kai.thekey.core.utils.views.animateAlphaAsState
+import com.github.klee0kai.thekey.core.utils.views.rememberAlphaAnimate
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.core.utils.views.tappable
 import com.github.klee0kai.thekey.core.utils.views.thenIf
@@ -55,152 +57,153 @@ fun PopupMenu(
     shadowColor: Color = LocalTheme.current.colorScheme.popupMenu.shadowColor,
     content: @Composable BoxScope.() -> Unit = {},
 ) {
-    val overlayContainer = LocalOverlayProvider.current
-    val density = LocalDensity.current
-    val view = LocalView.current
-    val bias = if (LocalLayoutDirection.current == LayoutDirection.Ltr) horizontalBias else 1f - horizontalBias
-    val anchor = positionAnchor.value?.toDp(density) ?: return
-    val contentPosPx = remember { mutableStateOf<ViewPositionPx?>(null) }
-    val contentPosDp by rememberDerivedStateOf { contentPosPx.value?.toDp(density) ?: ViewPositionDp() }
-    val offset by rememberDerivedStateOf {
-        with(density) {
-            when {
-                view.height.toDp() < anchor.globalPos.y + anchor.size.height + contentPosDp.size.height -> {
-                    DpOffset(
-                        x = anchor.globalPos.x + (anchor.size.width - contentPosDp.size.width) * bias,
-                        y = anchor.globalPos.y - contentPosDp.size.height,
+    val visibleAlpha by animateAlphaAsState(visible)
+    if (visibleAlpha > 0f) {
+        val overlayProvider = LocalOverlayProvider.current
+        val overlayKey = content.hashCode()
+        DisposableEffect(key1 = Unit) {
+            onDispose { overlayProvider.clean(overlayKey) }
+        }
+
+        LocalOverlayProvider.current.Overlay(overlayKey) {
+            val density = LocalDensity.current
+            val view = LocalView.current
+            val bias = if (LocalLayoutDirection.current == LayoutDirection.Ltr) horizontalBias else 1f - horizontalBias
+            val anchor = positionAnchor.value?.toDp(density) ?: return@Overlay
+
+            val contentPosPx = remember { mutableStateOf<ViewPositionPx?>(null) }
+            val contentPosDp by rememberDerivedStateOf { contentPosPx.value?.toDp(density) ?: ViewPositionDp() }
+            val offset by rememberDerivedStateOf {
+                with(density) {
+                    when {
+                        view.height.toDp() < anchor.globalPos.y + anchor.size.height + contentPosDp.size.height -> {
+                            DpOffset(
+                                x = anchor.globalPos.x + (anchor.size.width - contentPosDp.size.width) * bias,
+                                y = anchor.globalPos.y - contentPosDp.size.height,
+                            )
+                        }
+
+                        else -> {
+                            DpOffset(
+                                x = anchor.globalPos.x + (anchor.size.width - contentPosDp.size.width) * bias,
+                                y = anchor.globalPos.y + anchor.size.height,
+                            )
+                        }
+                    }
+                }
+            }
+
+            val leftPopupShadow by rememberDerivedStateOf {
+                with(density) {
+                    ViewPositionDp(
+                        globalPos = DpOffset(x = 0.dp, y = contentPosDp.globalPos.y),
+                        size = DpSize(width = contentPosDp.globalPos.x, height = contentPosDp.size.height)
                     )
                 }
+            }
 
-                else -> {
-                    DpOffset(
-                        x = anchor.globalPos.x + (anchor.size.width - contentPosDp.size.width) * bias,
-                        y = anchor.globalPos.y + anchor.size.height,
+            val rightPopupShadow by rememberDerivedStateOf {
+                with(density) {
+                    ViewPositionDp(
+                        globalPos = DpOffset(x = contentPosDp.globalPos.x + contentPosDp.size.width, y = contentPosDp.globalPos.y),
+                        size = DpSize(width = view.width.toDp() - (contentPosDp.globalPos.x + contentPosDp.size.width), height = contentPosDp.size.height)
                     )
                 }
             }
-        }
-    }
 
-    val visibleAnimated by animateAlphaAsState(visible)
-    if (visibleAnimated > 0f) {
-        val leftPopupShadow by rememberDerivedStateOf {
-            with(density) {
-                ViewPositionDp(
-                    globalPos = DpOffset(x = 0.dp, y = contentPosDp.globalPos.y),
-                    size = DpSize(width = contentPosDp.globalPos.x, height = contentPosDp.size.height)
-                )
+            val leftAnchorShadow by rememberDerivedStateOf {
+                with(density) {
+                    ViewPositionDp(
+                        globalPos = DpOffset(x = 0.dp, y = anchor.globalPos.y),
+                        size = DpSize(width = anchor.globalPos.x, height = anchor.size.height)
+                    )
+                }
             }
-        }
 
-        val rightPopupShadow by rememberDerivedStateOf {
-            with(density) {
-                ViewPositionDp(
-                    globalPos = DpOffset(x = contentPosDp.globalPos.x + contentPosDp.size.width, y = contentPosDp.globalPos.y),
-                    size = DpSize(width = view.width.toDp() - (contentPosDp.globalPos.x + contentPosDp.size.width), height = contentPosDp.size.height)
-                )
+            val rightAnchorShadow by rememberDerivedStateOf {
+                with(density) {
+                    ViewPositionDp(
+                        globalPos = DpOffset(x = anchor.globalPos.x + anchor.size.width, y = anchor.globalPos.y),
+                        size = DpSize(width = view.width.toDp() - (anchor.globalPos.x + anchor.size.width), height = anchor.size.height)
+                    )
+                }
             }
-        }
 
-        val leftAnchorShadow by rememberDerivedStateOf {
-            with(density) {
-                ViewPositionDp(
-                    globalPos = DpOffset(x = 0.dp, y = anchor.globalPos.y),
-                    size = DpSize(width = anchor.globalPos.x, height = anchor.size.height)
-                )
+            val bottomShadow by rememberDerivedStateOf {
+                with(density) {
+                    val y = max(anchor.globalPos.y + anchor.size.height, contentPosDp.globalPos.y + contentPosDp.size.height)
+                    ViewPositionDp(
+                        globalPos = DpOffset(x = 0.dp, y = y),
+                        size = DpSize(width = view.width.toDp(), height = view.height.toDp() - y)
+                    )
+                }
             }
-        }
 
-        val rightAnchorShadow by rememberDerivedStateOf {
-            with(density) {
-                ViewPositionDp(
-                    globalPos = DpOffset(x = anchor.globalPos.x + anchor.size.width, y = anchor.globalPos.y),
-                    size = DpSize(width = view.width.toDp() - (anchor.globalPos.x + anchor.size.width), height = anchor.size.height)
-                )
+            val topShadow by rememberDerivedStateOf {
+                with(density) {
+                    ViewPositionDp(
+                        globalPos = DpOffset(x = 0.dp, y = 0.dp),
+                        size = DpSize(width = view.width.toDp(), height = min(anchor.globalPos.y, contentPosDp.globalPos.y))
+                    )
+                }
             }
-        }
 
-        val bottomShadow by rememberDerivedStateOf {
-            with(density) {
-                val y = max(anchor.globalPos.y + anchor.size.height, contentPosDp.globalPos.y + contentPosDp.size.height)
-                ViewPositionDp(
-                    globalPos = DpOffset(x = 0.dp, y = y),
-                    size = DpSize(width = view.width.toDp(), height = view.height.toDp() - y)
-                )
-            }
-        }
-
-        val topShadow by rememberDerivedStateOf {
-            with(density) {
-                ViewPositionDp(
-                    globalPos = DpOffset(x = 0.dp, y = 0.dp),
-                    size = DpSize(width = view.width.toDp(), height = min(anchor.globalPos.y, contentPosDp.globalPos.y))
-                )
-            }
-        }
-
-        overlayContainer.Overlay(content.hashCode()) {
+            val positionAvailableAlpha by rememberAlphaAnimate { contentPosPx.value != null && visible }
+            val fullAnimatedAlpha by rememberDerivedStateOf { positionAvailableAlpha * visibleAlpha }
             Box(
                 modifier = Modifier
-                    .thenIf(contentPosPx.value == null) { alpha(0f) }
-                    .alpha(visibleAnimated)
                     .sizeIn(maxWidth = anchor.size.width)
                     .absoluteOffset(offset.x, offset.y)
-                    .onGlobalPositionState(contentPosPx),
+                    .onGlobalPositionState(contentPosPx)
+                    .alpha(fullAnimatedAlpha),
             ) {
                 content()
             }
 
             Box(
                 modifier = Modifier
-                    .thenIf(contentPosPx.value == null) { alpha(0f) }
-                    .alpha(visibleAnimated)
                     .placeTo(leftPopupShadow)
                     .thenIf(onDismissRequest != null) { tappable { onDismissRequest?.invoke() } }
+                    .alpha(fullAnimatedAlpha)
                     .background(shadowColor)
             )
 
             Box(
                 modifier = Modifier
-                    .thenIf(contentPosPx.value == null) { alpha(0f) }
-                    .alpha(visibleAnimated)
                     .placeTo(rightPopupShadow)
                     .thenIf(onDismissRequest != null) { tappable { onDismissRequest?.invoke() } }
+                    .alpha(fullAnimatedAlpha)
                     .background(shadowColor)
             )
             Box(
                 modifier = Modifier
-                    .thenIf(contentPosPx.value == null) { alpha(0f) }
-                    .alpha(visibleAnimated)
                     .placeTo(leftAnchorShadow)
                     .thenIf(onDismissRequest != null) { tappable { onDismissRequest?.invoke() } }
+                    .alpha(fullAnimatedAlpha)
                     .background(shadowColor)
             )
 
             Box(
                 modifier = Modifier
-                    .thenIf(contentPosPx.value == null) { alpha(0f) }
-                    .alpha(visibleAnimated)
                     .placeTo(rightAnchorShadow)
                     .thenIf(onDismissRequest != null) { tappable { onDismissRequest?.invoke() } }
+                    .alpha(fullAnimatedAlpha)
                     .background(shadowColor)
             )
 
             Box(
                 modifier = Modifier
-                    .thenIf(contentPosPx.value == null) { alpha(0f) }
-                    .alpha(visibleAnimated)
                     .placeTo(bottomShadow)
                     .thenIf(onDismissRequest != null) { tappable { onDismissRequest?.invoke() } }
+                    .alpha(fullAnimatedAlpha)
                     .background(shadowColor)
             )
 
             Box(
                 modifier = Modifier
-                    .thenIf(contentPosPx.value == null) { alpha(0f) }
-                    .alpha(visibleAnimated)
                     .placeTo(topShadow)
                     .thenIf(onDismissRequest != null) { tappable { onDismissRequest?.invoke() } }
+                    .alpha(fullAnimatedAlpha)
                     .background(shadowColor)
             )
         }

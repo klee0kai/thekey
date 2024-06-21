@@ -10,10 +10,12 @@ import androidx.compose.runtime.setValue
 
 val LocalOverlayProvider = compositionLocalOf<OverlayProvider> { error("overlay no available") }
 
-fun interface OverlayProvider {
+interface OverlayProvider {
 
     @Composable
     fun Overlay(key: Any, block: @Composable () -> Unit)
+
+    fun clean(key: Any)
 
 }
 
@@ -23,18 +25,26 @@ fun OverlayContainer(
 ) {
     var overlayKey by remember { mutableStateOf<Any?>(null) }
     var overlay by remember { mutableStateOf<(@Composable () -> Unit)?>(null) }
-//    LaunchedEffect(overlay.hashCode()) {
-//        delay(100)
-//        overlay = null
-//    }
 
-    CompositionLocalProvider(
-        LocalOverlayProvider provides OverlayProvider { key, block ->
+    val provider = object : OverlayProvider {
+        @Composable
+        override fun Overlay(key: Any, block: @Composable () -> Unit) {
             if (key != overlayKey) {
                 overlay = block
                 overlayKey = key
             }
-        },
+        }
+
+        override fun clean(key: Any) {
+            if (overlayKey == key) {
+                overlayKey = null
+                overlay = null
+            }
+        }
+    }
+
+    CompositionLocalProvider(
+        LocalOverlayProvider provides provider,
     ) {
         content()
 
