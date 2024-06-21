@@ -6,14 +6,20 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.absoluteOffset
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -32,21 +39,29 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.min
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
+import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
+import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextField
 import com.github.klee0kai.thekey.core.ui.devkit.overlay.LocalOverlayProvider
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.possitions.ViewPositionDp
 import com.github.klee0kai.thekey.core.utils.possitions.ViewPositionPx
 import com.github.klee0kai.thekey.core.utils.possitions.onGlobalPositionState
 import com.github.klee0kai.thekey.core.utils.possitions.placeTo
+import com.github.klee0kai.thekey.core.utils.possitions.pxToDp
 import com.github.klee0kai.thekey.core.utils.possitions.rememberViewPosition
 import com.github.klee0kai.thekey.core.utils.possitions.toDp
-import com.github.klee0kai.thekey.core.utils.views.DebugDarkPreview
+import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
 import com.github.klee0kai.thekey.core.utils.views.animateAlphaAsState
+import com.github.klee0kai.thekey.core.utils.views.horizontal
 import com.github.klee0kai.thekey.core.utils.views.rememberAlphaAnimate
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.core.utils.views.tappable
 import com.github.klee0kai.thekey.core.utils.views.thenIf
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 
 @Composable
 fun PopupMenu(
@@ -60,7 +75,8 @@ fun PopupMenu(
     val visibleAlpha by animateAlphaAsState(visible)
     if (visibleAlpha > 0f) {
         val overlayProvider = LocalOverlayProvider.current
-        val overlayKey = content.hashCode()
+        val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
+        val overlayKey = listOf(content.hashCode())
         DisposableEffect(key1 = Unit) {
             onDispose { overlayProvider.clean(overlayKey) }
         }
@@ -69,14 +85,15 @@ fun PopupMenu(
             val density = LocalDensity.current
             val view = LocalView.current
             val bias = if (LocalLayoutDirection.current == LayoutDirection.Ltr) horizontalBias else 1f - horizontalBias
-            val anchor = positionAnchor.value?.toDp(density) ?: return@Overlay
-
+            val anchorDelegated by rememberDerivedStateOf { positionAnchor.value?.toDp(density) }
             val contentPosPx = remember { mutableStateOf<ViewPositionPx?>(null) }
             val contentPosDp by rememberDerivedStateOf { contentPosPx.value?.toDp(density) ?: ViewPositionDp() }
             val offset by rememberDerivedStateOf {
                 with(density) {
+                    val anchor = anchorDelegated ?: return@rememberDerivedStateOf DpOffset(0.dp, 0.dp)
                     when {
-                        view.height.toDp() < anchor.globalPos.y + anchor.size.height + contentPosDp.size.height -> {
+                        view.height.toDp() - safeContentPaddings.calculateBottomPadding() < anchor.globalPos.y + anchor.size.height + contentPosDp.size.height
+                                && anchor.globalPos.y > view.height.toDp() / 2f -> {
                             DpOffset(
                                 x = anchor.globalPos.x + (anchor.size.width - contentPosDp.size.width) * bias,
                                 y = anchor.globalPos.y - contentPosDp.size.height,
@@ -113,6 +130,7 @@ fun PopupMenu(
 
             val leftAnchorShadow by rememberDerivedStateOf {
                 with(density) {
+                    val anchor = anchorDelegated ?: return@rememberDerivedStateOf ViewPositionDp()
                     ViewPositionDp(
                         globalPos = DpOffset(x = 0.dp, y = anchor.globalPos.y),
                         size = DpSize(width = anchor.globalPos.x, height = anchor.size.height)
@@ -122,6 +140,7 @@ fun PopupMenu(
 
             val rightAnchorShadow by rememberDerivedStateOf {
                 with(density) {
+                    val anchor = anchorDelegated ?: return@rememberDerivedStateOf ViewPositionDp()
                     ViewPositionDp(
                         globalPos = DpOffset(x = anchor.globalPos.x + anchor.size.width, y = anchor.globalPos.y),
                         size = DpSize(width = view.width.toDp() - (anchor.globalPos.x + anchor.size.width), height = anchor.size.height)
@@ -131,6 +150,7 @@ fun PopupMenu(
 
             val bottomShadow by rememberDerivedStateOf {
                 with(density) {
+                    val anchor = anchorDelegated ?: return@rememberDerivedStateOf ViewPositionDp()
                     val y = max(anchor.globalPos.y + anchor.size.height, contentPosDp.globalPos.y + contentPosDp.size.height)
                     ViewPositionDp(
                         globalPos = DpOffset(x = 0.dp, y = y),
@@ -141,6 +161,7 @@ fun PopupMenu(
 
             val topShadow by rememberDerivedStateOf {
                 with(density) {
+                    val anchor = anchorDelegated ?: return@rememberDerivedStateOf ViewPositionDp()
                     ViewPositionDp(
                         globalPos = DpOffset(x = 0.dp, y = 0.dp),
                         size = DpSize(width = view.width.toDp(), height = min(anchor.globalPos.y, contentPosDp.globalPos.y))
@@ -152,7 +173,7 @@ fun PopupMenu(
             val fullAnimatedAlpha by rememberDerivedStateOf { positionAvailableAlpha * visibleAlpha }
             Box(
                 modifier = Modifier
-                    .sizeIn(maxWidth = anchor.size.width)
+                    .sizeIn(maxWidth = anchorDelegated?.size?.width ?: 0.dp)
                     .absoluteOffset(offset.x, offset.y)
                     .onGlobalPositionState(contentPosPx)
                     .alpha(fullAnimatedAlpha),
@@ -214,7 +235,7 @@ fun PopupMenu(
 @OptIn(DebugOnly::class)
 @Composable
 @Preview
-fun PopupMenuPreview() = DebugDarkPreview(
+fun PopupMenuSimplePreview() = DebugDarkScreenPreview(
     layoutDirection = LayoutDirection.Ltr,
 ) {
     val theme = LocalTheme.current
@@ -242,6 +263,80 @@ fun PopupMenuPreview() = DebugDarkPreview(
         onDismissRequest = {
             popupVisible = false
         },
+    ) {
+        Box(
+            modifier = Modifier
+                .height(300.dp)
+                .fillMaxWidth(0.6f)
+                .background(theme.colorScheme.popupMenu.surfaceColor),
+        )
+    }
+}
+
+
+@OptIn(DebugOnly::class)
+@Composable
+@Preview
+fun PopupMenuInsetsPreview() = DebugDarkScreenPreview(
+    layoutDirection = LayoutDirection.Ltr,
+) {
+    val theme = LocalTheme.current
+    val view = LocalView.current
+    var popupVisible by remember { mutableStateOf(true) }
+    val storagePathPosition = rememberViewPosition()
+    val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
+    var additionalPadding by remember { mutableStateOf(0.dp) }
+
+    LaunchedEffect(Unit) {
+        while (isActive) {
+            repeat(60) {
+                delay(100)
+                additionalPadding += 10.dp
+            }
+            repeat(60) {
+                delay(100)
+                additionalPadding -= 10.dp
+            }
+        }
+    }
+
+    ConstraintLayout(
+        modifier = Modifier
+            .imePadding()
+            .fillMaxSize()
+            .defaultMinSize(minHeight = view.height.pxToDp()),
+    ) {
+        val (
+            pathTextField,
+        ) = createRefs()
+
+        AppTextField(
+            modifier = Modifier
+                .onFocusChanged { }
+                .onGlobalPositionState(storagePathPosition)
+                .constrainAs(pathTextField) {
+                    width = Dimension.fillToConstraints
+                    linkTo(
+                        start = parent.start,
+                        top = parent.top,
+                        end = parent.end,
+                        bottom = parent.bottom,
+                        verticalBias = 0f,
+                        topMargin = 8.dp + AppBarConst.appBarSize + additionalPadding,
+                        startMargin = safeContentPaddings.horizontal(16.dp),
+                        endMargin = safeContentPaddings.horizontal(16.dp)
+                    )
+                },
+            value = "text",
+            label = { "text" }
+        )
+    }
+
+    PopupMenu(
+        visible = popupVisible,
+        positionAnchor = storagePathPosition,
+        horizontalBias = 0.8f,
+        onDismissRequest = { popupVisible = false },
     ) {
         Box(
             modifier = Modifier

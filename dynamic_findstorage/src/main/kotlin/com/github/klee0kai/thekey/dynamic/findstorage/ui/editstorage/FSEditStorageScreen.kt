@@ -1,6 +1,7 @@
 package com.github.klee0kai.thekey.dynamic.findstorage.ui.editstorage
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -39,7 +40,6 @@ import androidx.constraintlayout.compose.Dimension
 import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
-import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
@@ -49,11 +49,14 @@ import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DeleteIconBut
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DoneIconButton
 import com.github.klee0kai.thekey.core.ui.devkit.components.dropdownfields.ColorGroupDropDownField
 import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextField
-import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
+import com.github.klee0kai.thekey.core.ui.devkit.popup.PopupMenu
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.common.Dummy
+import com.github.klee0kai.thekey.core.utils.possitions.onGlobalPositionState
 import com.github.klee0kai.thekey.core.utils.possitions.pxToDp
+import com.github.klee0kai.thekey.core.utils.possitions.rememberViewPosition
 import com.github.klee0kai.thekey.core.utils.views.AutoFillList
+import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
 import com.github.klee0kai.thekey.core.utils.views.Keyboard
 import com.github.klee0kai.thekey.core.utils.views.animateSkeletonModifier
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
@@ -71,7 +74,6 @@ import com.github.klee0kai.thekey.dynamic.findstorage.di.hardResetToPreview
 import com.github.klee0kai.thekey.dynamic.findstorage.di.modules.FSPresentersModule
 import com.github.klee0kai.thekey.dynamic.findstorage.ui.editstorage.model.FSEditStorageState
 import com.github.klee0kai.thekey.dynamic.findstorage.ui.editstorage.presenter.FSEditStoragePresenter
-import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.jetbrains.annotations.VisibleForTesting
 
@@ -93,6 +95,7 @@ fun FSEditStorageScreen(
     val isSaveAvailable by rememberTargetCrossFaded { state.isSaveAvailable }
     val isRemoveAvailable by rememberTargetCrossFaded { state.isRemoveAvailable }
     val skeletonModifier by animateSkeletonModifier { state.isSkeleton }
+    val storagePathPosition = rememberViewPosition()
 
     LaunchedEffect(keyboardState) {
         if (keyboardState == Keyboard.Closed) {
@@ -114,12 +117,11 @@ fun FSEditStorageScreen(
             nameTextField,
             descTextField,
             colorGroupField,
-            autofillList,
         ) = createRefs()
-
 
         AppTextField(
             modifier = Modifier
+                .onGlobalPositionState(storagePathPosition)
                 .onFocusChanged { presenter?.input { copy(storagePathFieldFocused = true) } }
                 .constrainAs(pathTextField) {
                     width = Dimension.fillToConstraints
@@ -153,6 +155,32 @@ fun FSEditStorageScreen(
             },
             label = { Text(stringResource(R.string.storage_path)) }
         )
+
+        PopupMenu(
+            visible = state.storagePathFieldFocused,
+            positionAnchor = storagePathPosition,
+            onDismissRequest = { presenter?.input { copy(storagePathFieldFocused = false) } }
+        ) {
+            AutoFillList(
+                modifier = Modifier
+                    .background(theme.colorScheme.popupMenu.shadowColor)
+                    .padding(top = 10.dp, bottom = 10.dp)
+                    .fillMaxWidth(),
+                isVisible = state.storagePathFieldFocused,
+                variants = state.storagePathVariants,
+                onSelected = { selected ->
+                    with(pathInputHelper) {
+                        if (selected == null) return@AutoFillList
+                        presenter?.input {
+                            copy(
+                                pathNoExt = path.folderSelected(selected)
+                                    .toTextFieldValue()
+                            )
+                        }
+                    }
+                }
+            )
+        }
 
 
         AppTextField(
@@ -216,35 +244,6 @@ fun FSEditStorageScreen(
                 }
             }
         }
-
-        AutoFillList(
-            modifier = Modifier
-                .constrainAs(autofillList) {
-                    height = Dimension.wrapContent
-                    width = Dimension.fillToConstraints
-                    linkTo(
-                        start = pathTextField.start,
-                        end = pathTextField.end,
-                        top = pathTextField.bottom,
-                        bottom = parent.bottom,
-                        verticalBias = 0f,
-                        bottomMargin = 16.dp
-                    )
-                },
-            isVisible = state.storagePathFieldFocused,
-            variants = state.storagePathVariants,
-            onSelected = { selected ->
-                with(pathInputHelper) {
-                    if (selected == null) return@AutoFillList
-                    presenter?.input {
-                        copy(
-                            pathNoExt = path.folderSelected(selected)
-                                .toTextFieldValue()
-                        )
-                    }
-                }
-            }
-        )
 
         ColorGroupDropDownField(
             modifier = Modifier
@@ -325,7 +324,7 @@ fun FSEditStorageScreen(
 @VisibleForTesting
 @Preview(device = Devices.PHONE)
 @Composable
-fun FSEditStorageScreenPreview() = EdgeToEdgeTemplate {
+fun FSEditStorageScreenPreview() = DebugDarkScreenPreview {
     FSDI.hardResetToPreview()
     FSDI.initFSPresentersModule(object : FSPresentersModule {
 
@@ -338,21 +337,18 @@ fun FSEditStorageScreenPreview() = EdgeToEdgeTemplate {
             )
         }
     })
-    AppTheme(theme = DefaultThemes.darkTheme) {
-        FSEditStorageScreen(
-            path = "some/path/to/storage",
-        )
-    }
+    FSEditStorageScreen(
+        path = "some/path/to/storage",
+    )
 }
 
 @OptIn(DebugOnly::class)
 @VisibleForTesting
 @Preview(device = Devices.PHONE)
 @Composable
-fun FSEditStorageScreenSelectPathPreview() = EdgeToEdgeTemplate {
+fun FSEditStorageScreenSelectPathPreview() = DebugDarkScreenPreview {
     FSDI.hardResetToPreview()
     FSDI.initFSPresentersModule(object : FSPresentersModule {
-
         override fun fsEditStoragePresenter(storageIdentifier: StorageIdentifier) = object : FSEditStoragePresenter {
             override val state = MutableStateFlow(
                 FSEditStorageState(
@@ -369,9 +365,7 @@ fun FSEditStorageScreenSelectPathPreview() = EdgeToEdgeTemplate {
             )
         }
     })
-    AppTheme(theme = DefaultThemes.darkTheme) {
-        FSEditStorageScreen(
-            path = "some/path/to/storage",
-        )
-    }
+    FSEditStorageScreen(
+        path = "some/path/to/storage",
+    )
 }
