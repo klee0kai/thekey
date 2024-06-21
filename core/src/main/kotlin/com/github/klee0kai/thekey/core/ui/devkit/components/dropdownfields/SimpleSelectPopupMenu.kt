@@ -25,7 +25,7 @@ import com.github.klee0kai.thekey.core.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 
 @Composable
-fun AutoFillList(
+fun SimpleSelectPopupMenu(
     modifier: Modifier = Modifier,
     isVisible: Boolean = false,
     surface: Color = LocalTheme.current.colorScheme.popupMenu.surfaceColor,
@@ -76,8 +76,8 @@ fun AutoFillList(
 @Preview
 @DebugOnly
 @Composable
-fun AutoFillListPreview() = DebugDarkContentPreview {
-    AutoFillList(
+fun SimpleSelectPopupMenuPreview() = DebugDarkContentPreview {
+    SimpleSelectPopupMenu(
         isVisible = true,
         variants = listOf(
             "variant 1",

@@ -53,8 +53,8 @@ import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DeleteIconButton
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DoneIconButton
 import com.github.klee0kai.thekey.core.ui.devkit.components.buttons.GroupCircle
-import com.github.klee0kai.thekey.core.ui.devkit.components.dropdownfields.AutoFillGroupHandler
-import com.github.klee0kai.thekey.core.ui.devkit.components.dropdownfields.AutoFillList
+import com.github.klee0kai.thekey.core.ui.devkit.components.dropdownfields.ColorGroupSelectPopupMenu
+import com.github.klee0kai.thekey.core.ui.devkit.components.dropdownfields.SimpleSelectPopupMenu
 import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextField
 import com.github.klee0kai.thekey.core.ui.devkit.popup.PopupMenu
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
@@ -173,7 +173,7 @@ fun FSEditStorageScreen(
             positionAnchor = storagePathPosition,
             onDismissRequest = { presenter?.input { copy(storagePathFieldExpanded = false) } }
         ) {
-            AutoFillList(
+            SimpleSelectPopupMenu(
                 modifier = Modifier
                     .background(theme.colorScheme.popupMenu.shadowColor)
                     .padding(top = 10.dp, bottom = 10.dp)
@@ -182,7 +182,7 @@ fun FSEditStorageScreen(
                 variants = state.storagePathVariants,
                 onSelected = { selected ->
                     with(pathInputHelper) {
-                        if (selected == null) return@AutoFillList
+                        if (selected == null) return@SimpleSelectPopupMenu
                         presenter?.input { copy(pathNoExt = path.folderSelected(selected).toTextFieldValue()) }
                     }
                 }
@@ -290,7 +290,7 @@ fun FSEditStorageScreen(
             positionAnchor = groupSelectPosition,
             onDismissRequest = { presenter?.input { copy(colorGroupExpanded = false) } }
         ) {
-            AutoFillGroupHandler(
+            ColorGroupSelectPopupMenu(
                 modifier = Modifier
                     .background(theme.colorScheme.popupMenu.shadowColor)
                     .padding(top = 10.dp, bottom = 10.dp)

@@ -29,7 +29,7 @@ import com.github.klee0kai.thekey.core.utils.common.Dummy
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkContentPreview
 
 @Composable
-fun AutoFillGroupHandler(
+fun ColorGroupSelectPopupMenu(
     modifier: Modifier = Modifier,
     surface: Color = LocalTheme.current.colorScheme.popupMenu.surfaceColor,
     variants: List<ColorGroup> = emptyList(),
@@ -86,8 +86,8 @@ fun AutoFillGroupHandler(
 @Preview
 @DebugOnly
 @Composable
-fun AutoFillGroupHandlerPreview() = DebugDarkContentPreview {
-    AutoFillGroupHandler(
+fun ColorGroupSelectPopupMenuPreview() = DebugDarkContentPreview {
+    ColorGroupSelectPopupMenu(
         selectedIndex = 1,
         variants = listOf(
             ColorGroup(Dummy.dummyId, "A", KeyColor.PINK),
