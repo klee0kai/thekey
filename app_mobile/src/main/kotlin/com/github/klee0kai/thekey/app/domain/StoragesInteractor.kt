@@ -33,12 +33,6 @@ class StoragesInteractor {
         storage
     }
 
-    fun setStorage(storage: ColoredStorage) = scope.launch { rep().setStorage(storage).join() }
-
-    fun setStoragesGroup(storagePaths: List<String>, groupId: Long) = scope.launch { rep().setStoragesGroup(storagePaths, groupId).join() }
-
-    fun deleteStorage(path: String) = scope.launch { rep().deleteStorage(path).join() }
-
     fun setColorGroup(colorGroup: ColorGroup) = scope.launch { rep().setColorGroup(colorGroup).join() }
 
     fun deleteColorGroup(id: Long) = scope.launch { rep().deleteColorGroup(id).join() }

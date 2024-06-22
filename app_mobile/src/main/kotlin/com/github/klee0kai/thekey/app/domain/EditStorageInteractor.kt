@@ -11,7 +11,7 @@ import java.io.File
 class EditStorageInteractor {
 
     private val scope = DI.defaultThreadScope()
-    private val storagesInteractor = DI.storagesInteractorLazy()
+    private val rep = DI.storagesRepositoryLazy()
     private val engine = DI.editStorageEngineLazy()
 
     fun createStorage(storage: ColoredStorage) = scope.asyncResult {
@@ -22,7 +22,7 @@ class EditStorageInteractor {
 
         val error = engine().createStorage(storage.toStorage())
         engine().throwError(error)
-        storagesInteractor().setStorage(storage).join()
+        rep().setStorage(storage).join()
     }
 
     fun moveStorage(from: String, storage: ColoredStorage) = scope.asyncResult {
@@ -34,14 +34,19 @@ class EditStorageInteractor {
         engine().throwError(error)
 
 
-        storagesInteractor().setStorage(storage).join()
+        rep().setStorage(storage).join()
     }
 
     fun setStorage(storage: ColoredStorage) = scope.asyncResult {
         var error = engine().editStorage(storage.toStorage())
         engine().throwError(error)
 
-        storagesInteractor().setStorage(storage).join()
+        rep().setStorage(storage).join()
+    }
+
+    fun deleteStorage(path: String) = scope.asyncResult {
+        File(path).delete()
+        rep().deleteStorage(path).join()
     }
 
 

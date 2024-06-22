@@ -96,7 +96,7 @@ class FSEditStoragePresenterImpl(
 
     override fun remove(router: AppRouter) = scope.launch {
         val path = originStorage?.path ?: return@launch
-        storagesInteractor().deleteStorage(path)
+        interactor().deleteStorage(path).await()
         router.snack(R.string.storage_deleted)
         backFromScreen(router)
     }
