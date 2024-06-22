@@ -1,7 +1,6 @@
 package com.github.klee0kai.thekey.core.di
 
 import android.content.Context
-import android.view.View
 import androidx.activity.ComponentActivity
 import com.github.klee0kai.stone.KotlinWrappersStone
 import com.github.klee0kai.stone.Stone
@@ -9,7 +8,6 @@ import com.github.klee0kai.stone.annotations.component.Component
 import com.github.klee0kai.stone.annotations.component.GcWeakScope
 import com.github.klee0kai.stone.annotations.component.RunGc
 import com.github.klee0kai.stone.annotations.module.BindInstance
-import com.github.klee0kai.thekey.core.di.debug.DummyCoreAndroidHelpersModule
 import com.github.klee0kai.thekey.core.di.dependecies.CoreDependencyProvider
 import com.github.klee0kai.thekey.core.di.identifiers.ActivityIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.NoteGroupIdentifier
@@ -71,9 +69,4 @@ fun CoreComponent.hardResetToPreview() {
 
 private fun initCoreComponent() = Stone.createComponent(CoreComponent::class.java).apply {
     config(AppConfig())
-
-    val context = StartContextHolder.appRef?.get()
-    if (context == null || View(context).isInEditMode) {
-        initCoreAndroidHelpersModule(DummyCoreAndroidHelpersModule())
-    }
 }

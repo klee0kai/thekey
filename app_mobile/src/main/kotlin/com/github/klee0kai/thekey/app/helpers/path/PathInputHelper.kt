@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.core.helpers.path
+package com.github.klee0kai.thekey.app.helpers.path
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
@@ -7,7 +7,7 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.withStyle
-import com.github.klee0kai.thekey.core.di.CoreDI
+import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.core.utils.common.runForEach
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -17,7 +17,7 @@ import java.util.Locale
 
 class PathInputHelper {
 
-    private val shortPaths by lazy { CoreDI.userShortPaths() }
+    private val shortPaths by lazy { DI.userShortPaths() }
     private val dirFileNameFilter = FilenameFilter { dir, name -> File(dir, name).isDirectory }
 
 
@@ -73,7 +73,7 @@ class PathInputHelper {
             shortPaths.rootUserPaths
         }.filter { it.lowercase(Locale.getDefault()).contains(searchFileName) }
         emit(availableList)
-    }.flowOn(CoreDI.defaultDispatcher())
+    }.flowOn(DI.defaultDispatcher())
 
     fun String.folderSelected(selected: String): String {
         val input = this

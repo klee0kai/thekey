@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.core.helpers.path
+package com.github.klee0kai.thekey.app.helpers.path
 
 class DummyUserShortPaths : UserShortPaths() {
 

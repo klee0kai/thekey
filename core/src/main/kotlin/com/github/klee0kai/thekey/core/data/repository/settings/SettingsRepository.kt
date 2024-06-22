@@ -11,10 +11,9 @@ open class SettingsRepository {
 
     private val settingsDao = CoreDI.settingDaoLazy()
     private val scope = CoreDI.ioThreadScope()
-    private val userShortPaths = CoreDI.userShortPaths()
 
     val currentStoragePath = stringDelegate(SETTING_DEFAULT_STORAGE_PATH) {
-        File(userShortPaths.appPath, "keys.ckey").path
+        File(CoreDI.ctx().applicationInfo?.dataDir, "keys.ckey").path
     }
 
     val newStorageVersion = intDelegate(SETTING_DEFAULT_STORAGE_VERSION) { 2 }

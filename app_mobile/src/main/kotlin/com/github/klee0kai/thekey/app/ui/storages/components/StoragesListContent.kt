@@ -25,6 +25,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
+import com.github.klee0kai.thekey.core.utils.views.DebugDarkContentPreview
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
@@ -88,16 +89,14 @@ fun StoragesListContent(
 @OptIn(DebugOnly::class)
 @Composable
 @Preview
-fun StoragesListContentPreview() {
+fun StoragesListContentPreview() = DebugDarkContentPreview {
     DI.hardResetToPreview()
     DI.initPresenterModule(object : PresentersModule {
         override fun storagesPresenter() = StoragesPresenterDummy()
     })
 
-    AppTheme(theme = DefaultThemes.darkTheme) {
-        StoragesListContent(
-            onExport = {},
-            onEdit = {},
-        )
-    }
+    StoragesListContent(
+        onExport = {},
+        onEdit = {},
+    )
 }
