@@ -1,10 +1,10 @@
 package com.github.klee0kai.thekey.app.ui.storages.components
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -13,23 +13,24 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
+import com.github.klee0kai.thekey.app.ui.storages.components.popup.StoragePopupMenu
 import com.github.klee0kai.thekey.app.ui.storages.presenter.StoragesPresenterDummy
 import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
-import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
-import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
+import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
+import com.github.klee0kai.thekey.core.ui.devkit.overlay.PopupMenu
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
+import com.github.klee0kai.thekey.core.utils.possitions.onGlobalPositionState
+import com.github.klee0kai.thekey.core.utils.possitions.rememberViewPosition
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkContentPreview
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
-
 
 @Composable
 fun StoragesListContent(
@@ -40,6 +41,7 @@ fun StoragesListContent(
     footer: @Composable LazyItemScope.() -> Unit = {},
 ) {
     val navigator = LocalRouter.current
+    val theme = LocalTheme.current
     val scope = rememberCoroutineScope()
     val presenter by rememberOnScreenRef { DI.storagesPresenter() }
     val storages = presenter!!.filteredStorages.collectAsState(key = Unit, initial = emptyList())
@@ -61,23 +63,28 @@ fun StoragesListContent(
         storages.value.forEach { storage ->
             item(contentType = storage::class) {
                 var showMenu by remember { mutableStateOf(false) }
+                val position = rememberViewPosition()
+
                 ColoredStorageItem(
+                    modifier = Modifier
+                        .onGlobalPositionState(position),
                     storage = storage,
                     onClick = { navigator.backWithResult(storage.path) },
                     onLongClick = { showMenu = true },
-                    overlayContent = {
-                        DropdownMenu(
-                            offset = DpOffset(x = (-16).dp, y = 2.dp),
-                            expanded = showMenu && hasActions,
-                            onDismissRequest = { showMenu = false }
-                        ) {
-                            StorageDropDownMenuContent(
-                                onExport = onExport?.let { { onExport.invoke(storage) } },
-                                onEdit = onEdit?.let { { onEdit.invoke(storage) } },
-                            )
-                        }
-                    }
                 )
+
+                PopupMenu(
+                    visible = showMenu,
+                    positionAnchor = position,
+                    horizontalBias = 0.8f,
+                    onDismissRequest = { showMenu = false }
+                ) {
+                    StoragePopupMenu(
+                        modifier = Modifier.padding(vertical = 4.dp),
+                        onExport = onExport?.let { { onExport.invoke(storage) } },
+                        onEdit = onEdit?.let { { onEdit.invoke(storage) } },
+                    )
+                }
             }
         }
 

@@ -3,7 +3,6 @@
 package com.github.klee0kai.thekey.dynamic.findstorage.ui.editstorage
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Box
@@ -149,7 +148,7 @@ fun FSEditStorageScreen(
                 },
             visualTransformation = { input ->
                 with(pathInputHelper) {
-                    input.coloredPath()
+                    input.coloredPath(theme.colorScheme.androidColorScheme.primary)
                         .toTransformationText()
                 }
             },
@@ -169,13 +168,12 @@ fun FSEditStorageScreen(
         )
 
         PopupMenu(
-            visible = state.storagePathFieldExpanded,
+            visible = state.storagePathFieldExpanded && state.storagePathVariants.isNotEmpty(),
             positionAnchor = storagePathPosition,
             onDismissRequest = { presenter?.input { copy(storagePathFieldExpanded = false) } }
         ) {
             SimpleSelectPopupMenu(
                 modifier = Modifier
-                    .background(theme.colorScheme.popupMenu.shadowColor)
                     .padding(top = 10.dp, bottom = 10.dp)
                     .fillMaxWidth(),
                 variants = state.storagePathVariants,
@@ -290,7 +288,6 @@ fun FSEditStorageScreen(
         ) {
             ColorGroupSelectPopupMenu(
                 modifier = Modifier
-                    .background(theme.colorScheme.popupMenu.shadowColor)
                     .padding(top = 10.dp, bottom = 10.dp)
                     .fillMaxWidth(),
                 variants = state.colorGroupVariants,

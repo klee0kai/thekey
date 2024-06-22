@@ -14,6 +14,7 @@ import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.PluginIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.StorageGroupIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
+import com.github.klee0kai.thekey.core.di.initDummyModule
 import com.github.klee0kai.thekey.core.di.wrap.AppWrappersStone
 import com.github.klee0kai.thekey.core.domain.model.feature.model.DynamicFeature
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
@@ -45,6 +46,8 @@ interface FindStorageComponent : FSProviders, FSModules, AppComponentProviders, 
 fun FindStorageComponent.hardResetToPreview() {
     DI.hardResetToPreview()
     FSDI = initFindStorageComponent()
+
+    CoreDI.initDummyModule()
 }
 
 private fun initFindStorageComponent() = Stone.createComponent(FindStorageComponent::class.java).apply {

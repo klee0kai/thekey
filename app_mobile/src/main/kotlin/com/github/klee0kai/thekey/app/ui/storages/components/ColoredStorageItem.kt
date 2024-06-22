@@ -38,7 +38,6 @@ fun ColoredStorageItem(
     storage: ColoredStorage = ColoredStorage(),
     onClick: () -> Unit = {},
     onLongClick: (() -> Unit)? = null,
-    overlayContent: @Composable () -> Unit = {},
 ) {
     val colorScheme = LocalColorScheme.current
     val pathInputHelper = remember { DI.pathInputHelper() }
@@ -135,8 +134,6 @@ fun ColoredStorageItem(
                 }
             )
         }
-
-        overlayContent()
     }
 }
 
@@ -159,7 +156,7 @@ fun ColoredStorageItemPreview() = DebugDarkContentPreview {
 @OptIn(DebugOnly::class)
 @Preview
 @Composable
-fun ColoredStorageNotValidItemPreview() = DebugDarkContentPreview{
+fun ColoredStorageNotValidItemPreview() = DebugDarkContentPreview {
     DI.hardResetToPreview()
     ColoredStorageItem(
         storage = ColoredStorage(

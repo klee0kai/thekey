@@ -16,7 +16,7 @@ class ShortPath(
 
 open class UserShortPaths {
 
-    open val appPath: String by lazy { CoreDI.ctx().applicationInfo.dataDir }
+    open val appPath: String by lazy { CoreDI.ctx().applicationInfo.dataDir + "/storages" }
 
     open val shortPaths by lazy {
         listOf(
