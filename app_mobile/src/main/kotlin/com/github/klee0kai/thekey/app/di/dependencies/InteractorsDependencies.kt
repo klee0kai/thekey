@@ -1,5 +1,6 @@
 package com.github.klee0kai.thekey.app.di.dependencies
 
+import com.github.klee0kai.thekey.app.domain.EditStorageInteractor
 import com.github.klee0kai.thekey.app.domain.GroupsInteractor
 import com.github.klee0kai.thekey.app.domain.LoginInteractor
 import com.github.klee0kai.thekey.app.domain.NotesInteractor
@@ -13,6 +14,8 @@ interface InteractorsDependencies {
     fun loginInteractorLazy(): AsyncCoroutineProvide<LoginInteractor>
 
     fun storagesInteractorLazy(): AsyncCoroutineProvide<StoragesInteractor>
+
+    fun editStorageInteractorLazy(): AsyncCoroutineProvide<EditStorageInteractor>
 
     fun notesInteractorLazy(storageIdentifier: StorageIdentifier): AsyncCoroutineProvide<NotesInteractor>
 

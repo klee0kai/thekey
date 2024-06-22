@@ -1,13 +1,14 @@
 package com.github.klee0kai.thekey.dynamic.findstorage.ui.editstorage.presenter
 
-import com.github.klee0kai.thekey.app.data.mapping.toStorage
+import androidx.compose.ui.text.input.TextFieldValue
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.core.domain.model.noGroup
-import com.github.klee0kai.thekey.core.helpers.path.appendTKeyFormat
+import com.github.klee0kai.thekey.core.helpers.path.removeTKeyFormat
+import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
 import com.github.klee0kai.thekey.core.utils.common.launchLatest
 import com.github.klee0kai.thekey.dynamic.findstorage.di.FSDI
 import com.github.klee0kai.thekey.dynamic.findstorage.ui.editstorage.model.FSEditStorageState
@@ -17,16 +18,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.io.File
 
 class FSEditStoragePresenterImpl(
     val storageIdentifier: StorageIdentifier?,
 ) : FSEditStoragePresenter {
 
     private val scope = FSDI.defaultThreadScope()
-    private val router = FSDI.router()
-    private val engine = FSDI.editStorageEngineLazy()
-    private val interactor = FSDI.storagesInteractorLazy()
+    private val storagesInteractor = FSDI.storagesInteractorLazy()
+    private val interactor = FSDI.editStorageInteractorLazy()
     private val settingsRep = FSDI.settingsRepositoryLazy()
     private val pathInputHelper = FSDI.pathInputHelper()
 
@@ -35,27 +34,30 @@ class FSEditStoragePresenterImpl(
 
     override val state = MutableStateFlow(FSEditStorageState(isSkeleton = true))
 
-
     override fun init() = scope.launch {
         if (!state.value.isSkeleton) return@launch
 
         val colorGroupUpdate = launch {
-            colorGroups = interactor().allColorGroups
+            colorGroups = storagesInteractor().allColorGroups
                 .first()
                 .let { listOf(ColorGroup.noGroup()) + it }
         }
 
         originStorage = storageIdentifier?.path?.let {
-            interactor().findStorage(it).await()
+            storagesInteractor().findStorage(it).await()
         }
 
-        val initState = FSEditStorageState(
-            isEditMode = originStorage != null,
-            isRemoveAvailable = originStorage != null,
-            name = originStorage?.name ?: "",
-            desc = originStorage?.description ?: "",
-        )
-        state.update { initState }
+        with(pathInputHelper) {
+            val initState = FSEditStorageState(
+                isEditMode = originStorage != null,
+                isRemoveAvailable = originStorage != null,
+                path = TextFieldValue(originStorage?.path?.shortPath()?.removeTKeyFormat() ?: ""),
+                name = originStorage?.name ?: "",
+                desc = originStorage?.description ?: "",
+            )
+            state.update { initState }
+        }
+
         colorGroupUpdate.join()
         state.update {
             it.updateWith(
@@ -70,9 +72,12 @@ class FSEditStoragePresenterImpl(
     override fun input(block: FSEditStorageState.() -> FSEditStorageState) = scope.launch(DI.mainDispatcher()) {
         state.update {
             var newState = block(it)
+            val fulfilled = newState.path.text.isNotBlank()
+                    && !newState.path.text.endsWith("/")
+                    && newState.name.isNotBlank()
             val isSaveAvailable = when {
-                originStorage != null -> newState.name.isNotBlank() && newState.storage(originStorage!!) != originStorage
-                else -> newState.name.isNotBlank()
+                originStorage != null -> fulfilled && newState.storage(pathInputHelper, originStorage!!) != originStorage
+                else -> fulfilled
             }
             newState = newState.copy(
                 isSaveAvailable = isSaveAvailable,
@@ -85,54 +90,55 @@ class FSEditStoragePresenterImpl(
         updatePathVariants()
     }
 
-    override fun remove() = scope.launch {
+    override fun remove(router: AppRouter) = scope.launch {
         val path = originStorage?.path ?: return@launch
-        interactor().deleteStorage(path)
+        storagesInteractor().deleteStorage(path)
         router.snack(R.string.storage_deleted)
-        router.back()
-        clean()
+        backFromScreen(router)
     }
 
-    override fun save() = scope.launch {
+    override fun save(router: AppRouter) = scope.launch {
         val curState = state.value
-        var storage = curState.storage(originStorage ?: ColoredStorage(version = settingsRep().newStorageVersion()))
-
-        storage = storage.copy(
-            path = File(curState.folder.text, curState.name)
-                .absolutePath
-                .appendTKeyFormat()
-        )
-
-        router.back()
-        clean()
+        var storage = curState.storage(pathInputHelper, originStorage ?: ColoredStorage(version = settingsRep().newStorageVersion()))
 
         when {
             originStorage == null -> {
-                engine().createStorage(storage.toStorage())
-                interactor().setStorage(storage).join()
-                router.snack(R.string.storage_created)
+                val result = interactor().createStorage(storage).await()
+
+                if (result.isSuccess) {
+                    router.snack(R.string.storage_created)
+                    backFromScreen(router)
+                } else {
+                    router.snack(R.string.unknown_error)
+                }
             }
 
             originStorage?.path != storage.path -> {
-                engine().move(originStorage!!.path, storage.path)
-                engine().editStorage(storage.toStorage())
-                interactor().setStorage(storage).join()
-                router.snack(R.string.storage_moved)
+                val result = interactor().createStorage(storage).await()
+                if (result.isSuccess) {
+                    router.snack(R.string.storage_moved)
+                    backFromScreen(router)
+                } else {
+                    router.snack(R.string.unknown_error)
+                }
             }
 
             else -> {
-                engine().editStorage(storage.toStorage())
-                interactor().setStorage(storage).join()
-                router.snack(R.string.storage_saved)
+                val result = interactor().setStorage(storage).await()
+
+                if (result.isSuccess) {
+                    router.snack(R.string.storage_saved)
+                    backFromScreen(router)
+                } else {
+                    router.snack(R.string.unknown_error)
+                }
             }
         }
-
-
     }
 
     private fun updatePathVariants() = scope.launchLatest("path_variants", FSDI.defaultDispatcher()) {
         with(pathInputHelper) {
-            state.value.folder.text
+            state.value.path.text
                 .pathVariables()
                 .collect { pathVariants ->
                     state.update {
@@ -140,6 +146,11 @@ class FSEditStoragePresenterImpl(
                     }
                 }
         }
+    }
+
+    private fun backFromScreen(router: AppRouter) {
+        clean()
+        router.back()
     }
 
     private fun clean() = input { copy(isSkeleton = true) }

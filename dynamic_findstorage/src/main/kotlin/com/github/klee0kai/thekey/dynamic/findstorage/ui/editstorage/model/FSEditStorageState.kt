@@ -4,6 +4,8 @@ import android.os.Parcelable
 import androidx.compose.ui.text.input.TextFieldValue
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
+import com.github.klee0kai.thekey.core.helpers.path.PathInputHelper
+import com.github.klee0kai.thekey.core.helpers.path.appendTKeyFormat
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
 
@@ -14,7 +16,7 @@ data class FSEditStorageState(
     val isSaveAvailable: Boolean = false,
     val isRemoveAvailable: Boolean = false,
 
-    val folder: @RawValue TextFieldValue = TextFieldValue(""),
+    val path: @RawValue TextFieldValue = TextFieldValue(""),
     val name: String = "",
     val desc: String = "",
 
@@ -27,12 +29,17 @@ data class FSEditStorageState(
 
     ) : Parcelable
 
-fun FSEditStorageState.storage(origin: ColoredStorage = ColoredStorage()) =
+fun FSEditStorageState.storage(
+    pathInputHelper: PathInputHelper,
+    origin: ColoredStorage = ColoredStorage(),
+) = with(pathInputHelper) {
     origin.copy(
+        path = path.text.absolutePath()?.appendTKeyFormat() ?: "",
         name = name,
         description = desc,
         colorGroup = colorGroupVariants.getOrNull(colorGroupSelectedIndex)
     )
+}
 
 fun FSEditStorageState.updateWith(
     storage: ColoredStorage? = null,

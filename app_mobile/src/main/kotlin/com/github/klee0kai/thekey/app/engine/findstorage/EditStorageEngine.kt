@@ -18,7 +18,7 @@ class EditStorageEngine {
 
     external fun editStorage(storage: Storage): Int
 
-    external fun move(from: String, to: String)
+    external fun move(from: String, to: String): Int
 
     enum class Error(val code: Int, val stringResId: Int) {
         OK(0, 0),

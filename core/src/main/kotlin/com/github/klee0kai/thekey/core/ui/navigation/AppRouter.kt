@@ -39,7 +39,7 @@ interface ComposeRouter {
 
     suspend fun awaitScreenClose(destination: Destination) = Unit
 
-    fun back() = Unit
+    fun back(exitFromApp: Boolean = false) = Unit
 
     fun resetStack(vararg destinations: Destination) = Unit
 

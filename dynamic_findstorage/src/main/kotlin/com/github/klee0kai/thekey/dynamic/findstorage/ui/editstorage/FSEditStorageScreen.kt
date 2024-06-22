@@ -155,13 +155,13 @@ fun FSEditStorageScreen(
                         .withTKeyExtension(theme.colorScheme.hintTextColor)
                 }
             },
-            value = state.folder,
+            value = state.path,
             onValueChange = {
                 with(pathInputHelper) {
                     presenter?.input {
                         copy(
                             storagePathFieldExpanded = true,
-                            folder = it.pathInputMask(),
+                            path = it.pathInputMask(),
                         )
                     }
                 }
@@ -182,7 +182,7 @@ fun FSEditStorageScreen(
                 variants = state.storagePathVariants,
                 onSelected = { selected, _ ->
                     with(pathInputHelper) {
-                        presenter?.input { copy(folder = folder.text.folderSelected(selected).toTextFieldValue()) }
+                        presenter?.input { copy(path = this.path.text.folderSelected(selected).toTextFieldValue()) }
                     }
                 }
             )
@@ -241,7 +241,7 @@ fun FSEditStorageScreen(
                         .align(Alignment.BottomCenter)
                         .fillMaxWidth()
                         .alpha(imeIsVisibleAnimated.alpha),
-                    onClick = { presenter?.save() }
+                    onClick = { presenter?.save(router) }
                 ) {
                     Text(stringResource(R.string.save))
                 }
@@ -319,7 +319,7 @@ fun FSEditStorageScreen(
                     .fillMaxWidth()
                     .alpha(imeIsVisibleAnimated.alpha)
                     .alpha(isSaveAvailable.alpha),
-                onClick = { presenter?.save() }
+                onClick = { presenter?.save(router) }
             ) { Text(stringResource(R.string.save)) }
         }
     }
@@ -340,14 +340,14 @@ fun FSEditStorageScreen(
                 DeleteIconButton(
                     modifier = Modifier
                         .alpha(isRemoveAvailable.alpha),
-                    onClick = { presenter?.remove() }
+                    onClick = { presenter?.remove(router) }
                 )
             }
 
             if (imeIsVisibleAnimated.current && isSaveAvailable.current) {
                 DoneIconButton(
                     modifier = Modifier.alpha(imeIsVisibleAnimated.alpha),
-                    onClick = { presenter?.save() }
+                    onClick = { presenter?.save(router) }
                 )
             }
         }
@@ -366,7 +366,7 @@ fun FSEditStorageScreenPreview() = DebugDarkScreenPreview {
         override fun fsEditStoragePresenter(storageIdentifier: StorageIdentifier) = object : FSEditStoragePresenter {
             override val state = MutableStateFlow(
                 FSEditStorageState(
-                    folder = TextFieldValue("/appdata/work"),
+                    path = TextFieldValue("/appdata/work"),
                     isSkeleton = false,
                     isSaveAvailable = true,
                 )

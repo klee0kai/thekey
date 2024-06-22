@@ -1,5 +1,6 @@
 package com.github.klee0kai.thekey.dynamic.findstorage.ui.editstorage.presenter
 
+import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
 import com.github.klee0kai.thekey.core.utils.coroutine.emptyJob
 import com.github.klee0kai.thekey.dynamic.findstorage.ui.editstorage.model.FSEditStorageState
 import kotlinx.coroutines.Job
@@ -14,8 +15,8 @@ interface FSEditStoragePresenter {
 
     fun input(block: FSEditStorageState.() -> FSEditStorageState): Job = emptyJob()
 
-    fun remove(): Job = emptyJob()
+    fun remove(router: AppRouter): Job = emptyJob()
 
-    fun save(): Job = emptyJob()
+    fun save(router: AppRouter): Job = emptyJob()
 
 }

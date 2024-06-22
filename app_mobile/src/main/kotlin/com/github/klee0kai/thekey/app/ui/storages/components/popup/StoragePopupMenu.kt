@@ -19,7 +19,6 @@ fun StoragePopupMenu(
     onExport: (() -> Unit)? = null,
     onEdit: (() -> Unit)? = null,
 ) {
-
     val theme = LocalTheme.current
     val exportText = stringResource(id = R.string.export)
     val editText = stringResource(id = R.string.edit)
@@ -27,13 +26,13 @@ fun StoragePopupMenu(
     SimpleSelectPopupMenu(
         modifier = modifier,
         variants = buildList {
-            if (onExport != null) add(exportText)
             if (onEdit != null) add(editText)
+            if (onExport != null) add(exportText)
         },
         onSelected = { text, _ ->
             when (text) {
-                exportText -> onExport?.invoke()
                 editText -> onEdit?.invoke()
+                exportText -> onExport?.invoke()
             }
         }
     )
