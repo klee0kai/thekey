@@ -32,6 +32,7 @@ import com.github.klee0kai.thekey.app.ui.storage.StorageScreen
 import com.github.klee0kai.thekey.app.ui.storagegroup.EditStorageGroupsScreen
 import com.github.klee0kai.thekey.app.ui.storages.SelectStorageDialog
 import com.github.klee0kai.thekey.app.ui.storages.StoragesScreen
+import com.github.klee0kai.thekey.app.ui.storages.widgets.ColoredStorageItemWidget
 import com.github.klee0kai.thekey.app.ui.storages.widgets.StoragesButtonsWidget
 import com.github.klee0kai.thekey.app.ui.storages.widgets.StoragesListWidget
 import com.github.klee0kai.thekey.app.ui.storages.widgets.StoragesStatusBarWidget
@@ -41,6 +42,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.dialogs.AlertDialogScreen
 import com.github.klee0kai.thekey.core.ui.navigation.model.AlertDialogDestination
 import com.github.klee0kai.thekey.core.ui.navigation.model.Destination
 import com.github.klee0kai.thekey.core.ui.navigation.model.DynamicDestination
+import com.github.klee0kai.thekey.core.ui.navigation.model.StorageItemWidgetState
 import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesButtonsWidgetState
 import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesListWidgetState
 import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesStatusBarWidgetState
@@ -91,6 +93,7 @@ class ScreenResolverImpl : ScreenResolver {
             is StoragesListWidgetState -> StoragesListWidget(modifier, widgetState)
             is StoragesButtonsWidgetState -> StoragesButtonsWidget(modifier, widgetState)
             is StoragesStatusBarWidgetState -> StoragesStatusBarWidget(modifier, widgetState)
+            is StorageItemWidgetState -> ColoredStorageItemWidget(modifier, widgetState)
         }
     }
 

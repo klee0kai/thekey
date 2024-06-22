@@ -185,7 +185,7 @@ fun PopupMenu(
                     .thenIf(!ignoreAnchorSize) { sizeIn(maxWidth = anchorDelegated?.size?.width ?: 0.dp) }
                     .absoluteOffset(offset.x, offset.y)
                     .onGlobalPositionState(contentPosPx)
-                    .background(shadowColor)
+                    .background(shadowColor.copy(alpha = shadowColor.alpha * fullAnimatedAlpha))
                     .alpha(fullAnimatedAlpha),
             ) {
                 content()

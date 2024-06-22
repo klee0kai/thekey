@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalFoundationApi::class)
 
-package com.github.klee0kai.thekey.app.ui.storages.components
+package com.github.klee0kai.thekey.dynamic.findstorage.ui.storages.content
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -14,6 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -27,11 +28,11 @@ import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkContentPreview
-import java.io.File
+import com.github.klee0kai.thekey.core.utils.views.toAnnotationString
 
 
 @Composable
-fun ColoredStorageItem(
+fun FSColoredStorageItem(
     modifier: Modifier = Modifier,
     storage: ColoredStorage = ColoredStorage(),
     onClick: () -> Unit = {},
@@ -39,6 +40,15 @@ fun ColoredStorageItem(
 ) {
     val theme = LocalTheme.current
     val colorScheme = theme.colorScheme
+    val pathInputHelper = remember { DI.pathInputHelper() }
+    val isDescNotEmpty = storage.description.isNotBlank() || storage.name.isNotBlank()
+
+    val pathShortPath = with(pathInputHelper) {
+        storage.path
+            .shortPath()
+            .toAnnotationString()
+            .coloredPath(accentColor = colorScheme.androidColorScheme.primary)
+    }
 
     ConstraintLayout(
         modifier = modifier
@@ -49,15 +59,13 @@ fun ColoredStorageItem(
                 onLongClick = onLongClick,
             )
     ) {
-        val (colorGroupField, nameField, descriptionField, errorIconField) = createRefs()
+        val (colorGroupField, pathField, nameField, errorIconField) = createRefs()
 
         Box(
             modifier = Modifier
                 .size(2.dp, 24.dp)
                 .background(
-                    color = colorScheme.surfaceSchemas.surfaceScheme(
-                        storage.colorGroup?.keyColor ?: KeyColor.NOCOLOR
-                    ).surfaceColor,
+                    color = colorScheme.surfaceSchemas.surfaceScheme(storage.colorGroup?.keyColor ?: KeyColor.NOCOLOR).surfaceColor,
                     shape = RoundedCornerShape(1.dp)
                 )
                 .constrainAs(colorGroupField) {
@@ -77,13 +85,10 @@ fun ColoredStorageItem(
         )
 
         Text(
-            text = when {
-                storage.name.isNotBlank() -> storage.name
-                else -> File(storage.path).nameWithoutExtension
-            },
+            text = pathShortPath,
             style = theme.typeScheme.typography.bodyMedium,
             modifier = Modifier
-                .constrainAs(nameField) {
+                .constrainAs(pathField) {
                     linkTo(
                         top = parent.top,
                         bottom = parent.bottom,
@@ -94,19 +99,22 @@ fun ColoredStorageItem(
                         startMargin = 16.dp,
                         endMargin = 16.dp,
                         horizontalBias = 0f,
-                        verticalBias = if (storage.description.isNotBlank()) 0f else 0.5f,
+                        verticalBias = if (isDescNotEmpty) 0f else 0.5f,
                     )
                 }
         )
 
-        if (storage.description.isNotBlank()) {
+        if (isDescNotEmpty) {
             Text(
-                text = storage.description,
+                text = when {
+                    storage.name.isNotBlank() && storage.description.isNotBlank() -> "${storage.name}  ~  ${storage.description}"
+                    else -> "${storage.name}${storage.description}"
+                },
                 style = theme.typeScheme.typography.bodySmall,
                 modifier = Modifier
-                    .constrainAs(descriptionField) {
+                    .constrainAs(nameField) {
                         linkTo(
-                            top = nameField.bottom,
+                            top = pathField.bottom,
                             bottom = parent.bottom,
                             start = colorGroupField.end,
                             end = parent.end,
@@ -117,7 +125,7 @@ fun ColoredStorageItem(
                             horizontalBias = 0f,
                             verticalBias = 1f,
                         )
-                        top.linkTo(nameField.bottom, margin = 4.dp)
+                        top.linkTo(pathField.bottom, margin = 4.dp)
                     }
             )
         }
@@ -147,9 +155,9 @@ fun ColoredStorageItem(
 @OptIn(DebugOnly::class)
 @Preview
 @Composable
-fun ColoredStorageItemPreview() = DebugDarkContentPreview {
+fun FSColoredStorageItemPreview() = DebugDarkContentPreview {
     DI.hardResetToPreview()
-    ColoredStorageItem(
+    FSColoredStorageItem(
         storage = ColoredStorage(
             path = "path",
             name = "name",
@@ -162,13 +170,27 @@ fun ColoredStorageItemPreview() = DebugDarkContentPreview {
 @OptIn(DebugOnly::class)
 @Preview
 @Composable
-fun ColoredStorageNoDescItemPreview() = DebugDarkContentPreview {
+fun FSColoredStorageNoDescItemPreview() = DebugDarkContentPreview {
     DI.hardResetToPreview()
-    ColoredStorageItem(
+    FSColoredStorageItem(
+        storage = ColoredStorage(
+            path = "path",
+            version = 1,
+        ),
+    )
+}
+
+
+@OptIn(DebugOnly::class)
+@Preview
+@Composable
+fun FSColoredStorageNotValidItemPreview() = DebugDarkContentPreview {
+    DI.hardResetToPreview()
+    FSColoredStorageItem(
         storage = ColoredStorage(
             path = "path",
             name = "name",
-            version = 1,
+            description = "description"
         ),
     )
 }
@@ -176,12 +198,11 @@ fun ColoredStorageNoDescItemPreview() = DebugDarkContentPreview {
 @OptIn(DebugOnly::class)
 @Preview
 @Composable
-fun ColoredStorageNoValidItemPreview() = DebugDarkContentPreview {
+fun FSColoredStorageDescItemPreview() = DebugDarkContentPreview {
     DI.hardResetToPreview()
-    ColoredStorageItem(
+    FSColoredStorageItem(
         storage = ColoredStorage(
             path = "path",
-            name = "name",
             description = "description"
         ),
     )

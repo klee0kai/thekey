@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditStorageDestination
 import com.github.klee0kai.thekey.core.ui.navigation.model.Destination
+import com.github.klee0kai.thekey.core.ui.navigation.model.StorageItemWidgetState
 import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesButtonsWidgetState
 import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesListWidgetState
 import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesStatusBarWidgetState
@@ -12,6 +13,7 @@ import com.github.klee0kai.thekey.core.ui.navigation.screenresolver.ScreenResolv
 import com.github.klee0kai.thekey.dynamic.findstorage.di.FSDI
 import com.github.klee0kai.thekey.dynamic.findstorage.perm.writeStoragePermissions
 import com.github.klee0kai.thekey.dynamic.findstorage.ui.editstorage.FSEditStorageScreen
+import com.github.klee0kai.thekey.dynamic.findstorage.ui.storages.widgets.FSColoredStorageItemWidget
 import com.github.klee0kai.thekey.dynamic.findstorage.ui.storages.widgets.FSStoragesButtonsWidget
 import com.github.klee0kai.thekey.dynamic.findstorage.ui.storages.widgets.FSStoragesListWidget
 import com.github.klee0kai.thekey.dynamic.findstorage.ui.storages.widgets.FSStoragesStatusBarWidget
@@ -38,6 +40,7 @@ class FSScreenResolverExt(
             is StoragesListWidgetState -> FSStoragesListWidget(modifier, widgetState, parent())
             is StoragesButtonsWidgetState -> FSStoragesButtonsWidget(modifier, widgetState, parent())
             is StoragesStatusBarWidgetState -> FSStoragesStatusBarWidget(modifier, widgetState, parent())
+            is StorageItemWidgetState -> FSColoredStorageItemWidget(modifier, widgetState)
 
             else -> origin.widget(modifier, widgetState)
         }

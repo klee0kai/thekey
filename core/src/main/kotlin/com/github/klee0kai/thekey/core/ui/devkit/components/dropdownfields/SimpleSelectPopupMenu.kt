@@ -2,13 +2,11 @@ package com.github.klee0kai.thekey.core.ui.devkit.components.dropdownfields
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -16,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
@@ -51,7 +48,7 @@ fun SimpleSelectPopupMenu(
                     text = text,
                     modifier = Modifier
                         .clickable { onSelected.invoke(text, inx) }
-                        .defaultMinSize(minWidth = container.value?.size?.width?.pxToDp() ?: Dp.Unspecified)
+                        .defaultMinSize(minWidth = container.value?.size?.width?.pxToDp() ?: 200.dp)
                         .padding(all = 12.dp)
                         .padding(start = 8.dp, end = 28.dp)
 

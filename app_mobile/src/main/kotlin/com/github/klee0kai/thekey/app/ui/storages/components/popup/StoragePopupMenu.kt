@@ -16,8 +16,8 @@ import com.github.klee0kai.thekey.core.utils.views.DebugDarkContentPreview
 @Composable
 fun StoragePopupMenu(
     modifier: Modifier = Modifier,
-    onExport: (() -> Unit)? = null,
     onEdit: (() -> Unit)? = null,
+    onExport: (() -> Unit)? = null,
 ) {
     val theme = LocalTheme.current
     val exportText = stringResource(id = R.string.export)

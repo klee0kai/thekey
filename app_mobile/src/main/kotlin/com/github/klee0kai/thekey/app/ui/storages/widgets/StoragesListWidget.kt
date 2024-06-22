@@ -71,8 +71,7 @@ fun StoragesListWidget(
                 modifier = modifier
                     .fillMaxSize()
                     .alpha(isShowInstallPluginPromo.alpha),
-                onEdit = { presenter?.editStorage(storagePath = it.path, router) },
-                onExport = { presenter?.exportStorage(storagePath = it.path, router) },
+                isPopupMenuAvailable = true,
                 header = {
                     Text(
                         text = stringResource(id = R.string.storages),
