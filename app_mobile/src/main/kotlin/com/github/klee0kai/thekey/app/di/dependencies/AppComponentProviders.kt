@@ -6,7 +6,6 @@ import com.github.klee0kai.stone.annotations.dependencies.Dependencies
 interface AppComponentProviders :
     PresentersDependencies,
     AndroidHelpersDependencies,
-    HelperDependencies,
     InteractorsDependencies,
     RepositoriesDependencies,
     EngineDependencies

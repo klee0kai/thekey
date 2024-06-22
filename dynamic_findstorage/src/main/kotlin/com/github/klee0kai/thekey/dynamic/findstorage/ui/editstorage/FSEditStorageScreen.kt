@@ -149,7 +149,7 @@ fun FSEditStorageScreen(
                 },
             visualTransformation = { input ->
                 with(pathInputHelper) {
-                    input.coloredPath()
+                    input.coloredPath(accentColor = theme.colorScheme.androidColorScheme.primary)
                         .toTransformationText()
                 }
             },
@@ -169,7 +169,7 @@ fun FSEditStorageScreen(
         )
 
         PopupMenu(
-            visible = state.storagePathFieldExpanded,
+            visible = state.storagePathFieldExpanded && state.storagePathVariants.isNotEmpty(),
             positionAnchor = storagePathPosition,
             onDismissRequest = { presenter?.input { copy(storagePathFieldExpanded = false) } }
         ) {
@@ -181,7 +181,7 @@ fun FSEditStorageScreen(
                 variants = state.storagePathVariants,
                 onSelected = { selected, _ ->
                     with(pathInputHelper) {
-                        presenter?.input { copy(pathNoExt = path.folderSelected(selected).toTextFieldValue()) }
+                        presenter?.input { copy(pathNoExt = pathNoExt.text.folderSelected(selected).toTextFieldValue()) }
                     }
                 }
             )

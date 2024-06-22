@@ -1,7 +1,7 @@
-package com.github.klee0kai.thekey.app.helpers.path
+package com.github.klee0kai.thekey.core.helpers.path
 
 import android.os.Environment
-import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.core.di.CoreDI
 import com.github.klee0kai.thekey.core.utils.common.runForEach
 import java.io.File
 import java.util.Locale
@@ -16,7 +16,7 @@ class ShortPath(
 
 open class UserShortPaths {
 
-    open val appPath: String by lazy { DI.ctx().applicationInfo.dataDir }
+    open val appPath: String by lazy { CoreDI.ctx().applicationInfo.dataDir + "/storages" }
 
     open val shortPaths by lazy {
         listOf(
