@@ -6,12 +6,12 @@
 #include <android/log.h>
 #include "brooklyn.h"
 #include "key_find.h"
-#include "key1.h"
+#include "key2.h"
 
 using namespace brooklyn;
 using namespace std;
 using namespace thekey;
-using namespace thekey_v1;
+using namespace thekey_v2;
 
 typedef EngineModelStorage JvmStorage;
 typedef EngineFindstorageEditStorageEngine JvmFindStorageListener;
@@ -25,7 +25,7 @@ std::shared_ptr<JvmStorage> JvmFindStorageListener::findStorageInfo(const std::s
 
 
 int JvmFindStorageListener::createStorage(const JvmStorage &storage) {
-    auto error = thekey_v1::createStorage(thekey::Storage{
+    auto error = thekey_v2::createStorage(thekey::Storage{
             .file = storage.path,
             .name = storage.name,
             .description = storage.description,
@@ -38,3 +38,6 @@ int JvmFindStorageListener::editStorage(const JvmStorage &storage) {
     return JNI_FALSE;
 }
 
+void EngineFindstorageEditStorageEngine::move(const std::string &from, const std::string &to) {
+    rename(from.c_str(), to.c_str());
+}

@@ -1,5 +1,6 @@
 package com.github.klee0kai.thekey.dynamic.findstorage.ui.editstorage.presenter
 
+import com.github.klee0kai.thekey.app.data.mapping.toStorage
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
@@ -24,7 +25,8 @@ class FSEditStoragePresenterImpl(
 
     private val scope = FSDI.defaultThreadScope()
     private val router = FSDI.router()
-    private val rep = FSDI.storagesRepositoryLazy()
+    private val engine = FSDI.editStorageEngineLazy()
+    private val interactor = FSDI.storagesInteractorLazy()
     private val settingsRep = FSDI.settingsRepositoryLazy()
     private val pathInputHelper = FSDI.pathInputHelper()
 
@@ -38,13 +40,13 @@ class FSEditStoragePresenterImpl(
         if (!state.value.isSkeleton) return@launch
 
         val colorGroupUpdate = launch {
-            colorGroups = rep().allColorGroups
+            colorGroups = interactor().allColorGroups
                 .first()
                 .let { listOf(ColorGroup.noGroup()) + it }
         }
 
         originStorage = storageIdentifier?.path?.let {
-            rep().findStorage(it).await()
+            interactor().findStorage(it).await()
         }
 
         val initState = FSEditStorageState(
@@ -83,10 +85,9 @@ class FSEditStoragePresenterImpl(
         updatePathVariants()
     }
 
-
     override fun remove() = scope.launch {
         val path = originStorage?.path ?: return@launch
-        rep().deleteStorage(path)
+        interactor().deleteStorage(path)
         router.snack(R.string.storage_deleted)
         router.back()
         clean()
@@ -95,18 +96,38 @@ class FSEditStoragePresenterImpl(
     override fun save() = scope.launch {
         val curState = state.value
         var storage = curState.storage(originStorage ?: ColoredStorage(version = settingsRep().newStorageVersion()))
-        if (storage.path.isBlank()) {
-            storage = storage.copy(
-                path = File(curState.folder.text, curState.name)
-                    .absolutePath
-                    .appendTKeyFormat()
-            )
-        }
 
-        rep().setStorage(storage)
-        router.snack(R.string.storage_saved)
+        storage = storage.copy(
+            path = File(curState.folder.text, curState.name)
+                .absolutePath
+                .appendTKeyFormat()
+        )
+
         router.back()
         clean()
+
+        when {
+            originStorage == null -> {
+                engine().createStorage(storage.toStorage())
+                interactor().setStorage(storage).join()
+                router.snack(R.string.storage_created)
+            }
+
+            originStorage?.path != storage.path -> {
+                engine().move(originStorage!!.path, storage.path)
+                engine().editStorage(storage.toStorage())
+                interactor().setStorage(storage).join()
+                router.snack(R.string.storage_moved)
+            }
+
+            else -> {
+                engine().editStorage(storage.toStorage())
+                interactor().setStorage(storage).join()
+                router.snack(R.string.storage_saved)
+            }
+        }
+
+
     }
 
     private fun updatePathVariants() = scope.launchLatest("path_variants", FSDI.defaultDispatcher()) {

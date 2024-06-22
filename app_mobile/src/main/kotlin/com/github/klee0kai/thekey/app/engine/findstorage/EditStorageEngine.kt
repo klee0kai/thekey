@@ -18,6 +18,8 @@ class EditStorageEngine {
 
     external fun editStorage(storage: Storage): Int
 
+    external fun move(from: String, to: String)
+
     enum class Error(val code: Int, val stringResId: Int) {
         OK(0, 0),
         UNKNOWN_ERROR(-1, R.string.unknown_error),

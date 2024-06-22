@@ -116,4 +116,6 @@
     <string name="more">More</string>
     <string name="export">Export</string>
     <string name="ext">EXT</string>
+    <string name="storage_created">Storage has been created</string>
+    <string name="storage_moved">Storage has been moved</string>
 </resources>
