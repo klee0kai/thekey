@@ -14,7 +14,7 @@ data class FSEditStorageState(
     val isSaveAvailable: Boolean = false,
     val isRemoveAvailable: Boolean = false,
 
-    val pathNoExt: @RawValue TextFieldValue = TextFieldValue(""),
+    val folder: @RawValue TextFieldValue = TextFieldValue(""),
     val name: String = "",
     val desc: String = "",
 

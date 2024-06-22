@@ -24,7 +24,7 @@ class EditStoragePresenterImpl(
     private val router = DI.router()
     private val rep = DI.storagesRepositoryLazy()
     private val settingsRep = DI.settingsRepositoryLazy()
-    private val appFolder by lazy { DI.ctx().applicationInfo.dataDir }
+    private val appFolder by lazy { DI.userShortPaths().appPath }
 
     private var originStorage: ColoredStorage? = null
     private var colorGroups: List<ColorGroup> = emptyList()

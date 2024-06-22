@@ -27,7 +27,6 @@ class FSEditStoragePresenterImpl(
     private val rep = FSDI.storagesRepositoryLazy()
     private val settingsRep = FSDI.settingsRepositoryLazy()
     private val pathInputHelper = FSDI.pathInputHelper()
-    private val appFolder by lazy { DI.ctx().applicationInfo.dataDir }
 
     private var originStorage: ColoredStorage? = null
     private var colorGroups: List<ColorGroup> = emptyList()
@@ -98,7 +97,7 @@ class FSEditStoragePresenterImpl(
         var storage = curState.storage(originStorage ?: ColoredStorage(version = settingsRep().newStorageVersion()))
         if (storage.path.isBlank()) {
             storage = storage.copy(
-                path = File(appFolder, curState.name)
+                path = File(curState.folder.text, curState.name)
                     .absolutePath
                     .appendTKeyFormat()
             )
@@ -112,7 +111,7 @@ class FSEditStoragePresenterImpl(
 
     private fun updatePathVariants() = scope.launchLatest("path_variants", FSDI.defaultDispatcher()) {
         with(pathInputHelper) {
-            state.value.pathNoExt.text
+            state.value.folder.text
                 .pathVariables()
                 .collect { pathVariants ->
                     state.update {

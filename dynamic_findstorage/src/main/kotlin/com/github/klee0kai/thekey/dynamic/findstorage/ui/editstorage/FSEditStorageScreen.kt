@@ -153,19 +153,19 @@ fun FSEditStorageScreen(
                         .toTransformationText()
                 }
             },
-            value = state.pathNoExt,
+            value = state.folder,
             onValueChange = {
                 with(pathInputHelper) {
                     presenter?.input {
                         copy(
                             storagePathFieldExpanded = true,
-                            pathNoExt = it.pathInputMask(),
+                            folder = it.pathInputMask(),
                         )
                     }
                 }
             },
             interactionSource = pathInteractionSource,
-            label = { Text(stringResource(R.string.storage_path)) }
+            label = { Text(stringResource(R.string.storage_folder)) }
         )
 
         PopupMenu(
@@ -181,7 +181,7 @@ fun FSEditStorageScreen(
                 variants = state.storagePathVariants,
                 onSelected = { selected, _ ->
                     with(pathInputHelper) {
-                        presenter?.input { copy(pathNoExt = pathNoExt.text.folderSelected(selected).toTextFieldValue()) }
+                        presenter?.input { copy(folder = folder.text.folderSelected(selected).toTextFieldValue()) }
                     }
                 }
             )
