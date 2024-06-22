@@ -10,6 +10,10 @@ import com.github.klee0kai.thekey.core.domain.model.noGroup
 import com.github.klee0kai.thekey.core.helpers.path.removeTKeyFormat
 import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
 import com.github.klee0kai.thekey.core.utils.common.launchLatest
+import com.github.klee0kai.thekey.core.utils.error.FSDuplicateError
+import com.github.klee0kai.thekey.core.utils.error.FSNoAccessError
+import com.github.klee0kai.thekey.core.utils.error.FSNoFileName
+import com.github.klee0kai.thekey.core.utils.error.cause
 import com.github.klee0kai.thekey.dynamic.findstorage.di.FSDI
 import com.github.klee0kai.thekey.dynamic.findstorage.ui.editstorage.model.FSEditStorageState
 import com.github.klee0kai.thekey.dynamic.findstorage.ui.editstorage.model.storage
@@ -99,40 +103,36 @@ class FSEditStoragePresenterImpl(
 
     override fun save(router: AppRouter) = scope.launch {
         val curState = state.value
-        var storage = curState.storage(pathInputHelper, originStorage ?: ColoredStorage(version = settingsRep().newStorageVersion()))
+        val storage = curState.storage(pathInputHelper, originStorage ?: ColoredStorage(version = settingsRep().newStorageVersion()))
 
-        when {
+        val (result, messageRes) = when {
             originStorage == null -> {
                 val result = interactor().createStorage(storage).await()
-
-                if (result.isSuccess) {
-                    router.snack(R.string.storage_created)
-                    backFromScreen(router)
-                } else {
-                    router.snack(R.string.unknown_error)
-                }
+                result to R.string.storage_created
             }
 
             originStorage?.path != storage.path -> {
-                val result = interactor().createStorage(storage).await()
-                if (result.isSuccess) {
-                    router.snack(R.string.storage_moved)
-                    backFromScreen(router)
-                } else {
-                    router.snack(R.string.unknown_error)
-                }
+                val result = interactor().moveStorage(originStorage!!.path, storage).await()
+                result to R.string.storage_moved
             }
 
             else -> {
                 val result = interactor().setStorage(storage).await()
-
-                if (result.isSuccess) {
-                    router.snack(R.string.storage_saved)
-                    backFromScreen(router)
-                } else {
-                    router.snack(R.string.unknown_error)
-                }
+                result to R.string.storage_saved
             }
+        }
+
+        val error = result.exceptionOrNull()
+        when {
+            error == null && result.isSuccess -> {
+                router.snack(messageRes)
+                backFromScreen(router)
+            }
+
+            error?.cause(FSNoFileName::class) != null -> router.snack(R.string.fill_the_file_name)
+            error?.cause(FSDuplicateError::class) != null -> router.snack(R.string.duplicate)
+            error?.cause(FSNoAccessError::class) != null -> router.snack(R.string.no_access)
+            else -> router.snack(R.string.unknown_error)
         }
     }
 

@@ -119,4 +119,6 @@
     <string name="storage_created">Storage has been created</string>
     <string name="storage_moved">Storage has been moved</string>
     <string name="path_is_empty">Path is empty</string>
+    <string name="no_access">No access</string>
+    <string name="duplicate">Duplicate</string>
 </resources>

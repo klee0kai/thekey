@@ -3,7 +3,9 @@ package com.github.klee0kai.thekey.app.engine.findstorage
 import com.github.klee0kai.brooklyn.JniMirror
 import com.github.klee0kai.thekey.app.engine.NativeLibLoader
 import com.github.klee0kai.thekey.app.engine.model.Storage
-import com.github.klee0kai.thekey.core.R
+import com.github.klee0kai.thekey.core.utils.error.FSNoAccessError
+import com.github.klee0kai.thekey.core.utils.error.FSNoFileName
+import java.io.IOException
 
 @JniMirror
 class EditStorageEngine {
@@ -20,19 +22,12 @@ class EditStorageEngine {
 
     external fun move(from: String, to: String): Int
 
-    enum class Error(val code: Int, val stringResId: Int) {
-        OK(0, 0),
-        UNKNOWN_ERROR(-1, R.string.unknown_error),
-        ITIS_FOLDER_ERROR(-2, R.string.fill_the_file_name),
-        PATH_UNREACHABLE(-3, R.string.path_unreachable),
-        ;
-
-        companion object {
-            fun fromCode(code: Int): Error =
-                entries
-                    .firstOrNull { it.code == code }
-                    ?: UNKNOWN_ERROR
-        }
+    fun throwError(code: Int) = when (code) {
+        0 -> Unit
+        -2 -> throw FSNoFileName()
+        -2 -> throw FSNoFileName()
+        -3 -> throw FSNoAccessError()
+        else -> throw IOException()
     }
 }
 

@@ -4,6 +4,8 @@ import com.github.klee0kai.thekey.app.data.mapping.toStorage
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.core.utils.common.asyncResult
+import com.github.klee0kai.thekey.core.utils.error.FSDuplicateError
+import com.github.klee0kai.thekey.core.utils.error.FSNoAccessError
 import java.io.File
 
 class EditStorageInteractor {
@@ -13,25 +15,31 @@ class EditStorageInteractor {
     private val engine = DI.editStorageEngineLazy()
 
     fun createStorage(storage: ColoredStorage) = scope.asyncResult {
-        File(storage.path).parentFile?.mkdirs()
+        val folder = File(storage.path).parentFile
+        folder?.mkdirs()
+        if (folder?.canRead() != true || !folder.exists()) throw FSNoAccessError()
+        if (File(storage.path).exists()) throw FSDuplicateError()
+
         val error = engine().createStorage(storage.toStorage())
-        assert(error == 0) { "error create storage" }
+        engine().throwError(error)
         storagesInteractor().setStorage(storage).join()
     }
 
     fun moveStorage(from: String, storage: ColoredStorage) = scope.asyncResult {
         File(storage.path).parentFile?.mkdirs()
         var error = engine().move(from, storage.path)
-        assert(error == 0) { "error move storage" }
+        engine().throwError(error)
+
         error = engine().editStorage(storage.toStorage())
-        assert(error == 0) { "error edit storage" }
+        engine().throwError(error)
+
 
         storagesInteractor().setStorage(storage).join()
     }
 
     fun setStorage(storage: ColoredStorage) = scope.asyncResult {
         var error = engine().editStorage(storage.toStorage())
-        assert(error == 0) { "error edit storage" }
+        engine().throwError(error)
 
         storagesInteractor().setStorage(storage).join()
     }
