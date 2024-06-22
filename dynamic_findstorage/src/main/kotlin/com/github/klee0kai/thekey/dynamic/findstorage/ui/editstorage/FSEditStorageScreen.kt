@@ -56,7 +56,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.components.buttons.GroupCircle
 import com.github.klee0kai.thekey.core.ui.devkit.components.dropdownfields.ColorGroupSelectPopupMenu
 import com.github.klee0kai.thekey.core.ui.devkit.components.dropdownfields.SimpleSelectPopupMenu
 import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextField
-import com.github.klee0kai.thekey.core.ui.devkit.popup.PopupMenu
+import com.github.klee0kai.thekey.core.ui.devkit.overlay.PopupMenu
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.common.Dummy
 import com.github.klee0kai.thekey.core.utils.possitions.onGlobalPositionState
@@ -178,11 +178,9 @@ fun FSEditStorageScreen(
                     .background(theme.colorScheme.popupMenu.shadowColor)
                     .padding(top = 10.dp, bottom = 10.dp)
                     .fillMaxWidth(),
-                isVisible = state.storagePathFieldExpanded,
                 variants = state.storagePathVariants,
-                onSelected = { selected ->
+                onSelected = { selected, _ ->
                     with(pathInputHelper) {
-                        if (selected == null) return@SimpleSelectPopupMenu
                         presenter?.input { copy(pathNoExt = path.folderSelected(selected).toTextFieldValue()) }
                     }
                 }

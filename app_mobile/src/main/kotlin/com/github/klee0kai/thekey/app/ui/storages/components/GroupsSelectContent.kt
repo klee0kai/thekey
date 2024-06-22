@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,17 +25,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.github.klee0kai.thekey.app.ui.storages.components.popup.GroupPopupMenu
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
-import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
-import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
+import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import com.github.klee0kai.thekey.core.ui.devkit.components.LazyListIndicatorIfNeed
 import com.github.klee0kai.thekey.core.ui.devkit.components.buttons.AddCircle
 import com.github.klee0kai.thekey.core.ui.devkit.components.buttons.GroupCircle
 import com.github.klee0kai.thekey.core.ui.devkit.components.scrollPosition
-import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
+import com.github.klee0kai.thekey.core.ui.devkit.overlay.PopupMenu
+import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.common.Dummy
+import com.github.klee0kai.thekey.core.utils.possitions.onGlobalPositionState
+import com.github.klee0kai.thekey.core.utils.possitions.rememberViewPosition
+import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
+import com.github.klee0kai.thekey.core.utils.views.animatedBackground
 
 @Composable
 fun GroupsSelectContent(
@@ -47,7 +51,7 @@ fun GroupsSelectContent(
     onGroupSelected: (ColorGroup) -> Unit = {},
     onGroupEdit: (ColorGroup) -> Unit = {},
 ) {
-    val colorScheme = LocalColorScheme.current
+    val theme = LocalTheme.current
     val lazyListState = rememberLazyListState()
 
     ConstraintLayout(
@@ -112,13 +116,16 @@ fun GroupsSelectContent(
             colorGroups.forEachIndexed { index, group ->
                 item(key = group.id) {
                     var showMenu by remember { mutableStateOf(false) }
+                    val position = rememberViewPosition()
 
                     GroupCircle(
                         name = group.name,
                         buttonSize = 56.dp,
-                        colorScheme = colorScheme.surfaceSchemas.surfaceScheme(group.keyColor),
+                        colorScheme = theme.colorScheme.surfaceSchemas.surfaceScheme(group.keyColor),
                         checked = group.id == selectedGroup,
                         modifier = Modifier
+                            .onGlobalPositionState(position)
+                            .animatedBackground(showMenu, theme.colorScheme.popupMenu.shadowColor)
                             .padding(
                                 start = 1.dp,
                                 top = 16.dp,
@@ -127,17 +134,18 @@ fun GroupsSelectContent(
                             ),
                         onLongClick = { showMenu = true },
                         onClick = { onGroupSelected.invoke(group) },
-                        overlayContent = {
-                            DropdownMenu(
-                                expanded = showMenu,
-                                onDismissRequest = { showMenu = false }
-                            ) {
-                                GroupDropDownMenuContent(
-                                    onEdit = { onGroupEdit(group) },
-                                )
-                            }
-                        }
                     )
+
+                    PopupMenu(
+                        visible = showMenu,
+                        positionAnchor = position,
+                        ignoreAnchorSize = true,
+                        onDismissRequest = { showMenu = false },
+                    ) {
+                        GroupPopupMenu(
+                            onEdit = { onGroupEdit(group) }
+                        )
+                    }
                 }
             }
 
@@ -162,9 +170,10 @@ fun GroupsSelectContent(
     }
 }
 
+@OptIn(DebugOnly::class)
 @Preview
 @Composable
-private fun GroupsSelectContentPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
+private fun GroupsSelectContentPreview() = DebugDarkScreenPreview {
     GroupsSelectContent(
         selectedGroup = 1L,
         colorGroups = listOf(

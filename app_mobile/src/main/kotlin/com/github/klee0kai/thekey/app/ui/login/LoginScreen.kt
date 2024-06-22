@@ -49,6 +49,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
+import com.github.klee0kai.thekey.core.ui.devkit.Screen
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DoneIconButton
 import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextField
@@ -69,7 +70,7 @@ import com.github.klee0kai.thekey.core.R as CoreR
 @Composable
 fun LoginScreen(
     dest: LoginDestination = LoginDestination(),
-) {
+) = Screen {
     val scope = rememberCoroutineScope()
     val router = LocalRouter.current
     val theme = LocalTheme.current

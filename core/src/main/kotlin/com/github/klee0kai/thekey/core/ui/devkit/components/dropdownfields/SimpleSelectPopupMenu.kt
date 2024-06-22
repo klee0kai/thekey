@@ -4,66 +4,58 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
+import com.github.klee0kai.thekey.core.utils.possitions.onGlobalPositionState
+import com.github.klee0kai.thekey.core.utils.possitions.pxToDp
+import com.github.klee0kai.thekey.core.utils.possitions.rememberViewPosition
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkContentPreview
-import com.github.klee0kai.thekey.core.utils.views.animateAlphaAsState
-import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 
 @Composable
 fun SimpleSelectPopupMenu(
     modifier: Modifier = Modifier,
-    isVisible: Boolean = false,
     surface: Color = LocalTheme.current.colorScheme.popupMenu.surfaceColor,
     variants: List<String> = emptyList(),
-    onSelected: (String?) -> Unit = {},
+    onSelected: (variant: String, index: Int) -> Unit = { _, _ -> },
 ) {
-    val variantsListAlpha by animateAlphaAsState(isVisible && variants.isNotEmpty())
-    val notVisible = rememberDerivedStateOf { variantsListAlpha <= 0 }
 
-    if (notVisible.value) return
+    if (variants.isEmpty()) return
+    val container = rememberViewPosition()
 
     LazyColumn(
         modifier = modifier
-            .alpha(variantsListAlpha)
+            .onGlobalPositionState(container)
             .heightIn(0.dp, 200.dp)
             .background(color = surface, shape = RoundedCornerShape(16.dp)),
     ) {
         item {
             Spacer(modifier = Modifier.height(8.dp))
         }
-        variants.forEach { text ->
+        variants.forEachIndexed { inx, text ->
             item {
-                Box(
+                Text(
+                    text = text,
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable {
-                            onSelected.invoke(text)
-                        }
-                ) {
-                    Text(
-                        text = text,
-                        modifier = Modifier
-                            .padding(all = 12.dp)
-                            .padding(start = 8.dp, end = 8.dp)
-                            .fillMaxWidth()
-                    )
-                }
+                        .clickable { onSelected.invoke(text, inx) }
+                        .defaultMinSize(minWidth = container.value?.size?.width?.pxToDp() ?: Dp.Unspecified)
+                        .padding(all = 12.dp)
+                        .padding(start = 8.dp, end = 28.dp)
 
+                )
             }
         }
         item {
@@ -78,10 +70,9 @@ fun SimpleSelectPopupMenu(
 @Composable
 fun SimpleSelectPopupMenuPreview() = DebugDarkContentPreview {
     SimpleSelectPopupMenu(
-        isVisible = true,
         variants = listOf(
             "variant 1",
-            "variant 2",
+            "variant 2 fjdsklfsdjflksf",
         )
     )
 }

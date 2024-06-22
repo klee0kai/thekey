@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.core.ui.devkit.popup
+package com.github.klee0kai.thekey.core.ui.devkit.overlay
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -43,8 +44,8 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
+import com.github.klee0kai.thekey.core.ui.devkit.components.dropdownfields.SimpleSelectPopupMenu
 import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextField
-import com.github.klee0kai.thekey.core.ui.devkit.overlay.LocalOverlayProvider
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.possitions.ViewPositionDp
 import com.github.klee0kai.thekey.core.utils.possitions.ViewPositionPx
@@ -70,6 +71,7 @@ fun PopupMenu(
     horizontalBias: Float = 0f,
     onDismissRequest: (() -> Unit)? = null,
     shadowColor: Color = LocalTheme.current.colorScheme.popupMenu.shadowColor,
+    ignoreAnchorSize: Boolean = false,
     content: @Composable BoxScope.() -> Unit = {},
 ) {
     val visibleAlpha by animateAlphaAsState(visible)
@@ -91,7 +93,7 @@ fun PopupMenu(
             val offset by rememberDerivedStateOf {
                 with(density) {
                     val anchor = anchorDelegated ?: return@rememberDerivedStateOf DpOffset(0.dp, 0.dp)
-                    when {
+                    var offset = when {
                         view.height.toDp() - safeContentPaddings.calculateBottomPadding() < anchor.globalPos.y + anchor.size.height + contentPosDp.size.height
                                 && anchor.globalPos.y > view.height.toDp() / 2f -> {
                             DpOffset(
@@ -107,6 +109,13 @@ fun PopupMenu(
                             )
                         }
                     }
+                    if (offset.x + contentPosDp.size.width > view.width.toDp() - safeContentPaddings.horizontal()) {
+                        offset = offset.copy(
+                            x = view.width.toDp() - safeContentPaddings.horizontal() - contentPosDp.size.width
+                        )
+                    }
+
+                    offset
                 }
             }
 
@@ -173,7 +182,7 @@ fun PopupMenu(
             val fullAnimatedAlpha by rememberDerivedStateOf { positionAvailableAlpha * visibleAlpha }
             Box(
                 modifier = Modifier
-                    .sizeIn(maxWidth = anchorDelegated?.size?.width ?: 0.dp)
+                    .thenIf(!ignoreAnchorSize) { sizeIn(maxWidth = anchorDelegated?.size?.width ?: 0.dp) }
                     .absoluteOffset(offset.x, offset.y)
                     .onGlobalPositionState(contentPosPx)
                     .alpha(fullAnimatedAlpha),
@@ -269,6 +278,59 @@ fun PopupMenuSimplePreview() = DebugDarkScreenPreview(
                 .height(300.dp)
                 .fillMaxWidth(0.6f)
                 .background(theme.colorScheme.popupMenu.surfaceColor),
+        )
+    }
+}
+
+
+@OptIn(DebugOnly::class)
+@Composable
+@Preview
+fun PopupMenuSmallButtonPreview() = DebugDarkScreenPreview(
+    layoutDirection = LayoutDirection.Ltr,
+) {
+    val theme = LocalTheme.current
+    val textFieldPos = rememberViewPosition()
+    var popupVisible by remember { mutableStateOf(true) }
+
+    ConstraintLayout(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+    ) {
+        val (buttonField) = createRefs()
+        Box(
+            modifier = Modifier
+                .size(width = 50.dp, height = 50.dp)
+                .onGlobalPositionState(textFieldPos)
+                .background(Color.Gray)
+                .clickable { popupVisible = true }
+                .constrainAs(buttonField) {
+                    linkTo(
+                        top = parent.top,
+                        bottom = parent.bottom,
+                        start = parent.start,
+                        end = parent.end,
+                        verticalBias = 0.5f,
+                        horizontalBias = 1f,
+                    )
+                },
+        )
+    }
+
+    PopupMenu(
+        visible = popupVisible,
+        positionAnchor = textFieldPos,
+        horizontalBias = 0.2f,
+        ignoreAnchorSize = true,
+        onDismissRequest = { popupVisible = false },
+    ) {
+        SimpleSelectPopupMenu(
+            variants = listOf(
+                "item 1",
+                "item 2",
+                "item 3",
+            )
         )
     }
 }

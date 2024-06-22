@@ -34,6 +34,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.LocalScreenResolver
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
+import com.github.klee0kai.thekey.core.ui.devkit.Screen
 import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.SimpleBottomSheetScaffold
 import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.topContentAlphaFromDrag
 import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.topContentOffsetFromDrag
@@ -55,7 +56,7 @@ import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
-fun StoragesScreen() {
+fun StoragesScreen() = Screen {
     val router by LocalRouter.currentRef
     val theme by LocalTheme.currentRef
     val screenResolver by LocalScreenResolver.currentRef

@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.ui.storages.components
+package com.github.klee0kai.thekey.app.ui.storages.components.popup
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope

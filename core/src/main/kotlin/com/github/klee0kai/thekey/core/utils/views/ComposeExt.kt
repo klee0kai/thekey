@@ -164,5 +164,11 @@ fun Modifier.thenIf(condition: Boolean, block: Modifier.() -> Modifier) =
 
 fun Modifier.tappable(onTap: ((Offset) -> Unit)? = null) = this.pointerInput(Unit) { detectTapGestures(onTap = onTap) }
 
+@Composable
+fun Modifier.animatedBackground(condition: Boolean, background: Color): Modifier {
+    val alpha by animateAlphaAsState(boolean = condition)
+    return this.background(background.copy(alpha = background.alpha * alpha))
+}
+
 val <T> CompositionLocal<T>.currentRef
     @Composable get() = rememberOnScreenRef { current }
