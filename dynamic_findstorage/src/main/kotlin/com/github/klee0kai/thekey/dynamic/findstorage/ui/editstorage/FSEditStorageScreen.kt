@@ -101,9 +101,9 @@ fun FSEditStorageScreen(
     val isRemoveAvailable by rememberTargetCrossFaded { state.isRemoveAvailable }
     val skeletonModifier by animateSkeletonModifier { state.isSkeleton }
     val storagePathPosition = rememberViewPosition()
+    val pathInteractionSource = remember { MutableInteractionSource() }
     val groupSelectPosition = rememberViewPosition()
     val groupInteractionSource = remember { MutableInteractionSource() }
-    val pathInteractionSource = remember { MutableInteractionSource() }
 
     LaunchedEffect(Unit) {
         groupInteractionSource.interactions.filterIsInstance<PressInteraction.Press>().collect {
@@ -334,7 +334,12 @@ fun FSEditStorageScreen(
                 )
             }
         },
-        titleContent = { Text(text = stringResource(id = if (state.isEditMode) R.string.edit_storage else R.string.create_storage)) },
+        titleContent = {
+            when {
+                !state.isSkeleton && state.isEditMode -> Text(text = stringResource(R.string.edit_storage))
+                !state.isSkeleton && !state.isEditMode -> Text(text = stringResource(R.string.edit_storage))
+            }
+        },
         actions = {
             if (isRemoveAvailable.current) {
                 DeleteIconButton(

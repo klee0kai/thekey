@@ -1,7 +1,7 @@
 package com.github.klee0kai.thekey.core.domain
 
-open class StartupInteractor {
+interface StartupInteractor {
 
-    open fun appStarted() = Unit
+    fun appStarted() = Unit
 
 }

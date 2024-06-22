@@ -40,4 +40,5 @@ int JvmFindStorageListener::editStorage(const JvmStorage &storage) {
 
 int EngineFindstorageEditStorageEngine::move(const std::string &from, const std::string &to) {
     rename(from.c_str(), to.c_str());
+    return 0;
 }

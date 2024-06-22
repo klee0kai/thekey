@@ -12,7 +12,7 @@ class StoragesInteractor {
 
     private val scope = DI.defaultThreadScope()
     private val rep = DI.storagesRepositoryLazy()
-    private val engine = DI.engine().findStoragesEngine()
+    private val engine = DI.findStorageEngineLazy()
     private val settings = DI.settingsRepositoryLazy()
 
     val allColorGroups = flow<List<ColorGroup>> {
@@ -38,7 +38,7 @@ class StoragesInteractor {
     fun deleteColorGroup(id: Long) = scope.launch { rep().deleteColorGroup(id).join() }
 
     private suspend fun ColoredStorage.updateVersion(): ColoredStorage {
-        val version = engine.storageVersion(path = path)
+        val version = engine().storageVersion(path = path)
         return copy(version = if (version > 0) version else settings().newStorageVersion())
     }
 }

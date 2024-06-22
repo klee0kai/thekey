@@ -1,8 +1,8 @@
 package com.github.klee0kai.thekey.app.ui.editstorage.model
 
 import android.os.Parcelable
-import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
+import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -16,7 +16,7 @@ data class EditStorageState(
     val desc: String = "",
 
     val colorGroupExpanded: Boolean = false,
-    val colorGroupSelected: Int = 0,
+    val colorGroupSelectedIndex: Int = 0,
     val colorGroupVariants: List<ColorGroup> = emptyList(),
 
     ) : Parcelable
@@ -25,7 +25,7 @@ fun EditStorageState.storage(origin: ColoredStorage = ColoredStorage()) =
     origin.copy(
         name = name,
         description = desc,
-        colorGroup = colorGroupVariants.getOrNull(colorGroupSelected)
+        colorGroup = colorGroupVariants.getOrNull(colorGroupSelectedIndex)
     )
 
 fun EditStorageState.updateWith(
@@ -35,7 +35,7 @@ fun EditStorageState.updateWith(
     name = storage?.name ?: "",
     desc = storage?.description ?: "",
     colorGroupVariants = colorGroups,
-    colorGroupSelected = colorGroups
+    colorGroupSelectedIndex = colorGroups
         .indexOfFirst { storage?.colorGroup?.id == it.id }
         .takeIf { it >= 0 } ?: 0,
 )

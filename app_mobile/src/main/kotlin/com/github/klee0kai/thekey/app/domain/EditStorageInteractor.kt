@@ -33,12 +33,12 @@ class EditStorageInteractor {
         error = engine().editStorage(storage.toStorage())
         engine().throwError(error)
 
-
+        rep().deleteStorage(from)
         rep().setStorage(storage).join()
     }
 
     fun setStorage(storage: ColoredStorage) = scope.asyncResult {
-        var error = engine().editStorage(storage.toStorage())
+        val error = engine().editStorage(storage.toStorage())
         engine().throwError(error)
 
         rep().setStorage(storage).join()

@@ -10,6 +10,11 @@ import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.core.domain.model.noGroup
 import com.github.klee0kai.thekey.core.helpers.path.appendTKeyFormat
+import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
+import com.github.klee0kai.thekey.core.utils.error.FSDuplicateError
+import com.github.klee0kai.thekey.core.utils.error.FSNoAccessError
+import com.github.klee0kai.thekey.core.utils.error.FSNoFileName
+import com.github.klee0kai.thekey.core.utils.error.cause
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
@@ -21,9 +26,10 @@ class EditStoragePresenterImpl(
 ) : EditStoragePresenter {
 
     private val scope = DI.defaultThreadScope()
-    private val router = DI.router()
-    private val rep = DI.storagesRepositoryLazy()
+    private val storagesInteractor = DI.storagesInteractorLazy()
+    private val interactor = DI.editStorageInteractorLazy()
     private val settingsRep = DI.settingsRepositoryLazy()
+    private val userShortPaths = DI.userShortPaths()
     private val appFolder by lazy { DI.userShortPaths().appPath }
 
     private var originStorage: ColoredStorage? = null
@@ -31,18 +37,17 @@ class EditStoragePresenterImpl(
 
     override val state = MutableStateFlow(EditStorageState(isSkeleton = true))
 
-
     override fun init() = scope.launch {
         if (!state.value.isSkeleton) return@launch
 
         val colorGroupUpdate = launch {
-            colorGroups = rep().allColorGroups
+            colorGroups = storagesInteractor().allColorGroups
                 .first()
                 .let { listOf(ColorGroup.noGroup()) + it }
         }
 
         originStorage = storageIdentifier?.path?.let {
-            rep().findStorage(it).await()
+            storagesInteractor().findStorage(it).await()
         }
 
         val initState = EditStorageState(
@@ -65,9 +70,10 @@ class EditStoragePresenterImpl(
 
     override fun input(block: EditStorageState.() -> EditStorageState) = scope.launch(DI.mainDispatcher()) {
         var newState = block.invoke(state.value)
+        val fulfilled = newState.name.isNotBlank()
         val isSaveAvailable = when {
-            originStorage != null -> newState.name.isNotBlank() && newState.storage(originStorage!!) != originStorage
-            else -> newState.name.isNotBlank()
+            originStorage != null -> fulfilled && newState.storage(originStorage!!) != originStorage
+            else -> fulfilled
         }
         newState = newState.copy(
             isSaveAvailable = isSaveAvailable,
@@ -77,18 +83,17 @@ class EditStoragePresenterImpl(
     }
 
 
-    override fun remove() = scope.launch {
+    override fun remove(router: AppRouter) = scope.launch {
         val path = originStorage?.path ?: return@launch
-        rep().deleteStorage(path)
+        interactor().deleteStorage(path).await()
         router.snack(R.string.storage_deleted)
-        router.back()
-        clean()
+        backFromScreen(router)
     }
 
-    override fun save() = scope.launch {
+    override fun save(router: AppRouter) = scope.launch {
         val curState = state.value
         var storage = curState.storage(originStorage ?: ColoredStorage(version = settingsRep().newStorageVersion()))
-        if (storage.path.isBlank()) {
+        if (storage.path.isBlank() || userShortPaths.isAppInnerExternal(storage.path)) {
             storage = storage.copy(
                 path = File(appFolder, curState.name)
                     .absolutePath
@@ -96,10 +101,40 @@ class EditStoragePresenterImpl(
             )
         }
 
-        rep().setStorage(storage)
-        router.snack(R.string.storage_saved)
-        router.back()
+        val (result, messageRes) = when {
+            originStorage == null -> {
+                val result = interactor().createStorage(storage).await()
+                result to R.string.storage_created
+            }
+
+            originStorage?.path != storage.path -> {
+                val result = interactor().moveStorage(originStorage!!.path, storage).await()
+                result to R.string.storage_moved
+            }
+
+            else -> {
+                val result = interactor().setStorage(storage).await()
+                result to R.string.storage_saved
+            }
+        }
+
+        val error = result.exceptionOrNull()
+        when {
+            error == null && result.isSuccess -> {
+                router.snack(messageRes)
+                backFromScreen(router)
+            }
+
+            error?.cause(FSNoFileName::class) != null -> router.snack(R.string.fill_the_file_name)
+            error?.cause(FSDuplicateError::class) != null -> router.snack(R.string.duplicate)
+            error?.cause(FSNoAccessError::class) != null -> router.snack(R.string.no_access)
+            else -> router.snack(R.string.unknown_error)
+        }
+    }
+
+    private fun backFromScreen(router: AppRouter) {
         clean()
+        router.back()
     }
 
     private fun clean() = input { copy(isSkeleton = true) }

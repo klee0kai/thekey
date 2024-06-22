@@ -42,6 +42,10 @@ open class UserShortPaths {
         return !path.startsWith(appPath)
     }
 
+    open fun isAppInnerExternal(path: String): Boolean {
+        return path.startsWith(appPath)
+    }
+
     open fun shortPathName(originAbsolutePath: String): String {
         if (originAbsolutePath.isBlank()) {
             return originAbsolutePath.fromRootPath()

@@ -12,6 +12,6 @@ interface CoreInteractorsModule {
     fun billingInteractor(): BillingInteractor
 
     @Provide(cache = Provide.CacheType.Weak)
-    fun startupInteractor(): StartupInteractor
+    fun startupInteractor(): StartupInteractor = object : StartupInteractor {}
 
 }
