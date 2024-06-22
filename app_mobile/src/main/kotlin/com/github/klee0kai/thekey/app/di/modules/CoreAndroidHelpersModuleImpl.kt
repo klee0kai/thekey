@@ -10,7 +10,9 @@ import com.github.klee0kai.thekey.core.di.modules.CoreAndroidHelpersModule
 import com.github.klee0kai.thekey.core.domain.model.feature.DynamicFeaturesManager
 import com.github.klee0kai.thekey.core.ui.navigation.screenresolver.ScreenResolver
 
-open class CoreAndroidHelpersModuleFactory : CoreAndroidHelpersModule {
+open class CoreAndroidHelpersModuleImpl(
+    val origin: CoreAndroidHelpersModule,
+) : CoreAndroidHelpersModule by origin {
 
     override fun screenResolver(): ScreenResolver = ScreenResolverImpl()
 

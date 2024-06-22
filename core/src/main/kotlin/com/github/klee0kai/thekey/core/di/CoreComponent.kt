@@ -8,6 +8,7 @@ import com.github.klee0kai.stone.annotations.component.Component
 import com.github.klee0kai.stone.annotations.component.GcWeakScope
 import com.github.klee0kai.stone.annotations.component.RunGc
 import com.github.klee0kai.stone.annotations.module.BindInstance
+import com.github.klee0kai.thekey.core.di.debug.DummyCoreAndroidHelpersModule
 import com.github.klee0kai.thekey.core.di.dependecies.CoreDependencyProvider
 import com.github.klee0kai.thekey.core.di.identifiers.ActivityIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.NoteGroupIdentifier
@@ -65,6 +66,15 @@ fun CoreComponent.hardResetToPreview() {
 
     CoreDI.ctx(ctx)
     CoreDI.config(config)
+
+    initDummyModule()
+}
+
+@DebugOnly
+fun CoreComponent.initDummyModule() {
+    initCoreAndroidHelpersModule(
+        DummyCoreAndroidHelpersModule(origin = coreAndroidHelpersModuleFactory())
+    )
 }
 
 private fun initCoreComponent() = Stone.createComponent(CoreComponent::class.java).apply {

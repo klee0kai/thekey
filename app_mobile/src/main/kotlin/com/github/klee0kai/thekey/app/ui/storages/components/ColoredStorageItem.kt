@@ -23,11 +23,12 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.wear.compose.material.Icon
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.core.domain.model.isValid
-import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
-import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
+import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
+import com.github.klee0kai.thekey.core.utils.views.DebugDarkContentPreview
 import com.github.klee0kai.thekey.core.utils.views.toAnnotationString
 
 
@@ -140,9 +141,11 @@ fun ColoredStorageItem(
 }
 
 
+@OptIn(DebugOnly::class)
 @Preview
 @Composable
-fun ColoredStorageItemPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
+fun ColoredStorageItemPreview() = DebugDarkContentPreview {
+    DI.hardResetToPreview()
     ColoredStorageItem(
         storage = ColoredStorage(
             path = "path",
@@ -153,9 +156,11 @@ fun ColoredStorageItemPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     )
 }
 
+@OptIn(DebugOnly::class)
 @Preview
 @Composable
-fun ColoredStorageNotValidItemPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
+fun ColoredStorageNotValidItemPreview() = DebugDarkContentPreview{
+    DI.hardResetToPreview()
     ColoredStorageItem(
         storage = ColoredStorage(
             path = "path",

@@ -2,12 +2,12 @@ package com.github.klee0kai.thekey.dynamic.findstorage.ui.editstorage.presenter
 
 import com.github.klee0kai.thekey.app.data.mapping.toStorage
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.helpers.path.appendTKeyFormat
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.core.domain.model.noGroup
+import com.github.klee0kai.thekey.core.helpers.path.appendTKeyFormat
 import com.github.klee0kai.thekey.core.utils.common.launchLatest
 import com.github.klee0kai.thekey.dynamic.findstorage.di.FSDI
 import com.github.klee0kai.thekey.dynamic.findstorage.ui.editstorage.model.FSEditStorageState
