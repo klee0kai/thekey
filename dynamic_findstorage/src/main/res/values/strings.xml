@@ -8,7 +8,7 @@
     <string name="grant_permissions">Grant permissions</string>
     <string name="storages">Storages</string>
     <string name="strorage_searching">Storage searching…</string>
-    <string name="storage_folder">Storage folder</string>
+    <string name="storage_path">Storage path</string>
     <string name="save">Save</string>
     <string name="edit_storage">Edit storage</string>
     <string name="create_storage">Create Storage</string>

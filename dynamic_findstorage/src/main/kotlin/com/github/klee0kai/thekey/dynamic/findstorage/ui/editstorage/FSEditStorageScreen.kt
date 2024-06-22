@@ -36,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -71,6 +72,7 @@ import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.core.utils.views.rememberTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.toTextFieldValue
 import com.github.klee0kai.thekey.core.utils.views.toTransformationText
+import com.github.klee0kai.thekey.core.utils.views.withTKeyExtension
 import com.github.klee0kai.thekey.dynamic.findstorage.R
 import com.github.klee0kai.thekey.dynamic.findstorage.di.FSDI
 import com.github.klee0kai.thekey.dynamic.findstorage.di.hardResetToPreview
@@ -150,6 +152,7 @@ fun FSEditStorageScreen(
                 with(pathInputHelper) {
                     input.coloredPath(theme.colorScheme.androidColorScheme.primary)
                         .toTransformationText()
+                        .withTKeyExtension(theme.colorScheme.hintTextColor)
                 }
             },
             value = state.folder,
@@ -164,7 +167,7 @@ fun FSEditStorageScreen(
                 }
             },
             interactionSource = pathInteractionSource,
-            label = { Text(stringResource(R.string.storage_folder)) }
+            label = { Text(stringResource(R.string.storage_path)) }
         )
 
         PopupMenu(
@@ -363,6 +366,7 @@ fun FSEditStorageScreenPreview() = DebugDarkScreenPreview {
         override fun fsEditStoragePresenter(storageIdentifier: StorageIdentifier) = object : FSEditStoragePresenter {
             override val state = MutableStateFlow(
                 FSEditStorageState(
+                    folder = TextFieldValue("/appdata/work"),
                     isSkeleton = false,
                     isSaveAvailable = true,
                 )
