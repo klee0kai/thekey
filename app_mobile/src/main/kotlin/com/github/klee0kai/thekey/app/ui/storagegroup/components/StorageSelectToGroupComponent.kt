@@ -32,6 +32,7 @@ import com.github.klee0kai.thekey.core.ui.navigation.model.StorageItemWidgetStat
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.common.Dummy
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkContentPreview
+import com.github.klee0kai.thekey.core.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.core.utils.views.animateContentSizeProduction
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
@@ -43,6 +44,7 @@ import org.jetbrains.annotations.VisibleForTesting
 fun StorageSelectToGroupComponent(
     modifier: Modifier = Modifier,
     dest: EditStorageGroupDestination = EditStorageGroupDestination(),
+    isSelectAvailable: Boolean = false,
     onSelect: (storagePath: String, selected: Boolean) -> Unit = { _, _ -> },
     header: @Composable LazyItemScope.() -> Unit = { Spacer(modifier = Modifier.height(12.dp)) },
     footer: @Composable LazyItemScope.() -> Unit = { Spacer(modifier = Modifier.height(12.dp)) },
@@ -50,6 +52,7 @@ fun StorageSelectToGroupComponent(
     val screenResolver = LocalScreenResolver.current
     val presenter by rememberOnScreenRef { DI.editStorageGroupPresenter(dest.identifier()) }
     val storages by presenter!!.allStorages.collectAsState(key = Unit, initial = emptyList())
+    val selectAvailableAlpha by animateAlphaAsState(isSelectAvailable)
 
     if (storages.isEmpty()) {
         return
@@ -70,11 +73,16 @@ fun StorageSelectToGroupComponent(
                     modifier = Modifier.animateContentSizeProduction(),
                     widgetState = StorageItemWidgetState(
                         coloredStorage = storage.toColorStorage(),
-                        onClick = { onSelect.invoke(storage.path, !storage.selected) },
+                        onClick = {
+                            if (isSelectAvailable) {
+                                onSelect.invoke(storage.path, !storage.selected)
+                            }
+                        },
                         iconContent = {
                             Icon(
                                 modifier = Modifier
                                     .alpha(icon.alpha)
+                                    .alpha(selectAvailableAlpha)
                                     .alpha(animatedStorage.alpha),
                                 imageVector = icon.current,
                                 contentDescription = "Added"

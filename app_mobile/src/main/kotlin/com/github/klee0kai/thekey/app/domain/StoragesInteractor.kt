@@ -3,6 +3,7 @@ package com.github.klee0kai.thekey.app.domain
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
+import com.github.klee0kai.thekey.core.domain.model.externalStorages
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
@@ -25,6 +26,13 @@ class StoragesInteractor {
             .collect(this)
     }
 
+    val externalStoragesGroup = flow<ColorGroup> {
+        val precreated = ColorGroup.externalStorages()
+        rep().allColorGroups
+            .map { list -> list.firstOrNull { it.id == precreated.id } ?: precreated }
+            .collect(this)
+    }
+
     fun findStorage(path: String, mockNew: Boolean = false) = scope.async {
         var storage = rep().findStorage(path).await()?.updateVersion()
         if (storage == null && mockNew) {
@@ -34,9 +42,21 @@ class StoragesInteractor {
         storage
     }
 
-    fun setColorGroup(colorGroup: ColorGroup) = scope.launch { rep().setColorGroup(colorGroup).join() }
+    fun setColorGroup(colorGroup: ColorGroup) = scope.async {
+        if (colorGroup.id == ColorGroup.externalStorages().id) {
+            settings().externalStoragesGroup.set(true).join()
+        }
+        rep().setColorGroup(colorGroup).await()
+    }
 
-    fun deleteColorGroup(id: Long) = scope.launch { rep().deleteColorGroup(id).join() }
+    fun setStoragesGroup(storagePaths: List<String>, groupId: Long) = scope.launch { rep().setStoragesGroup(storagePaths, groupId).join() }
+
+    fun deleteColorGroup(id: Long) = scope.launch {
+        if (id == ColorGroup.externalStorages().id) {
+            settings().externalStoragesGroup.set(false).join()
+        }
+        rep().deleteColorGroup(id).join()
+    }
 
     private suspend fun ColoredStorage.updateVersion(): ColoredStorage {
         val version = engine().storageVersion(path = path)

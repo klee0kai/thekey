@@ -39,10 +39,8 @@ fun ColorGroupEntry.toColorGroup() =
     )
 
 
-fun ColorGroup.toColorGroupEntry(
-    id: Long? = null
-) = ColorGroupEntry(
-    id = id ?: 0L,
+fun ColorGroup.toColorGroupEntry() = ColorGroupEntry(
+    id = this.id,
     name = name,
     colorGroup = keyColor.ordinal,
     isFavorite = isFavorite,

@@ -22,6 +22,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.klee0kai.thekey.core.R
+import com.github.klee0kai.thekey.core.domain.model.ColorGroup
+import com.github.klee0kai.thekey.core.domain.model.externalStorages
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
@@ -39,12 +41,13 @@ fun EditGroupInfoContent(
     modifier: Modifier = Modifier,
     groupNameFieldModifier: Modifier = Modifier,
     groupName: String = "",
-    select: KeyColor = KeyColor.NOCOLOR,
+    variants: List<ColorGroup> = emptyList(),
+    selectedId: Long = -1,
     forceIndicatorVisible: Boolean = false,
     favoriteVisible: Boolean = false,
     favoriteChecked: Boolean = false,
     onChangeGroupName: (String) -> Unit = {},
-    onSelect: (KeyColor) -> Unit = {},
+    onSelect: (ColorGroup) -> Unit = {},
     onFavoriteChecked: (Boolean) -> Unit = {},
 ) {
     val theme = LocalTheme.current
@@ -116,8 +119,8 @@ fun EditGroupInfoContent(
                 Spacer(modifier = Modifier.width(14.dp))
             }
 
-            KeyColor.colors.forEachIndexed { index, color ->
-                item(key = color) {
+            variants.forEachIndexed { index, group ->
+                item(key = group.id) {
                     GroupCircle(
                         modifier = Modifier
                             .animateContentSize()
@@ -128,9 +131,10 @@ fun EditGroupInfoContent(
                                 bottom = 8.dp
                             ),
                         buttonSize = 56.dp,
-                        checked = color == select,
-                        colorScheme = theme.colorScheme.surfaceSchemas.surfaceScheme(color),
-                        onClick = { onSelect(color) },
+                        checked = group.id == selectedId,
+                        name = group.name,
+                        colorScheme = theme.colorScheme.surfaceSchemas.surfaceScheme(group.keyColor),
+                        onClick = { onSelect(group) },
                     )
                 }
             }
@@ -187,6 +191,7 @@ fun EditGroupInfoContent(
 @Composable
 fun EditGroupInfoContentPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     EditGroupInfoContent(
+        variants = KeyColor.selectableColorGroups,
         forceIndicatorVisible = true,
     )
 }
@@ -196,6 +201,7 @@ fun EditGroupInfoContentPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
 @Composable
 fun EditGroupInfoContentFavoritePreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     EditGroupInfoContent(
+        variants = KeyColor.selectableColorGroups,
         forceIndicatorVisible = true,
         favoriteVisible = true,
     )
@@ -207,6 +213,7 @@ fun EditGroupInfoContentFavoritePreview() = AppTheme(theme = DefaultThemes.darkT
 fun EditGroupInfoContentInBoxPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     Box(modifier = Modifier.fillMaxSize()) {
         EditGroupInfoContent(
+            variants = listOf(ColorGroup.externalStorages()) + KeyColor.selectableColorGroups,
             modifier = Modifier.align(Alignment.Center),
             forceIndicatorVisible = true,
         )

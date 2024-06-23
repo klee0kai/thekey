@@ -8,6 +8,12 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ColorGroup(
+    /**
+     * id > 0 - created color group
+     * id [-1 - 0] - no group
+     * id [-199 - -100] - predefinded key colors
+     * id [-299 - -200] - custom color groups like External or QR
+     */
     val id: Long = 0,
     val name: String = "",
     val keyColor: KeyColor = KeyColor.NOCOLOR,
@@ -19,18 +25,22 @@ data class ColorGroup(
 }
 
 fun ColorGroup.Companion.noGroup(): ColorGroup =
-    ColorGroup(name = CoreDI.ctx().resources.getString(R.string.no), keyColor = KeyColor.NOCOLOR)
+    ColorGroup(
+        id = -201,
+        name = CoreDI.ctx().resources.getString(R.string.no),
+        keyColor = KeyColor.NOCOLOR
+    )
 
 fun ColorGroup.Companion.externalStorages(): ColorGroup =
     ColorGroup(
-        id = -2,
+        id = -202,
         name = CoreDI.ctx().resources.getString(R.string.ext),
         keyColor = KeyColor.TURQUOISE
     )
 
 fun ColorGroup.Companion.otpNotes(): ColorGroup =
     ColorGroup(
-        id = -3,
+        id = -203,
         name = CoreDI.ctx().resources.getString(R.string.ext),
         keyColor = KeyColor.TURQUOISE
     )

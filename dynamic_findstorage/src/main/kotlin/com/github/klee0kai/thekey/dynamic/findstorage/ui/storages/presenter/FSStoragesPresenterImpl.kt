@@ -9,7 +9,6 @@ import com.github.klee0kai.thekey.core.utils.coroutine.touchable
 import com.github.klee0kai.thekey.dynamic.findstorage.R
 import com.github.klee0kai.thekey.dynamic.findstorage.di.FSDI
 import com.github.klee0kai.thekey.dynamic.findstorage.perm.writeStoragePermissions
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
@@ -21,6 +20,11 @@ class FSStoragesPresenterImpl(
     private val scope = FSDI.defaultThreadScope()
     private val perm = FSDI.permissionsHelper()
     private val interactor = FSDI.findStoragesInteractorLazy()
+    private val storagesInteractor = FSDI.storagesInteractorLazy()
+
+    override val externalStoragesColorGroup = flow {
+        storagesInteractor().externalStoragesGroup.collect(this)
+    }
 
     override val isStoragesSearchingProgress = flow { interactor().searchState.collect(this) }
 

@@ -26,6 +26,8 @@ import androidx.compose.ui.unit.dp
 import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditStorageDestination
 import com.github.klee0kai.thekey.app.ui.storages.presenter.StoragesPresenter
+import com.github.klee0kai.thekey.core.domain.model.ColorGroup
+import com.github.klee0kai.thekey.core.domain.model.externalStorages
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
@@ -55,6 +57,7 @@ fun FSStoragesButtonsWidget(
     val router = LocalRouter.current
     val theme = LocalTheme.current
     val presenter by rememberOnScreenRef { FSDI.fsStoragesPresenter() }
+    val extGroup by presenter!!.externalStoragesColorGroup.collectAsState(key = Unit, initial = ColorGroup.externalStorages())
 
     val imeIsVisibleAnimated by animateTargetCrossFaded(WindowInsets.isIme)
     val isPermissionsGranted by presenter!!.isPermissionGranted.collectAsState(key = Unit, initial = null)
@@ -121,7 +124,7 @@ fun FSStoragesButtonsWidget(
                     .alpha(imeIsVisibleAnimated.alpha),
                 square = showSearchExt,
                 containerColor = if (showSearchExt) {
-                    theme.colorScheme.androidColorScheme.primaryContainer
+                    theme.colorScheme.surfaceSchemas.surfaceScheme(extGroup.keyColor).surfaceColor
                 } else {
                     theme.colorScheme.androidColorScheme.secondaryContainer
                 },

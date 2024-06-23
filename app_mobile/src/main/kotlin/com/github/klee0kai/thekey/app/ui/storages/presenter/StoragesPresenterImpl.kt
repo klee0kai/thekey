@@ -1,5 +1,6 @@
 package com.github.klee0kai.thekey.app.ui.storages.presenter
 
+import com.github.klee0kai.hummus.collections.contains
 import com.github.klee0kai.thekey.app.data.mapping.toColoredStorage
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.features.findStorage
@@ -17,6 +18,7 @@ import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
 import com.github.klee0kai.thekey.core.utils.file.createNewWithSuffix
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -53,10 +55,11 @@ open class StoragesPresenterImpl : StoragesPresenter {
     }.flowOn(DI.defaultDispatcher())
 
     override val filteredColorGroups = flow {
+        val extGroup = interactor().externalStoragesGroup.first()
         selectableColorGroups
             .map { list ->
                 buildList {
-                    if (settings().externalStoragesGroup()) add(ColorGroup.externalStorages())
+                    if (settings().externalStoragesGroup() && !list.contains { it.id == extGroup.id }) add(extGroup)
                     addAll(list)
                 }
             }

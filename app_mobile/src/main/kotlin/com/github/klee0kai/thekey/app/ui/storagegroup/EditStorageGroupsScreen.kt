@@ -98,14 +98,15 @@ fun EditStorageGroupsScreen(
                     .offset(y = dragProgress.topContentOffsetFromDrag()),
                 groupNameFieldModifier = Modifier
                     .focusRequester(groupNameFieldFocusRequester),
-                select = state.color,
+                variants = state.colorGroupVariants,
+                selectedId = state.selectedGroupId,
                 groupName = state.name,
                 favoriteVisible = true,
                 favoriteChecked = state.isFavorite,
                 onChangeGroupName = { presenter?.input { copy(name = it.take(1)) } },
                 onSelect = {
                     groupNameFieldFocusRequester.freeFocus()
-                    presenter?.input { copy(color = it) }
+                    presenter?.input { copy(selectedGroupId = it.id) }
                 },
                 onFavoriteChecked = {
                     presenter?.input { copy(isFavorite = it) }
@@ -119,6 +120,7 @@ fun EditStorageGroupsScreen(
                     .padding(top = 20.dp)
                     .fillMaxSize(),
                 dest = dest,
+                isSelectAvailable = state.isCanSelectStorages,
                 onSelect = { storagePath, selected ->
                     presenter?.selectStorage(storagePath, selected)
                 },
