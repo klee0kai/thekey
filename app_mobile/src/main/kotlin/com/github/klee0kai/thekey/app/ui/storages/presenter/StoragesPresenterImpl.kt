@@ -1,15 +1,19 @@
 package com.github.klee0kai.thekey.app.ui.storages.presenter
 
 import com.github.klee0kai.hummus.collections.contains
+import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.data.mapping.toColoredStorage
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.features.findStorage
 import com.github.klee0kai.thekey.app.ui.navigation.createFileIntent
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditStorageDestination
+import com.github.klee0kai.thekey.app.ui.navigation.model.EditStorageGroupDestination
 import com.github.klee0kai.thekey.app.ui.navigation.openFileIntent
 import com.github.klee0kai.thekey.app.ui.storage.model.SearchState
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.domain.model.externalStorages
+import com.github.klee0kai.thekey.core.domain.model.feature.PaidFeature
+import com.github.klee0kai.thekey.core.domain.model.feature.PaidLimits
 import com.github.klee0kai.thekey.core.domain.model.feature.model.DynamicFeature
 import com.github.klee0kai.thekey.core.domain.model.filterBy
 import com.github.klee0kai.thekey.core.domain.model.sortableFlatText
@@ -44,6 +48,7 @@ open class StoragesPresenterImpl : StoragesPresenter {
     private val shortPath = DI.userShortPaths()
     private val engine = DI.findStorageEngineLazy()
     private val dateFormat by lazy { SimpleDateFormat.getDateInstance() }
+    private val billing = DI.billingInteractor()
 
     override val installAutoSearchStatus = installFindStoragePresenter.status
 
@@ -126,7 +131,14 @@ open class StoragesPresenterImpl : StoragesPresenter {
         } catch (e: Throwable) {
             Timber.e(createDocResult.error, "error to export storage")
         }
+    }
 
+    override fun addNewStorage(appRouter: AppRouter?) = scope.launch {
+        if (billing.isAvailable(PaidFeature.UNLIMITED_GROUPS) || (filteredColorGroups.firstOrNull()?.size ?: 0) < PaidLimits.PAID_GROUPS_LIMIT) {
+            appRouter?.navigate(EditStorageGroupDestination())
+        } else {
+            appRouter?.snack(R.string.limited_in_free_version)
+        }
     }
 
     override fun editStorage(storagePath: String, router: AppRouter) = scope.launch {

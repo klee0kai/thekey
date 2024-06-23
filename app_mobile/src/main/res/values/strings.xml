@@ -1,4 +1,5 @@
 <resources>
 
     <string name="nothig_to_show">Nothing to show</string>
+    <string name="limited_in_free_version">Limited in free version</string>
 </resources>

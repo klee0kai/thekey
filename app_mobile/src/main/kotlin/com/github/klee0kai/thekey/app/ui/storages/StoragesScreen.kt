@@ -90,7 +90,7 @@ fun StoragesScreen() = Screen {
                     .offset(y = dragProgress.topContentOffsetFromDrag()),
                 colorGroups = groups,
                 selectedGroup = selectedGroup,
-                onAdd = { router?.navigate(EditStorageGroupDestination()) },
+                onAdd = { presenter?.addNewStorage(router) },
                 onGroupEdit = { router?.navigate(EditStorageGroupDestination(it.id)) },
                 onGroupSelected = { presenter?.selectGroup(it.id) },
             )
