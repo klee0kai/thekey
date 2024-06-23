@@ -22,6 +22,7 @@ import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.possitions.onGlobalPositionState
 import com.github.klee0kai.thekey.core.utils.possitions.rememberViewPosition
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkContentPreview
+import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 
 
@@ -34,6 +35,7 @@ fun ColoredStorageItemWidget(
     var showMenu by remember { mutableStateOf(false) }
     val position = rememberViewPosition()
     val presenter by rememberOnScreenRef { DI.storagesPresenter() }
+    val groups by presenter!!.selectableColorGroups.collectAsState(key = Unit, initial = emptyList())
 
     ColoredStorageItem(
         modifier = modifier
@@ -52,8 +54,20 @@ fun ColoredStorageItemWidget(
         ) {
             StoragePopupMenu(
                 modifier = Modifier.padding(vertical = 4.dp),
-                onEdit = { presenter?.editStorage(state.coloredStorage.path, router) },
-                onExport = { presenter?.exportStorage(state.coloredStorage.path, router) },
+                colorGroups = groups,
+                selectedGroupId = state.coloredStorage.colorGroup?.id ?: -1,
+                onEdit = {
+                    showMenu = false
+                    presenter?.editStorage(state.coloredStorage.path, router)
+                },
+                onExport = {
+                    showMenu = false
+                    presenter?.exportStorage(state.coloredStorage.path, router)
+                },
+                onColorGroupSelected = {
+                    showMenu = false
+                    presenter?.setColorGroup(state.coloredStorage.path, it.id)
+                }
             )
         }
     }

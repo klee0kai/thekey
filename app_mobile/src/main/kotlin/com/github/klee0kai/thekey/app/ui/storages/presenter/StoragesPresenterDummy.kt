@@ -14,7 +14,7 @@ open class StoragesPresenterDummy(
 
     override val installAutoSearchStatus = MutableStateFlow(NotInstalled)
 
-    override val filteredColorGroups = MutableStateFlow<List<ColorGroup>>(
+    override val selectableColorGroups = MutableStateFlow<List<ColorGroup>>(
         buildList {
             repeat(groupsCount) { index ->
                 add(
@@ -27,6 +27,8 @@ open class StoragesPresenterDummy(
             }
         }
     )
+
+    override val filteredColorGroups = selectableColorGroups
 
     override val filteredStorages = MutableStateFlow(
         buildList {

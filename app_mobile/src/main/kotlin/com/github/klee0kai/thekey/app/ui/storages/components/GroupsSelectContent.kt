@@ -143,7 +143,10 @@ fun GroupsSelectContent(
                         onDismissRequest = { showMenu = false },
                     ) {
                         GroupPopupMenu(
-                            onEdit = { onGroupEdit(group) }
+                            onEdit = {
+                                showMenu = false
+                                onGroupEdit(group)
+                            }
                         )
                     }
                 }

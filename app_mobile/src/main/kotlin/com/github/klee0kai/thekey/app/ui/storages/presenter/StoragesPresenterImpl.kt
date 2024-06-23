@@ -48,14 +48,12 @@ open class StoragesPresenterImpl : StoragesPresenter {
     override val searchState = MutableStateFlow(SearchState())
     override val selectedGroupId = MutableStateFlow<Long?>(null)
 
-    private val sortedStorages = flow {
-        interactor().allStorages
-            .map { list -> list.sortedBy { storage -> storage.sortableFlatText() } }
-            .collect(this)
-    }
+    override val selectableColorGroups = flow {
+        rep().allColorGroups.collect(this)
+    }.flowOn(DI.defaultDispatcher())
 
     override val filteredColorGroups = flow {
-        rep().allColorGroups
+        selectableColorGroups
             .map { list ->
                 buildList {
                     if (settings().externalStoragesGroup()) add(ColorGroup.externalStorages())
@@ -64,6 +62,12 @@ open class StoragesPresenterImpl : StoragesPresenter {
             }
             .collect(this)
     }.flowOn(DI.defaultDispatcher())
+
+    private val sortedStorages = flow {
+        interactor().allStorages
+            .map { list -> list.sortedBy { storage -> storage.sortableFlatText() } }
+            .collect(this)
+    }
 
     override val filteredStorages = flow {
         combine(

@@ -5,6 +5,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.github.klee0kai.stone.type.wrappers.getValue
@@ -30,9 +31,10 @@ fun StoragesListContent(
     val router = LocalRouter.current
     val resolver = LocalScreenResolver.current
     val presenter by rememberOnScreenRef { DI.storagesPresenter() }
-    val storages = presenter!!.filteredStorages.collectAsState(key = Unit, initial = emptyList())
+    val storages by presenter!!.filteredStorages.collectAsState(key = Unit, initial = emptyList())
+    val groups by presenter!!.filteredColorGroups.collectAsState(key = Unit, initial = emptyList())
 
-    if (storages.value.isEmpty()) {
+    if (storages.isEmpty()) {
         // show empty state if need
 
         // should return here so as not to reset the state of the list
@@ -45,13 +47,13 @@ fun StoragesListContent(
     ) {
         item { header() }
 
-        storages.value.forEach { storage ->
+        storages.forEach { storage ->
             item(contentType = storage::class) {
                 resolver.widget(
                     modifier = Modifier,
                     widgetState = StorageItemWidgetState(
                         coloredStorage = storage,
-                        isPopupMenuAvailable = true,
+                        isPopupMenuAvailable = isPopupMenuAvailable,
                     )
                 )
             }
@@ -65,11 +67,15 @@ fun StoragesListContent(
 @OptIn(DebugOnly::class)
 @Composable
 @Preview
-fun StoragesListContentPreview() = DebugDarkContentPreview {
+fun StoragesListContentPreview() {
     DI.hardResetToPreview()
     DI.initPresenterModule(object : PresentersModule {
-        override fun storagesPresenter() = StoragesPresenterDummy()
+        override fun storagesPresenter() = StoragesPresenterDummy(
+            groupsCount = 8,
+        )
     })
 
-    StoragesListContent()
+    DebugDarkContentPreview {
+        StoragesListContent()
+    }
 }

@@ -37,8 +37,6 @@ import com.github.klee0kai.thekey.app.ui.navigationboard.StorageNavigationBoard
 import com.github.klee0kai.thekey.core.ui.devkit.EmptyScreen
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.navigation.model.Destination
-import com.github.klee0kai.thekey.core.ui.navigation.model.DialogDestination
-import com.github.klee0kai.thekey.core.utils.views.minInsets
 import com.github.klee0kai.thekey.core.utils.views.rememberTickerOf
 import dev.olshevski.navigation.reimagined.AnimatedNavHost
 import dev.olshevski.navigation.reimagined.NavAction
@@ -113,8 +111,8 @@ fun SnackContainer() {
         SnackbarHost(
             hostState = snackbarHostState,
             modifier = Modifier
-                .windowInsetsPadding(WindowInsets.safeContent.minInsets(16.dp))
-                .padding(bottom = 30.dp)
+                .windowInsetsPadding(WindowInsets.safeContent)
+                .padding(bottom = 92.dp)
                 .alpha(swipeAlpha)
                 .align(Alignment.BottomCenter)
         ) { data ->
