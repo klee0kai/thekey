@@ -103,7 +103,7 @@ open class EditStoragesGroupsPresenterImpl(
         newState = newState.copy(
             isSaveAvailable = isSaveAvailable,
             isRemoveAvailable = newState.isRemoveAvailable && !isSaveAvailable,
-            isExternalGroupMode = newColorGroup.id == ColorGroup.externalStorages().id,
+            isExternalGroupMode = isExternalGroupMode || newState.selectedGroupId == ColorGroup.externalStorages().id,
         )
         state.value = newState
     }
