@@ -38,6 +38,7 @@ open class EditStoragesGroupsPresenterImpl(
     }
 
     private var originalGroup: ColorGroup? = null
+    private var originSelectedStorages: List<String> = emptyList()
 
     override fun init() = scope.launch {
         if (!state.value.isSkeleton) return@launch
@@ -52,11 +53,13 @@ open class EditStoragesGroupsPresenterImpl(
             ?.filter { it.colorGroup?.id != null && it.colorGroup?.id == originalGroup?.id }
             ?.map { it.path }
             ?: emptyList()
+        originSelectedStorages = selectedStorages
 
         state.update {
             it.copy(
                 isSkeleton = false,
                 isEditMode = originalGroup != null,
+                isRemoveAvailable = originalGroup != null,
                 color = originalGroup?.keyColor ?: KeyColor.NOCOLOR,
                 name = originalGroup?.name ?: "",
                 isFavorite = originalGroup?.isFavorite ?: false,
@@ -67,9 +70,11 @@ open class EditStoragesGroupsPresenterImpl(
 
     override fun input(block: EditStorageGroupsState.() -> EditStorageGroupsState) = scope.launch(DI.mainDispatcher()) {
         var newState = block.invoke(state.value)
+
+        val fulfilled = newState.color != KeyColor.NOCOLOR
         val isSaveAvailable = when {
-            originalGroup != null -> newState.color != KeyColor.NOCOLOR && newState.colorGroup(originalGroup!!) != originalGroup
-            else -> newState.color != KeyColor.NOCOLOR
+            originalGroup != null -> fulfilled && (newState.colorGroup(originalGroup!!) != originalGroup || originSelectedStorages != newState.selectedStorages)
+            else -> fulfilled
         }
         newState = newState.copy(
             isSaveAvailable = isSaveAvailable,

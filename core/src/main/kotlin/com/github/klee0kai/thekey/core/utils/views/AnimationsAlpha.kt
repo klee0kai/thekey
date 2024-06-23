@@ -64,16 +64,17 @@ inline fun animateAlphaAsState(
 inline fun <T> Flow<T>.collectAsStateCrossFaded(
     key: Any?,
     initial: T,
-    context: CoroutineContext = EmptyCoroutineContext
+    skipStates: List<T> = emptyList(),
+    context: CoroutineContext = EmptyCoroutineContext,
 ): State<TargetAlpha<T>> {
     val target by collectAsState(key = key, initial = initial, context = context)
-    return animateTargetCrossFaded(target)
+    return animateTargetCrossFaded(target, skipStates = skipStates)
 }
 
 @Composable
-inline fun <T> rememberTargetCrossFaded(noinline calculation: () -> T): State<TargetAlpha<T>> {
+inline fun <T> rememberTargetCrossFaded(skipStates: List<T> = emptyList(), noinline calculation: () -> T): State<TargetAlpha<T>> {
     val target = rememberDerivedStateOf(calculation)
-    return animateTargetCrossFaded(target = target.value)
+    return animateTargetCrossFaded(target = target.value, skipStates = skipStates)
 }
 
 @Composable
