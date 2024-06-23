@@ -100,10 +100,16 @@ fun EditStorageGroupsScreen(
                     .focusRequester(groupNameFieldFocusRequester),
                 variants = state.colorGroupVariants,
                 selectedId = state.selectedGroupId,
-                groupName = state.name,
-                favoriteVisible = true,
+                groupName = if (state.isExternalGroupMode) state.extStorageName else state.name,
+                favoriteVisible = !state.isExternalGroupMode,
                 favoriteChecked = state.isFavorite,
-                onChangeGroupName = { presenter?.input { copy(name = it.take(1)) } },
+                onChangeGroupName = {
+                    if (state.isExternalGroupMode) {
+                        presenter?.input { copy(extStorageName = it.take(3)) }
+                    } else {
+                        presenter?.input { copy(name = it.take(1)) }
+                    }
+                },
                 onSelect = {
                     groupNameFieldFocusRequester.freeFocus()
                     presenter?.input { copy(selectedGroupId = it.id) }
@@ -120,7 +126,7 @@ fun EditStorageGroupsScreen(
                     .padding(top = 20.dp)
                     .fillMaxSize(),
                 dest = dest,
-                isSelectAvailable = state.isCanSelectStorages,
+                isSelectAvailable = !state.isExternalGroupMode,
                 onSelect = { storagePath, selected ->
                     presenter?.selectStorage(storagePath, selected)
                 },

@@ -12,21 +12,21 @@ data class EditStorageGroupsState(
     val isSkeleton: Boolean = false,
     val isSaveAvailable: Boolean = false,
     val isRemoveAvailable: Boolean = false,
-    val isCanSelectStorages: Boolean = false,
+    val isExternalGroupMode: Boolean = false,
     val colorGroupVariants: List<ColorGroup> = emptyList(),
     val selectedGroupId: Long = 0,
     val name: String = "",
+    val extStorageName: String = "",
     val selectedStorages: Set<String> = emptySet(),
     val isFavorite: Boolean = false,
 ) : Parcelable
 
 
-fun EditStorageGroupsState.colorGroup(origin: ColorGroup = ColorGroup()): ColorGroup {
-    val ext = ColorGroup.externalStorages()
-    if (selectedGroupId == ext.id) {
+fun EditStorageGroupsState.colorGroup(origin: ColorGroup = ColorGroup(), isExtMode: Boolean = false): ColorGroup {
+    if (isExtMode) {
         return origin.copy(
-            id = selectedGroupId,
-            name = name.takeIf { it.isNotBlank() } ?: ext.name,
+            id = ColorGroup.externalStorages().id,
+            name = extStorageName,
             keyColor = colorGroupVariants.firstOrNull { it.id == selectedGroupId }?.keyColor ?: KeyColor.NOCOLOR,
             isFavorite = isFavorite,
         )

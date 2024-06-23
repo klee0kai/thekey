@@ -80,10 +80,11 @@ open class EditStoragesGroupsPresenterImpl(
                 isSkeleton = false,
                 isEditMode = originalGroup != null,
                 isRemoveAvailable = originalGroup != null,
-                isCanSelectStorages = originalGroup?.id != externalsGroup.id,
+                isExternalGroupMode = originalGroup?.id == externalsGroup.id,
                 colorGroupVariants = colorGroupVariants,
                 selectedGroupId = colorGroupVariants.firstOrNull { selectable -> selectable.keyColor == originalGroup?.keyColor }?.id ?: 0,
                 name = originalGroup?.name ?: "",
+                extStorageName = externalsGroup.name,
                 isFavorite = originalGroup?.isFavorite ?: false,
                 selectedStorages = selectedStorages.toSet()
             )
@@ -102,14 +103,18 @@ open class EditStoragesGroupsPresenterImpl(
         newState = newState.copy(
             isSaveAvailable = isSaveAvailable,
             isRemoveAvailable = newState.isRemoveAvailable && !isSaveAvailable,
-            isCanSelectStorages = newState.selectedGroupId != ColorGroup.externalStorages().id,
+            isExternalGroupMode = newColorGroup.id == ColorGroup.externalStorages().id,
         )
         state.value = newState
     }
 
     override fun save() = scope.launchSafe {
         val curState = state.value
-        val newColorGroup = curState.colorGroup(originalGroup ?: ColorGroup())
+        val ext = ColorGroup.externalStorages()
+        val newColorGroup = curState.colorGroup(
+            origin = originalGroup ?: ColorGroup(),
+            isExtMode = isExternalGroupMode || curState.selectedGroupId == ext.id
+        )
         if (newColorGroup.keyColor == KeyColor.NOCOLOR) {
             router.snack(R.string.select_color)
             return@launchSafe
