@@ -1,6 +1,7 @@
 package com.github.klee0kai.thekey.app.di.dependencies
 
 import com.github.klee0kai.thekey.app.engine.editstorage.EditStorageEngine
+import com.github.klee0kai.thekey.app.engine.editstorage.EditStorageSuspended
 import com.github.klee0kai.thekey.app.engine.findstorage.FindStorageEngine
 import com.github.klee0kai.thekey.app.engine.storage.CryptStorage
 import com.github.klee0kai.thekey.app.engine.storage.CryptStorageSuspended
@@ -11,8 +12,12 @@ interface EngineDependencies {
 
     fun findStorageEngineLazy(): AsyncCoroutineProvide<FindStorageEngine>
 
+    @Deprecated("use editStorageEngineSafeLazy")
     fun editStorageEngineLazy(): AsyncCoroutineProvide<EditStorageEngine>
 
+    fun editStorageEngineSafeLazy(): AsyncCoroutineProvide<EditStorageSuspended>
+
+    @Deprecated("use cryptStorageEngineSafeLazy")
     fun cryptStorageEngineLazy(id: StorageIdentifier): AsyncCoroutineProvide<CryptStorage>
 
     fun cryptStorageEngineSafeLazy(id: StorageIdentifier): AsyncCoroutineProvide<CryptStorageSuspended>
