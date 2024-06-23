@@ -7,16 +7,14 @@ import com.github.klee0kai.thekey.core.di.wrap.AsyncCoroutineProvide
 import com.github.klee0kai.thekey.core.utils.common.launchIfNotStarted
 import com.github.klee0kai.thekey.dynamic.findstorage.di.FSDI
 import com.github.klee0kai.thekey.dynamic.findstorage.perm.writeStoragePermissions
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
 class FindStorageInteractor {
 
     private val scope = FSDI.defaultThreadScope()
     private val perm = FSDI.permissionsHelper()
-    private val engine = FSDI.findStorageEngineLazy()
+    private val engine = FSDI.findStorageEngineSaveLazy()
     private val rep = FSDI.storagesRepositoryLazy()
     private val settings = FSDI.fsSettingsRepositoryLazy()
     val searchState = MutableStateFlow(false)

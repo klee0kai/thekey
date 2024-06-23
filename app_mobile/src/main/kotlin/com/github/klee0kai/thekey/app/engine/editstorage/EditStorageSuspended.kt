@@ -1,6 +1,5 @@
 package com.github.klee0kai.thekey.app.engine.editstorage
 
-import com.github.klee0kai.brooklyn.JniMirror
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.engine.model.Storage
 import com.github.klee0kai.thekey.core.utils.error.FSNoAccessError
@@ -8,7 +7,6 @@ import com.github.klee0kai.thekey.core.utils.error.FSNoFileName
 import kotlinx.coroutines.withContext
 import java.io.IOException
 
-@JniMirror
 class EditStorageSuspended {
 
     private val _engine = DI.editStorageEngineLazy()
