@@ -59,6 +59,8 @@ dependencies {
     // hummus
     implementation(libs.hummus)
 
+    implementation(libs.lorem)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso)

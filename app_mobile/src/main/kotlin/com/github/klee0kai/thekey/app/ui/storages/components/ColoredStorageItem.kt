@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import androidx.wear.compose.material.Icon
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.hardResetToPreview
@@ -27,6 +29,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkContentPreview
+import com.thedeanda.lorem.LoremIpsum
 import java.io.File
 
 
@@ -36,6 +39,7 @@ fun ColoredStorageItem(
     storage: ColoredStorage = ColoredStorage(),
     onClick: () -> Unit = {},
     onLongClick: (() -> Unit)? = null,
+    icon: (@Composable () -> Unit)? = null,
 ) {
     val theme = LocalTheme.current
     val colorScheme = theme.colorScheme
@@ -49,7 +53,7 @@ fun ColoredStorageItem(
                 onLongClick = onLongClick,
             )
     ) {
-        val (colorGroupField, nameField, descriptionField, errorIconField) = createRefs()
+        val (colorGroupField, nameField, descriptionField, iconField) = createRefs()
 
         Box(
             modifier = Modifier
@@ -84,11 +88,12 @@ fun ColoredStorageItem(
             style = theme.typeScheme.typography.bodyMedium,
             modifier = Modifier
                 .constrainAs(nameField) {
+                    width = Dimension.fillToConstraints
                     linkTo(
                         top = parent.top,
                         bottom = parent.bottom,
                         start = colorGroupField.end,
-                        end = parent.end,
+                        end = iconField.start,
                         topMargin = 6.dp,
                         bottomMargin = 6.dp,
                         startMargin = 16.dp,
@@ -105,11 +110,12 @@ fun ColoredStorageItem(
                 style = theme.typeScheme.typography.bodySmall,
                 modifier = Modifier
                     .constrainAs(descriptionField) {
+                        width = Dimension.fillToConstraints
                         linkTo(
                             top = nameField.bottom,
                             bottom = parent.bottom,
                             start = colorGroupField.end,
-                            end = parent.end,
+                            end = iconField.start,
                             topMargin = 4.dp,
                             startMargin = 16.dp,
                             endMargin = 16.dp,
@@ -122,23 +128,27 @@ fun ColoredStorageItem(
             )
         }
 
-        if (!storage.isValid()) {
-            Icon(
-                Icons.Default.Info,
-                contentDescription = null,
-                tint = colorScheme.deleteColor,
-                modifier = Modifier.constrainAs(errorIconField) {
-                    linkTo(
-                        top = parent.top,
-                        bottom = parent.bottom,
-                        start = parent.start,
-                        end = parent.end,
-                        startMargin = 16.dp,
-                        endMargin = 16.dp,
-                        horizontalBias = 1f,
+        Box(modifier = Modifier.constrainAs(iconField) {
+            linkTo(
+                top = parent.top,
+                bottom = parent.bottom,
+                start = parent.start,
+                end = parent.end,
+                startMargin = 16.dp,
+                endMargin = 16.dp,
+                horizontalBias = 1f,
+            )
+        }) {
+            when {
+                icon != null -> icon.invoke()
+                !storage.isValid() -> {
+                    Icon(
+                        Icons.Default.Info,
+                        contentDescription = null,
+                        tint = colorScheme.deleteColor,
                     )
                 }
-            )
+            }
         }
     }
 }
@@ -184,5 +194,26 @@ fun ColoredStorageNoValidItemPreview() = DebugDarkContentPreview {
             name = "name",
             description = "description"
         ),
+    )
+}
+
+@OptIn(DebugOnly::class)
+@Preview
+@Composable
+fun ColoredStorageLargeItemPreview() = DebugDarkContentPreview {
+    DI.hardResetToPreview()
+    ColoredStorageItem(
+        storage = ColoredStorage(
+            path = "/some/file.ext",
+            name = LoremIpsum().getWords(10, 15),
+            description = LoremIpsum().getWords(10, 15),
+        ),
+        icon = {
+            Icon(
+                modifier = Modifier,
+                imageVector = Icons.Default.Check,
+                contentDescription = "Added"
+            )
+        }
     )
 }

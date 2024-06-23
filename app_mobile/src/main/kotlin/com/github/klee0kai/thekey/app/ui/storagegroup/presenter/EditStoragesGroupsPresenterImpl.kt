@@ -90,7 +90,7 @@ open class EditStoragesGroupsPresenterImpl(
 
         val selectedStorages = curState.selectedStorages
         val resetNotes = allStorages.firstOrNull()
-            ?.filter { note -> note.group.id == originalGroup?.id && note.path !in selectedStorages }
+            ?.filter { note -> note.group?.id == originalGroup?.id && note.path !in selectedStorages }
             ?.map { it.path }
             ?: emptyList()
         rep().setStoragesGroup(resetNotes, 0)

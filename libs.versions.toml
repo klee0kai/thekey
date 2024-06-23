@@ -35,6 +35,8 @@ hummus = "0.0.2"
 
 room = "2.6.1"
 
+lorem = "2.2"
+
 junit = "4.13.2"
 androidx-junit = "1.1.5"
 androidx-espresso = "3.5.1"
@@ -102,6 +104,8 @@ hummus = { group = "com.github.klee0kai.hummus", name = "android_kotlin_hummus",
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 room-kapt = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 
+
+lorem = { group = "com.thedeanda", name = "lorem", version.ref = "lorem" }
 
 
 # test

@@ -129,6 +129,8 @@ dependencies {
 
     implementation(libs.hummus)
 
+    implementation(libs.lorem)
+
     testImplementation(libs.junit)
     testImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.junit)

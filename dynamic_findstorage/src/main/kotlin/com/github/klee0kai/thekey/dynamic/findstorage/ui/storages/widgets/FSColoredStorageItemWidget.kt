@@ -42,8 +42,9 @@ fun FSColoredStorageItemWidget(
         modifier = modifier
             .onGlobalPositionState(position),
         storage = state.coloredStorage,
-        onClick = { router.backWithResult(state.coloredStorage.path) },
+        onClick = state.onClick,
         onLongClick = { showMenu = true },
+        icon = state.iconContent,
     )
 
     if (state.isPopupMenuAvailable) {
