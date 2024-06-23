@@ -18,6 +18,7 @@ class StoragesInteractor {
     val allColorGroups = flow<List<ColorGroup>> {
         rep().allColorGroups.collect(this)
     }
+
     val allStorages = flow<List<ColoredStorage>> {
         rep().allStorages
             .map { list -> list.map { storage -> storage.updateVersion() } }

@@ -61,7 +61,9 @@ class StoragesRepositoryImpl : StoragesRepository {
     }
 
     override fun findStorage(path: String) = scope.async {
-        storagesDao().get(path)?.toColoredStorage()
+        val storage = storagesDao().get(path) ?: return@async null
+        val colorGroup = colorGroupsDao()[storage.id]
+        storage.toColoredStorage().copy(colorGroup = colorGroup?.toColorGroup())
     }
 
     override fun setStorage(storage: ColoredStorage): Job = scope.launch {

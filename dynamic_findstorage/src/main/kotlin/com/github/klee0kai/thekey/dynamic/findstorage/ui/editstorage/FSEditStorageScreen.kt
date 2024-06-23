@@ -268,7 +268,14 @@ fun FSEditStorageScreen(
             interactionSource = groupInteractionSource,
             readOnly = true,
             singleLine = true,
-            value = state.colorGroupVariants.getOrNull(state.colorGroupSelectedIndex)?.name ?: "",
+            value = when {
+                state.colorGroupSelectedIndex < 0 -> stringResource(id = R.string.no_group)
+                else -> state.colorGroupVariants
+                    .getOrNull(state.colorGroupSelectedIndex)
+                    ?.name
+                    ?.takeIf { it.isNotBlank() }
+                    ?: stringResource(id = R.string.no_name)
+            },
             leadingIcon = {
                 GroupCircle(
                     modifier = Modifier

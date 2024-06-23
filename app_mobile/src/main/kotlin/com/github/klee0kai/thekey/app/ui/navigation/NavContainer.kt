@@ -111,10 +111,7 @@ fun SnackContainer() {
         SnackbarHost(
             hostState = snackbarHostState,
             modifier = Modifier
-                .windowInsetsPadding(WindowInsets.safeContent)
-                .padding(bottom = 92.dp)
-                .alpha(swipeAlpha)
-                .align(Alignment.BottomCenter)
+                .align(Alignment.BottomCenter),
         ) { data ->
             SwipeToDismissBox(
                 state = dismissSnackbarState,
@@ -123,7 +120,15 @@ fun SnackContainer() {
                     .fillMaxWidth(),
                 enableDismissFromStartToEnd = true,
                 enableDismissFromEndToStart = true,
-                content = { Snackbar(snackbarData = data) }
+                content = {
+                    Snackbar(
+                        modifier = Modifier
+                            .windowInsetsPadding(WindowInsets.safeContent)
+                            .padding(bottom = 92.dp)
+                            .alpha(swipeAlpha),
+                        snackbarData = data,
+                    )
+                }
             )
         }
     }

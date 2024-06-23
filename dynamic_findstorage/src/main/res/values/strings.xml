@@ -15,4 +15,6 @@
     <string name="storage_name">Storage name</string>
     <string name="storage_description">Storage description</string>
     <string name="group">Group</string>
+    <string name="no_group">No group</string>
+    <string name="no_name">No name</string>
 </resources>
