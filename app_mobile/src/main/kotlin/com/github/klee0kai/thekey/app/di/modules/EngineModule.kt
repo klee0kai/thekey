@@ -2,7 +2,7 @@ package com.github.klee0kai.thekey.app.di.modules
 
 import com.github.klee0kai.stone.annotations.module.Module
 import com.github.klee0kai.stone.annotations.module.Provide
-import com.github.klee0kai.thekey.app.engine.findstorage.EditStorageEngine
+import com.github.klee0kai.thekey.app.engine.editstorage.EditStorageEngine
 import com.github.klee0kai.thekey.app.engine.findstorage.FindStorageEngine
 import com.github.klee0kai.thekey.app.engine.storage.CryptStorage
 import com.github.klee0kai.thekey.app.engine.storage.CryptStorageSuspended

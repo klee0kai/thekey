@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.engine.findstorage
+package com.github.klee0kai.thekey.app.engine.editstorage
 
 import com.github.klee0kai.brooklyn.JniMirror
 import com.github.klee0kai.thekey.app.engine.NativeLibLoader
