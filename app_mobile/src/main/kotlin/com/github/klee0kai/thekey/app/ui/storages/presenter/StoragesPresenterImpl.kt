@@ -163,7 +163,7 @@ open class StoragesPresenterImpl : StoragesPresenter {
             val storageInfo = engine().storageInfo(path = newStorageFile.absolutePath)
             if (storageInfo == null) {
                 appRouter.snack(CoreR.string.storage_file_incorrect)
-                newStorageFile.deleteOnExit()
+                newStorageFile.delete()
             } else {
                 rep().setStorage(storageInfo.toColoredStorage())
                 selectedGroupId.value = null

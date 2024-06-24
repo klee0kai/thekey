@@ -52,12 +52,12 @@ fun StoragesButtonsWidget(
     val router by LocalRouter.currentRef
     val theme = LocalTheme.current
     val presenter by rememberOnScreenRef { DI.storagesPresenter() }
-    val isFindStoragesNoteInstalled by presenter!!.installAutoSearchStatus.collectAsState(key = Unit, initial = null)
+    val isFindStoragesFeatureInstalled by presenter!!.installAutoSearchStatus.collectAsState(key = Unit, initial = null)
 
     val imeIsVisibleAnimated by animateTargetCrossFaded(WindowInsets.isIme)
 
     val isShowInstallPluginPromo by animateTargetCrossFaded(
-        target = isFindStoragesNoteInstalled?.let {
+        target = isFindStoragesFeatureInstalled?.let {
             state.isExtStorageSelected && !it.isInstalled
         },
         skipStates = listOf(null),

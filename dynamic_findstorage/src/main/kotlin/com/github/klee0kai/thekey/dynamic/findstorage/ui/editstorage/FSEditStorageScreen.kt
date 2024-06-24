@@ -345,7 +345,7 @@ fun FSEditStorageScreen(
         titleContent = {
             when {
                 !state.isSkeleton && state.isEditMode -> Text(text = stringResource(R.string.edit_storage))
-                !state.isSkeleton && !state.isEditMode -> Text(text = stringResource(R.string.edit_storage))
+                !state.isSkeleton && !state.isEditMode -> Text(text = stringResource(R.string.create_storage))
             }
         },
         actions = {

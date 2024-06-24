@@ -42,7 +42,7 @@ open class UserShortPaths {
         return !path.startsWith(appPath)
     }
 
-    open fun isAppInnerExternal(path: String): Boolean {
+    open fun isAppInner(path: String): Boolean {
         return path.startsWith(appPath)
     }
 

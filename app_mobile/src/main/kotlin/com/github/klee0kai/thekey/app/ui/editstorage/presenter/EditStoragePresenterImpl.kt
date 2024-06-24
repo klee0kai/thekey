@@ -93,7 +93,7 @@ class EditStoragePresenterImpl(
     override fun save(router: AppRouter?) = scope.launch {
         val curState = state.value
         var storage = curState.storage(originStorage ?: ColoredStorage(version = settingsRep().newStorageVersion()))
-        if (storage.path.isBlank() || userShortPaths.isAppInnerExternal(storage.path)) {
+        if (storage.path.isBlank() || userShortPaths.isAppInner(storage.path)) {
             storage = storage.copy(
                 path = File(appFolder, curState.name)
                     .absolutePath
