@@ -20,7 +20,7 @@ import com.github.klee0kai.thekey.core.domain.model.feature.model.DynamicFeature
 
 interface PresentersDependencies {
 
-    fun loginPresenter(identifier: StorageIdentifier? = null): LoginPresenter
+    fun loginPresenter(identifier: StorageIdentifier = StorageIdentifier()): LoginPresenter
 
     fun navigationBoardPresenter(): NavigationBoardPresenter
 

@@ -62,8 +62,6 @@ class EditStoragePresenterImpl(
             it.updateWith(
                 storage = originStorage,
                 colorGroups = colorGroups
-            ).copy(
-                isEditMode = false,
             )
         }
     }
