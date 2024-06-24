@@ -31,6 +31,7 @@ import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkContentPreview
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
+import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 
 @Composable
@@ -40,7 +41,7 @@ fun StoragesListContent(
     header: @Composable LazyItemScope.() -> Unit = { },
     footer: @Composable LazyItemScope.() -> Unit = {},
 ) {
-    val router = LocalRouter.current
+    val router by LocalRouter.currentRef
     val resolver = LocalScreenResolver.current
     val theme = LocalTheme.current
     val presenter by rememberOnScreenRef { DI.storagesPresenter() }
@@ -91,7 +92,7 @@ fun StoragesListContent(
                     widgetState = StorageItemWidgetState(
                         coloredStorage = storage,
                         isPopupMenuAvailable = isPopupMenuAvailable,
-                        onClick = { router.backWithResult(storage.path) }
+                        onClick = { router?.backWithResult(storage.path) }
                     )
                 )
             }

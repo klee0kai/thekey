@@ -66,6 +66,7 @@ import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
 import com.github.klee0kai.thekey.core.utils.views.animateSkeletonModifier
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
+import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.horizontal
 import com.github.klee0kai.thekey.core.utils.views.isIme
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
@@ -87,7 +88,7 @@ import org.jetbrains.annotations.VisibleForTesting
 fun FSEditStorageScreen(
     path: String = "",
 ) {
-    val router = LocalRouter.current
+    val router by LocalRouter.currentRef
     val view = LocalView.current
     val theme = LocalTheme.current
     val presenter by rememberOnScreenRef { FSDI.fsEditStoragePresenter(StorageIdentifier(path)).apply { init() } }
@@ -334,7 +335,7 @@ fun FSEditStorageScreen(
     AppBarStates(
         isVisible = scrollState.value == 0,
         navigationIcon = {
-            IconButton(onClick = { router.back() }) {
+            IconButton(onClick = { router?.back() }) {
                 Icon(
                     Icons.AutoMirrored.Default.ArrowBack,
                     contentDescription = null,

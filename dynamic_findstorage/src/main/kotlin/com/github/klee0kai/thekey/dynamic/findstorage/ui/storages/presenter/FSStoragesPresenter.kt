@@ -16,7 +16,7 @@ interface FSStoragesPresenter : StoragesPresenter {
 
     val isPermissionGranted: Flow<Boolean> get() = emptyFlow()
 
-    fun requestPermissions(appRouter: AppRouter): Job = emptyJob()
+    fun requestPermissions(appRouter: AppRouter?): Job = emptyJob()
 
     fun searchStorages(): Job = emptyJob()
 

@@ -33,9 +33,9 @@ class FSStoragesPresenterImpl(
     }.filterNotNull()
         .touchable()
 
-    override fun requestPermissions(appRouter: AppRouter) = scope.launch {
+    override fun requestPermissions(appRouter: AppRouter?) = scope.launch {
         with(perm) {
-            appRouter.askPermissionsIfNeed(
+            appRouter?.askPermissionsIfNeed(
                 perms = perm.writeStoragePermissions(),
                 purpose = TextProvider(R.string.find_external_storage_purpose),
                 skipDialogs = true,

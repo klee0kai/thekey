@@ -34,6 +34,7 @@ import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesListWidgetSta
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
+import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.core.utils.views.visibleOnTargetAlpha
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,7 +44,7 @@ fun StoragesListWidget(
     modifier: Modifier = Modifier,
     state: StoragesListWidgetState = StoragesListWidgetState(),
 ) {
-    val router = LocalRouter.current
+    val router = LocalRouter.currentRef
     val theme = LocalTheme.current
     val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
     val presenter by rememberOnScreenRef { DI.storagesPresenter() }

@@ -62,6 +62,7 @@ import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.common.Dummy
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
+import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.horizontal
 import com.github.klee0kai.thekey.core.utils.views.isIme
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
@@ -76,7 +77,7 @@ fun EditStorageGroupsScreen(
     dest: EditStorageGroupDestination = EditStorageGroupDestination(),
 ) {
     val presenter by rememberOnScreenRef { DI.editStorageGroupPresenter(dest.identifier()).apply { init() } }
-    val router = LocalRouter.current
+    val router by LocalRouter.currentRef
     val groupNameFieldFocusRequester = remember { FocusRequester() }
     val state by presenter!!.state.collectAsState(key = Unit, initial = EditStorageGroupsState())
 
@@ -140,7 +141,7 @@ fun EditStorageGroupsScreen(
     AppBarStates(
         modifier = Modifier,
         navigationIcon = {
-            IconButton(onClick = remember { { router.back() } }) {
+            IconButton(onClick = remember { { router?.back() } }) {
                 Icon(Icons.AutoMirrored.Default.ArrowBack, contentDescription = null)
             }
         },

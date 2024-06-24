@@ -15,8 +15,8 @@ interface FSEditStoragePresenter {
 
     fun input(block: FSEditStorageState.() -> FSEditStorageState): Job = emptyJob()
 
-    fun remove(router: AppRouter): Job = emptyJob()
+    fun remove(router: AppRouter?): Job = emptyJob()
 
-    fun save(router: AppRouter): Job = emptyJob()
+    fun save(router: AppRouter?): Job = emptyJob()
 
 }

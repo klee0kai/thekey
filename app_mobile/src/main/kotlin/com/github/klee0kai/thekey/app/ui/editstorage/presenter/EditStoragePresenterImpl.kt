@@ -83,14 +83,14 @@ class EditStoragePresenterImpl(
     }
 
 
-    override fun remove(router: AppRouter) = scope.launch {
+    override fun remove(router: AppRouter?) = scope.launch {
         val path = originStorage?.path ?: return@launch
         interactor().deleteStorage(path).await()
-        router.snack(R.string.storage_deleted)
+        router?.snack(R.string.storage_deleted)
         backFromScreen(router)
     }
 
-    override fun save(router: AppRouter) = scope.launch {
+    override fun save(router: AppRouter?) = scope.launch {
         val curState = state.value
         var storage = curState.storage(originStorage ?: ColoredStorage(version = settingsRep().newStorageVersion()))
         if (storage.path.isBlank() || userShortPaths.isAppInnerExternal(storage.path)) {
@@ -121,20 +121,20 @@ class EditStoragePresenterImpl(
         val error = result.exceptionOrNull()
         when {
             error == null && result.isSuccess -> {
-                router.snack(messageRes)
+                router?.snack(messageRes)
                 backFromScreen(router)
             }
 
-            error?.cause(FSNoFileName::class) != null -> router.snack(R.string.fill_the_file_name)
-            error?.cause(FSDuplicateError::class) != null -> router.snack(R.string.duplicate)
-            error?.cause(FSNoAccessError::class) != null -> router.snack(R.string.no_access)
-            else -> router.snack(R.string.unknown_error)
+            error?.cause(FSNoFileName::class) != null -> router?.snack(R.string.fill_the_file_name)
+            error?.cause(FSDuplicateError::class) != null -> router?.snack(R.string.duplicate)
+            error?.cause(FSNoAccessError::class) != null -> router?.snack(R.string.no_access)
+            else -> router?.snack(R.string.unknown_error)
         }
     }
 
-    private fun backFromScreen(router: AppRouter) {
+    private fun backFromScreen(router: AppRouter?) {
         clean()
-        router.back()
+        router?.back()
     }
 
     private fun clean() = input { copy(isSkeleton = true) }

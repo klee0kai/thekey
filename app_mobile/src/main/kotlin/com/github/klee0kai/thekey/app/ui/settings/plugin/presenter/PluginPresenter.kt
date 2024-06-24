@@ -11,8 +11,8 @@ interface PluginPresenter {
 
     val status: Flow<InstallStatus> get() = emptyFlow()
 
-    fun install(router: AppRouter): Job = emptyJob()
+    fun install(router: AppRouter?): Job = emptyJob()
 
-    fun uninstall(router: AppRouter): Job = emptyJob()
+    fun uninstall(router: AppRouter?): Job = emptyJob()
 
 }
