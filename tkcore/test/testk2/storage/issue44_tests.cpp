@@ -22,6 +22,7 @@ using namespace key_salt;
 
 // https://github.com/klee0kai/thekey/issues/44
 TEST(Storage2_Issue44, CreateStorage) {
+    unlink("ts_issue44.ckey");
     auto error = thekey_v2::createStorage({
                                                   .file = "ts_issue44.ckey",
                                                   .name = "test_storage_v2_name",
