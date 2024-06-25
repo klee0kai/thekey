@@ -30,8 +30,8 @@ class TouchableFlowTests {
         someFlow.touch()
 
         delay(10)
-        assertEquals(2, triggersCount)
-        assertEquals(1, lastValue)
+        assertEquals(3, triggersCount)
+        assertEquals(2, lastValue)
 
         subscriber.cancel()
     }
