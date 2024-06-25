@@ -66,7 +66,7 @@ shared_ptr<StorageInfo> thekey_v2::storageFullInfo(const std::string &file) {
 }
 
 int thekey_v2::createStorage(const thekey::Storage &storage) {
-    int fd = open(storage.file.c_str(), O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
+    int fd = open(storage.file.c_str(), O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
     if (fd < 0) {
         keyError = KEY_OPEN_FILE_ERROR;
         return KEY_OPEN_FILE_ERROR;
@@ -91,7 +91,7 @@ int thekey_v2::createStorage(const thekey::Storage &storage) {
 }
 
 std::shared_ptr<KeyStorageV2> thekey_v2::storage(const std::string &path, const std::string &passw) {
-    int fd = open(path.c_str(), O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
+    int fd = open(path.c_str(), O_RDWR);
     if (fd == -1) {
         keyError = KEY_OPEN_FILE_ERROR;
         return {};
@@ -297,9 +297,9 @@ int KeyStorageV2::save(const int &fd) {
         keyError = KEY_OPEN_FILE_ERROR;
         return KEY_OPEN_FILE_ERROR;
     }
-    auto data = snapshot();
     lseek(fd, 0, SEEK_SET);
-    ftruncate(fd, 0);
+
+    auto data = snapshot();
     auto writeLen = write(fd, &*fheader, sizeof(StorageHeaderFlat));
     FileSectionFlat fileSection{};
 
