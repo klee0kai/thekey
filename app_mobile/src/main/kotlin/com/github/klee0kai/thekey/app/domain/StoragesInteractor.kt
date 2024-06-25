@@ -13,7 +13,7 @@ class StoragesInteractor {
 
     private val scope = DI.defaultThreadScope()
     private val rep = DI.storagesRepositoryLazy()
-    private val engine = DI.findStorageEngineLazy()
+    private val engine = DI.findStorageEngineSaveLazy()
     private val settings = DI.settingsRepositoryLazy()
 
     val allColorGroups = flow<List<ColorGroup>> {

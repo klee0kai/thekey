@@ -15,7 +15,7 @@ fun DeeplinkRoute.openStorageDeeplink() {
         action(Intent.ACTION_VIEW) {
             handle { intent ->
                 val url = intent.data ?: return@handle false
-                val engine = DI.findStorageEngineLazy()
+                val engine = DI.findStorageEngineSaveLazy()
                 val fd = DI.ctx()
                     .contentResolver
                     .openFileDescriptor(url, "rw", null)

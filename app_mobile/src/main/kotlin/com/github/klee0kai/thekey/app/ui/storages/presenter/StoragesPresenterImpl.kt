@@ -46,7 +46,7 @@ open class StoragesPresenterImpl : StoragesPresenter {
     private val settings = DI.settingsRepositoryLazy()
     private val scope = DI.defaultThreadScope()
     private val shortPath = DI.userShortPaths()
-    private val engine = DI.findStorageEngineLazy()
+    private val engine = DI.findStorageEngineSaveLazy()
     private val dateFormat by lazy { SimpleDateFormat.getDateInstance() }
     private val billing = DI.billingInteractor()
 

@@ -12,7 +12,7 @@ class EditStorageInteractor {
 
     private val scope = DI.defaultThreadScope()
     private val rep = DI.storagesRepositoryLazy()
-    private val engine = DI.editStorageEngineLazy()
+    private val engine = DI.editStorageEngineSafeLazy()
 
     fun createStorage(storage: ColoredStorage) = scope.asyncResult {
         val folder = File(storage.path).parentFile

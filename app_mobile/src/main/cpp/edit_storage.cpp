@@ -14,7 +14,7 @@ using namespace thekey;
 using namespace thekey_v2;
 
 typedef EngineModelStorage JvmStorage;
-typedef EngineFindstorageEditStorageEngine JvmFindStorageListener;
+typedef EngineEditstorageEditStorageEngine JvmFindStorageListener;
 
 std::shared_ptr<JvmStorage> JvmFindStorageListener::findStorageInfo(const std::string &path) {
     auto storage = shared_ptr<JvmStorage>{
@@ -38,7 +38,7 @@ int JvmFindStorageListener::editStorage(const JvmStorage &storage) {
     return JNI_FALSE;
 }
 
-int EngineFindstorageEditStorageEngine::move(const std::string &from, const std::string &to) {
+int JvmFindStorageListener::move(const std::string &from, const std::string &to) {
     rename(from.c_str(), to.c_str());
     return 0;
 }

@@ -1,43 +1,22 @@
 package com.github.klee0kai.thekey.app.engine.findstorage
 
 import com.github.klee0kai.brooklyn.JniMirror
-import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.engine.NativeLibLoader
 import com.github.klee0kai.thekey.app.engine.model.Storage
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.launch
 
 @JniMirror
-open class FindStorageEngine {
+class FindStorageEngine {
 
     init {
         NativeLibLoader.loadIfNeed()
     }
 
-    open external fun findStorages(folder: String, listener: FindStorageListener)
+    external fun findStorages(folder: String, listener: FindStorageListener)
 
-    open external fun storageVersion(path: String): Int
+    external fun storageVersion(path: String): Int
 
-    open external fun storageInfo(path: String): Storage?
+    external fun storageInfo(path: String): Storage?
 
-    open external fun storageInfoFromDescriptor(fd: Int): Storage?
+    external fun storageInfoFromDescriptor(fd: Int): Storage?
 
-}
-
-fun FindStorageEngine.findStoragesFlow(folder: String): Flow<Storage> = callbackFlow {
-    launch(DI.ioDispatcher()) {
-        findStorages(folder, object : FindStorageListener() {
-            override fun onStorageFound(storage: Storage) {
-                launch { send(storage) }
-            }
-        })
-
-        delay(10)
-        channel.close()
-    }
-
-    awaitClose()
 }

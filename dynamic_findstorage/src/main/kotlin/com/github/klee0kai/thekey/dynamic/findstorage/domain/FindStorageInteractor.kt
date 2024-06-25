@@ -5,18 +5,18 @@ import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.engine.findstorage.findStoragesFlow
 import com.github.klee0kai.thekey.core.di.wrap.AsyncCoroutineProvide
 import com.github.klee0kai.thekey.core.utils.common.launchIfNotStarted
+import com.github.klee0kai.thekey.core.utils.coroutine.minDuration
 import com.github.klee0kai.thekey.dynamic.findstorage.di.FSDI
 import com.github.klee0kai.thekey.dynamic.findstorage.perm.writeStoragePermissions
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
+import kotlin.time.Duration.Companion.seconds
 
 class FindStorageInteractor {
 
     private val scope = FSDI.defaultThreadScope()
     private val perm = FSDI.permissionsHelper()
-    private val engine = FSDI.findStorageEngineLazy()
+    private val engine = FSDI.findStorageEngineSaveLazy()
     private val rep = FSDI.storagesRepositoryLazy()
     private val settings = FSDI.fsSettingsRepositoryLazy()
     val searchState = MutableStateFlow(false)
@@ -27,15 +27,17 @@ class FindStorageInteractor {
         if (!canToScan || !needToScan()) return@launchIfNotStarted
         searchState.value = true
 
-        DI.userShortPaths().rootAbsolutePaths
-            .map { root ->
-                engine().findStoragesFlow(root)
-                    .collect { storage ->
-                        if (rep().findStorage(storage.path).await() == null) {
-                            rep().setStorage(storage.toColoredStorage())
+        minDuration(3.seconds) {
+            DI.userShortPaths().rootAbsolutePaths
+                .map { root ->
+                    engine().findStoragesFlow(root)
+                        .collect { storage ->
+                            if (rep().findStorage(storage.path).await() == null) {
+                                rep().setStorage(storage.toColoredStorage())
+                            }
                         }
-                    }
-            }
+                }
+        }
 
         searchState.value = false
     }
