@@ -48,11 +48,18 @@ JvmStorageInfo JvmStorage2::info() {
 }
 
 void JvmStorage2::login(const std::string &passw) {
-    storages.erase(getStoragePath());
-    auto storageInfo = storageFullInfo(getStoragePath());
-    if (!storageInfo) createStorage(Storage{.file = getStoragePath()});
-
-    auto storage = thekey_v2::storage(getStoragePath(), passw);
+    auto fileDescriptor = getFileDescriptor();
+    auto path = getStoragePath();
+    storages.erase(path);
+    shared_ptr<KeyStorageV2> storage = {};
+    if (fileDescriptor) {
+        storage = thekey_v2::storage(*fileDescriptor, path, passw);
+        if (storage) storage->setSingleDescriptorMode(1);
+    } else {
+        auto storageInfo = storageFullInfo(getStoragePath());
+        if (!storageInfo) createStorage(Storage{.file = getStoragePath()});
+        storage = thekey_v2::storage(getStoragePath(), passw);
+    }
     if (storage) {
         storage->readAll();
         storages.insert({getStoragePath(), storage});

@@ -3,9 +3,11 @@ package com.github.klee0kai.thekey.core.utils.views
 import android.annotation.SuppressLint
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocal
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.NonRestartableComposable
 import androidx.compose.runtime.State
@@ -18,7 +20,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.core.di.CoreDI
 import com.github.klee0kai.thekey.core.utils.common.ObjHolder
@@ -157,3 +161,14 @@ fun Modifier.animateContentSizeProduction() = run {
 
 fun Modifier.thenIf(condition: Boolean, block: Modifier.() -> Modifier) =
     if (condition) block() else this
+
+fun Modifier.tappable(onTap: ((Offset) -> Unit)? = null) = this.pointerInput(Unit) { detectTapGestures(onTap = onTap) }
+
+@Composable
+fun Modifier.animatedBackground(condition: Boolean, background: Color): Modifier {
+    val alpha by animateAlphaAsState(boolean = condition)
+    return this.background(background.copy(alpha = background.alpha * alpha))
+}
+
+val <T> CompositionLocal<T>.currentRef
+    @Composable get() = rememberOnScreenRef { current }

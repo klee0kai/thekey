@@ -78,9 +78,14 @@ class ComposeRouterImpl(context: RouterContext) : ComposeRouter, RouterContext b
         return popResult
     }
 
-    override fun back() {
+    override fun back(exitFromApp: Boolean) {
         scope.launch {
-            backDispatcher?.onBackPressed()
+            val popResult = navFullController.pop()
+
+            if (!popResult && exitFromApp) {
+                backDispatcher?.onBackPressed()
+                return@launch
+            }
         }
     }
 

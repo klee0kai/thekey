@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextField
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.views.transparentColors
 import org.jetbrains.annotations.VisibleForTesting
 
@@ -58,7 +59,7 @@ fun SearchField(
 @VisibleForTesting
 @Preview
 @Composable
-fun SearchFieldEmptyPreview() = AppTheme {
+fun SearchFieldEmptyPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     AppBarStates(
         navigationIcon = {
             IconButton(onClick = { }) {
@@ -79,7 +80,7 @@ fun SearchFieldEmptyPreview() = AppTheme {
 @VisibleForTesting
 @Preview
 @Composable
-fun SearchFieldTextPreview() = AppTheme {
+fun SearchFieldTextPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     AppBarStates(
         navigationIcon = {
             IconButton(onClick = { }) {

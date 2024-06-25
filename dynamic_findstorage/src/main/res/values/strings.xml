@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="grant_rights">Grant rights</string>
+    <string name="grant_rights_hint">Grant permissions to the storage to search for tkey files</string>
+    <string name="find_external_storage_purpose">To Find external master storages need:</string>
+    <string name="import_storage">Import Storage</string>
+    <string name="grant_permissions">Grant permissions</string>
+    <string name="storages">Storages</string>
+    <string name="strorage_searching">Storage searching…</string>
+    <string name="storage_path">Storage path</string>
+    <string name="save">Save</string>
+    <string name="edit_storage">Edit storage</string>
+    <string name="create_storage">Create Storage</string>
+    <string name="storage_name">Storage name</string>
+    <string name="storage_description">Storage description</string>
+    <string name="group">Group</string>
+    <string name="no_group">No group</string>
+    <string name="no_name">No name</string>
+</resources>

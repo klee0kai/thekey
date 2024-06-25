@@ -25,6 +25,7 @@ import com.github.klee0kai.thekey.app.perm.PermissionsHelperDummy
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.ui.navigation.model.TextProvider
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
@@ -93,7 +94,12 @@ fun ScanQRCodeScreen() {
                     colors = LocalColorScheme.current.grayTextButtonColors,
                     onClick = {
                         scope.launch {
-                            permissionHelper.askPermissionsIfNeed(permissionHelper.cameraPermissions(), TextProvider("qrCode"))
+                            with(permissionHelper) {
+                                router.askPermissionsIfNeed(
+                                    perms = permissionHelper.cameraPermissions(),
+                                    purpose = TextProvider("qrCode")
+                                )
+                            }
                             permGranded = permissionHelper.checkPermissions(permissionHelper.cameraPermissions())
                         }
                     }
@@ -129,7 +135,7 @@ fun ScanQRCodeScreen() {
 @OptIn(DebugOnly::class)
 @Preview
 @Composable
-fun ScanQRCodeScreenNoPermissionPreview() = AppTheme {
+fun ScanQRCodeScreenNoPermissionPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     DI.hardResetToPreview()
     DI.initAndroidHelpersModule(object : AndroidHelpersModule {
         override fun permissionsHelper() = PermissionsHelperDummy(false)
@@ -141,7 +147,7 @@ fun ScanQRCodeScreenNoPermissionPreview() = AppTheme {
 @OptIn(DebugOnly::class)
 @Preview
 @Composable
-fun ScanQRCodeScreenPreview() = AppTheme {
+fun ScanQRCodeScreenPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     DI.hardResetToPreview()
     DI.initAndroidHelpersModule(object : AndroidHelpersModule {
         override fun permissionsHelper() = PermissionsHelperDummy(true)

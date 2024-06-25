@@ -15,11 +15,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.core.R
-import com.github.klee0kai.thekey.core.domain.ColorGroup
+import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import com.github.klee0kai.thekey.core.ui.devkit.components.buttons.GroupCircle
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.common.Dummy
 import org.jetbrains.annotations.VisibleForTesting
 
@@ -65,7 +66,7 @@ fun ColumnScope.NoteDropDownMenuContent(
 @VisibleForTesting
 @Preview
 @Composable
-fun NoteDropDownMenuWithGroupsPreview() = AppTheme {
+fun NoteDropDownMenuWithGroupsPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     Column {
         NoteDropDownMenuContent(
             selectedGroupId = 1L,
@@ -86,7 +87,7 @@ fun NoteDropDownMenuWithGroupsPreview() = AppTheme {
 @VisibleForTesting
 @Preview
 @Composable
-fun NoteDropDownMenuNoPreview() = AppTheme {
+fun NoteDropDownMenuNoPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     Column {
         NoteDropDownMenuContent()
     }

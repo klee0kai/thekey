@@ -34,6 +34,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.core.ui.devkit.components.settings.Preference
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.core.utils.views.truncate
@@ -91,7 +92,7 @@ fun PluginsScreen() {
 @Preview(device = Devices.PHONE)
 @Composable
 fun PluginsScreenPreview() = EdgeToEdgeTemplate {
-    AppTheme {
+    AppTheme(theme = DefaultThemes.darkTheme) {
         DI.initPresenterModule(object : PresentersModule {
             override fun pluginsPresenter() = object : PluginsPresenter {
                 override val features = MutableStateFlow(

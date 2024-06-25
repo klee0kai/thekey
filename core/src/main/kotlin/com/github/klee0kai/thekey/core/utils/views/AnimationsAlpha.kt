@@ -3,10 +3,12 @@
 package com.github.klee0kai.thekey.core.utils.views
 
 import androidx.compose.animation.core.AnimationConstants.DefaultDurationMillis
+import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animate
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
@@ -50,9 +52,11 @@ fun <T> TargetAlpha<T>.visibleOnTargetAlpha(vararg targetsToVisible: T): Float {
 @Composable
 inline fun animateAlphaAsState(
     boolean: Boolean,
+    animationSpec: AnimationSpec<Float> = spring<Float>(),
     label: String = "",
 ) = animateFloatAsState(
     targetValue = if (boolean) 1f else 0f,
+    animationSpec = animationSpec,
     label = label
 )
 
@@ -60,16 +64,17 @@ inline fun animateAlphaAsState(
 inline fun <T> Flow<T>.collectAsStateCrossFaded(
     key: Any?,
     initial: T,
-    context: CoroutineContext = EmptyCoroutineContext
+    skipStates: List<T> = emptyList(),
+    context: CoroutineContext = EmptyCoroutineContext,
 ): State<TargetAlpha<T>> {
     val target by collectAsState(key = key, initial = initial, context = context)
-    return animateTargetCrossFaded(target)
+    return animateTargetCrossFaded(target, skipStates = skipStates)
 }
 
 @Composable
-inline fun <T> rememberTargetCrossFaded(noinline calculation: () -> T): State<TargetAlpha<T>> {
+inline fun <T> rememberTargetCrossFaded(skipStates: List<T> = emptyList(), noinline calculation: () -> T): State<TargetAlpha<T>> {
     val target = rememberDerivedStateOf(calculation)
-    return animateTargetCrossFaded(target = target.value)
+    return animateTargetCrossFaded(target = target.value, skipStates = skipStates)
 }
 
 @Composable
@@ -97,12 +102,21 @@ fun <T> SwipeProgress<T>.crossFadeAlpha(): TargetAlpha<T> = when {
 }
 
 @Composable
-inline fun <T> animateTargetCrossFaded(target: T, progress: Float = 1f): State<TargetAlpha<T>> {
+inline fun <T> animateTargetCrossFaded(
+    target: T,
+    skipStates: List<T> = emptyList(),
+): State<TargetAlpha<T>> {
     val targetAlphaState = remember { mutableStateOf(TargetAlpha(target, target, 1f)) }
     var targetAlpha by targetAlphaState
     var velocity by remember { mutableFloatStateOf(0f) }
 
     LaunchedEffect(key1 = target) {
+        if (targetAlpha.current in skipStates) {
+            targetAlpha = TargetAlpha(target, target, 1f)
+            velocity = 0f
+            return@LaunchedEffect
+        }
+
         targetAlpha = targetAlpha.copy(next = target)
         if (targetAlpha.current != target) {
             animate(

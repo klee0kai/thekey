@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 import org.jetbrains.annotations.VisibleForTesting
@@ -115,7 +116,7 @@ fun SecondaryTabs(
 @VisibleForTesting
 @Preview
 @Composable
-fun SecondaryTabsPreview() = AppTheme {
+fun SecondaryTabsPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     SecondaryTabs(
         modifier = Modifier
             .padding(top = AppBarConst.appBarSize),

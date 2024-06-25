@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.views.horizontal
 import org.jetbrains.annotations.VisibleForTesting
 
@@ -97,7 +98,7 @@ fun PreferenceDetailed(
 @Preview
 @VisibleForTesting
 @Composable
-fun PreferenceDetailedPreview() = AppTheme {
+fun PreferenceDetailedPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     PreferenceDetailed(
         text = "Some Preference",
         hint = "preference hint"

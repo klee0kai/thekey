@@ -21,17 +21,18 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
-import com.github.klee0kai.thekey.app.domain.model.HistPassw
 import com.github.klee0kai.thekey.app.ui.genhist.components.HistPasswItem
 import com.github.klee0kai.thekey.app.ui.genhist.presenter.GenHistPresenter
 import com.github.klee0kai.thekey.app.ui.navigation.model.GenHistDestination
 import com.github.klee0kai.thekey.app.ui.navigation.storageIdentifier
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
+import com.github.klee0kai.thekey.core.domain.model.HistPassw
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.common.Dummy
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
@@ -80,7 +81,7 @@ fun GenHistScreen(
 @Preview(device = Devices.PHONE)
 @Composable
 fun GenHistScreenPreview() = EdgeToEdgeTemplate {
-    AppTheme {
+    AppTheme(theme = DefaultThemes.darkTheme) {
         DI.initPresenterModule(object : PresentersModule {
             override fun genHistPresenter(storageIdentifier: StorageIdentifier) = object : GenHistPresenter {
                 override val histFlow = MutableStateFlow(

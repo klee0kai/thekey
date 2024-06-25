@@ -22,6 +22,7 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteGroupDestinati
 import com.github.klee0kai.thekey.app.ui.notegroup.presenter.EditNoteGroupsPresenterDummy
 import com.github.klee0kai.thekey.core.di.identifiers.NoteGroupIdentifier
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.common.Dummy
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
@@ -68,7 +69,7 @@ fun NoteSelectToGroupComponent(
 @VisibleForTesting
 @Preview
 @Composable
-fun NoteSelectToGroupComponentPreview() = AppTheme {
+fun NoteSelectToGroupComponentPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     DI.initPresenterModule(object : PresentersModule {
         override fun editNoteGroupPresenter(id: NoteGroupIdentifier) = EditNoteGroupsPresenterDummy()
     })

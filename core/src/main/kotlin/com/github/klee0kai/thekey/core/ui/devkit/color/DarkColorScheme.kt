@@ -39,6 +39,11 @@ fun darkCommonColorScheme() = CommonColorScheme(
         headerContainerColor = Color(0xFF3A3D52),
         bodyContentColor = Color(0xFF1C1D27),
     ),
+    popupMenu = PopupMenuColors(
+        surfaceColor =  Color(0xFF3A3D52),
+        contentColor = Color(0xffB7B7B7),
+        shadowColor = Color.Black.copy(alpha = 0.2f)
+    ),
     grayTextButtonColors = ButtonColors(
         contentColor = Color(0xffB7B7B7),
         containerColor = Color.Transparent,

@@ -69,7 +69,10 @@ import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.SecondaryTabs
 import com.github.klee0kai.thekey.core.ui.devkit.components.dropdownfields.ColorGroupDropDownField
 import com.github.klee0kai.thekey.core.ui.devkit.components.dropdownfields.DropDownField
 import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextField
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.common.Dummy
+import com.github.klee0kai.thekey.core.utils.possitions.pxToDp
+import com.github.klee0kai.thekey.core.utils.possitions.toPx
 import com.github.klee0kai.thekey.core.utils.views.TargetAlpha
 import com.github.klee0kai.thekey.core.utils.views.animateSkeletonModifier
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
@@ -77,12 +80,10 @@ import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.crossFadeAlpha
 import com.github.klee0kai.thekey.core.utils.views.isIme
 import com.github.klee0kai.thekey.core.utils.views.minInsets
-import com.github.klee0kai.thekey.core.utils.views.pxToDp
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.core.utils.views.rememberTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.thenIf
-import com.github.klee0kai.thekey.core.utils.views.toPx
 import com.github.klee0kai.thekey.core.utils.views.topDp
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -505,7 +506,7 @@ fun EditNoteScreen(
 @Preview(device = Devices.PHONE)
 @Composable
 fun CreateAccountScreenP6SkeletonPreview() = EdgeToEdgeTemplate {
-    AppTheme {
+    AppTheme(theme = DefaultThemes.darkTheme) {
         DI.initPresenterModule(object : PresentersModule {
             override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter = object : EditNotePresenter {
                 override val state = MutableStateFlow(
@@ -522,7 +523,7 @@ fun CreateAccountScreenP6SkeletonPreview() = EdgeToEdgeTemplate {
 @Preview(device = Devices.PHONE)
 @Composable
 fun CreateOTPScreenP6SkeletonPreview() = EdgeToEdgeTemplate {
-    AppTheme {
+    AppTheme(theme = DefaultThemes.darkTheme) {
         DI.initPresenterModule(object : PresentersModule {
             override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter = object : EditNotePresenter {
                 override val state = MutableStateFlow(
@@ -539,7 +540,7 @@ fun CreateOTPScreenP6SkeletonPreview() = EdgeToEdgeTemplate {
 @Preview(device = Devices.PHONE)
 @Composable
 fun CreateAccountScreenP6Preview() = EdgeToEdgeTemplate {
-    AppTheme {
+    AppTheme(theme = DefaultThemes.darkTheme) {
         DI.initPresenterModule(object : PresentersModule {
             override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter = object : EditNotePresenter {
                 override val state = MutableStateFlow(
@@ -559,7 +560,7 @@ fun CreateAccountScreenP6Preview() = EdgeToEdgeTemplate {
 @Preview(device = Devices.PHONE)
 @Composable
 fun EditAccountScreenP6Preview() = EdgeToEdgeTemplate {
-    AppTheme {
+    AppTheme(theme = DefaultThemes.darkTheme) {
         DI.initPresenterModule(object : PresentersModule {
             override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter = object : EditNotePresenter {
                 override val state = MutableStateFlow(
@@ -581,7 +582,7 @@ fun EditAccountScreenP6Preview() = EdgeToEdgeTemplate {
 @Preview(device = Devices.PHONE)
 @Composable
 fun EditAccountScreenSaveP6Preview() = EdgeToEdgeTemplate {
-    AppTheme {
+    AppTheme(theme = DefaultThemes.darkTheme) {
         DI.initPresenterModule(object : PresentersModule {
             override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter = object : EditNotePresenter {
                 override val state = MutableStateFlow(
@@ -604,7 +605,7 @@ fun EditAccountScreenSaveP6Preview() = EdgeToEdgeTemplate {
 @Preview(device = Devices.PHONE)
 @Composable
 fun EditOTPScreenP6SkeletonPreview() = EdgeToEdgeTemplate {
-    AppTheme {
+    AppTheme(theme = DefaultThemes.darkTheme) {
         DI.initPresenterModule(object : PresentersModule {
             override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter = object : EditNotePresenter {
                 override val state = MutableStateFlow(
@@ -622,7 +623,7 @@ fun EditOTPScreenP6SkeletonPreview() = EdgeToEdgeTemplate {
 @Preview(device = Devices.PHONE)
 @Composable
 fun EditOTPScreenP6Preview() = EdgeToEdgeTemplate {
-    AppTheme {
+    AppTheme(theme = DefaultThemes.darkTheme) {
         DI.initPresenterModule(object : PresentersModule {
             override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter = object : EditNotePresenter {
                 override val state = MutableStateFlow(

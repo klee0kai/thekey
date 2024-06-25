@@ -2,7 +2,6 @@ package com.github.klee0kai.thekey.core.di.wrap
 
 import com.github.klee0kai.stone.annotations.wrappers.WrappersCreator
 import com.github.klee0kai.stone.wrappers.creators.CircleWrapper
-import kotlinx.coroutines.runBlocking
 import javax.inject.Provider
 
 @WrappersCreator(
@@ -24,7 +23,7 @@ class AppWrappersStone : CircleWrapper {
 
     override fun <Wr : Any?, T : Any?> unwrap(wrapperCl: Class<Wr>?, objectType: Class<T>?, wrapper: Wr): T? {
         return when {
-            wrapperCl == AsyncCoroutineProvide::class.java -> runBlocking { (wrapper as AsyncCoroutineProvide<T>).get() }
+            wrapperCl == AsyncCoroutineProvide::class.java -> (wrapper as AsyncCoroutineProvide<T>).syncGet()
             else -> null
         }
     }

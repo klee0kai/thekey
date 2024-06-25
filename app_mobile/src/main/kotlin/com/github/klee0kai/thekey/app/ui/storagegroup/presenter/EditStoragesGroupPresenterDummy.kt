@@ -4,6 +4,7 @@ package com.github.klee0kai.thekey.app.ui.storagegroup.presenter
 
 import com.github.klee0kai.thekey.app.ui.storagegroup.model.EditStorageGroupsState
 import com.github.klee0kai.thekey.app.ui.storagegroup.model.SelectedStorage
+import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
@@ -14,6 +15,8 @@ import kotlinx.coroutines.launch
 open class EditStoragesGroupPresenterDummy(
     val storagesCount: Int = 3,
 ) : EditStoragesGroupPresenter {
+
+    override val variants = MutableStateFlow(KeyColor.selectableColorGroups)
 
     override val state = MutableStateFlow(
         EditStorageGroupsState(

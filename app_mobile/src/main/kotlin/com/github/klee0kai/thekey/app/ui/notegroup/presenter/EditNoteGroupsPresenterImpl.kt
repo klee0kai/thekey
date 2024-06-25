@@ -7,7 +7,7 @@ import com.github.klee0kai.thekey.app.ui.notegroup.model.SelectedNote
 import com.github.klee0kai.thekey.app.ui.notegroup.model.selected
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.NoteGroupIdentifier
-import com.github.klee0kai.thekey.core.domain.ColorGroup
+import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import com.github.klee0kai.thekey.core.utils.common.launchLatest
 import com.github.klee0kai.thekey.core.utils.common.launchSafe
@@ -65,10 +65,12 @@ open class EditNoteGroupsPresenterImpl(
 
             updateNoteTrigger.emit(Unit)
 
+            val colorGroupVariants = KeyColor.selectableColorGroups
             state.update {
                 it.copy(
                     isSkeleton = false,
-                    color = originalGroup?.keyColor ?: KeyColor.NOCOLOR,
+                    selectedGroupId = colorGroupVariants.firstOrNull { selectable -> selectable.keyColor == originalGroup?.keyColor }?.id ?: 0,
+                    colorGroupVariants = colorGroupVariants,
                     name = originalGroup?.name ?: ""
                 )
             }
@@ -87,14 +89,18 @@ open class EditNoteGroupsPresenterImpl(
 
     override fun save() = scope.launchSafe {
         val curState = state.value
-        if (curState.color == KeyColor.NOCOLOR) {
+        val keyColor = curState.colorGroupVariants
+            .firstOrNull { selectable -> selectable.keyColor == originalGroup?.keyColor }
+            ?.keyColor
+
+        if (keyColor == null || keyColor == KeyColor.NOCOLOR) {
             router.snack(R.string.select_color)
             return@launchSafe
         }
         val group = interactor().saveColorGroup(
             DecryptedColorGroup(
                 id = groupIdentifier.groupId ?: 0,
-                color = curState.color.ordinal,
+                color = keyColor.ordinal,
                 name = curState.name
             )
         ).await() ?: return@launchSafe

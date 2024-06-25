@@ -18,8 +18,8 @@ import com.github.klee0kai.thekey.app.ui.note.model.isValid
 import com.github.klee0kai.thekey.app.ui.note.model.updateWith
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
-import com.github.klee0kai.thekey.core.domain.ColorGroup
-import com.github.klee0kai.thekey.core.domain.noGroup
+import com.github.klee0kai.thekey.core.domain.model.ColorGroup
+import com.github.klee0kai.thekey.core.domain.model.noGroup
 import com.github.klee0kai.thekey.core.ui.navigation.model.AlertDialogDestination
 import com.github.klee0kai.thekey.core.ui.navigation.model.ConfirmDialogResult
 import com.github.klee0kai.thekey.core.ui.navigation.model.TextProvider

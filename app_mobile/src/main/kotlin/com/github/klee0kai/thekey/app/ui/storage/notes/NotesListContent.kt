@@ -26,7 +26,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.stone.type.wrappers.getValue
-import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
@@ -36,9 +35,11 @@ import com.github.klee0kai.thekey.app.ui.navigation.note
 import com.github.klee0kai.thekey.app.ui.navigation.otpNote
 import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenterDummy
 import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenterLongListDummy
+import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.core.utils.views.animateContentSizeProduction
@@ -163,7 +164,7 @@ fun NotesListContentPreview() = EdgeToEdgeTemplate(
     isStatusBarVisible = false,
     cameraCutoutMode = CameraCutoutMode.None,
 ) {
-    AppTheme {
+    AppTheme(theme = DefaultThemes.darkTheme) {
         DI.hardResetToPreview()
         DI.initPresenterModule(object : PresentersModule {
             override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterDummy()
@@ -182,7 +183,7 @@ fun NotesLongListContentPreview() = EdgeToEdgeTemplate(
     isStatusBarVisible = false,
     cameraCutoutMode = CameraCutoutMode.None,
 ) {
-    AppTheme {
+    AppTheme(theme = DefaultThemes.darkTheme) {
         DI.hardResetToPreview()
         DI.initPresenterModule(object : PresentersModule {
             override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterLongListDummy(notesCount = 20)
@@ -201,7 +202,7 @@ fun NotesListContentTitlePreview() = EdgeToEdgeTemplate(
     isStatusBarVisible = false,
     cameraCutoutMode = CameraCutoutMode.None,
 ) {
-    AppTheme {
+    AppTheme(theme = DefaultThemes.darkTheme) {
         DI.hardResetToPreview()
         DI.initPresenterModule(object : PresentersModule {
             override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterDummy()

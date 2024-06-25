@@ -8,7 +8,8 @@ import com.github.klee0kai.thekey.app.BuildConfig
 import com.github.klee0kai.thekey.app.di.debug.DebugDI
 import com.github.klee0kai.thekey.app.di.debug.DebugDI.initDummyModules
 import com.github.klee0kai.thekey.app.di.dependencies.AppComponentProviders
-import com.github.klee0kai.thekey.app.di.modules.CoreAndroidHelpersModuleFactory
+import com.github.klee0kai.thekey.app.di.modules.AppInteractorModuleExt
+import com.github.klee0kai.thekey.app.di.modules.CoreAndroidHelpersModuleImpl
 import com.github.klee0kai.thekey.app.features.allFeatures
 import com.github.klee0kai.thekey.app.features.model.findApi
 import com.github.klee0kai.thekey.app.ui.navigation.deeplink.configMainDeeplinks
@@ -21,6 +22,7 @@ import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.PluginIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.StorageGroupIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
+import com.github.klee0kai.thekey.core.di.initDummyModule
 import com.github.klee0kai.thekey.core.di.wrap.AppWrappersStone
 import com.github.klee0kai.thekey.core.domain.model.AppConfig
 import com.github.klee0kai.thekey.core.domain.model.feature.model.DynamicFeature
@@ -61,6 +63,8 @@ fun AppComponent.hardResetToPreview() {
 
     DI.ctx(ctx)
     DI.config(config)
+
+    CoreDI.initDummyModule()
     DI.initDummyModules()
 }
 
@@ -98,9 +102,15 @@ fun AppComponent.configRouting(
 
 private fun initAppComponent() = Stone.createComponent(AppComponent::class.java).apply {
     ext(CoreDI)
+    config(AppConfig(isDebug = BuildConfig.DEBUG))
+
+    // targets: community / commercial : debug / release
     with(CommercialDIInit) { initDI() }
 
-    initCoreAndroidHelpersModule(CoreAndroidHelpersModuleFactory())
-    config(AppConfig(isDebug = BuildConfig.DEBUG))
+    // init extensions
+    initCoreInteractorsModule(AppInteractorModuleExt(coreInteractorsFactory()))
+    initCoreAndroidHelpersModule(CoreAndroidHelpersModuleImpl(coreAndroidHelpersModuleFactory()))
+
+    // init dynamic features
     updateComponentsSoft()
 }

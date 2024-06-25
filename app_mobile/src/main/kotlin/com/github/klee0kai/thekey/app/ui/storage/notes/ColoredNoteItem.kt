@@ -18,12 +18,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import com.github.klee0kai.thekey.app.domain.model.ColoredNote
 import com.github.klee0kai.thekey.core.R
-import com.github.klee0kai.thekey.core.domain.ColorGroup
+import com.github.klee0kai.thekey.core.domain.model.ColorGroup
+import com.github.klee0kai.thekey.core.domain.model.ColoredNote
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.skeleton
 import com.github.klee0kai.thekey.core.utils.views.visibleOnTargetAlpha
@@ -171,14 +172,14 @@ fun ColoredNoteItem(
 @VisibleForTesting
 @Composable
 @Preview
-fun ColoredNoteSkeleton() = AppTheme {
+fun ColoredNoteSkeleton() = AppTheme(theme = DefaultThemes.darkTheme) {
     ColoredNoteItem(note = ColoredNote(isLoaded = false))
 }
 
 @VisibleForTesting
 @Composable
 @Preview
-fun ColoredNoteDummy() = AppTheme {
+fun ColoredNoteDummy() = AppTheme(theme = DefaultThemes.darkTheme) {
     ColoredNoteItem(
         note = ColoredNote(
             site = "some.super.site.com",
@@ -196,7 +197,7 @@ fun ColoredNoteDummy() = AppTheme {
 @VisibleForTesting
 @Composable
 @Preview
-fun ColoredNoteDummyNoGroup() = AppTheme {
+fun ColoredNoteDummyNoGroup() = AppTheme(theme = DefaultThemes.darkTheme) {
     ColoredNoteItem(
         note = ColoredNote(
             site = "some.super.site.com",

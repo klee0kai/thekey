@@ -2,6 +2,8 @@ package com.github.klee0kai.thekey.app.engine.model
 
 import android.os.Parcelable
 import com.github.klee0kai.brooklyn.JniPojo
+import com.github.klee0kai.thekey.core.domain.model.ColoredNote
+import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import kotlinx.parcelize.Parcelize
 
 @JniPojo
@@ -35,3 +37,18 @@ fun DecryptedNote.merge(note: DecryptedNote?) =
     } else {
         this
     }
+
+
+
+fun DecryptedNote.coloredNote(
+    group: ColorGroup? = null,
+    isLoaded: Boolean = false,
+) = ColoredNote(
+    ptnote = ptnote,
+    site = site,
+    login = login,
+    passw = passw,
+    desc = desc,
+    group = group ?: ColorGroup(id = colorGroupId),
+    isLoaded = isLoaded,
+)

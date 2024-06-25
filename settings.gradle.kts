@@ -28,6 +28,7 @@ rootProject.name = "TheKey"
 include(":core")
 include(":app_mobile")
 include(":dynamic_qrcodescanner")
+include(":dynamic_findstorage")
 
 val isPrivateAvailable = file("private").list()?.isNotEmpty() ?: false
 

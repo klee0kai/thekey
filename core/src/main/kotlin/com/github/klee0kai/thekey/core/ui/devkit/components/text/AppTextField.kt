@@ -1,5 +1,6 @@
 package com.github.klee0kai.thekey.core.ui.devkit.components.text
 
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -10,12 +11,14 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.views.grayColors
 import com.github.klee0kai.thekey.core.utils.views.transparentColors
 
@@ -39,6 +42,7 @@ fun AppTextField(
     singleLine: Boolean = false,
     maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
     minLines: Int = 1,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     colors: TextFieldColors = TextFieldDefaults.grayColors(),
 ) {
     TextField(
@@ -61,6 +65,7 @@ fun AppTextField(
         maxLines = maxLines,
         minLines = minLines,
         shape = RoundedCornerShape(10.dp),
+        interactionSource = interactionSource,
         colors = colors,
     )
 }
@@ -85,6 +90,7 @@ fun AppTextField(
     singleLine: Boolean = false,
     maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
     minLines: Int = 1,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     colors: TextFieldColors = TextFieldDefaults.grayColors(),
 ) {
     TextField(
@@ -107,6 +113,7 @@ fun AppTextField(
         maxLines = maxLines,
         minLines = minLines,
         shape = RoundedCornerShape(10.dp),
+        interactionSource = interactionSource,
         colors = colors,
     )
 }
@@ -114,7 +121,7 @@ fun AppTextField(
 
 @Composable
 @Preview
-fun AppTextFieldPreview() = AppTheme {
+fun AppTextFieldPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     Box(
         modifier = Modifier.padding(10.dp)
     ) {
@@ -130,7 +137,7 @@ fun AppTextFieldPreview() = AppTheme {
 
 @Composable
 @Preview
-fun AppTextEmptyFieldPreview() = AppTheme {
+fun AppTextEmptyFieldPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     Box(
         modifier = Modifier.padding(10.dp)
     ) {
@@ -147,7 +154,7 @@ fun AppTextEmptyFieldPreview() = AppTheme {
 
 @Composable
 @Preview
-fun AppTransparentTextFieldPreview() = AppTheme {
+fun AppTransparentTextFieldPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     Box(
         modifier = Modifier.padding(10.dp)
     ) {
@@ -164,7 +171,7 @@ fun AppTransparentTextFieldPreview() = AppTheme {
 
 @Composable
 @Preview
-fun AppTransparentTextEmptyFieldPreview() = AppTheme {
+fun AppTransparentTextEmptyFieldPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     Box(
         modifier = Modifier.padding(10.dp)
     ) {

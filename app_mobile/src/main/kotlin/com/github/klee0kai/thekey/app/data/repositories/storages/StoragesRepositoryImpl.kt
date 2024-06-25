@@ -3,10 +3,10 @@ package com.github.klee0kai.thekey.app.data.repositories.storages
 import com.github.klee0kai.thekey.app.data.mapping.toColoredStorage
 import com.github.klee0kai.thekey.app.data.mapping.toStorageEntry
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.core.data.room.entry.toColorGroup
 import com.github.klee0kai.thekey.core.data.room.entry.toColorGroupEntry
-import com.github.klee0kai.thekey.core.domain.ColorGroup
+import com.github.klee0kai.thekey.core.domain.model.ColorGroup
+import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.core.utils.coroutine.onTicks
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.io.File
 
 class StoragesRepositoryImpl : StoragesRepository {
 
@@ -62,7 +61,9 @@ class StoragesRepositoryImpl : StoragesRepository {
     }
 
     override fun findStorage(path: String) = scope.async {
-        storagesDao().get(path)?.toColoredStorage()
+        val storage = storagesDao().get(path) ?: return@async null
+        val colorGroup = colorGroupsDao()[storage.id]
+        storage.toColoredStorage().copy(colorGroup = colorGroup?.toColorGroup())
     }
 
     override fun setStorage(storage: ColoredStorage): Job = scope.launch {
@@ -82,7 +83,6 @@ class StoragesRepositoryImpl : StoragesRepository {
     }
 
     override fun deleteStorage(path: String): Job = scope.launch {
-        File(path).deleteOnExit()
         storagesDao().delete(path)
         updateTicker.emit(Unit)
     }

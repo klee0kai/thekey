@@ -21,6 +21,9 @@
     <string name="title_autofill">Autofill manager</string>
     <string name="desc_autofill">Password autofill manager</string>
 
+    <string name="title_findstorages">Find storages</string>
+    <string name="desc_findstorages">Search for encrypted storage throughout the phone</string>
+
     <string name="login">Login</string>
     <string name="password">Password</string>
     <string name="app_login_description">Create and remember your passport for your key masster storage</string>
@@ -51,7 +54,6 @@
     <string name="manageExnternalStorage">Manage external storage</string>
     <string name="reject">Reject</string>
     <string name="go_to_settings">Go To settings</string>
-    <string name="find_external_storage_purpose">To Find external master storages need:</string>
     <string name="copied_to_clipboard">Copied to clipboard</string>
     <string name="gen_history">Gen Password History</string>
     <string name="note_is_empty">Note is empty</string>
@@ -92,8 +94,11 @@
     <string name="installing">Installing</string>
     <string name="installed">Installed</string>
     <string name="install_error">Install Error</string>
+    <string name="install_storage_search">Install storage search plugin</string>
+    <string name="install_storage_search_hint">find encrypted storage throughout your phone</string>
     <string name="other">Other</string>
     <string name="storage_auto_search">Storages Auto Search</string>
+    <string name="import_storage">Import storage</string>
     <string name="try_again">Try again</string>
     <string name="buy">Buy</string>
     <string name="about">About</string>
@@ -105,6 +110,16 @@
     <string name="color_group_deleted">Color group has been deleted</string>
     <string name="storage_saved">Storage has been saved</string>
     <string name="edit_storages_group">Edit storages group</string>
+    <string name="storage_file_incorrect">Storage file is incorrect</string>
+    <string name="storage_imported">Storage has been imported</string>
     <string name="favorite">Favorite</string>
     <string name="more">More</string>
+    <string name="export">Export</string>
+    <string name="ext">EXT</string>
+    <string name="storage_created">Storage has been created</string>
+    <string name="storage_moved">Storage has been moved</string>
+    <string name="path_is_empty">Path is empty</string>
+    <string name="no_access">No access</string>
+    <string name="duplicate">Duplicate</string>
+    <string name="external_storage_group_disabled">External group has been disabled</string>
 </resources>

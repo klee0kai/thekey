@@ -57,10 +57,12 @@ import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DeleteIconButton
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DoneIconButton
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.common.Dummy
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
+import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.horizontal
 import com.github.klee0kai.thekey.core.utils.views.isIme
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
@@ -75,7 +77,7 @@ fun EditStorageGroupsScreen(
     dest: EditStorageGroupDestination = EditStorageGroupDestination(),
 ) {
     val presenter by rememberOnScreenRef { DI.editStorageGroupPresenter(dest.identifier()).apply { init() } }
-    val router = LocalRouter.current
+    val router by LocalRouter.currentRef
     val groupNameFieldFocusRequester = remember { FocusRequester() }
     val state by presenter!!.state.collectAsState(key = Unit, initial = EditStorageGroupsState())
 
@@ -97,14 +99,21 @@ fun EditStorageGroupsScreen(
                     .offset(y = dragProgress.topContentOffsetFromDrag()),
                 groupNameFieldModifier = Modifier
                     .focusRequester(groupNameFieldFocusRequester),
-                select = state.color,
-                groupName = state.name,
-                favoriteVisible = true,
+                variants = state.colorGroupVariants,
+                selectedId = state.selectedGroupId,
+                groupName = if (state.isExternalGroupMode) state.extStorageName else state.name,
+                favoriteVisible = !state.isExternalGroupMode,
                 favoriteChecked = state.isFavorite,
-                onChangeGroupName = { presenter?.input { copy(name = it.take(1)) } },
+                onChangeGroupName = {
+                    if (state.isExternalGroupMode) {
+                        presenter?.input { copy(extStorageName = it.take(3)) }
+                    } else {
+                        presenter?.input { copy(name = it.take(1)) }
+                    }
+                },
                 onSelect = {
                     groupNameFieldFocusRequester.freeFocus()
-                    presenter?.input { copy(color = it) }
+                    presenter?.input { copy(selectedGroupId = it.id) }
                 },
                 onFavoriteChecked = {
                     presenter?.input { copy(isFavorite = it) }
@@ -118,6 +127,7 @@ fun EditStorageGroupsScreen(
                     .padding(top = 20.dp)
                     .fillMaxSize(),
                 dest = dest,
+                isSelectAvailable = !state.isExternalGroupMode,
                 onSelect = { storagePath, selected ->
                     presenter?.selectStorage(storagePath, selected)
                 },
@@ -131,7 +141,7 @@ fun EditStorageGroupsScreen(
     AppBarStates(
         modifier = Modifier,
         navigationIcon = {
-            IconButton(onClick = remember { { router.back() } }) {
+            IconButton(onClick = remember { { router?.back() } }) {
                 Icon(Icons.AutoMirrored.Default.ArrowBack, contentDescription = null)
             }
         },
@@ -180,7 +190,7 @@ fun EditStorageGroupsScreen(
 @Preview(device = Devices.PHONE)
 @Composable
 fun EditStorageGroupPreview() = EdgeToEdgeTemplate {
-    AppTheme {
+    AppTheme(theme = DefaultThemes.darkTheme) {
         DI.hardResetToPreview()
         DI.initPresenterModule(object : PresentersModule {
             override fun editStorageGroupPresenter(storageIdentifier: StorageGroupIdentifier) = object : EditStoragesGroupPresenterDummy() {
@@ -203,7 +213,7 @@ fun EditStorageGroupPreview() = EdgeToEdgeTemplate {
 @Preview(device = Devices.PHONE)
 @Composable
 fun EditStorageGroupBigListPreview() = EdgeToEdgeTemplate {
-    AppTheme {
+    AppTheme(theme = DefaultThemes.darkTheme) {
         DI.hardResetToPreview()
         DI.initPresenterModule(object : PresentersModule {
             override fun editStorageGroupPresenter(storageIdentifier: StorageGroupIdentifier) = object : EditStoragesGroupPresenterDummy(storagesCount = 24) {

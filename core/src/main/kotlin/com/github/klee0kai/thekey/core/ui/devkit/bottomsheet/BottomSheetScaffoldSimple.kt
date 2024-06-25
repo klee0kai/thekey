@@ -33,8 +33,9 @@ import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.SimpleScaffoldConst.dragHandleSize
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
+import com.github.klee0kai.thekey.core.utils.possitions.pxToDp
 import com.github.klee0kai.thekey.core.utils.views.accelerateDecelerate
-import com.github.klee0kai.thekey.core.utils.views.pxToDp
 import com.github.klee0kai.thekey.core.utils.views.ratioBetween
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 import org.jetbrains.annotations.VisibleForTesting
@@ -141,14 +142,14 @@ fun SimpleBottomSheetScaffold(
 @VisibleForTesting
 @Preview
 @Composable
-fun SimpleBottomSheetScaffoldPreview() = AppTheme {
+fun SimpleBottomSheetScaffoldPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     SimpleBottomSheetScaffold()
 }
 
 @VisibleForTesting
 @Preview
 @Composable
-fun SimpleBottomSheetScaffoldTopContentPreview() = AppTheme {
+fun SimpleBottomSheetScaffoldTopContentPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     SimpleBottomSheetScaffold(
         topContent = {
             Box(
@@ -164,7 +165,7 @@ fun SimpleBottomSheetScaffoldTopContentPreview() = AppTheme {
 @VisibleForTesting
 @Preview
 @Composable
-fun SimpleBottomSheetScaffoldTopContent2Preview() = AppTheme {
+fun SimpleBottomSheetScaffoldTopContent2Preview() = AppTheme(theme = DefaultThemes.darkTheme) {
     SimpleBottomSheetScaffold(
         topContentSize = 190.dp,
         topMargin = AppBarConst.appBarSize,

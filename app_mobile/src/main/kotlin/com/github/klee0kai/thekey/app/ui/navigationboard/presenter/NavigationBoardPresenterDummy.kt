@@ -1,6 +1,6 @@
 package com.github.klee0kai.thekey.app.ui.navigationboard.presenter
 
-import com.github.klee0kai.thekey.app.domain.model.ColoredStorage
+import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.emptyFlow
 

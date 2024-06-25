@@ -1,5 +1,10 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.github.klee0kai.thekey.app.ui.editstorage
 
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -16,12 +21,16 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -40,38 +49,44 @@ import com.github.klee0kai.thekey.app.ui.editstorage.model.EditStorageState
 import com.github.klee0kai.thekey.app.ui.editstorage.presenter.EditStoragePresenter
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
-import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
+import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
+import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DeleteIconButton
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DoneIconButton
-import com.github.klee0kai.thekey.core.ui.devkit.components.dropdownfields.ColorGroupDropDownField
+import com.github.klee0kai.thekey.core.ui.devkit.components.buttons.GroupCircle
+import com.github.klee0kai.thekey.core.ui.devkit.components.dropdownfields.ColorGroupSelectPopupMenu
 import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextField
+import com.github.klee0kai.thekey.core.ui.devkit.overlay.PopupMenu
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
+import com.github.klee0kai.thekey.core.utils.possitions.onGlobalPositionState
+import com.github.klee0kai.thekey.core.utils.possitions.pxToDp
+import com.github.klee0kai.thekey.core.utils.possitions.rememberViewPosition
+import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
 import com.github.klee0kai.thekey.core.utils.views.animateSkeletonModifier
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
+import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.horizontal
 import com.github.klee0kai.thekey.core.utils.views.isIme
-import com.github.klee0kai.thekey.core.utils.views.keyboardAsState
-import com.github.klee0kai.thekey.core.utils.views.pxToDp
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.core.utils.views.rememberTargetCrossFaded
-import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.filterIsInstance
 import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
 fun EditStorageScreen(
     path: String = "",
 ) {
-    val router = LocalRouter.current
+    val router by LocalRouter.currentRef
     val view = LocalView.current
+    val theme = LocalTheme.current
     val presenter by rememberOnScreenRef { DI.editStoragePresenter(StorageIdentifier(path)).apply { init() } }
 
     val state by presenter!!.state.collectAsState(key = Unit, initial = EditStorageState(isSkeleton = false))
-    val keyboardState by keyboardAsState()
     val scrollState = rememberScrollState()
     val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
 
@@ -79,7 +94,17 @@ fun EditStorageScreen(
     val isSaveAvailable by rememberTargetCrossFaded { state.isSaveAvailable }
     val isRemoveAvailable by rememberTargetCrossFaded { state.isRemoveAvailable }
     val skeletonModifier by animateSkeletonModifier { state.isSkeleton }
+    val groupSelectPosition = rememberViewPosition()
+    val groupInteractionSource = remember { MutableInteractionSource() }
 
+    LaunchedEffect(Unit) {
+        groupInteractionSource.interactions.filterIsInstance<PressInteraction.Press>().collect {
+            presenter?.input { copy(colorGroupExpanded = !colorGroupExpanded) }
+        }
+    }
+    BackHandler(enabled = state.colorGroupExpanded) {
+        presenter?.input { copy(colorGroupExpanded = false) }
+    }
     ConstraintLayout(
         modifier = Modifier
             .imePadding()
@@ -134,8 +159,6 @@ fun EditStorageScreen(
             label = { Text(stringResource(R.string.storage_description)) }
         )
 
-
-
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -148,7 +171,7 @@ fun EditStorageScreen(
                         .align(Alignment.BottomCenter)
                         .fillMaxWidth()
                         .alpha(imeIsVisibleAnimated.alpha),
-                    onClick = { presenter?.save() }
+                    onClick = { presenter?.save(router) }
                 ) {
                     Text(stringResource(R.string.save))
                 }
@@ -156,8 +179,9 @@ fun EditStorageScreen(
         }
 
 
-        ColorGroupDropDownField(
+        AppTextField(
             modifier = Modifier
+                .onGlobalPositionState(groupSelectPosition)
                 .then(skeletonModifier)
                 .fillMaxWidth(0.5f)
                 .constrainAs(colorGroupField) {
@@ -171,15 +195,53 @@ fun EditStorageScreen(
                         topMargin = 8.dp,
                     )
                 },
-            selectedIndex = state.colorGroupSelected,
-            variants = state.colorGroupVariants,
-            expanded = state.colorGroupExpanded,
-            onExpandedChange = { presenter?.input { copy(colorGroupExpanded = it) } },
-            onSelected = { presenter?.input { copy(colorGroupSelected = it, colorGroupExpanded = false) } },
+            interactionSource = groupInteractionSource,
+            readOnly = true,
+            singleLine = true,
+            value = when {
+                state.colorGroupSelectedIndex < 0 -> stringResource(id = R.string.no_group)
+                else -> state.colorGroupVariants
+                    .getOrNull(state.colorGroupSelectedIndex)
+                    ?.name
+                    ?.takeIf { it.isNotBlank() }
+                    ?: stringResource(id = R.string.no_name)
+            },
+            leadingIcon = {
+                GroupCircle(
+                    modifier = Modifier
+                        .padding(4.dp),
+                    colorScheme = theme.colorScheme.surfaceSchemas.surfaceScheme(
+                        state.colorGroupVariants.getOrNull(state.colorGroupSelectedIndex)?.keyColor ?: KeyColor.NOCOLOR
+                    ),
+                )
+            },
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = state.colorGroupExpanded) },
+            onValueChange = { },
             label = { Text(stringResource(R.string.group)) }
         )
-    }
 
+
+        PopupMenu(
+            visible = state.colorGroupExpanded,
+            positionAnchor = groupSelectPosition,
+            onDismissRequest = { presenter?.input { copy(colorGroupExpanded = false) } }
+        ) {
+            ColorGroupSelectPopupMenu(
+                modifier = Modifier
+                    .padding(top = 10.dp, bottom = 10.dp)
+                    .fillMaxWidth(),
+                variants = state.colorGroupVariants,
+                onSelected = { _, idx ->
+                    presenter?.input {
+                        copy(
+                            colorGroupSelectedIndex = idx,
+                            colorGroupExpanded = false,
+                        )
+                    }
+                }
+            )
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -194,18 +256,15 @@ fun EditStorageScreen(
                     .fillMaxWidth()
                     .alpha(imeIsVisibleAnimated.alpha)
                     .alpha(isSaveAvailable.alpha),
-                onClick = { presenter?.save() }
+                onClick = { presenter?.save(router) }
             ) { Text(stringResource(R.string.save)) }
         }
     }
 
-
     AppBarStates(
         isVisible = scrollState.value == 0,
         navigationIcon = {
-            IconButton(onClick = {
-                router.back()
-            }) {
+            IconButton(onClick = { router?.back() }) {
                 Icon(
                     Icons.AutoMirrored.Default.ArrowBack,
                     contentDescription = null,
@@ -213,21 +272,24 @@ fun EditStorageScreen(
             }
         },
         titleContent = {
-            Text(text = stringResource(id = if (state.isEditMode) R.string.edit_storage else R.string.create_storage))
+            when {
+                !state.isSkeleton && state.isEditMode -> Text(text = stringResource(R.string.edit_storage))
+                !state.isSkeleton && !state.isEditMode -> Text(text = stringResource(R.string.create_storage))
+            }
         },
         actions = {
             if (isRemoveAvailable.current) {
                 DeleteIconButton(
                     modifier = Modifier
                         .alpha(isRemoveAvailable.alpha),
-                    onClick = { presenter?.remove() }
+                    onClick = { presenter?.remove(router) }
                 )
             }
 
             if (imeIsVisibleAnimated.current && isSaveAvailable.current) {
                 DoneIconButton(
                     modifier = Modifier.alpha(imeIsVisibleAnimated.alpha),
-                    onClick = { presenter?.save() }
+                    onClick = { presenter?.save(router) }
                 )
             }
         }
@@ -239,7 +301,7 @@ fun EditStorageScreen(
 @VisibleForTesting
 @Preview(device = Devices.PHONE)
 @Composable
-fun EditStorageScreenPreview() = EdgeToEdgeTemplate {
+fun EditStorageScreenPreview() = DebugDarkScreenPreview {
     DI.hardResetToPreview()
     DI.initPresenterModule(object : PresentersModule {
 
@@ -252,7 +314,5 @@ fun EditStorageScreenPreview() = EdgeToEdgeTemplate {
             )
         }
     })
-    AppTheme {
-        EditStorageScreen(path = "some/path/to/storage")
-    }
+    EditStorageScreen(path = "some/path/to/storage")
 }

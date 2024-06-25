@@ -28,7 +28,6 @@ import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
-import com.github.klee0kai.thekey.app.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.app.ui.navigation.model.AboutDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.SettingsDestination
 import com.github.klee0kai.thekey.app.ui.navigationboard.components.CurrentStorageHeader
@@ -36,9 +35,11 @@ import com.github.klee0kai.thekey.app.ui.navigationboard.components.DefaultHeade
 import com.github.klee0kai.thekey.app.ui.navigationboard.components.StorageNavigationMapList
 import com.github.klee0kai.thekey.app.ui.navigationboard.presenter.NavigationBoardPresenterDummy
 import com.github.klee0kai.thekey.core.R
+import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.collectAsStateCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
@@ -169,7 +170,7 @@ fun StorageNavigationBoard(modifier: Modifier = Modifier) {
 @Preview(device = Devices.PHONE)
 @Composable
 fun StorageNavigationBoardPreview() = EdgeToEdgeTemplate {
-    AppTheme {
+    AppTheme(theme = DefaultThemes.darkTheme) {
         DI.hardResetToPreview()
         DI.initPresenterModule(object : PresentersModule {
             override fun navigationBoardPresenter() = NavigationBoardPresenterDummy(
@@ -187,7 +188,7 @@ fun StorageNavigationBoardPreview() = EdgeToEdgeTemplate {
 @Preview(device = Devices.PHONE)
 @Composable
 fun StorageNavigationBoardNoCurrentPreview() = EdgeToEdgeTemplate {
-    AppTheme {
+    AppTheme(theme = DefaultThemes.darkTheme) {
         DI.hardResetToPreview()
         DI.initPresenterModule(object : PresentersModule {
             override fun navigationBoardPresenter() = NavigationBoardPresenterDummy(
@@ -204,7 +205,7 @@ fun StorageNavigationBoardNoCurrentPreview() = EdgeToEdgeTemplate {
 @Preview(device = Devices.PHONE)
 @Composable
 fun StorageNavigationBoardEmptyPreview() = EdgeToEdgeTemplate {
-    AppTheme {
+    AppTheme(theme = DefaultThemes.darkTheme) {
         DI.hardResetToPreview()
         DI.initPresenterModule(object : PresentersModule {
             override fun navigationBoardPresenter() = NavigationBoardPresenterDummy()
@@ -219,7 +220,7 @@ fun StorageNavigationBoardEmptyPreview() = EdgeToEdgeTemplate {
 @Preview(device = Devices.TABLET)
 @Composable
 fun StorageNavigationBoardTabletPreview() = EdgeToEdgeTemplate {
-    AppTheme {
+    AppTheme(theme = DefaultThemes.darkTheme) {
         DI.hardResetToPreview()
         DI.initPresenterModule(object : PresentersModule {
             override fun navigationBoardPresenter() = NavigationBoardPresenterDummy()

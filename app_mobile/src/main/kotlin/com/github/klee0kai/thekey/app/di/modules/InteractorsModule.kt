@@ -2,6 +2,7 @@ package com.github.klee0kai.thekey.app.di.modules
 
 import com.github.klee0kai.stone.annotations.module.Module
 import com.github.klee0kai.stone.annotations.module.Provide
+import com.github.klee0kai.thekey.app.domain.EditStorageInteractor
 import com.github.klee0kai.thekey.app.domain.GroupsInteractor
 import com.github.klee0kai.thekey.app.domain.LoginInteractor
 import com.github.klee0kai.thekey.app.domain.NotesInteractor
@@ -17,6 +18,9 @@ interface InteractorsModule {
 
     @Provide(cache = Provide.CacheType.Weak)
     fun storagesInteractor(): StoragesInteractor
+
+    @Provide(cache = Provide.CacheType.Weak)
+    fun editStorageInteractor(): EditStorageInteractor
 
     @Provide(cache = Provide.CacheType.Weak)
     fun notesInteractor(storageIdentifier: StorageIdentifier): NotesInteractor

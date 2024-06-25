@@ -15,7 +15,6 @@ object DebugDI {
 
     fun AppComponent.initDummyModules() {
         initEngineModule(DummyEngineModule::class.java)
-        initHelpersModule(DummyHelpersModule::class.java)
     }
 
 }

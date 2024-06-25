@@ -39,7 +39,6 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.stone.type.wrappers.getValue
-import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
@@ -49,6 +48,7 @@ import com.github.klee0kai.thekey.app.ui.storage.genpassw.GenPasswordContent
 import com.github.klee0kai.thekey.app.ui.storage.model.SearchState
 import com.github.klee0kai.thekey.app.ui.storage.notes.NotesContent
 import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenterDummy
+import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalAppConfig
@@ -59,6 +59,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppTitleImage
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.SearchField
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.SecondaryTabs
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.SecondaryTabsConst
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.common.Dummy
 import com.github.klee0kai.thekey.core.utils.views.accumulate
@@ -235,7 +236,7 @@ fun StorageScreen(
 @Preview(device = Devices.PHONE)
 @Composable
 fun StorageScreenAccountsPreview() = EdgeToEdgeTemplate {
-    AppTheme {
+    AppTheme(theme = DefaultThemes.darkTheme) {
         DI.hardResetToPreview()
         DI.initPresenterModule(object : PresentersModule {
             override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterDummy()
@@ -251,7 +252,7 @@ fun StorageScreenAccountsPreview() = EdgeToEdgeTemplate {
 @Preview(device = Devices.PHONE)
 @Composable
 fun StorageScreenAccountsSearchPreview() = EdgeToEdgeTemplate {
-    AppTheme {
+    AppTheme(theme = DefaultThemes.darkTheme) {
         DI.hardResetToPreview()
         DI.initPresenterModule(object : PresentersModule {
             override fun storagePresenter(storageIdentifier: StorageIdentifier) =
@@ -268,7 +269,7 @@ fun StorageScreenAccountsSearchPreview() = EdgeToEdgeTemplate {
 @Preview(device = Devices.PHONE)
 @Composable
 fun StorageScreenGeneratePreview() = EdgeToEdgeTemplate {
-    AppTheme {
+    AppTheme(theme = DefaultThemes.darkTheme) {
         DI.hardResetToPreview()
         DI.initPresenterModule(object : PresentersModule {
             override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterDummy()

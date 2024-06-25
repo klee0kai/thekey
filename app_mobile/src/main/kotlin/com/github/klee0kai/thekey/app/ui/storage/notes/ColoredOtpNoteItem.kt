@@ -18,12 +18,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import com.github.klee0kai.thekey.app.domain.model.ColoredOtpNote
 import com.github.klee0kai.thekey.core.R
-import com.github.klee0kai.thekey.core.domain.ColorGroup
+import com.github.klee0kai.thekey.core.domain.model.ColorGroup
+import com.github.klee0kai.thekey.core.domain.model.ColoredOtpNote
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.skeleton
 import com.github.klee0kai.thekey.core.utils.views.visibleOnTargetAlpha
@@ -148,14 +149,14 @@ fun ColoredOtpNoteItem(
 @VisibleForTesting
 @Composable
 @Preview
-fun ColoredOtpNoteSkeletonPreview() = AppTheme {
+fun ColoredOtpNoteSkeletonPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     ColoredOtpNoteItem(otp = ColoredOtpNote(isLoaded = false))
 }
 
 @VisibleForTesting
 @Composable
 @Preview
-fun ColoredOtpNoteDummyPreview() = AppTheme {
+fun ColoredOtpNoteDummyPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     ColoredOtpNoteItem(
         otp = ColoredOtpNote(
             issuer = "some.super.site.com",
@@ -172,7 +173,7 @@ fun ColoredOtpNoteDummyPreview() = AppTheme {
 @VisibleForTesting
 @Composable
 @Preview
-fun ColoredOtpNoteDummyNoGroupPreview() = AppTheme {
+fun ColoredOtpNoteDummyNoGroupPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     ColoredOtpNoteItem(
         otp = ColoredOtpNote(
             issuer = "some.super.site.com",

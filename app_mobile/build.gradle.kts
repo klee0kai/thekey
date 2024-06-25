@@ -7,9 +7,6 @@ plugins {
     id("kotlin-parcelize")
     id("brooklyn-plugin")
     id("app.cash.paparazzi")
-
-//    id("com.google.gms.google-services")
-//    id ("com.google.firebase.crashlytics")
 }
 
 val appGroup = "com.github.klee0kai.thekey.app"
@@ -20,7 +17,7 @@ brooklyn {
 
 android {
     appDefaults(appGroup, project)
-    dynamicFeatures += setOf(":dynamic_qrcodescanner")
+    dynamicFeatures += setOf(":dynamic_qrcodescanner",":dynamic_findstorage")
     if (Commercial.isCommercialAvailable) {
         dynamicFeatures += setOf(":private:dynamic_autofill")
     }
@@ -131,6 +128,8 @@ dependencies {
     kapt(libs.room.kapt)
 
     implementation(libs.hummus)
+
+    implementation(libs.lorem)
 
     testImplementation(libs.junit)
     testImplementation(libs.androidx.junit)

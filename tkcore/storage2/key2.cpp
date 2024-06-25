@@ -53,7 +53,7 @@ list<T> readSimpleList(char *buffer, int len) {
 
 // -------------------- static ---------------------------------
 shared_ptr<StorageInfo> thekey_v2::storageFullInfo(const std::string &file) {
-    int fd = open(file.c_str(), O_RDONLY | O_CLOEXEC);
+    int fd = open(file.c_str(), O_RDONLY);
     if (fd == -1) return {};
     auto header = storageHeader(fd);
     if (!header)return {};
@@ -66,7 +66,7 @@ shared_ptr<StorageInfo> thekey_v2::storageFullInfo(const std::string &file) {
 }
 
 int thekey_v2::createStorage(const thekey::Storage &storage) {
-    int fd = open(storage.file.c_str(), O_RDONLY | O_WRONLY | O_CLOEXEC | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
+    int fd = open(storage.file.c_str(), O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
     if (fd < 0) {
         keyError = KEY_OPEN_FILE_ERROR;
         return KEY_OPEN_FILE_ERROR;
@@ -91,11 +91,15 @@ int thekey_v2::createStorage(const thekey::Storage &storage) {
 }
 
 std::shared_ptr<KeyStorageV2> thekey_v2::storage(const std::string &path, const std::string &passw) {
-    int fd = open(path.c_str(), O_RDONLY | O_CLOEXEC);
+    int fd = open(path.c_str(), O_RDWR);
     if (fd == -1) {
         keyError = KEY_OPEN_FILE_ERROR;
         return {};
     }
+    return storage(fd, path, passw);
+}
+
+std::shared_ptr<KeyStorageV2> thekey_v2::storage(const int &fd, const std::string &path, const std::string &passw) {
     auto header = storageHeader(fd);
     if (!header) {
         close(fd);
@@ -147,7 +151,7 @@ std::shared_ptr<CryptContext> thekey_v2::cryptContext(
 
 // ------------------- public --------------------------
 KeyStorageV2::KeyStorageV2(int fd, const std::string &path, const std::shared_ptr<CryptContext> &ctx)
-        : fd(fd), storagePath(path), ctx(ctx) {
+        : storageFileDescriptor(fd), singleDescriptorMode(0), storagePath(path), ctx(ctx) {
     tempStoragePath = path.substr(0, path.find_last_of('.')) + "-temp.ckey";
     cachedInfo = {.path = storagePath,};
     _dataSnapshot = {.idCounter = ID_COUNTER_START};
@@ -155,13 +159,18 @@ KeyStorageV2::KeyStorageV2(int fd, const std::string &path, const std::shared_pt
 
 KeyStorageV2::~KeyStorageV2() {
     if (ctx) memset(&*ctx, 0, sizeof(CryptContext));
-    if (fd) close(fd);
+    if (storageFileDescriptor) close(storageFileDescriptor);
     ctx.reset();
-    fd = 0;
+    storageFileDescriptor = 0;
+}
+
+void KeyStorageV2::setSingleDescriptorMode(const int &mode) {
+    KeyStorageV2::singleDescriptorMode = mode;
 }
 
 int KeyStorageV2::readAll() {
     lock_guard guard(editMutex);
+    lseek(storageFileDescriptor, 0, SEEK_SET);
 
     int idCounter = ID_COUNTER_START;
     int colorGroupIdCounter = ID_COUNTER_START;
@@ -170,21 +179,21 @@ int KeyStorageV2::readAll() {
     list<CryptedOtpInfo> cryptedOtpNotes;
     list<CryptedPassword> cryptedGeneratedPassws;
 
-    fheader = storageHeader(fd);
+    fheader = storageHeader(storageFileDescriptor);
     cachedInfo.storageVersion = fheader->storageVersion();
     cachedInfo.name = fheader->name;
     cachedInfo.description = fheader->description;
 
     while (true) {
         FileSectionFlat section{};
-        int len = read(fd, &section, sizeof(section));
+        int len = read(storageFileDescriptor, &section, sizeof(section));
         if (!len) break;
         if (len != sizeof(section)) {
             keyError = KEY_STORAGE_FILE_IS_BROKEN;
             return KEY_STORAGE_FILE_IS_BROKEN;
         }
         char buffer[section.sectionLen()];
-        len = read(fd, buffer, section.sectionLen());
+        len = read(storageFileDescriptor, buffer, section.sectionLen());
         if (len != section.sectionLen()) {
             keyError = KEY_STORAGE_FILE_IS_BROKEN;
             return KEY_STORAGE_FILE_IS_BROKEN;
@@ -258,12 +267,17 @@ StorageInfo KeyStorageV2::info() {
 }
 
 int KeyStorageV2::save() {
-    auto error = save(tempStoragePath);
-    if (error)return error;
-    error = save(storagePath);
-    if (error) return error;
-    // everything went fine, you can delete the backup file
-    remove(tempStoragePath.c_str());
+    int error = 0;
+    if (singleDescriptorMode) {
+        save(storageFileDescriptor);
+    } else {
+        error = save(tempStoragePath);
+        if (error)return error;
+        error = save(storagePath);
+        if (error) return error;
+        // everything went fine, you can delete the backup file
+        remove(tempStoragePath.c_str());
+    }
     return error;
 }
 
@@ -273,6 +287,18 @@ int KeyStorageV2::save(const std::string &path) {
         keyError = KEY_OPEN_FILE_ERROR;
         return KEY_OPEN_FILE_ERROR;
     }
+    keyError = save(fd);
+    close(fd);
+    return keyError;
+}
+
+int KeyStorageV2::save(const int &fd) {
+    if (fd < 0) {
+        keyError = KEY_OPEN_FILE_ERROR;
+        return KEY_OPEN_FILE_ERROR;
+    }
+    lseek(fd, 0, SEEK_SET);
+
     auto data = snapshot();
     auto writeLen = write(fd, &*fheader, sizeof(StorageHeaderFlat));
     FileSectionFlat fileSection{};
@@ -329,11 +355,9 @@ int KeyStorageV2::save(const std::string &path) {
         if (writeLen != sizeof(CryptedOtpInfoFlat)) goto write_file_error;
     }
 
-    close(fd);
     return 0;
 
     write_file_error:
-    close(fd);
     keyError = KEY_WRITE_FILE_ERROR;
     return KEY_WRITE_FILE_ERROR;
 }

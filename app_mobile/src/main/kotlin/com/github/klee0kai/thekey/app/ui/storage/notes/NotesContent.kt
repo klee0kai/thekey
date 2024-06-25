@@ -43,6 +43,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.topContentAlphaFrom
 import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.topContentOffsetFromDrag
 import com.github.klee0kai.thekey.core.ui.devkit.components.FabSimpleInContainer
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.common.Dummy
 import com.github.klee0kai.thekey.core.utils.views.animateAlphaAsState
@@ -89,7 +90,6 @@ fun NotesContent(
                 colorGroups = groups,
                 onGroupSelected = { presenter?.selectGroup(it.id) },
                 onGroupEdit = { router.navigate(dest.editGroup(it.id)) },
-                onGroupDelete = { presenter?.deleteGroup(it.id) }
             )
         },
         sheetContent = {
@@ -115,7 +115,7 @@ fun NotesContent(
 @Preview(device = Devices.PHONE)
 @Composable
 fun NotesContentPreview() = EdgeToEdgeTemplate {
-    AppTheme {
+    AppTheme(theme = DefaultThemes.darkTheme) {
         DI.hardResetToPreview()
         DI.initPresenterModule(object : PresentersModule {
             override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterDummy()

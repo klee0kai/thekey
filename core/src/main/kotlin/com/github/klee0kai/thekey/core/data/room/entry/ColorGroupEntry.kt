@@ -5,7 +5,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.github.klee0kai.thekey.core.data.room.dao.ColorGroupDao
-import com.github.klee0kai.thekey.core.domain.ColorGroup
+import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import kotlinx.parcelize.Parcelize
 
@@ -39,10 +39,8 @@ fun ColorGroupEntry.toColorGroup() =
     )
 
 
-fun ColorGroup.toColorGroupEntry(
-    id: Long? = null
-) = ColorGroupEntry(
-    id = id ?: 0L,
+fun ColorGroup.toColorGroupEntry() = ColorGroupEntry(
+    id = this.id,
     name = name,
     colorGroup = keyColor.ordinal,
     isFavorite = isFavorite,

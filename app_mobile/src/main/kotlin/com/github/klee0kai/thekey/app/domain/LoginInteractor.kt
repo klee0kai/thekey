@@ -1,11 +1,12 @@
 package com.github.klee0kai.thekey.app.domain
 
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
+import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import java.io.File
 
 class LoginInteractor {
 
@@ -38,6 +39,7 @@ class LoginInteractor {
         otpNotesInteractor().clear()
         groupsInteractor().clear()
 
+        File(storageIdentifier.path).parentFile?.mkdirs()
         engine().login(passw)
 
         notesInteractor().loadNotes()

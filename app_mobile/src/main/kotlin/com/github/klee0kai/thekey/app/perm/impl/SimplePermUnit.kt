@@ -8,6 +8,7 @@ import com.github.klee0kai.thekey.app.ui.navigation.navigateAppSettings
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.perm.PermUnit
 import com.github.klee0kai.thekey.core.perm.model.SimplePerm
+import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
 import com.github.klee0kai.thekey.core.ui.navigation.model.AlertDialogDestination
 import com.github.klee0kai.thekey.core.ui.navigation.model.ConfirmDialogResult
 import com.github.klee0kai.thekey.core.ui.navigation.model.TextProvider
@@ -21,21 +22,17 @@ class SimplePermUnit(
     private val permissions: List<SimplePerm>,
 ) : PermUnit {
 
-    val scope by lazy { DI.mainThreadScope() }
-    val router by lazy { DI.router() }
-
-    val activity get() = DI.activity()
-    val app get() = DI.ctx()
+    private val app get() = DI.ctx()
 
     override fun isGranted(): Boolean = permissions.all { perm ->
         ActivityCompat.checkSelfPermission(app, perm.perm) == PackageManager.PERMISSION_GRANTED
     }
 
-    override fun ask(purpose: TextProvider): Flow<Boolean> = singleEventFlow {
+    override fun AppRouter.ask(purpose: TextProvider, skipDialog: Boolean): Flow<Boolean> = singleEventFlow {
         if (isGranted()) return@singleEventFlow true
 
         // ask all permissions directly
-        router.askPermissions(permissions.map { it.perm }.toTypedArray())
+        askPermissions(permissions.map { it.perm }.toTypedArray())
             .last()
 
         // check need
@@ -43,26 +40,28 @@ class SimplePermUnit(
         val showRationale = permissions.any { perm -> activity?.shouldShowRequestPermissionRationale(perm.perm) == true }
 
         if (notGranted && !showRationale) {
-            val goToSettingsResult = router.navigate<ConfirmDialogResult>(
-                AlertDialogDestination(
-                    title = TextProvider(R.string.grant_permissions),
-                    message = TextProvider(buildString {
-                        appendLine(purpose.text(app.resources))
-                        appendLine(app.resources.getString(R.string.neen_permissions_list))
+            if (!skipDialog) {
+                val goToSettingsResult = navigate<ConfirmDialogResult>(
+                    AlertDialogDestination(
+                        title = TextProvider(R.string.grant_permissions),
+                        message = TextProvider(buildString {
+                            appendLine(purpose.text(app.resources))
+                            appendLine(app.resources.getString(R.string.neen_permissions_list))
 
-                        permissions.forEach {
-                            appendLine(app.resources.getString(it.desc))
-                        }
-                    }),
-                    confirm = TextProvider(R.string.go_to_settings),
-                    reject = TextProvider(R.string.reject),
-                )
-            ).last()
-            if (goToSettingsResult != ConfirmDialogResult.CONFIRMED) {
-                return@singleEventFlow false
+                            permissions.forEach {
+                                appendLine(app.resources.getString(it.desc))
+                            }
+                        }),
+                        confirm = TextProvider(R.string.go_to_settings),
+                        reject = TextProvider(R.string.reject),
+                    )
+                ).last()
+                if (goToSettingsResult != ConfirmDialogResult.CONFIRMED) {
+                    return@singleEventFlow false
+                }
             }
 
-            router.navigateAppSettings()
+            navigateAppSettings()
                 .last()
         }
 

@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.core.utils.views.ratioBetween
 import kotlinx.parcelize.Parcelize
@@ -115,7 +116,7 @@ fun LazyListIndicatorIfNeed(
 @VisibleForTesting
 @Preview
 @Composable
-fun ListIndicatorVerticalPreview() = AppTheme {
+fun ListIndicatorVerticalPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     Box(
         modifier = Modifier
             .size(10.dp, 100.dp)
@@ -135,7 +136,7 @@ fun ListIndicatorVerticalPreview() = AppTheme {
 @VisibleForTesting
 @Preview
 @Composable
-fun ListIndicatorHorizontalPreview() = AppTheme {
+fun ListIndicatorHorizontalPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     Box(
         modifier = Modifier
             .size(100.dp, 10.dp)
@@ -156,7 +157,7 @@ fun ListIndicatorHorizontalPreview() = AppTheme {
 @VisibleForTesting
 @Preview
 @Composable
-fun ListIndicatorZeroPreview() = AppTheme {
+fun ListIndicatorZeroPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     Box(
         modifier = Modifier
             .size(100.dp, 10.dp)

@@ -42,6 +42,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
+import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.minInsets
@@ -105,8 +106,8 @@ fun PluginScreen(
                 },
             onClick = {
                 when (featureStatus) {
-                    NotInstalled, InstallError -> presenter?.install()
-                    Installed, is Installing -> presenter?.uninstall()
+                    NotInstalled, InstallError -> presenter?.install(router)
+                    Installed, is Installing -> presenter?.uninstall(router)
                 }
             },
             colors = when (featureStatus) {
@@ -165,7 +166,7 @@ fun PluginScreen(
 @Preview(device = Devices.PHONE)
 @Composable
 fun PluginNotInstalledPreview() = EdgeToEdgeTemplate {
-    AppTheme {
+    AppTheme(theme = DefaultThemes.darkTheme) {
         DI.hardResetToPreview()
         DI.initPresenterModule(object : PresentersModule {
             override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {
@@ -180,7 +181,7 @@ fun PluginNotInstalledPreview() = EdgeToEdgeTemplate {
 @Preview(device = Devices.PHONE)
 @Composable
 fun PluginBuyPreview() = EdgeToEdgeTemplate {
-    AppTheme {
+    AppTheme(theme = DefaultThemes.darkTheme) {
         DI.hardResetToPreview()
         DI.initPresenterModule(object : PresentersModule {
             override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {
@@ -201,7 +202,7 @@ fun PluginBuyPreview() = EdgeToEdgeTemplate {
 @Preview(device = Devices.PHONE)
 @Composable
 fun PluginInstallingPreview() = EdgeToEdgeTemplate {
-    AppTheme {
+    AppTheme(theme = DefaultThemes.darkTheme) {
         DI.hardResetToPreview()
         DI.initPresenterModule(object : PresentersModule {
             override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {
@@ -216,7 +217,7 @@ fun PluginInstallingPreview() = EdgeToEdgeTemplate {
 @Preview(device = Devices.PHONE)
 @Composable
 fun PluginInstalledPreview() = EdgeToEdgeTemplate {
-    AppTheme {
+    AppTheme(theme = DefaultThemes.darkTheme) {
         DI.hardResetToPreview()
         DI.initPresenterModule(object : PresentersModule {
             override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {
@@ -231,7 +232,7 @@ fun PluginInstalledPreview() = EdgeToEdgeTemplate {
 @Preview(device = Devices.PHONE)
 @Composable
 fun PluginInstallErrorPreview() = EdgeToEdgeTemplate {
-    AppTheme {
+    AppTheme(theme = DefaultThemes.darkTheme) {
         DI.hardResetToPreview()
         DI.initPresenterModule(object : PresentersModule {
             override fun pluginPresenter(feature: DynamicFeature) = object : PluginPresenter {
