@@ -17,16 +17,8 @@ fun DebugDarkScreenPreview(
     content: @Composable () -> Unit
 ) {
     EdgeToEdgeTemplate {
-        CompositionLocalProvider(
-            LocalLayoutDirection provides layoutDirection,
-        ) {
-            AppTheme(
-                theme = DefaultThemes.darkTheme,
-            ) {
-                OverlayContainer {
-                    content()
-                }
-            }
+        DebugDarkContentPreview(layoutDirection) {
+            content()
         }
     }
 }

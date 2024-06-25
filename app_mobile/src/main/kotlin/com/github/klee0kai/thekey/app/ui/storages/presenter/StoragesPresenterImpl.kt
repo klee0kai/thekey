@@ -116,9 +116,9 @@ open class StoragesPresenterImpl : StoragesPresenter {
         rep().deleteColorGroup(id)
     }
 
-    override fun exportStorage(storagePath: String, router: AppRouter) = scope.launch {
-        val createDocResult = router.navigate(createFileIntent(File(storagePath).name))
-            .firstOrNull()
+    override fun exportStorage(storagePath: String, router: AppRouter?) = scope.launch {
+        val createDocResult = router?.navigate(createFileIntent(File(storagePath).name))
+            ?.firstOrNull()
         if (createDocResult?.error != null) Timber.e(createDocResult.error, "error create file to save")
 
         val url = createDocResult?.data?.data ?: return@launch
@@ -141,14 +141,14 @@ open class StoragesPresenterImpl : StoragesPresenter {
         }
     }
 
-    override fun editStorage(storagePath: String, router: AppRouter) = scope.launch {
-        router.navigate(EditStorageDestination(path = storagePath))
-            .firstOrNull()
+    override fun editStorage(storagePath: String, router: AppRouter?) = scope.launch {
+        router?.navigate(EditStorageDestination(path = storagePath))
+            ?.firstOrNull()
     }
 
-    override fun importStorage(appRouter: AppRouter) = scope.launch {
-        val openResult = appRouter.navigate(openFileIntent())
-            .firstOrNull()
+    override fun importStorage(appRouter: AppRouter?) = scope.launch {
+        val openResult = appRouter?.navigate(openFileIntent())
+            ?.firstOrNull()
         if (openResult?.error != null) Timber.e(openResult.error, "import storage err")
         val url = openResult?.data?.data ?: return@launch
 
@@ -163,7 +163,7 @@ open class StoragesPresenterImpl : StoragesPresenter {
             val storageInfo = engine().storageInfo(path = newStorageFile.absolutePath)
             if (storageInfo == null) {
                 appRouter.snack(CoreR.string.storage_file_incorrect)
-                newStorageFile.deleteOnExit()
+                newStorageFile.delete()
             } else {
                 rep().setStorage(storageInfo.toColoredStorage())
                 selectedGroupId.value = null
@@ -174,7 +174,7 @@ open class StoragesPresenterImpl : StoragesPresenter {
         }
     }
 
-    override fun installAutoSearchPlugin(appRouter: AppRouter) =
+    override fun installAutoSearchPlugin(appRouter: AppRouter?) =
         installFindStoragePresenter.install(appRouter)
 
 }

@@ -23,6 +23,7 @@ import com.github.klee0kai.thekey.core.utils.possitions.onGlobalPositionState
 import com.github.klee0kai.thekey.core.utils.possitions.rememberViewPosition
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkContentPreview
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
+import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 
 
@@ -31,7 +32,7 @@ fun ColoredStorageItemWidget(
     modifier: Modifier = Modifier,
     state: StorageItemWidgetState = StorageItemWidgetState(),
 ) {
-    val router = LocalRouter.current
+    val router by LocalRouter.currentRef
     var showMenu by remember { mutableStateOf(false) }
     val position = rememberViewPosition()
     val presenter by rememberOnScreenRef { DI.storagesPresenter() }

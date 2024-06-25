@@ -59,7 +59,7 @@ open class SettingsRepository {
         private const val SETTING_GEN_PASS_INCLUDE_EN = 43
         private const val SETTING_GEN_PASS_INCLUDE_SPEC_SYMBOLS = 44
         private const val SETTING_EXTERNAL_STORAGES_GROUP = 55
-        private const val SETTING_OTP_NOTES_GROUP = 55
+        private const val SETTING_OTP_NOTES_GROUP = 57
     }
 
 }

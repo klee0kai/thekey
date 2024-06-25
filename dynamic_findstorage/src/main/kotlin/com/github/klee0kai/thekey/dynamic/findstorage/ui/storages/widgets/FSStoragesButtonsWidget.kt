@@ -39,6 +39,7 @@ import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesListWidgetSta
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
+import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.isIme
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.dynamic.findstorage.R
@@ -54,7 +55,7 @@ fun FSStoragesButtonsWidget(
     widget: StoragesButtonsWidgetState = StoragesButtonsWidgetState(),
     parent: @Composable (modifier: Modifier, state: StoragesListWidgetState) -> Unit = { _, _ -> },
 ) = Box(modifier = modifier.fillMaxSize()) {
-    val router = LocalRouter.current
+    val router by LocalRouter.currentRef
     val theme = LocalTheme.current
     val presenter by rememberOnScreenRef { FSDI.fsStoragesPresenter() }
     val extGroup by presenter!!.externalStoragesColorGroup.collectAsState(key = Unit, initial = ColorGroup.externalStorages())
@@ -132,7 +133,7 @@ fun FSStoragesButtonsWidget(
                     if (showSearchExt) {
                         presenter?.searchStorages()
                     } else {
-                        router.navigate(EditStorageDestination())
+                        router?.navigate(EditStorageDestination())
                     }
                 },
                 content = {

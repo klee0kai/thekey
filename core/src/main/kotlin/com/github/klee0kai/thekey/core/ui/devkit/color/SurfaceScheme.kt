@@ -43,6 +43,6 @@ enum class KeyColor {
 
         val colors get() = entries.filter { it != NOCOLOR }
 
-        val selectableColorGroups get() = colors.map { ColorGroup(id = -it.ordinal.toLong() * 100, keyColor = it) }
+        val selectableColorGroups get() = colors.map { ColorGroup(id = -it.ordinal.toLong() - 100, keyColor = it) }
     }
 }

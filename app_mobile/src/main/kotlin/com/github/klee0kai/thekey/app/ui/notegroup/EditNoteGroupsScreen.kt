@@ -87,12 +87,13 @@ fun EditNoteGroupsScreen(
                     .offset(y = dragProgress.topContentOffsetFromDrag()),
                 groupNameFieldModifier = Modifier
                     .focusRequester(groupNameFieldFocusRequester),
-// TODO                select = state.color,
+                selectedId = state.selectedGroupId,
+                variants = state.colorGroupVariants,
                 groupName = state.name,
                 onChangeGroupName = { presenter?.input { copy(name = it.take(1)) } },
                 onSelect = {
                     groupNameFieldFocusRequester.freeFocus()
-//  TODO                   presenter?.input { copy(color = it) }
+                    presenter?.input { copy(selectedGroupId = it.id) }
                 }
             )
         },

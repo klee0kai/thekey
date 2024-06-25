@@ -53,7 +53,7 @@ list<T> readSimpleList(char *buffer, int len) {
 
 // -------------------- static ---------------------------------
 shared_ptr<StorageInfo> thekey_v2::storageFullInfo(const std::string &file) {
-    int fd = open(file.c_str(), O_RDONLY | O_CLOEXEC);
+    int fd = open(file.c_str(), O_RDONLY);
     if (fd == -1) return {};
     auto header = storageHeader(fd);
     if (!header)return {};
@@ -66,7 +66,7 @@ shared_ptr<StorageInfo> thekey_v2::storageFullInfo(const std::string &file) {
 }
 
 int thekey_v2::createStorage(const thekey::Storage &storage) {
-    int fd = open(storage.file.c_str(), O_RDONLY | O_WRONLY | O_CLOEXEC | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
+    int fd = open(storage.file.c_str(), O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
     if (fd < 0) {
         keyError = KEY_OPEN_FILE_ERROR;
         return KEY_OPEN_FILE_ERROR;
@@ -91,7 +91,7 @@ int thekey_v2::createStorage(const thekey::Storage &storage) {
 }
 
 std::shared_ptr<KeyStorageV2> thekey_v2::storage(const std::string &path, const std::string &passw) {
-    int fd = open(path.c_str(), O_RDONLY | O_CLOEXEC);
+    int fd = open(path.c_str(), O_RDWR);
     if (fd == -1) {
         keyError = KEY_OPEN_FILE_ERROR;
         return {};
@@ -151,7 +151,7 @@ std::shared_ptr<CryptContext> thekey_v2::cryptContext(
 
 // ------------------- public --------------------------
 KeyStorageV2::KeyStorageV2(int fd, const std::string &path, const std::shared_ptr<CryptContext> &ctx)
-        : storageFileDescriptor(fd), storagePath(path), ctx(ctx) {
+        : storageFileDescriptor(fd), singleDescriptorMode(0), storagePath(path), ctx(ctx) {
     tempStoragePath = path.substr(0, path.find_last_of('.')) + "-temp.ckey";
     cachedInfo = {.path = storagePath,};
     _dataSnapshot = {.idCounter = ID_COUNTER_START};
@@ -170,7 +170,7 @@ void KeyStorageV2::setSingleDescriptorMode(const int &mode) {
 
 int KeyStorageV2::readAll() {
     lock_guard guard(editMutex);
-    lseek(storageFileDescriptor, SEEK_SET, 0);
+    lseek(storageFileDescriptor, 0, SEEK_SET);
 
     int idCounter = ID_COUNTER_START;
     int colorGroupIdCounter = ID_COUNTER_START;
@@ -297,9 +297,9 @@ int KeyStorageV2::save(const int &fd) {
         keyError = KEY_OPEN_FILE_ERROR;
         return KEY_OPEN_FILE_ERROR;
     }
+    lseek(fd, 0, SEEK_SET);
+
     auto data = snapshot();
-    lseek(fd, SEEK_SET, 0);
-    ftruncate(fd, 0);
     auto writeLen = write(fd, &*fheader, sizeof(StorageHeaderFlat));
     FileSectionFlat fileSection{};
 

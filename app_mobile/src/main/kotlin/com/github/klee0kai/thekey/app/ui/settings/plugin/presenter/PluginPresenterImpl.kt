@@ -30,17 +30,17 @@ open class PluginPresenterImpl(
             .collect(this)
     }
 
-    override fun install(router: AppRouter) = scope.launchLatest("install") {
+    override fun install(router: AppRouter?) = scope.launchLatest("install") {
         featuresManager().install(feature)
         status.firstOrNull { it.isCompleted }
 
-        router.softUpdateFeatures()
+        router?.softUpdateFeatures()
     }
 
-    override fun uninstall(router: AppRouter) = scope.launchLatest("install") {
+    override fun uninstall(router: AppRouter?) = scope.launchLatest("install") {
         featuresManager().uninstall(feature)
 
-        router.softUpdateFeatures()
+        router?.softUpdateFeatures()
     }
 
     protected open suspend fun AppRouter.softUpdateFeatures() {

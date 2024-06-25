@@ -26,7 +26,7 @@ data class ColorGroup(
 
 fun ColorGroup.Companion.noGroup(): ColorGroup =
     ColorGroup(
-        id = -201,
+        id = 0,
         name = CoreDI.ctx().resources.getString(R.string.no),
         keyColor = KeyColor.NOCOLOR
     )

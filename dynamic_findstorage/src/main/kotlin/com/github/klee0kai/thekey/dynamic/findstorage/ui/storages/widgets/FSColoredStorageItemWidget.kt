@@ -22,6 +22,7 @@ import com.github.klee0kai.thekey.core.utils.possitions.onGlobalPositionState
 import com.github.klee0kai.thekey.core.utils.possitions.rememberViewPosition
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkContentPreview
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
+import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.dynamic.findstorage.di.FSDI
 import com.github.klee0kai.thekey.dynamic.findstorage.ui.storages.content.FSColoredStorageItem
@@ -32,7 +33,7 @@ fun FSColoredStorageItemWidget(
     modifier: Modifier = Modifier,
     state: StorageItemWidgetState = StorageItemWidgetState(),
 ) {
-    val router = LocalRouter.current
+    val router by LocalRouter.currentRef
     var showMenu by remember { mutableStateOf(false) }
     val position = rememberViewPosition()
     val presenter by rememberOnScreenRef { FSDI.fsStoragesPresenter() }

@@ -15,8 +15,8 @@ interface EditStoragePresenter {
 
     fun input(block: EditStorageState.() -> EditStorageState): Job = emptyJob()
 
-    fun remove(router: AppRouter): Job = emptyJob()
+    fun remove(router: AppRouter?): Job = emptyJob()
 
-    fun save(router: AppRouter): Job = emptyJob()
+    fun save(router: AppRouter?): Job = emptyJob()
 
 }
