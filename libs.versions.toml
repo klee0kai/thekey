@@ -13,6 +13,8 @@ androidx-activity = "1.9.0"
 androidx-futures = "1.1.0"
 
 firebase-bom = "33.1.0"
+google-creditals = "1.2.2"
+googleid = "1.1.0"
 
 compose-bom = "2024.06.00"
 compose-constraintlayout = "1.1.0-alpha13"
@@ -60,6 +62,10 @@ firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
 firebase-crashlytics-gradle = { group = "com.google.firebase", name = "firebase-crashlytics-gradle", version.ref = "crashlytics-gradle" }
 google-services-gradle = { group = "com.google.gms", name = "google-services", version.ref = "google-services-gradle" }
+
+google-creditals = { group = "androidx.credentials", name = "credentials", version.ref = "google-creditals" }
+google-creditals-gp = { group = "androidx.credentials", name = "credentials-play-services-auth", version.ref = "google-creditals" }
+google-identity = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleid" }
 
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
 compose-activity = { group = "androidx.activity", name = "activity-compose" }
@@ -118,6 +124,7 @@ compose-test = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 
 androidx = ["androidx-core", "androidx-lifecycle", "androidx-activity", "androidx-futures"]
 firebase = ["firebase-analytics", "firebase-crashlytics"]
+google-auth = ["google-creditals", "google-creditals-gp", "google-identity"]
 compose = ["compose-activity", "compose-ui", "compose-graphics",
     "compose-m3", "compose-constraintlayout", "compose-wear", "compose-nav", "compose-shimmer"]
 compose-debug = ["compose-preview", "compose-tooling", "compose-manifest", "compose-EdgeToEdge"]
