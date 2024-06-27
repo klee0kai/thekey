@@ -1,12 +1,12 @@
 package com.github.klee0kai.thekey.dynamic.findstorage.domain
 
-import com.github.klee0kai.thekey.core.domain.StartupInteractor
+import com.github.klee0kai.thekey.core.domain.AppLifeCycleInteractor
 import com.github.klee0kai.thekey.dynamic.findstorage.di.FSDI
 import kotlinx.coroutines.launch
 
-class FSStartupInteractorExt(
-    val origin: StartupInteractor,
-) : StartupInteractor by origin {
+class FSAppLifeCycleInteractorExt(
+    val origin: AppLifeCycleInteractor,
+) : AppLifeCycleInteractor by origin {
 
     private val scope = FSDI.defaultThreadScope()
     private val findStorageInteractor = FSDI.findStoragesInteractorLazy()

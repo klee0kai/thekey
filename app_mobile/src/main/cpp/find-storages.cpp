@@ -43,9 +43,10 @@ std::shared_ptr<JvmStorageInfo> JvmFindStorageEngine::storageInfo(const std::str
     if (storage) {
         return std::make_shared<JvmStorageInfo>(JvmStorageInfo{
                 .path = storage->file,
+                .salt = storage->saltSha256,
                 .name = storage->name,
                 .description = storage->description,
-                .version = int(storage->storageVersion)
+                .version = int(storage->storageVersion),
         });
     } else {
         return {};
@@ -57,6 +58,7 @@ std::shared_ptr<JvmStorageInfo> JvmFindStorageEngine::storageInfoFromDescriptor(
     if (storage) {
         return std::make_shared<JvmStorageInfo>(JvmStorageInfo{
                 .path = storage->file,
+                .salt = storage->saltSha256,
                 .name = storage->name,
                 .description = storage->description,
                 .version = int(storage->storageVersion)

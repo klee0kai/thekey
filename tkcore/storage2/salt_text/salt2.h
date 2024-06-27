@@ -41,7 +41,7 @@ namespace thekey_v2 {
      * @param out tkey encoded text
      * @param in simple unicode text
      * @param bufSize in and out buffers size
-     * @param salt salt out text
+     * @param salt saltSha256 out text
      * @return
      */
     int encoded(uint32_t schemeId,

@@ -62,6 +62,10 @@ fun ColoredStorageItemWidget(
                     showMenu = false
                     presenter?.editStorage(state.coloredStorage.path, router)
                 },
+                onBackup = {
+                    showMenu = false
+                    presenter?.backupStorage(state.coloredStorage.path, router)
+                },
                 onExport = {
                     showMenu = false
                     presenter?.exportStorage(state.coloredStorage.path, router)

@@ -1,7 +1,9 @@
 package com.github.klee0kai.thekey.core.domain
 
-interface StartupInteractor {
+interface AppLifeCycleInteractor {
 
     fun appStarted() = Unit
+
+    fun appMinimazed() = Unit
 
 }

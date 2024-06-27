@@ -36,4 +36,5 @@ if (isPrivateAvailable) {
     include(":private:feature_firebase")
     include(":private:feature_billing")
     include(":private:dynamic_autofill")
+    include(":private:dynamic_gdrive")
 }

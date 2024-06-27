@@ -69,7 +69,7 @@ namespace thekey_v2 {
         char name[STORAGE_NAME_LEN];
         char description[STORAGE_DESCRIPTION_LEN];
 
-        unsigned char salt[SALT_LEN]; // crypt/decrypt salt
+        unsigned char salt[SALT_LEN]; // crypt/decrypt saltSha256
         INT32_BIG_ENDIAN(keyInteractionsCount)// key crypt/decrypt interaction count
         INT32_BIG_ENDIAN(interactionsCount)// crypt/decrypt interaction count
         INT32_BIG_ENDIAN_ENUM(cryptType, EncryptType) // crypt type

@@ -12,6 +12,7 @@
 #define FILE_TYPE_OWNER_LEN 256
 #define STORAGE_NAME_LEN 128
 #define STORAGE_DESCRIPTION_LEN 512
+#define SALT_LEN 2048
 
 namespace thekey_v2 {
 
@@ -25,8 +26,12 @@ namespace thekey_v2 {
 
         char name[STORAGE_NAME_LEN];
         char description[STORAGE_DESCRIPTION_LEN];
+        unsigned char salt[SALT_LEN]; // crypt/decrypt saltSha256
 
         [[nodiscard]] int checkSignature() const;
+
+        [[nodiscard]] std::string saltSha256() const;
+
     };
 
 #pragma pack(pop)

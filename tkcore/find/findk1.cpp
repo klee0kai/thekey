@@ -2,7 +2,9 @@
 // Created by panda on 27.01.24.
 //
 
+#include <openssl/sha.h>
 #include "findk1.h"
+#include "../otpauth/tools/base64.h"
 
 using namespace thekey;
 using namespace thekey_v1;
@@ -14,6 +16,15 @@ static std::shared_ptr<StorageHeaderShort> storageHeader(int fd);
     return memcmp(signature, &thekey::storageSignature_V1, SIGNATURE_LEN) == 0;
 }
 
+string StorageHeaderShort::saltSha256() const {
+    char sha256Buf[SHA256_DIGEST_LENGTH + 1];
+    memset(sha256Buf, 0, sizeof(sha256Buf));
+    ::SHA256(salt, SALT_LEN, (unsigned char *) sha256Buf);
+    auto result = std::vector<uint8_t>(SHA256_DIGEST_LENGTH);
+    result.assign(sha256Buf, sha256Buf + SHA256_DIGEST_LENGTH);
+    return base64::encode(result);
+}
+
 shared_ptr<thekey::Storage> thekey_v1::storage(int fd, const string &path) {
     auto header = storageHeader(fd);
     if (!header) return {};
@@ -22,6 +33,7 @@ shared_ptr<thekey::Storage> thekey_v1::storage(int fd, const string &path) {
     storage->storageVersion = header->storageVersion;
     storage->name = header->name;
     storage->description = header->description;
+    storage->saltSha256 = header->saltSha256();
     return storage;
 }
 

@@ -3,6 +3,7 @@ package com.github.klee0kai.thekey.app.ui.navigation.model
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.engine.model.DecryptedOtpNote
 import com.github.klee0kai.thekey.app.features.autofill
+import com.github.klee0kai.thekey.app.features.gdrive
 import com.github.klee0kai.thekey.app.features.qrcodeScanner
 import com.github.klee0kai.thekey.app.ui.note.model.EditTabs
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
@@ -145,4 +146,12 @@ data object QRCodeScanDestination : DynamicDestination(DynamicFeature.qrcodeScan
 
 @Parcelize
 data object AutoFillSettingsDestination : DynamicDestination(DynamicFeature.autofill())
+
+@Parcelize
+data object BackupSettings : DynamicDestination(DynamicFeature.gdrive())
+
+@Parcelize
+data class BackupStorageDestination(
+    val storageIdentifier: StorageIdentifier = StorageIdentifier(),
+) : DynamicDestination(DynamicFeature.gdrive())
 

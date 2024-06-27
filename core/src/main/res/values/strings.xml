@@ -24,6 +24,9 @@
     <string name="title_findstorages">Find storages</string>
     <string name="desc_findstorages">Search for encrypted storage throughout the phone</string>
 
+    <string name="title_gdrive">Google Drive</string>
+    <string name="desc_gdrvie">Backup you storages in your google drive</string>
+
     <string name="login">Login</string>
     <string name="password">Password</string>
     <string name="app_login_description">Create and remember your passport for your key masster storage</string>
@@ -122,4 +125,6 @@
     <string name="no_access">No access</string>
     <string name="duplicate">Duplicate</string>
     <string name="external_storage_group_disabled">External group has been disabled</string>
+    <string name="backup">Backup</string>
+    <string name="debug">Debug</string>
 </resources>

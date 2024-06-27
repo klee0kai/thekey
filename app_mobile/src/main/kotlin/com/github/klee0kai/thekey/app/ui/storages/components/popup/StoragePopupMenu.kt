@@ -37,14 +37,16 @@ fun StoragePopupMenu(
     colorGroups: List<ColorGroup> = emptyList(),
     selectedGroupId: Long? = null,
     onEdit: (() -> Unit)? = null,
+    onBackup: (() -> Unit)? = null,
     onExport: (() -> Unit)? = null,
     onColorGroupSelected: ((ColorGroup) -> Unit)? = null,
 ) {
     val theme = LocalTheme.current
     val colorScheme = theme.colorScheme
     val surfaceColor = LocalTheme.current.colorScheme.popupMenu.surfaceColor
-    val exportText = stringResource(id = R.string.export)
     val editText = stringResource(id = R.string.edit)
+    val backupText = stringResource(id = R.string.backup)
+    val exportText = stringResource(id = R.string.export)
 
     ConstraintLayout(modifier = modifier) {
         val (menuField) = createRefs()
@@ -138,11 +140,13 @@ fun StoragePopupMenu(
             },
             variants = buildList {
                 if (onEdit != null) add(editText)
+                if (onBackup != null) add(backupText)
                 if (onExport != null) add(exportText)
             },
             onSelected = { text, _ ->
                 when (text) {
                     editText -> onEdit?.invoke()
+                    backupText -> onBackup?.invoke()
                     exportText -> onExport?.invoke()
                 }
             }
@@ -169,8 +173,9 @@ private fun StoragePopupMenuPreview() = DebugDarkContentPreview {
                 ColorGroup(Dummy.dummyId, "E", KeyColor.VIOLET),
                 ColorGroup(Dummy.dummyId, "E", KeyColor.VIOLET),
             ),
-            onExport = {},
             onEdit = {},
+            onBackup = {},
+            onExport = {},
             onColorGroupSelected = { },
         )
     }

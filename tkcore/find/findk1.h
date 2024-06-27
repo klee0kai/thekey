@@ -11,6 +11,7 @@
 
 #define STORAGE_NAME_LEN 128
 #define STORAGE_DESCRIPTION_LEN 512
+#define SALT_LEN 2048
 
 namespace thekey_v1 {
 
@@ -21,8 +22,13 @@ namespace thekey_v1 {
         unsigned char storageVersion;
         char name[STORAGE_NAME_LEN];
         char description[STORAGE_DESCRIPTION_LEN];
+        unsigned int notesCount;
+        unsigned int genPasswCount;
+        unsigned char salt[SALT_LEN];// saltSha256 used during encryption
 
         [[nodiscard]] int checkSignature() const;
+
+        [[nodiscard]] std::string saltSha256() const;
 
     };
 

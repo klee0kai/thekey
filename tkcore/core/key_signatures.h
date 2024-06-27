@@ -45,6 +45,7 @@ namespace thekey {
         unsigned int storageVersion;
         std::string name;
         std::string description;
+        std::string saltSha256;
     };
 
     extern const char *const storageFormat;

@@ -60,7 +60,7 @@ struct thekey_v1::StorageV1_Header {
     char description[STORAGE_DESCRIPTION_LEN];
     unsigned int notesCount;
     unsigned int genPasswCount;
-    unsigned char salt[SALT_LEN];// salt used during encryption
+    unsigned char salt[SALT_LEN];// saltSha256 used during encryption
 };
 
 struct thekey_v1::CryptedPassw {
