@@ -17,7 +17,7 @@ brooklyn {
 
 android {
     appDefaults(appGroup, project)
-    dynamicFeatures += setOf(/*":dynamic_qrcodescanner", */":dynamic_findstorage")
+    dynamicFeatures += setOf(":dynamic_qrcodescanner", ":dynamic_findstorage")
     if (Commercial.isCommercialAvailable) {
         dynamicFeatures += setOf(":private:dynamic_autofill", ":private:dynamic_gdrive")
     }

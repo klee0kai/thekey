@@ -27,9 +27,6 @@ class App : Application() {
     }
 
 
-
-
-
     companion object {
         var appRef: WeakReference<App>? = null
     }
