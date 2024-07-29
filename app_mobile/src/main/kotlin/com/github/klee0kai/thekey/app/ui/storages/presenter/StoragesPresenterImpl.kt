@@ -6,10 +6,12 @@ import com.github.klee0kai.thekey.app.data.mapping.toColoredStorage
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.features.findStorage
 import com.github.klee0kai.thekey.app.ui.navigation.createFileIntent
+import com.github.klee0kai.thekey.app.ui.navigation.model.BackupStorageDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditStorageDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditStorageGroupDestination
 import com.github.klee0kai.thekey.app.ui.navigation.openFileIntent
 import com.github.klee0kai.thekey.app.ui.storage.model.SearchState
+import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.domain.model.externalStorages
 import com.github.klee0kai.thekey.core.domain.model.feature.PaidFeature
@@ -64,7 +66,8 @@ open class StoragesPresenterImpl : StoragesPresenter {
         selectableColorGroups
             .map { list ->
                 buildList {
-                    if (settings().externalStoragesGroup() && !list.contains { it.id == extGroup.id }) add(extGroup)
+                    if (settings().externalStoragesGroup() && !list.contains { it.id == extGroup.id })
+                        add(extGroup)
                     addAll(list)
                 }
             }
@@ -87,7 +90,8 @@ open class StoragesPresenterImpl : StoragesPresenter {
                 val filter = search.searchText
                 var filtList = storages
                 if (filterExt) filtList = filtList.filter { shortPath.isExternal(it.path) }
-                else if (selectedGroup != null) filtList = filtList.filter { it.colorGroup?.id == selectedGroup }
+                else if (selectedGroup != null) filtList =
+                    filtList.filter { it.colorGroup?.id == selectedGroup }
                 if (filter.isNotBlank()) filtList = filtList.filter { it.filterBy(filter) }
                 filtList
             }
@@ -119,7 +123,10 @@ open class StoragesPresenterImpl : StoragesPresenter {
     override fun exportStorage(storagePath: String, router: AppRouter?) = scope.launch {
         val createDocResult = router?.navigate(createFileIntent(File(storagePath).name))
             ?.firstOrNull()
-        if (createDocResult?.error != null) Timber.e(createDocResult.error, "error create file to save")
+        if (createDocResult?.error != null) Timber.e(
+            createDocResult.error,
+            "error create file to save"
+        )
 
         val url = createDocResult?.data?.data ?: return@launch
         try {
@@ -134,7 +141,9 @@ open class StoragesPresenterImpl : StoragesPresenter {
     }
 
     override fun addNewStorage(appRouter: AppRouter?) = scope.launch {
-        if (billing.isAvailable(PaidFeature.UNLIMITED_GROUPS) || (filteredColorGroups.firstOrNull()?.size ?: 0) < PaidLimits.PAID_GROUPS_LIMIT) {
+        if (billing.isAvailable(PaidFeature.UNLIMITED_GROUPS) || (filteredColorGroups.firstOrNull()?.size
+                ?: 0) < PaidLimits.PAID_GROUPS_LIMIT
+        ) {
             appRouter?.navigate(EditStorageGroupDestination())
         } else {
             appRouter?.snack(R.string.limited_in_free_version)
@@ -146,6 +155,11 @@ open class StoragesPresenterImpl : StoragesPresenter {
             ?.firstOrNull()
     }
 
+    override fun backupStorage(storagePath: String, router: AppRouter?) = scope.launch {
+        router?.navigate(BackupStorageDestination(StorageIdentifier(path = storagePath)))
+            ?.firstOrNull()
+    }
+
     override fun importStorage(appRouter: AppRouter?) = scope.launch {
         val openResult = appRouter?.navigate(openFileIntent())
             ?.firstOrNull()
@@ -153,7 +167,8 @@ open class StoragesPresenterImpl : StoragesPresenter {
         val url = openResult?.data?.data ?: return@launch
 
         val filename = dateFormat.format(Date())
-        val newStorageFile = File("${shortPath.appPath}/${filename}.$tKeyExtension").createNewWithSuffix()
+        val newStorageFile = File("${shortPath.appPath}/${filename}.$tKeyExtension")
+            .createNewWithSuffix()
         try {
             ctx.contentResolver.openInputStream(url)?.use { input ->
                 FileOutputStream(newStorageFile).use { output ->

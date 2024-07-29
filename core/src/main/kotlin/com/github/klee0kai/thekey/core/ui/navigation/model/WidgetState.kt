@@ -27,3 +27,7 @@ data class StorageItemWidgetState(
     val iconContent: (@Composable () -> Unit)? = null,
 ) : WidgetState
 
+
+data object DebugSettingsWidgetState : WidgetState
+
+

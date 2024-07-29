@@ -118,10 +118,14 @@ fun NotesContentPreview() = EdgeToEdgeTemplate {
     AppTheme(theme = DefaultThemes.darkTheme) {
         DI.hardResetToPreview()
         DI.initPresenterModule(object : PresentersModule {
-            override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterDummy()
+            override fun storagePresenter(storageIdentifier: StorageIdentifier) =
+                StoragePresenterDummy()
         })
         StorageScreen(
-            dest = StorageDestination(path = Dummy.unicString, version = 2)
+            dest = StorageDestination(
+                path = Dummy.unicString, version = 2,
+                selectedPage = 0
+            ),
         )
     }
 }

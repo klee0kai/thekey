@@ -16,7 +16,7 @@ class App : Application() {
         if (BuildConfig.DEBUG) Timber.plant(TimberWtfTree())
     }
 
-    private val interactor by lazy { DI.startupInteractor() }
+    private val interactor by lazy { DI.lifecycleInteractor() }
 
     override fun onCreate() {
         super.onCreate()

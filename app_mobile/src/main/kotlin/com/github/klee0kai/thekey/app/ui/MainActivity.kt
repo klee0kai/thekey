@@ -17,6 +17,8 @@ open class MainActivity : BaseActivity() {
 
     override val activityIdentifier: ActivityIdentifier? get() = null
 
+    protected val lifeCycleInteractor get() = DI.lifecycleInteractor()
+
     init {
         router.initDestination(LoginDestination())
     }
@@ -35,6 +37,11 @@ open class MainActivity : BaseActivity() {
                 }
             }
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        lifeCycleInteractor.appMinimazed()
     }
 
     override fun onNewIntent(intent: Intent) {

@@ -7,7 +7,7 @@ import kotlinx.coroutines.CoroutineScope
 class StringNoteDelegate(
     settingsDao: AsyncCoroutineProvide<SettingDao>,
     scope: CoroutineScope,
-    settingId: Int,
+    settingId: String,
     defaultValue: () -> String,
 ) : SettingsNoteDelegate<String>(
     settingsDao, scope, settingId, defaultValue,

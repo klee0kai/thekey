@@ -74,6 +74,6 @@ TEST(SaltTests, SalteDesalt) {
         }
     }
 
-    //  saltHeader salt not work
+    //  saltHeader saltSha256 not work
     ASSERT_FALSE(fmSaltIndex >= 1000);
 }

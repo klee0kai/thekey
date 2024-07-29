@@ -1,6 +1,7 @@
 package com.github.klee0kai.thekey.core.ui.navigation
 
 import android.content.Intent
+import android.content.IntentSender
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedDispatcher
 import androidx.annotation.StringRes
@@ -70,6 +71,8 @@ interface NavBoardRouter {
 interface ActivityRouter {
 
     fun navigate(intent: Intent): Flow<ActivityResult> = emptyFlow()
+
+    fun navigate(sender: IntentSender): Flow<ActivityResult> = emptyFlow()
 
     fun onResult(result: ActivityResult) = Unit
 

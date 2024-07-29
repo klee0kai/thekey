@@ -12,4 +12,10 @@ object TimeFormats {
         return formatter
     }
 
+    fun timeDateFormat(): DateFormat {
+        val formatter = SimpleDateFormat.getDateTimeInstance()
+        formatter.timeZone = TimeZone.getTimeZone("UTC")
+        return formatter
+    }
+
 }

@@ -27,41 +27,49 @@ import timber.log.Timber
 
 class ComposeRouterImpl(context: RouterContext) : ComposeRouter, RouterContext by context {
 
-    override fun navigate(vararg destination: Destination): Flow<Any?> = navigate(destinations = destination, resultClazz = Any::class.java)
+    override fun navigate(vararg destination: Destination): Flow<Any?> =
+        navigate(destinations = destination, resultClazz = Any::class.java)
 
-    override fun <R> navigate(vararg destinations: Destination, resultClazz: Class<R>): Flow<R> = navFullController.run {
-        if (destinations.isEmpty()) return@run emptyFlow()
-        val navEntries = destinations.map { navEntry(it) }.toList()
-        val navEntry = navEntries.last()
-        setNewBackstack(
-            entries = backstack.entries + navEntries,
-            action = NavAction.Navigate
-        )
-        return flow<R> {
-            // wait navigate to target
-            withTimeoutOrNull(1000) {
-                navChanges.first { change ->
-                    change.currentNavIds.contains(navEntry.id)
-                }
-            }
-            // wait close target
-            val result = navChanges
-                .first { change ->
-                    val destClosed = change.closedDestination?.first == navEntry.id
-                    val destinationLost = !change.currentNavIds.contains(navEntry.id)
-                    if (destClosed || destinationLost) {
-                        Timber.d("target ${navEntry.destination} id = ${navEntry.id} closed ($destClosed ; $destinationLost )")
+    override fun <R> navigate(vararg destinations: Destination, resultClazz: Class<R>): Flow<R> =
+        navFullController.run {
+            if (destinations.isEmpty()) return@run emptyFlow()
+            val navEntries = destinations.map { navEntry(it) }.toList()
+            val navEntry = navEntries.last()
+            setNewBackstack(
+                entries = backstack.entries + navEntries,
+                action = NavAction.Navigate
+            )
+            return flow<R> {
+                // wait navigate to target
+                withTimeoutOrNull(1000) {
+                    navChanges.first { change ->
+                        change.currentNavIds.contains(navEntry.id)
                     }
-                    destClosed || destinationLost
                 }
-            if (result.closedDestination != null && result.closedDestination?.first == navEntry.id && resultClazz.isInstance(result.closedDestination!!.second)) {
-                emit(result.closedDestination!!.second as R)
-            }
-        }.shareLatest(scope, resultClazz)
-    }
+                // wait close target
+                val result = navChanges
+                    .first { change ->
+                        val destClosed = change.closedDestination?.first == navEntry.id
+                        val destinationLost = !change.currentNavIds.contains(navEntry.id)
+                        if (destClosed || destinationLost) {
+                            Timber.d("target ${navEntry.destination} id = ${navEntry.id} closed ($destClosed ; $destinationLost )")
+                        }
+                        destClosed || destinationLost
+                    }
+                if (result.closedDestination != null && result.closedDestination?.first == navEntry.id && resultClazz.isInstance(
+                        result.closedDestination!!.second
+                    )
+                ) {
+                    emit(result.closedDestination!!.second as R)
+                }
+            }.shareLatest(scope, resultClazz)
+        }
 
-    override fun <R> backWithResult(result: R, exitFromApp: Boolean): Boolean = navFullController.run {
-        val navId = backstack.entries.last().id
+    override fun <R> backWithResult(
+        result: R,
+        exitFromApp: Boolean,
+    ): Boolean = navFullController.run {
+        val navId = backstack.entries.lastOrNull()?.id ?: return false
         val popResult = pop()
         scope.launch {
             navChanges.emit(

@@ -10,10 +10,12 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 @Entity(tableName = SettingDao.TABLE_NAME)
 data class SettingPairEntry(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(index = true, name = "id")
-    val id: Int,
+
+    @PrimaryKey
+    @ColumnInfo(name = "id")
+    val id: String,
 
     @ColumnInfo(name = "value")
     val value: String,
+
 ) : Parcelable

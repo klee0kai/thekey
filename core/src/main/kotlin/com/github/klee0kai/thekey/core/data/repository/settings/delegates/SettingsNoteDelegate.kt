@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 open class SettingsNoteDelegate<T>(
     private val settingsDao: AsyncCoroutineProvide<SettingDao>,
     private val scope: CoroutineScope,
-    private val settingId: Int,
+    private val settingId: String,
     private val defaultValue: () -> T,
     private val getTransform: (String) -> T,
     private val setTransform: (T) -> String,
@@ -23,12 +23,17 @@ open class SettingsNoteDelegate<T>(
         settingsDao().update(entry = entry)
     }
 
+    fun delete(): Job = scope.launch {
+        settingsDao().delete(settingId)
+    }
+
     fun get(): Deferred<T> = scope.async {
         settingsDao()[settingId]
             ?.value
             ?.let { getTransform(it) }
             ?: defaultValue()
     }
+
 
     suspend operator fun invoke() = get().await()
 

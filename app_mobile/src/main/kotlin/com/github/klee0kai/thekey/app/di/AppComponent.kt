@@ -80,7 +80,11 @@ fun AppComponent.updateComponentsSoft() {
         .mapNotNull { it.findApi() }
 
     availableFeatures
-        .forEach { feature -> with(feature) { initDI() } }
+        .forEach { feature ->
+            with(feature) {
+                initDI()
+            }
+        }
 }
 
 fun AppComponent.configRouting(
@@ -94,7 +98,11 @@ fun AppComponent.configRouting(
     // init new deeplinks routing
     router(activityIdentifier).configDeeplinks {
         availableFeatures
-            .forEach { feature -> with(feature) { configDeeplinks() } }
+            .forEach { feature ->
+                with(feature) {
+                    configDeeplinks()
+                }
+            }
 
         configMainDeeplinks()
     }

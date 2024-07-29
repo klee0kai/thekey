@@ -22,9 +22,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import androidx.wear.compose.material.SwipeProgress
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
+import kotlin.time.Duration
 
 @Stable
 @Immutable
@@ -72,7 +74,10 @@ inline fun <T> Flow<T>.collectAsStateCrossFaded(
 }
 
 @Composable
-inline fun <T> rememberTargetCrossFaded(skipStates: List<T> = emptyList(), noinline calculation: () -> T): State<TargetAlpha<T>> {
+inline fun <T> rememberTargetCrossFaded(
+    skipStates: List<T> = emptyList(),
+    noinline calculation: () -> T
+): State<TargetAlpha<T>> {
     val target = rememberDerivedStateOf(calculation)
     return animateTargetCrossFaded(target = target.value, skipStates = skipStates)
 }
@@ -105,6 +110,7 @@ fun <T> SwipeProgress<T>.crossFadeAlpha(): TargetAlpha<T> = when {
 inline fun <T> animateTargetCrossFaded(
     target: T,
     skipStates: List<T> = emptyList(),
+    delay: Duration = Duration.ZERO,
 ): State<TargetAlpha<T>> {
     val targetAlphaState = remember { mutableStateOf(TargetAlpha(target, target, 1f)) }
     var targetAlpha by targetAlphaState
@@ -119,6 +125,8 @@ inline fun <T> animateTargetCrossFaded(
 
         targetAlpha = targetAlpha.copy(next = target)
         if (targetAlpha.current != target) {
+            if (delay > Duration.ZERO) delay(delay)
+
             animate(
                 initialValue = targetAlpha.alpha,
                 targetValue = 0f,

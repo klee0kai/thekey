@@ -1,8 +1,9 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
-    id("kotlin-parcelize")
     kotlin("kapt")
+    id("kotlin-parcelize")
+    kotlin("plugin.serialization")
 }
 
 android {
@@ -43,6 +44,7 @@ dependencies {
 
     implementation(libs.jetbrain.immutable)
     implementation(libs.jetbrain.coroutines)
+    implementation(libs.jetbrain.serialization.json)
 
     implementation(libs.hummus)
 

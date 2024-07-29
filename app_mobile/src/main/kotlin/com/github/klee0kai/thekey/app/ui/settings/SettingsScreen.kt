@@ -1,6 +1,7 @@
 package com.github.klee0kai.thekey.app.ui.settings
 
 import android.os.Build
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,16 +22,20 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.wear.compose.material.Text
 import com.github.klee0kai.thekey.app.ui.navigation.model.AutoFillSettingsDestination
+import com.github.klee0kai.thekey.app.ui.navigation.model.BackupSettings
 import com.github.klee0kai.thekey.app.ui.navigation.model.PluginsDestination
+import com.github.klee0kai.thekey.core.BuildConfig
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
+import com.github.klee0kai.thekey.core.ui.devkit.LocalScreenResolver
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.core.ui.devkit.components.settings.Preference
 import com.github.klee0kai.thekey.core.ui.devkit.components.settings.SectionHeader
 import com.github.klee0kai.thekey.core.ui.devkit.components.settings.SwitchPreference
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
+import com.github.klee0kai.thekey.core.ui.navigation.model.DebugSettingsWidgetState
 import com.github.klee0kai.thekey.core.utils.views.truncate
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.launch
@@ -39,6 +44,7 @@ import kotlinx.coroutines.launch
 fun SettingScreen() {
     val scope = rememberCoroutineScope()
     val router = LocalRouter.current
+    val resolver = LocalScreenResolver.current
 
     LazyColumn(
         modifier = Modifier
@@ -57,6 +63,13 @@ fun SettingScreen() {
         item {
             SwitchPreference(
                 text = stringResource(id = R.string.storage_auto_search)
+            )
+        }
+
+        item {
+            Preference(
+                text = stringResource(id = R.string.backup),
+                onClick = { router.navigate(BackupSettings) }
             )
         }
 
@@ -84,6 +97,18 @@ fun SettingScreen() {
                     router.navigate(PluginsDestination)
                 }
             )
+        }
+
+        if (BuildConfig.DEBUG) {
+            item {
+                SectionHeader(
+                    text = stringResource(id = R.string.debug),
+                )
+
+                Column {
+                    resolver.widget(modifier = Modifier, widgetState = DebugSettingsWidgetState)
+                }
+            }
         }
 
     }

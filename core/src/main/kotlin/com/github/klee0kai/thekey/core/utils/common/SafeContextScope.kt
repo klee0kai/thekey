@@ -4,6 +4,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -19,34 +21,95 @@ class SafeContextScope(
     internal val singleRunJobs = ConcurrentHashMap<String, Job>()
 }
 
+fun SafeContextScope.launch(
+    context: CoroutineContext = EmptyCoroutineContext,
+    trackFlow: MutableStateFlow<Int>? = null,
+    mutex: Mutex? = null,
+    block: suspend CoroutineScope.() -> Unit
+): Job = launch(context = context, start = CoroutineStart.UNDISPATCHED) {
+    mutex.withLockOrRun {
+        yield() //set to context
+        try {
+            trackFlow?.update { it + 1 }
+            block()
+        } finally {
+            trackFlow?.update { it - 1 }
+        }
+    }
+}
+
 fun SafeContextScope.launchSafe(
     context: CoroutineContext = EmptyCoroutineContext,
+    mutex: Mutex = this.mutex,
+    trackFlow: MutableStateFlow<Int>? = null,
     block: suspend CoroutineScope.() -> Unit
 ): Job = launch(context = context, start = CoroutineStart.UNDISPATCHED) {
     mutex.withLock {
         yield() //set to context
-        block()
+        try {
+            trackFlow?.update { it + 1 }
+            block()
+        } finally {
+            trackFlow?.update { it - 1 }
+        }
     }
 }
 
 fun <R> SafeContextScope.asyncSafe(
     context: CoroutineContext = EmptyCoroutineContext,
+    mutex: Mutex = this.mutex,
+    trackFlow: MutableStateFlow<Int>? = null,
     block: suspend CoroutineScope.() -> R
 ) = async(context = context, start = CoroutineStart.UNDISPATCHED) {
     mutex.withLock {
         yield() //set to context
-        block()
+        try {
+            trackFlow?.update { it + 1 }
+            block()
+        } finally {
+            trackFlow?.update { it - 1 }
+        }
     }
 }
 
 fun <R> SafeContextScope.asyncResult(
     context: CoroutineContext = EmptyCoroutineContext,
+    mutex: Mutex? = null,
+    trackFlow: MutableStateFlow<Int>? = null,
     block: suspend CoroutineScope.() -> R
-) = async(context = context) {
-    runCatching {
-        block()
+)  = async(context = context, start = CoroutineStart.UNDISPATCHED) {
+    kotlin.runCatching {
+        mutex.withLockOrRun {
+            yield() //set to context
+            try {
+                trackFlow?.update { it + 1 }
+                block()
+            } finally {
+                trackFlow?.update { it - 1 }
+            }
+        }
     }
 }
+
+fun <R> SafeContextScope.asyncResultSafe(
+    context: CoroutineContext = EmptyCoroutineContext,
+    mutex: Mutex = this.mutex,
+    trackFlow: MutableStateFlow<Int>? = null,
+    block: suspend CoroutineScope.() -> R
+) = async(context = context, start = CoroutineStart.UNDISPATCHED) {
+    kotlin.runCatching {
+        mutex.withLockOrRun {
+            yield() //set to context
+            try {
+                trackFlow?.update { it + 1 }
+                block()
+            } finally {
+                trackFlow?.update { it - 1 }
+            }
+        }
+    }
+}
+
 
 fun SafeContextScope.launchLatest(
     key: String,
@@ -88,4 +151,12 @@ fun SafeContextScope.launchLatestSafe(
 }.also { curJob ->
     singleRunJobs[key]?.cancel()
     singleRunJobs[key] = curJob;
+}
+
+suspend inline fun <T> Mutex?.withLockOrRun(action: () -> T): T {
+    return if (this != null) {
+        withLock(action = action)
+    } else {
+        action()
+    }
 }

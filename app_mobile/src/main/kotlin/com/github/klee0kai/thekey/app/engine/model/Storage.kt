@@ -8,8 +8,14 @@ import kotlinx.parcelize.Parcelize
 @JniPojo
 data class Storage(
     val path: String = "",
+
+    /**
+     * sha256 of salt
+     */
+    val salt: String = "",
     val name: String = "",
     val description: String = "",
+
     val version: Int = 0,
 
     // opened storage info

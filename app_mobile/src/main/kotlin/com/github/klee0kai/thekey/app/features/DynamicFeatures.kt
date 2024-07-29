@@ -7,12 +7,13 @@ fun DynamicFeature.Companion.allFeatures() = listOf(
     findStorage(),
     qrcodeScanner(),
     autofill(),
+    gdrive(),
 )
 
 fun DynamicFeature.Companion.byName(moduleName: String) = allFeatures().firstOrNull { it.moduleName == moduleName }
 
 fun DynamicFeature.Companion.qrcodeScanner() = DynamicFeature(
-    moduleName = "qrcodescanner",
+    moduleName = "dynamic_qrcodescanner",
     titleRes = R.string.title_qrcodescanner,
     descRes = R.string.desc_qrcodescanner,
     featureLibApiClass = "com.github.klee0kai.thekey.dynamic.qrcodescanner.QRCodeScannerImpl",
@@ -32,5 +33,13 @@ fun DynamicFeature.Companion.autofill() = DynamicFeature(
     titleRes = R.string.title_autofill,
     descRes = R.string.desc_autofill,
     featureLibApiClass = "com.github.klee0kai.thekey.dynamic.autofill.AutofillImpl",
+)
+
+
+fun DynamicFeature.Companion.gdrive() = DynamicFeature(
+    moduleName = "dynamic_gdrive",
+    titleRes = R.string.title_gdrive,
+    descRes = R.string.desc_gdrvie,
+    featureLibApiClass = "com.github.klee0kai.thekey.dynamic.gdrive.GDriveImpl",
 )
 

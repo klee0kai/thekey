@@ -38,6 +38,8 @@ interface StoragesPresenter {
 
     fun editStorage(storagePath: String, router: AppRouter?): Job = emptyJob()
 
+    fun backupStorage(storagePath: String, router: AppRouter?): Job = emptyJob()
+
     fun exportStorage(storagePath: String, router: AppRouter?): Job = emptyJob()
 
     fun importStorage(appRouter: AppRouter?): Job = emptyJob()
