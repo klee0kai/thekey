@@ -118,20 +118,19 @@ dependencies {
     implementation(libs.bundles.compose.debug)
     implementation(libs.bundles.androidx)
     implementation(libs.bundles.stone)
+    implementation(libs.bundles.fix.doubles)
 
     implementation(libs.jetbrain.immutable)
     implementation(libs.jetbrain.coroutines)
 
     implementation(libs.ml.dynamic)
 
-    implementation(libs.bundles.stone)
     kapt(libs.stone.kapt)
 
     implementation(libs.room.runtime)
     kapt(libs.room.kapt)
 
     implementation(libs.hummus)
-
     implementation(libs.lorem)
 
     testImplementation(libs.junit)
