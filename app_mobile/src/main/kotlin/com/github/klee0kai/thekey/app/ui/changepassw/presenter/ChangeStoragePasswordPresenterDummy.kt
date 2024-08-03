@@ -23,35 +23,31 @@ open class ChangeStoragePasswordPresenterDummy(
 
     override val state = MutableStateFlow(state)
 
-    override val filteredItems = MutableStateFlow(
-        if (notesCount < 0) {
-            null
-        } else {
-            buildList<StorageItem> {
-                repeat(notesCount) {
-                    add(
-                        if (Random.nextBoolean()) {
-                            ColoredNote(
-                                ptnote = Dummy.dummyId,
-                                site = "some${it}.site",
-                                login = "login${it}",
-                                desc = "description${it}",
-                                group = ColorGroup(
-                                    id = Dummy.dummyId,
-                                    keyColor = KeyColor.colors.random()
-                                ),
-                                isLoaded = true,
-                            ).storageItem()
-                        } else {
-                            ColoredOtpNote(
-                                ptnote = Dummy.dummyId,
-                                issuer = "issuer${it}",
-                                name = "otp_name${it}",
-                                isLoaded = true,
-                            ).storageItem()
-                        }
-                    )
-                }
+    override val sortedStorageItems = MutableStateFlow(
+        buildList<StorageItem> {
+            repeat(notesCount) {
+                add(
+                    if (Random.nextBoolean()) {
+                        ColoredNote(
+                            ptnote = Dummy.dummyId,
+                            site = "some${it}.site",
+                            login = "login${it}",
+                            desc = "description${it}",
+                            group = ColorGroup(
+                                id = Dummy.dummyId,
+                                keyColor = KeyColor.colors.random()
+                            ),
+                            isLoaded = true,
+                        ).storageItem()
+                    } else {
+                        ColoredOtpNote(
+                            ptnote = Dummy.dummyId,
+                            issuer = "issuer${it}",
+                            name = "otp_name${it}",
+                            isLoaded = true,
+                        ).storageItem()
+                    }
+                )
             }
         }
     )

@@ -41,7 +41,6 @@ import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.ui.changepassw.model.ChangePasswordStorageState
 import com.github.klee0kai.thekey.app.ui.changepassw.presenter.ChangeStoragePasswordPresenterDummy
-import com.github.klee0kai.thekey.app.ui.storage.model.id
 import com.github.klee0kai.thekey.app.ui.storage.notes.ColoredNoteItem
 import com.github.klee0kai.thekey.app.ui.storage.notes.ColoredOtpNoteItem
 import com.github.klee0kai.thekey.core.R
@@ -79,7 +78,7 @@ fun ChangeStoragePasswordScreen(path: String) = Screen {
         key = Unit,
         initial = ChangePasswordStorageState()
     )
-    val storageItems by presenter!!.filteredItems.collectAsStateCrossFaded(
+    val storageItems by presenter!!.sortedStorageItems.collectAsStateCrossFaded(
         key = Unit,
         initial = null
     )
@@ -130,6 +129,15 @@ fun ChangeStoragePasswordScreen(path: String) = Screen {
                     .fillMaxWidth()
                     .ifProduction { animateItemPlacement() },
                 value = state.newPasswConfirm,
+                supportingText = {
+                    if (state.isConfirmWrong) {
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(id = R.string.confirm_is_wrong),
+                            color = theme.colorScheme.deleteColor,
+                        )
+                    }
+                },
                 onValueChange = { presenter?.input { copy(newPasswConfirm = it) } },
                 label = { Text(stringResource(R.string.confirm_password)) }
             )
@@ -142,7 +150,7 @@ fun ChangeStoragePasswordScreen(path: String) = Screen {
         }
 
         storageItems.current?.forEach { item ->
-            item(key = item.id) {
+            item(key = item) {
                 when {
                     item.note != null -> {
                         ColoredNoteItem(
@@ -226,7 +234,7 @@ fun ChangeStoragePasswordScreen(path: String) = Screen {
 fun ChangeStoragePasswordScreenPreview() = DebugDarkScreenPreview {
     DI.hardResetToPreview()
     DI.initPresenterModule(object : PresentersModule {
-        override fun changeStoragePasswordPresenter(storageIdentifier: StorageIdentifier?) =
+        override fun changeStoragePasswordPresenter(storageIdentifier: StorageIdentifier) =
             object : ChangeStoragePasswordPresenterDummy(
                 state = ChangePasswordStorageState(
                     currentPassw = "df",

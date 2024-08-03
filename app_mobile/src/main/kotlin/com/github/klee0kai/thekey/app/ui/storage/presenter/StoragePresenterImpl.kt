@@ -21,7 +21,6 @@ open class StoragePresenterImpl(
     private val otpNotesInteractor = DI.otpNotesInteractorLazy(storageIdentifier)
     private val groupsInteractor = DI.groupsInteractorLazy(storageIdentifier)
 
-    private val router = DI.router()
     private val scope = DI.defaultThreadScope()
 
     override val searchState = MutableStateFlow(SearchState())

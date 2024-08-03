@@ -52,7 +52,7 @@ interface PresentersModule {
         EditStoragePresenterImpl(storageIdentifier)
 
     @Provide(cache = Provide.CacheType.Weak)
-    fun changeStoragePasswordPresenter(storageIdentifier: StorageIdentifier?): ChangeStoragePasswordPresenter =
+    fun changeStoragePasswordPresenter(storageIdentifier: StorageIdentifier): ChangeStoragePasswordPresenter =
         ChangeStoragePasswordPresenterImpl(storageIdentifier)
 
     @Provide(cache = Provide.CacheType.Weak)

@@ -13,8 +13,8 @@ interface ChangeStoragePasswordPresenter {
 
     val state: Flow<ChangePasswordStorageState> get() = emptyFlow()
 
-    val filteredItems: Flow<List<StorageItem>?>
-        get() = MutableStateFlow(null)
+    val sortedStorageItems: Flow<List<StorageItem>>
+        get() = MutableStateFlow(emptyList())
 
     fun init(): Job = emptyJob()
 

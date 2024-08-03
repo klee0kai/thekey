@@ -15,6 +15,7 @@ import com.github.klee0kai.thekey.core.utils.error.FSDuplicateError
 import com.github.klee0kai.thekey.core.utils.error.FSNoAccessError
 import com.github.klee0kai.thekey.core.utils.error.FSNoFileName
 import com.github.klee0kai.thekey.core.utils.error.cause
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
@@ -66,7 +67,9 @@ class EditStoragePresenterImpl(
         }
     }
 
-    override fun input(block: EditStorageState.() -> EditStorageState) = scope.launch(DI.mainDispatcher()) {
+    override fun input(
+        block: EditStorageState.() -> EditStorageState,
+    ) = scope.launch(start = CoroutineStart.UNDISPATCHED) {
         var newState = block.invoke(state.value)
         val fulfilled = newState.name.isNotBlank()
         val isSaveAvailable = when {
@@ -90,7 +93,9 @@ class EditStoragePresenterImpl(
 
     override fun save(router: AppRouter?) = scope.launch {
         val curState = state.value
-        var storage = curState.storage(originStorage ?: ColoredStorage(version = settingsRep().newStorageVersion()))
+        var storage = curState.storage(
+            originStorage ?: ColoredStorage(version = settingsRep().newStorageVersion())
+        )
         if (storage.path.isBlank() || userShortPaths.isAppInner(storage.path)) {
             storage = storage.copy(
                 path = File(appFolder, curState.name)

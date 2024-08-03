@@ -9,6 +9,5 @@ data class ChangePasswordStorageState(
     val newPassw: String = "",
     val newPasswConfirm: String = "",
     val isSaveAvailable: Boolean = false,
-
-
+    val isConfirmWrong: Boolean = false,
 ) : Parcelable

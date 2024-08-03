@@ -343,7 +343,7 @@ namespace thekey_v2 {
         virtual DataSnapshot snapshot();
 
         /**
-         *thread securely set a snapshot of data
+         * thread securely set a snapshot of data
          * @param data
          */
         virtual void snapshot(const DataSnapshot &data);

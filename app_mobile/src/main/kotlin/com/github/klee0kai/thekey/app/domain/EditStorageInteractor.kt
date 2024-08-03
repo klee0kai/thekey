@@ -4,6 +4,7 @@ import com.github.klee0kai.thekey.app.data.mapping.toStorage
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.core.utils.common.asyncResult
+import com.github.klee0kai.thekey.core.utils.common.launch
 import com.github.klee0kai.thekey.core.utils.error.FSDuplicateError
 import com.github.klee0kai.thekey.core.utils.error.FSNoAccessError
 import java.io.File
@@ -42,6 +43,18 @@ class EditStorageInteractor {
         engine().throwError(error)
 
         rep().setStorage(storage).join()
+    }
+
+    fun changePassw(path: String, currentPassw: String, newPassw: String) = scope.launch {
+        engine().changePassw(path, currentPassw, newPassw)
+    }
+
+    fun notes(path: String, passw: String) = scope.asyncResult {
+        engine().notes(path, passw)
+    }
+
+    fun otpNotes(path: String, passw: String) = scope.asyncResult {
+        engine().otpNotes(path, passw)
     }
 
     fun deleteStorage(path: String) = scope.asyncResult {
