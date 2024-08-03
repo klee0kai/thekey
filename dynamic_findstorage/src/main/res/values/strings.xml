@@ -18,4 +18,5 @@
     <string name="no_group">No group</string>
     <string name="no_name">No name</string>
     <string name="change_password">Change password</string>
+    <string name="searching_for_storaages">Searching for storages</string>
 </resources>

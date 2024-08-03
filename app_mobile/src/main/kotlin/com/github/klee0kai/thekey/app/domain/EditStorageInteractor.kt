@@ -1,5 +1,6 @@
 package com.github.klee0kai.thekey.app.domain
 
+import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.data.mapping.toStorage
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
@@ -26,7 +27,10 @@ class EditStorageInteractor {
         rep().setStorage(storage).join()
     }
 
-    fun moveStorage(from: String, storage: ColoredStorage) = scope.asyncResult {
+    fun moveStorage(
+        from: String,
+        storage: ColoredStorage,
+    ) = scope.asyncResult {
         File(storage.path).parentFile?.mkdirs()
         var error = engine().move(from, storage.path)
         engine().throwError(error)
@@ -45,15 +49,25 @@ class EditStorageInteractor {
         rep().setStorage(storage).join()
     }
 
-    fun changePassw(path: String, currentPassw: String, newPassw: String) = scope.launch {
+    fun changePassw(
+        path: String,
+        currentPassw: String,
+        newPassw: String,
+    ) = scope.launch(globalRunDesc = R.string.changing_storage_password) {
         engine().changePassw(path, currentPassw, newPassw)
     }
 
-    fun notes(path: String, passw: String) = scope.asyncResult {
+    fun notes(
+        path: String,
+        passw: String,
+    ) = scope.asyncResult {
         engine().notes(path, passw)
     }
 
-    fun otpNotes(path: String, passw: String) = scope.asyncResult {
+    fun otpNotes(
+        path: String,
+        passw: String,
+    ) = scope.asyncResult {
         engine().otpNotes(path, passw)
     }
 

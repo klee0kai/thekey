@@ -1,5 +1,6 @@
 package com.github.klee0kai.thekey.core.utils.common
 
+import androidx.annotation.StringRes
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
@@ -25,13 +26,14 @@ fun SafeContextScope.launch(
     context: CoroutineContext = EmptyCoroutineContext,
     trackFlow: MutableStateFlow<Int>? = null,
     mutex: Mutex? = null,
+    @StringRes globalRunDesc: Int = 0,
     block: suspend CoroutineScope.() -> Unit
 ): Job = launch(context = context, start = CoroutineStart.UNDISPATCHED) {
     mutex.withLockOrRun {
         yield() //set to context
         try {
             trackFlow?.update { it + 1 }
-            block()
+            GlobalJobsCollection.trackJob(globalRunDesc) { block() }
         } finally {
             trackFlow?.update { it - 1 }
         }
@@ -42,13 +44,14 @@ fun SafeContextScope.launchSafe(
     context: CoroutineContext = EmptyCoroutineContext,
     mutex: Mutex = this.mutex,
     trackFlow: MutableStateFlow<Int>? = null,
+    @StringRes globalRunDesc: Int = 0,
     block: suspend CoroutineScope.() -> Unit
 ): Job = launch(context = context, start = CoroutineStart.UNDISPATCHED) {
     mutex.withLock {
         yield() //set to context
         try {
             trackFlow?.update { it + 1 }
-            block()
+            GlobalJobsCollection.trackJob(globalRunDesc) { block() }
         } finally {
             trackFlow?.update { it - 1 }
         }
@@ -59,13 +62,14 @@ fun <R> SafeContextScope.asyncSafe(
     context: CoroutineContext = EmptyCoroutineContext,
     mutex: Mutex = this.mutex,
     trackFlow: MutableStateFlow<Int>? = null,
+    @StringRes globalRunDesc: Int = 0,
     block: suspend CoroutineScope.() -> R
 ) = async(context = context, start = CoroutineStart.UNDISPATCHED) {
     mutex.withLock {
         yield() //set to context
         try {
             trackFlow?.update { it + 1 }
-            block()
+            GlobalJobsCollection.trackJob(globalRunDesc) { block() }
         } finally {
             trackFlow?.update { it - 1 }
         }
@@ -76,14 +80,15 @@ fun <R> SafeContextScope.asyncResult(
     context: CoroutineContext = EmptyCoroutineContext,
     mutex: Mutex? = null,
     trackFlow: MutableStateFlow<Int>? = null,
+    @StringRes globalRunDesc: Int = 0,
     block: suspend CoroutineScope.() -> R
-)  = async(context = context, start = CoroutineStart.UNDISPATCHED) {
+) = async(context = context, start = CoroutineStart.UNDISPATCHED) {
     kotlin.runCatching {
         mutex.withLockOrRun {
             yield() //set to context
             try {
                 trackFlow?.update { it + 1 }
-                block()
+                GlobalJobsCollection.trackJob(globalRunDesc) { block() }
             } finally {
                 trackFlow?.update { it - 1 }
             }
@@ -95,6 +100,7 @@ fun <R> SafeContextScope.asyncResultSafe(
     context: CoroutineContext = EmptyCoroutineContext,
     mutex: Mutex = this.mutex,
     trackFlow: MutableStateFlow<Int>? = null,
+    @StringRes globalRunDesc: Int = 0,
     block: suspend CoroutineScope.() -> R
 ) = async(context = context, start = CoroutineStart.UNDISPATCHED) {
     kotlin.runCatching {
@@ -102,7 +108,7 @@ fun <R> SafeContextScope.asyncResultSafe(
             yield() //set to context
             try {
                 trackFlow?.update { it + 1 }
-                block()
+                GlobalJobsCollection.trackJob(globalRunDesc) { block() }
             } finally {
                 trackFlow?.update { it - 1 }
             }
@@ -114,9 +120,10 @@ fun <R> SafeContextScope.asyncResultSafe(
 fun SafeContextScope.launchLatest(
     key: String,
     context: CoroutineContext = EmptyCoroutineContext,
+    @StringRes globalRunDesc: Int = 0,
     block: suspend CoroutineScope.() -> Unit
 ): Job = launch(context = context) {
-    block()
+    GlobalJobsCollection.trackJob(globalRunDesc) { block() }
 }.also { curJob ->
     singleRunJobs[key]?.cancel()
     singleRunJobs[key] = curJob;
@@ -125,6 +132,7 @@ fun SafeContextScope.launchLatest(
 fun SafeContextScope.launchIfNotStarted(
     key: String,
     context: CoroutineContext = EmptyCoroutineContext,
+    @StringRes globalRunDesc: Int = 0,
     block: suspend CoroutineScope.() -> Unit
 ): Job {
     val latest = singleRunJobs[key]
@@ -132,7 +140,7 @@ fun SafeContextScope.launchIfNotStarted(
     latest?.cancel()
 
     return launch(context = context) {
-        block()
+        GlobalJobsCollection.trackJob(globalRunDesc) { block() }
     }.also { curJob ->
         singleRunJobs[key] = curJob;
     }
@@ -142,11 +150,15 @@ fun SafeContextScope.launchIfNotStarted(
 fun SafeContextScope.launchLatestSafe(
     key: String,
     context: CoroutineContext = EmptyCoroutineContext,
+    @StringRes globalRunDesc: Int = 0,
     block: suspend CoroutineScope.() -> Unit
-): Job = launch(context = context, start = CoroutineStart.UNDISPATCHED) {
+): Job = launch(
+    context = context,
+    start = CoroutineStart.UNDISPATCHED,
+) {
     mutex.withLock {
         yield() //set to context
-        block()
+        GlobalJobsCollection.trackJob(globalRunDesc) { block() }
     }
 }.also { curJob ->
     singleRunJobs[key]?.cancel()
