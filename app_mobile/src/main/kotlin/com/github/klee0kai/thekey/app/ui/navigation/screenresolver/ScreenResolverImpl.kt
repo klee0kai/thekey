@@ -5,10 +5,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import com.github.klee0kai.thekey.app.BuildConfig
 import com.github.klee0kai.thekey.app.ui.about.AboutScreen
+import com.github.klee0kai.thekey.app.ui.changepassw.ChangeStoragePasswordScreen
 import com.github.klee0kai.thekey.app.ui.editstorage.EditStorageScreen
 import com.github.klee0kai.thekey.app.ui.genhist.GenHistScreen
 import com.github.klee0kai.thekey.app.ui.login.LoginScreen
 import com.github.klee0kai.thekey.app.ui.navigation.model.AboutDestination
+import com.github.klee0kai.thekey.app.ui.navigation.model.ChangeStoragePasswordDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.DesignDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteGroupDestination
@@ -62,6 +64,7 @@ class ScreenResolverImpl : ScreenResolver {
             is PluginDestination -> PluginScreen(destination)
             is StoragesDestination -> StoragesScreen()
             is EditStorageDestination -> EditStorageScreen(path = destination.path)
+            is ChangeStoragePasswordDestination -> ChangeStoragePasswordScreen(path = destination.path)
             is EditStorageGroupDestination -> EditStorageGroupsScreen(destination)
             is StorageDestination -> StorageScreen(destination)
             is GenHistDestination -> GenHistScreen(destination)

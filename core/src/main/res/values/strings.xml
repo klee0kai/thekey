@@ -127,4 +127,8 @@
     <string name="external_storage_group_disabled">External group has been disabled</string>
     <string name="backup">Backup</string>
     <string name="debug">Debug</string>
+    <string name="change_password">Change password</string>
+    <string name="current_password">Current password</string>
+    <string name="new_password">New Password</string>
+    <string name="confirm_password">Confirm password</string>
 </resources>

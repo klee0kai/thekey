@@ -41,6 +41,14 @@ data class EditStorageDestination(
 ) : Destination
 
 @Parcelize
+data class ChangeStoragePasswordDestination(
+    /**
+     * storage path
+     */
+    val path: String = ""
+) : Destination
+
+@Parcelize
 data class EditStorageGroupDestination(
     /**
      * group id

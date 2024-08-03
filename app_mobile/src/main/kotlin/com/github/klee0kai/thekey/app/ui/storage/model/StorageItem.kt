@@ -1,9 +1,9 @@
 package com.github.klee0kai.thekey.app.ui.storage.model
 
 import android.os.Parcelable
+import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.domain.model.ColoredNote
 import com.github.klee0kai.thekey.core.domain.model.ColoredOtpNote
-import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -11,6 +11,8 @@ data class StorageItem(
     val note: ColoredNote? = null,
     val otp: ColoredOtpNote? = null,
 ) : Parcelable
+
+val StorageItem.id get() = note?.ptnote ?: otp?.ptnote
 
 val StorageItem.group get() = note?.group ?: otp?.group ?: ColorGroup()
 
@@ -27,6 +29,7 @@ fun StorageItem.sortableFlatText(): String {
     val login = note?.login ?: otp?.name ?: ""
     return "$site-$login"
 }
+
 
 fun ColoredNote.storageItem() = StorageItem(note = this)
 

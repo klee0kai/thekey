@@ -27,6 +27,7 @@ import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -43,8 +44,10 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.github.klee0kai.stone.type.wrappers.getValue
+import com.github.klee0kai.thekey.app.ui.navigation.model.ChangeStoragePasswordDestination
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
+import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
@@ -321,6 +324,19 @@ fun FSEditStorageScreen(
             .padding(horizontal = safeContentPaddings.horizontal(minValue = 16.dp)),
     ) {
         Spacer(modifier = Modifier.weight(1f))
+
+        if (state.isEditMode) {
+            TextButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 12.dp),
+                colors = LocalColorScheme.current.grayTextButtonColors,
+                onClick = { router?.navigate(ChangeStoragePasswordDestination(path)) }
+            ) {
+                Text(stringResource(R.string.change_password))
+            }
+        }
+
         if (!imeIsVisibleAnimated.current && isSaveAvailable.current) {
             FilledTonalButton(
                 modifier = Modifier
@@ -402,6 +418,7 @@ fun FSEditStorageScreenSelectPathPreview() = DebugDarkScreenPreview {
             override val state = MutableStateFlow(
                 FSEditStorageState(
                     isSkeleton = false,
+                    isEditMode = true,
                     isSaveAvailable = true,
                     storagePathVariants = listOf("/appdata", "/phoneData"),
                     storagePathFieldExpanded = false,
