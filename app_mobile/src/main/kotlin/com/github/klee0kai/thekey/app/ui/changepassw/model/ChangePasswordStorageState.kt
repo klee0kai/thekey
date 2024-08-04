@@ -9,5 +9,13 @@ data class ChangePasswordStorageState(
     val newPassw: String = "",
     val newPasswConfirm: String = "",
     val isSaveAvailable: Boolean = false,
-    val isConfirmWrong: Boolean = false,
+    val error: ChangePasswError? = null,
 ) : Parcelable
+
+sealed interface ChangePasswError : Parcelable
+
+@Parcelize
+data object ConfirmIsWrong : ChangePasswError
+
+@Parcelize
+data object PasswordNotChanged : ChangePasswError

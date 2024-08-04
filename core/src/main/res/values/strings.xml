@@ -132,4 +132,5 @@
     <string name="new_password">New Password</string>
     <string name="confirm_password">Confirm password</string>
     <string name="confirm_is_wrong">Confirm is wrong</string>
+    <string name="password_not_changed">Password not changed</string>
 </resources>

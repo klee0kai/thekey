@@ -33,6 +33,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -41,6 +42,8 @@ import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.ui.changepassw.model.ChangePasswordStorageState
+import com.github.klee0kai.thekey.app.ui.changepassw.model.ConfirmIsWrong
+import com.github.klee0kai.thekey.app.ui.changepassw.model.PasswordNotChanged
 import com.github.klee0kai.thekey.app.ui.changepassw.presenter.ChangeStoragePasswordPresenterDummy
 import com.github.klee0kai.thekey.app.ui.storage.notes.ColoredNoteItem
 import com.github.klee0kai.thekey.app.ui.storage.notes.ColoredOtpNoteItem
@@ -111,6 +114,7 @@ fun ChangeStoragePasswordScreen(path: String) = Screen {
                     .fillMaxWidth()
                     .ifProduction { animateItemPlacement() },
                 value = state.currentPassw,
+                visualTransformation = PasswordVisualTransformation(),
                 onValueChange = { presenter?.input { copy(currentPassw = it) } },
                 label = { Text(stringResource(R.string.current_password)) }
             )
@@ -122,6 +126,7 @@ fun ChangeStoragePasswordScreen(path: String) = Screen {
                     .fillMaxWidth()
                     .ifProduction { animateItemPlacement() },
                 value = state.newPassw,
+                visualTransformation = PasswordVisualTransformation(),
                 onValueChange = { presenter?.input { copy(newPassw = it) } },
                 label = { Text(stringResource(R.string.new_password)) }
             )
@@ -133,13 +138,24 @@ fun ChangeStoragePasswordScreen(path: String) = Screen {
                     .fillMaxWidth()
                     .ifProduction { animateItemPlacement() },
                 value = state.newPasswConfirm,
+                visualTransformation = PasswordVisualTransformation(),
                 supportingText = {
-                    if (state.isConfirmWrong) {
-                        Text(
-                            modifier = Modifier.fillMaxWidth(),
-                            text = stringResource(id = R.string.confirm_is_wrong),
-                            color = theme.colorScheme.deleteColor,
-                        )
+                    when(state.error){
+                        ConfirmIsWrong -> {
+                            Text(
+                                modifier = Modifier.fillMaxWidth(),
+                                text = stringResource(id = R.string.confirm_is_wrong),
+                                color = theme.colorScheme.deleteColor,
+                            )
+                        }
+                        PasswordNotChanged -> {
+                            Text(
+                                modifier = Modifier.fillMaxWidth(),
+                                text = stringResource(id = R.string.password_not_changed),
+                                color = theme.colorScheme.deleteColor,
+                            )
+                        }
+                        null -> Unit
                     }
                 },
                 onValueChange = { presenter?.input { copy(newPasswConfirm = it) } },

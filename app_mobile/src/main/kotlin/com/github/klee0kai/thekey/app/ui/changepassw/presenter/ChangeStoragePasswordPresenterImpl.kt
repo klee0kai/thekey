@@ -1,7 +1,10 @@
 package com.github.klee0kai.thekey.app.ui.changepassw.presenter
 
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.ui.changepassw.model.ChangePasswError
 import com.github.klee0kai.thekey.app.ui.changepassw.model.ChangePasswordStorageState
+import com.github.klee0kai.thekey.app.ui.changepassw.model.ConfirmIsWrong
+import com.github.klee0kai.thekey.app.ui.changepassw.model.PasswordNotChanged
 import com.github.klee0kai.thekey.app.ui.storage.model.StorageItem
 import com.github.klee0kai.thekey.app.ui.storage.model.sortableFlatText
 import com.github.klee0kai.thekey.app.ui.storage.model.storageItem
@@ -40,11 +43,11 @@ open class ChangeStoragePasswordPresenterImpl(
         var newState = block.invoke(state.value)
         newState = newState.copy(
             isSaveAvailable = newState.calcSaveAvailable(),
-            isConfirmWrong = false,
+            error = null,
         )
         state.value = newState
         loadNotesIfNeed()
-        confirmWrongIfNeed()
+        checkErrorIfNeed()
     }
 
     override fun save(router: AppRouter?) = scope.launch {
@@ -57,13 +60,10 @@ open class ChangeStoragePasswordPresenterImpl(
         ).join()
     }
 
-    private fun confirmWrongIfNeed() = scope.launchLatest("conf_wrong") {
+    private fun checkErrorIfNeed() = scope.launchLatest("conf_wrong") {
         delay(5.seconds)
         state.update { state ->
-            state.copy(
-                isConfirmWrong = state.newPasswConfirm.isNotBlank()
-                        && state.newPassw != state.newPasswConfirm
-            )
+            state.copy(error = state.checkError())
         }
     }
 
@@ -145,3 +145,12 @@ open class ChangeStoragePasswordPresenterImpl(
 private fun ChangePasswordStorageState.calcSaveAvailable() = currentPassw.isNotBlank()
         && newPassw.isNotBlank()
         && newPassw == newPasswConfirm
+        && checkError() == null
+
+private fun ChangePasswordStorageState.checkError(): ChangePasswError? {
+    return when {
+        newPasswConfirm.isNotBlank() && newPassw != newPasswConfirm -> ConfirmIsWrong
+        newPassw == currentPassw -> PasswordNotChanged
+        else -> null
+    }
+}
