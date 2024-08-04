@@ -9,6 +9,7 @@ import com.github.klee0kai.thekey.core.di.CoreDI
 import com.github.klee0kai.thekey.core.di.dependecies.CoreDependencyProvider
 import com.github.klee0kai.thekey.core.di.hardResetToPreview
 import com.github.klee0kai.thekey.core.di.identifiers.ActivityIdentifier
+import com.github.klee0kai.thekey.core.di.identifiers.FileIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.NoteGroupIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.PluginIdentifier
@@ -27,6 +28,7 @@ var FSDI: FindStorageComponent = initFindStorageComponent()
     identifiers = [
         ActivityIdentifier::class,
         StorageIdentifier::class,
+        FileIdentifier::class,
         NoteIdentifier::class,
         NoteGroupIdentifier::class,
         StorageGroupIdentifier::class,

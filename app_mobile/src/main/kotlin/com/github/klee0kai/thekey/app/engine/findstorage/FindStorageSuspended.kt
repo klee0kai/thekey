@@ -2,6 +2,7 @@ package com.github.klee0kai.thekey.app.engine.findstorage
 
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.engine.model.Storage
+import com.github.klee0kai.thekey.core.di.identifiers.FileIdentifier
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -14,17 +15,55 @@ open class FindStorageSuspended {
     private val _engine = DI.findStorageEngineLazy()
     private val dispatcher = DI.jniDispatcher()
 
-    open suspend fun findStorages(folder: String, listener: FindStorageListener) = engineRun { findStorages(folder, listener) }
+    open suspend fun findStorages(
+        folder: String,
+        listener: FindStorageListener,
+    ) = engineRun { findStorages(folder, listener) }
 
-    open suspend fun storageVersion(path: String): Int = engineRun { storageVersion(path) }
+    open suspend fun storageVersion(
+        path: String,
+    ): Int = engineRead(path) {
+        storageVersion(path)
+    }
 
-    open suspend fun storageInfo(path: String): Storage? = engineRun { storageInfo(path) }
+    open suspend fun storageInfo(
+        path: String,
+    ): Storage? = engineRead(path) {
+        storageInfo(path)
+    }
 
-    open suspend fun storageInfoFromDescriptor(fd: Int): Storage? = engineRun { storageInfoFromDescriptor(fd) }
+    open suspend fun storageInfoFromDescriptor(
+        fd: Int,
+    ): Storage? = engineRun {
+        storageInfoFromDescriptor(fd)
+    }
 
-    private suspend fun <T> engineRun(block: suspend FindStorageEngine.() -> T): T = withContext(dispatcher) {
+    private suspend fun <T> engineRun(
+        block: suspend FindStorageEngine.() -> T
+    ): T = withContext(dispatcher) {
         _engine().block()
     }
+
+    private suspend fun <T> engineWrite(
+        path: String,
+        block: suspend FindStorageEngine.() -> T
+    ): T = withContext(dispatcher) {
+        val fileMutex = DI.fileMutex(FileIdentifier(path))
+        fileMutex.withWriteLock {
+            _engine().block()
+        }
+    }
+
+    private suspend fun <T> engineRead(
+        path: String,
+        block: suspend FindStorageEngine.() -> T
+    ): T = withContext(dispatcher) {
+        val fileMutex = DI.fileMutex(FileIdentifier(path))
+        fileMutex.withWriteLock {
+            _engine().block()
+        }
+    }
+
 
 }
 

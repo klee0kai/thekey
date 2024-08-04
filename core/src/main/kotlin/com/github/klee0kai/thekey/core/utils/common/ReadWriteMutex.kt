@@ -1,5 +1,8 @@
 package com.github.klee0kai.thekey.core.utils.common
 
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
@@ -44,55 +47,8 @@ enum class MutexState {
 
 data class MutexInfo(val mode: MutexMode, val state: MutexState)
 
-/**
- * A variation on [Mutex] that supports read and write operations.
- *
- * A "real" version may be in the works:
- * https://github.com/Kotlin/kotlinx.coroutines/issues/94
- */
-interface ReadWriteMutex {
-    /**
-     * Execute a read operation.  Readers do not block one another, but will be blocked
-     * by a writer.
-     */
-    suspend fun <T> withReadLock(block: suspend () -> T): T
 
-    /**
-     * Execute a write operation.  Writers block all other activity in the mutex until
-     * they have finished.
-     */
-    suspend fun <T> withWriteLock(fn: suspend () -> T): T
-}
-
-/**
- * Construct a new [ReadWriteMutex].  The [block] can be used to provide additional
- * configuration options to the mutex.
- */
-fun ReadWriteMutex(block: ReadWriteMutexBuilder.() -> Unit = {}): ReadWriteMutex {
-    return ReadWriteMutexBuilder().apply(block).build()
-}
-
-class ReadWriteMutexBuilder internal constructor() {
-    private var onStateChange: (suspend (MutexInfo) -> Unit)? = null
-
-    /**
-     * Provide a function to invoke as the mutex transitions into new states.  This can be
-     * used to coordinate the internal operation with externally-visible effects, such as
-     * acquiring filesystem locks.
-     */
-    fun onStateChange(block: suspend (MutexInfo) -> Unit) {
-        onStateChange = block
-    }
-
-    internal fun build(): ReadWriteMutex = ReadWriteMutexImpl(onStateChange)
-}
-
-/**
- * Implementation of [ReadWriteMutex].
- */
-private class ReadWriteMutexImpl constructor(
-    private val onStateChange: (suspend (MutexInfo) -> Unit)?
-) : ReadWriteMutex {
+class ReadWriteMutex {
     /**
      * A mutex to guard the creation of new readers.
      */
@@ -109,7 +65,10 @@ private class ReadWriteMutexImpl constructor(
      */
     private val stateLock = Mutex()
 
-    override suspend fun <T> withReadLock(block: suspend () -> T): T {
+    private val stateListenersMutex = Mutex()
+    private val stateListeners = mutableListOf<suspend (MutexInfo) -> Unit>()
+
+    suspend fun <T> withReadLock(block: suspend () -> T): T {
         return try {
             // Ensure new readers are allowed
             allowNewReads.withLock {
@@ -119,7 +78,7 @@ private class ReadWriteMutexImpl constructor(
                         // If we're the first reader, ensure that writes are locked out
                         allowNewWrites.lock(this)
                         // Invoke user callback
-                        onStateChange?.invoke(MutexInfo(MutexMode.READ, MutexState.LOCKED))
+                        notifyListeners(MutexInfo(MutexMode.READ, MutexState.LOCKED))
                     }
                 }
             }
@@ -134,7 +93,7 @@ private class ReadWriteMutexImpl constructor(
                 if (--readers == 0) {
                     try {
                         // Invoke user callback in opposite order from above
-                        onStateChange?.invoke(MutexInfo(MutexMode.READ, MutexState.UNLOCKED))
+                        notifyListeners(MutexInfo(MutexMode.READ, MutexState.UNLOCKED))
                     } finally {
                         // If a writer is pending, this will unlock it
                         allowNewWrites.unlock(this)
@@ -144,18 +103,45 @@ private class ReadWriteMutexImpl constructor(
         }
     }
 
-    override suspend fun <T> withWriteLock(fn: suspend () -> T): T {
+    suspend fun <T> withWriteLock(fn: suspend () -> T): T {
         // Prevent readers from starting any new action
         return allowNewReads.withLock {
             // Wait for all outstanding readers to drain.
             allowNewWrites.withLock {
                 try {
-                    onStateChange?.invoke(MutexInfo(MutexMode.WRITE, MutexState.LOCKED))
+                    notifyListeners(MutexInfo(MutexMode.WRITE, MutexState.LOCKED))
                     fn()
                 } finally {
-                    onStateChange?.invoke(MutexInfo(MutexMode.WRITE, MutexState.UNLOCKED))
+                    notifyListeners(MutexInfo(MutexMode.WRITE, MutexState.UNLOCKED))
                 }
             }
         }
     }
+
+    suspend fun subscribe(listener: suspend (MutexInfo) -> Unit) = stateListenersMutex.withLock {
+        stateListeners.add(listener)
+    }
+
+    suspend fun unsubscribe(listener: suspend (MutexInfo) -> Unit) = stateListenersMutex.withLock {
+        stateListeners.remove(listener)
+    }
+
+    private suspend fun notifyListeners(info: MutexInfo): Unit = stateListenersMutex.withLock {
+        stateListeners.forEach { listener ->
+            listener.invoke(info)
+        }
+    }
+
+}
+
+fun ReadWriteMutex.stateFlow() = channelFlow<MutexInfo> {
+    val listener: suspend (MutexInfo) -> Unit = {
+        send(it)
+    }
+
+    subscribe(listener)
+    awaitClose {
+        runBlocking { unsubscribe(listener) }
+    }
+
 }

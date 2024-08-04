@@ -4,6 +4,7 @@ import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.engine.model.DecryptedOtpNote
 import com.github.klee0kai.thekey.app.engine.model.Storage
+import com.github.klee0kai.thekey.core.di.identifiers.FileIdentifier
 import com.github.klee0kai.thekey.core.utils.error.FSNoAccessError
 import com.github.klee0kai.thekey.core.utils.error.FSNoFileName
 import kotlinx.coroutines.withContext
@@ -14,22 +15,45 @@ class EditStorageSuspended {
     private val _engine = DI.editStorageEngineLazy()
     private val dispatcher = DI.jniDispatcher()
 
-    suspend fun findStorageInfo(path: String): Storage? = engineRun { findStorageInfo(path) }
+    suspend fun findStorageInfo(path: String): Storage? = engineRead(path) {
+        findStorageInfo(path)
+    }
 
-    suspend fun createStorage(storage: Storage): Int = engineRun { createStorage(storage) }
+    suspend fun createStorage(storage: Storage): Int = engineWrite(storage.path) {
+        createStorage(storage)
+    }
 
-    suspend fun editStorage(storage: Storage): Int = engineRun { editStorage(storage) }
+    suspend fun editStorage(storage: Storage): Int = engineWrite(storage.path) {
+        editStorage(storage)
+    }
 
-    suspend fun move(from: String, to: String): Int = engineRun { move(from, to) }
+    suspend fun move(from: String, to: String): Int = engineRead(from) {
+        engineWrite(to) {
+            move(from, to)
+        }
+    }
 
-    suspend fun changePassw(path: String, currentPassw: String, newPassw: String) =
-        engineRun { changePassw(path, currentPassw, newPassw) }
+    suspend fun changePassw(
+        path: String,
+        currentPassw: String,
+        newPassw: String,
+    ) = engineWrite(path) {
+        changePassw(path, currentPassw, newPassw)
+    }
 
-    suspend fun notes(path: String, passw: String): Array<DecryptedNote> =
-        engineRun { notes(path, passw) }
+    suspend fun notes(
+        path: String,
+        passw: String,
+    ): Array<DecryptedNote> = engineRead(path) {
+        notes(path, passw)
+    }
 
-    suspend fun otpNotes(path: String, passw: String): Array<DecryptedOtpNote> =
-        engineRun { otpNotes(path, passw) }
+    suspend fun otpNotes(
+        path: String,
+        passw: String,
+    ): Array<DecryptedOtpNote> = engineRead(path) {
+        otpNotes(path, passw)
+    }
 
     fun throwError(code: Int) = when (code) {
         0 -> Unit
@@ -38,9 +62,24 @@ class EditStorageSuspended {
         else -> throw IOException()
     }
 
-    private suspend fun <T> engineRun(block: suspend EditStorageEngine.() -> T): T =
-        withContext(dispatcher) {
+    private suspend fun <T> engineWrite(
+        path: String,
+        block: suspend EditStorageEngine.() -> T,
+    ): T = withContext(dispatcher) {
+        val fileMutex = DI.fileMutex(FileIdentifier(path))
+        fileMutex.withWriteLock {
             _engine().block()
         }
+    }
+
+    private suspend fun <T> engineRead(
+        path: String,
+        block: suspend EditStorageEngine.() -> T,
+    ): T = withContext(dispatcher) {
+        val fileMutex = DI.fileMutex(FileIdentifier(path))
+        fileMutex.withReadLock {
+            _engine().block()
+        }
+    }
 }
 

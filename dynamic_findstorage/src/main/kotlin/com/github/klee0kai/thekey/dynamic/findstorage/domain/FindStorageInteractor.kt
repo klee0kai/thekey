@@ -31,7 +31,7 @@ class FindStorageInteractor {
         if (!canToScan || !needToScan()) return@launchIfNotStarted
         searchState.value = true
 
-        minDuration(20.seconds) {
+        minDuration(3.seconds) {
             DI.userShortPaths().rootAbsolutePaths
                 .map { root ->
                     engine().findStoragesFlow(root)
