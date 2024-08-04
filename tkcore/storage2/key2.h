@@ -168,6 +168,13 @@ namespace thekey_v2 {
                 const std::function<void(const float &)> &progress = {}
         );
 
+        /**
+         *
+         * set
+         */
+        virtual void setInfo(const StorageInfo &info);
+
+
         // ---- group api -----
         /**
          * get all color groups in storage

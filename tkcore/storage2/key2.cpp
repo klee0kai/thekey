@@ -417,6 +417,13 @@ int KeyStorageV2::saveNewPassw(
     return destStorage->save();
 }
 
+void KeyStorageV2::setInfo(const thekey_v2::StorageInfo &info) {
+    lock_guard guard(editMutex);
+    strncpy(fheader->name, info.name.c_str(), STORAGE_NAME_LEN);
+    strncpy(fheader->description, info.description.c_str(), STORAGE_DESCRIPTION_LEN);
+    save();
+}
+
 // ---- color group api ----
 std::vector<DecryptedColorGroup> KeyStorageV2::colorGroups(uint flags) {
     auto data = snapshot();
