@@ -35,7 +35,15 @@ int JvmEditStorageEngine::createStorage(const JvmStorage &storage) {
     return error;
 }
 
-int JvmEditStorageEngine::editStorage(const JvmStorage &storage) {
+int JvmEditStorageEngine::editStorage(const JvmStorage &jStorage) {
+    auto storage = thekey_v2::storage(jStorage.path, "");
+    if (!storage) return -1;
+    storage->readAll();
+    auto info = storage->info();
+    info.name = jStorage.name;
+    info.description = jStorage.description;
+    storage->setInfo(info);
+    storage->save();
     return 0;
 }
 
@@ -51,60 +59,7 @@ void JvmEditStorageEngine::changePassw(
         const std::string &newPassw
 ) {
     auto storage = thekey_v2::storage(path, currentPassw);
-    if (!storage) return ;
+    if (!storage) return;
     storage->readAll();
-    storage->saveNewPassw(path,newPassw);
-}
-
-std::vector<EngineModelDecryptedNote>
-JvmEditStorageEngine::notes(
-        const std::string &path,
-        const std::string &passw
-) {
-    auto storage = thekey_v2::storage(path, passw);
-    if (!storage) return {};
-    storage->readAll();
-
-    auto notes = std::vector<JvmDecryptedNote>();
-    for (const auto &dnote: storage->notes(TK2_GET_NOTE_INFO)) {
-        notes.push_back(
-                {
-                        .ptnote = dnote.id,
-                        .site =  dnote.site,
-                        .login =  dnote.login,
-                        .desc =  dnote.description,
-                        .chTime = (int64_t) dnote.genTime,
-                        .colorGroupId = dnote.colorGroupId,
-                });
-    }
-
-    return notes;
-}
-
-std::vector<EngineModelDecryptedOtpNote>
-JvmEditStorageEngine::otpNotes(
-        const std::string &path,
-        const std::string &passw
-) {
-    auto storage = thekey_v2::storage(path, passw);
-    if (!storage) return {};
-    storage->readAll();
-    auto otpNotes = std::vector<JvmDecryptedOtpNote>();
-    for (const auto &dnote: storage->otpNotes(TK2_GET_NOTE_INFO)) {
-        otpNotes.push_back(
-                JvmDecryptedOtpNote{
-                        .ptnote = dnote.id,
-                        .issuer =  dnote.issuer,
-                        .name =  dnote.name,
-                        .otpMethodRaw = dnote.method,
-                        .otpAlgoRaw = dnote.algo,
-                        .digits = int(dnote.digits),
-                        .interval = int(dnote.interval),
-                        .counter = int(dnote.counter),
-                        .crTime = (int64_t) dnote.createTime,
-                        .colorGroupId = dnote.colorGroupId,
-                });
-    }
-
-    return otpNotes;
+    storage->saveNewPassw(path, newPassw);
 }
