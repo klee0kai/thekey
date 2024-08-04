@@ -26,14 +26,14 @@ typedef brooklyn::EngineModelDecryptedColorGroup JvmColorGroup;
 
 static map<string, shared_ptr<KeyStorageV2>> storages = {};
 
-static KeyStorageV2 *findStorage(const string &path) {
-    auto it = storages.find(path);
+static KeyStorageV2 *findStorage(const string &engineId) {
+    auto it = storages.find(engineId);
     if (it == storages.end())return {};
     return &*it->second;
 }
 
 JvmStorageInfo JvmStorage2::info() {
-    auto storage = findStorage(getStoragePath());
+    auto storage = findStorage(getEngineIdentifier());
     auto storageInfo = storageFullInfo(getStoragePath());
     if (storageInfo)
         return JvmStorageInfo{
@@ -49,11 +49,10 @@ JvmStorageInfo JvmStorage2::info() {
 
 void JvmStorage2::login(const std::string &passw) {
     auto fileDescriptor = getFileDescriptor();
-    auto path = getStoragePath();
-    storages.erase(path);
+    storages.erase(getEngineIdentifier());
     shared_ptr<KeyStorageV2> storage = {};
     if (fileDescriptor) {
-        storage = thekey_v2::storage(*fileDescriptor, path, passw);
+        storage = thekey_v2::storage(*fileDescriptor, getStoragePath(), passw);
         if (storage) storage->setSingleDescriptorMode(1);
     } else {
         auto storageInfo = storageFullInfo(getStoragePath());
@@ -62,16 +61,16 @@ void JvmStorage2::login(const std::string &passw) {
     }
     if (storage) {
         storage->readAll();
-        storages.insert({getStoragePath(), storage});
+        storages.insert({getEngineIdentifier(), storage});
     }
 }
 
 void JvmStorage2::unlogin() {
-    storages.erase(getStoragePath());
+    storages.erase(getEngineIdentifier());
 }
 
 std::vector<JvmColorGroup> JvmStorage2::colorGroups(const int &info) {
-    auto storage = findStorage(getStoragePath());
+    auto storage = findStorage(getEngineIdentifier());
     if (!storage) return {};
     auto notes = std::vector<JvmColorGroup>();
     auto flags = info ? TK2_GET_NOTE_INFO : TK2_GET_NOTE_PTR_ONLY;
@@ -88,7 +87,7 @@ std::vector<JvmColorGroup> JvmStorage2::colorGroups(const int &info) {
 }
 
 std::shared_ptr<JvmColorGroup> JvmStorage2::saveColorGroup(const JvmColorGroup &group) {
-    auto storage = findStorage(getStoragePath());
+    auto storage = findStorage(getEngineIdentifier());
     if (!storage) return {};
 
     auto dGroup = make_shared<DecryptedColorGroup>(DecryptedColorGroup{
@@ -114,7 +113,7 @@ std::shared_ptr<JvmColorGroup> JvmStorage2::saveColorGroup(const JvmColorGroup &
 }
 
 int JvmStorage2::setNotesGroup(const std::vector<int64_t> &notePtrs, const int64_t &groupId) {
-    auto storage = findStorage(getStoragePath());
+    auto storage = findStorage(getEngineIdentifier());
     if (!storage) return -1;
 
     auto flags = TK2_GET_NOTE_PTR_ONLY;
@@ -130,7 +129,7 @@ int JvmStorage2::setNotesGroup(const std::vector<int64_t> &notePtrs, const int64
 }
 
 int JvmStorage2::removeColorGroup(const int64_t &colorGroupId) {
-    auto storage = findStorage(getStoragePath());
+    auto storage = findStorage(getEngineIdentifier());
     if (!storage) return -1;
 
     storage->removeColorGroup(colorGroupId);
@@ -138,7 +137,7 @@ int JvmStorage2::removeColorGroup(const int64_t &colorGroupId) {
 }
 
 std::vector<JvmDecryptedNote> JvmStorage2::notes(const int &loadInfo) {
-    auto storage = findStorage(getStoragePath());
+    auto storage = findStorage(getEngineIdentifier());
     if (!storage) return {};
     auto notes = std::vector<JvmDecryptedNote>();
     auto flags = loadInfo ? TK2_GET_NOTE_INFO : TK2_GET_NOTE_PTR_ONLY;
@@ -157,7 +156,7 @@ std::vector<JvmDecryptedNote> JvmStorage2::notes(const int &loadInfo) {
 }
 
 JvmDecryptedNote JvmStorage2::note(const int64_t &notePtr) {
-    auto storage = findStorage(getStoragePath());
+    auto storage = findStorage(getEngineIdentifier());
     if (!storage)return {};
     auto dnote = storage->note(notePtr, TK2_GET_NOTE_INFO | TK2_GET_NOTE_PASSWORD);
     if (!dnote) return {};
@@ -175,12 +174,13 @@ JvmDecryptedNote JvmStorage2::note(const int64_t &notePtr) {
 }
 
 int JvmStorage2::saveNote(const JvmDecryptedNote &decryptedNote, const int &setAll) {
-    auto storage = findStorage(getStoragePath());
+    auto storage = findStorage(getEngineIdentifier());
     if (!storage) return -1;
 
     auto flags = 0;
     if (setAll) {
-        flags |= TK2_SET_NOTE_INFO | TK2_SET_NOTE_PASSW | TK2_SET_NOTE_TRACK_HISTORY | TK2_SET_NOTE_SAVE_TO_FILE;
+        flags |= TK2_SET_NOTE_INFO | TK2_SET_NOTE_PASSW | TK2_SET_NOTE_TRACK_HISTORY |
+                 TK2_SET_NOTE_SAVE_TO_FILE;
     }
 
     thekey_v2::DecryptedNote dnote = {
@@ -200,7 +200,7 @@ int JvmStorage2::saveNote(const JvmDecryptedNote &decryptedNote, const int &setA
 }
 
 int JvmStorage2::removeNote(const int64_t &notePt) {
-    auto storage = findStorage(getStoragePath());
+    auto storage = findStorage(getEngineIdentifier());
     if (!storage)return -1;
 
     storage->removeNote(notePt);
@@ -208,7 +208,7 @@ int JvmStorage2::removeNote(const int64_t &notePt) {
 }
 
 std::string JvmStorage2::generateNewPassw(const JvmGenPasswParams &params) {
-    auto storage = findStorage(getStoragePath());
+    auto storage = findStorage(getEngineIdentifier());
     if (!storage) return "";
 
     auto len = params.len;
@@ -229,7 +229,7 @@ std::string JvmStorage2::generateNewPassw(const JvmGenPasswParams &params) {
 }
 
 std::string JvmStorage2::lastGeneratedPassw() {
-    auto storage = findStorage(getStoragePath());
+    auto storage = findStorage(getEngineIdentifier());
     if (!storage)return "";
     auto hist = storage->genPasswHistoryList();
     if (!hist.empty()) {
@@ -241,7 +241,7 @@ std::string JvmStorage2::lastGeneratedPassw() {
 }
 
 std::vector<JvmDecryptedPassw> JvmStorage2::genHistory(const int &info) {
-    auto storage = findStorage(getStoragePath());
+    auto storage = findStorage(getEngineIdentifier());
     if (!storage)return {};
 
     auto flags = info ? TK2_GET_NOTE_HISTORY_FULL : 0;
@@ -260,7 +260,7 @@ std::vector<JvmDecryptedPassw> JvmStorage2::genHistory(const int &info) {
 }
 
 JvmDecryptedPassw JvmStorage2::getGenPassw(const int64_t &ptNote) {
-    auto storage = findStorage(getStoragePath());
+    auto storage = findStorage(getEngineIdentifier());
     if (!storage)return {};
 
     auto passw = storage->genPasswHistory(ptNote);
@@ -276,7 +276,7 @@ JvmDecryptedPassw JvmStorage2::getGenPassw(const int64_t &ptNote) {
 }
 
 std::vector<JvmDecryptedOtpNote> JvmStorage2::otpNotes(const int &info) {
-    auto storage = findStorage(getStoragePath());
+    auto storage = findStorage(getEngineIdentifier());
     if (!storage)return {};
     auto otpNotes = std::vector<JvmDecryptedOtpNote>();
     auto flags = info ? TK2_GET_NOTE_INFO : TK2_GET_NOTE_PTR_ONLY;
@@ -300,7 +300,7 @@ std::vector<JvmDecryptedOtpNote> JvmStorage2::otpNotes(const int &info) {
 }
 
 JvmDecryptedOtpNote JvmStorage2::otpNote(const int64_t &notePtr) {
-    auto storage = findStorage(getStoragePath());
+    auto storage = findStorage(getEngineIdentifier());
     if (!storage)return {};
     auto dnotePtr = storage->otpNote(notePtr, TK2_GET_NOTE_INFO | TK2_GET_NOTE_PASSWORD);
     if (!dnotePtr)return {};
@@ -323,7 +323,7 @@ JvmDecryptedOtpNote JvmStorage2::otpNote(const int64_t &notePtr) {
 }
 
 int JvmStorage2::saveOtpNote(const JvmDecryptedOtpNote &jOtp, const int &setAll) {
-    auto storage = findStorage(getStoragePath());
+    auto storage = findStorage(getEngineIdentifier());
     if (!storage)return {};
 
     auto dnote = DecryptedOtpNote{
@@ -349,7 +349,7 @@ int JvmStorage2::saveOtpNote(const JvmDecryptedOtpNote &jOtp, const int &setAll)
 }
 
 int JvmStorage2::removeOtpNote(const int64_t &notePt) {
-    auto storage = findStorage(getStoragePath());
+    auto storage = findStorage(getEngineIdentifier());
     if (!storage)return {};
 
     storage->removeOtpNote(notePt);
@@ -375,7 +375,7 @@ shared_ptr<JvmDecryptedOtpNote> JvmStorage2::otpNoteFromUrl(const std::string &u
 }
 
 int JvmStorage2::setOtpNotesGroup(const std::vector<int64_t> &notePtrs, const int64_t &groupId) {
-    auto storage = findStorage(getStoragePath());
+    auto storage = findStorage(getEngineIdentifier());
     if (!storage)return {};
 
     auto flags = TK2_GET_NOTE_PTR_ONLY;

@@ -22,4 +22,6 @@ interface ChangeStoragePasswordPresenter {
 
     fun save(router: AppRouter?): Job = emptyJob()
 
+    fun clean(): Job = emptyJob()
+
 }

@@ -7,6 +7,7 @@ import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.utils.common.launchLatest
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
@@ -29,6 +30,8 @@ class OtpNotesInteractor(
             }
         }.collect(this)
     }
+
+    val loadedOtpNotes = otpNotes.filter { list -> list.all { it.isLoaded } }
 
     fun loadOtpNotes() = scope.launchLatest("load_notes") { rep().loadOtpNotes() }
 

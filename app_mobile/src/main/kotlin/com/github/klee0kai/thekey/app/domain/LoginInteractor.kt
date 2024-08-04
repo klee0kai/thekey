@@ -26,9 +26,15 @@ class LoginInteractor {
             }.collect(this)
     }
 
-    fun login(storageIdentifier: StorageIdentifier, passw: String) = scope.async {
+    fun login(
+        storageIdentifier: StorageIdentifier,
+        passw: String,
+        ignoreLoginned: Boolean = false
+    ) = scope.async {
         var identifier = storageIdentifier
-        if (identifier.version == 0) identifier = identifier.copy(version = settingsRep().newStorageVersion())
+        if (identifier.version == 0) {
+            identifier = identifier.copy(version = settingsRep().newStorageVersion())
+        }
 
         val engine = DI.cryptStorageEngineSafeLazy(identifier)
         val notesInteractor = DI.notesInteractorLazy(identifier)
@@ -45,7 +51,7 @@ class LoginInteractor {
         notesInteractor().loadNotes()
         otpNotesInteractor().loadOtpNotes()
         groupsInteractor().loadGroups()
-        rep().logined(identifier)
+        if (!ignoreLoginned) rep().logined(identifier)
 
         identifier
     }

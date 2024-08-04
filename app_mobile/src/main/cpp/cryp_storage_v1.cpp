@@ -23,14 +23,14 @@ typedef brooklyn::EngineModelDecryptedNote JvmDecryptedNote;
 
 static map<string, shared_ptr<KeyStorageV1>> storages = {};
 
-static KeyStorageV1 *findStorage(const string &path) {
-    auto it = storages.find(path);
+static KeyStorageV1 *findStorage(const string &engineId) {
+    auto it = storages.find(engineId);
     if (it == storages.end())return {};
     return &*it->second;
 }
 
 JvmStorageInfo JvmStorage1::info() {
-    auto storageV1 = findStorage(getStoragePath());
+    auto storageV1 = findStorage(getEngineIdentifier());
     auto storageInfo = storageV1Info(getStoragePath());
     if (storageInfo)
         return JvmStorageInfo{
@@ -45,23 +45,23 @@ JvmStorageInfo JvmStorage1::info() {
 }
 
 void JvmStorage1::login(const std::string &passw) {
-    storages.erase(getStoragePath());
+    storages.erase(getEngineIdentifier());
     auto storageInfo = storageV1Info(getStoragePath());
     if (!storageInfo) createStorage(Storage{.file = getStoragePath()});
 
     auto storage = thekey_v1::storage(getStoragePath(), passw);
     if (storage) {
         storage->readAll();
-        storages.insert({getStoragePath(), storage});
+        storages.insert({getEngineIdentifier(), storage});
     }
 }
 
 void JvmStorage1::unlogin() {
-    storages.erase(getStoragePath());
+    storages.erase(getEngineIdentifier());
 }
 
 std::vector<JvmDecryptedNote> JvmStorage1::notes(const int &loadInfo) {
-    auto storageV1 = findStorage(getStoragePath());
+    auto storageV1 = findStorage(getEngineIdentifier());
     if (!storageV1)return {};
     auto notes = std::vector<JvmDecryptedNote>();
     auto flags = loadInfo ? TK1_GET_NOTE_INFO : TK1_GET_NOTE_PTR_ONLY;
@@ -79,7 +79,7 @@ std::vector<JvmDecryptedNote> JvmStorage1::notes(const int &loadInfo) {
 }
 
 JvmDecryptedNote JvmStorage1::note(const int64_t &notePtr) {
-    auto storageV1 = findStorage(getStoragePath());
+    auto storageV1 = findStorage(getEngineIdentifier());
     if (!storageV1)return {};
     auto dnote = storageV1->note(notePtr, TK1_GET_NOTE_INFO | TK1_GET_NOTE_PASSWORD);
     auto result = JvmDecryptedNote{
@@ -94,7 +94,7 @@ JvmDecryptedNote JvmStorage1::note(const int64_t &notePtr) {
 }
 
 int JvmStorage1::saveNote(const JvmDecryptedNote &decryptedNote, const int &setAll) {
-    auto storageV1 = findStorage(getStoragePath());
+    auto storageV1 = findStorage(getEngineIdentifier());
     if (!storageV1 || !setAll)return -1;
 
     thekey_v1::DecryptedNote dnote = {
@@ -110,7 +110,7 @@ int JvmStorage1::saveNote(const JvmDecryptedNote &decryptedNote, const int &setA
 }
 
 int JvmStorage1::removeNote(const int64_t &notePt) {
-    auto storageV1 = findStorage(getStoragePath());
+    auto storageV1 = findStorage(getEngineIdentifier());
     if (!storageV1)return -1;
 
     storageV1->removeNote(notePt);
@@ -118,7 +118,7 @@ int JvmStorage1::removeNote(const int64_t &notePt) {
 }
 
 std::string JvmStorage1::generateNewPassw(const JvmGenPasswParams &params) {
-    auto storageV1 = findStorage(getStoragePath());
+    auto storageV1 = findStorage(getEngineIdentifier());
     if (!storageV1)return "";
     int genPasswEncoding = ENC_NUM_ONLY;
     if (params.specSymbolsInPassw) {
@@ -130,7 +130,7 @@ std::string JvmStorage1::generateNewPassw(const JvmGenPasswParams &params) {
 }
 
 std::string JvmStorage1::lastGeneratedPassw() {
-    auto storageV1 = findStorage(getStoragePath());
+    auto storageV1 = findStorage(getEngineIdentifier());
     if (!storageV1)return "";
     auto hist = storageV1->genPasswHistoryList();
     if (!hist.empty()) {
@@ -141,7 +141,7 @@ std::string JvmStorage1::lastGeneratedPassw() {
 }
 
 std::vector<EngineModelDecryptedPassw> JvmStorage1::genHistory(const int &info) {
-    auto storageV1 = findStorage(getStoragePath());
+    auto storageV1 = findStorage(getEngineIdentifier());
     if (!storageV1)return {};
 
     auto flags = info ? TK1_GET_NOTE_HISTORY_FULL : 0;
@@ -160,7 +160,7 @@ std::vector<EngineModelDecryptedPassw> JvmStorage1::genHistory(const int &info) 
 }
 
 JvmDecryptedPassw JvmStorage1::getGenPassw(const int64_t &ptNote) {
-    auto storageV1 = findStorage(getStoragePath());
+    auto storageV1 = findStorage(getEngineIdentifier());
     if (!storageV1)return {};
 
     auto passw = storageV1->genPasswHistory(ptNote);
