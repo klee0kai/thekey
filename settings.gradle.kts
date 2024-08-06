@@ -37,4 +37,5 @@ if (isPrivateAvailable) {
     include(":private:feature_billing")
     include(":private:dynamic_autofill")
     include(":private:dynamic_gdrive")
+    include(":private:dynamic_chpassw")
 }

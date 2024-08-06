@@ -146,9 +146,6 @@ fun NotesListContent(
                                 }
                             ),
                         otp = otp,
-                        overlayContent = {
-
-                        }
                     )
                 }
             }

@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.wear.compose.material.Icon
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.domain.model.ColoredNote
@@ -35,6 +38,7 @@ import org.jetbrains.annotations.VisibleForTesting
 fun ColoredNoteItem(
     modifier: Modifier = Modifier,
     note: ColoredNote = ColoredNote(),
+    icon: (@Composable () -> Unit)? = null,
     overlayContent: @Composable () -> Unit = {},
 ) {
     val colorScheme = LocalColorScheme.current
@@ -49,7 +53,7 @@ fun ColoredNoteItem(
         val (
             skeletonField,
             colorGroupField,
-            siteField, loginField, descriptionField
+            siteField, loginField, descriptionField, iconField,
         ) = createRefs()
 
         if (skeleton.current) {
@@ -96,7 +100,8 @@ fun ColoredNoteItem(
         )
 
         Text(
-            text = animatedNote.current.site.takeIf { it.isNotBlank() } ?: stringResource(id = R.string.no_site),
+            text = animatedNote.current.site.takeIf { it.isNotBlank() }
+                ?: stringResource(id = R.string.no_site),
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Medium,
             modifier = Modifier
@@ -131,11 +136,11 @@ fun ColoredNoteItem(
                         top = parent.top,
                         bottom = parent.bottom,
                         start = siteField.end,
-                        end = parent.end,
+                        end = iconField.start,
                         topMargin = 6.dp,
                         bottomMargin = 6.dp,
                         startMargin = 8.dp,
-                        endMargin = 26.dp,
+                        endMargin = 4.dp,
                         horizontalBias = 0.6f,
                         verticalBias = 0f,
                     )
@@ -164,6 +169,23 @@ fun ColoredNoteItem(
                     )
                 }
         )
+
+
+        Box(modifier = Modifier.constrainAs(iconField) {
+            linkTo(
+                top = parent.top,
+                bottom = parent.bottom,
+                start = parent.start,
+                end = parent.end,
+                startMargin = 16.dp,
+                endMargin = 16.dp,
+                horizontalBias = 1f,
+            )
+        }) {
+            when {
+                icon != null -> icon.invoke()
+            }
+        }
 
         overlayContent()
     }
@@ -206,5 +228,23 @@ fun ColoredNoteDummyNoGroup() = AppTheme(theme = DefaultThemes.darkTheme) {
             group = ColorGroup(),
             isLoaded = true,
         )
+    )
+}
+
+@VisibleForTesting
+@Composable
+@Preview
+fun ColoredNoteIcon() = AppTheme(theme = DefaultThemes.darkTheme) {
+    ColoredNoteItem(
+        note = ColoredNote(
+            site = "some.super.site.com",
+            login = "potato",
+            desc = "my work note",
+            group = ColorGroup(),
+            isLoaded = true,
+        ),
+        icon = {
+            Icon(imageVector = Icons.Default.Check, contentDescription = "")
+        }
     )
 }
