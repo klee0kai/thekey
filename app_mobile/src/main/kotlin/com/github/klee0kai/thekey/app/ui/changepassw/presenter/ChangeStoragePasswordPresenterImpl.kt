@@ -60,6 +60,16 @@ open class ChangeStoragePasswordPresenterImpl(
         ).join()
     }
 
+    override fun clean() = scope.launch {
+        val passwds = loginnedPasswords.keys().toList()
+        loginnedPasswords.clear()
+        passwds.forEach { passw ->
+            loginInteractor()
+                .unlogin(storageIdentifier(passw))
+                .join()
+        }
+    }
+
     private fun checkErrorIfNeed() = scope.launchLatest("conf_wrong") {
         delay(5.seconds)
         state.update { state ->
@@ -118,16 +128,6 @@ open class ChangeStoragePasswordPresenterImpl(
             if (state.value.currentPassw == passw) {
                 sortedStorageItems.value = sortedList
             }
-        }
-    }
-
-    override fun clean() = scope.launch {
-        val passwds = loginnedPasswords.keys().toList()
-        loginnedPasswords.clear()
-        passwds.forEach { passw ->
-            loginInteractor()
-                .unlogin(storageIdentifier(passw))
-                .join()
         }
     }
 
