@@ -100,6 +100,7 @@ std::shared_ptr<JvmColorGroup> JvmStorage2::saveColorGroup(const JvmColorGroup &
     } else {
         storage->setColorGroup(*dGroup);
     }
+    storage->save();
 
     auto jniColorGroup = make_shared<JvmColorGroup>(
             JvmColorGroup{
@@ -124,8 +125,7 @@ int JvmStorage2::setNotesGroup(const std::vector<int64_t> &notePtrs, const int64
         storage->setNote(*note, flags);
     }
 
-    storage->save();
-    return 0;
+    return storage->save();
 }
 
 int JvmStorage2::removeColorGroup(const int64_t &colorGroupId) {
@@ -133,7 +133,7 @@ int JvmStorage2::removeColorGroup(const int64_t &colorGroupId) {
     if (!storage) return -1;
 
     storage->removeColorGroup(colorGroupId);
-    return 0;
+    return storage->save();
 }
 
 std::vector<JvmDecryptedNote> JvmStorage2::notes(const int &loadInfo) {
@@ -179,8 +179,7 @@ int JvmStorage2::saveNote(const JvmDecryptedNote &decryptedNote, const int &setA
 
     auto flags = 0;
     if (setAll) {
-        flags |= TK2_SET_NOTE_INFO | TK2_SET_NOTE_PASSW | TK2_SET_NOTE_TRACK_HISTORY |
-                 TK2_SET_NOTE_SAVE_TO_FILE;
+        flags |= TK2_SET_NOTE_INFO | TK2_SET_NOTE_PASSW | TK2_SET_NOTE_TRACK_HISTORY;
     }
 
     thekey_v2::DecryptedNote dnote = {
@@ -196,6 +195,7 @@ int JvmStorage2::saveNote(const JvmDecryptedNote &decryptedNote, const int &setA
     } else {
         storage->setNote(dnote, flags);
     }
+    storage->save();
     return 0;
 }
 
@@ -204,6 +204,7 @@ int JvmStorage2::removeNote(const int64_t &notePt) {
     if (!storage)return -1;
 
     storage->removeNote(notePt);
+    storage->save();
     return 0;
 }
 
@@ -225,7 +226,9 @@ std::string JvmStorage2::generateNewPassw(const JvmGenPasswParams &params) {
         if (!len) len = params.oldPassw.length();
     }
 
-    return storage->genPassword(schemeId, len);
+    auto result = storage->genPassword(schemeId, len);
+    storage->save();
+    return result;
 }
 
 std::string JvmStorage2::lastGeneratedPassw() {
@@ -237,7 +240,9 @@ std::string JvmStorage2::lastGeneratedPassw() {
         if (genPassw) return genPassw->passw;
     }
     auto schemeType = thekey_v2::findSchemeByFlags(SCHEME_NUMBERS);
-    return storage->genPassword(schemeType, 4);
+    auto result = storage->genPassword(schemeType, 4);
+    storage->save();
+    return result;
 }
 
 std::vector<JvmDecryptedPassw> JvmStorage2::genHistory(const int &info) {
@@ -345,7 +350,8 @@ int JvmStorage2::saveOtpNote(const JvmDecryptedOtpNote &jOtp, const int &setAll)
     } else {
         storage->setOtpNote(dnote, 0);
     }
-    return -1;
+
+    return storage->save();
 }
 
 int JvmStorage2::removeOtpNote(const int64_t &notePt) {
@@ -353,7 +359,7 @@ int JvmStorage2::removeOtpNote(const int64_t &notePt) {
     if (!storage)return {};
 
     storage->removeOtpNote(notePt);
-    return 0;
+    return storage->save();
 }
 
 shared_ptr<JvmDecryptedOtpNote> JvmStorage2::otpNoteFromUrl(const std::string &url) {
@@ -386,6 +392,5 @@ int JvmStorage2::setOtpNotesGroup(const std::vector<int64_t> &notePtrs, const in
         storage->setOtpNote(*note, flags);
     }
 
-    storage->save();
-    return 0;
+    return storage->save();
 }

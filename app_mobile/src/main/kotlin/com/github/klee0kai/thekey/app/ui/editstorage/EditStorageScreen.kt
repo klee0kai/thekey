@@ -48,7 +48,6 @@ import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.ui.editstorage.model.EditStorageState
 import com.github.klee0kai.thekey.app.ui.editstorage.presenter.EditStoragePresenter
-import com.github.klee0kai.thekey.app.ui.navigation.model.ChangeStoragePasswordDestination
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
@@ -265,7 +264,7 @@ fun EditStorageScreen(
                     .fillMaxWidth()
                     .padding(bottom = 12.dp),
                 colors = LocalColorScheme.current.grayTextButtonColors,
-                onClick = { router?.navigate(ChangeStoragePasswordDestination(path)) }
+                onClick = { presenter?.changePassw(router) }
             ) {
                 Text(stringResource(R.string.change_password))
             }

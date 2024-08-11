@@ -1,6 +1,7 @@
 package com.github.klee0kai.thekey.app.engine.editstorage
 
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.engine.model.ChPasswStrategy
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.engine.model.DecryptedOtpNote
 import com.github.klee0kai.thekey.app.engine.model.Storage
@@ -27,9 +28,16 @@ class EditStorageSuspended {
         editStorage(storage)
     }
 
-    suspend fun move(from: String, to: String): Int = engineRead(from) {
-        engineWrite(to) {
-            move(from, to)
+    suspend fun move(from: String, to: String): Int {
+        if (from == to) {
+            return engineWrite(to) {
+                move(from, to)
+            }
+        }
+        return engineRead(from) {
+            engineWrite(to) {
+                move(from, to)
+            }
         }
     }
 
@@ -40,6 +48,12 @@ class EditStorageSuspended {
     ) = engineWrite(path) {
         changePassw(path, currentPassw, newPassw)
     }
+
+    suspend fun changePasswStrategy(path: String, strategies: List<ChPasswStrategy>) =
+        engineWrite(path) {
+            changePasswStrategy(path, strategies.toTypedArray())
+        }
+
 
     suspend fun notes(
         path: String,

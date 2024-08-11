@@ -1,6 +1,8 @@
 package com.github.klee0kai.thekey.app.ui.changepassw.presenter
 
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.ui.changepassw.model.ChPasswConfirmed
+import com.github.klee0kai.thekey.app.ui.changepassw.model.ChPasswResults
 import com.github.klee0kai.thekey.app.ui.changepassw.model.ChangePasswError
 import com.github.klee0kai.thekey.app.ui.changepassw.model.ChangePasswordStorageState
 import com.github.klee0kai.thekey.app.ui.changepassw.model.ConfirmIsWrong
@@ -53,6 +55,8 @@ open class ChangeStoragePasswordPresenterImpl(
     override fun save(router: AppRouter?) = scope.launch {
         val state = state.value
         if (!state.calcSaveAvailable()) return@launch
+        router?.backWithResult<ChPasswResults>(ChPasswConfirmed)
+
         interactor().changePassw(
             path = originStorageIdentifier.path,
             currentPassw = state.currentPassw,

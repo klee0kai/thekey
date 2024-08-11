@@ -16,6 +16,7 @@ typedef EngineModelStorage JvmStorage;
 typedef EngineEditstorageEditStorageEngine JvmEditStorageEngine;
 typedef brooklyn::EngineModelDecryptedNote JvmDecryptedNote;
 typedef brooklyn::EngineModelDecryptedOtpNote JvmDecryptedOtpNote;
+typedef brooklyn::EngineModelChPasswStrategy JvmChStrategy;
 
 
 std::shared_ptr<JvmStorage> JvmEditStorageEngine::findStorageInfo(const std::string &path) {
@@ -62,4 +63,35 @@ void JvmEditStorageEngine::changePassw(
     if (!storage) return;
     storage->readAll();
     storage->saveNewPassw(path, newPassw);
+}
+
+
+void JvmEditStorageEngine::changePasswStrategy(
+        const std::string &path,
+        const std::vector<JvmChStrategy> &jStrategies) {
+    auto defaultStrategy = std::find_if(jStrategies.begin(), jStrategies.end(),
+                                        [](const JvmChStrategy &it) { return it.defaultStrategy; });
+    if (defaultStrategy == jStrategies.end()) return;
+    auto storage = thekey_v2::storage(path, defaultStrategy->currentPasswd);
+    if (!storage) return;
+    storage->readAll();
+
+    list<thekey_v2::StoragePasswMigrateStrategy> strategies = {};
+
+
+    for (const auto &jStrategy: jStrategies) {
+        strategies.push_back(thekey_v2::StoragePasswMigrateStrategy{
+                .currentPassword = jStrategy.currentPasswd,
+                .newPassw = jStrategy.newPassw,
+                .isDefault = jStrategy.defaultStrategy,
+        });
+        auto &strategy = strategies.back();
+        strategy.noteIds.insert(strategy.noteIds.end(),
+                                jStrategy.noteIds.begin(),
+                                jStrategy.noteIds.end());
+        strategy.otpNoteIds.insert(strategy.otpNoteIds.end(),
+                                jStrategy.otpNoteIds.begin(),
+                                jStrategy.otpNoteIds.end());
+    }
+    storage->saveNewPasswStrategy(path, strategies);
 }
