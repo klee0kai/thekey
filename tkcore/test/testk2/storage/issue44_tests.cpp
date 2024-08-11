@@ -19,7 +19,6 @@ using namespace std;
 using namespace thekey_v2;
 using namespace key_salt;
 
-
 // https://github.com/klee0kai/thekey/issues/44
 TEST(Storage2_Issue44, CreateStorage) {
     unlink("ts_issue44.ckey");
@@ -121,7 +120,6 @@ TEST(Storage2_Issue44, CreateStorage) {
 
 }
 
-
 // RUN AFTER Storage2_Issue44::CreateStorage
 // https://github.com/klee0kai/thekey/issues/44
 TEST(Storage2_Issue44, ReadStorage) {
@@ -176,7 +174,6 @@ TEST(Storage2_Issue44, ReadStorage) {
     ASSERT_EQ(pinkGroup->id, otpNote.colorGroupId);
 }
 
-
 // RUN AFTER Storage2_Issue44::CreateStorage
 // https://github.com/klee0kai/thekey/issues/44
 TEST(Storage2_Issue44, OtpSecretsTests) {
@@ -197,7 +194,6 @@ TEST(Storage2_Issue44, OtpSecretsTests) {
               uri2.query["secret"]);
 
 }
-
 
 // RUN AFTER Storage2_Issue44::CreateStorage
 // https://github.com/klee0kai/thekey/issues/44
@@ -221,9 +217,6 @@ TEST(Storage2_Issue44, GenOtpGoogleExample) {
 
     ASSERT_EQ("602287", otpFull->otpPassw);
 }
-
-
-
 
 // RUN AFTER Storage2_Issue44::CreateStorage
 // https://github.com/klee0kai/thekey/issues/44

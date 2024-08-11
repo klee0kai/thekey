@@ -417,12 +417,12 @@ int KeyStorageV2::saveNewPassw(
     return destStorage->save();
 }
 
-int KeyStorageV2::migratePassw(
+int KeyStorageV2::saveNewPasswStrategy(
         const std::string &path,
-        const std::list<StoragePassportMigrateStrategy> &strategies,
+        const std::list<StoragePasswMigrateStrategy> &strategies,
         const std::function<void(const float &)> &progress) {
     auto defaultStrategy = std::find_if(strategies.begin(), strategies.end(),
-                                        [](const StoragePassportMigrateStrategy &it) { return it.isDefault; });
+                                        [](const StoragePasswMigrateStrategy &it) { return it.isDefault; });
     if (defaultStrategy == strategies.end()) return KEY_NO_DEFAULT_STRATEGY;
     auto storageInfo = info();
     auto error = createStorage(
@@ -438,6 +438,10 @@ int KeyStorageV2::migratePassw(
     int progressCount = 0;
 
     auto collectingNewSnaphot = snapshot();
+    collectingNewSnaphot.cryptedColorGroups->clear();
+    collectingNewSnaphot.cryptedNotes->clear();
+    collectingNewSnaphot.cryptedOtpNotes->clear();
+    collectingNewSnaphot.cryptedGeneratedPassws->clear();
     for (const auto &strategy: strategies) {
         auto virtSrc = storage(storagePath, strategy.currentPassword);
         auto virtDest = storage(path, strategy.newPassw);
@@ -452,39 +456,42 @@ int KeyStorageV2::migratePassw(
             }
         }
 
-        for (const auto &note: virtSrc->notes(TK2_GET_NOTE_FULL)) {
-            if (std::find(strategy.noteIds.begin(), strategy.noteIds.end(), note.id) == strategy.noteIds.end()) {
+        for (const auto &srcNote: virtSrc->notes(TK2_GET_NOTE_FULL)) {
+            if (std::find(strategy.noteIds.begin(), strategy.noteIds.end(), srcNote.id) == strategy.noteIds.end()) {
                 continue;
             }
-            virtDest->createNote(note);
+            virtDest->createNote(srcNote);
 
             if (progress) progress(MIN(1, progressCount++ / allItemsCount));
         }
 
-        for (const auto &srcNote: virtSrc->otpNotes(TK2_GET_NOTE_FULL)) {
-            if (std::find(strategy.otpNoteIds.begin(), strategy.otpNoteIds.end(), srcNote.id) ==
+        for (const auto &srcOtpNote: virtSrc->otpNotes(TK2_GET_NOTE_FULL)) {
+            if (std::find(strategy.otpNoteIds.begin(), strategy.otpNoteIds.end(), srcOtpNote.id) ==
                 strategy.otpNoteIds.end()) {
                 continue;
             }
 
-            auto destNoteList = virtDest->createOtpNotes(exportOtpNote(srcNote.id).toUri(), TK2_GET_NOTE_FULL);
-            if (destNoteList.empty())continue;
-            auto destNote = destNoteList.front();
+            auto destOtpNoteList = virtDest->createOtpNotes(virtSrc->exportOtpNote(srcOtpNote.id).toUri(), TK2_GET_NOTE_FULL);
+            if (destOtpNoteList.empty()) continue;
+            auto destOtpNote = destOtpNoteList.front();
 
             // not export meta
-            destNote.colorGroupId = srcNote.colorGroupId;
-            destNote.pin = srcNote.pin;
+            destOtpNote.colorGroupId = srcOtpNote.colorGroupId;
+            destOtpNote.pin = srcOtpNote.pin;
 
-            virtDest->setOtpNote(destNote);
+            virtDest->setOtpNote(destOtpNote);
 
             if (progress) progress(MIN(1, progressCount++ / allItemsCount));
         }
 
         if (strategy.isDefault) {
-            virtDest->appendPasswHistory(genPasswHistoryList(TK2_GET_NOTE_FULL));
+            virtDest->appendPasswHistory(virtSrc->genPasswHistoryList(TK2_GET_NOTE_FULL));
         }
 
         auto appendSnaphot = virtDest->snapshot();
+        collectingNewSnaphot.idCounter = MAX(appendSnaphot.idCounter, collectingNewSnaphot.idCounter);
+        collectingNewSnaphot.colorGroupIdCounter = MAX(appendSnaphot.colorGroupIdCounter,
+                                                       collectingNewSnaphot.colorGroupIdCounter);
         collectingNewSnaphot.cryptedColorGroups->splice(
                 collectingNewSnaphot.cryptedColorGroups->end(),
                 *appendSnaphot.cryptedColorGroups);

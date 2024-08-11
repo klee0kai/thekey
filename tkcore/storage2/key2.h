@@ -126,7 +126,7 @@ namespace thekey_v2 {
         std::shared_ptr<std::list<CryptedPassword>> cryptedGeneratedPassws;
     };
 
-    struct StoragePassportMigrateStrategy {
+    struct StoragePasswMigrateStrategy {
         std::string currentPassword;
         std::string newPassw;
         int isDefault;
@@ -174,9 +174,9 @@ namespace thekey_v2 {
                 const std::function<void(const float &)> &progress = {}
         );
 
-        virtual int migratePassw(
+        virtual int saveNewPasswStrategy(
                 const std::string &path,
-                const std::list<StoragePassportMigrateStrategy> &strategies,
+                const std::list<StoragePasswMigrateStrategy> &strategies,
                 const std::function<void(const float &)> &progress = {}
         );
 

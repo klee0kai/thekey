@@ -15,6 +15,7 @@ add_executable(testk2
         ${CMAKE_CURRENT_LIST_DIR}/storage/read_issue44_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/storage/issue44_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/storage/change_passw_storage_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/storage/change_passw_strategy_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/storage/create_storage2_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/storage/read_storage2_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/storage/setheader_tests.cpp
