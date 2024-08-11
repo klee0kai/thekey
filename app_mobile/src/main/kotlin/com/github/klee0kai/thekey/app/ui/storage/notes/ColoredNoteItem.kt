@@ -2,8 +2,11 @@ package com.github.klee0kai.thekey.app.ui.storage.notes
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -29,6 +32,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.horizontal
 import com.github.klee0kai.thekey.core.utils.views.skeleton
 import com.github.klee0kai.thekey.core.utils.views.visibleOnTargetAlpha
 import org.jetbrains.annotations.VisibleForTesting
@@ -44,6 +48,7 @@ fun ColoredNoteItem(
     val colorScheme = LocalColorScheme.current
     val animatedNote by animateTargetCrossFaded(note)
     val skeleton by animateTargetCrossFaded(!note.isLoaded)
+    val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
 
     ConstraintLayout(
         modifier = modifier
@@ -71,8 +76,8 @@ fun ColoredNoteItem(
                             end = parent.end,
                             topMargin = 6.dp,
                             bottomMargin = 6.dp,
-                            startMargin = 16.dp,
-                            endMargin = 16.dp,
+                            startMargin = safeContentPaddings.horizontal(minValue = 16.dp),
+                            endMargin = safeContentPaddings.horizontal(minValue = 16.dp),
                         )
                     }
             )
@@ -94,7 +99,7 @@ fun ColoredNoteItem(
                         end = parent.end,
                         verticalBias = 0.5f,
                         horizontalBias = 0f,
-                        startMargin = 16.dp,
+                        startMargin = safeContentPaddings.horizontal(minValue = 16.dp),
                     )
                 }
         )
@@ -179,8 +184,8 @@ fun ColoredNoteItem(
                     bottom = parent.bottom,
                     start = parent.start,
                     end = parent.end,
-                    startMargin = 16.dp,
-                    endMargin = 16.dp,
+                    startMargin = safeContentPaddings.horizontal(minValue = 16.dp),
+                    endMargin = safeContentPaddings.horizontal(minValue = 16.dp),
                     horizontalBias = 1f,
                 )
             }) {
