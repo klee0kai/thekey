@@ -90,7 +90,26 @@ int thekey_v2::createStorage(const thekey::Storage &storage) {
     return 0;
 }
 
-std::shared_ptr<KeyStorageV2> thekey_v2::storage(const std::string &path, const std::string &passw) {
+int thekey_v2::createStorageWithHeader(
+        const string &file,
+        const thekey_v2::StorageHeaderFlat &header) {
+    int fd = open(file.c_str(), O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
+    if (fd < 0) {
+        keyError = KEY_OPEN_FILE_ERROR;
+        return KEY_OPEN_FILE_ERROR;
+    }
+    auto wroteLen = write(fd, &header, sizeof(header));
+    if (wroteLen != sizeof(header)) {
+        close(fd);
+        keyError = KEY_WRITE_FILE_ERROR;
+        return KEY_WRITE_FILE_ERROR;
+    }
+    close(fd);
+    return 0;
+}
+
+std::shared_ptr<KeyStorageV2>
+thekey_v2::storage(const std::string &path, const std::string &passw) {
     int fd = open(path.c_str(), O_RDWR);
     if (fd == -1) {
         keyError = KEY_OPEN_FILE_ERROR;
@@ -99,7 +118,8 @@ std::shared_ptr<KeyStorageV2> thekey_v2::storage(const std::string &path, const 
     return storage(fd, path, passw);
 }
 
-std::shared_ptr<KeyStorageV2> thekey_v2::storage(const int &fd, const std::string &path, const std::string &passw) {
+std::shared_ptr<KeyStorageV2>
+thekey_v2::storage(const int &fd, const std::string &path, const std::string &passw) {
     auto header = storageHeader(fd);
     if (!header) {
         close(fd);
@@ -150,7 +170,8 @@ std::shared_ptr<CryptContext> thekey_v2::cryptContext(
 }
 
 // ------------------- public --------------------------
-KeyStorageV2::KeyStorageV2(int fd, const std::string &path, const std::shared_ptr<CryptContext> &ctx)
+KeyStorageV2::KeyStorageV2(int fd, const std::string &path,
+                           const std::shared_ptr<CryptContext> &ctx)
         : storageFileDescriptor(fd), singleDescriptorMode(0), storagePath(path), ctx(ctx) {
     tempStoragePath = path.substr(0, path.find_last_of('.')) + "-temp.ckey";
     cachedInfo = {.path = storagePath,};
@@ -320,7 +341,8 @@ int KeyStorageV2::save(const int &fd) {
     for (const auto &note: *data.cryptedNotes) {
         fileSection = {};
         fileSection.sectionType(NoteEntry);
-        fileSection.sectionLen(sizeof(CryptedNoteFlat) + note.history.size() * sizeof(CryptedPasswordFlat));
+        fileSection.sectionLen(
+                sizeof(CryptedNoteFlat) + note.history.size() * sizeof(CryptedPasswordFlat));
         writeLen = write(fd, &fileSection, sizeof(fileSection));
         if (writeLen != sizeof(FileSectionFlat)) goto write_file_error;
 
@@ -368,13 +390,7 @@ int KeyStorageV2::saveNewPassw(
         const std::function<void(const float &)> &progress
 ) {
     auto storageInfo = info();
-    auto error = createStorage(
-            {
-                    .file = path,
-                    .storageVersion = storageInfo.storageVersion,
-                    .name = storageInfo.name,
-                    .description = storageInfo.description
-            });
+    auto error = createStorageWithHeader(path, *fheader);
     if (error)return error;
     auto destStorage = storage(path, passw);
     destStorage->readAll();
@@ -425,26 +441,23 @@ int KeyStorageV2::saveNewPasswStrategy(
                                         [](const StoragePasswMigrateStrategy &it) { return it.isDefault; });
     if (defaultStrategy == strategies.end()) return KEY_NO_DEFAULT_STRATEGY;
     auto storageInfo = info();
-    auto error = createStorage(
-            {
-                    .file = path,
-                    .storageVersion = storageInfo.storageVersion,
-                    .name = storageInfo.name,
-                    .description = storageInfo.description
-            });
-    if (error)return error;
+    auto destTempPath = path.substr(0, path.find_last_of('.')) + "-temp.ckey";
 
     auto allItemsCount = float(colorGroups().size() + notes().size() + otpNotes(0).size());
     int progressCount = 0;
 
+    auto error = createStorageWithHeader(destTempPath, *fheader);
+    if (error)return error;
+
     auto collectingNewSnaphot = snapshot();
-    collectingNewSnaphot.cryptedColorGroups->clear();
-    collectingNewSnaphot.cryptedNotes->clear();
-    collectingNewSnaphot.cryptedOtpNotes->clear();
-    collectingNewSnaphot.cryptedGeneratedPassws->clear();
+    collectingNewSnaphot.cryptedColorGroups = make_shared<list<CryptedColorGroupFlat>>();
+    collectingNewSnaphot.cryptedNotes = make_shared<list<CryptedNote>>();
+    collectingNewSnaphot.cryptedOtpNotes = make_shared<list<CryptedOtpInfo>>();
+    collectingNewSnaphot.cryptedGeneratedPassws = make_shared<list<CryptedPassword>>();
+
     for (const auto &strategy: strategies) {
         auto virtSrc = storage(storagePath, strategy.currentPassword);
-        auto virtDest = storage(path, strategy.newPassw);
+        auto virtDest = storage(destTempPath, strategy.newPassw);
         virtSrc->readAll();
         virtDest->readAll();
 
@@ -457,7 +470,8 @@ int KeyStorageV2::saveNewPasswStrategy(
         }
 
         for (const auto &srcNote: virtSrc->notes(TK2_GET_NOTE_FULL)) {
-            if (std::find(strategy.noteIds.begin(), strategy.noteIds.end(), srcNote.id) == strategy.noteIds.end()) {
+            if (std::find(strategy.noteIds.begin(), strategy.noteIds.end(), srcNote.id) ==
+                strategy.noteIds.end()) {
                 continue;
             }
             virtDest->createNote(srcNote);
@@ -471,7 +485,8 @@ int KeyStorageV2::saveNewPasswStrategy(
                 continue;
             }
 
-            auto destOtpNoteList = virtDest->createOtpNotes(virtSrc->exportOtpNote(srcOtpNote.id).toUri(), TK2_GET_NOTE_FULL);
+            auto destOtpNoteList = virtDest->createOtpNotes(
+                    virtSrc->exportOtpNote(srcOtpNote.id).toUri(), TK2_GET_NOTE_FULL);
             if (destOtpNoteList.empty()) continue;
             auto destOtpNote = destOtpNoteList.front();
 
@@ -489,7 +504,8 @@ int KeyStorageV2::saveNewPasswStrategy(
         }
 
         auto appendSnaphot = virtDest->snapshot();
-        collectingNewSnaphot.idCounter = MAX(appendSnaphot.idCounter, collectingNewSnaphot.idCounter);
+        collectingNewSnaphot.idCounter = MAX(appendSnaphot.idCounter,
+                                             collectingNewSnaphot.idCounter);
         collectingNewSnaphot.colorGroupIdCounter = MAX(appendSnaphot.colorGroupIdCounter,
                                                        collectingNewSnaphot.colorGroupIdCounter);
         collectingNewSnaphot.cryptedColorGroups->splice(
@@ -506,10 +522,15 @@ int KeyStorageV2::saveNewPasswStrategy(
                 *appendSnaphot.cryptedGeneratedPassws);
     }
 
-    auto destStorage = storage(path, defaultStrategy->newPassw);
+    auto destStorage = storage(destTempPath, defaultStrategy->newPassw);
     destStorage->readAll();
     destStorage->snapshot(collectingNewSnaphot);
-    return destStorage->save();
+    auto result = destStorage->save();
+
+    unlink(path.c_str());
+    rename(destTempPath.c_str(), path.c_str());
+
+    return result;
 }
 
 void KeyStorageV2::setInfo(const thekey_v2::StorageInfo &info) {
@@ -545,7 +566,8 @@ std::vector<DecryptedColorGroup> KeyStorageV2::colorGroups(uint flags) {
     return groups;
 }
 
-std::shared_ptr<DecryptedColorGroup> KeyStorageV2::createColorGroup(const thekey_v2::DecryptedColorGroup &group) {
+std::shared_ptr<DecryptedColorGroup>
+KeyStorageV2::createColorGroup(const thekey_v2::DecryptedColorGroup &group) {
     lock_guard guard(editMutex);
     auto data = snapshot();
     data.cryptedColorGroups = make_shared<list<CryptedColorGroupFlat>>(
@@ -645,7 +667,8 @@ std::vector<DecryptedNote> KeyStorageV2::notes(uint flags) {
 
 std::shared_ptr<DecryptedNote> KeyStorageV2::note(long long id, uint flags) {
     auto data = snapshot();
-    auto cryptedNote = findPtrBy(*data.cryptedNotes, [&](const CryptedNote &note) { return note.id == id; });
+    auto cryptedNote = findPtrBy(*data.cryptedNotes,
+                                 [&](const CryptedNote &note) { return note.id == id; });
     if (!cryptedNote) {
         keyError = KEY_NOTE_NOT_FOUND;
         return {};
@@ -703,7 +726,8 @@ shared_ptr<DecryptedNote> KeyStorageV2::createNote(const DecryptedNote &note, ui
     dNote->id = createdId;
     snapshot(data);
 
-    setNote(*dNote, flags | TK2_SET_NOTE_FORCE | TK2_SET_NOTE_INFO | TK2_SET_NOTE_PASSW | TK2_SET_NOTE_FULL_HISTORY);
+    setNote(*dNote, flags | TK2_SET_NOTE_FORCE | TK2_SET_NOTE_INFO | TK2_SET_NOTE_PASSW |
+                    TK2_SET_NOTE_FULL_HISTORY);
     return dNote;
 }
 
@@ -712,7 +736,8 @@ int KeyStorageV2::setNote(const thekey_v2::DecryptedNote &dnote, uint flags) {
     auto data = snapshot();
     data.cryptedNotes = make_shared<list<CryptedNote>>(list<CryptedNote>(*data.cryptedNotes));
 
-    auto cryptedNote = findPtrBy(*data.cryptedNotes, [&](const auto &note) { return note.id == dnote.id; });
+    auto cryptedNote = findPtrBy(*data.cryptedNotes,
+                                 [&](const auto &note) { return note.id == dnote.id; });
     if (!cryptedNote) {
         keyError = KEY_NOTE_NOT_FOUND;
         return KEY_NOTE_NOT_FOUND;
@@ -800,7 +825,8 @@ int KeyStorageV2::removeNote(long long id) {
     auto data = snapshot();
     data.cryptedNotes = make_shared<list<CryptedNote>>(list<CryptedNote>(*data.cryptedNotes));
 
-    auto cryptedNote = findItBy(*data.cryptedNotes, [&](const auto &item) { return item.id == id; });
+    auto cryptedNote = findItBy(*data.cryptedNotes,
+                                [&](const auto &item) { return item.id == id; });
     if (cryptedNote == data.cryptedNotes->end()) {
         keyError = KEY_NOTE_NOT_FOUND;
         return KEY_NOTE_NOT_FOUND;
@@ -816,7 +842,8 @@ int KeyStorageV2::removeNote(long long id) {
 std::list<DecryptedOtpNote> KeyStorageV2::createOtpNotes(const std::string &uri, uint flags) {
     lock_guard guard(editMutex);
     auto data = snapshot();
-    data.cryptedOtpNotes = make_shared<list<CryptedOtpInfo>>(list<CryptedOtpInfo>(*data.cryptedOtpNotes));
+    data.cryptedOtpNotes = make_shared<list<CryptedOtpInfo>>(
+            list<CryptedOtpInfo>(*data.cryptedOtpNotes));
 
     list<long long> addedOtpPtrsList{};
     const auto &otpList = key_otp::parseOtpUri(uri);
@@ -867,10 +894,12 @@ std::list<DecryptedOtpNote> KeyStorageV2::createOtpNotes(const std::string &uri,
     return addedOtpNotes;
 }
 
-std::shared_ptr<DecryptedOtpNote> KeyStorageV2::createOtpNote(const thekey_v2::DecryptedOtpNote &dnote, uint flags) {
+std::shared_ptr<DecryptedOtpNote>
+KeyStorageV2::createOtpNote(const thekey_v2::DecryptedOtpNote &dnote, uint flags) {
     lock_guard guard(editMutex);
     auto data = snapshot();
-    data.cryptedOtpNotes = make_shared<list<CryptedOtpInfo>>(list<CryptedOtpInfo>(*data.cryptedOtpNotes));
+    data.cryptedOtpNotes = make_shared<list<CryptedOtpInfo>>(
+            list<CryptedOtpInfo>(*data.cryptedOtpNotes));
 
     auto createdId = data.idCounter++;
     data.cryptedOtpNotes->push_back({.id=createdId});
@@ -885,9 +914,11 @@ std::shared_ptr<DecryptedOtpNote> KeyStorageV2::createOtpNote(const thekey_v2::D
 int KeyStorageV2::setOtpNote(const thekey_v2::DecryptedOtpNote &dnote, uint flags) {
     lock_guard guard(editMutex);
     auto data = snapshot();
-    data.cryptedOtpNotes = make_shared<list<CryptedOtpInfo>>(list<CryptedOtpInfo>(*data.cryptedOtpNotes));
+    data.cryptedOtpNotes = make_shared<list<CryptedOtpInfo>>(
+            list<CryptedOtpInfo>(*data.cryptedOtpNotes));
 
-    auto cryptedNote = findItBy(*data.cryptedOtpNotes, [&](const auto &item) { return item.id == dnote.id; });
+    auto cryptedNote = findItBy(*data.cryptedOtpNotes,
+                                [&](const auto &item) { return item.id == dnote.id; });
     if (cryptedNote == data.cryptedOtpNotes->end()) {
         keyError = KEY_NOTE_NOT_FOUND;
         return KEY_NOTE_NOT_FOUND;
@@ -959,7 +990,8 @@ std::vector<DecryptedOtpNote> KeyStorageV2::otpNotes(uint flags) {
 
 std::shared_ptr<DecryptedOtpNote> KeyStorageV2::otpNote(long long id, uint flags, time_t now) {
     auto data = snapshot();
-    auto cryptedNote = findPtrBy(*data.cryptedOtpNotes, [&](const auto &item) { return item.id == id; });
+    auto cryptedNote = findPtrBy(*data.cryptedOtpNotes,
+                                 [&](const auto &item) { return item.id == id; });
     if (!cryptedNote) {
         keyError = KEY_NOTE_NOT_FOUND;
         return {};
@@ -1015,7 +1047,8 @@ std::shared_ptr<DecryptedOtpNote> KeyStorageV2::otpNote(long long id, uint flags
 
 OtpInfo KeyStorageV2::exportOtpNote(long long id) {
     auto data = snapshot();
-    auto cryptedNote = findPtrBy(*data.cryptedOtpNotes, [&](const auto &item) { return item.id == id; });
+    auto cryptedNote = findPtrBy(*data.cryptedOtpNotes,
+                                 [&](const auto &item) { return item.id == id; });
     if (!cryptedNote) {
         keyError = KEY_NOTE_NOT_FOUND;
         return {};
@@ -1059,9 +1092,11 @@ OtpInfo KeyStorageV2::exportOtpNote(long long id) {
 int KeyStorageV2::removeOtpNote(long long id) {
     lock_guard guard(editMutex);
     auto data = snapshot();
-    data.cryptedOtpNotes = make_shared<list<CryptedOtpInfo>>(list<CryptedOtpInfo>(*data.cryptedOtpNotes));
+    data.cryptedOtpNotes = make_shared<list<CryptedOtpInfo>>(
+            list<CryptedOtpInfo>(*data.cryptedOtpNotes));
 
-    auto cryptedNote = findItBy(*data.cryptedOtpNotes, [&](const auto &item) { return item.id == id; });
+    auto cryptedNote = findItBy(*data.cryptedOtpNotes,
+                                [&](const auto &item) { return item.id == id; });
     if (cryptedNote == data.cryptedOtpNotes->end()) {
         keyError = KEY_NOTE_NOT_FOUND;
         return KEY_NOTE_NOT_FOUND;

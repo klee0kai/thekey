@@ -374,6 +374,8 @@ namespace thekey_v2 {
 
     int createStorage(const thekey::Storage &storage);
 
+    int createStorageWithHeader(const std::string &storage, const StorageHeaderFlat &headerFlat);
+
     std::shared_ptr<KeyStorageV2> storage(const std::string &path, const std::string &passw);
 
     std::shared_ptr<KeyStorageV2> storage(const int &fd, const std::string &path, const std::string &passw);
