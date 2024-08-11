@@ -76,12 +76,14 @@ TEST(Storage2_SetHeader, ChangeTest1) {
     auto otpNote = storage->otpNotes(TK2_GET_NOTE_INFO)[1];
     otpNote.colorGroupId = pinkGroup->id;
     storage->setOtpNote(otpNote);
+    storage->save();
     storage.reset();
 
     // WHEN
     storage = thekey_v2::storage("ch_header.ckey", "");
     storage->readAll();
     storage->setInfo(StorageInfo{.name = "new_name", .description = "new desc"});
+    storage->save();
     storage.reset();
 
 

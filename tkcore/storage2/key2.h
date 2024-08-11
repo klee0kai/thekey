@@ -24,7 +24,6 @@
 #define TK2_SET_NOTE_PASSW 0x400
 #define TK2_SET_NOTE_TRACK_HISTORY 0x800
 #define TK2_SET_NOTE_FULL_HISTORY 0x1000
-#define TK2_SET_NOTE_SAVE_TO_FILE 0x2000
 
 namespace thekey_v2 {
 
@@ -127,6 +126,13 @@ namespace thekey_v2 {
         std::shared_ptr<std::list<CryptedPassword>> cryptedGeneratedPassws;
     };
 
+    struct StoragePassportMigrateStrategy {
+        std::string currentPassword;
+        std::string newPassw;
+        int isDefault;
+        std::list<long long> noteIds;
+        std::list<long long> otpNoteIds;
+    };
 
     class KeyStorageV2 {
     private:
@@ -165,6 +171,12 @@ namespace thekey_v2 {
         virtual int saveNewPassw(
                 const std::string &path,
                 const std::string &passw,
+                const std::function<void(const float &)> &progress = {}
+        );
+
+        virtual int migratePassw(
+                const std::string &path,
+                const std::list<StoragePassportMigrateStrategy> &strategies,
                 const std::function<void(const float &)> &progress = {}
         );
 
@@ -233,7 +245,7 @@ namespace thekey_v2 {
          * @return
          */
         virtual int
-        setNote(const DecryptedNote &dnote, uint flags = TK2_SET_NOTE_TRACK_HISTORY | TK2_SET_NOTE_SAVE_TO_FILE);
+        setNote(const DecryptedNote &dnote, uint flags = TK2_SET_NOTE_TRACK_HISTORY);
 
         virtual int removeNote(long long id);
 

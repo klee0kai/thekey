@@ -76,7 +76,9 @@ TEST(Storage2_Issue44, CreateStorage) {
     auto otpNote = storage->otpNotes(TK2_GET_NOTE_INFO)[1];
     otpNote.colorGroupId = pinkGroup->id;
     storage->setOtpNote(otpNote);
+    storage->save();
 
+    // THEN
     const auto &notes = storage->notes();
     ASSERT_EQ(3, notes.size());
 

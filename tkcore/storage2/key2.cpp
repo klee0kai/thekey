@@ -417,6 +417,94 @@ int KeyStorageV2::saveNewPassw(
     return destStorage->save();
 }
 
+int KeyStorageV2::migratePassw(
+        const std::string &path,
+        const std::list<StoragePassportMigrateStrategy> &strategies,
+        const std::function<void(const float &)> &progress) {
+    auto defaultStrategy = std::find_if(strategies.begin(), strategies.end(),
+                                        [](const StoragePassportMigrateStrategy &it) { return it.isDefault; });
+    if (defaultStrategy == strategies.end()) return KEY_NO_DEFAULT_STRATEGY;
+    auto storageInfo = info();
+    auto error = createStorage(
+            {
+                    .file = path,
+                    .storageVersion = storageInfo.storageVersion,
+                    .name = storageInfo.name,
+                    .description = storageInfo.description
+            });
+    if (error)return error;
+
+    auto allItemsCount = float(colorGroups().size() + notes().size() + otpNotes(0).size());
+    int progressCount = 0;
+
+    auto collectingNewSnaphot = snapshot();
+    for (const auto &strategy: strategies) {
+        auto virtSrc = storage(storagePath, strategy.currentPassword);
+        auto virtDest = storage(path, strategy.newPassw);
+        virtSrc->readAll();
+        virtDest->readAll();
+
+        if (strategy.isDefault) {
+            for (const auto &group: virtSrc->colorGroups(TK2_GET_NOTE_FULL)) {
+                virtDest->createColorGroup(group);
+
+                if (progress) progress(MIN(1, progressCount++ / allItemsCount));
+            }
+        }
+
+        for (const auto &note: virtSrc->notes(TK2_GET_NOTE_FULL)) {
+            if (std::find(strategy.noteIds.begin(), strategy.noteIds.end(), note.id) == strategy.noteIds.end()) {
+                continue;
+            }
+            virtDest->createNote(note);
+
+            if (progress) progress(MIN(1, progressCount++ / allItemsCount));
+        }
+
+        for (const auto &srcNote: virtSrc->otpNotes(TK2_GET_NOTE_FULL)) {
+            if (std::find(strategy.otpNoteIds.begin(), strategy.otpNoteIds.end(), srcNote.id) ==
+                strategy.otpNoteIds.end()) {
+                continue;
+            }
+
+            auto destNoteList = virtDest->createOtpNotes(exportOtpNote(srcNote.id).toUri(), TK2_GET_NOTE_FULL);
+            if (destNoteList.empty())continue;
+            auto destNote = destNoteList.front();
+
+            // not export meta
+            destNote.colorGroupId = srcNote.colorGroupId;
+            destNote.pin = srcNote.pin;
+
+            virtDest->setOtpNote(destNote);
+
+            if (progress) progress(MIN(1, progressCount++ / allItemsCount));
+        }
+
+        if (strategy.isDefault) {
+            virtDest->appendPasswHistory(genPasswHistoryList(TK2_GET_NOTE_FULL));
+        }
+
+        auto appendSnaphot = virtDest->snapshot();
+        collectingNewSnaphot.cryptedColorGroups->splice(
+                collectingNewSnaphot.cryptedColorGroups->end(),
+                *appendSnaphot.cryptedColorGroups);
+        collectingNewSnaphot.cryptedNotes->splice(
+                collectingNewSnaphot.cryptedNotes->end(),
+                *appendSnaphot.cryptedNotes);
+        collectingNewSnaphot.cryptedOtpNotes->splice(
+                collectingNewSnaphot.cryptedOtpNotes->end(),
+                *appendSnaphot.cryptedOtpNotes);
+        collectingNewSnaphot.cryptedGeneratedPassws->splice(
+                collectingNewSnaphot.cryptedGeneratedPassws->end(),
+                *appendSnaphot.cryptedGeneratedPassws);
+    }
+
+    auto destStorage = storage(path, defaultStrategy->newPassw);
+    destStorage->readAll();
+    destStorage->snapshot(collectingNewSnaphot);
+    return destStorage->save();
+}
+
 void KeyStorageV2::setInfo(const thekey_v2::StorageInfo &info) {
     lock_guard guard(editMutex);
     strncpy(fheader->name, info.name.c_str(), STORAGE_NAME_LEN);
@@ -492,8 +580,7 @@ int KeyStorageV2::setColorGroup(const thekey_v2::DecryptedColorGroup &dGroup) {
     );
 
     snapshot(data);
-    auto error = save();
-    return error;
+    return 0;
 }
 
 int KeyStorageV2::removeColorGroup(long long colorGroupId) {
@@ -532,8 +619,7 @@ int KeyStorageV2::removeColorGroup(long long colorGroupId) {
 
 
     snapshot(data);
-    auto error = save();
-    return error;
+    return 0;
 }
 
 // ---- notes api ----
@@ -630,7 +716,6 @@ int KeyStorageV2::setNote(const thekey_v2::DecryptedNote &dnote, uint flags) {
     auto setNotePassw = (flags & TK2_SET_NOTE_PASSW);
     auto trackHist = (flags & TK2_SET_NOTE_TRACK_HISTORY);
     auto setFullHistory = (flags & TK2_SET_NOTE_FULL_HISTORY);
-    auto saveToFile = (flags & TK2_SET_NOTE_SAVE_TO_FILE);
     auto old = note(dnote.id, TK2_GET_NOTE_FULL);
 
     cryptedNote->note.colorGroupId(dnote.colorGroupId);
@@ -700,8 +785,7 @@ int KeyStorageV2::setNote(const thekey_v2::DecryptedNote &dnote, uint flags) {
     }
 
     snapshot(data);
-    auto error = saveToFile ? save() : 0;
-    return error;
+    return 0;
 }
 
 int KeyStorageV2::removeNote(long long id) {
@@ -773,7 +857,6 @@ std::list<DecryptedOtpNote> KeyStorageV2::createOtpNotes(const std::string &uri,
         if (otp) addedOtpNotes.push_back(*otp);
     }
 
-    save();
     return addedOtpNotes;
 }
 
@@ -852,8 +935,7 @@ int KeyStorageV2::setOtpNote(const thekey_v2::DecryptedOtpNote &dnote, uint flag
     }
 
     snapshot(data);
-    auto error = save();
-    return error;
+    return 0;
 }
 
 std::vector<DecryptedOtpNote> KeyStorageV2::otpNotes(uint flags) {
@@ -918,7 +1000,6 @@ std::shared_ptr<DecryptedOtpNote> KeyStorageV2::otpNote(long long id, uint flags
 
         if ((flags & TK2_GET_NOTE_INCREMENT_HOTP) != 0 && cryptedNote->data.method() == HOTP) {
             cryptedNote->data.counter(cryptedNote->data.counter() + 1);
-            save();
         }
     }
 
@@ -981,8 +1062,7 @@ int KeyStorageV2::removeOtpNote(long long id) {
     data.cryptedOtpNotes->erase(cryptedNote);
 
     snapshot(data);
-    auto error = save();
-    return error;
+    return 0;
 }
 
 // ---- gen passw and hist api ----
@@ -1006,7 +1086,6 @@ std::string KeyStorageV2::genPassword(uint32_t schemeId, int len) {
     data.cryptedGeneratedPassws->push_back({.id = data.idCounter++, .data=cryptedPasswordFlat});
 
     snapshot(data);
-    save();
     return passw;
 }
 
@@ -1077,8 +1156,7 @@ int KeyStorageV2::appendPasswHistory(const std::vector<DecryptedPassw> &hist) {
     }
 
     snapshot(data);
-    auto error = save();
-    return error;
+    return 0;
 }
 
 // -------------------- private ------------------------------
