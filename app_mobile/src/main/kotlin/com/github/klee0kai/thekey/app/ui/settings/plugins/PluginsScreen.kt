@@ -34,6 +34,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.core.ui.devkit.components.settings.Preference
+import com.github.klee0kai.thekey.core.ui.devkit.components.settings.RightArrowIcon
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
@@ -61,7 +62,8 @@ fun PluginsScreen() {
             item {
                 Preference(
                     text = stringResource(id = feature.feature.titleRes),
-                    onClick = { router.navigate(PluginDestination(feature = feature.feature)) }
+                    onClick = { router.navigate(PluginDestination(feature = feature.feature)) },
+                    icon = { RightArrowIcon() },
                 )
             }
         }

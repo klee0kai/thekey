@@ -32,6 +32,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.LocalScreenResolver
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.core.ui.devkit.components.settings.Preference
+import com.github.klee0kai.thekey.core.ui.devkit.components.settings.RightArrowIcon
 import com.github.klee0kai.thekey.core.ui.devkit.components.settings.SectionHeader
 import com.github.klee0kai.thekey.core.ui.devkit.components.settings.SwitchPreference
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
@@ -69,7 +70,8 @@ fun SettingScreen() {
         item {
             Preference(
                 text = stringResource(id = R.string.backup),
-                onClick = { router.navigate(BackupSettings) }
+                onClick = { router.navigate(BackupSettings) },
+                icon = { RightArrowIcon() }
             )
         }
 
@@ -83,9 +85,8 @@ fun SettingScreen() {
             item {
                 Preference(
                     text = stringResource(id = R.string.title_autofill),
-                    onClick = {
-                        router.navigate(AutoFillSettingsDestination)
-                    }
+                    onClick = { router.navigate(AutoFillSettingsDestination) },
+                    icon = { RightArrowIcon() },
                 )
             }
         }
@@ -93,9 +94,8 @@ fun SettingScreen() {
         item {
             Preference(
                 text = stringResource(id = R.string.plugins),
-                onClick = {
-                    router.navigate(PluginsDestination)
-                }
+                onClick = { router.navigate(PluginsDestination) },
+                icon = { RightArrowIcon() },
             )
         }
 

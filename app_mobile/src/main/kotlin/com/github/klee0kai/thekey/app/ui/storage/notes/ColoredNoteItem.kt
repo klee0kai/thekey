@@ -171,17 +171,19 @@ fun ColoredNoteItem(
         )
 
 
-        Box(modifier = Modifier.constrainAs(iconField) {
-            linkTo(
-                top = parent.top,
-                bottom = parent.bottom,
-                start = parent.start,
-                end = parent.end,
-                startMargin = 16.dp,
-                endMargin = 16.dp,
-                horizontalBias = 1f,
-            )
-        }) {
+        Box(modifier = Modifier
+            .alpha(skeleton.visibleOnTargetAlpha(false))
+            .constrainAs(iconField) {
+                linkTo(
+                    top = parent.top,
+                    bottom = parent.bottom,
+                    start = parent.start,
+                    end = parent.end,
+                    startMargin = 16.dp,
+                    endMargin = 16.dp,
+                    horizontalBias = 1f,
+                )
+            }) {
             when {
                 icon != null -> icon.invoke()
             }
