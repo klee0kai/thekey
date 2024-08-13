@@ -41,6 +41,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextField
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkContentPreview
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.core.utils.views.thenIf
 import com.github.klee0kai.thekey.core.utils.views.transparentColors
 import com.github.klee0kai.thekey.core.utils.views.visibleOnTargetAlpha
@@ -64,6 +65,7 @@ fun EditGroupInfoContent(
 ) {
     val theme = LocalTheme.current
     val lazyListState = rememberLazyListState()
+    val scrollPosition by rememberDerivedStateOf { lazyListState.scrollPosition() }
 
     val favoriteVisibleAnimated by animateTargetCrossFaded(favoriteVisible)
 
@@ -98,7 +100,7 @@ fun EditGroupInfoContent(
         )
 
         LazyListIndicatorIfNeed(
-            pos = lazyListState.scrollPosition(),
+            pos = scrollPosition,
             forceVisible = forceIndicatorVisible,
             horizontal = true,
             modifier = Modifier

@@ -6,6 +6,8 @@ import com.github.klee0kai.thekey.core.di.DefaultDispatcher
 import com.github.klee0kai.thekey.core.di.IODispatcher
 import com.github.klee0kai.thekey.core.di.JniDispatcher
 import com.github.klee0kai.thekey.core.di.MainDispatcher
+import com.github.klee0kai.thekey.core.di.identifiers.FileIdentifier
+import com.github.klee0kai.thekey.core.utils.common.ReadWriteMutex
 import com.github.klee0kai.thekey.core.utils.common.SafeContextScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -55,6 +57,9 @@ interface CoroutineModule {
         @DefaultDispatcher
         dispatcher: CoroutineDispatcher,
     ): SafeContextScope = SafeContextScope(dispatcher + SupervisorJob())
+
+    @Provide(cache = Provide.CacheType.Soft)
+    fun fileMutex(identifier: FileIdentifier): ReadWriteMutex = ReadWriteMutex()
 
 }
 

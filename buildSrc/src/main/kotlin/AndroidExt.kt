@@ -57,7 +57,8 @@ fun <BuildFeaturesT : BuildFeatures,
     }
     packaging {
         resources {
-            excludes += "/META-INF/*"
+            excludes += "META-INF/INDEX.LIST"
+            excludes += "META-INF/DEPENDENCIES"
         }
     }
 }

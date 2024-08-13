@@ -169,6 +169,8 @@ open class StoragesPresenterImpl : StoragesPresenter {
         val filename = dateFormat.format(Date())
         val newStorageFile = File("${shortPath.appPath}/${filename}.$tKeyExtension")
             .createNewWithSuffix()
+        newStorageFile.parentFile?.mkdirs()
+
         try {
             ctx.contentResolver.openInputStream(url)?.use { input ->
                 FileOutputStream(newStorageFile).use { output ->
@@ -185,7 +187,7 @@ open class StoragesPresenterImpl : StoragesPresenter {
                 appRouter.snack(CoreR.string.storage_imported)
             }
         } catch (e: Throwable) {
-            Timber.e(openResult.error, "error to import storage")
+            Timber.e(openResult.error ?: e, "error to import storage")
         }
     }
 

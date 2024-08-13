@@ -41,6 +41,7 @@ import com.github.klee0kai.thekey.core.utils.possitions.onGlobalPositionState
 import com.github.klee0kai.thekey.core.utils.possitions.rememberViewPosition
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
 import com.github.klee0kai.thekey.core.utils.views.animatedBackground
+import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 
 @Composable
 fun GroupsSelectContent(
@@ -53,6 +54,7 @@ fun GroupsSelectContent(
 ) {
     val theme = LocalTheme.current
     val lazyListState = rememberLazyListState()
+    val scrollPosition by rememberDerivedStateOf { lazyListState.scrollPosition() }
 
     ConstraintLayout(
         modifier = modifier
@@ -79,7 +81,7 @@ fun GroupsSelectContent(
         )
 
         LazyListIndicatorIfNeed(
-            pos = lazyListState.scrollPosition(),
+            pos = scrollPosition,
             horizontal = true,
             modifier = Modifier
                 .size(52.dp, 4.dp)
@@ -113,8 +115,8 @@ fun GroupsSelectContent(
                 Spacer(modifier = Modifier.width(14.dp))
             }
 
-            colorGroups.forEachIndexed { index, group ->
-                item(key = group.id) {
+            colorGroups.forEachIndexed { _, group ->
+                item(key = group.id, contentType = group::class) {
                     var showMenu by remember { mutableStateOf(false) }
                     val position = rememberViewPosition()
 

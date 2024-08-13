@@ -26,7 +26,6 @@ using namespace key_salt;
 static auto now = time(NULL);
 static std::list<string> expectedPasswHist{};
 
-
 TEST(CreateStorage2, CreateStorage) {
     now = time(NULL);
 
@@ -102,7 +101,6 @@ TEST(CreateStorage2, CreateStorage) {
 
     storage->save();
 }
-
 
 // run after TEST(CreateStorage2, CreateStorage)
 TEST(CreateStorage2, ReadNotes) {
@@ -214,8 +212,6 @@ TEST(CreateStorage2, ReadGenHistory) {
     }
 
 }
-
-
 
 // run after TEST(CreateStorage2, CreateStorage)
 TEST(CreateStorage2, YaotpGenTest) {

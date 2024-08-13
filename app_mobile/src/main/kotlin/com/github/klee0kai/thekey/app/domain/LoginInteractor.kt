@@ -1,12 +1,18 @@
 package com.github.klee0kai.thekey.app.domain
 
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.core.di.identifiers.FileIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
+import com.github.klee0kai.thekey.core.utils.common.MutexState
+import com.github.klee0kai.thekey.core.utils.common.stateFlow
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import java.io.File
+import kotlin.time.Duration.Companion.milliseconds
 
 class LoginInteractor {
 
@@ -26,9 +32,15 @@ class LoginInteractor {
             }.collect(this)
     }
 
-    fun login(storageIdentifier: StorageIdentifier, passw: String) = scope.async {
+    fun login(
+        storageIdentifier: StorageIdentifier,
+        passw: String,
+        ignoreLoginned: Boolean = false
+    ) = scope.async {
         var identifier = storageIdentifier
-        if (identifier.version == 0) identifier = identifier.copy(version = settingsRep().newStorageVersion())
+        if (identifier.version == 0) {
+            identifier = identifier.copy(version = settingsRep().newStorageVersion())
+        }
 
         val engine = DI.cryptStorageEngineSafeLazy(identifier)
         val notesInteractor = DI.notesInteractorLazy(identifier)
@@ -45,12 +57,18 @@ class LoginInteractor {
         notesInteractor().loadNotes()
         otpNotesInteractor().loadOtpNotes()
         groupsInteractor().loadGroups()
-        rep().logined(identifier)
+        if (!ignoreLoginned) rep().logined(identifier)
 
         identifier
     }
 
     fun unlogin(identifier: StorageIdentifier) = scope.async {
+        // wait no one use the storage
+        val fileMutex = DI.fileMutex(FileIdentifier(identifier.path))
+        fileMutex.stateFlow()
+            .debounce(100.milliseconds)
+            .firstOrNull { it.state == MutexState.UNLOCKED }
+
         val engine = DI.cryptStorageEngineSafeLazy(identifier)
         val notesInteractor = DI.notesInteractorLazy(identifier)
         val otpNotesInteractor = DI.otpNotesInteractorLazy(identifier)

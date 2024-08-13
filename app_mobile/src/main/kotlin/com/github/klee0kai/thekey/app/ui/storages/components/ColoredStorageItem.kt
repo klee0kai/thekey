@@ -6,7 +6,10 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -29,6 +32,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkContentPreview
+import com.github.klee0kai.thekey.core.utils.views.horizontal
 import com.thedeanda.lorem.LoremIpsum
 import java.io.File
 
@@ -43,6 +47,7 @@ fun ColoredStorageItem(
 ) {
     val theme = LocalTheme.current
     val colorScheme = theme.colorScheme
+    val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
 
     ConstraintLayout(
         modifier = modifier
@@ -72,8 +77,8 @@ fun ColoredStorageItem(
                         end = parent.end,
                         topMargin = 12.dp,
                         bottomMargin = 12.dp,
-                        startMargin = 16.dp,
-                        endMargin = 16.dp,
+                        startMargin = safeContentPaddings.horizontal(minValue = 16.dp),
+                        endMargin = safeContentPaddings.horizontal(minValue = 16.dp),
                         horizontalBias = 0f,
                         verticalBias = 0.5f,
                     )
@@ -134,8 +139,8 @@ fun ColoredStorageItem(
                 bottom = parent.bottom,
                 start = parent.start,
                 end = parent.end,
-                startMargin = 16.dp,
-                endMargin = 16.dp,
+                startMargin = safeContentPaddings.horizontal(minValue = 16.dp),
+                endMargin = safeContentPaddings.horizontal(minValue = 16.dp),
                 horizontalBias = 1f,
             )
         }) {

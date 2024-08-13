@@ -11,6 +11,7 @@ import com.github.klee0kai.stone.annotations.module.BindInstance
 import com.github.klee0kai.thekey.core.di.debug.DummyCoreAndroidHelpersModule
 import com.github.klee0kai.thekey.core.di.dependecies.CoreDependencyProvider
 import com.github.klee0kai.thekey.core.di.identifiers.ActivityIdentifier
+import com.github.klee0kai.thekey.core.di.identifiers.FileIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.NoteGroupIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.PluginIdentifier
@@ -29,6 +30,8 @@ var CoreDI: CoreComponent = initCoreComponent()
     identifiers = [
         ActivityIdentifier::class,
         StorageIdentifier::class,
+        FileIdentifier::class,
+        FileIdentifier::class,
         NoteIdentifier::class,
         NoteGroupIdentifier::class,
         StorageGroupIdentifier::class,

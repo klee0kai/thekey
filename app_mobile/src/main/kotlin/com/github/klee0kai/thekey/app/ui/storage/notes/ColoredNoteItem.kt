@@ -2,10 +2,15 @@ package com.github.klee0kai.thekey.app.ui.storage.notes
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.wear.compose.material.Icon
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.domain.model.ColoredNote
@@ -26,6 +32,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.horizontal
 import com.github.klee0kai.thekey.core.utils.views.skeleton
 import com.github.klee0kai.thekey.core.utils.views.visibleOnTargetAlpha
 import org.jetbrains.annotations.VisibleForTesting
@@ -35,11 +42,13 @@ import org.jetbrains.annotations.VisibleForTesting
 fun ColoredNoteItem(
     modifier: Modifier = Modifier,
     note: ColoredNote = ColoredNote(),
+    icon: (@Composable () -> Unit)? = null,
     overlayContent: @Composable () -> Unit = {},
 ) {
     val colorScheme = LocalColorScheme.current
     val animatedNote by animateTargetCrossFaded(note)
     val skeleton by animateTargetCrossFaded(!note.isLoaded)
+    val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
 
     ConstraintLayout(
         modifier = modifier
@@ -49,7 +58,7 @@ fun ColoredNoteItem(
         val (
             skeletonField,
             colorGroupField,
-            siteField, loginField, descriptionField
+            siteField, loginField, descriptionField, iconField,
         ) = createRefs()
 
         if (skeleton.current) {
@@ -67,8 +76,8 @@ fun ColoredNoteItem(
                             end = parent.end,
                             topMargin = 6.dp,
                             bottomMargin = 6.dp,
-                            startMargin = 16.dp,
-                            endMargin = 16.dp,
+                            startMargin = safeContentPaddings.horizontal(minValue = 16.dp),
+                            endMargin = safeContentPaddings.horizontal(minValue = 16.dp),
                         )
                     }
             )
@@ -90,13 +99,14 @@ fun ColoredNoteItem(
                         end = parent.end,
                         verticalBias = 0.5f,
                         horizontalBias = 0f,
-                        startMargin = 16.dp,
+                        startMargin = safeContentPaddings.horizontal(minValue = 16.dp),
                     )
                 }
         )
 
         Text(
-            text = animatedNote.current.site.takeIf { it.isNotBlank() } ?: stringResource(id = R.string.no_site),
+            text = animatedNote.current.site.takeIf { it.isNotBlank() }
+                ?: stringResource(id = R.string.no_site),
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Medium,
             modifier = Modifier
@@ -131,11 +141,11 @@ fun ColoredNoteItem(
                         top = parent.top,
                         bottom = parent.bottom,
                         start = siteField.end,
-                        end = parent.end,
+                        end = iconField.start,
                         topMargin = 6.dp,
                         bottomMargin = 6.dp,
                         startMargin = 8.dp,
-                        endMargin = 26.dp,
+                        endMargin = 4.dp,
                         horizontalBias = 0.6f,
                         verticalBias = 0f,
                     )
@@ -164,6 +174,25 @@ fun ColoredNoteItem(
                     )
                 }
         )
+
+
+        Box(modifier = Modifier
+            .alpha(skeleton.visibleOnTargetAlpha(false))
+            .constrainAs(iconField) {
+                linkTo(
+                    top = parent.top,
+                    bottom = parent.bottom,
+                    start = parent.start,
+                    end = parent.end,
+                    startMargin = safeContentPaddings.horizontal(minValue = 16.dp),
+                    endMargin = safeContentPaddings.horizontal(minValue = 16.dp),
+                    horizontalBias = 1f,
+                )
+            }) {
+            when {
+                icon != null -> icon.invoke()
+            }
+        }
 
         overlayContent()
     }
@@ -206,5 +235,23 @@ fun ColoredNoteDummyNoGroup() = AppTheme(theme = DefaultThemes.darkTheme) {
             group = ColorGroup(),
             isLoaded = true,
         )
+    )
+}
+
+@VisibleForTesting
+@Composable
+@Preview
+fun ColoredNoteIcon() = AppTheme(theme = DefaultThemes.darkTheme) {
+    ColoredNoteItem(
+        note = ColoredNote(
+            site = "some.super.site.com",
+            login = "potato",
+            desc = "my work note",
+            group = ColorGroup(),
+            isLoaded = true,
+        ),
+        icon = {
+            Icon(imageVector = Icons.Default.Check, contentDescription = "")
+        }
     )
 }

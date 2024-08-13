@@ -1,9 +1,13 @@
 package com.github.klee0kai.thekey.app.ui.editstorage.presenter
 
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.ui.changepassw.model.ChPasswCanceled
+import com.github.klee0kai.thekey.app.ui.changepassw.model.ChPasswConfirmed
+import com.github.klee0kai.thekey.app.ui.changepassw.model.ChPasswResults
 import com.github.klee0kai.thekey.app.ui.editstorage.model.EditStorageState
 import com.github.klee0kai.thekey.app.ui.editstorage.model.storage
 import com.github.klee0kai.thekey.app.ui.editstorage.model.updateWith
+import com.github.klee0kai.thekey.app.ui.navigation.model.ChangeStoragePasswordDestination
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
@@ -11,12 +15,15 @@ import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.core.domain.model.noGroup
 import com.github.klee0kai.thekey.core.helpers.path.appendTKeyFormat
 import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
+import com.github.klee0kai.thekey.core.ui.navigation.navigate
 import com.github.klee0kai.thekey.core.utils.error.FSDuplicateError
 import com.github.klee0kai.thekey.core.utils.error.FSNoAccessError
 import com.github.klee0kai.thekey.core.utils.error.FSNoFileName
 import com.github.klee0kai.thekey.core.utils.error.cause
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
@@ -66,7 +73,9 @@ class EditStoragePresenterImpl(
         }
     }
 
-    override fun input(block: EditStorageState.() -> EditStorageState) = scope.launch(DI.mainDispatcher()) {
+    override fun input(
+        block: EditStorageState.() -> EditStorageState,
+    ) = scope.launch(start = CoroutineStart.UNDISPATCHED) {
         var newState = block.invoke(state.value)
         val fulfilled = newState.name.isNotBlank()
         val isSaveAvailable = when {
@@ -90,7 +99,9 @@ class EditStoragePresenterImpl(
 
     override fun save(router: AppRouter?) = scope.launch {
         val curState = state.value
-        var storage = curState.storage(originStorage ?: ColoredStorage(version = settingsRep().newStorageVersion()))
+        var storage = curState.storage(
+            originStorage ?: ColoredStorage(version = settingsRep().newStorageVersion())
+        )
         if (storage.path.isBlank() || userShortPaths.isAppInner(storage.path)) {
             storage = storage.copy(
                 path = File(appFolder, curState.name)
@@ -127,6 +138,16 @@ class EditStoragePresenterImpl(
             error?.cause(FSDuplicateError::class) != null -> router?.snack(R.string.duplicate)
             error?.cause(FSNoAccessError::class) != null -> router?.snack(R.string.no_access)
             else -> router?.snack(R.string.unknown_error)
+        }
+    }
+
+    override fun changePassw(router: AppRouter?) = scope.launch {
+        val path = storageIdentifier?.path ?: return@launch
+        val result = router?.navigate<ChPasswResults>(ChangeStoragePasswordDestination(path))
+            ?.firstOrNull()
+        when (result) {
+            ChPasswConfirmed -> router.back()
+            ChPasswCanceled, null -> Unit /* ignore */
         }
     }
 

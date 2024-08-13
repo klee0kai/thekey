@@ -23,7 +23,6 @@ using namespace std;
 using namespace thekey_v2;
 using namespace key_salt;
 
-
 TEST(Storage2ChangePassw, ChangePasswToNewFile) {
     // GIVEN
     static std::list<string> expectedPassw{};
@@ -189,7 +188,6 @@ TEST(Storage2ChangePassw, ChangePasswToNewFile) {
 
 }
 
-
 TEST(Storage2ChangePassw, ChangePasswToOldFile) {
     // GIVEN
     static std::list<string> expectedPassw{};
@@ -354,7 +352,6 @@ TEST(Storage2ChangePassw, ChangePasswToOldFile) {
     }
 
 }
-
 
 TEST(Storage2ChangePassw, OldPassw) {
     // GIVEN

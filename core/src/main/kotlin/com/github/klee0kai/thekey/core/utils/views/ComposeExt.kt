@@ -159,10 +159,14 @@ fun Modifier.animateContentSizeProduction() = run {
     else animateContentSize()
 }
 
+fun Modifier.ifProduction(block: Modifier.() -> Modifier) =
+    if (!CoreDI.config().isViewEditMode) block() else this
+
 fun Modifier.thenIf(condition: Boolean, block: Modifier.() -> Modifier) =
     if (condition) block() else this
 
-fun Modifier.tappable(onTap: ((Offset) -> Unit)? = null) = this.pointerInput(Unit) { detectTapGestures(onTap = onTap) }
+fun Modifier.tappable(onTap: ((Offset) -> Unit)? = null) =
+    this.pointerInput(Unit) { detectTapGestures(onTap = onTap) }
 
 @Composable
 fun Modifier.animatedBackground(condition: Boolean, background: Color): Modifier {

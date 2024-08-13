@@ -2,6 +2,8 @@ package com.github.klee0kai.thekey.app.di.modules
 
 import com.github.klee0kai.stone.annotations.module.Module
 import com.github.klee0kai.stone.annotations.module.Provide
+import com.github.klee0kai.thekey.app.ui.changepassw.presenter.ChangeStoragePasswordPresenter
+import com.github.klee0kai.thekey.app.ui.changepassw.presenter.ChangeStoragePasswordPresenterImpl
 import com.github.klee0kai.thekey.app.ui.editstorage.presenter.EditStoragePresenter
 import com.github.klee0kai.thekey.app.ui.editstorage.presenter.EditStoragePresenterImpl
 import com.github.klee0kai.thekey.app.ui.genhist.presenter.GenHistPresenter
@@ -36,7 +38,8 @@ import com.github.klee0kai.thekey.core.domain.model.feature.model.DynamicFeature
 interface PresentersModule {
 
     @Provide(cache = Provide.CacheType.Weak)
-    open fun loginPresenter(storageIdentifier: StorageIdentifier): LoginPresenter = LoginPresenterImpl(storageIdentifier)
+    fun loginPresenter(storageIdentifier: StorageIdentifier): LoginPresenter =
+        LoginPresenterImpl(storageIdentifier)
 
     @Provide(cache = Provide.CacheType.Weak)
     fun navigationBoardPresenter(): NavigationBoardPresenter = NavigationBoardPresenterImpl()
@@ -45,7 +48,12 @@ interface PresentersModule {
     fun storagesPresenter(): StoragesPresenter = StoragesPresenterImpl()
 
     @Provide(cache = Provide.CacheType.Weak)
-    fun editStoragePresenter(storageIdentifier: StorageIdentifier?): EditStoragePresenter = EditStoragePresenterImpl(storageIdentifier)
+    fun editStoragePresenter(storageIdentifier: StorageIdentifier?): EditStoragePresenter =
+        EditStoragePresenterImpl(storageIdentifier)
+
+    @Provide(cache = Provide.CacheType.Weak)
+    fun changeStoragePasswordPresenter(storageIdentifier: StorageIdentifier): ChangeStoragePasswordPresenter =
+        ChangeStoragePasswordPresenterImpl(storageIdentifier)
 
     @Provide(cache = Provide.CacheType.Weak)
     fun storagePresenter(storageIdentifier: StorageIdentifier): StoragePresenter =

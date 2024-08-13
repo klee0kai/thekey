@@ -24,8 +24,18 @@ abstract class EngineModule {
     @Provide(cache = Provide.CacheType.Soft)
     open fun cryptStorageEngine(id: StorageIdentifier): CryptStorage? {
         return when (id.version) {
-            1 -> K1Storage(storagePath = id.path, fileDescriptor = id.fileDescriptor)
-            2 -> K2Storage(storagePath = id.path, fileDescriptor = id.fileDescriptor)
+            1 -> K1Storage(
+                engineIdentifier = id.engineIdentifier,
+                storagePath = id.path,
+                fileDescriptor = id.fileDescriptor,
+            )
+
+            2 -> K2Storage(
+                engineIdentifier = id.engineIdentifier,
+                storagePath = id.path,
+                fileDescriptor = id.fileDescriptor,
+            )
+
             else -> null
         }
     }

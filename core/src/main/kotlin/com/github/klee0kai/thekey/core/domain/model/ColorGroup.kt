@@ -4,6 +4,8 @@ import android.os.Parcelable
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.CoreDI
 import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
+import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
+import com.github.klee0kai.thekey.core.utils.common.Dummy
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -43,4 +45,12 @@ fun ColorGroup.Companion.otpNotes(): ColorGroup =
         id = -203,
         name = CoreDI.ctx().resources.getString(R.string.ext),
         keyColor = KeyColor.TURQUOISE
+    )
+
+@DebugOnly
+fun ColorGroup.Companion.dummy() =
+    ColorGroup(
+        id = Dummy.dummyId,
+        name = "qwerty".random().toString(),
+        keyColor = KeyColor.entries.random(),
     )

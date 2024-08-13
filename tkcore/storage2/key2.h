@@ -24,7 +24,6 @@
 #define TK2_SET_NOTE_PASSW 0x400
 #define TK2_SET_NOTE_TRACK_HISTORY 0x800
 #define TK2_SET_NOTE_FULL_HISTORY 0x1000
-#define TK2_SET_NOTE_SAVE_TO_FILE 0x2000
 
 namespace thekey_v2 {
 
@@ -127,6 +126,13 @@ namespace thekey_v2 {
         std::shared_ptr<std::list<CryptedPassword>> cryptedGeneratedPassws;
     };
 
+    struct StoragePasswMigrateStrategy {
+        std::string currentPassword;
+        std::string newPassw;
+        int isDefault;
+        std::list<long long> noteIds;
+        std::list<long long> otpNoteIds;
+    };
 
     class KeyStorageV2 {
     private:
@@ -167,6 +173,19 @@ namespace thekey_v2 {
                 const std::string &passw,
                 const std::function<void(const float &)> &progress = {}
         );
+
+        virtual int saveNewPasswStrategy(
+                const std::string &path,
+                const std::list<StoragePasswMigrateStrategy> &strategies,
+                const std::function<void(const float &)> &progress = {}
+        );
+
+        /**
+         *
+         * set
+         */
+        virtual void setInfo(const StorageInfo &info);
+
 
         // ---- group api -----
         /**
@@ -226,7 +245,7 @@ namespace thekey_v2 {
          * @return
          */
         virtual int
-        setNote(const DecryptedNote &dnote, uint flags = TK2_SET_NOTE_TRACK_HISTORY | TK2_SET_NOTE_SAVE_TO_FILE);
+        setNote(const DecryptedNote &dnote, uint flags = TK2_SET_NOTE_TRACK_HISTORY);
 
         virtual int removeNote(long long id);
 
@@ -343,7 +362,7 @@ namespace thekey_v2 {
         virtual DataSnapshot snapshot();
 
         /**
-         *thread securely set a snapshot of data
+         * thread securely set a snapshot of data
          * @param data
          */
         virtual void snapshot(const DataSnapshot &data);
@@ -354,6 +373,8 @@ namespace thekey_v2 {
     std::shared_ptr<StorageInfo> storageFullInfo(const std::string &file);
 
     int createStorage(const thekey::Storage &storage);
+
+    int createStorageWithHeader(const std::string &storage, const StorageHeaderFlat &headerFlat);
 
     std::shared_ptr<KeyStorageV2> storage(const std::string &path, const std::string &passw);
 

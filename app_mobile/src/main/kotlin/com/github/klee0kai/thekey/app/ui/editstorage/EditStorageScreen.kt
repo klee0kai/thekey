@@ -27,6 +27,7 @@ import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -49,6 +50,7 @@ import com.github.klee0kai.thekey.app.ui.editstorage.model.EditStorageState
 import com.github.klee0kai.thekey.app.ui.editstorage.presenter.EditStoragePresenter
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
+import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
@@ -84,9 +86,14 @@ fun EditStorageScreen(
     val router by LocalRouter.currentRef
     val view = LocalView.current
     val theme = LocalTheme.current
-    val presenter by rememberOnScreenRef { DI.editStoragePresenter(StorageIdentifier(path)).apply { init() } }
+    val presenter by rememberOnScreenRef {
+        DI.editStoragePresenter(StorageIdentifier(path)).apply { init() }
+    }
 
-    val state by presenter!!.state.collectAsState(key = Unit, initial = EditStorageState(isSkeleton = false))
+    val state by presenter!!.state.collectAsState(
+        key = Unit,
+        initial = EditStorageState(isSkeleton = false)
+    )
     val scrollState = rememberScrollState()
     val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
 
@@ -178,7 +185,6 @@ fun EditStorageScreen(
             }
         }
 
-
         AppTextField(
             modifier = Modifier
                 .onGlobalPositionState(groupSelectPosition)
@@ -211,7 +217,8 @@ fun EditStorageScreen(
                     modifier = Modifier
                         .padding(4.dp),
                     colorScheme = theme.colorScheme.surfaceSchemas.surfaceScheme(
-                        state.colorGroupVariants.getOrNull(state.colorGroupSelectedIndex)?.keyColor ?: KeyColor.NOCOLOR
+                        state.colorGroupVariants.getOrNull(state.colorGroupSelectedIndex)?.keyColor
+                            ?: KeyColor.NOCOLOR
                     ),
                 )
             },
@@ -250,6 +257,19 @@ fun EditStorageScreen(
             .padding(horizontal = safeContentPaddings.horizontal(minValue = 16.dp)),
     ) {
         Spacer(modifier = Modifier.weight(1f))
+
+        if (state.isEditMode) {
+            TextButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 12.dp),
+                colors = LocalColorScheme.current.grayTextButtonColors,
+                onClick = { presenter?.changePassw(router) }
+            ) {
+                Text(stringResource(R.string.change_password))
+            }
+        }
+
         if (!imeIsVisibleAnimated.current && isSaveAvailable.current) {
             FilledTonalButton(
                 modifier = Modifier
@@ -305,14 +325,16 @@ fun EditStorageScreenPreview() = DebugDarkScreenPreview {
     DI.hardResetToPreview()
     DI.initPresenterModule(object : PresentersModule {
 
-        override fun editStoragePresenter(storageIdentifier: StorageIdentifier?) = object : EditStoragePresenter {
-            override val state = MutableStateFlow(
-                EditStorageState(
-                    isSkeleton = false,
-                    isSaveAvailable = true,
+        override fun editStoragePresenter(storageIdentifier: StorageIdentifier?) =
+            object : EditStoragePresenter {
+                override val state = MutableStateFlow(
+                    EditStorageState(
+                        isSkeleton = false,
+                        isSaveAvailable = true,
+                        isEditMode = true,
+                    )
                 )
-            )
-        }
+            }
     })
     EditStorageScreen(path = "some/path/to/storage")
 }

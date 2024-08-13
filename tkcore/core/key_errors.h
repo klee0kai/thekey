@@ -14,6 +14,7 @@
 #define KEY_STORAGE_VERSION_NOT_SUPPORT -6
 #define KEY_CRYPT_ERROR -7
 #define KEY_HIST_NOT_FOUND -8
+#define KEY_NO_DEFAULT_STRATEGY -9
 
 
 namespace thekey {

@@ -17,15 +17,14 @@
 
     <string name="title_qrcodescanner">QR Code Scanner</string>
     <string name="desc_qrcodescanner">Scan QR code to add OTP passwords.</string>
-
     <string name="title_autofill">Autofill manager</string>
     <string name="desc_autofill">Password autofill manager</string>
-
     <string name="title_findstorages">Find storages</string>
     <string name="desc_findstorages">Search for encrypted storage throughout the phone</string>
-
     <string name="title_gdrive">Google Drive</string>
     <string name="desc_gdrvie">Backup you storages in your google drive</string>
+    <string name="title_chpassw">Change Password</string>
+    <string name="desc_chpassw">Change password your storage using prof tools</string>
 
     <string name="login">Login</string>
     <string name="password">Password</string>
@@ -127,4 +126,12 @@
     <string name="external_storage_group_disabled">External group has been disabled</string>
     <string name="backup">Backup</string>
     <string name="debug">Debug</string>
+    <string name="change_password">Change password</string>
+    <string name="current_password">Current password</string>
+    <string name="new_password">New Password</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="confirm_is_wrong">Confirm is wrong</string>
+    <string name="password_not_changed">Password not changed</string>
+    <string name="title_ch_passw">Change password</string>
+    <string name="desc_ch_passw">Change password like pro</string>
 </resources>
