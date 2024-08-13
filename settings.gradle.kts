@@ -38,4 +38,5 @@ if (isPrivateAvailable) {
     include(":private:dynamic_autofill")
     include(":private:dynamic_gdrive")
     include(":private:dynamic_chpassw")
+    include(":private:dynamic_smpassw")
 }

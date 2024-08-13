@@ -26,6 +26,9 @@
     <string name="title_chpassw">Change Password</string>
     <string name="desc_chpassw">Change password your storage using prof tools</string>
 
+    <string name="title_smpassw">Similar passwords</string>
+    <string name="desc_smpassw">Design your storage using similar passwords</string>
+
     <string name="login">Login</string>
     <string name="password">Password</string>
     <string name="app_login_description">Create and remember your passport for your key masster storage</string>

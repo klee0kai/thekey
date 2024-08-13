@@ -9,6 +9,7 @@ fun DynamicFeature.Companion.allFeatures() = listOf(
     autofill(),
     gdrive(),
     chpassw(),
+    smpassw(),
 )
 
 fun DynamicFeature.Companion.byName(moduleName: String) =
@@ -51,4 +52,13 @@ fun DynamicFeature.Companion.chpassw() = DynamicFeature(
     descRes = R.string.desc_ch_passw,
     featureLibApiClass = "com.github.klee0kai.thekey.dynamic.chpassw.ChPasswImpl",
 )
+
+fun DynamicFeature.Companion.smpassw() = DynamicFeature(
+    moduleName = "dynamic_smpassw",
+    titleRes = R.string.title_smpassw,
+    descRes = R.string.desc_smpassw,
+    featureLibApiClass = "com.github.klee0kai.thekey.dynamic.similar.SmPasswImpl",
+)
+
+
 
