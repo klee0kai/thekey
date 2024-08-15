@@ -6,6 +6,8 @@ import com.github.klee0kai.thekey.app.engine.findstorage.FindStorageEngine
 import com.github.klee0kai.thekey.app.engine.findstorage.FindStorageSuspended
 import com.github.klee0kai.thekey.app.engine.storage.CryptStorage
 import com.github.klee0kai.thekey.app.engine.storage.CryptStorageSuspended
+import com.github.klee0kai.thekey.app.engine.twins.PasswordTwinsEngine
+import com.github.klee0kai.thekey.app.engine.twins.PasswordTwinsSuspended
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.di.wrap.AsyncCoroutineProvide
 
@@ -25,5 +27,11 @@ interface EngineDependencies {
     fun cryptStorageEngineLazy(id: StorageIdentifier): AsyncCoroutineProvide<CryptStorage>
 
     fun cryptStorageEngineSafeLazy(id: StorageIdentifier): AsyncCoroutineProvide<CryptStorageSuspended>
+
+    @Deprecated("use cryptStorageEngineSafeLazy")
+    fun passwordTwinsEngine(): AsyncCoroutineProvide<PasswordTwinsEngine>
+
+    fun passwordTwinsSuspended(): AsyncCoroutineProvide<PasswordTwinsSuspended>
+
 
 }

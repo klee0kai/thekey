@@ -137,4 +137,6 @@
     <string name="password_not_changed">Password not changed</string>
     <string name="title_ch_passw">Change password</string>
     <string name="desc_ch_passw">Change password like pro</string>
+    <string name="twins">Twins</string>
+    <string name="password_twins">Password twins</string>
 </resources>

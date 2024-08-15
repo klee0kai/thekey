@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.core.di.CoreDI
+import com.github.klee0kai.thekey.core.utils.common.Cleanable
 import com.github.klee0kai.thekey.core.utils.common.ObjHolder
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
@@ -85,6 +86,7 @@ inline fun <T> rememberOnScreen(block: () -> T): T {
     val cached = remember { ObjHolder<T?>(null) }
     DisposableEffect(key1 = Unit) {
         onDispose {
+            (cached.value as? Cleanable)?.clean()
             cached.value = null
         }
     }

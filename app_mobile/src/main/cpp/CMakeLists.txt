@@ -19,6 +19,7 @@ find_library(log-lib log)
 add_library(crypt-storage-lib SHARED
         ${BROOKLYN_SRC}
         find-storages.cpp
+        passw_twins.cpp
         edit_storage.cpp
         cryp_storage_v1.cpp
         cryp_storage_v2.cpp
