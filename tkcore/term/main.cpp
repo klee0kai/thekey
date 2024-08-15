@@ -10,6 +10,7 @@
 #include "key1.h"
 #include "key_find.h"
 #include "otp/termotp.h"
+#include "split_password.h"
 
 #ifdef __ANDROID__
 namespace fs = std::__fs::filesystem;
@@ -112,6 +113,35 @@ int main(int argc, char **argv) {
         thekey_otp::interactive();
     });
 
+
+    it.cmd({"twins"}, "find hidden password twins", []() {
+        auto version = ask_int_from_term("input storage version: ");
+        if (version != 2) {
+            cerr << "sorry this feature support only for version 2..." << endl;
+            return;
+        }
+        auto passw = ask_password_from_term("input passw: ");
+        auto twins = thekey_v2::twins(passw);
+
+        cout << "Found twins SAFEST: " << endl;
+        for (const auto &twinPassw: twins.passwForDescriptionTwins) {
+            cout << " " << twinPassw << "  ;  ";
+        }
+        cout << endl << "Found twins GOOD: " << endl;
+        for (const auto &twinPassw: twins.passwForHistPasswTwins) {
+            cout << " " << twinPassw << "  ;  ";
+        }
+        cout << endl << "Found twins USE CAREFULLY: " << endl;
+        for (const auto &twinPassw: twins.passwForLoginTwins) {
+            cout << " " << twinPassw << "  ;  ";
+        }
+        cout << endl << "Found twins DANGER: " << endl;
+        for (const auto &twinPassw: twins.passwForOtpTwins) {
+            cout << " " << twinPassw << "  ;  ";
+        }
+        cout << endl;
+
+    });
 
     it.cmd({"info"}, "print info about build", []() {
         cout << string("TheKey - ")

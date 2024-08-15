@@ -5,6 +5,7 @@
 #ifndef THEKEY_SPLIT_PASSWORD_H
 #define THEKEY_SPLIT_PASSWORD_H
 
+#include <set>
 #include "key_core.h"
 
 namespace thekey_v2 {
@@ -17,7 +18,16 @@ namespace thekey_v2 {
         std::string passwForDescription; // passw power 0.5f
     };
 
+    struct PasswordTwins {
+        std::set<std::string> passwForOtpTwins;
+        std::set<std::string> passwForLoginTwins;
+        std::set<std::string> passwForHistPasswTwins;
+        std::set<std::string> passwForDescriptionTwins;
+    };
+
     SplitPasswords split(const std::string &passw);
+
+    PasswordTwins twins(const std::string &passw);
 
 }
 
