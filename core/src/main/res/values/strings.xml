@@ -139,4 +139,9 @@
     <string name="desc_ch_passw">Change password like pro</string>
     <string name="twins">Twins</string>
     <string name="password_twins">Password twins</string>
+    <string name="twins_hint">Twin passwords allow partial disclosure of information about your storage. Allows more effective use of the concept of a hidden bottom. Use with caution.</string>
+    <string name="safest">Safest</string>
+    <string name="good">Good</string>
+    <string name="use_carefully">Use carefully</string>
+    <string name="danger">Danger</string>
 </resources>
