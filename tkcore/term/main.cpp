@@ -115,32 +115,22 @@ int main(int argc, char **argv) {
 
 
     it.cmd({"twins"}, "find hidden password twins", []() {
-        auto version = ask_int_from_term("input storage version: ");
-        if (version != 2) {
-            cerr << "sorry this feature support only for version 2..." << endl;
+        auto filePath = ask_from_term("input path : ");
+        auto storageInfo = thekey::storage(filePath);
+        if (!storageInfo) {
+            cerr << "can't open file " << fs::absolute(filePath) << " error " << errorToString(keyError) << endl;
             return;
         }
-        auto passw = ask_password_from_term("input passw: ");
-        auto twins = thekey_v2::twins(passw);
+        switch (storageInfo->storageVersion) {
+            case 2:
+                thekey_v2::twinsInteractive(filePath);
+                return;
 
-        cout << "Found twins SAFEST: " << endl;
-        for (const auto &twinPassw: twins.passwForDescriptionTwins) {
-            cout << " " << twinPassw << "  ;  ";
+            default:
+                cerr << "storage version " << storageInfo->storageVersion
+                     << " not supported " << filePath << endl;
+                return;
         }
-        cout << endl << "Found twins GOOD: " << endl;
-        for (const auto &twinPassw: twins.passwForHistPasswTwins) {
-            cout << " " << twinPassw << "  ;  ";
-        }
-        cout << endl << "Found twins USE CAREFULLY: " << endl;
-        for (const auto &twinPassw: twins.passwForLoginTwins) {
-            cout << " " << twinPassw << "  ;  ";
-        }
-        cout << endl << "Found twins DANGER: " << endl;
-        for (const auto &twinPassw: twins.passwForOtpTwins) {
-            cout << " " << twinPassw << "  ;  ";
-        }
-        cout << endl;
-
     });
 
     it.cmd({"info"}, "print info about build", []() {

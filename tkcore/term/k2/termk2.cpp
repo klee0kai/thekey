@@ -8,6 +8,7 @@
 #include "../utils/term_utils.h"
 #include "../utils/Interactive.h"
 #include "salt_text/salt2_schema.h"
+#include "split_password.h"
 
 using namespace std;
 using namespace thekey;
@@ -124,6 +125,7 @@ void thekey_v2::login(const std::string &filePath) {
                 .color = KeyColor(color),
                 .name = name,
         });
+        storageV2->save();
 
         cout << "color group saved " << dGroup->id << endl;
     });
@@ -142,6 +144,8 @@ void thekey_v2::login(const std::string &filePath) {
                         .description = desc,
                 }
         );
+        storageV2->save();
+
         cout << "note saved " << notePtr << endl;
     });
 
@@ -150,6 +154,7 @@ void thekey_v2::login(const std::string &filePath) {
         if (!storageV2)return;
         auto uri = ask_from_term("input uri (otpauth or otpauth-migration schemas): ");
         const auto &otpNotes = storageV2->createOtpNotes(uri);
+        storageV2->save();
         cout << "added " << otpNotes.size() << " otp notes " << endl;
     });
 
@@ -184,12 +189,15 @@ void thekey_v2::login(const std::string &filePath) {
 
         if (selectNote.type == Group) {
             storageV2->removeColorGroup(selectNote.notePtr);
+            storageV2->save();
             cout << "group removed" << endl;
         } else if (selectNote.type == Simple) {
             storageV2->removeNote(selectNote.notePtr);
+            storageV2->save();
             cout << "note removed" << endl;
         } else if (selectNote.type == Otp) {
             storageV2->removeOtpNote(selectNote.notePtr);
+            storageV2->save();
             cout << "otp note removed" << endl;
         }
     });
@@ -222,6 +230,7 @@ void thekey_v2::login(const std::string &filePath) {
 
         auto len = term::ask_int_from_term("length of password: ");
         auto passw = storageV2->genPassword(schemeType, len);
+        storageV2->save();
         cout << "generated password '" << passw << "' " << endl;
     });
 
@@ -258,4 +267,34 @@ void thekey_v2::login(const std::string &filePath) {
     storageV2.reset();
 
     cout << "Storage '" << storageInfo->name << "' closed." << endl;
+}
+
+
+void thekey_v2::twinsInteractive(const std::string &filePath) {
+    auto storageFullInfo = thekey_v2::storageFullInfo(filePath);
+    if (!storageFullInfo) {
+        cerr << "can't open file " << filePath << " " << errorToString(keyError) << endl;
+        return;
+    }
+
+    auto passw = ask_password_from_term("input passw: ");
+    auto twins = thekey_v2::twins(passw, storageFullInfo->saltMini);
+
+    cout << "Found twins SAFEST: " << endl;
+    for (const auto &twinPassw: twins.passwForDescriptionTwins) {
+        cout << " " << twinPassw << "  ;  ";
+    }
+    cout << endl << "Found twins GOOD: " << endl;
+    for (const auto &twinPassw: twins.passwForHistPasswTwins) {
+        cout << " " << twinPassw << "  ;  ";
+    }
+    cout << endl << "Found twins USE CAREFULLY: " << endl;
+    for (const auto &twinPassw: twins.passwForLoginTwins) {
+        cout << " " << twinPassw << "  ;  ";
+    }
+    cout << endl << "Found twins DANGER: " << endl;
+    for (const auto &twinPassw: twins.passwForOtpTwins) {
+        cout << " " << twinPassw << "  ;  ";
+    }
+    cout << endl;
 }

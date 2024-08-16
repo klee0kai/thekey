@@ -81,7 +81,10 @@ int thekey_v2::decoded(
     return bufLen;
 }
 
-wide_string thekey_v2::gen_password(const uint32_t &schemeId, const int &len) {
+wide_string thekey_v2::gen_password(
+        const uint32_t &schemeId,
+        const int &len
+) {
     auto scheme = schema(schemeId);
     if (!scheme)return {};
     wide_char randPassw[len + 1];
@@ -96,7 +99,9 @@ wide_string thekey_v2::gen_password(const uint32_t &schemeId, const int &len) {
 wide_string thekey_v2::password_masked(
         const uint32_t &schemeId,
         const wide_string &in,
-        const float &passw_power) {
+        const float &passw_power,
+        const uint32_t &salt
+) {
     auto scheme = schema(schemeId);
     if (!scheme)return {};
     auto ring = MAX(uint(round(scheme->len() * pow(passw_power, 5))), 1);
@@ -105,6 +110,7 @@ wide_string thekey_v2::password_masked(
     outPassw.reserve(in.length());
     for (int i = 0; i < in.length(); ++i) {
         auto maskOffset = int(gen_offset({
+                                                 salt,
                                                  uint32_t(i),
                                                  (uint32_t) scheme->len(),
                                                  (uint32_t) passw_power,
@@ -121,7 +127,9 @@ wide_string thekey_v2::password_masked(
 key_salt::wide_string thekey_v2::password_masked_twin(
         const uint32_t &schemeId,
         const key_salt::wide_string &in,
-        const float &passw_power) {
+        const float &passw_power,
+        const uint32_t &salt
+) {
     auto scheme = schema(schemeId);
     if (!scheme) return {};
     auto schemeLen = scheme->len();
@@ -131,6 +139,7 @@ key_salt::wide_string thekey_v2::password_masked_twin(
     outPassw.reserve(in.length());
     for (int i = 0; i < in.length(); ++i) {
         auto maskOffset = int(gen_offset({
+                                                 salt,
                                                  uint32_t(i),
                                                  (uint32_t) scheme->len(),
                                                  (uint32_t) passw_power,

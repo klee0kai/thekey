@@ -53,6 +53,7 @@ void thekey_v2::interactiveEditNote(const long long &notePtr) {
     editIt.loop();
 
     int error = storageV2->setNote(*note, TK2_SET_NOTE_TRACK_HISTORY);
+    if (!error) error = storageV2->save();
     if (error) {
         cerr << "error to save note " << errorToString(error) << endl;
         return;
@@ -102,6 +103,7 @@ void thekey_v2::interactiveEditOtpNote(const long long &notePtr) {
     editIt.loop();
 
     int error = storageV2->setOtpNote(*note, 0);
+    if (!error) error = storageV2->save();
     if (error) cerr << "error to save otp note " << errorToString(error) << endl;
     else cout << "otp note saved " << notePtr << endl;
 

@@ -25,9 +25,15 @@ namespace thekey_v2 {
         std::set<std::string> passwForDescriptionTwins;
     };
 
-    SplitPasswords split(const std::string &passw);
+    SplitPasswords split(
+            const std::string &passw,
+            const uint32_t &salt
+    );
 
-    PasswordTwins twins(const std::string &passw);
+    PasswordTwins twins(
+            const std::string &passw,
+            const uint32_t &salt
+    );
 
 }
 

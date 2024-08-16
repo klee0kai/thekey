@@ -1,6 +1,7 @@
 
 add_executable(testk2
-        ${CMAKE_CURRENT_LIST_DIR}/gen_passw_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/twins/gen_passw_tests.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/twins/storage_passw_twins_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/crypt_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/schemas/find_schemas_tests.cpp
         ${CMAKE_CURRENT_LIST_DIR}/schemas/encoding_schemas_tests.cpp

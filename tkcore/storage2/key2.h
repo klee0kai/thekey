@@ -56,6 +56,12 @@ namespace thekey_v2 {
         std::string name;
         unsigned int storageVersion;
         std::string description;
+
+        uint32_t saltMini;
+        int keyInteractionsCount;
+        int interactionsCount;
+        EncryptType cryptType;
+
         //  --- additional fields ----
         int invalidSectionsContains;
     };

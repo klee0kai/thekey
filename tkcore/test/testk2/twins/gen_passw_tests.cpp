@@ -35,7 +35,7 @@ TEST(GenPasswords, PasswMasked) {
 
     // when
     auto passw = "o13hEeOP";
-    auto passwMasked = from(password_masked(type, from(passw), 0.5f));
+    auto passwMasked = from(password_masked(type, from(passw), 0.5f, 0));
 
     // then
     ASSERT_TRUE(passwMasked != passw)
@@ -54,9 +54,9 @@ TEST(GenPasswords, PasswTwins) {
         // when
 
         auto passw = from(gen_password(type, 8));
-        auto passwMasked = from(password_masked(type, from(passw), passwPower));
-        auto passwTwin = from(password_masked_twin(type, from(passw), passwPower));
-        auto passwTwinMasked = from(password_masked(type, from(passwMasked), passwPower));
+        auto passwMasked = from(password_masked(type, from(passw), passwPower, 0));
+        auto passwTwin = from(password_masked_twin(type, from(passw), passwPower, 0));
+        auto passwTwinMasked = from(password_masked(type, from(passwMasked), passwPower, 0));
 
 
         // then
@@ -78,12 +78,12 @@ TEST(GenPasswords, TwinIsCorrect) {
     auto type = find_scheme_id(from(passw), 30);
     auto passwWide = from(passw);
     for (float power = 0.1f; power <= 1.1f; power += 0.1f) {
-        auto passwMasked = from(password_masked(type, passwWide, power));
+        auto passwMasked = from(password_masked(type, passwWide, power, 0));
 
         std::set<std::string> twins;
         for (int i = 0; i < 1e4; ++i) {
-            auto twin = from(password_masked_twin(type, passwWide, power));
-            auto twinMasked = from(password_masked(type, from(twin), power));
+            auto twin = from(password_masked_twin(type, passwWide, power, 0));
+            auto twinMasked = from(password_masked(type, from(twin), power, 0));
             twins.insert(twins.end(), twin);
             ASSERT_EQ(passwMasked, twinMasked);
         }
@@ -97,10 +97,10 @@ TEST(GenPasswords, PasswordPower) {
 
     auto power1 = 0.3f;
     std::set<std::string> twins1;
-    auto passwMasked1 = from(password_masked(type, from(passw), power1));
+    auto passwMasked1 = from(password_masked(type, from(passw), power1, 0));
     for (int i = 0; i < combinationCount; ++i) {
         auto diffPassw = from(gen_password(type, 4));
-        auto diffPasswMasked = from(password_masked(type, from(diffPassw), power1));
+        auto diffPasswMasked = from(password_masked(type, from(diffPassw), power1, 0));
 
         if (passwMasked1 == diffPasswMasked)
             twins1.insert(twins1.end(), diffPassw);
@@ -108,10 +108,10 @@ TEST(GenPasswords, PasswordPower) {
 
     auto power2 = 0.7f;
     std::set<std::string> twins2;
-    auto passwMasked2 = from(password_masked(type, from(passw), power2));
+    auto passwMasked2 = from(password_masked(type, from(passw), power2, 0));
     for (int i = 0; i < combinationCount; ++i) {
         auto diffPassw = from(gen_password(type, 4));
-        auto diffPasswMasked = from(password_masked(type, from(diffPassw), power2));
+        auto diffPasswMasked = from(password_masked(type, from(diffPassw), power2, 0));
 
         if (passwMasked2 == diffPasswMasked)
             twins2.insert(twins2.end(), diffPassw);
@@ -129,16 +129,16 @@ TEST(GenPasswords, PasswPowerTwinsCount) {
     auto power1 = 0.3f;
     std::set<std::string> twins1;
     for (int i = 0; i < combinationCount; ++i) {
-        auto twin = from(password_masked_twin(type, passwWide, power1));
-        auto twinMasked = from(password_masked(type, from(twin), power1));
+        auto twin = from(password_masked_twin(type, passwWide, power1, 0));
+        auto twinMasked = from(password_masked(type, from(twin), power1, 0));
         twins1.insert(twins1.end(), twin);
     }
 
     auto power2 = 0.7f;
     std::set<std::string> twins2;
     for (int i = 0; i < combinationCount; ++i) {
-        auto twin = from(password_masked_twin(type, passwWide, power2));
-        auto twinMasked = from(password_masked(type, from(twin), power2));
+        auto twin = from(password_masked_twin(type, passwWide, power2, 0));
+        auto twinMasked = from(password_masked(type, from(twin), power2, 0));
         twins2.insert(twins2.end(), twin);
     }
 
