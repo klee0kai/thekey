@@ -28,8 +28,9 @@ namespace thekey_v2 {
 
     extern std::shared_ptr<thekey_v2::KeyStorageV2> storageV2;
 
-
     void login(const std::string &filePath);
+
+    void twinsInteractive(const std::string &filePath);
 
     void interactiveEditNote(const long long &notePtr);
 

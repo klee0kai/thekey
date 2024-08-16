@@ -78,24 +78,30 @@ namespace thekey_v2 {
      * @param schemeId
      * @param in
      * @param passw_power
+     * @param salt unique salt chunk from storage header for more unpredictable generation
      * @return
      */
     key_salt::wide_string password_masked(
             const uint32_t &schemeId,
             const key_salt::wide_string &in,
-            const float &passw_power);
+            const float &passw_power,
+            const uint32_t &salt
+    );
 
     /**
      *
      * @param schemeId
      * @param in
      * @param passw_power
+     * @param salt unique salt chunk from storage header for more unpredictable generation
      * @return
      */
     key_salt::wide_string password_masked_twin(
             const uint32_t &schemeId,
             const key_salt::wide_string &in,
-            const float &passw_power);
+            const float &passw_power,
+            const uint32_t &salt
+    );
 
 }
 

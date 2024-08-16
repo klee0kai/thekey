@@ -5,9 +5,9 @@
 #include "salt2.h"
 #include "key_core.h"
 #include "salt2_schema.h"
-#include <cstdarg>
 #include <cstring>
 #include <cmath>
+#include <iostream>
 
 using namespace std;
 using namespace thekey_v2;
@@ -15,7 +15,7 @@ using namespace key_salt;
 
 static auto hashFunc = hash<uint32_t>();
 
-static int gen_offset(vector<uint32_t> args);
+static unsigned int gen_offset(const vector<uint32_t> &args);
 
 void thekey_v2::SaltedText::salted(const std::string &text, const int &minEncodingLen) {
     auto wideString = from(text);
@@ -81,7 +81,10 @@ int thekey_v2::decoded(
     return bufLen;
 }
 
-wide_string thekey_v2::gen_password(const uint32_t &schemeId, const int &len) {
+wide_string thekey_v2::gen_password(
+        const uint32_t &schemeId,
+        const int &len
+) {
     auto scheme = schema(schemeId);
     if (!scheme)return {};
     wide_char randPassw[len + 1];
@@ -96,40 +99,57 @@ wide_string thekey_v2::gen_password(const uint32_t &schemeId, const int &len) {
 wide_string thekey_v2::password_masked(
         const uint32_t &schemeId,
         const wide_string &in,
-        const float &passw_power) {
-
+        const float &passw_power,
+        const uint32_t &salt
+) {
     auto scheme = schema(schemeId);
     if (!scheme)return {};
-    auto ring = uint(round(scheme->len() * passw_power));
-    auto maskOffset = gen_offset({(uint32_t) scheme->len(), (uint32_t) passw_power, (uint32_t) in.length()});
+    auto ring = MAX(uint(round(scheme->len() * pow(passw_power, 5))), 1);
 
     wide_string outPassw{};
     outPassw.reserve(in.length());
     for (int i = 0; i < in.length(); ++i) {
+        auto maskOffset = int(gen_offset({
+                                                 salt,
+                                                 uint32_t(i),
+                                                 (uint32_t) scheme->len(),
+                                                 (uint32_t) passw_power,
+                                                 (uint32_t) in.length()
+                                         }));
         wide_char c = in.at(i);
         c = scheme->encoded(c, maskOffset);
-        c = DESALT_IN_RING(c, ring);// additional password power trimming
+        c = DESALT_IN_RING(c, ring);
         outPassw += scheme->decoded(c, -maskOffset);
     }
     return outPassw;
 }
 
-
 key_salt::wide_string thekey_v2::password_masked_twin(
         const uint32_t &schemeId,
         const key_salt::wide_string &in,
-        const float &passw_power) {
+        const float &passw_power,
+        const uint32_t &salt
+) {
     auto scheme = schema(schemeId);
-    if (!scheme)return {};
-    auto ring = uint(round(scheme->len() * passw_power));
-    auto maskOffset = gen_offset({(uint32_t) scheme->len(), (uint32_t) passw_power, (uint32_t) in.length()});
+    if (!scheme) return {};
+    auto schemeLen = scheme->len();
+    auto ring = MAX(uint(round(scheme->len() * pow(passw_power, 5))), 1);
 
     wide_string outPassw{};
     outPassw.reserve(in.length());
     for (int i = 0; i < in.length(); ++i) {
+        auto maskOffset = int(gen_offset({
+                                                 salt,
+                                                 uint32_t(i),
+                                                 (uint32_t) scheme->len(),
+                                                 (uint32_t) passw_power,
+                                                 (uint32_t) in.length()
+                                         }));
         wide_char c = in.at(i);
         c = scheme->encoded(c, maskOffset);
-        c = SALT_IN_RING(c, ring);// generate twins
+        c = DESALT_IN_RING(c, ring);
+        auto steps = (schemeLen - c) / ring;
+        c = steps > 0 ? c + rand(steps) * ring : c;
         outPassw += scheme->decoded(c, -maskOffset);
     }
     return outPassw;
@@ -137,8 +157,8 @@ key_salt::wide_string thekey_v2::password_masked_twin(
 
 
 // -------------------- private ---------------------
-static int gen_offset(vector<uint32_t> args) {
-    int maskOffset = 0;
+static unsigned int gen_offset(const vector<uint32_t> &args) {
+    unsigned int maskOffset = 0;
     for (const auto &item: args) {
         maskOffset ^= hashFunc(item);
     }

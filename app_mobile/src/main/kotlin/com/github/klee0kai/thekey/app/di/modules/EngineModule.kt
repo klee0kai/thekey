@@ -54,5 +54,4 @@ abstract class EngineModule {
     @Provide(cache = Provide.CacheType.Soft)
     abstract fun editStorageEngineSuspended(): EditStorageSuspended
 
-
 }

@@ -5,6 +5,7 @@ import com.github.klee0kai.thekey.app.engine.model.DecryptedOtpNote
 import com.github.klee0kai.thekey.app.features.autofill
 import com.github.klee0kai.thekey.app.features.gdrive
 import com.github.klee0kai.thekey.app.features.qrcodeScanner
+import com.github.klee0kai.thekey.app.features.smpassw
 import com.github.klee0kai.thekey.app.ui.note.model.EditTabs
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.domain.model.feature.model.DynamicFeature
@@ -24,6 +25,8 @@ data object EmptyDestination : Destination
 @Parcelize
 data class LoginDestination(
     val identifier: StorageIdentifier = StorageIdentifier(),
+    val prefilledPassw: String? = null,
+    val forceAllowStorageSelect: Boolean = false,
 ) : Destination
 
 @Parcelize
@@ -162,4 +165,10 @@ data object BackupSettings : DynamicDestination(DynamicFeature.gdrive())
 data class BackupStorageDestination(
     val storageIdentifier: StorageIdentifier = StorageIdentifier(),
 ) : DynamicDestination(DynamicFeature.gdrive())
+
+
+@Parcelize
+data class PasswordTwinsDestination(
+    val storageIdentifier: StorageIdentifier = StorageIdentifier(),
+) : DynamicDestination(DynamicFeature.smpassw())
 

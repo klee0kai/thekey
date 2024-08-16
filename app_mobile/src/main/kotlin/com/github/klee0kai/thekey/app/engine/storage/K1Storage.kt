@@ -8,6 +8,7 @@ import com.github.klee0kai.thekey.app.engine.model.DecryptedOtpNote
 import com.github.klee0kai.thekey.app.engine.model.DecryptedPassw
 import com.github.klee0kai.thekey.app.engine.model.GenPasswParams
 import com.github.klee0kai.thekey.app.engine.model.Storage
+import com.github.klee0kai.thekey.app.engine.model.TwinsCollection
 
 @JniMirror
 class K1Storage(
@@ -76,5 +77,8 @@ class K1Storage(
 
     @Synchronized
     external override fun getGenPassw(ptNote: Long): DecryptedPassw
+
+    override fun findTwins(passw: String): TwinsCollection? = null
+
 
 }

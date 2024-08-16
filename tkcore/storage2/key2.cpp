@@ -62,6 +62,10 @@ shared_ptr<StorageInfo> thekey_v2::storageFullInfo(const std::string &file) {
     storage->storageVersion = header->storageVersion();
     storage->name = header->name;
     storage->description = header->description;
+    storage->saltMini = htobig(*(uint32_t *) header->salt);
+    storage->keyInteractionsCount = header->keyInteractionsCount();
+    storage->interactionsCount = header->interactionsCount();
+    storage->cryptType = header->cryptType();
     return storage;
 }
 
@@ -140,7 +144,7 @@ std::shared_ptr<CryptContext> thekey_v2::cryptContext(
         const uint &interactionsCount,
         const unsigned char *salt
 ) {
-    auto splitPassw = split(passw);
+    auto splitPassw = split(passw, htobig(*((uint32_t *) salt)));
     auto passwLen = int(splitPassw.passwForPassw.length());
     auto ctx = std::make_shared<CryptContext>();
     memset(&*ctx, 0, sizeof(CryptContext));

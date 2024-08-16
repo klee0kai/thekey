@@ -5,6 +5,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -14,6 +15,8 @@ import kotlinx.coroutines.yield
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 class SafeContextScope(
     override val coroutineContext: CoroutineContext,
@@ -142,7 +145,23 @@ fun SafeContextScope.launchIfNotStarted(
     return launch(context = context) {
         GlobalJobsCollection.trackJob(globalRunDesc) { block() }
     }.also { curJob ->
-        singleRunJobs[key] = curJob;
+        singleRunJobs[key] = curJob
+    }
+}
+
+fun SafeContextScope.launchDebounced(
+    key: String,
+    debounceTime: Duration = 500.milliseconds,
+    context: CoroutineContext = EmptyCoroutineContext,
+    @StringRes globalRunDesc: Int = 0,
+    block: suspend CoroutineScope.() -> Unit
+): Job {
+    val latest = singleRunJobs[key]
+    if (latest?.isActive == true) return latest
+    latest?.cancel()
+    singleRunJobs[key] = launch { delay(debounceTime) }
+    return launch(context = context) {
+        GlobalJobsCollection.trackJob(globalRunDesc) { block() }
     }
 }
 

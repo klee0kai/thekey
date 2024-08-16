@@ -67,7 +67,7 @@ TEST(ReadStorage2, ReadNotes) {
     ASSERT_EQ("somesite_desc", note->description);
     ASSERT_EQ(0, note->history.size());
     ASSERT_EQ(orangeGroup->id, note->colorGroupId);
-    ASSERT_EQ(1711897865, note->genTime);
+    ASSERT_EQ(1723826572, note->genTime);
     ASSERT_TRUE(note->passw.empty()) << "read without passw ";
 
     note = storage->note(notes[1].id, TK2_GET_NOTE_INFO);
@@ -76,7 +76,7 @@ TEST(ReadStorage2, ReadNotes) {
     ASSERT_EQ("desc", note->description);
     ASSERT_EQ(0, note->history.size());
     ASSERT_EQ(violetGroup->id, note->colorGroupId);
-    ASSERT_EQ(1711897868, note->genTime);
+    ASSERT_EQ(1723826574, note->genTime);
     ASSERT_TRUE(note->passw.empty()) << "read without passw ";
 }
 
@@ -102,7 +102,7 @@ TEST(ReadStorage2, ReadOtpNotes) {
     ASSERT_EQ("Example", otpNote.issuer);
     ASSERT_EQ("JBSWY3DPEHPK3PXP", base32::encode(otpInfo.secret, true));
     ASSERT_EQ(0, otpNote.colorGroupId);
-    ASSERT_EQ(1711897870, otpNote.createTime);
+    ASSERT_EQ(1723826577, otpNote.createTime);
 
 
     otpNote = otpNotes[1];
@@ -112,7 +112,7 @@ TEST(ReadStorage2, ReadOtpNotes) {
     ASSERT_EQ("WDW2ZCDQYHFXYV4G7WB6FG2WNBXKEGUJRW3QLE634JP43J4TCGTCPCKAAVISY6A7BNKYULEUXQ5YC2JPG7QXFFMDRIRJMESQNYWZ72A",
               base32::encode(otpInfo.secret, true));
     ASSERT_EQ(pinkGroup->id, otpNote.colorGroupId);
-    ASSERT_EQ(1711897870, otpNote.createTime);
+    ASSERT_EQ(1723826578, otpNote.createTime);
 
 }
 
@@ -128,15 +128,16 @@ TEST(ReadStorage2, ReadGenHistory) {
     ASSERT_EQ(3, genHist.size());
 
     auto genHistIt = genHist.begin();
-    ASSERT_EQ("DjRb3N", genHistIt->passw);
-    ASSERT_EQ(1711897873, genHistIt->genTime);
+    ASSERT_EQ("D6ilAL", genHistIt->passw);
+    ASSERT_EQ(1723826580, genHistIt->genTime);
 
     genHistIt++;
-    ASSERT_EQ("#Y8?\\=.B", genHistIt->passw);
-    ASSERT_EQ(1711897873, genHistIt->genTime);
+    ASSERT_EQ("spuMu4b!", genHistIt->passw);
+    ASSERT_EQ(1723826580, genHistIt->genTime);
 
-    ASSERT_EQ("#Y8?\\=.B", genHistIt->passw);
-    ASSERT_EQ(1711897873, genHistIt->genTime);
+    genHistIt++;
+    ASSERT_EQ("/J5R0I<1]c[mDoKI", genHistIt->passw);
+    ASSERT_EQ(1723826580, genHistIt->genTime);
 }
 
 TEST(ReadStorage2, YaotpGenTest) {

@@ -7,6 +7,7 @@ import com.github.klee0kai.thekey.app.engine.model.DecryptedOtpNote
 import com.github.klee0kai.thekey.app.engine.model.DecryptedPassw
 import com.github.klee0kai.thekey.app.engine.model.GenPasswParams
 import com.github.klee0kai.thekey.app.engine.model.Storage
+import com.github.klee0kai.thekey.app.engine.model.TwinsCollection
 import com.github.klee0kai.thekey.core.di.identifiers.FileIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import kotlinx.coroutines.withContext
@@ -81,7 +82,17 @@ class CryptStorageSuspended(
 
     suspend fun lastGeneratedPassw(): String = engineRunRead { lastGeneratedPassw() }
 
-    suspend fun getGenPassw(ptNote: Long): DecryptedPassw = engineRunRead { getGenPassw(ptNote) }
+    suspend fun getGenPassw(
+        ptNote: Long,
+    ): DecryptedPassw = engineRunRead {
+        getGenPassw(ptNote)
+    }
+
+    suspend fun findTwins(
+        passw: String,
+    ): TwinsCollection? = engineRunRead {
+        findTwins(passw)
+    }
 
     private suspend fun <T> engineRunRead(block: suspend CryptStorage.() -> T): T =
         withContext(dispatcher) {

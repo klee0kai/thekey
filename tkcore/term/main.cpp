@@ -10,6 +10,7 @@
 #include "key1.h"
 #include "key_find.h"
 #include "otp/termotp.h"
+#include "split_password.h"
 
 #ifdef __ANDROID__
 namespace fs = std::__fs::filesystem;
@@ -112,6 +113,25 @@ int main(int argc, char **argv) {
         thekey_otp::interactive();
     });
 
+
+    it.cmd({"twins"}, "find hidden password twins", []() {
+        auto filePath = ask_from_term("input path : ");
+        auto storageInfo = thekey::storage(filePath);
+        if (!storageInfo) {
+            cerr << "can't open file " << fs::absolute(filePath) << " error " << errorToString(keyError) << endl;
+            return;
+        }
+        switch (storageInfo->storageVersion) {
+            case 2:
+                thekey_v2::twinsInteractive(filePath);
+                return;
+
+            default:
+                cerr << "storage version " << storageInfo->storageVersion
+                     << " not supported " << filePath << endl;
+                return;
+        }
+    });
 
     it.cmd({"info"}, "print info about build", []() {
         cout << string("TheKey - ")

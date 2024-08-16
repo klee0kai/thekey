@@ -76,8 +76,10 @@ fun LoginScreen(
     val theme = LocalTheme.current
     val presenter by rememberOnScreenRef { DI.loginPresenter(dest.identifier) }
     val pathInputHelper = remember { DI.pathInputHelper() }
-    val currentStorageState by presenter!!.currentStorageFlow.collectAsState(Unit, initial = ColoredStorage())
-    var passwordInputText by remember { mutableStateOf("") }
+    val currentStorageState by presenter!!.currentStorageFlow
+        .collectAsState(key = Unit, initial = ColoredStorage())
+
+    var passwordInputText by remember { mutableStateOf(dest.prefilledPassw ?: "") }
     val imeVisible by animateTargetCrossFaded(WindowInsets.isIme)
 
     val shortStoragePath = with(pathInputHelper) {
@@ -103,7 +105,7 @@ fun LoginScreen(
             if (imeVisible.current) {
                 DoneIconButton(
                     modifier = Modifier.alpha(imeVisible.alpha),
-                    onClick = { presenter?.login(passwordInputText) }
+                    onClick = { presenter?.login(passwordInputText, router) }
                 )
             }
         }
@@ -180,7 +182,7 @@ fun LoginScreen(
             label = { Text(stringResource(R.string.password)) },
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
             keyboardActions = KeyboardActions(
-                onDone = { presenter?.login(passwordInputText) })
+                onDone = { presenter?.login(passwordInputText, router) })
         )
 
         Text(
@@ -212,7 +214,7 @@ fun LoginScreen(
         )
 
         if (!imeVisible.current) {
-            if (dest.identifier.path.isBlank()) {
+            if (dest.identifier.path.isBlank() || dest.forceAllowStorageSelect) {
                 TextButton(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -223,7 +225,7 @@ fun LoginScreen(
                             end.linkTo(parent.end)
                         },
                     colors = LocalColorScheme.current.grayTextButtonColors,
-                    onClick = { presenter?.selectStorage() }
+                    onClick = { presenter?.selectStorage(router) }
                 ) {
                     Text(stringResource(R.string.storages))
                 }
@@ -238,7 +240,7 @@ fun LoginScreen(
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                     },
-                onClick = { presenter?.login(passwordInputText) }
+                onClick = { presenter?.login(passwordInputText, router) }
             ) {
                 Text(stringResource(R.string.login))
             }
@@ -259,7 +261,12 @@ fun LoginScreenPreview() = EdgeToEdgeTemplate {
             object : PresentersModule {
                 override fun loginPresenter(storageIdentifier: StorageIdentifier): LoginPresenter {
                     return object : LoginPresenter {
-                        override val currentStorageFlow = MutableStateFlow(ColoredStorage(path = "/app_folder/some_path", name = "editModeStorage"))
+                        override val currentStorageFlow = MutableStateFlow(
+                            ColoredStorage(
+                                path = "/app_folder/some_path",
+                                name = "editModeStorage"
+                            )
+                        )
                     }
                 }
             }
@@ -280,7 +287,12 @@ fun LoginLangScreenPreview() = EdgeToEdgeTemplate {
             object : PresentersModule {
                 override fun loginPresenter(storageIdentifier: StorageIdentifier): LoginPresenter {
                     return object : LoginPresenter {
-                        override val currentStorageFlow = MutableStateFlow(ColoredStorage(path = "/app_folder/some_path", name = "editModeStorage"))
+                        override val currentStorageFlow = MutableStateFlow(
+                            ColoredStorage(
+                                path = "/app_folder/some_path",
+                                name = "editModeStorage"
+                            )
+                        )
                     }
                 }
             }
@@ -300,7 +312,12 @@ fun LoginScreenTabletPreview() = EdgeToEdgeTemplate {
             object : PresentersModule {
                 override fun loginPresenter(storageIdentifier: StorageIdentifier): LoginPresenter {
                     return object : LoginPresenter {
-                        override val currentStorageFlow = MutableStateFlow(ColoredStorage(path = "/app_folder/some_path", name = "editModeStorage"))
+                        override val currentStorageFlow = MutableStateFlow(
+                            ColoredStorage(
+                                path = "/app_folder/some_path",
+                                name = "editModeStorage"
+                            )
+                        )
                     }
                 }
             }

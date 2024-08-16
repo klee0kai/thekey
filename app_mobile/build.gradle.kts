@@ -23,6 +23,7 @@ android {
             ":private:dynamic_autofill",
             ":private:dynamic_gdrive",
             ":private:dynamic_chpassw",
+            ":private:dynamic_smpassw",
         )
     }
 
