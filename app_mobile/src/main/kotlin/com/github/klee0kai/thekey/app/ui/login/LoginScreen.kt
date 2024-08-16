@@ -105,7 +105,7 @@ fun LoginScreen(
             if (imeVisible.current) {
                 DoneIconButton(
                     modifier = Modifier.alpha(imeVisible.alpha),
-                    onClick = { presenter?.login(passwordInputText) }
+                    onClick = { presenter?.login(passwordInputText, router) }
                 )
             }
         }
@@ -182,7 +182,7 @@ fun LoginScreen(
             label = { Text(stringResource(R.string.password)) },
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
             keyboardActions = KeyboardActions(
-                onDone = { presenter?.login(passwordInputText) })
+                onDone = { presenter?.login(passwordInputText, router) })
         )
 
         Text(
@@ -225,7 +225,7 @@ fun LoginScreen(
                             end.linkTo(parent.end)
                         },
                     colors = LocalColorScheme.current.grayTextButtonColors,
-                    onClick = { presenter?.selectStorage() }
+                    onClick = { presenter?.selectStorage(router) }
                 ) {
                     Text(stringResource(R.string.storages))
                 }
@@ -240,7 +240,7 @@ fun LoginScreen(
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                     },
-                onClick = { presenter?.login(passwordInputText) }
+                onClick = { presenter?.login(passwordInputText, router) }
             ) {
                 Text(stringResource(R.string.login))
             }

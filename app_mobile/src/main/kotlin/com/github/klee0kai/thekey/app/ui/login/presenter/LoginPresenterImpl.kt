@@ -7,6 +7,7 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.StoragesDestination
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
+import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
 import com.github.klee0kai.thekey.core.ui.navigation.navigate
 import com.github.klee0kai.thekey.core.utils.common.launchDebounced
 import com.github.klee0kai.thekey.core.utils.coroutine.coldStateFlow
@@ -24,7 +25,6 @@ class LoginPresenterImpl(
     private val storagesInteractor = DI.storagesInteractorLazy()
     private val settingsRep = DI.settingsRepositoryLazy()
     private val loginInteractor = DI.loginInteractorLazy()
-    private val router = DI.router()
 
     override val currentStorageFlow = coldStateFlow<ColoredStorage> {
         val storagePath =
@@ -33,10 +33,10 @@ class LoginPresenterImpl(
         result.update { storage }
     }.filterNotNull()
 
-    override fun selectStorage() = scope.launchDebounced("select_storage") {
+    override fun selectStorage(router: AppRouter?) = scope.launchDebounced("select_storage") {
         val selectedStorage = router
-            .navigate<String>(StoragesDestination)
-            .firstOrNull()
+            ?.navigate<String>(StoragesDestination)
+            ?.firstOrNull()
 
         if (selectedStorage != null) {
             settingsRep()
@@ -45,9 +45,9 @@ class LoginPresenterImpl(
         }
     }
 
-    override fun login(passw: String) = scope.launchDebounced("login") {
+    override fun login(passw: String, router: AppRouter?) = scope.launchDebounced("login") {
         if (passw.isBlank()) {
-            router.snack(R.string.passw_is_null)
+            router?.snack(R.string.passw_is_null)
             return@launchDebounced
         }
         runCatching {
@@ -60,11 +60,11 @@ class LoginPresenterImpl(
             loginInteractor()
                 .login(storageIdentifier, passw)
                 .await().let {
-                    router.navigate(it.dest())
+                    router?.navigate(it.dest())
                 }
         }.onFailure { error ->
             Timber.d(error)
-            router.snack(error.message ?: "error")
+            router?.snack(error.message ?: "error")
         }
     }
 }
