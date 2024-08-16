@@ -23,7 +23,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.wear.compose.material.Text
 import com.github.klee0kai.thekey.app.ui.navigation.model.AutoFillSettingsDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.BackupSettings
-import com.github.klee0kai.thekey.app.ui.navigation.model.PasswordTwinsDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.PluginsDestination
 import com.github.klee0kai.thekey.core.BuildConfig
 import com.github.klee0kai.thekey.core.R
@@ -91,15 +90,6 @@ fun SettingScreen() {
                 )
             }
         }
-
-        item {
-            Preference(
-                text = stringResource(id = R.string.twins),
-                onClick = { router.navigate(PasswordTwinsDestination) },
-                icon = { RightArrowIcon() },
-            )
-        }
-
 
         item {
             Preference(

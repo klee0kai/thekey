@@ -39,6 +39,7 @@ fun StoragePopupMenu(
     onEdit: (() -> Unit)? = null,
     onBackup: (() -> Unit)? = null,
     onExport: (() -> Unit)? = null,
+    onPassTwins: (() -> Unit)? = null,
     onColorGroupSelected: ((ColorGroup) -> Unit)? = null,
 ) {
     val theme = LocalTheme.current
@@ -47,6 +48,7 @@ fun StoragePopupMenu(
     val editText = stringResource(id = R.string.edit)
     val backupText = stringResource(id = R.string.backup)
     val exportText = stringResource(id = R.string.export)
+    val passwTwins = stringResource(id = R.string.password_twins)
 
     ConstraintLayout(modifier = modifier) {
         val (menuField) = createRefs()
@@ -55,10 +57,22 @@ fun StoragePopupMenu(
             val (groupsField, shadowField) = createRefs()
 
             val scrollState = rememberLazyListState()
-            val roundStart by animateDpAsState(if (scrollState.canScrollBackward) 0.dp else 16.dp, label = "roundEnd")
-            val shadowStartColor by animateColorAsState(if (scrollState.canScrollBackward) surfaceColor else Color.Transparent, label = "shadowStartColor")
-            val roundEnd by animateDpAsState(if (scrollState.canScrollForward) 0.dp else 16.dp, label = "roundEnd")
-            val shadowEndColor by animateColorAsState(if (scrollState.canScrollForward) surfaceColor else Color.Transparent, label = "shadowEndColor")
+            val roundStart by animateDpAsState(
+                if (scrollState.canScrollBackward) 0.dp else 16.dp,
+                label = "roundEnd"
+            )
+            val shadowStartColor by animateColorAsState(
+                if (scrollState.canScrollBackward) surfaceColor else Color.Transparent,
+                label = "shadowStartColor"
+            )
+            val roundEnd by animateDpAsState(
+                if (scrollState.canScrollForward) 0.dp else 16.dp,
+                label = "roundEnd"
+            )
+            val shadowEndColor by animateColorAsState(
+                if (scrollState.canScrollForward) surfaceColor else Color.Transparent,
+                label = "shadowEndColor"
+            )
 
             LazyRow(
                 modifier = Modifier
@@ -142,12 +156,14 @@ fun StoragePopupMenu(
                 if (onEdit != null) add(editText)
                 if (onBackup != null) add(backupText)
                 if (onExport != null) add(exportText)
+                if (onExport != null) add(passwTwins)
             },
             onSelected = { text, _ ->
                 when (text) {
                     editText -> onEdit?.invoke()
                     backupText -> onBackup?.invoke()
                     exportText -> onExport?.invoke()
+                    passwTwins -> onPassTwins?.invoke()
                 }
             }
         )

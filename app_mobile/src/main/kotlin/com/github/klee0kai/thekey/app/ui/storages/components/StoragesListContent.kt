@@ -92,7 +92,7 @@ fun StoragesListContent(
                     widgetState = StorageItemWidgetState(
                         coloredStorage = storage,
                         isPopupMenuAvailable = isPopupMenuAvailable,
-                        onClick = { router?.backWithResult(storage.path) }
+                        onClick = { presenter?.selectStorage(storage.path, router) }
                     )
                 )
             }

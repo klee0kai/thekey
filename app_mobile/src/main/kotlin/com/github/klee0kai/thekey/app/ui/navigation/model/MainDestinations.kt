@@ -25,6 +25,8 @@ data object EmptyDestination : Destination
 @Parcelize
 data class LoginDestination(
     val identifier: StorageIdentifier = StorageIdentifier(),
+    val prefilledPassw: String? = null,
+    val forceAllowStorageSelect: Boolean = false,
 ) : Destination
 
 @Parcelize
@@ -166,5 +168,7 @@ data class BackupStorageDestination(
 
 
 @Parcelize
-data object PasswordTwinsDestination : DynamicDestination(DynamicFeature.smpassw())
+data class PasswordTwinsDestination(
+    val storageIdentifier: StorageIdentifier = StorageIdentifier(),
+) : DynamicDestination(DynamicFeature.smpassw())
 

@@ -1,6 +1,7 @@
 package com.github.klee0kai.thekey.core.utils.common
 
 import androidx.annotation.StringRes
+import com.github.klee0kai.thekey.core.utils.coroutine.minDuration
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
@@ -14,6 +15,8 @@ import kotlinx.coroutines.yield
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 class SafeContextScope(
     override val coroutineContext: CoroutineContext,
@@ -141,6 +144,26 @@ fun SafeContextScope.launchIfNotStarted(
 
     return launch(context = context) {
         GlobalJobsCollection.trackJob(globalRunDesc) { block() }
+    }.also { curJob ->
+        singleRunJobs[key] = curJob;
+    }
+}
+
+fun SafeContextScope.launchDebounced(
+    key: String,
+    debounceTime: Duration = 500.milliseconds,
+    context: CoroutineContext = EmptyCoroutineContext,
+    @StringRes globalRunDesc: Int = 0,
+    block: suspend CoroutineScope.() -> Unit
+): Job {
+    val latest = singleRunJobs[key]
+    if (latest?.isActive == true) return latest
+    latest?.cancel()
+
+    return launch(context = context) {
+        minDuration(debounceTime) {
+            GlobalJobsCollection.trackJob(globalRunDesc) { block() }
+        }
     }.also { curJob ->
         singleRunJobs[key] = curJob;
     }

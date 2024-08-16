@@ -3,7 +3,7 @@ package com.github.klee0kai.thekey.dynamic.findstorage.ui.storages.presenter
 import com.github.klee0kai.thekey.app.ui.storages.presenter.StoragesPresenter
 import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
 import com.github.klee0kai.thekey.core.ui.navigation.model.TextProvider
-import com.github.klee0kai.thekey.core.utils.common.launchIfNotStarted
+import com.github.klee0kai.thekey.core.utils.common.launchDebounced
 import com.github.klee0kai.thekey.core.utils.coroutine.coldStateFlow
 import com.github.klee0kai.thekey.core.utils.coroutine.touchable
 import com.github.klee0kai.thekey.dynamic.findstorage.R
@@ -11,7 +11,6 @@ import com.github.klee0kai.thekey.dynamic.findstorage.di.FSDI
 import com.github.klee0kai.thekey.dynamic.findstorage.perm.writeStoragePermissions
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
 
 class FSStoragesPresenterImpl(
     private val origin: StoragesPresenter = object : StoragesPresenter {},
@@ -33,7 +32,7 @@ class FSStoragesPresenterImpl(
     }.filterNotNull()
         .touchable()
 
-    override fun requestPermissions(appRouter: AppRouter?) = scope.launch {
+    override fun requestPermissions(appRouter: AppRouter?) = scope.launchDebounced("req_perm") {
         with(perm) {
             appRouter?.askPermissionsIfNeed(
                 perms = perm.writeStoragePermissions(),
@@ -44,7 +43,7 @@ class FSStoragesPresenterImpl(
         isPermissionGranted.touch()
     }
 
-    override fun searchStorages() = scope.launchIfNotStarted("search") {
+    override fun searchStorages() = scope.launchDebounced("search") {
         interactor().findStoragesIfNeed(force = true)
     }
 

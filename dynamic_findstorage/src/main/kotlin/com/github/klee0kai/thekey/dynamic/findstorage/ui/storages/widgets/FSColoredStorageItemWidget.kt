@@ -12,6 +12,8 @@ import androidx.compose.ui.unit.dp
 import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.hardResetToPreview
+import com.github.klee0kai.thekey.app.ui.navigation.identifier
+import com.github.klee0kai.thekey.app.ui.navigation.model.PasswordTwinsDestination
 import com.github.klee0kai.thekey.app.ui.storages.components.popup.StoragePopupMenu
 import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
@@ -37,7 +39,10 @@ fun FSColoredStorageItemWidget(
     var showMenu by remember { mutableStateOf(false) }
     val position = rememberViewPosition()
     val presenter by rememberOnScreenRef { FSDI.fsStoragesPresenter() }
-    val groups by presenter!!.selectableColorGroups.collectAsState(key = Unit, initial = emptyList())
+    val groups by presenter!!.selectableColorGroups.collectAsState(
+        key = Unit,
+        initial = emptyList()
+    )
 
     FSColoredStorageItem(
         modifier = modifier
@@ -70,6 +75,10 @@ fun FSColoredStorageItemWidget(
                 onExport = {
                     showMenu = false
                     presenter?.exportStorage(state.coloredStorage.path, router)
+                },
+                onPassTwins = {
+                    showMenu = false
+                    router?.navigate(PasswordTwinsDestination(state.coloredStorage.identifier()))
                 },
                 onColorGroupSelected = {
                     showMenu = false
