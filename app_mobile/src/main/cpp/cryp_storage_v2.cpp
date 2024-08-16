@@ -7,6 +7,7 @@
 #include "memory"
 #include "key_core.h"
 #include "key2.h"
+#include "split_password.h"
 #include "brooklyn.h"
 #include "salt_text/salt2_schema.h"
 #include "tools/base32.h"
@@ -23,6 +24,7 @@ typedef brooklyn::EngineModelDecryptedPassw JvmDecryptedPassw;
 typedef brooklyn::EngineModelDecryptedNote JvmDecryptedNote;
 typedef brooklyn::EngineModelDecryptedOtpNote JvmDecryptedOtpNote;
 typedef brooklyn::EngineModelDecryptedColorGroup JvmColorGroup;
+typedef brooklyn::EngineModelTwinsCollection JvmTwinsCollection;
 
 static map<string, shared_ptr<KeyStorageV2>> storages = {};
 
@@ -393,4 +395,27 @@ int JvmStorage2::setOtpNotesGroup(const std::vector<int64_t> &notePtrs, const in
     }
 
     return storage->save();
+}
+
+std::shared_ptr<JvmTwinsCollection> JvmStorage2::findTwins(const std::string &passw) {
+
+    const auto &info = storageFullInfo(getStoragePath());
+    if (!info) return {};
+    const auto &twins = thekey_v2::twins(passw, info->saltMini);
+    auto jTwins = make_shared<JvmTwinsCollection>(JvmTwinsCollection{});
+    jTwins->otpTwins.insert(jTwins->otpTwins.end(),
+                            twins.passwForOtpTwins.begin(),
+                            twins.passwForOtpTwins.end());
+    jTwins->loginTwins.insert(jTwins->loginTwins.end(),
+                              twins.passwForLoginTwins.begin(),
+                              twins.passwForLoginTwins.end());
+    jTwins->histTwins.insert(jTwins->histTwins.end(),
+                             twins.passwForHistPasswTwins.begin(),
+                             twins.passwForHistPasswTwins.end());
+    jTwins->descTwins.insert(jTwins->descTwins.end(),
+                             twins.passwForDescriptionTwins.begin(),
+                             twins.passwForDescriptionTwins.end());
+
+    return jTwins;
+
 }

@@ -10,8 +10,6 @@ import com.github.klee0kai.thekey.app.engine.storage.CryptStorage
 import com.github.klee0kai.thekey.app.engine.storage.CryptStorageSuspended
 import com.github.klee0kai.thekey.app.engine.storage.K1Storage
 import com.github.klee0kai.thekey.app.engine.storage.K2Storage
-import com.github.klee0kai.thekey.app.engine.twins.PasswordTwinsEngine
-import com.github.klee0kai.thekey.app.engine.twins.PasswordTwinsSuspended
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 
 @Module
@@ -55,11 +53,5 @@ abstract class EngineModule {
 
     @Provide(cache = Provide.CacheType.Soft)
     abstract fun editStorageEngineSuspended(): EditStorageSuspended
-
-    @Provide(cache = Provide.CacheType.Strong)
-    abstract fun passwordTwinsEngine(): PasswordTwinsEngine
-
-    @Provide(cache = Provide.CacheType.Strong)
-    abstract fun passwordTwinsSuspended(): PasswordTwinsSuspended
 
 }

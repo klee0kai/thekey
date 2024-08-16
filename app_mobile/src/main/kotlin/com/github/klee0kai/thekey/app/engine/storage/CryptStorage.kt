@@ -6,6 +6,7 @@ import com.github.klee0kai.thekey.app.engine.model.DecryptedOtpNote
 import com.github.klee0kai.thekey.app.engine.model.DecryptedPassw
 import com.github.klee0kai.thekey.app.engine.model.GenPasswParams
 import com.github.klee0kai.thekey.app.engine.model.Storage
+import com.github.klee0kai.thekey.app.engine.model.TwinsCollection
 
 interface CryptStorage {
 
@@ -50,5 +51,7 @@ interface CryptStorage {
     fun lastGeneratedPassw(): String
 
     fun getGenPassw(ptNote: Long): DecryptedPassw
+
+    fun findTwins(passw: String): TwinsCollection?
 
 }
