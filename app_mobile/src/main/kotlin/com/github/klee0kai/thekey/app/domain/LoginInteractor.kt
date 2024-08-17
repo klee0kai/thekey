@@ -1,10 +1,12 @@
 package com.github.klee0kai.thekey.app.domain
 
+import com.github.klee0kai.thekey.app.data.mapping.toColoredStorage
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.core.di.identifiers.FileIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.core.utils.common.MutexState
+import com.github.klee0kai.thekey.core.utils.common.launch
 import com.github.klee0kai.thekey.core.utils.common.stateFlow
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.debounce
@@ -18,6 +20,7 @@ class LoginInteractor {
 
     private val scope = DI.defaultThreadScope()
     private val rep = DI.loginedRepLazy()
+    private val billing = DI.billingInteractor()
     private val storagesRep = DI.storagesRepositoryLazy()
     private val settingsRep = DI.settingsRepositoryLazy()
 
@@ -59,10 +62,15 @@ class LoginInteractor {
         groupsInteractor().loadGroups()
         if (!ignoreLoginned) rep().logined(identifier)
 
+        if (storagesRep().findStorage(identifier.path).await() == null) {
+            // create storage if not exist
+            storagesRep().setStorage(engine().info().toColoredStorage())
+        }
+
         identifier
     }
 
-    fun unlogin(identifier: StorageIdentifier) = scope.async {
+    fun unlogin(identifier: StorageIdentifier) = scope.launch {
         // wait no one use the storage
         val fileMutex = DI.fileMutex(FileIdentifier(identifier.path))
         fileMutex.stateFlow()
@@ -80,7 +88,6 @@ class LoginInteractor {
 
         engine().unlogin()
         rep().logouted(identifier)
-        Unit
     }
 
 }

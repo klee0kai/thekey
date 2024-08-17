@@ -4,6 +4,7 @@ package com.github.klee0kai.thekey.app.ui.navigationboard.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Text
@@ -48,12 +49,13 @@ fun FavoriteStorageItem(
 
     ConstraintLayout(
         modifier = modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
             .combinedClickable(
                 onClick = onClick,
                 onLongClick = onLongClick,
-            ),
+            )
+            .defaultMinSize(minHeight = 56.dp)
+            .wrapContentHeight()
+            .fillMaxWidth(),
     ) {
         val (pathField, nameField) = createRefs()
 
@@ -127,7 +129,7 @@ private fun FavoriteStorageItemPreview() {
 
 
 @OptIn(DebugOnly::class)
-@Preview(widthDp = 250)
+@Preview(widthDp = 450)
 @Composable
 private fun FavoriteStorageItemNoDescPreview() {
     DI.hardResetToPreview()

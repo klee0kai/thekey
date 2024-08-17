@@ -63,7 +63,7 @@ fun StorageNavigationMapList(
         }
 
         opened.forEach { storage ->
-            item {
+            item(key = "openned-${storage.path}") {
                 var showMenu by remember { mutableStateOf(false) }
                 val position = rememberViewPosition()
 
@@ -71,7 +71,8 @@ fun StorageNavigationMapList(
                     modifier = modifier
                         .onGlobalPositionState(position),
                     storage = storage,
-                    onClick = rememberClickDebounced {
+                    onClick = rememberClickDebounced(storage.path) {
+                        showMenu = false
                         presenter?.openStorage(storage.path, router)
                     },
                     onLongClick = rememberClickDebounced { showMenu = true },
@@ -83,7 +84,7 @@ fun StorageNavigationMapList(
                     onDismissRequest = rememberClickDebounced { showMenu = false }
                 ) {
                     OpenedStoragePopupMenu(
-                        onLogout = rememberClickDebounced {
+                        onLogout = rememberClickDebounced(storage.path) {
                             showMenu = false
                             presenter?.logout(storage.path, router)
                         }
@@ -105,10 +106,10 @@ fun StorageNavigationMapList(
         }
 
         favorites.forEach { storage ->
-            item {
+            item(key = "favorites-${storage.path}") {
                 FavoriteStorageItem(
                     storage = storage,
-                    onClick = rememberClickDebounced {
+                    onClick = rememberClickDebounced(storage.path) {
                         presenter?.openStorage(storage.path, router)
                     },
                 )

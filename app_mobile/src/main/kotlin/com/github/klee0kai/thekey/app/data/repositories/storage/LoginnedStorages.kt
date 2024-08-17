@@ -6,18 +6,14 @@ import kotlinx.coroutines.flow.update
 
 class LoginnedStorages {
 
-    val logginedStorages = MutableStateFlow<List<StorageIdentifier>>(emptyList())
+    val logginedStorages = MutableStateFlow<Set<StorageIdentifier>>(emptySet())
 
     fun logined(storage: StorageIdentifier) {
-        logginedStorages.update {
-            it + listOf(storage)
-        }
+        logginedStorages.update { set -> set + storage }
     }
 
     fun logouted(storage: StorageIdentifier) {
-        logginedStorages.update {
-            it.toMutableList().apply { remove(storage) }
-        }
+        logginedStorages.update { set -> set - storage }
     }
 
 }
