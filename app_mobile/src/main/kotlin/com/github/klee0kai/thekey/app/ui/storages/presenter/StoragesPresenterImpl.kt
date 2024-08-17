@@ -21,7 +21,6 @@ import com.github.klee0kai.thekey.core.domain.model.filterBy
 import com.github.klee0kai.thekey.core.domain.model.sortableFlatText
 import com.github.klee0kai.thekey.core.helpers.path.tKeyExtension
 import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
-import com.github.klee0kai.thekey.core.utils.common.launchDebounced
 import com.github.klee0kai.thekey.core.utils.file.createNewWithSuffix
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -139,13 +138,6 @@ open class StoragesPresenterImpl : StoragesPresenter {
         } catch (e: Throwable) {
             Timber.e(createDocResult.error, "error to export storage")
         }
-    }
-
-    override fun selectStorage(
-        storagePath: String,
-        appRouter: AppRouter?,
-    ) = scope.launchDebounced("sel_storage") {
-        appRouter?.backWithResult(appRouter)
     }
 
     override fun addNewStorage(appRouter: AppRouter?) = scope.launch {

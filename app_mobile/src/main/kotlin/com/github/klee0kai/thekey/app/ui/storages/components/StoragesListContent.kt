@@ -32,6 +32,7 @@ import com.github.klee0kai.thekey.core.utils.views.DebugDarkContentPreview
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.currentRef
+import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 
 @Composable
@@ -92,7 +93,9 @@ fun StoragesListContent(
                     widgetState = StorageItemWidgetState(
                         coloredStorage = storage,
                         isPopupMenuAvailable = isPopupMenuAvailable,
-                        onClick = { presenter?.selectStorage(storage.path, router) }
+                        onClick = rememberClickDebounced(storage.path) {
+                            router?.backWithResult(storage.path)
+                        }
                     )
                 )
             }

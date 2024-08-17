@@ -33,7 +33,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.components.settings.Preference
 import com.github.klee0kai.thekey.core.ui.devkit.components.settings.RightArrowIcon
 import com.github.klee0kai.thekey.core.ui.devkit.components.settings.SectionHeader
 import com.github.klee0kai.thekey.core.ui.devkit.components.settings.SwitchPreference
-import com.github.klee0kai.thekey.core.ui.devkit.icons.BackIcon
+import com.github.klee0kai.thekey.core.ui.devkit.icons.BackMenuIcon
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.ui.navigation.model.DebugSettingsWidgetState
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
@@ -128,7 +128,7 @@ fun SettingScreen() {
 
     AppBarStates(
         navigationIcon = {
-            IconButton(onClick = rememberClickDebounced { router.back() }) { BackIcon() }
+            IconButton(onClick = rememberClickDebounced { router.back() }) { BackMenuIcon() }
         },
         titleContent = {
             Text(

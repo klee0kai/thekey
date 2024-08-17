@@ -49,3 +49,27 @@ fun rememberClickDebounced(
     }
 }
 
+@Composable
+@NonRestartableComposable
+fun <Cons> rememberClickDebouncedCons(
+    key1: Any? = null,
+    key2: Any? = null,
+    key3: Any? = null,
+    key4: Any? = null,
+    key5: Any? = null,
+    key6: Any? = null,
+    debounce: Duration = 500.milliseconds,
+    launch: () -> Unit,
+): Cons.() -> Unit {
+    var lastClickTime by remember { mutableStateOf<TimeSource.Monotonic.ValueTimeMark?>(null) }
+    return remember(key1, key2, key3, key4, key5, key6) {
+        {
+            val now = TimeSource.Monotonic.markNow()
+            if (lastClickTime?.let { now - it < debounce } != true) {
+                launch()
+                lastClickTime = now
+            }
+        }
+    }
+}
+

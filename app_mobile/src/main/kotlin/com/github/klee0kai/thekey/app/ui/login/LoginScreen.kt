@@ -11,15 +11,13 @@ import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,17 +51,19 @@ import com.github.klee0kai.thekey.core.ui.devkit.Screen
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DoneIconButton
 import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextField
+import com.github.klee0kai.thekey.core.ui.devkit.icons.BackMenuIcon
 import com.github.klee0kai.thekey.core.ui.devkit.preview.PreviewDevices
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.isIme
+import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
+import com.github.klee0kai.thekey.core.utils.views.rememberClickDebouncedCons
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.core.utils.views.toAnnotationString
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
 import org.jetbrains.annotations.VisibleForTesting
 import com.github.klee0kai.thekey.core.R as CoreR
 
@@ -78,6 +78,7 @@ fun LoginScreen(
     val pathInputHelper = remember { DI.pathInputHelper() }
     val currentStorageState by presenter!!.currentStorageFlow
         .collectAsState(key = Unit, initial = ColoredStorage())
+    val isNavBoardOpen by router.isNavBoardOpen.collectAsState(false)
 
     var passwordInputText by remember { mutableStateOf(dest.prefilledPassw ?: "") }
     val imeVisible by animateTargetCrossFaded(WindowInsets.isIme)
@@ -89,23 +90,23 @@ fun LoginScreen(
             .coloredPath(accentColor = theme.colorScheme.androidColorScheme.primary)
     }
 
-    BackHandler(enabled = router.isNavigationBoardIsOpen()) {
+    BackHandler(enabled = isNavBoardOpen) {
         when {
-            router.isNavigationBoardIsOpen() -> scope.launch { router.hideNavigationBoard() }
+            isNavBoardOpen -> router.hideNavigationBoard()
         }
     }
 
     AppBarStates(
         navigationIcon = {
-            IconButton(onClick = { scope.launch { router.showNavigationBoard() } }) {
-                Icon(Icons.Filled.Menu, contentDescription = null)
+            IconButton(onClick = rememberClickDebounced { router.showNavigationBoard() }) {
+                BackMenuIcon(isMenu = true)
             }
         },
         actions = {
             if (imeVisible.current) {
                 DoneIconButton(
                     modifier = Modifier.alpha(imeVisible.alpha),
-                    onClick = { presenter?.login(passwordInputText, router) }
+                    onClick = rememberClickDebounced { presenter?.login(passwordInputText, router) }
                 )
             }
         }
@@ -182,7 +183,7 @@ fun LoginScreen(
             label = { Text(stringResource(R.string.password)) },
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
             keyboardActions = KeyboardActions(
-                onDone = { presenter?.login(passwordInputText, router) })
+                onDone = rememberClickDebouncedCons { presenter?.login(passwordInputText, router) })
         )
 
         Text(
@@ -225,7 +226,7 @@ fun LoginScreen(
                             end.linkTo(parent.end)
                         },
                     colors = LocalColorScheme.current.grayTextButtonColors,
-                    onClick = { presenter?.selectStorage(router) }
+                    onClick = rememberClickDebounced { presenter?.selectStorage(router) }
                 ) {
                     Text(stringResource(R.string.storages))
                 }
@@ -240,7 +241,7 @@ fun LoginScreen(
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                     },
-                onClick = { presenter?.login(passwordInputText, router) }
+                onClick = rememberClickDebounced { presenter?.login(passwordInputText, router) }
             ) {
                 Text(stringResource(R.string.login))
             }
