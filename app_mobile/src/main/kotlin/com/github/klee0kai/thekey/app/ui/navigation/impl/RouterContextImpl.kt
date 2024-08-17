@@ -30,12 +30,20 @@ class RouterContextImpl(
 
     override val snackbarHostState: SnackbarHostState = SnackbarHostState()
     override val navBoardState: DrawerState = DrawerState(DrawerValue.Closed)
-    override val navFullController: NavController<Destination> by lazy { navController(initDestination) }
-    override val navScreensController: NavController<Destination> by lazy { navController(initDestination) }
+    override val navFullController: NavController<Destination> by lazy {
+        navController(
+            initDestination
+        )
+    }
+    override val navScreensController: NavController<Destination> by lazy {
+        navController(
+            initDestination
+        )
+    }
     override val navDialogsController: NavController<Destination> by lazy { navController(emptyList()) }
 
     override val navChanges = MutableSharedFlow<NavigateBackstackChange>(replay = 1)
-    override val scope = DI.mainThreadScope()
+    override val scope = DI.androidUiScope()
 
     private var _reqCodeCounter = Random.nextInt(1000) + 1
     override fun genRequestCode(): Int = _reqCodeCounter++

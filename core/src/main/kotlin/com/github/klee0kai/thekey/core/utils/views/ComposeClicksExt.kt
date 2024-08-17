@@ -8,7 +8,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.TimeSource
 
 @Composable
 @NonRestartableComposable
@@ -24,7 +23,6 @@ fun rememberClick(
     launch
 }
 
-
 @Composable
 @NonRestartableComposable
 fun rememberClickDebounced(
@@ -37,12 +35,37 @@ fun rememberClickDebounced(
     debounce: Duration = 500.milliseconds,
     launch: () -> Unit,
 ): () -> Unit {
-    var lastClickTime by remember { mutableStateOf<TimeSource.Monotonic.ValueTimeMark?>(null) }
+    var lastClickTime by remember { mutableStateOf<Long?>(null) }
     return remember(key1, key2, key3, key4, key5, key6) {
         {
-            val now = TimeSource.Monotonic.markNow()
-            if (lastClickTime?.let { now - it < debounce } != true) {
+            val now = System.currentTimeMillis()
+            if (lastClickTime?.let { now - it < debounce.inWholeMilliseconds } != true) {
                 launch()
+                lastClickTime = now
+            }
+        }
+    }
+}
+
+
+@Composable
+@NonRestartableComposable
+fun <Arg> rememberClickDebouncedArg(
+    key1: Any? = null,
+    key2: Any? = null,
+    key3: Any? = null,
+    key4: Any? = null,
+    key5: Any? = null,
+    key6: Any? = null,
+    debounce: Duration = 500.milliseconds,
+    launch: (Arg) -> Unit,
+): (Arg) -> Unit {
+    var lastClickTime by remember { mutableStateOf<Long?>(null) }
+    return remember(key1, key2, key3, key4, key5, key6) {
+        { arg: Arg ->
+            val now = System.currentTimeMillis()
+            if (lastClickTime?.let { now - it < debounce.inWholeMilliseconds } != true) {
+                launch(arg)
                 lastClickTime = now
             }
         }
@@ -59,13 +82,13 @@ fun <Cons> rememberClickDebouncedCons(
     key5: Any? = null,
     key6: Any? = null,
     debounce: Duration = 500.milliseconds,
-    launch: () -> Unit,
+    launch: Cons.() -> Unit,
 ): Cons.() -> Unit {
-    var lastClickTime by remember { mutableStateOf<TimeSource.Monotonic.ValueTimeMark?>(null) }
+    var lastClickTime by remember { mutableStateOf<Long?>(null) }
     return remember(key1, key2, key3, key4, key5, key6) {
         {
-            val now = TimeSource.Monotonic.markNow()
-            if (lastClickTime?.let { now - it < debounce } != true) {
+            val now = System.currentTimeMillis()
+            if (lastClickTime?.let { now - it < debounce.inWholeMilliseconds } != true) {
                 launch()
                 lastClickTime = now
             }

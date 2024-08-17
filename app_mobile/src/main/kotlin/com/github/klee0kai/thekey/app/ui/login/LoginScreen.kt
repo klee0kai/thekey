@@ -88,6 +88,7 @@ fun LoginScreen(
             .shortPath()
             .toAnnotationString()
             .coloredPath(accentColor = theme.colorScheme.androidColorScheme.primary)
+            .coloredFileExt(extensionColor = theme.colorScheme.hintTextColor)
     }
 
     BackHandler(enabled = isNavBoardOpen) {

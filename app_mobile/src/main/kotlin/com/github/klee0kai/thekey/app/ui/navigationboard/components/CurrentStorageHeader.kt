@@ -3,21 +3,26 @@ package com.github.klee0kai.thekey.app.ui.navigationboard.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
-import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
-import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
+import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
+import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
+import com.github.klee0kai.thekey.core.utils.views.DebugDarkContentPreview
+import com.github.klee0kai.thekey.core.utils.views.toAnnotationString
+import com.thedeanda.lorem.LoremIpsum
 import com.github.klee0kai.thekey.app.R as AppR
 
 @Composable
@@ -25,6 +30,18 @@ fun CurrentStorageHeader(
     modifier: Modifier = Modifier,
     storage: ColoredStorage = ColoredStorage(),
 ) {
+    val theme = LocalTheme.current
+    val colorScheme = theme.colorScheme
+    val pathInputHelper = remember { DI.pathInputHelper() }
+    val isDescNotEmpty = storage.description.isNotBlank() || storage.name.isNotBlank()
+    val pathShortPath = with(pathInputHelper) {
+        storage.path
+            .shortPath()
+            .toAnnotationString()
+            .coloredPath(accentColor = colorScheme.androidColorScheme.primary)
+            .coloredFileExt(extensionColor = theme.colorScheme.hintTextColor)
+    }
+
     ConstraintLayout(
         modifier = modifier
             .defaultMinSize(minWidth = 200.dp)
@@ -47,7 +64,7 @@ fun CurrentStorageHeader(
                         endMargin = 16.dp,
                     )
                 },
-            style = MaterialTheme.typography.titleLarge,
+            style = theme.typeScheme.typography.titleLarge,
             text = stringResource(id = R.string.current_storage)
         )
 
@@ -87,39 +104,66 @@ fun CurrentStorageHeader(
                         horizontalBias = 0f,
                     )
                 },
-            style = MaterialTheme.typography.bodyMedium,
-            text = storage.path
+            style = theme.typeScheme.typography.titleMedium,
+            text = pathShortPath,
         )
 
-        Text(
-            modifier = Modifier
-                .constrainAs(storageNameField) {
-                    width = Dimension.fillToConstraints
-                    linkTo(
-                        top = storagePathField.bottom,
-                        bottom = iconField.bottom,
-                        start = iconField.end,
-                        end = parent.end,
-                        topMargin = 8.dp,
-                        startMargin = 8.dp,
-                        endMargin = 16.dp,
-                        verticalBias = 0f,
-                        horizontalBias = 0f,
-                        bottomMargin = 24.dp,
-                    )
+        if (isDescNotEmpty) {
+            Text(
+                text = when {
+                    storage.name.isNotBlank() && storage.description.isNotBlank() -> "${storage.name}  ~  ${storage.description}"
+                    else -> "${storage.name}${storage.description}"
                 },
-            style = MaterialTheme.typography.bodySmall,
-            color = Color(0xffB7B7B7),
-            text = storage.name
-        )
+                style = theme.typeScheme.typography.labelMedium,
+                modifier = Modifier
+                    .alpha(0.4f)
+                    .constrainAs(storageNameField) {
+                        width = Dimension.fillToConstraints
+                        linkTo(
+                            top = storagePathField.bottom,
+                            bottom = iconField.bottom,
+                            start = iconField.end,
+                            end = parent.end,
+                            topMargin = 8.dp,
+                            startMargin = 8.dp,
+                            endMargin = 16.dp,
+                            verticalBias = 0f,
+                            horizontalBias = 0f,
+                            bottomMargin = 24.dp,
+                        )
+                    },
+            )
+        }
     }
 }
 
 
-@Preview
+@OptIn(DebugOnly::class)
+@Preview(widthDp = 400)
 @Composable
-fun CurrentStorageHeaderPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
-    CurrentStorageHeader(
-        storage = ColoredStorage(path = "phoneStorage/Documents/pet.ckey", name = "petprojects")
-    )
+fun CurrentStorageHeaderPreview() {
+    DI.hardResetToPreview()
+    DebugDarkContentPreview {
+        CurrentStorageHeader(
+            storage = ColoredStorage(
+                path = "/phoneStorage/Documents/pet.ckey",
+                name = LoremIpsum().city,
+                description = LoremIpsum().getWords(6)
+            )
+        )
+    }
+}
+
+@OptIn(DebugOnly::class)
+@Preview(widthDp = 400)
+@Composable
+fun CurrentStorageHeaderNoDescPreview() {
+    DI.hardResetToPreview()
+    DebugDarkContentPreview {
+        CurrentStorageHeader(
+            storage = ColoredStorage(
+                path = "/phoneStorage/Documents/pet.ckey",
+            )
+        )
+    }
 }

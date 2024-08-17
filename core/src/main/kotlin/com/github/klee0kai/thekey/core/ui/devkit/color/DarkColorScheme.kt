@@ -36,8 +36,8 @@ fun darkCommonColorScheme() = CommonColorScheme(
     deleteColor = coral.surfaceColor,
     windowBackgroundColor = background,
     navigationBoard = NavigationBoardColors(
-        headerContainerColor = Color(0xFF3A3D52),
-        bodyContentColor = Color(0xFF1C1D27),
+        headerSurfaceColor = Color(0xFF3A3D52),
+        bodySurfaceColor = Color(0xFF1C1D27),
     ),
     popupMenu = PopupMenuColors(
         surfaceColor =  Color(0xFF3A3D52),

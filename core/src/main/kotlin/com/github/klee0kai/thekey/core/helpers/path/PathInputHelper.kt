@@ -39,6 +39,22 @@ class PathInputHelper {
         append(input)
     }
 
+    fun AnnotatedString.coloredFileExt(
+        extensionColor: Color = Color.Gray,
+    ) = buildAnnotatedString {
+        val input = this@coloredFileExt
+        val coloredSpanStyle = SpanStyle(color = extensionColor)
+        val extLen = File(input.text).extension.length
+        if (extLen <= 0) {
+            append(input)
+        } else {
+            append(input.subSequence(0..<input.length - extLen))
+            withStyle(coloredSpanStyle) {
+                append(input.substring(input.length - extLen..<input.length))
+            }
+        }
+    }
+
     fun TextFieldValue.pathInputMask(): TextFieldValue {
         val input = this
         val searchAbsPath = shortPaths.absolutePath(input.text) ?: ""
