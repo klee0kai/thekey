@@ -8,9 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -21,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.wear.compose.material.Text
+import com.github.klee0kai.thekey.app.ui.navigation.model.AboutDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.AutoFillSettingsDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.BackupSettings
 import com.github.klee0kai.thekey.app.ui.navigation.model.PluginsDestination
@@ -35,17 +33,19 @@ import com.github.klee0kai.thekey.core.ui.devkit.components.settings.Preference
 import com.github.klee0kai.thekey.core.ui.devkit.components.settings.RightArrowIcon
 import com.github.klee0kai.thekey.core.ui.devkit.components.settings.SectionHeader
 import com.github.klee0kai.thekey.core.ui.devkit.components.settings.SwitchPreference
+import com.github.klee0kai.thekey.core.ui.devkit.icons.BackIcon
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.ui.navigation.model.DebugSettingsWidgetState
+import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.truncate
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
-import kotlinx.coroutines.launch
 
 @Composable
 fun SettingScreen() {
     val scope = rememberCoroutineScope()
     val router = LocalRouter.current
     val resolver = LocalScreenResolver.current
+
 
     LazyColumn(
         modifier = Modifier
@@ -70,7 +70,9 @@ fun SettingScreen() {
         item {
             Preference(
                 text = stringResource(id = R.string.backup),
-                onClick = { router.navigate(BackupSettings) },
+                onClick = rememberClickDebounced {
+                    router.navigate(BackupSettings)
+                },
                 icon = { RightArrowIcon() }
             )
         }
@@ -85,7 +87,9 @@ fun SettingScreen() {
             item {
                 Preference(
                     text = stringResource(id = R.string.title_autofill),
-                    onClick = { router.navigate(AutoFillSettingsDestination) },
+                    onClick = rememberClickDebounced {
+                        router.navigate(AutoFillSettingsDestination)
+                    },
                     icon = { RightArrowIcon() },
                 )
             }
@@ -94,7 +98,15 @@ fun SettingScreen() {
         item {
             Preference(
                 text = stringResource(id = R.string.plugins),
-                onClick = { router.navigate(PluginsDestination) },
+                onClick = rememberClickDebounced { router.navigate(PluginsDestination) },
+                icon = { RightArrowIcon() },
+            )
+        }
+
+        item {
+            Preference(
+                text = stringResource(id = R.string.about),
+                onClick = rememberClickDebounced { router.navigate(AboutDestination) },
                 icon = { RightArrowIcon() },
             )
         }
@@ -116,12 +128,7 @@ fun SettingScreen() {
 
     AppBarStates(
         navigationIcon = {
-            IconButton(onClick = { scope.launch { router.back() } }) {
-                Icon(
-                    Icons.AutoMirrored.Default.ArrowBack,
-                    contentDescription = null,
-                )
-            }
+            IconButton(onClick = rememberClickDebounced { router.back() }) { BackIcon() }
         },
         titleContent = {
             Text(
