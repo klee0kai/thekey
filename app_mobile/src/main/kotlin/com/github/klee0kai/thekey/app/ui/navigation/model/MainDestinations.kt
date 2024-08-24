@@ -148,6 +148,9 @@ data object SettingsDestination : Destination
 data object PluginsDestination : Destination
 
 @Parcelize
+data object SubscriptionsDestination : Destination
+
+@Parcelize
 data class PluginDestination(
     val feature: DynamicFeature,
 ) : Destination

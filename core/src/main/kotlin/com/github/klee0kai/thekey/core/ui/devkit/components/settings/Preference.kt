@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
@@ -21,10 +22,12 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.views.horizontal
+import com.thedeanda.lorem.LoremIpsum
 import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
@@ -50,6 +53,7 @@ fun Preference(
     ConstraintLayout(
         modifier = modifier
             .clickable(onClick = onClick)
+            .defaultMinSize(minHeight = 56.dp)
             .padding(
                 horizontal = safeContentPaddings.horizontal(minValue = 16.dp),
                 vertical = 12.dp
@@ -61,12 +65,14 @@ fun Preference(
         Text(
             modifier = Modifier
                 .constrainAs(textField) {
+                    width = Dimension.fillToConstraints
                     linkTo(
                         start = parent.start,
                         bottom = if (hint.isNotBlank()) hintField.top else parent.bottom,
                         top = parent.top,
                         end = iconField.start,
                         horizontalBias = 0f,
+                        endMargin = 6.dp,
                     )
                 },
             text = text,
@@ -78,6 +84,7 @@ fun Preference(
                 modifier = Modifier
                     .alpha(hintAlpha)
                     .constrainAs(hintField) {
+                        width = Dimension.fillToConstraints
                         linkTo(
                             start = parent.start,
                             bottom = parent.bottom,
@@ -85,6 +92,7 @@ fun Preference(
                             end = iconField.start,
                             horizontalBias = 0f,
                             topMargin = 2.dp,
+                            endMargin = 6.dp,
                         )
                     },
                 text = hint,
@@ -119,7 +127,7 @@ fun Preference(
 fun PreferenceDetailedPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     Preference(
         text = "Some Preference",
-        hint = "preference hint",
+        hint = LoremIpsum.getInstance().getWords(10),
         icon = {
             Icon(
                 imageVector = Icons.AutoMirrored.Default.KeyboardArrowRight,
@@ -135,7 +143,7 @@ fun PreferenceDetailedPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
 fun PreferenceErrorPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     Preference(
         text = "Some Preference",
-        hint = "preference hint",
+        hint = LoremIpsum.getInstance().getWords(10),
         icon = {
             Icon(
                 imageVector = Icons.AutoMirrored.Default.KeyboardArrowRight,

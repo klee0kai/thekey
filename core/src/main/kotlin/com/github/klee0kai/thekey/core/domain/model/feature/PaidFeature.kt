@@ -13,7 +13,12 @@ enum class PaidFeature {
      *  Only a limited number of favorite storages are displayed in the side navigation.
      * @see PaidLimits.PAID_FAVORITE_STORAGE_LIMITS
      */
-    UNLIMITED_FAVORITE_STORAGES;
+    UNLIMITED_FAVORITE_STORAGES,
+
+    /**
+     * Unlimited password history period
+     */
+    UNLIMITED_HIST_PERIOD;
 }
 
 object PaidLimits {
