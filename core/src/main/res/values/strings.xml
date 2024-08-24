@@ -145,4 +145,15 @@
     <string name="use_carefully">Use carefully</string>
     <string name="danger">Danger</string>
     <string name="logout">Logout</string>
+    <string name="secure">Secure</string>
+    <string name="strong">Strong</string>
+    <string name="secure_strong_hint">instant logout from storages. Prevent screenshots and overlays.</string>
+    <string name="low">Low</string>
+    <string name="middle">Middle</string>
+    <string name="secure_middle_hint">logout after 1 minutes</string>
+    <string name="secure_low_hint">Logout after 10 minutes</string>
+    <string name="encryption_complexity">Encryption complexity</string>
+    <string name="encryption_low_hint">For new storages, the normal number of encryption iterations is used.</string>
+    <string name="encryption_middle_hint">New storage uses a large number of encryption iterations.</string>
+    <string name="encryption_strong_hint">The new vault will have an extremely large number of encryption iterations. Opening the vault may take a long time.</string>
 </resources>

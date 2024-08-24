@@ -20,6 +20,8 @@ import com.github.klee0kai.thekey.app.ui.settings.plugin.presenter.PluginPresent
 import com.github.klee0kai.thekey.app.ui.settings.plugin.presenter.PluginPresenterImpl
 import com.github.klee0kai.thekey.app.ui.settings.plugins.presenter.PluginsPresenter
 import com.github.klee0kai.thekey.app.ui.settings.plugins.presenter.PluginsPresenterImpl
+import com.github.klee0kai.thekey.app.ui.settings.presenter.SettingsPresenter
+import com.github.klee0kai.thekey.app.ui.settings.presenter.SettingsPresenterImpl
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.presenter.GenPasswPresenter
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.presenter.GenPasswPresenterImpl
 import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenter
@@ -78,6 +80,9 @@ interface PresentersModule {
     @Provide(cache = Provide.CacheType.Weak)
     fun editNoteGroupPresenter(id: NoteGroupIdentifier): EditNoteGroupsPresenter =
         EditNoteGroupsPresenterImpl(id)
+
+    @Provide(cache = Provide.CacheType.Weak)
+    fun settingsPresenter(): SettingsPresenter = SettingsPresenterImpl()
 
     @Provide(cache = Provide.CacheType.Weak)
     fun pluginsPresenter(): PluginsPresenter = PluginsPresenterImpl()

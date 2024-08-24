@@ -18,38 +18,39 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
+import com.github.klee0kai.thekey.core.utils.views.animateContentSizeProduction
 import com.github.klee0kai.thekey.core.utils.views.horizontal
+import com.thedeanda.lorem.LoremIpsum
 import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
-fun Preference(
+fun StatusPreference(
     modifier: Modifier = Modifier,
     text: String = "",
     hint: String = "",
-    hintIsError: Boolean = false,
+    status: String = "",
+    statusColor: Color = LocalTheme.current.colorScheme.hintTextColor,
     onClick: () -> Unit = {},
-    icon: (@Composable () -> Unit)? = null,
 ) {
     val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
     val theme = LocalTheme.current
-    val hintAlpha by animateFloatAsState(
-        targetValue = if (hintIsError) 1f else 0.4f,
-        label = "hint alpha"
-    )
-    val hintColor by animateColorAsState(
-        targetValue = if (hintIsError) theme.colorScheme.redColor else theme.colorScheme.androidColorScheme.onBackground,
-        label = "hint color"
+    val statusColorAnimated by animateColorAsState(
+        targetValue = statusColor,
+        label = "status color"
     )
 
     ConstraintLayout(
         modifier = modifier
             .clickable(onClick = onClick)
+            .animateContentSizeProduction()
             .padding(
                 horizontal = safeContentPaddings.horizontal(minValue = 16.dp),
                 vertical = 12.dp
@@ -57,16 +58,19 @@ fun Preference(
             .fillMaxWidth()
             .wrapContentHeight(),
     ) {
-        val (textField, iconField, hintField) = createRefs()
+        val (textField, statusField, hintField) = createRefs()
         Text(
             modifier = Modifier
+                .animateContentSizeProduction()
                 .constrainAs(textField) {
+                    width = Dimension.fillToConstraints
                     linkTo(
                         start = parent.start,
                         bottom = if (hint.isNotBlank()) hintField.top else parent.bottom,
                         top = parent.top,
-                        end = iconField.start,
+                        end = statusField.start,
                         horizontalBias = 0f,
+                        endMargin = 6.dp,
                     )
                 },
             text = text,
@@ -76,39 +80,41 @@ fun Preference(
         if (hint.isNotBlank()) {
             Text(
                 modifier = Modifier
-                    .alpha(hintAlpha)
+                    .animateContentSizeProduction()
+                    .alpha(0.5f)
                     .constrainAs(hintField) {
+                        width = Dimension.fillToConstraints
                         linkTo(
                             start = parent.start,
                             bottom = parent.bottom,
                             top = textField.bottom,
-                            end = iconField.start,
+                            end = statusField.start,
                             horizontalBias = 0f,
                             topMargin = 2.dp,
+                            endMargin = 6.dp,
                         )
                     },
                 text = hint,
                 style = theme.typeScheme.typography.labelSmall,
-                color = hintColor,
             )
         }
 
-
-        Box(modifier = Modifier
-            .constrainAs(iconField) {
-                linkTo(
-                    top = parent.top,
-                    bottom = parent.bottom,
-                    start = parent.start,
-                    end = parent.end,
-                    horizontalBias = 1f,
-                )
-            }) {
-            when {
-                icon != null -> icon.invoke()
-            }
-        }
-
+        Text(
+            modifier = Modifier
+                .animateContentSizeProduction()
+                .constrainAs(statusField) {
+                    linkTo(
+                        start = parent.start,
+                        bottom = parent.bottom,
+                        top = parent.top,
+                        end = parent.end,
+                        horizontalBias = 1f,
+                    )
+                },
+            text = status,
+            style = theme.typeScheme.typography.labelSmall,
+            color = statusColorAnimated,
+        )
     }
 }
 
@@ -116,43 +122,27 @@ fun Preference(
 @Preview
 @VisibleForTesting
 @Composable
-fun PreferenceDetailedPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
-    Preference(
+fun StatusPreferencePreview() = AppTheme(theme = DefaultThemes.darkTheme) {
+    val theme = LocalTheme.current
+
+    StatusPreference(
         text = "Some Preference",
-        hint = "preference hint",
-        icon = {
-            Icon(
-                imageVector = Icons.AutoMirrored.Default.KeyboardArrowRight,
-                contentDescription = null,
-            )
-        }
+        status = "enabled",
+        statusColor = theme.colorScheme.greenColor,
     )
 }
 
 @Preview
 @VisibleForTesting
 @Composable
-fun PreferenceErrorPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
-    Preference(
-        text = "Some Preference",
-        hint = "preference hint",
-        icon = {
-            Icon(
-                imageVector = Icons.AutoMirrored.Default.KeyboardArrowRight,
-                contentDescription = null,
-            )
-        },
-        hintIsError = true,
-    )
-}
+fun StatusPreferenceShortPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
+    val theme = LocalTheme.current
 
-
-@Preview
-@VisibleForTesting
-@Composable
-fun PreferenceSimplePreview() = AppTheme(theme = DefaultThemes.darkTheme) {
-    Preference(
-        text = "Some Preference",
+    StatusPreference(
+        text = LoremIpsum.getInstance().getWords(2),
+        hint = LoremIpsum.getInstance().getWords(10),
+        status = "disabled",
+        statusColor = theme.colorScheme.redColor,
     )
 }
 

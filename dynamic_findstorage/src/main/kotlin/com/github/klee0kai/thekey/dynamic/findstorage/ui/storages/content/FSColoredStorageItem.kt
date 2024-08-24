@@ -156,7 +156,7 @@ fun FSColoredStorageItem(
                     Icon(
                         Icons.Default.Info,
                         contentDescription = null,
-                        tint = colorScheme.deleteColor,
+                        tint = colorScheme.redColor,
                     )
                 }
             }
