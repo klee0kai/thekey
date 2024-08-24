@@ -60,6 +60,10 @@ void JvmStorage1::unlogin() {
     storages.erase(getEngineIdentifier());
 }
 
+void JvmStorage1::logoutAll() {
+    storages.clear();
+}
+
 std::vector<JvmDecryptedNote> JvmStorage1::notes(const int &loadInfo) {
     auto storageV1 = findStorage(getEngineIdentifier());
     if (!storageV1)return {};

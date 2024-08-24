@@ -16,4 +16,8 @@ class LoginnedStorages {
         logginedStorages.update { set -> set - storage }
     }
 
+    fun logoutAll() {
+        logginedStorages.value = emptySet()
+    }
+
 }

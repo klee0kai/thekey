@@ -10,6 +10,8 @@ import com.github.klee0kai.thekey.core.utils.error.fatalError
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.minutes
 
 open class SettingsRepository {
 
@@ -31,6 +33,7 @@ open class SettingsRepository {
 
     val externalStoragesGroup = booleanDelegate(SETTING_EXTERNAL_STORAGES_GROUP) { true }
     val otpNotesGroup = booleanDelegate(SETTING_OTP_NOTES_GROUP) { true }
+    val logoutTimeout = delegate<Duration>(SETTING_LOGOUT_TIMEOUT) { 1.minutes }
 
 
     protected fun stringDelegate(
@@ -81,6 +84,7 @@ open class SettingsRepository {
         private const val SETTING_GEN_PASS_INCLUDE_SPEC_SYMBOLS = "base_spec"
         private const val SETTING_EXTERNAL_STORAGES_GROUP = "base_gr"
         private const val SETTING_OTP_NOTES_GROUP = "base_otp_gr"
+        private const val SETTING_LOGOUT_TIMEOUT = "base_logout_timeout"
     }
 
 }

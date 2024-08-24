@@ -76,7 +76,7 @@ class NavigationBoardPresenterImpl : NavigationBoardPresenter {
         router?.hideNavigationBoard()
         if (currentLogined?.path == storagePath) router?.resetStack(LoginDestination())
         val storage = storagesInteractor().findStorage(storagePath).await() ?: return@launch
-        loginInteractor().unlogin(storage.identifier()).join()
+        loginInteractor().logout(storage.identifier()).join()
     }
 
 }

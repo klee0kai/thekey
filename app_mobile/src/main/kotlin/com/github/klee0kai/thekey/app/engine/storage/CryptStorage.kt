@@ -16,6 +16,8 @@ interface CryptStorage {
 
     fun unlogin()
 
+    fun logoutAll()
+
     fun colorGroups(info: Boolean = false): Array<DecryptedColorGroup>
 
     fun saveColorGroup(group: DecryptedColorGroup): DecryptedColorGroup?

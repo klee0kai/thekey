@@ -26,6 +26,8 @@ class CryptStorageSuspended(
 
     suspend fun unlogin() = engineRunRead { unlogin() }
 
+    suspend fun logoutAll() = engineRunRead { logoutAll() }
+
     /* color groups  */
     suspend fun colorGroups(info: Boolean = false): Array<DecryptedColorGroup> =
         engineRunRead { colorGroups(info) }

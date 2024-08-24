@@ -14,7 +14,7 @@ import com.github.klee0kai.thekey.core.di.identifiers.ActivityIdentifier
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.overlay.OverlayContainer
 import com.github.klee0kai.thekey.core.utils.common.GlobalJobsCollection
-import kotlinx.coroutines.launch
+import com.github.klee0kai.thekey.core.utils.common.launch
 
 open class MainActivity : BaseActivity() {
 
@@ -39,6 +39,13 @@ open class MainActivity : BaseActivity() {
                     }
                 }
             }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        scope.launch {
+            lifeCycleInteractor.appResumed()
         }
     }
 

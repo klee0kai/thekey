@@ -49,9 +49,9 @@ fun StorageNavigationMapList(
         modifier = modifier
             .animateContentSize()
     ) {
-        item { header() }
+        item("header") { header() }
         if (opened.isNotEmpty()) {
-            item {
+            item("openned_header") {
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -94,7 +94,7 @@ fun StorageNavigationMapList(
         }
 
         if (favorites.isNotEmpty()) {
-            item {
+            item("favorites_header") {
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -116,7 +116,7 @@ fun StorageNavigationMapList(
             }
         }
 
-        item { footer() }
+        item("footer") { footer() }
     }
 
 }

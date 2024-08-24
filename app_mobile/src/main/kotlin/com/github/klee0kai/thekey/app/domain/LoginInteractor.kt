@@ -9,10 +9,12 @@ import com.github.klee0kai.thekey.core.utils.common.MutexState
 import com.github.klee0kai.thekey.core.utils.common.launch
 import com.github.klee0kai.thekey.core.utils.common.stateFlow
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import timber.log.Timber
 import java.io.File
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -70,7 +72,7 @@ class LoginInteractor {
         identifier
     }
 
-    fun unlogin(identifier: StorageIdentifier) = scope.launch {
+    fun logout(identifier: StorageIdentifier) = scope.launch {
         // wait no one use the storage
         val fileMutex = DI.fileMutex(FileIdentifier(identifier.path))
         fileMutex.stateFlow()
@@ -88,6 +90,23 @@ class LoginInteractor {
 
         engine().unlogin()
         rep().logouted(identifier)
+    }
+
+    fun logoutAll() = scope.launch {
+        Timber.d("logout all")
+        rep().logginedStorages.firstOrNull()
+            ?.map { DI.fileMutex(FileIdentifier(it.path)).stateFlow() }
+            ?.let {
+                combine(it) { mutexInfos ->
+                    mutexInfos.all { mutexInfo -> mutexInfo.state == MutexState.UNLOCKED }
+                }
+            }?.debounce(100.milliseconds)
+            ?.firstOrNull { it }
+
+        val engine = DI.cryptStorageEngineSafeLazy(StorageIdentifier())
+
+        engine().logoutAll()
+        rep().logoutAll()
     }
 
 }

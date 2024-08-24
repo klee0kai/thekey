@@ -69,7 +69,7 @@ open class ChangeStoragePasswordPresenterImpl(
         loginnedPasswords.clear()
         passwds.forEach { passw ->
             loginInteractor()
-                .unlogin(storageIdentifier(passw))
+                .logout(storageIdentifier(passw))
                 .join()
         }
     }

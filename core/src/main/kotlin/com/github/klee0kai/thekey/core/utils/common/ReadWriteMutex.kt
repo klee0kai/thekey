@@ -68,6 +68,9 @@ class ReadWriteMutex {
     private val stateListenersMutex = Mutex()
     private val stateListeners = mutableListOf<suspend (MutexInfo) -> Unit>()
 
+    var state = MutexInfo(MutexMode.READ, MutexState.UNLOCKED)
+        private set
+
     suspend fun <T> withReadLock(block: suspend () -> T): T {
         return try {
             // Ensure new readers are allowed
@@ -78,7 +81,8 @@ class ReadWriteMutex {
                         // If we're the first reader, ensure that writes are locked out
                         allowNewWrites.lock(this)
                         // Invoke user callback
-                        notifyListeners(MutexInfo(MutexMode.READ, MutexState.LOCKED))
+                        state = MutexInfo(MutexMode.READ, MutexState.LOCKED)
+                        notifyListeners()
                     }
                 }
             }
@@ -93,7 +97,8 @@ class ReadWriteMutex {
                 if (--readers == 0) {
                     try {
                         // Invoke user callback in opposite order from above
-                        notifyListeners(MutexInfo(MutexMode.READ, MutexState.UNLOCKED))
+                        state = MutexInfo(MutexMode.READ, MutexState.UNLOCKED)
+                        notifyListeners()
                     } finally {
                         // If a writer is pending, this will unlock it
                         allowNewWrites.unlock(this)
@@ -109,10 +114,12 @@ class ReadWriteMutex {
             // Wait for all outstanding readers to drain.
             allowNewWrites.withLock {
                 try {
-                    notifyListeners(MutexInfo(MutexMode.WRITE, MutexState.LOCKED))
+                    state = MutexInfo(MutexMode.WRITE, MutexState.LOCKED)
+                    notifyListeners()
                     fn()
                 } finally {
-                    notifyListeners(MutexInfo(MutexMode.WRITE, MutexState.UNLOCKED))
+                    state = MutexInfo(MutexMode.WRITE, MutexState.UNLOCKED)
+                    notifyListeners()
                 }
             }
         }
@@ -126,9 +133,9 @@ class ReadWriteMutex {
         stateListeners.remove(listener)
     }
 
-    private suspend fun notifyListeners(info: MutexInfo): Unit = stateListenersMutex.withLock {
+    private suspend fun notifyListeners(): Unit = stateListenersMutex.withLock {
         stateListeners.forEach { listener ->
-            listener.invoke(info)
+            listener.invoke(state)
         }
     }
 
@@ -140,6 +147,7 @@ fun ReadWriteMutex.stateFlow() = channelFlow<MutexInfo> {
     }
 
     subscribe(listener)
+    listener.invoke(state)
     awaitClose {
         runBlocking { unsubscribe(listener) }
     }

@@ -71,6 +71,10 @@ void JvmStorage2::unlogin() {
     storages.erase(getEngineIdentifier());
 }
 
+void JvmStorage2::logoutAll() {
+    storages.clear();
+}
+
 std::vector<JvmColorGroup> JvmStorage2::colorGroups(const int &info) {
     auto storage = findStorage(getEngineIdentifier());
     if (!storage) return {};

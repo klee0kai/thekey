@@ -33,6 +33,9 @@ class K1Storage(
     @Synchronized
     external override fun unlogin()
 
+    @Synchronized
+    external override fun logoutAll()
+
     override fun colorGroups(info: Boolean): Array<DecryptedColorGroup> = emptyArray()
 
     override fun saveColorGroup(group: DecryptedColorGroup): DecryptedColorGroup? = null

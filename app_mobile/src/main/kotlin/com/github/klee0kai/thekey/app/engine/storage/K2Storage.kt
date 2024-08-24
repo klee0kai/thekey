@@ -30,6 +30,8 @@ class K2Storage(
 
     external override fun unlogin()
 
+    external override fun logoutAll()
+
     external override fun colorGroups(info: Boolean): Array<DecryptedColorGroup>
 
     external override fun saveColorGroup(group: DecryptedColorGroup): DecryptedColorGroup?

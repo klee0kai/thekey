@@ -4,6 +4,8 @@ interface AppLifeCycleInteractor {
 
     fun appStarted() = Unit
 
+    fun appResumed() = Unit
+
     fun appMinimazed() = Unit
 
 }

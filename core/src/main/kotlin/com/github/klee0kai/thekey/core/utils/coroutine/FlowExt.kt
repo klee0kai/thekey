@@ -78,3 +78,10 @@ suspend inline fun <reified T> Flow<T>.await(timeout: Long): T? =
     withTimeout(timeout) { firstOrNull() }
 
 suspend inline fun <reified T> Flow<T>.awaitSec(): T? = await(1000)
+
+
+//inline fun <reified T> List<Flow<T>>.combine(scope: CoroutineScope): Flow<List<T>> = flow {
+//
+//
+//}
+
