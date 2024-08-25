@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.configRouting
 import com.github.klee0kai.thekey.app.service.UnfinishedJobsService
+import com.github.klee0kai.thekey.app.ui.main.BaseActivity
 import com.github.klee0kai.thekey.app.ui.navigation.MainNavContainer
 import com.github.klee0kai.thekey.app.ui.navigation.model.LoginDestination
 import com.github.klee0kai.thekey.app.ui.settings.plugin.PluginApplyingOverlay
@@ -14,7 +15,7 @@ import com.github.klee0kai.thekey.core.di.identifiers.ActivityIdentifier
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.overlay.OverlayContainer
 import com.github.klee0kai.thekey.core.utils.common.GlobalJobsCollection
-import kotlinx.coroutines.launch
+import com.github.klee0kai.thekey.core.utils.common.launch
 
 open class MainActivity : BaseActivity() {
 
@@ -39,6 +40,13 @@ open class MainActivity : BaseActivity() {
                     }
                 }
             }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        scope.launch {
+            lifeCycleInteractor.appResumed()
         }
     }
 

@@ -2,6 +2,7 @@ package com.github.klee0kai.thekey.app.engine.storage
 
 import com.github.klee0kai.brooklyn.JniMirror
 import com.github.klee0kai.thekey.app.engine.NativeLibLoader
+import com.github.klee0kai.thekey.app.engine.model.CreateStorageConfig
 import com.github.klee0kai.thekey.app.engine.model.DecryptedColorGroup
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.engine.model.DecryptedOtpNote
@@ -28,10 +29,16 @@ class K1Storage(
     external override fun info(): Storage
 
     @Synchronized
-    external override fun login(passw: String)
+    external override fun login(
+        passw: String,
+        createConfig: CreateStorageConfig,
+    )
 
     @Synchronized
     external override fun unlogin()
+
+    @Synchronized
+    external override fun logoutAll()
 
     override fun colorGroups(info: Boolean): Array<DecryptedColorGroup> = emptyArray()
 
@@ -49,7 +56,6 @@ class K1Storage(
 
     @Synchronized
     external override fun saveNote(decryptedNote: DecryptedNote, setAll: Boolean): Int
-
 
     @Synchronized
     external override fun removeNote(notePt: Long): Int

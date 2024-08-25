@@ -11,15 +11,12 @@ import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,17 +50,21 @@ import com.github.klee0kai.thekey.core.ui.devkit.Screen
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DoneIconButton
 import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextField
+import com.github.klee0kai.thekey.core.ui.devkit.icons.BackMenuIcon
 import com.github.klee0kai.thekey.core.ui.devkit.preview.PreviewDevices
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
+import com.github.klee0kai.thekey.core.utils.views.collectAsStateCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.isIme
+import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
+import com.github.klee0kai.thekey.core.utils.views.rememberClickDebouncedCons
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.core.utils.views.toAnnotationString
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.map
 import org.jetbrains.annotations.VisibleForTesting
 import com.github.klee0kai.thekey.core.R as CoreR
 
@@ -78,6 +79,10 @@ fun LoginScreen(
     val pathInputHelper = remember { DI.pathInputHelper() }
     val currentStorageState by presenter!!.currentStorageFlow
         .collectAsState(key = Unit, initial = ColoredStorage())
+    val isNavBoardOpen by router.isNavBoardOpen.collectAsState(false)
+    val isLoginNotProcessing by presenter!!
+        .loginTrackFlow.map { it <= 0 }
+        .collectAsStateCrossFaded(key = Unit, initial = true)
 
     var passwordInputText by remember { mutableStateOf(dest.prefilledPassw ?: "") }
     val imeVisible by animateTargetCrossFaded(WindowInsets.isIme)
@@ -87,30 +92,14 @@ fun LoginScreen(
             .shortPath()
             .toAnnotationString()
             .coloredPath(accentColor = theme.colorScheme.androidColorScheme.primary)
+            .coloredFileExt(extensionColor = theme.colorScheme.hintTextColor)
     }
 
-    BackHandler(enabled = router.isNavigationBoardIsOpen()) {
+    BackHandler(enabled = isNavBoardOpen) {
         when {
-            router.isNavigationBoardIsOpen() -> scope.launch { router.hideNavigationBoard() }
+            isNavBoardOpen -> router.hideNavigationBoard()
         }
     }
-
-    AppBarStates(
-        navigationIcon = {
-            IconButton(onClick = { scope.launch { router.showNavigationBoard() } }) {
-                Icon(Icons.Filled.Menu, contentDescription = null)
-            }
-        },
-        actions = {
-            if (imeVisible.current) {
-                DoneIconButton(
-                    modifier = Modifier.alpha(imeVisible.alpha),
-                    onClick = { presenter?.login(passwordInputText, router) }
-                )
-            }
-        }
-
-    )
 
     ConstraintLayout(
         modifier = Modifier
@@ -176,18 +165,19 @@ fun LoginScreen(
                         verticalBias = 0.53f,
                     )
                 },
+            enabled = isLoginNotProcessing.current,
             visualTransformation = PasswordVisualTransformation(),
             value = passwordInputText,
             onValueChange = { passwordInputText = it },
             label = { Text(stringResource(R.string.password)) },
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
             keyboardActions = KeyboardActions(
-                onDone = { presenter?.login(passwordInputText, router) })
+                onDone = rememberClickDebouncedCons { presenter?.login(passwordInputText, router) })
         )
 
         Text(
             text = currentStorageState.name,
-            style = MaterialTheme.typography.labelSmall,
+            style = theme.typeScheme.typography.labelSmall,
             modifier = Modifier
                 .constrainAs(storageName) {
                     linkTo(
@@ -201,7 +191,7 @@ fun LoginScreen(
 
         Text(
             text = shortStoragePath,
-            style = MaterialTheme.typography.labelSmall,
+            style = theme.typeScheme.typography.labelSmall,
             modifier = Modifier
                 .constrainAs(storagePath) {
                     linkTo(
@@ -225,7 +215,7 @@ fun LoginScreen(
                             end.linkTo(parent.end)
                         },
                     colors = LocalColorScheme.current.grayTextButtonColors,
-                    onClick = { presenter?.selectStorage(router) }
+                    onClick = rememberClickDebounced { presenter?.selectStorage(router) }
                 ) {
                     Text(stringResource(R.string.storages))
                 }
@@ -240,13 +230,31 @@ fun LoginScreen(
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                     },
-                onClick = { presenter?.login(passwordInputText, router) }
+                enabled = isLoginNotProcessing.current,
+                onClick = rememberClickDebounced { presenter?.login(passwordInputText, router) }
             ) {
                 Text(stringResource(R.string.login))
             }
         }
     }
 
+
+    AppBarStates(
+        navigationIcon = {
+            IconButton(onClick = rememberClickDebounced { router.showNavigationBoard() }) {
+                BackMenuIcon(isMenu = true)
+            }
+        },
+        actions = {
+            if (imeVisible.current) {
+                DoneIconButton(
+                    modifier = Modifier.alpha(imeVisible.alpha),
+                    enabled = isLoginNotProcessing.current,
+                    onClick = rememberClickDebounced { presenter?.login(passwordInputText, router) }
+                )
+            }
+        }
+    )
 
 }
 

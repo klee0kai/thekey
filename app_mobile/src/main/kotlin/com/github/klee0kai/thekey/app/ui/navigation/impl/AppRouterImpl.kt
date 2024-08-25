@@ -6,6 +6,7 @@ import com.github.klee0kai.thekey.core.ui.navigation.ActivityRouter
 import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
 import com.github.klee0kai.thekey.core.ui.navigation.ComposeRouter
 import com.github.klee0kai.thekey.core.ui.navigation.DeeplinkRouter
+import com.github.klee0kai.thekey.core.ui.navigation.KeyBoardRouter
 import com.github.klee0kai.thekey.core.ui.navigation.NavBoardRouter
 import com.github.klee0kai.thekey.core.ui.navigation.PermissionsRouter
 import com.github.klee0kai.thekey.core.ui.navigation.RouterContext
@@ -19,6 +20,7 @@ open class AppRouterImp(
 ) : AppRouter,
     ComposeRouter by ComposeRouterImpl(ctx),
     DeeplinkRouter,
+    KeyBoardRouter by KeyboardRouterImpl(ctx),
     SnackRouter by SnackRouterImpl(ctx),
     NavBoardRouter by NavBoardRouterImpl(ctx),
     ActivityRouter by ActivityRouterImpl(ctx),

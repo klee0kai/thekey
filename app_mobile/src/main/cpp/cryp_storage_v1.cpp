@@ -17,6 +17,7 @@ using namespace thekey_v1;
 
 typedef brooklyn::EngineStorageK1Storage JvmStorage1;
 typedef brooklyn::EngineModelStorage JvmStorageInfo;
+typedef brooklyn::EngineModelCreateStorageConfig JvmCreateConfig;
 typedef brooklyn::EngineModelGenPasswParams JvmGenPasswParams;
 typedef brooklyn::EngineModelDecryptedPassw JvmDecryptedPassw;
 typedef brooklyn::EngineModelDecryptedNote JvmDecryptedNote;
@@ -44,7 +45,7 @@ JvmStorageInfo JvmStorage1::info() {
     return {};
 }
 
-void JvmStorage1::login(const std::string &passw) {
+void JvmStorage1::login(const std::string &passw, const JvmCreateConfig &createConfig) {
     storages.erase(getEngineIdentifier());
     auto storageInfo = storageV1Info(getStoragePath());
     if (!storageInfo) createStorage(Storage{.file = getStoragePath()});
@@ -58,6 +59,10 @@ void JvmStorage1::login(const std::string &passw) {
 
 void JvmStorage1::unlogin() {
     storages.erase(getEngineIdentifier());
+}
+
+void JvmStorage1::logoutAll() {
+    storages.clear();
 }
 
 std::vector<JvmDecryptedNote> JvmStorage1::notes(const int &loadInfo) {

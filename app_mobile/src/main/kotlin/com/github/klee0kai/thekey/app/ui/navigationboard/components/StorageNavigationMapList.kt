@@ -7,6 +7,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
@@ -16,18 +19,28 @@ import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
+import com.github.klee0kai.thekey.app.ui.navigationboard.components.popup.OpenedStoragePopupMenu
 import com.github.klee0kai.thekey.app.ui.navigationboard.presenter.NavigationBoardPresenterDummy
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
+import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
+import com.github.klee0kai.thekey.core.ui.devkit.overlay.PopupMenu
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
+import com.github.klee0kai.thekey.core.utils.possitions.onGlobalPositionState
+import com.github.klee0kai.thekey.core.utils.possitions.rememberViewPosition
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
+import com.github.klee0kai.thekey.core.utils.views.currentRef
+import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 
 @Composable
 fun StorageNavigationMapList(
     modifier: Modifier = Modifier,
+    header: @Composable () -> Unit = {},
+    footer: @Composable () -> Unit = {},
 ) {
+    val router by LocalRouter.currentRef
     val presenter by rememberOnScreenRef { DI.navigationBoardPresenter() }
     val opened by presenter!!.openedStoragesFlow.collectAsState(key = Unit, initial = emptyList())
     val favorites by presenter!!.favoritesStorages.collectAsState(key = Unit, initial = emptyList())
@@ -36,8 +49,9 @@ fun StorageNavigationMapList(
         modifier = modifier
             .animateContentSize()
     ) {
+        item("header") { header() }
         if (opened.isNotEmpty()) {
-            item {
+            item("openned_header") {
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -49,15 +63,38 @@ fun StorageNavigationMapList(
         }
 
         opened.forEach { storage ->
-            item {
+            item(key = "openned-${storage.path}") {
+                var showMenu by remember { mutableStateOf(false) }
+                val position = rememberViewPosition()
+
                 FavoriteStorageItem(
-                    storage = storage
+                    modifier = modifier
+                        .onGlobalPositionState(position),
+                    storage = storage,
+                    onClick = rememberClickDebounced(storage.path) {
+                        showMenu = false
+                        presenter?.openStorage(storage.path, router)
+                    },
+                    onLongClick = rememberClickDebounced { showMenu = true },
                 )
+                PopupMenu(
+                    visible = showMenu,
+                    positionAnchor = position,
+                    horizontalBias = 0.8f,
+                    onDismissRequest = rememberClickDebounced { showMenu = false }
+                ) {
+                    OpenedStoragePopupMenu(
+                        onLogout = rememberClickDebounced(storage.path) {
+                            showMenu = false
+                            presenter?.logout(storage.path, router)
+                        }
+                    )
+                }
             }
         }
 
         if (favorites.isNotEmpty()) {
-            item {
+            item("favorites_header") {
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -69,12 +106,17 @@ fun StorageNavigationMapList(
         }
 
         favorites.forEach { storage ->
-            item {
+            item(key = "favorites-${storage.path}") {
                 FavoriteStorageItem(
-                    storage = storage
+                    storage = storage,
+                    onClick = rememberClickDebounced(storage.path) {
+                        presenter?.openStorage(storage.path, router)
+                    },
                 )
             }
         }
+
+        item("footer") { footer() }
     }
 
 }
@@ -87,8 +129,6 @@ private fun NavigationMapListPreview() = AppTheme(theme = DefaultThemes.darkThem
     DI.hardResetToPreview()
     DI.initPresenterModule(object : PresentersModule {
         override fun navigationBoardPresenter() = NavigationBoardPresenterDummy(
-            hasOpened = true,
-            hasFavorites = true,
         )
     })
     StorageNavigationMapList()

@@ -149,23 +149,6 @@ fun SafeContextScope.launchIfNotStarted(
     }
 }
 
-fun SafeContextScope.launchDebounced(
-    key: String,
-    debounceTime: Duration = 500.milliseconds,
-    context: CoroutineContext = EmptyCoroutineContext,
-    @StringRes globalRunDesc: Int = 0,
-    block: suspend CoroutineScope.() -> Unit
-): Job {
-    val latest = singleRunJobs[key]
-    if (latest?.isActive == true) return latest
-    latest?.cancel()
-    singleRunJobs[key] = launch { delay(debounceTime) }
-    return launch(context = context) {
-        GlobalJobsCollection.trackJob(globalRunDesc) { block() }
-    }
-}
-
-
 fun SafeContextScope.launchLatestSafe(
     key: String,
     context: CoroutineContext = EmptyCoroutineContext,

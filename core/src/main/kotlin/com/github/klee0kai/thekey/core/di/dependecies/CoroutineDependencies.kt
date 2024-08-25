@@ -1,5 +1,6 @@
 package com.github.klee0kai.thekey.core.di.dependecies
 
+import com.github.klee0kai.thekey.core.di.AndrUiDispatcher
 import com.github.klee0kai.thekey.core.di.DefaultDispatcher
 import com.github.klee0kai.thekey.core.di.IODispatcher
 import com.github.klee0kai.thekey.core.di.JniDispatcher
@@ -29,6 +30,9 @@ interface CoroutineDependencies {
 
     @MainDispatcher
     fun mainThreadScope(): SafeContextScope
+
+    @AndrUiDispatcher
+    fun androidUiScope(): SafeContextScope
 
     @IODispatcher
     fun ioThreadScope(): SafeContextScope

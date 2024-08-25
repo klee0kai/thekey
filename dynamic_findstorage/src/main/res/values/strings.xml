@@ -19,4 +19,11 @@
     <string name="no_name">No name</string>
     <string name="change_password">Change password</string>
     <string name="searching_for_storaages">Searching for storages</string>
+
+
+    <string name="storage_auto_search">Storages Auto Search</string>
+    <string name="storage_auto_search_enabled_hint">The application automatically tries to find new storages on the device</string>
+    <string name="storage_auto_search_disabled_hint">Enable automatic storage search on your device</string>
+    <string name="enabled">Enabled</string>
+    <string name="disabled">Disabled</string>
 </resources>

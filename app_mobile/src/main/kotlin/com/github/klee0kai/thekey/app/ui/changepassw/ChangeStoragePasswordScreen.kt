@@ -145,14 +145,14 @@ fun ChangeStoragePasswordScreen(path: String) = Screen {
                             Text(
                                 modifier = Modifier.fillMaxWidth(),
                                 text = stringResource(id = R.string.confirm_is_wrong),
-                                color = theme.colorScheme.deleteColor,
+                                color = theme.colorScheme.redColor,
                             )
                         }
                         PasswordNotChanged -> {
                             Text(
                                 modifier = Modifier.fillMaxWidth(),
                                 text = stringResource(id = R.string.password_not_changed),
-                                color = theme.colorScheme.deleteColor,
+                                color = theme.colorScheme.redColor,
                             )
                         }
                         null -> Unit

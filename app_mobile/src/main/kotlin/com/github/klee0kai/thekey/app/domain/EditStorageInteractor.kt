@@ -4,6 +4,7 @@ import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.data.mapping.toStorage
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.engine.model.ChPasswStrategy
+import com.github.klee0kai.thekey.app.engine.model.createConfig
 import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.core.utils.common.asyncResult
 import com.github.klee0kai.thekey.core.utils.common.launch
@@ -14,16 +15,22 @@ import java.io.File
 class EditStorageInteractor {
 
     private val scope = DI.defaultThreadScope()
+    private val settings = DI.settingsRepositoryLazy()
     private val rep = DI.storagesRepositoryLazy()
     private val engine = DI.editStorageEngineSafeLazy()
 
-    fun createStorage(storage: ColoredStorage) = scope.asyncResult {
+    fun createStorage(
+        storage: ColoredStorage,
+    ) = scope.asyncResult(globalRunDesc = R.string.creating_storage) {
         val folder = File(storage.path).parentFile
         folder?.mkdirs()
         if (folder?.canRead() != true || !folder.exists()) throw FSNoAccessError()
         if (File(storage.path).exists()) throw FSDuplicateError()
 
-        val error = engine().createStorage(storage.toStorage())
+        val error = engine().createStorage(
+            storage = storage.toStorage(),
+            createStorageConfig = settings().encryptionComplexity().createConfig(),
+        )
         engine().throwError(error)
         rep().setStorage(storage).join()
     }
@@ -31,7 +38,7 @@ class EditStorageInteractor {
     fun moveStorage(
         from: String,
         storage: ColoredStorage,
-    ) = scope.asyncResult {
+    ) = scope.asyncResult(globalRunDesc = R.string.moving_storage) {
         File(storage.path).parentFile?.mkdirs()
         var error = engine().move(from, storage.path)
         engine().throwError(error)
@@ -79,7 +86,9 @@ class EditStorageInteractor {
         engine().otpNotes(path, passw)
     }
 
-    fun deleteStorage(path: String) = scope.asyncResult {
+    fun deleteStorage(
+        path: String
+    ) = scope.asyncResult(globalRunDesc = R.string.deleting_storage) {
         File(path).delete()
         rep().deleteStorage(path).join()
     }

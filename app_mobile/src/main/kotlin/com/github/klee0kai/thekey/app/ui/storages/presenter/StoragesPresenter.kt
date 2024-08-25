@@ -34,9 +34,7 @@ interface StoragesPresenter {
 
     fun deleteGroup(id: Long): Job = emptyJob()
 
-    fun selectStorage(storagePath: String, appRouter: AppRouter?): Job = emptyJob()
-
-    fun addNewStorage(appRouter: AppRouter?): Job = emptyJob()
+    fun addNewStorageGroup(appRouter: AppRouter?): Job = emptyJob()
 
     fun editStorage(storagePath: String, router: AppRouter?): Job = emptyJob()
 

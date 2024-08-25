@@ -13,6 +13,7 @@ using namespace std;
 using namespace thekey;
 
 typedef EngineModelStorage JvmStorage;
+typedef brooklyn::EngineModelCreateStorageConfig JvmCreateConfig;
 typedef EngineEditstorageEditStorageEngine JvmEditStorageEngine;
 typedef brooklyn::EngineModelDecryptedNote JvmDecryptedNote;
 typedef brooklyn::EngineModelDecryptedOtpNote JvmDecryptedOtpNote;
@@ -27,12 +28,18 @@ std::shared_ptr<JvmStorage> JvmEditStorageEngine::findStorageInfo(const std::str
 }
 
 
-int JvmEditStorageEngine::createStorage(const JvmStorage &storage) {
-    auto error = thekey_v2::createStorage(thekey::Storage{
-            .file = storage.path,
-            .name = storage.name,
-            .description = storage.description,
-    });
+int JvmEditStorageEngine::createStorage(
+        const JvmStorage &storage,
+        const JvmCreateConfig &createConfig) {
+    auto error = thekey_v2::createStorage(
+            thekey::Storage{
+                    .file = storage.path,
+                    .name = storage.name,
+                    .description = storage.description,
+            },
+            createConfig.keyInteractionsCount,
+            createConfig.interactionsCount
+    );
     return error;
 }
 
@@ -90,8 +97,8 @@ void JvmEditStorageEngine::changePasswStrategy(
                                 jStrategy.noteIds.begin(),
                                 jStrategy.noteIds.end());
         strategy.otpNoteIds.insert(strategy.otpNoteIds.end(),
-                                jStrategy.otpNoteIds.begin(),
-                                jStrategy.otpNoteIds.end());
+                                   jStrategy.otpNoteIds.begin(),
+                                   jStrategy.otpNoteIds.end());
     }
     storage->saveNewPasswStrategy(path, strategies);
 }

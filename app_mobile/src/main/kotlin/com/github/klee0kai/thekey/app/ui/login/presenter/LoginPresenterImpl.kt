@@ -9,8 +9,9 @@ import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
 import com.github.klee0kai.thekey.core.ui.navigation.navigate
-import com.github.klee0kai.thekey.core.utils.common.launchDebounced
+import com.github.klee0kai.thekey.core.utils.common.launch
 import com.github.klee0kai.thekey.core.utils.coroutine.coldStateFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
@@ -33,7 +34,9 @@ class LoginPresenterImpl(
         result.update { storage }
     }.filterNotNull()
 
-    override fun selectStorage(router: AppRouter?) = scope.launchDebounced("select_storage") {
+    override val loginTrackFlow = MutableStateFlow<Int>(0)
+
+    override fun selectStorage(router: AppRouter?) = scope.launch {
         val selectedStorage = router
             ?.navigate<String>(StoragesDestination)
             ?.firstOrNull()
@@ -45,11 +48,16 @@ class LoginPresenterImpl(
         }
     }
 
-    override fun login(passw: String, router: AppRouter?) = scope.launchDebounced("login") {
+    override fun login(
+        passw: String,
+        router: AppRouter?,
+    ) = scope.launch(trackFlow = loginTrackFlow) {
         if (passw.isBlank()) {
             router?.snack(R.string.passw_is_null)
-            return@launchDebounced
+            return@launch
         }
+        router?.hideKeyboard()
+
         runCatching {
             val storageIdentifier = if (overrided.fileDescriptor != null) {
                 overrided

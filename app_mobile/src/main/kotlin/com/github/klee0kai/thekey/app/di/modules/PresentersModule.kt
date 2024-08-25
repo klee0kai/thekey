@@ -10,6 +10,8 @@ import com.github.klee0kai.thekey.app.ui.genhist.presenter.GenHistPresenter
 import com.github.klee0kai.thekey.app.ui.genhist.presenter.GenHistPresenterImpl
 import com.github.klee0kai.thekey.app.ui.login.presenter.LoginPresenter
 import com.github.klee0kai.thekey.app.ui.login.presenter.LoginPresenterImpl
+import com.github.klee0kai.thekey.app.ui.main.presenter.MainPresenter
+import com.github.klee0kai.thekey.app.ui.main.presenter.MainPresenterImpl
 import com.github.klee0kai.thekey.app.ui.navigationboard.presenter.NavigationBoardPresenter
 import com.github.klee0kai.thekey.app.ui.navigationboard.presenter.NavigationBoardPresenterImpl
 import com.github.klee0kai.thekey.app.ui.note.presenter.EditNotePresenter
@@ -20,6 +22,8 @@ import com.github.klee0kai.thekey.app.ui.settings.plugin.presenter.PluginPresent
 import com.github.klee0kai.thekey.app.ui.settings.plugin.presenter.PluginPresenterImpl
 import com.github.klee0kai.thekey.app.ui.settings.plugins.presenter.PluginsPresenter
 import com.github.klee0kai.thekey.app.ui.settings.plugins.presenter.PluginsPresenterImpl
+import com.github.klee0kai.thekey.app.ui.settings.presenter.SettingsPresenter
+import com.github.klee0kai.thekey.app.ui.settings.presenter.SettingsPresenterImpl
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.presenter.GenPasswPresenter
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.presenter.GenPasswPresenterImpl
 import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenter
@@ -36,6 +40,9 @@ import com.github.klee0kai.thekey.core.domain.model.feature.model.DynamicFeature
 
 @Module
 interface PresentersModule {
+
+    @Provide(cache = Provide.CacheType.Weak)
+    fun mainPresenter(): MainPresenter = MainPresenterImpl()
 
     @Provide(cache = Provide.CacheType.Weak)
     fun loginPresenter(storageIdentifier: StorageIdentifier): LoginPresenter =
@@ -78,6 +85,9 @@ interface PresentersModule {
     @Provide(cache = Provide.CacheType.Weak)
     fun editNoteGroupPresenter(id: NoteGroupIdentifier): EditNoteGroupsPresenter =
         EditNoteGroupsPresenterImpl(id)
+
+    @Provide(cache = Provide.CacheType.Weak)
+    fun settingsPresenter(): SettingsPresenter = SettingsPresenterImpl()
 
     @Provide(cache = Provide.CacheType.Weak)
     fun pluginsPresenter(): PluginsPresenter = PluginsPresenterImpl()

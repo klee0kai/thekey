@@ -1,29 +1,37 @@
 package com.github.klee0kai.thekey.app.domain
 
+import com.github.klee0kai.thekey.app.data.mapping.toColoredStorage
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.engine.model.createConfig
 import com.github.klee0kai.thekey.core.di.identifiers.FileIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
+import com.github.klee0kai.thekey.core.domain.model.feature.PaidFeature
+import com.github.klee0kai.thekey.core.domain.model.feature.PaidLimits
 import com.github.klee0kai.thekey.core.utils.common.MutexState
+import com.github.klee0kai.thekey.core.utils.common.launch
 import com.github.klee0kai.thekey.core.utils.common.stateFlow
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import timber.log.Timber
 import java.io.File
 import kotlin.time.Duration.Companion.milliseconds
 
 class LoginInteractor {
 
     private val scope = DI.defaultThreadScope()
-    private val rep = DI.loginedRepLazy()
+    private val rep = DI.authorizedRepLazy()
+    private val billing = DI.billingInteractor()
     private val storagesRep = DI.storagesRepositoryLazy()
     private val settingsRep = DI.settingsRepositoryLazy()
 
-    val logginedStorages = flow {
+    val authorizedStorages = flow {
         val foundStorageRep = storagesRep()
-        rep().logginedStorages
+        rep().authorizedStorages
             .map { storages ->
                 storages.map { storage ->
                     foundStorageRep.findStorage(storage.path).await()
@@ -42,6 +50,13 @@ class LoginInteractor {
             identifier = identifier.copy(version = settingsRep().newStorageVersion())
         }
 
+        if (!billing.isAvailable(PaidFeature.UNLIMITED_AUTHORIZED_STORAGES)) {
+            rep().authorizedStorages
+                .firstOrNull()
+                ?.filterIndexed { index, _ -> index + 1 >= PaidLimits.PAID_AUTHORIZED_STORAGE_LIMITS }
+                ?.forEach { logout(it).join() }
+        }
+
         val engine = DI.cryptStorageEngineSafeLazy(identifier)
         val notesInteractor = DI.notesInteractorLazy(identifier)
         val otpNotesInteractor = DI.otpNotesInteractorLazy(identifier)
@@ -51,18 +66,25 @@ class LoginInteractor {
         otpNotesInteractor().clear()
         groupsInteractor().clear()
 
+        val createConfig = settingsRep().encryptionComplexity().createConfig()
+
         File(storageIdentifier.path).parentFile?.mkdirs()
-        engine().login(passw)
+        engine().login(passw, createConfig)
 
         notesInteractor().loadNotes()
         otpNotesInteractor().loadOtpNotes()
         groupsInteractor().loadGroups()
-        if (!ignoreLoginned) rep().logined(identifier)
+        if (!ignoreLoginned) rep().auth(identifier)
+
+        if (storagesRep().findStorage(identifier.path).await() == null) {
+            // create storage if not exist
+            storagesRep().setStorage(engine().info().toColoredStorage())
+        }
 
         identifier
     }
 
-    fun unlogin(identifier: StorageIdentifier) = scope.async {
+    fun logout(identifier: StorageIdentifier) = scope.launch {
         // wait no one use the storage
         val fileMutex = DI.fileMutex(FileIdentifier(identifier.path))
         fileMutex.stateFlow()
@@ -79,8 +101,24 @@ class LoginInteractor {
         groupsInteractor().clear()
 
         engine().unlogin()
-        rep().logouted(identifier)
-        Unit
+        rep().logout(identifier)
+    }
+
+    fun logoutAll() = scope.launch {
+        Timber.d("logout all")
+        rep().authorizedStorages.firstOrNull()
+            ?.map { DI.fileMutex(FileIdentifier(it.path)).stateFlow() }
+            ?.let {
+                combine(it) { mutexInfos ->
+                    mutexInfos.all { mutexInfo -> mutexInfo.state == MutexState.UNLOCKED }
+                }
+            }?.debounce(100.milliseconds)
+            ?.firstOrNull { it }
+
+        val engine = DI.cryptStorageEngineSafeLazy(StorageIdentifier())
+
+        engine().logoutAll()
+        rep().logoutAll()
     }
 
 }

@@ -6,10 +6,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.safeContent
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -40,6 +37,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.topContentAlphaFrom
 import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.topContentOffsetFromDrag
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
+import com.github.klee0kai.thekey.core.ui.devkit.icons.BackMenuIcon
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesButtonsWidgetState
 import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesListWidgetState
@@ -50,6 +48,8 @@ import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.isIme
+import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
+import com.github.klee0kai.thekey.core.utils.views.rememberClickDebouncedArg
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
@@ -90,9 +90,13 @@ fun StoragesScreen() = Screen {
                     .offset(y = dragProgress.topContentOffsetFromDrag()),
                 colorGroups = groups,
                 selectedGroup = selectedGroup,
-                onAdd = { presenter?.addNewStorage(router) },
-                onGroupEdit = { router?.navigate(EditStorageGroupDestination(it.id)) },
-                onGroupSelected = { presenter?.selectGroup(it.id) },
+                onAdd = rememberClickDebounced { presenter?.addNewStorageGroup(router) },
+                onGroupEdit = rememberClickDebouncedArg {
+                    router?.navigate(
+                        EditStorageGroupDestination(it.id)
+                    )
+                },
+                onGroupSelected = rememberClickDebouncedArg { presenter?.selectGroup(it.id) },
             )
         },
         sheetContent = {
@@ -115,12 +119,7 @@ fun StoragesScreen() = Screen {
 
     AppBarStates(
         navigationIcon = {
-            IconButton(onClick = { router?.back() }) {
-                Icon(
-                    Icons.AutoMirrored.Default.ArrowBack,
-                    contentDescription = null,
-                )
-            }
+            IconButton(onClick = { router?.back() }) { BackMenuIcon() }
         },
         titleContent = {
             screenResolver?.widget(

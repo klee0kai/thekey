@@ -96,8 +96,10 @@ fun StorageScreen(
     )
     val searchFocusRequester = remember { FocusRequester() }
     val searchState by presenter!!.searchState.collectAsState(key = Unit, initial = SearchState())
+    val isNavBoardOpen by router.isNavBoardOpen.collectAsState(key = Unit, initial = false)
     var dragProgress by remember { mutableFloatStateOf(0f) }
-    val pagerState = rememberPagerState(initialPage = dest.selectedPage.coerceIn(titles.indices)) { titles.size }
+    val pagerState =
+        rememberPagerState(initialPage = dest.selectedPage.coerceIn(titles.indices)) { titles.size }
     val singlePagePagerState = rememberPagerState(initialPage = 0) { 1 }
     val pagerStateFiltered by rememberDerivedStateOf { if (searchState.isActive) singlePagePagerState else pagerState }
     val secondaryTabsHeight by rememberDerivedStateOf { if (searchState.isActive) 0.dp else SecondaryTabsConst.allHeight }
@@ -126,9 +128,9 @@ fun StorageScreen(
         }
     }
 
-    BackHandler(enabled = searchState.isActive || router.isNavigationBoardIsOpen()) {
+    BackHandler(enabled = searchState.isActive || isNavBoardOpen) {
         when {
-            router.isNavigationBoardIsOpen() -> scope.launch { router.hideNavigationBoard() }
+            isNavBoardOpen -> router.hideNavigationBoard()
             searchState.isActive -> presenter?.searchFilter(SearchState())
         }
     }
@@ -211,7 +213,14 @@ fun StorageScreen(
                         textModifier = Modifier
                             .focusRequester(searchFocusRequester),
                         searchText = searchState.searchText,
-                        onSearch = { newText -> presenter?.searchFilter(SearchState(isActive = true, searchText = newText)) },
+                        onSearch = { newText ->
+                            presenter?.searchFilter(
+                                SearchState(
+                                    isActive = true,
+                                    searchText = newText
+                                )
+                            )
+                        },
                         onClose = { presenter?.searchFilter(SearchState()) }
                     )
                 }
@@ -239,7 +248,8 @@ fun StorageScreenAccountsPreview() = EdgeToEdgeTemplate {
     AppTheme(theme = DefaultThemes.darkTheme) {
         DI.hardResetToPreview()
         DI.initPresenterModule(object : PresentersModule {
-            override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterDummy()
+            override fun storagePresenter(storageIdentifier: StorageIdentifier) =
+                StoragePresenterDummy()
         })
         StorageScreen(
             dest = StorageDestination(path = Dummy.unicString, version = 2)
@@ -272,7 +282,8 @@ fun StorageScreenGeneratePreview() = EdgeToEdgeTemplate {
     AppTheme(theme = DefaultThemes.darkTheme) {
         DI.hardResetToPreview()
         DI.initPresenterModule(object : PresentersModule {
-            override fun storagePresenter(storageIdentifier: StorageIdentifier) = StoragePresenterDummy()
+            override fun storagePresenter(storageIdentifier: StorageIdentifier) =
+                StoragePresenterDummy()
         })
         StorageScreen(
             dest = StorageDestination(path = Dummy.unicString, version = 2, selectedPage = 1)

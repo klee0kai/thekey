@@ -52,6 +52,7 @@ fun FSColoredStorageItem(
             .shortPath()
             .toAnnotationString()
             .coloredPath(accentColor = colorScheme.androidColorScheme.primary)
+            .coloredFileExt(extensionColor = theme.colorScheme.hintTextColor)
     }
 
     ConstraintLayout(
@@ -69,7 +70,9 @@ fun FSColoredStorageItem(
             modifier = Modifier
                 .size(2.dp, 24.dp)
                 .background(
-                    color = colorScheme.surfaceSchemas.surfaceScheme(storage.colorGroup?.keyColor ?: KeyColor.NOCOLOR).surfaceColor,
+                    color = colorScheme.surfaceSchemas.surfaceScheme(
+                        storage.colorGroup?.keyColor ?: KeyColor.NOCOLOR
+                    ).surfaceColor,
                     shape = RoundedCornerShape(1.dp)
                 )
                 .constrainAs(colorGroupField) {
@@ -153,7 +156,7 @@ fun FSColoredStorageItem(
                     Icon(
                         Icons.Default.Info,
                         contentDescription = null,
-                        tint = colorScheme.deleteColor,
+                        tint = colorScheme.redColor,
                     )
                 }
             }
@@ -169,7 +172,7 @@ fun FSColoredStorageItemPreview() = DebugDarkContentPreview {
     DI.hardResetToPreview()
     FSColoredStorageItem(
         storage = ColoredStorage(
-            path = "path",
+            path = "/phoneStorage/Documents/pet.ckey",
             name = "name",
             description = "description",
             version = 1,
@@ -184,7 +187,7 @@ fun FSColoredStorageNoDescItemPreview() = DebugDarkContentPreview {
     DI.hardResetToPreview()
     FSColoredStorageItem(
         storage = ColoredStorage(
-            path = "path",
+            path = "/phoneStorage/Documents/pet.ckey",
             version = 1,
         ),
     )
@@ -198,7 +201,7 @@ fun FSColoredStorageNotValidItemPreview() = DebugDarkContentPreview {
     DI.hardResetToPreview()
     FSColoredStorageItem(
         storage = ColoredStorage(
-            path = "path",
+            path = "/phoneStorage/Documents/pet.ckey",
             name = "name",
             description = "description"
         ),
@@ -212,7 +215,7 @@ fun FSColoredStorageLargeTestPreview() = DebugDarkContentPreview {
     DI.hardResetToPreview()
     FSColoredStorageItem(
         storage = ColoredStorage(
-            path = "/" + LoremIpsum().getWords(1, 15).replace(" ", "/"),
+            path = "/" + LoremIpsum().getWords(1, 15).replace(" ", "/")+".ckey",
             description = LoremIpsum().getWords(1, 15),
         ),
     )
@@ -225,7 +228,7 @@ fun FSColoredStorageIconItemPreview() = DebugDarkContentPreview {
     DI.hardResetToPreview()
     FSColoredStorageItem(
         storage = ColoredStorage(
-            path = "path",
+            path = "/phoneStorage/Documents/pet.ckey",
             name = "name",
             description = "description"
         ),

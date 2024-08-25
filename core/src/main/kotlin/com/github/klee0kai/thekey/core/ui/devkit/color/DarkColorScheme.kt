@@ -6,6 +6,7 @@ import androidx.compose.ui.graphics.Color
 import com.github.klee0kai.thekey.core.ui.devkit.color.DarkColorCollection.background
 import com.github.klee0kai.thekey.core.ui.devkit.color.DarkColorCollection.blackColor
 import com.github.klee0kai.thekey.core.ui.devkit.color.DarkColorCollection.coral
+import com.github.klee0kai.thekey.core.ui.devkit.color.DarkColorCollection.green
 import com.github.klee0kai.thekey.core.ui.devkit.color.DarkColorCollection.lightBackground
 import com.github.klee0kai.thekey.core.ui.devkit.color.DarkColorCollection.noColor
 import com.github.klee0kai.thekey.core.ui.devkit.color.DarkColorCollection.orange
@@ -13,6 +14,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.color.DarkColorCollection.pink
 import com.github.klee0kai.thekey.core.ui.devkit.color.DarkColorCollection.turquoise
 import com.github.klee0kai.thekey.core.ui.devkit.color.DarkColorCollection.violet
 import com.github.klee0kai.thekey.core.ui.devkit.color.DarkColorCollection.whiteColor
+import com.github.klee0kai.thekey.core.ui.devkit.color.DarkColorCollection.yellow
 
 internal object DarkColorCollection {
     val lightBackground = Color(0xFF242738)
@@ -25,6 +27,8 @@ internal object DarkColorCollection {
 
     val noColor = SurfaceScheme(grayColor, whiteColor)
     val violet = SurfaceScheme(Color(0xFF837AE8), whiteColor)
+    val green = SurfaceScheme(Color(0xFF36C817), whiteColor)
+    val yellow = SurfaceScheme(Color(0xFFF0EC1C), whiteColor)
     val turquoise = SurfaceScheme(Color(0xFF7AE8E8), whiteColor)
     val pink = SurfaceScheme(Color(0xFFE87AD6), whiteColor)
     val orange = SurfaceScheme(Color(0xFFDC8938), whiteColor)
@@ -33,14 +37,13 @@ internal object DarkColorCollection {
 
 fun darkCommonColorScheme() = CommonColorScheme(
     isDark = true,
-    deleteColor = coral.surfaceColor,
     windowBackgroundColor = background,
     navigationBoard = NavigationBoardColors(
-        headerContainerColor = Color(0xFF3A3D52),
-        bodyContentColor = Color(0xFF1C1D27),
+        headerSurfaceColor = Color(0xFF3A3D52),
+        bodySurfaceColor = Color(0xFF1C1D27),
     ),
     popupMenu = PopupMenuColors(
-        surfaceColor =  Color(0xFF3A3D52),
+        surfaceColor = Color(0xFF3A3D52),
         contentColor = Color(0xffB7B7B7),
         shadowColor = Color.Black.copy(alpha = 0.2f)
     ),
@@ -59,6 +62,9 @@ fun darkCommonColorScheme() = CommonColorScheme(
         orange = orange,
         coral = coral,
     ),
+    greenColor = green.surfaceColor,
+    yellowColor = yellow.surfaceColor,
+    redColor = coral.surfaceColor,
     androidColorScheme = darkColorScheme(
         primary = turquoise.surfaceColor,
         onPrimary = whiteColor,

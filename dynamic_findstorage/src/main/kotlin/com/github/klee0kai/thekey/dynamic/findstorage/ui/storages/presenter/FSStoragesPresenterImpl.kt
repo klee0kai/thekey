@@ -3,7 +3,7 @@ package com.github.klee0kai.thekey.dynamic.findstorage.ui.storages.presenter
 import com.github.klee0kai.thekey.app.ui.storages.presenter.StoragesPresenter
 import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
 import com.github.klee0kai.thekey.core.ui.navigation.model.TextProvider
-import com.github.klee0kai.thekey.core.utils.common.launchDebounced
+import com.github.klee0kai.thekey.core.utils.common.launch
 import com.github.klee0kai.thekey.core.utils.coroutine.coldStateFlow
 import com.github.klee0kai.thekey.core.utils.coroutine.touchable
 import com.github.klee0kai.thekey.dynamic.findstorage.R
@@ -32,7 +32,7 @@ class FSStoragesPresenterImpl(
     }.filterNotNull()
         .touchable()
 
-    override fun requestPermissions(appRouter: AppRouter?) = scope.launchDebounced("req_perm") {
+    override fun requestPermissions(appRouter: AppRouter?) = scope.launch {
         with(perm) {
             appRouter?.askPermissionsIfNeed(
                 perms = perm.writeStoragePermissions(),
@@ -43,7 +43,7 @@ class FSStoragesPresenterImpl(
         isPermissionGranted.touch()
     }
 
-    override fun searchStorages() = scope.launchDebounced("search") {
+    override fun searchStorages() = scope.launch {
         interactor().findStoragesIfNeed(force = true)
     }
 

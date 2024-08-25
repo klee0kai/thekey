@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.emptyFlow
 interface LoginPresenter {
 
     val currentStorageFlow: Flow<ColoredStorage> get() = emptyFlow()
+    val loginTrackFlow: Flow<Int> get() = emptyFlow()
 
     fun selectStorage(router: AppRouter?): Job = emptyJob()
 

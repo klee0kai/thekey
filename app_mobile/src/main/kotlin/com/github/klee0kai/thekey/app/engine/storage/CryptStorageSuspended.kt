@@ -1,6 +1,7 @@
 package com.github.klee0kai.thekey.app.engine.storage
 
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.engine.model.CreateStorageConfig
 import com.github.klee0kai.thekey.app.engine.model.DecryptedColorGroup
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.engine.model.DecryptedOtpNote
@@ -22,9 +23,16 @@ class CryptStorageSuspended(
 
     suspend fun info(): Storage = engineRunRead { info() }
 
-    suspend fun login(passw: String) = engineRunRead { login(passw) }
+    suspend fun login(
+        passw: String,
+        createStorageConfig: CreateStorageConfig,
+    ) = engineRunRead {
+        login(passw, createStorageConfig)
+    }
 
     suspend fun unlogin() = engineRunRead { unlogin() }
+
+    suspend fun logoutAll() = engineRunRead { logoutAll() }
 
     /* color groups  */
     suspend fun colorGroups(info: Boolean = false): Array<DecryptedColorGroup> =

@@ -1,7 +1,9 @@
 package com.github.klee0kai.thekey.core.di.modules
 
+import androidx.compose.ui.platform.AndroidUiDispatcher
 import com.github.klee0kai.stone.annotations.module.Module
 import com.github.klee0kai.stone.annotations.module.Provide
+import com.github.klee0kai.thekey.core.di.AndrUiDispatcher
 import com.github.klee0kai.thekey.core.di.DefaultDispatcher
 import com.github.klee0kai.thekey.core.di.IODispatcher
 import com.github.klee0kai.thekey.core.di.JniDispatcher
@@ -34,6 +36,7 @@ interface CoroutineModule {
     @MainDispatcher
     fun mainDispatcher(): CoroutineDispatcher = Dispatchers.Main.immediate
 
+
     @IODispatcher
     fun ioDispatcher(): CoroutineDispatcher = Dispatchers.IO
 
@@ -45,6 +48,9 @@ interface CoroutineModule {
         @MainDispatcher
         dispatcher: CoroutineDispatcher,
     ): SafeContextScope = SafeContextScope(dispatcher + SupervisorJob())
+
+    @AndrUiDispatcher
+    fun androidUiScope(): SafeContextScope = SafeContextScope(AndroidUiDispatcher.Main)
 
     @IODispatcher
     fun ioThreadScope(

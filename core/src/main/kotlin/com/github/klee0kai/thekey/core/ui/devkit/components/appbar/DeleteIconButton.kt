@@ -26,7 +26,7 @@ fun DeleteIconButton(
         Icon(
             imageVector = Icons.Filled.Delete,
             contentDescription = stringResource(id = R.string.delete),
-            tint = LocalColorScheme.current.deleteColor,
+            tint = LocalColorScheme.current.redColor,
         )
     }
 }

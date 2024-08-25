@@ -21,7 +21,6 @@ import com.github.klee0kai.thekey.core.domain.model.filterBy
 import com.github.klee0kai.thekey.core.domain.model.sortableFlatText
 import com.github.klee0kai.thekey.core.helpers.path.tKeyExtension
 import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
-import com.github.klee0kai.thekey.core.utils.common.launchDebounced
 import com.github.klee0kai.thekey.core.utils.file.createNewWithSuffix
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -141,16 +140,10 @@ open class StoragesPresenterImpl : StoragesPresenter {
         }
     }
 
-    override fun selectStorage(
-        storagePath: String,
-        appRouter: AppRouter?,
-    ) = scope.launchDebounced("sel_storage") {
-        appRouter?.backWithResult(appRouter)
-    }
-
-    override fun addNewStorage(appRouter: AppRouter?) = scope.launch {
-        if (billing.isAvailable(PaidFeature.UNLIMITED_GROUPS) || (filteredColorGroups.firstOrNull()?.size
-                ?: 0) < PaidLimits.PAID_GROUPS_LIMIT
+    override fun addNewStorageGroup(appRouter: AppRouter?) = scope.launch {
+        val currentColorGroups = filteredColorGroups.firstOrNull()?.size ?: 0
+        if (billing.isAvailable(PaidFeature.UNLIMITED_STORAGE_GROUPS)
+            || currentColorGroups < PaidLimits.PAID_GROUPS_LIMIT
         ) {
             appRouter?.navigate(EditStorageGroupDestination())
         } else {

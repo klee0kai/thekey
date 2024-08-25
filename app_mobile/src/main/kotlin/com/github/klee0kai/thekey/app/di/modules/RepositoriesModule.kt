@@ -3,7 +3,7 @@ package com.github.klee0kai.thekey.app.di.modules
 import com.github.klee0kai.stone.annotations.module.Module
 import com.github.klee0kai.stone.annotations.module.Provide
 import com.github.klee0kai.thekey.app.data.repositories.storage.GroupsRepository
-import com.github.klee0kai.thekey.app.data.repositories.storage.LoginnedStorages
+import com.github.klee0kai.thekey.app.data.repositories.storage.AuthorizedStoragesRepository
 import com.github.klee0kai.thekey.app.data.repositories.storage.NotesRepository
 import com.github.klee0kai.thekey.app.data.repositories.storage.OtpNotesRepository
 import com.github.klee0kai.thekey.app.data.repositories.storages.StoragesRepository
@@ -17,7 +17,7 @@ interface RepositoriesModule {
     fun storagesRepository(): StoragesRepository = StoragesRepositoryImpl()
 
     @Provide(cache = Provide.CacheType.Strong)
-    fun loginnedStorages(): LoginnedStorages
+    fun authorizedStorages(): AuthorizedStoragesRepository
 
     @Provide(cache = Provide.CacheType.Soft)
     fun notesRepository(storageIdentifier: StorageIdentifier): NotesRepository

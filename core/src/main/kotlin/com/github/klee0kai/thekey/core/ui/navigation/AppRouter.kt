@@ -26,15 +26,24 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.emptyFlow
 
-interface AppRouter : RouterContext, DeeplinkRouter, ComposeRouter, SnackRouter, NavBoardRouter, ActivityRouter, PermissionsRouter
+interface AppRouter : RouterContext,
+    DeeplinkRouter,
+    ComposeRouter,
+    KeyBoardRouter,
+    SnackRouter,
+    NavBoardRouter,
+    ActivityRouter,
+    PermissionsRouter
 
 interface ComposeRouter {
 
     fun navigate(vararg destination: Destination): Flow<Any?> = emptyFlow()
 
-    fun <R> navigate(vararg destinations: Destination, resultClazz: Class<R>): Flow<R?> = emptyFlow()
+    fun <R> navigate(vararg destinations: Destination, resultClazz: Class<R>): Flow<R?> =
+        emptyFlow()
 
     fun <R> backWithResult(result: R, exitFromApp: Boolean = false): Boolean = false
 
@@ -51,22 +60,25 @@ interface ComposeRouter {
 
 interface SnackRouter {
 
-    fun snack(message: String, duration: SnackbarDuration = SnackbarDuration.Short): Deferred<SnackbarResult> = completeAsync(SnackbarResult.Dismissed)
+    fun snack(
+        message: String,
+        duration: SnackbarDuration = SnackbarDuration.Short
+    ): Deferred<SnackbarResult> = completeAsync(SnackbarResult.Dismissed)
 
-    fun snack(@StringRes message: Int, duration: SnackbarDuration = SnackbarDuration.Short): Job = emptyJob()
+    fun snack(@StringRes message: Int, duration: SnackbarDuration = SnackbarDuration.Short): Job =
+        emptyJob()
 
 }
 
 interface NavBoardRouter {
 
-    fun isNavigationBoardIsOpen(): Boolean = false
+    val isNavBoardOpen: StateFlow<Boolean> get() = MutableStateFlow(false)
 
-    suspend fun showNavigationBoard() = Unit
+    fun showNavigationBoard() = Unit
 
-    suspend fun hideNavigationBoard() = Unit
+    fun hideNavigationBoard() = Unit
 
 }
-
 
 interface ActivityRouter {
 
@@ -75,6 +87,13 @@ interface ActivityRouter {
     fun navigate(sender: IntentSender): Flow<ActivityResult> = emptyFlow()
 
     fun onResult(result: ActivityResult) = Unit
+
+}
+
+
+interface KeyBoardRouter {
+
+    fun hideKeyboard() = Unit
 
 }
 
