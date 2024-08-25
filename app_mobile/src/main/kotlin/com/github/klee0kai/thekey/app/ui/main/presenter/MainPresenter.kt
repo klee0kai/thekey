@@ -8,4 +8,8 @@ interface MainPresenter {
 
     val loginSecureMode: Flow<LoginSecureMode> get() = emptyFlow()
 
+    val isMakeBlur: Flow<Boolean> get() = emptyFlow()
+
+    fun windowFocus(focus: Boolean) = Unit
+
 }

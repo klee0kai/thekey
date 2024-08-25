@@ -40,6 +40,7 @@ import com.github.klee0kai.thekey.core.domain.model.nextRecursive
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.LocalScreenResolver
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
+import com.github.klee0kai.thekey.core.ui.devkit.Screen
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.core.ui.devkit.components.settings.Preference
@@ -57,7 +58,7 @@ import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
-fun SettingScreen() {
+fun SettingScreen() = Screen {
     val scope = rememberCoroutineScope()
     val router = LocalRouter.current
     val resolver = LocalScreenResolver.current
@@ -69,7 +70,8 @@ fun SettingScreen() {
 
     LazyColumn(
         state = scrollState,
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize(),
     ) {
 
         item("top_padding") {

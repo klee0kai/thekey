@@ -37,6 +37,11 @@ open class BaseActivity : ComponentActivity() {
         DI.ctx(applicationContext)
     }
 
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        presenter.windowFocus(hasFocus)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         router.onResult(
@@ -70,6 +75,7 @@ open class BaseActivity : ComponentActivity() {
 
     private fun subscribeSecurityMode() {
         scope.launch {
+            // prevent screenshots
             presenter.loginSecureMode.collectLatest { sec ->
                 when (sec) {
                     LoginSecureMode.LOW_SECURE -> {

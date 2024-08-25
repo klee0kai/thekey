@@ -5,6 +5,7 @@ package com.github.klee0kai.thekey.app.ui.navigation
 import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -30,14 +31,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.navigationboard.StorageNavigationBoard
 import com.github.klee0kai.thekey.core.ui.devkit.EmptyScreen
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.navigation.model.Destination
+import com.github.klee0kai.thekey.core.utils.views.collectAsState
+import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.core.utils.views.rememberTickerOf
+import com.github.klee0kai.thekey.core.utils.views.thenIf
 import dev.olshevski.navigation.reimagined.AnimatedNavHost
 import dev.olshevski.navigation.reimagined.NavAction
 import dev.olshevski.navigation.reimagined.NavBackHandler
@@ -49,6 +55,10 @@ import dev.olshevski.navigation.reimagined.NavTransitionSpec
 fun MainNavContainer() {
     NavBackHandler(LocalRouter.current.navFullController)
     LocalRouter.current.collectBackstackChanges()
+    val presenter by rememberOnScreenRef { DI.mainPresenter() }
+    val isBlur by presenter!!.isMakeBlur
+        .collectAsState(key = Unit, initial = false)
+    val blurDp by animateDpAsState(targetValue = if (isBlur) 10.dp else 0.dp, label = "blur")
 
     ModalNavigationDrawer(
         drawerState = LocalRouter.current.navBoardState,
@@ -63,7 +73,9 @@ fun MainNavContainer() {
             transitionSpec = customTransitionSpec,
             emptyBackstackPlaceholder = { EmptyScreen() }
         ) { destination ->
-            DI.screenResolver().screenOf(destination = destination)
+            Box(modifier = Modifier.thenIf(blurDp > 0.dp) { blur(blurDp) }) {
+                DI.screenResolver().screenOf(destination = destination)
+            }
         }
     }
 
@@ -74,7 +86,9 @@ fun MainNavContainer() {
         transitionSpec = customTransitionSpec,
         emptyBackstackPlaceholder = { Box(modifier = Modifier.fillMaxSize()) }
     ) { destination ->
-        DI.screenResolver().screenOf(destination = destination)
+        Box(modifier = Modifier.thenIf(blurDp > 0.dp) { blur(blurDp) }) {
+            DI.screenResolver().screenOf(destination = destination)
+        }
     }
 
     // snack
@@ -137,15 +151,25 @@ fun SnackContainer() {
 
 private val customTransitionSpec = object : NavTransitionSpec<Destination> {
 
-    override fun NavTransitionScope.getContentTransform(action: NavAction, from: Destination, to: Destination): ContentTransform {
+    override fun NavTransitionScope.getContentTransform(
+        action: NavAction,
+        from: Destination,
+        to: Destination
+    ): ContentTransform {
         return crossfade()
     }
 
-    override fun NavTransitionScope.fromEmptyBackstack(action: NavAction, to: Destination): ContentTransform {
+    override fun NavTransitionScope.fromEmptyBackstack(
+        action: NavAction,
+        to: Destination
+    ): ContentTransform {
         return crossfade()
     }
 
-    override fun NavTransitionScope.toEmptyBackstack(action: NavAction, from: Destination): ContentTransform {
+    override fun NavTransitionScope.toEmptyBackstack(
+        action: NavAction,
+        from: Destination
+    ): ContentTransform {
         return crossfade()
     }
 
