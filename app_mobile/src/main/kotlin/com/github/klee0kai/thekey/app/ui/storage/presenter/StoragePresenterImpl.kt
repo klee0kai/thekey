@@ -11,6 +11,7 @@ import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
@@ -48,7 +49,8 @@ open class StoragePresenterImpl(
             transform = { search, selectedGroup, items ->
                 val filter = search.searchText
                 var filtList = items
-                if (selectedGroup != null) filtList = filtList.filter { it.group.id == selectedGroup }
+                if (selectedGroup != null) filtList =
+                    filtList.filter { it.group.id == selectedGroup }
                 if (filter.isNotBlank()) filtList = filtList.filter { it.filterBy(filter) }
                 filtList
             }
@@ -68,7 +70,17 @@ open class StoragePresenterImpl(
     }
 
     override fun setColorGroup(notePt: Long, groupId: Long) = scope.launch {
-        notesInteractor().setNotesGroup(listOf(notePt), groupId)
+        val oldNoteGroupId = notesInteractor().notes
+            .firstOrNull()
+            ?.firstOrNull { it.ptnote == notePt }
+            ?.group
+            ?.id
+            ?: return@launch
+        if (oldNoteGroupId ==groupId){
+            notesInteractor().setNotesGroup(listOf(notePt), 0)
+        }else {
+            notesInteractor().setNotesGroup(listOf(notePt), groupId)
+        }
     }
 
     override fun deleteGroup(id: Long) = scope.launch {

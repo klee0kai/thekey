@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.ZERO
 import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
@@ -66,6 +67,42 @@ fun <Arg> rememberClickDebouncedArg(
             val now = System.currentTimeMillis()
             if (lastClickTime?.let { now - it < debounce.inWholeMilliseconds } != true) {
                 launch(arg)
+                lastClickTime = now
+            }
+        }
+    }
+}
+
+@Composable
+@NonRestartableComposable
+fun <Arg> rememberClickArg(
+    key1: Any? = null,
+    key2: Any? = null,
+    key3: Any? = null,
+    key4: Any? = null,
+    key5: Any? = null,
+    key6: Any? = null,
+    launch: (Arg) -> Unit,
+): (Arg) -> Unit = rememberClickDebouncedArg(key1, key2, key3, key4, key5, key6, ZERO, launch)
+
+@Composable
+@NonRestartableComposable
+fun <Arg, Arg2> rememberClickDebouncedArg2(
+    key1: Any? = null,
+    key2: Any? = null,
+    key3: Any? = null,
+    key4: Any? = null,
+    key5: Any? = null,
+    key6: Any? = null,
+    debounce: Duration = 500.milliseconds,
+    launch: (Arg, Arg2) -> Unit,
+): (Arg, Arg2) -> Unit {
+    var lastClickTime by remember { mutableStateOf<Long?>(null) }
+    return remember(key1, key2, key3, key4, key5, key6) {
+        { arg: Arg, arg2: Arg2 ->
+            val now = System.currentTimeMillis()
+            if (lastClickTime?.let { now - it < debounce.inWholeMilliseconds } != true) {
+                launch(arg, arg2)
                 lastClickTime = now
             }
         }

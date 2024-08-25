@@ -131,7 +131,7 @@ fun EditGroupInfoContent(
                     )
                 })
         {
-            item {
+            item("start_spacer") {
                 Spacer(modifier = Modifier.width(14.dp))
             }
 

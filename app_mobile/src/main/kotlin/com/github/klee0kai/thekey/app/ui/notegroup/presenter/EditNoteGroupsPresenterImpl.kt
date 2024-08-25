@@ -3,17 +3,18 @@ package com.github.klee0kai.thekey.app.ui.notegroup.presenter
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.engine.model.DecryptedColorGroup
 import com.github.klee0kai.thekey.app.ui.notegroup.model.EditNoteGroupsState
-import com.github.klee0kai.thekey.app.ui.notegroup.model.SelectedNote
 import com.github.klee0kai.thekey.app.ui.notegroup.model.selected
+import com.github.klee0kai.thekey.app.ui.notegroup.model.selectedColorGroup
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.NoteGroupIdentifier
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
+import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
 import com.github.klee0kai.thekey.core.utils.common.launchLatest
 import com.github.klee0kai.thekey.core.utils.common.launchSafe
-import com.github.klee0kai.thekey.core.utils.coroutine.triggerOn
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -25,31 +26,28 @@ open class EditNoteGroupsPresenterImpl(
     val groupIdentifier: NoteGroupIdentifier,
 ) : EditNoteGroupsPresenter {
 
-    private val router = DI.router()
     private val scope = DI.defaultThreadScope()
     private val interactor = DI.groupsInteractorLazy(groupIdentifier.storageIdentifier)
     private val notesInteractor = DI.notesInteractorLazy(groupIdentifier.storageIdentifier)
 
     override val state = MutableStateFlow(EditNoteGroupsState(isSkeleton = true))
-    override val allNotes = flow<List<SelectedNote>> {
-        notesInteractor().notes
-            .triggerOn(updateNoteTrigger)
-            .map { notes ->
-                val selected = state.value.selectedNotes
-                notes.filter { note ->
-                    note.group.id in listOf(0L, originalGroup?.id ?: 0L)
-                }.map { note ->
-                    note.selected(selected.contains(note.ptnote))
-                }
-            }
-            .collect(this)
+
+    override val allNotes = combine(
+        flow = flow { notesInteractor().notes.collect(this) },
+        flow2 = state.map { it.selectedNotes }.distinctUntilChanged(),
+    ) { notes, selected ->
+        notes.filter { note ->
+            note.group.id in listOf(0L, originalGroup?.id ?: 0L)
+        }.map { note ->
+            note.selected(selected.contains(note.ptnote))
+        }
     }.flowOn(DI.defaultDispatcher())
 
-    private val updateNoteTrigger = MutableSharedFlow<Unit>()
     private var originalGroup: ColorGroup? = null
 
     override fun init() = scope.launchLatest("init") {
         if (groupIdentifier.groupId != null) {
+            // start in edit mode
             state.update { it.copy(isEditMode = true, isSkeleton = true) }
 
             originalGroup = interactor().groups
@@ -63,44 +61,46 @@ open class EditNoteGroupsPresenterImpl(
                 ?.map { it.ptnote }
                 ?.let { selectedNotes -> input { copy(selectedNotes = selectedNotes.toSet()) } }
 
-            updateNoteTrigger.emit(Unit)
-
             val colorGroupVariants = KeyColor.selectableColorGroups
             state.update {
                 it.copy(
                     isSkeleton = false,
-                    selectedGroupId = colorGroupVariants.firstOrNull { selectable -> selectable.keyColor == originalGroup?.keyColor }?.id ?: 0,
+                    selectedGroupId = colorGroupVariants
+                        .firstOrNull { selectable -> selectable.keyColor == originalGroup?.keyColor }
+                        ?.id ?: 0,
                     colorGroupVariants = colorGroupVariants,
                     name = originalGroup?.name ?: ""
                 )
             }
         } else {
-            state.update { it.copy(isSkeleton = false, isEditMode = false) }
+            // start in create mode
+            state.update {
+                it.copy(
+                    isSkeleton = false,
+                    isEditMode = false,
+                    colorGroupVariants = KeyColor.selectableColorGroups,
+                )
+            }
         }
     }
 
-    override fun input(block: EditNoteGroupsState.() -> EditNoteGroupsState) = scope.launch {
-        state.update { oldState ->
-            val newState = block(oldState)
-            updateNoteTrigger.emit(Unit)
-            newState
-        }
+    override fun input(
+        block: EditNoteGroupsState.() -> EditNoteGroupsState,
+    ) = scope.launch {
+        state.update { oldState -> block(oldState) }
     }
 
-    override fun save() = scope.launchSafe {
+    override fun save(appRouter: AppRouter?) = scope.launchSafe {
         val curState = state.value
-        val keyColor = curState.colorGroupVariants
-            .firstOrNull { selectable -> selectable.keyColor == originalGroup?.keyColor }
-            ?.keyColor
-
-        if (keyColor == null || keyColor == KeyColor.NOCOLOR) {
-            router.snack(R.string.select_color)
+        val selectedKeyColor = curState.selectedColorGroup?.keyColor
+        if (selectedKeyColor == null || selectedKeyColor == KeyColor.NOCOLOR) {
+            appRouter?.snack(R.string.select_color)
             return@launchSafe
         }
         val group = interactor().saveColorGroup(
             DecryptedColorGroup(
                 id = groupIdentifier.groupId ?: 0,
-                color = keyColor.ordinal,
+                color = selectedKeyColor.ordinal,
                 name = curState.name
             )
         ).await() ?: return@launchSafe
@@ -114,8 +114,14 @@ open class EditNoteGroupsPresenterImpl(
         notesInteractor().setNotesGroup(selectNotes.toList(), group.id)
         notesInteractor().setNotesGroup(resetNotes, 0L)
 
-        router.back()
+        appRouter?.back()
+        clear()
     }
+
+    private fun clear() = scope.launch {
+        state.value = EditNoteGroupsState(isSkeleton = true)
+    }
+
 }
 
 

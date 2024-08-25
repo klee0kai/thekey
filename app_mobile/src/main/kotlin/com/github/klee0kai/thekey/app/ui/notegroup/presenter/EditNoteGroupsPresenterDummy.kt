@@ -4,6 +4,7 @@ package com.github.klee0kai.thekey.app.ui.notegroup.presenter
 
 import com.github.klee0kai.thekey.app.ui.notegroup.model.EditNoteGroupsState
 import com.github.klee0kai.thekey.app.ui.notegroup.model.SelectedNote
+import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import com.github.klee0kai.thekey.core.utils.common.Dummy
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -18,6 +19,7 @@ open class EditNoteGroupsPresenterDummy(
     override val state = MutableStateFlow(
         EditNoteGroupsState(
             isSkeleton = skeleton,
+            colorGroupVariants = KeyColor.selectableColorGroups,
         )
     )
     override val allNotes = MutableStateFlow(

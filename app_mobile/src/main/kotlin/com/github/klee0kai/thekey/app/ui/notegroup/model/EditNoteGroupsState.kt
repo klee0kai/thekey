@@ -13,3 +13,8 @@ data class EditNoteGroupsState(
     val name: String = "",
     val selectedNotes: Set<Long> = emptySet(),
 ) : Parcelable
+
+
+val EditNoteGroupsState.selectedColorGroup
+    get() = colorGroupVariants
+        .firstOrNull { selectable -> selectable.id == selectedGroupId }

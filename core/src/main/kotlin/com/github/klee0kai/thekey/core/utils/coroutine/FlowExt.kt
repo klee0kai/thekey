@@ -33,15 +33,6 @@ suspend fun Flow<Unit>.onTicks(block: suspend () -> Unit) {
     }
 }
 
-inline fun <reified T> Flow<T>.triggerOn(flow2: Flow<Any>) = flow<T> {
-    val mergeObj = object {}
-    var lastValue: Any? = mergeObj
-    merge(this@triggerOn, flow2.map { mergeObj })
-        .map { if (it == mergeObj) lastValue else it.also { lastValue = it } }
-        .filterIsInstance<T>()
-        .collect(this)
-}
-
 fun <T> Flow<T>.shareLatest(scope: CoroutineScope, clazz: Class<T>): Flow<T> {
     val endl = object {}
     val orFlow = this
