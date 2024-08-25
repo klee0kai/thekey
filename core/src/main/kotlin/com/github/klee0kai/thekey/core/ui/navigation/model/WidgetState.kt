@@ -30,4 +30,6 @@ data class StorageItemWidgetState(
 
 data object DebugSettingsWidgetState : WidgetState
 
+data object AutoSearchSettingsWidgetState : WidgetState
+
 

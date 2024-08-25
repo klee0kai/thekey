@@ -8,11 +8,10 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class SettingState(
-    val autoSearch: Boolean = false,
-    val analytics: Boolean = false,
-    val loginSecure: LoginSecureMode = LoginSecureMode.MIDDLE_SECURE,
-    val encryptionComplexity: NewStorageSecureMode = NewStorageSecureMode.LOW_SECURE,
-    val histPeriod: HistPeriod = HistPeriod.SHORT,
+    val analytics: Boolean? = null,
+    val loginSecure: LoginSecureMode? = null,
+    val encryptionComplexity: NewStorageSecureMode? = null,
+    val histPeriod: HistPeriod? = null,
 ) : Parcelable
 
 

@@ -109,7 +109,7 @@ fun StatusPreference(
                     )
                 },
             text = status,
-            style = theme.typeScheme.typography.labelSmall,
+            style = theme.typeScheme.typography.bodyLarge,
             color = statusColorAnimated,
         )
     }

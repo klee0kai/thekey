@@ -47,6 +47,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.components.settings.RightArrowI
 import com.github.klee0kai.thekey.core.ui.devkit.components.settings.SectionHeader
 import com.github.klee0kai.thekey.core.ui.devkit.components.settings.StatusPreference
 import com.github.klee0kai.thekey.core.ui.devkit.icons.BackMenuIcon
+import com.github.klee0kai.thekey.core.ui.navigation.model.AutoSearchSettingsWidgetState
 import com.github.klee0kai.thekey.core.ui.navigation.model.DebugSettingsWidgetState
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
@@ -62,7 +63,7 @@ fun SettingScreen() {
     val resolver = LocalScreenResolver.current
     val theme = LocalTheme.current
     val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
-    val presenter by rememberOnScreenRef { DI.settingsPresenter() }
+    val presenter by rememberOnScreenRef { DI.settingsPresenter().apply { init() } }
     val state by presenter!!.state.collectAsState(key = Unit, initial = null)
     val scrollState = rememberLazyListState()
 
@@ -98,7 +99,7 @@ fun SettingScreen() {
         }
 
 
-        if (state != null) item("login_secure") {
+        if (state?.loginSecure != null) item("login_secure") {
             StatusPreference(
                 text = stringResource(id = R.string.secure),
                 status = when (state?.loginSecure) {
@@ -120,7 +121,7 @@ fun SettingScreen() {
                     null -> ""
                 },
                 onClick = rememberClickDebounced(debounce = 100.milliseconds) {
-                    presenter?.input { copy(loginSecure = loginSecure.nextRecursive()) }
+                    presenter?.input { copy(loginSecure = loginSecure?.nextRecursive()) }
                 },
             )
         }
@@ -129,9 +130,8 @@ fun SettingScreen() {
             item("autofill") {
                 Preference(
                     text = stringResource(id = R.string.title_autofill),
-                    onClick = rememberClickDebounced {
-                        router.navigate(AutoFillSettingsDestination)
-                    },
+                    hint = stringResource(id = R.string.title_autofill_hint),
+                    onClick = rememberClickDebounced { router.navigate(AutoFillSettingsDestination) },
                     icon = { RightArrowIcon() },
                 )
             }
@@ -146,7 +146,7 @@ fun SettingScreen() {
             )
         }
 
-        if (state != null) item("hist_period") {
+        if (state?.histPeriod != null) item("hist_period") {
             StatusPreference(
                 text = stringResource(id = R.string.hist_period),
                 status = when (state?.histPeriod) {
@@ -166,7 +166,7 @@ fun SettingScreen() {
 
                 },
                 onClick = rememberClickDebounced(debounce = 100.milliseconds) {
-                    presenter?.input { copy(histPeriod = histPeriod.nextRecursive()) }
+                    presenter?.input { copy(histPeriod = histPeriod?.nextRecursive()) }
                 },
             )
         }
@@ -177,31 +177,11 @@ fun SettingScreen() {
             )
         }
 
-        if (state != null) item("auto_search") {
-            StatusPreference(
-                text = stringResource(id = R.string.storage_auto_search),
-                status = when (state?.autoSearch) {
-                    true -> stringResource(id = R.string.enabled)
-                    false -> stringResource(id = R.string.disabled)
-                    null -> ""
-                },
-                statusColor = when (state?.autoSearch) {
-                    true -> theme.colorScheme.greenColor
-                    false -> theme.colorScheme.redColor
-                    null -> theme.colorScheme.hintTextColor
-                },
-                hint = when (state?.autoSearch) {
-                    true -> stringResource(id = R.string.storage_auto_search_enabled_hint)
-                    false -> stringResource(id = R.string.storage_auto_search_disabled_hint)
-                    null -> ""
-                },
-                onClick = rememberClickDebounced(debounce = 100.milliseconds) {
-                    presenter?.input { copy(autoSearch = !(state?.autoSearch ?: false)) }
-                },
-            )
+        item("auto_search") {
+            resolver.widget(modifier = Modifier, widgetState = AutoSearchSettingsWidgetState)
         }
 
-        if (state != null) item("encryption_complexity") {
+        if (state?.encryptionComplexity != null) item("encryption_complexity") {
             StatusPreference(
                 text = stringResource(id = R.string.encryption_complexity),
                 status = when (state?.encryptionComplexity) {
@@ -223,7 +203,7 @@ fun SettingScreen() {
                     null -> ""
                 },
                 onClick = rememberClickDebounced(debounce = 100.milliseconds) {
-                    presenter?.input { copy(encryptionComplexity = encryptionComplexity.nextRecursive()) }
+                    presenter?.input { copy(encryptionComplexity = encryptionComplexity?.nextRecursive()) }
                 },
             )
         }

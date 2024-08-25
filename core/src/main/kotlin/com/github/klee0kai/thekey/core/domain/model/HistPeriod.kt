@@ -1,16 +1,21 @@
 package com.github.klee0kai.thekey.core.domain.model
 
 import com.github.klee0kai.thekey.core.domain.model.feature.PaidFeature
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 enum class HistPeriod {
     /**
      * 1 month
      */
+    @SerialName("short")
     SHORT,
 
     /**
      * 3 month
      */
+    @SerialName("normal")
     NORMAL,
 
     /**
@@ -19,6 +24,7 @@ enum class HistPeriod {
      *
      * @see PaidFeature.UNLIMITED_HIST_PERIOD
      */
+    @SerialName("long")
     LONG,
 
     /**
@@ -27,6 +33,7 @@ enum class HistPeriod {
      *
      * @see PaidFeature.UNLIMITED_HIST_PERIOD
      */
+    @SerialName("very_long")
     VERY_LONG,
 }
 

@@ -17,8 +17,9 @@
 
     <string name="title_qrcodescanner">QR Code Scanner</string>
     <string name="desc_qrcodescanner">Scan QR code to add OTP passwords.</string>
-    <string name="title_autofill">Autofill manager</string>
+    <string name="title_autofill">Autofill</string>
     <string name="desc_autofill">Password autofill manager</string>
+    <string name="title_autofill_hint">Use password autofill in various applications</string>
     <string name="title_findstorages">Find storages</string>
     <string name="desc_findstorages">Search for encrypted storage throughout the phone</string>
     <string name="title_gdrive">Google Drive</string>
@@ -148,18 +149,13 @@
     <string name="backup">Backup</string>
     <string name="backup_hint">Save your storages on google drive cloud</string>
 
-
-    <string name="storage_auto_search">Storages Auto Search</string>
-    <string name="storage_auto_search_enabled_hint">The application automatically tries to find new storages on the device</string>
-    <string name="storage_auto_search_disabled_hint">Enable automatic storage search on your device</string>
-
     <string name="secure">Secure</string>
     <string name="strong">Strong</string>
     <string name="low">Low</string>
     <string name="middle">Middle</string>
-    <string name="secure_strong_hint">instant logout from storages. Prevent screenshots and overlays.</string>
-    <string name="secure_middle_hint">logout after 1 minutes</string>
-    <string name="secure_low_hint">Logout after 10 minutes</string>
+    <string name="secure_low_hint">Automatic logout from storage occurs after 10 minutes of application minimization.</string>
+    <string name="secure_middle_hint">Automatic logout from storage occurs after 1 minute of application minimization. Screenshots on screens are blocked.</string>
+    <string name="secure_strong_hint">Automatic logout from storage is performed immediately when the application is minimized. Screenshots on screens are blocked. Screen overlap detection is enabled, blocking content substitution.</string>
 
     <string name="encryption_complexity">Encryption complexity</string>
     <string name="encryption_low_hint">For new storages, the normal number of encryption iterations is used.</string>
@@ -175,10 +171,10 @@
     <string name="hist_period_normal">Normal</string>
     <string name="hist_period_long">Long</string>
     <string name="hist_period_very_long">Very long</string>
-    <string name="hist_period_short_hint">3 month</string>
-    <string name="hist_period_normal_hint">3 month</string>
-    <string name="hist_period_long_hint">6 month</string>
-    <string name="hist_period_verylong_hint">1 year</string>
+    <string name="hist_period_short_hint">Keep the history of generated passwords for no more than a month</string>
+    <string name="hist_period_normal_hint">Keep the history of generated passwords for 3 months</string>
+    <string name="hist_period_long_hint">Keep the history of generated passwords for 6 months</string>
+    <string name="hist_period_verylong_hint">Keep the history of generated passwords for 1 year</string>
     <string name="subscriptions">Subscriptions</string>
     <string name="new_storages">New storages</string>
     <string name="common">Common</string>

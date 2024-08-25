@@ -1,10 +1,15 @@
 package com.github.klee0kai.thekey.core.domain.model
 
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
 enum class LoginSecureMode {
     /**
      * Automatic logout from storage occurs
      * after 10 minutes of application minimization.
      */
+    @SerialName("low")
     LOW_SECURE,
 
     /**
@@ -13,6 +18,7 @@ enum class LoginSecureMode {
      *
      * Screenshots on screens are blocked.
      */
+    @SerialName("middle")
     MIDDLE_SECURE,
 
     /**
@@ -22,6 +28,7 @@ enum class LoginSecureMode {
      *  Screenshots on screens are blocked.
      *  Screen overlap detection is enabled, blocking content substitution.
      */
+    @SerialName("hard")
     HARD_SECURE,
 }
 

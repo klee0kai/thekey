@@ -26,7 +26,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.core.di.CoreDI
 import com.github.klee0kai.thekey.core.utils.common.Cleanable
-import com.github.klee0kai.thekey.core.utils.common.Initializable
 import com.github.klee0kai.thekey.core.utils.common.ObjHolder
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
@@ -93,10 +92,7 @@ inline fun <T> rememberOnScreen(block: () -> T): T {
     }
     return when {
         cached.value != null -> cached.value as T
-        else -> block().also {
-            (it as? Initializable)?.init()
-            cached.value = it
-        }
+        else -> block().also { cached.value = it }
     }
 }
 

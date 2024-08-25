@@ -6,6 +6,7 @@ import com.github.klee0kai.thekey.core.data.repository.settings.delegates.LongNo
 import com.github.klee0kai.thekey.core.data.repository.settings.delegates.SettingsNoteDelegate
 import com.github.klee0kai.thekey.core.data.repository.settings.delegates.StringNoteDelegate
 import com.github.klee0kai.thekey.core.di.CoreDI
+import com.github.klee0kai.thekey.core.domain.model.HistPeriod
 import com.github.klee0kai.thekey.core.domain.model.LoginSecureMode
 import com.github.klee0kai.thekey.core.domain.model.NewStorageSecureMode
 import com.github.klee0kai.thekey.core.utils.error.fatalError
@@ -33,13 +34,14 @@ open class SettingsRepository {
 
     val externalStoragesGroup = booleanDelegate(SETTING_EXTERNAL_STORAGES_GROUP) { true }
     val otpNotesGroup = booleanDelegate(SETTING_OTP_NOTES_GROUP) { true }
-    val storageAutoSearch = booleanDelegate(SETTING_STORAGE_AUTO_SEARCH) { false }
     val loginSecure = delegate<LoginSecureMode>(SETTING_LOGIN_SECURE) {
-        LoginSecureMode.MIDDLE_SECURE
+        LoginSecureMode.LOW_SECURE
     }
     val encryptionComplexity = delegate<NewStorageSecureMode>(SETTING_ENCR_SEC) {
-        NewStorageSecureMode.MIDDLE_SECURE
+        NewStorageSecureMode.LOW_SECURE
     }
+    val histPeriod = delegate<HistPeriod>(SETTING_HISTORY_PERIOD) { HistPeriod.NORMAL }
+    val analytics = booleanDelegate(SETTING_ANALYTICS) { false }
 
 
     protected fun stringDelegate(
@@ -90,9 +92,10 @@ open class SettingsRepository {
         private const val SETTING_GEN_PASS_INCLUDE_SPEC_SYMBOLS = "base_spec"
         private const val SETTING_EXTERNAL_STORAGES_GROUP = "base_gr"
         private const val SETTING_OTP_NOTES_GROUP = "base_otp_gr"
-        private const val SETTING_STORAGE_AUTO_SEARCH = "base_auto_search"
         private const val SETTING_LOGIN_SECURE = "base_login_secure"
         private const val SETTING_ENCR_SEC = "base_encr_sec"
+        private const val SETTING_HISTORY_PERIOD = "base_hist_period"
+        private const val SETTING_ANALYTICS = "base_analytics"
     }
 
 }
