@@ -28,7 +28,7 @@ class NavigationBoardPresenterDummy(
             repeat(opennedCount) {
                 add(
                     ColoredStorage(
-                        path = "/phoneStorage/Documents/business.ckey",
+                        path = "/phoneStorage/Documents/business-${it}.ckey",
                         name = "business",
                         description = LoremIpsum().getWords(4),
                     ),
@@ -43,7 +43,7 @@ class NavigationBoardPresenterDummy(
             repeat(favoriteCount) {
                 add(
                     ColoredStorage(
-                        path = "/phoneStorage/Documents/business.ckey",
+                        path = "/phoneStorage/Documents/business-${it}.ckey",
                         name = "business",
                         description = LoremIpsum().getWords(4),
                     ),
