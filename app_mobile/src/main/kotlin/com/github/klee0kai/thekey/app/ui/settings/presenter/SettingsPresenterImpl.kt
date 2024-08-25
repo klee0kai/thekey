@@ -55,7 +55,7 @@ class SettingsPresenterImpl : SettingsPresenter {
             state = state.copy(
                 histPeriod = when (state.histPeriod) {
                     null, HistPeriod.SHORT, HistPeriod.NORMAL -> state.histPeriod
-                    HistPeriod.LONG, HistPeriod.VERY_LONG -> HistPeriod.NORMAL
+                    HistPeriod.LONG, HistPeriod.VERY_LONG -> HistPeriod.SHORT
                 }
             )
         }

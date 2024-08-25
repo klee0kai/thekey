@@ -4,13 +4,13 @@ import com.github.klee0kai.thekey.app.ui.changepassw.presenter.ChangeStoragePass
 import com.github.klee0kai.thekey.app.ui.editstorage.presenter.EditStoragePresenter
 import com.github.klee0kai.thekey.app.ui.genhist.presenter.GenHistPresenter
 import com.github.klee0kai.thekey.app.ui.login.presenter.LoginPresenter
+import com.github.klee0kai.thekey.app.ui.main.presenter.MainPresenter
 import com.github.klee0kai.thekey.app.ui.navigationboard.presenter.NavigationBoardPresenter
 import com.github.klee0kai.thekey.app.ui.note.presenter.EditNotePresenter
 import com.github.klee0kai.thekey.app.ui.notegroup.presenter.EditNoteGroupsPresenter
 import com.github.klee0kai.thekey.app.ui.settings.plugin.presenter.PluginPresenter
 import com.github.klee0kai.thekey.app.ui.settings.plugins.presenter.PluginsPresenter
 import com.github.klee0kai.thekey.app.ui.settings.presenter.SettingsPresenter
-import com.github.klee0kai.thekey.app.ui.settings.presenter.SettingsPresenterImpl
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.presenter.GenPasswPresenter
 import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenter
 import com.github.klee0kai.thekey.app.ui.storagegroup.presenter.EditStoragesGroupPresenter
@@ -22,6 +22,8 @@ import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.domain.model.feature.model.DynamicFeature
 
 interface PresentersDependencies {
+
+    fun mainPresenter(): MainPresenter
 
     fun loginPresenter(identifier: StorageIdentifier = StorageIdentifier()): LoginPresenter
 

@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.configRouting
 import com.github.klee0kai.thekey.app.service.UnfinishedJobsService
+import com.github.klee0kai.thekey.app.ui.main.BaseActivity
 import com.github.klee0kai.thekey.app.ui.navigation.MainNavContainer
 import com.github.klee0kai.thekey.app.ui.navigation.model.LoginDestination
 import com.github.klee0kai.thekey.app.ui.settings.plugin.PluginApplyingOverlay
