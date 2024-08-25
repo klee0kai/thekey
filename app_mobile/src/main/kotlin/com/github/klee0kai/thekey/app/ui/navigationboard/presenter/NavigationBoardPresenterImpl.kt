@@ -41,7 +41,7 @@ class NavigationBoardPresenterImpl : NavigationBoardPresenter {
     }
 
     override val openedStoragesFlow = flow<List<ColoredStorage>> {
-        loginInteractor().logginedStorages.collect(this)
+        loginInteractor().authorizedStorages.collect(this)
     }
 
     override val favoritesStorages: Flow<List<ColoredStorage>> = flow {

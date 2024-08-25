@@ -10,10 +10,17 @@ enum class PaidFeature {
     UNLIMITED_STORAGE_GROUPS,
 
     /**
-     *  Only a limited number of favorite storages are displayed in the side navigation.
+     * Only a limited number of favorite storages are displayed in the side navigation.
      * @see PaidLimits.PAID_FAVORITE_STORAGE_LIMITS
      */
     UNLIMITED_FAVORITE_STORAGES,
+
+    /**
+     * Only a limited number of loggined storages are displayed in the side navigation.
+     *
+     * @see PaidLimits.PAID_AUTHORIZED_STORAGE_LIMITS
+     */
+    UNLIMITED_AUTHORIZED_STORAGES,
 
     /**
      * Unlimited password history period
@@ -32,5 +39,10 @@ object PaidLimits {
      * Only a limited number of favorite storages are displayed in the side navigation.
      */
     const val PAID_FAVORITE_STORAGE_LIMITS = 3
+
+    /**
+     * Only a limited number of loggined storages are displayed in the side navigation.
+     */
+    const val PAID_AUTHORIZED_STORAGE_LIMITS = 3
 
 }
