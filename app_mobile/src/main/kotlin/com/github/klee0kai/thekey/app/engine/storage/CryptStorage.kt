@@ -1,5 +1,6 @@
 package com.github.klee0kai.thekey.app.engine.storage
 
+import com.github.klee0kai.thekey.app.engine.model.CreateStorageConfig
 import com.github.klee0kai.thekey.app.engine.model.DecryptedColorGroup
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.engine.model.DecryptedOtpNote
@@ -12,7 +13,10 @@ interface CryptStorage {
 
     fun info(): Storage
 
-    fun login(passw: String)
+    fun login(
+        passw: String,
+        createConfig: CreateStorageConfig,
+    )
 
     fun unlogin()
 

@@ -31,14 +31,10 @@ class RouterContextImpl(
     override val snackbarHostState: SnackbarHostState = SnackbarHostState()
     override val navBoardState: DrawerState = DrawerState(DrawerValue.Closed)
     override val navFullController: NavController<Destination> by lazy {
-        navController(
-            initDestination
-        )
+        navController(initDestination)
     }
     override val navScreensController: NavController<Destination> by lazy {
-        navController(
-            initDestination
-        )
+        navController(initDestination)
     }
     override val navDialogsController: NavController<Destination> by lazy { navController(emptyList()) }
 

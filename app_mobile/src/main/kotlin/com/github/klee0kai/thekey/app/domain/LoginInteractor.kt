@@ -2,6 +2,7 @@ package com.github.klee0kai.thekey.app.domain
 
 import com.github.klee0kai.thekey.app.data.mapping.toColoredStorage
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.engine.model.createConfig
 import com.github.klee0kai.thekey.core.di.identifiers.FileIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
@@ -56,8 +57,10 @@ class LoginInteractor {
         otpNotesInteractor().clear()
         groupsInteractor().clear()
 
+        val createConfig = settingsRep().encryptionComplexity().createConfig()
+
         File(storageIdentifier.path).parentFile?.mkdirs()
-        engine().login(passw)
+        engine().login(passw, createConfig)
 
         notesInteractor().loadNotes()
         otpNotesInteractor().loadOtpNotes()

@@ -11,6 +11,7 @@ import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
 import com.github.klee0kai.thekey.core.ui.navigation.navigate
 import com.github.klee0kai.thekey.core.utils.common.launch
 import com.github.klee0kai.thekey.core.utils.coroutine.coldStateFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
@@ -33,6 +34,8 @@ class LoginPresenterImpl(
         result.update { storage }
     }.filterNotNull()
 
+    override val loginTrackFlow = MutableStateFlow<Int>(0)
+
     override fun selectStorage(router: AppRouter?) = scope.launch {
         val selectedStorage = router
             ?.navigate<String>(StoragesDestination)
@@ -45,11 +48,16 @@ class LoginPresenterImpl(
         }
     }
 
-    override fun login(passw: String, router: AppRouter?) = scope.launch {
+    override fun login(
+        passw: String,
+        router: AppRouter?,
+    ) = scope.launch(trackFlow = loginTrackFlow) {
         if (passw.isBlank()) {
             router?.snack(R.string.passw_is_null)
             return@launch
         }
+        router?.hideKeyboard()
+
         runCatching {
             val storageIdentifier = if (overrided.fileDescriptor != null) {
                 overrided

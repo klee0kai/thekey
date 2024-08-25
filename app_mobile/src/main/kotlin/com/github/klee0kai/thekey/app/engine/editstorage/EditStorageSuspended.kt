@@ -2,6 +2,7 @@ package com.github.klee0kai.thekey.app.engine.editstorage
 
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.engine.model.ChPasswStrategy
+import com.github.klee0kai.thekey.app.engine.model.CreateStorageConfig
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.engine.model.DecryptedOtpNote
 import com.github.klee0kai.thekey.app.engine.model.Storage
@@ -20,8 +21,11 @@ class EditStorageSuspended {
         findStorageInfo(path)
     }
 
-    suspend fun createStorage(storage: Storage): Int = engineWrite(storage.path) {
-        createStorage(storage)
+    suspend fun createStorage(
+        storage: Storage,
+        createStorageConfig: CreateStorageConfig,
+    ): Int = engineWrite(storage.path) {
+        createStorage(storage, createStorageConfig)
     }
 
     suspend fun editStorage(storage: Storage): Int = engineWrite(storage.path) {

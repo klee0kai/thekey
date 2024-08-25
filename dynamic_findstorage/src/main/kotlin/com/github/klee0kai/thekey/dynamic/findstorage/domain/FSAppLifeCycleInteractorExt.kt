@@ -9,12 +9,15 @@ class FSAppLifeCycleInteractorExt(
 ) : AppLifeCycleInteractor by origin {
 
     private val scope = FSDI.defaultThreadScope()
+    private val settings = FSDI.fsSettingsRepositoryLazy()
     private val findStorageInteractor = FSDI.findStoragesInteractorLazy()
 
     override fun appStarted() {
         origin.appStarted()
         scope.launch {
-            findStorageInteractor().findStoragesIfNeed()
+            if (settings().autoSearchEnabled()) {
+                findStorageInteractor().findStoragesIfNeed()
+            }
         }
     }
 }

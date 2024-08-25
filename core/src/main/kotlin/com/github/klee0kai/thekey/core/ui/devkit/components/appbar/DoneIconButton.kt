@@ -17,10 +17,12 @@ import org.jetbrains.annotations.VisibleForTesting
 @Composable
 fun DoneIconButton(
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
     onClick: () -> Unit = {},
 ) {
     IconButton(
         modifier = modifier,
+        enabled = enabled,
         onClick = onClick,
     ) {
         Icon(

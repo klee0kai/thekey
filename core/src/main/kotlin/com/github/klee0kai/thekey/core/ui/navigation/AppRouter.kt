@@ -29,8 +29,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.emptyFlow
 
-interface AppRouter : RouterContext, DeeplinkRouter, ComposeRouter, SnackRouter, NavBoardRouter,
-    ActivityRouter, PermissionsRouter
+interface AppRouter : RouterContext,
+    DeeplinkRouter,
+    ComposeRouter,
+    KeyBoardRouter,
+    SnackRouter,
+    NavBoardRouter,
+    ActivityRouter,
+    PermissionsRouter
 
 interface ComposeRouter {
 
@@ -74,7 +80,6 @@ interface NavBoardRouter {
 
 }
 
-
 interface ActivityRouter {
 
     fun navigate(intent: Intent): Flow<ActivityResult> = emptyFlow()
@@ -82,6 +87,13 @@ interface ActivityRouter {
     fun navigate(sender: IntentSender): Flow<ActivityResult> = emptyFlow()
 
     fun onResult(result: ActivityResult) = Unit
+
+}
+
+
+interface KeyBoardRouter {
+
+    fun hideKeyboard() = Unit
 
 }
 

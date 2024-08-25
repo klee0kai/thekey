@@ -19,6 +19,7 @@ using namespace thekey_v2;
 
 typedef brooklyn::EngineStorageK2Storage JvmStorage2;
 typedef brooklyn::EngineModelStorage JvmStorageInfo;
+typedef brooklyn::EngineModelCreateStorageConfig JvmCreateConfig;
 typedef brooklyn::EngineModelGenPasswParams JvmGenPasswParams;
 typedef brooklyn::EngineModelDecryptedPassw JvmDecryptedPassw;
 typedef brooklyn::EngineModelDecryptedNote JvmDecryptedNote;
@@ -49,7 +50,7 @@ JvmStorageInfo JvmStorage2::info() {
     return {};
 }
 
-void JvmStorage2::login(const std::string &passw) {
+void JvmStorage2::login(const std::string &passw, const JvmCreateConfig &createConfig) {
     auto fileDescriptor = getFileDescriptor();
     storages.erase(getEngineIdentifier());
     shared_ptr<KeyStorageV2> storage = {};
@@ -58,7 +59,12 @@ void JvmStorage2::login(const std::string &passw) {
         if (storage) storage->setSingleDescriptorMode(1);
     } else {
         auto storageInfo = storageFullInfo(getStoragePath());
-        if (!storageInfo) createStorage(Storage{.file = getStoragePath()});
+        if (!storageInfo)
+            createStorage(
+                    Storage{.file = getStoragePath()},
+                    createConfig.keyInteractionsCount,
+                    createConfig.interactionsCount
+            );
         storage = thekey_v2::storage(getStoragePath(), passw);
     }
     if (storage) {

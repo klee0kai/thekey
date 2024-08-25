@@ -205,7 +205,8 @@ namespace thekey_v2 {
          * @param group
          * @return
          */
-        virtual std::shared_ptr<DecryptedColorGroup> createColorGroup(const thekey_v2::DecryptedColorGroup &group = {});
+        virtual std::shared_ptr<DecryptedColorGroup>
+        createColorGroup(const thekey_v2::DecryptedColorGroup &group = {});
 
         /**
          * set color dGroup
@@ -237,12 +238,14 @@ namespace thekey_v2 {
          * @param flags TK2_GET_NOTE_PASSWORD
          * @return
          */
-        virtual std::shared_ptr<DecryptedNote> note(long long id, uint flags = TK2_GET_NOTE_PTR_ONLY);
+        virtual std::shared_ptr<DecryptedNote>
+        note(long long id, uint flags = TK2_GET_NOTE_PTR_ONLY);
 
         /**
          * @return created note. Has id
          */
-        virtual std::shared_ptr<DecryptedNote> createNote(const DecryptedNote &note = {}, uint flags = 0);
+        virtual std::shared_ptr<DecryptedNote>
+        createNote(const DecryptedNote &note = {}, uint flags = 0);
 
         /**
          *
@@ -263,7 +266,8 @@ namespace thekey_v2 {
          * @param flags decrypt otp flags
          * @return
          */
-        virtual std::list<DecryptedOtpNote> createOtpNotes(const std::string &uri, uint flags = TK2_GET_NOTE_PTR_ONLY);
+        virtual std::list<DecryptedOtpNote>
+        createOtpNotes(const std::string &uri, uint flags = TK2_GET_NOTE_PTR_ONLY);
 
         /**
          * create new OTP
@@ -271,7 +275,8 @@ namespace thekey_v2 {
          * @param flags
          * @return
          */
-        virtual std::shared_ptr<DecryptedOtpNote> createOtpNote(const DecryptedOtpNote &dnote = {}, uint flags = 0);
+        virtual std::shared_ptr<DecryptedOtpNote>
+        createOtpNote(const DecryptedOtpNote &dnote = {}, uint flags = 0);
 
         /**
          * Edit OTP dnote OTP dnote from uri
@@ -373,18 +378,22 @@ namespace thekey_v2 {
          */
         virtual void snapshot(const DataSnapshot &data);
 
-
     };
 
     std::shared_ptr<StorageInfo> storageFullInfo(const std::string &file);
 
-    int createStorage(const thekey::Storage &storage);
+    int createStorage(
+            const thekey::Storage &storage,
+            const int &keyInteractionsCount = 1000,
+            const int &interactionsCount = 1000
+    );
 
     int createStorageWithHeader(const std::string &storage, const StorageHeaderFlat &headerFlat);
 
     std::shared_ptr<KeyStorageV2> storage(const std::string &path, const std::string &passw);
 
-    std::shared_ptr<KeyStorageV2> storage(const int &fd, const std::string &path, const std::string &passw);
+    std::shared_ptr<KeyStorageV2>
+    storage(const int &fd, const std::string &path, const std::string &passw);
 
     std::shared_ptr<CryptContext> cryptContext(
             const std::string &passw,

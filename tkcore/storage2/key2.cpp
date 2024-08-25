@@ -69,7 +69,11 @@ shared_ptr<StorageInfo> thekey_v2::storageFullInfo(const std::string &file) {
     return storage;
 }
 
-int thekey_v2::createStorage(const thekey::Storage &storage) {
+int thekey_v2::createStorage(
+        const thekey::Storage &storage,
+        const int &keyInteractionsCount,
+        const int &interactionsCount
+) {
     int fd = open(storage.file.c_str(), O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
     if (fd < 0) {
         keyError = KEY_OPEN_FILE_ERROR;
@@ -82,7 +86,8 @@ int thekey_v2::createStorage(const thekey::Storage &storage) {
     strncpy(header.name, storage.name.c_str(), STORAGE_NAME_LEN);
     strncpy(header.description, storage.description.c_str(), STORAGE_DESCRIPTION_LEN);
     header.cryptType(Default);
-    header.interactionsCount(1000);
+    header.keyInteractionsCount(MAX(keyInteractionsCount, 10));
+    header.interactionsCount(MAX(interactionsCount, 10));
     RAND_bytes(header.salt, SALT_LEN);
     auto wroteLen = write(fd, &header, sizeof(header));
     if (wroteLen != sizeof(header)) {
@@ -131,7 +136,7 @@ thekey_v2::storage(const int &fd, const std::string &path, const std::string &pa
     }
     auto ctx = cryptContext(
             passw,
-            header->interactionsCount(),
+            header->keyInteractionsCount(),
             header->salt
     );
 
