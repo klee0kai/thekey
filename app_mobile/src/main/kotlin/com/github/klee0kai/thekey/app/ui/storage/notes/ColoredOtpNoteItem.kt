@@ -24,10 +24,10 @@ import androidx.wear.compose.material.Icon
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.domain.model.ColoredOtpNote
-import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
-import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
+import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
+import com.github.klee0kai.thekey.core.utils.views.DebugDarkContentPreview
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.skeleton
 import com.github.klee0kai.thekey.core.utils.views.visibleOnTargetAlpha
@@ -38,7 +38,6 @@ fun ColoredOtpNoteItem(
     modifier: Modifier = Modifier,
     otp: ColoredOtpNote = ColoredOtpNote(),
     icon: (@Composable () -> Unit)? = null,
-    overlayContent: @Composable () -> Unit = {},
 ) {
     val colorScheme = LocalColorScheme.current
     val animatedNote by animateTargetCrossFaded(otp)
@@ -46,7 +45,7 @@ fun ColoredOtpNoteItem(
 
     ConstraintLayout(
         modifier = modifier
-            .defaultMinSize(minHeight = 46.dp)
+            .defaultMinSize(minHeight = 56.dp)
             .fillMaxWidth()
     ) {
         val (
@@ -162,22 +161,22 @@ fun ColoredOtpNoteItem(
             }
         }
 
-
-        overlayContent()
     }
 }
 
+@OptIn(DebugOnly::class)
 @VisibleForTesting
 @Composable
 @Preview
-fun ColoredOtpNoteSkeletonPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
+fun ColoredOtpNoteSkeletonPreview() = DebugDarkContentPreview {
     ColoredOtpNoteItem(otp = ColoredOtpNote(isLoaded = false))
 }
 
+@OptIn(DebugOnly::class)
 @VisibleForTesting
 @Composable
 @Preview
-fun ColoredOtpNoteDummyPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
+fun ColoredOtpNoteDummyPreview() = DebugDarkContentPreview {
     ColoredOtpNoteItem(
         otp = ColoredOtpNote(
             issuer = "some.super.site.com",
@@ -191,10 +190,11 @@ fun ColoredOtpNoteDummyPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     )
 }
 
+@OptIn(DebugOnly::class)
 @VisibleForTesting
 @Composable
 @Preview
-fun ColoredOtpNoteDummyNoGroupPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
+fun ColoredOtpNoteDummyNoGroupPreview() = DebugDarkContentPreview {
     ColoredOtpNoteItem(
         otp = ColoredOtpNote(
             issuer = "some.super.site.com",
@@ -205,10 +205,11 @@ fun ColoredOtpNoteDummyNoGroupPreview() = AppTheme(theme = DefaultThemes.darkThe
     )
 }
 
+@OptIn(DebugOnly::class)
 @VisibleForTesting
 @Composable
 @Preview
-fun ColoredOtpNoteDummyIconPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
+fun ColoredOtpNoteDummyIconPreview() = DebugDarkContentPreview {
     ColoredOtpNoteItem(
         otp = ColoredOtpNote(
             issuer = "some.super.site.com",

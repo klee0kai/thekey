@@ -4,6 +4,7 @@ package com.github.klee0kai.thekey.app.ui.storage.notes
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -36,22 +37,21 @@ import com.github.klee0kai.thekey.app.ui.storage.StorageScreen
 import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenterDummy
 import com.github.klee0kai.thekey.app.ui.storages.components.GroupsSelectContent
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
-import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.SimpleBottomSheetScaffold
 import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.topContentAlphaFromDrag
 import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.topContentOffsetFromDrag
 import com.github.klee0kai.thekey.core.ui.devkit.components.FabSimpleInContainer
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
-import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.common.Dummy
+import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
 import com.github.klee0kai.thekey.core.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
+import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
+import com.github.klee0kai.thekey.core.utils.views.rememberClickDebouncedArg
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
-import com.github.klee0kai.thekey.core.utils.views.topDp
-import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
@@ -62,8 +62,9 @@ fun NotesContent(
     isPageFullyAvailable: Boolean = false,
     onDrag: (Float) -> Unit = {},
 ) {
-    val presenter by rememberOnScreenRef { DI.storagePresenter(dest.identifier()) }
     val router = LocalRouter.current
+    val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
+    val presenter by rememberOnScreenRef { DI.storagePresenter(dest.identifier()) }
     val selectedGroup by presenter!!.selectedGroupId.collectAsState(key = Unit, initial = null)
     val groups by presenter!!.filteredColorGroups.collectAsState(key = Unit, initial = emptyList())
     var dragProgress by remember { mutableFloatStateOf(0f) }
@@ -75,7 +76,7 @@ fun NotesContent(
         modifier = modifier,
         topContentSize = 170.dp + AppBarConst.appBarSize,
         topContentModifier = Modifier.padding(top = AppBarConst.appBarSize),
-        topMargin = secondaryTabsHeight + WindowInsets.safeContent.topDp,
+        topMargin = secondaryTabsHeight + safeContentPaddings.calculateTopPadding(),
         onDrag = {
             dragProgress = it
             onDrag.invoke(it)
@@ -86,10 +87,10 @@ fun NotesContent(
                     .alpha(dragProgress.topContentAlphaFromDrag())
                     .offset(y = dragProgress.topContentOffsetFromDrag()),
                 selectedGroup = selectedGroup,
-                onAdd = { router.navigate(dest.createGroup()) },
+                onAdd = rememberClickDebounced { router.navigate(dest.createGroup()) },
                 colorGroups = groups,
-                onGroupSelected = { presenter?.selectGroup(it.id) },
-                onGroupEdit = { router.navigate(dest.editGroup(it.id)) },
+                onGroupSelected = rememberClickDebouncedArg { presenter?.selectGroup(it.id) },
+                onGroupEdit = rememberClickDebouncedArg { router.navigate(dest.editGroup(it.id)) },
             )
         },
         sheetContent = {
@@ -104,7 +105,7 @@ fun NotesContent(
     if (addButtonVisible) {
         FabSimpleInContainer(
             modifier = Modifier.alpha(addButtonAlpha),
-            onClick = { router.navigate(dest.note()) },
+            onClick = rememberClickDebounced { router.navigate(dest.note()) },
             content = { Icon(Icons.Default.Add, contentDescription = "Add") }
         )
     }
@@ -114,13 +115,14 @@ fun NotesContent(
 @VisibleForTesting
 @Preview(device = Devices.PHONE)
 @Composable
-fun NotesContentPreview() = EdgeToEdgeTemplate {
-    AppTheme(theme = DefaultThemes.darkTheme) {
-        DI.hardResetToPreview()
-        DI.initPresenterModule(object : PresentersModule {
-            override fun storagePresenter(storageIdentifier: StorageIdentifier) =
-                StoragePresenterDummy()
-        })
+fun NotesContentPreview() {
+    DI.hardResetToPreview()
+    DI.initPresenterModule(object : PresentersModule {
+        override fun storagePresenter(storageIdentifier: StorageIdentifier) =
+            StoragePresenterDummy()
+    })
+
+    DebugDarkScreenPreview {
         StorageScreen(
             dest = StorageDestination(
                 path = Dummy.unicString, version = 2,
