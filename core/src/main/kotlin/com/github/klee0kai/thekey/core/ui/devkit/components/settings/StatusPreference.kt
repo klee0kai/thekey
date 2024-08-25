@@ -15,6 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -23,6 +24,8 @@ import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.views.animateContentSizeProduction
+import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.createAnchor
 import com.github.klee0kai.thekey.core.utils.views.horizontal
 import com.thedeanda.lorem.LoremIpsum
 import org.jetbrains.annotations.VisibleForTesting
@@ -42,6 +45,9 @@ fun StatusPreference(
         targetValue = statusColor,
         label = "status color"
     )
+    val textAnimated by animateTargetCrossFaded(target = text)
+    val hintAnimated by animateTargetCrossFaded(target = hint)
+    val statusAnimated by animateTargetCrossFaded(target = status)
 
     ConstraintLayout(
         modifier = modifier
@@ -55,10 +61,17 @@ fun StatusPreference(
             .fillMaxWidth()
             .wrapContentHeight(),
     ) {
-        val (textField, statusField, hintField) = createRefs()
+        val (
+            textField,
+            hintField,
+            statusField,
+        ) = createRefs()
+        val statusAnchorField = createAnchor(horizontalBias = 0.78f, verticalBias = 0.5f)
+
         Text(
             modifier = Modifier
                 .animateContentSizeProduction()
+                .alpha(textAnimated.alpha)
                 .constrainAs(textField) {
                     width = Dimension.fillToConstraints
                     linkTo(
@@ -70,15 +83,15 @@ fun StatusPreference(
                         endMargin = 6.dp,
                     )
                 },
-            text = text,
-
-            )
+            text = textAnimated.current,
+        )
 
         if (hint.isNotBlank()) {
             Text(
                 modifier = Modifier
                     .animateContentSizeProduction()
                     .alpha(0.5f)
+                    .alpha(hintAnimated.alpha)
                     .constrainAs(hintField) {
                         width = Dimension.fillToConstraints
                         linkTo(
@@ -91,24 +104,28 @@ fun StatusPreference(
                             endMargin = 6.dp,
                         )
                     },
-                text = hint,
+                text = hintAnimated.current,
                 style = theme.typeScheme.typography.labelSmall,
             )
         }
 
+
         Text(
             modifier = Modifier
                 .animateContentSizeProduction()
+                .alpha(statusAnimated.alpha)
                 .constrainAs(statusField) {
+                    width = Dimension.fillToConstraints
                     linkTo(
-                        start = parent.start,
+                        start = statusAnchorField.end,
                         bottom = parent.bottom,
                         top = parent.top,
                         end = parent.end,
-                        horizontalBias = 1f,
+                        horizontalBias = 0.5f,
                     )
                 },
-            text = status,
+            text = statusAnimated.current,
+            textAlign = TextAlign.Center,
             style = theme.typeScheme.typography.bodyLarge,
             color = statusColorAnimated,
         )
