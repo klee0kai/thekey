@@ -1,6 +1,8 @@
 package com.github.klee0kai.thekey.app.ui.storage.presenter
 
+import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteGroupDestination
 import com.github.klee0kai.thekey.app.ui.storage.model.SearchState
 import com.github.klee0kai.thekey.app.ui.storage.model.StorageItem
 import com.github.klee0kai.thekey.app.ui.storage.model.filterBy
@@ -9,6 +11,9 @@ import com.github.klee0kai.thekey.app.ui.storage.model.sortableFlatText
 import com.github.klee0kai.thekey.app.ui.storage.model.storageItem
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
+import com.github.klee0kai.thekey.core.domain.model.feature.PaidFeature
+import com.github.klee0kai.thekey.core.domain.model.feature.PaidLimits
+import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
@@ -18,9 +23,11 @@ import kotlinx.coroutines.launch
 open class StoragePresenterImpl(
     val storageIdentifier: StorageIdentifier,
 ) : StoragePresenter {
+
     private val notesInteractor = DI.notesInteractorLazy(storageIdentifier)
     private val otpNotesInteractor = DI.otpNotesInteractorLazy(storageIdentifier)
     private val groupsInteractor = DI.groupsInteractorLazy(storageIdentifier)
+    private val billing = DI.billingInteractor()
 
     private val scope = DI.defaultThreadScope()
 
@@ -76,15 +83,26 @@ open class StoragePresenterImpl(
             ?.group
             ?.id
             ?: return@launch
-        if (oldNoteGroupId ==groupId){
+        if (oldNoteGroupId == groupId) {
             notesInteractor().setNotesGroup(listOf(notePt), 0)
-        }else {
+        } else {
             notesInteractor().setNotesGroup(listOf(notePt), groupId)
         }
     }
 
     override fun deleteGroup(id: Long) = scope.launch {
         groupsInteractor().removeGroup(id)
+    }
+
+    override fun addNewNoteGroup(appRouter: AppRouter?) = scope.launch {
+        val currentColorGroups = filteredColorGroups.firstOrNull()?.size ?: 0
+        if (billing.isAvailable(PaidFeature.UNLIMITED_NOTE_GROUPS)
+            || currentColorGroups < PaidLimits.PAID_NOTE_GROUPS_LIMIT
+        ) {
+            appRouter?.navigate(EditNoteGroupDestination(storageIdentifier))
+        } else {
+            appRouter?.snack(R.string.limited_in_free_version)
+        }
     }
 
 }

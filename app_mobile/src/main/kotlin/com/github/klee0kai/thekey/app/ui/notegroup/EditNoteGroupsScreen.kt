@@ -45,7 +45,6 @@ import com.github.klee0kai.thekey.app.ui.notegroup.presenter.EditNoteGroupsPrese
 import com.github.klee0kai.thekey.app.ui.notegroup.presenter.selectNote
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.NoteGroupIdentifier
-import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.Screen
@@ -55,17 +54,22 @@ import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.topContentOffsetFro
 import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
+import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DeleteIconButton
+import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DoneIconButton
 import com.github.klee0kai.thekey.core.ui.devkit.icons.BackMenuIcon
-import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.common.Dummy
+import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
+import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
+import com.github.klee0kai.thekey.core.utils.views.currentRef
+import com.github.klee0kai.thekey.core.utils.views.isIme
 import com.github.klee0kai.thekey.core.utils.views.rememberClickArg
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebouncedArg
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebouncedArg2
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
-import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
+import com.github.klee0kai.thekey.core.utils.views.rememberTargetCrossFaded
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.jetbrains.annotations.VisibleForTesting
 import kotlin.time.Duration.Companion.milliseconds
@@ -74,15 +78,18 @@ import kotlin.time.Duration.Companion.milliseconds
 fun EditNoteGroupsScreen(
     dest: EditNoteGroupDestination = EditNoteGroupDestination(),
 ) = Screen {
-    val router = LocalRouter.current
+    val router by LocalRouter.currentRef
     val theme = LocalTheme.current
     val safeContentPadding = WindowInsets.safeContent.asPaddingValues()
+    val imeIsVisibleAnimated by animateTargetCrossFaded(WindowInsets.isIme)
+
     val presenter by rememberOnScreenRef {
         DI.editNoteGroupPresenter(dest.identifier()).apply { init() }
     }
     val groupNameFieldFocusRequester = remember { FocusRequester() }
     val state by presenter!!.state.collectAsState(key = Unit, initial = EditNoteGroupsState())
-
+    val isSaveAvailable by rememberTargetCrossFaded { state.isSaveAvailable }
+    val isRemoveAvailable by rememberTargetCrossFaded { state.isRemoveAvailable }
     var dragProgress by remember { mutableFloatStateOf(0f) }
 
     SimpleBottomSheetScaffold(
@@ -103,7 +110,7 @@ fun EditNoteGroupsScreen(
                 onChangeGroupName = rememberClickArg {
                     presenter?.input { copy(name = it.take(1)) }
                 },
-                onSelect = rememberClickDebouncedArg(debounce = 100.milliseconds) {
+                onSelect = rememberClickDebouncedArg(debounce = 50.milliseconds) {
                     groupNameFieldFocusRequester.freeFocus()
                     presenter?.input { copy(selectedGroupId = it.id) }
                 }
@@ -115,7 +122,7 @@ fun EditNoteGroupsScreen(
                     .padding(top = 20.dp)
                     .fillMaxSize(),
                 dest = dest,
-                onSelect = rememberClickDebouncedArg2(debounce = 100.milliseconds) { notePt, selected ->
+                onSelect = rememberClickDebouncedArg2(debounce = 50.milliseconds) { notePt, selected ->
                     presenter?.selectNote(notePt, selected)
                 },
                 footer = { Spacer(modifier = Modifier.height(200.dp)) }
@@ -127,11 +134,26 @@ fun EditNoteGroupsScreen(
         modifier = Modifier,
         navigationIcon = {
             IconButton(
-                onClick = rememberClickDebounced { router.back() },
+                onClick = rememberClickDebounced { router?.back() },
                 content = { BackMenuIcon() },
             )
         },
         titleContent = { Text(text = stringResource(id = if (state.isEditMode) R.string.edit_group else R.string.create_storages_group)) },
+        actions = {
+            if (isRemoveAvailable.current) {
+                DeleteIconButton(
+                    modifier = Modifier
+                        .alpha(isRemoveAvailable.alpha),
+                    onClick = rememberClickDebounced { presenter?.remove(router) }
+                )
+            }
+            if (imeIsVisibleAnimated.current && isSaveAvailable.current) {
+                DoneIconButton(
+                    modifier = Modifier.alpha(imeIsVisibleAnimated.alpha),
+                    onClick = rememberClickDebounced { presenter?.save(router) }
+                )
+            }
+        }
     )
 
     Box(
@@ -145,13 +167,16 @@ fun EditNoteGroupsScreen(
                 end = 16.dp
             ),
     ) {
-        FilledTonalButton(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth(),
-            onClick = rememberClickDebounced { presenter?.save(router) }
-        ) {
-            Text(stringResource(R.string.save))
+        if (!imeIsVisibleAnimated.current && isSaveAvailable.current) {
+            FilledTonalButton(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .alpha(isSaveAvailable.alpha)
+                    .fillMaxWidth(),
+                onClick = rememberClickDebounced { presenter?.save(router) }
+            ) {
+                Text(stringResource(R.string.save))
+            }
         }
     }
 }
@@ -161,21 +186,22 @@ fun EditNoteGroupsScreen(
 @VisibleForTesting
 @Preview(device = Devices.PHONE)
 @Composable
-fun EditNoteGroupsSkeletonPreview() = EdgeToEdgeTemplate {
-    AppTheme(theme = DefaultThemes.darkTheme) {
-        DI.hardResetToPreview()
-        DI.initPresenterModule(object : PresentersModule {
-            override fun editNoteGroupPresenter(id: NoteGroupIdentifier) =
-                object : EditNoteGroupsPresenterDummy() {
-                    override val state = MutableStateFlow(
-                        EditNoteGroupsState(
-                            isSkeleton = true,
-                            isEditMode = false,
-                            colorGroupVariants = KeyColor.selectableColorGroups,
-                        )
+fun EditNoteGroupsSkeletonPreview() {
+    DI.hardResetToPreview()
+    DI.initPresenterModule(object : PresentersModule {
+        override fun editNoteGroupPresenter(id: NoteGroupIdentifier) =
+            object : EditNoteGroupsPresenterDummy() {
+                override val state = MutableStateFlow(
+                    EditNoteGroupsState(
+                        isSkeleton = true,
+                        isEditMode = false,
+                        colorGroupVariants = KeyColor.selectableColorGroups,
                     )
-                }
-        })
+                )
+            }
+    })
+
+    DebugDarkScreenPreview {
         EditNoteGroupsScreen(dest = EditNoteGroupDestination(groupId = Dummy.dummyId))
     }
 }

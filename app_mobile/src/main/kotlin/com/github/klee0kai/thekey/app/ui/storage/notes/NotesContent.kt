@@ -28,7 +28,6 @@ import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
-import com.github.klee0kai.thekey.app.ui.navigation.createGroup
 import com.github.klee0kai.thekey.app.ui.navigation.editGroup
 import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
@@ -48,6 +47,7 @@ import com.github.klee0kai.thekey.core.utils.common.Dummy
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
 import com.github.klee0kai.thekey.core.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
+import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebouncedArg
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
@@ -62,7 +62,7 @@ fun NotesContent(
     isPageFullyAvailable: Boolean = false,
     onDrag: (Float) -> Unit = {},
 ) {
-    val router = LocalRouter.current
+    val router by LocalRouter.currentRef
     val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
     val presenter by rememberOnScreenRef { DI.storagePresenter(dest.identifier()) }
     val selectedGroup by presenter!!.selectedGroupId.collectAsState(key = Unit, initial = null)
@@ -87,10 +87,10 @@ fun NotesContent(
                     .alpha(dragProgress.topContentAlphaFromDrag())
                     .offset(y = dragProgress.topContentOffsetFromDrag()),
                 selectedGroup = selectedGroup,
-                onAdd = rememberClickDebounced { router.navigate(dest.createGroup()) },
+                onAdd = rememberClickDebounced { presenter?.addNewNoteGroup(router) },
                 colorGroups = groups,
                 onGroupSelected = rememberClickDebouncedArg { presenter?.selectGroup(it.id) },
-                onGroupEdit = rememberClickDebouncedArg { router.navigate(dest.editGroup(it.id)) },
+                onGroupEdit = rememberClickDebouncedArg { router?.navigate(dest.editGroup(it.id)) },
             )
         },
         sheetContent = {
@@ -105,7 +105,7 @@ fun NotesContent(
     if (addButtonVisible) {
         FabSimpleInContainer(
             modifier = Modifier.alpha(addButtonAlpha),
-            onClick = rememberClickDebounced { router.navigate(dest.note()) },
+            onClick = rememberClickDebounced { router?.navigate(dest.note()) },
             content = { Icon(Icons.Default.Add, contentDescription = "Add") }
         )
     }

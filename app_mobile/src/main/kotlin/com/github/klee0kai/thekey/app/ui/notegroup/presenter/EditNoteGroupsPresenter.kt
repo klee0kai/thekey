@@ -3,6 +3,7 @@ package com.github.klee0kai.thekey.app.ui.notegroup.presenter
 import com.github.klee0kai.thekey.app.ui.notegroup.model.EditNoteGroupsState
 import com.github.klee0kai.thekey.app.ui.notegroup.model.SelectedNote
 import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
+import com.github.klee0kai.thekey.core.utils.coroutine.emptyJob
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
@@ -13,11 +14,13 @@ interface EditNoteGroupsPresenter {
 
     val allNotes: Flow<List<SelectedNote>> get() = emptyFlow()
 
-    fun input(block: EditNoteGroupsState.() -> EditNoteGroupsState): Job = Job()
+    fun input(block: EditNoteGroupsState.() -> EditNoteGroupsState): Job = emptyJob()
 
-    fun init(): Job = Job()
+    fun init(): Job = emptyJob()
 
-    fun save(appRouter: AppRouter?): Job = Job()
+    fun save(router: AppRouter?): Job = emptyJob()
+
+    fun remove(router: AppRouter?): Job = emptyJob()
 
 }
 

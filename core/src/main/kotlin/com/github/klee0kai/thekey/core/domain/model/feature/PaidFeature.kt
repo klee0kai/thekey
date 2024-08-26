@@ -5,9 +5,17 @@ enum class PaidFeature {
      * Storage color group is unlimited.
      * For free account limit is PAID_GROUPS_LIMIT
      *
-     * @see PaidLimits.PAID_GROUPS_LIMIT
+     * @see PaidLimits.PAID_STORAGE_GROUPS_LIMIT
      */
     UNLIMITED_STORAGE_GROUPS,
+
+    /**
+     * Note color group is unlimited.
+     * For free account limit is PAID_GROUPS_LIMIT
+     *
+     * @see PaidLimits.PAID_NOTE_GROUPS_LIMIT
+     */
+    UNLIMITED_NOTE_GROUPS,
 
     /**
      * Only a limited number of favorite storages are displayed in the side navigation.
@@ -33,7 +41,12 @@ object PaidLimits {
     /**
      * Only a limited number of color groups are available for a free account.
      */
-    const val PAID_GROUPS_LIMIT = 3
+    const val PAID_STORAGE_GROUPS_LIMIT = 3
+
+    /**
+     * Only a limited number of color groups are available for a free account.
+     */
+    const val PAID_NOTE_GROUPS_LIMIT = 3
 
     /**
      * Only a limited number of favorite storages are displayed in the side navigation.

@@ -180,4 +180,5 @@
     <string name="common">Common</string>
     <string name="enabled">Enabled</string>
     <string name="disabled">Disabled</string>
+    <string name="color_group_changed">Color group changed</string>
 </resources>

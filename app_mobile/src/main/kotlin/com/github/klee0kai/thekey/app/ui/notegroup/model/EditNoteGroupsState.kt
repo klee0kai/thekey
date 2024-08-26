@@ -8,6 +8,8 @@ import kotlinx.parcelize.Parcelize
 data class EditNoteGroupsState(
     val isEditMode: Boolean = false,
     val isSkeleton: Boolean = false,
+    val isSaveAvailable: Boolean = false,
+    val isRemoveAvailable: Boolean = false,
     val colorGroupVariants: List<ColorGroup> = emptyList(),
     val selectedGroupId: Long = 0,
     val name: String = "",

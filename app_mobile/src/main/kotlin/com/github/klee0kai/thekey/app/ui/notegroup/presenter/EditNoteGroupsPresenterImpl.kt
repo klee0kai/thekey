@@ -10,7 +10,7 @@ import com.github.klee0kai.thekey.core.di.identifiers.NoteGroupIdentifier
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
-import com.github.klee0kai.thekey.core.utils.common.launchLatest
+import com.github.klee0kai.thekey.core.utils.common.launch
 import com.github.klee0kai.thekey.core.utils.common.launchSafe
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -20,10 +20,9 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 
 open class EditNoteGroupsPresenterImpl(
-    val groupIdentifier: NoteGroupIdentifier,
+    private val groupIdentifier: NoteGroupIdentifier,
 ) : EditNoteGroupsPresenter {
 
     private val scope = DI.defaultThreadScope()
@@ -44,66 +43,82 @@ open class EditNoteGroupsPresenterImpl(
     }.flowOn(DI.defaultDispatcher())
 
     private var originalGroup: ColorGroup? = null
+    private var originSelectedNotes: Set<Long> = emptySet()
 
-    override fun init() = scope.launchLatest("init") {
-        if (groupIdentifier.groupId != null) {
-            // start in edit mode
-            state.update { it.copy(isEditMode = true, isSkeleton = true) }
-
-            originalGroup = interactor().groups
-                .firstOrNull()
-                ?.firstOrNull { it.id == groupIdentifier.groupId }
-                ?: return@launchLatest
-
-            notesInteractor().notes
-                .firstOrNull()
-                ?.filter { it.group.id == originalGroup?.id }
-                ?.map { it.ptnote }
-                ?.let { selectedNotes -> input { copy(selectedNotes = selectedNotes.toSet()) } }
-
-            val colorGroupVariants = KeyColor.selectableColorGroups
-            state.update {
-                it.copy(
-                    isSkeleton = false,
-                    selectedGroupId = colorGroupVariants
-                        .firstOrNull { selectable -> selectable.keyColor == originalGroup?.keyColor }
-                        ?.id ?: 0,
-                    colorGroupVariants = colorGroupVariants,
-                    name = originalGroup?.name ?: ""
-                )
-            }
-        } else {
-            // start in create mode
-            state.update {
-                it.copy(
-                    isSkeleton = false,
-                    isEditMode = false,
-                    colorGroupVariants = KeyColor.selectableColorGroups,
-                )
-            }
+    override fun init() = scope.launch {
+        if (!state.value.isSkeleton) {
+            // add unique buttons if needed
+            state.update { it.copy(isRemoveAvailable = it.isEditMode) }
+            return@launch
         }
+
+        originalGroup = interactor()
+            .groups
+            .firstOrNull()
+            ?.firstOrNull { it.id == groupIdentifier.groupId }
+
+        val selectedNotes = notesInteractor().notes
+            .firstOrNull()
+            ?.filter { it.group.id == originalGroup?.id }
+            ?.map { it.ptnote }
+            ?.toSet()
+            ?: emptySet()
+        originSelectedNotes = selectedNotes
+
+
+        val colorGroupVariants = when {
+//  todo QRCODE externalGroupRemoved && groupIdentifier.groupId == null -> listOf(externalsGroup) + KeyColor.selectableColorGroups
+            else -> KeyColor.selectableColorGroups
+        }
+
+        state.value = EditNoteGroupsState(
+            isSkeleton = false,
+            isEditMode = originalGroup != null,
+            isRemoveAvailable = originalGroup != null,
+            colorGroupVariants = colorGroupVariants,
+            selectedGroupId = colorGroupVariants
+                .firstOrNull { selectable -> selectable.keyColor == originalGroup?.keyColor }
+                ?.id ?: 0,
+            name = originalGroup?.name ?: "",
+            selectedNotes = selectedNotes,
+        )
     }
 
     override fun input(
         block: EditNoteGroupsState.() -> EditNoteGroupsState,
-    ) = scope.launch {
-        state.update { oldState -> block(oldState) }
+    ) = scope.launch(DI.mainDispatcher()) {
+        val oldState = state.value
+        var newState = block(oldState)
+        val newKeyColor = newState.selectedColorGroup?.keyColor
+        val fulfilled = newKeyColor != null && newKeyColor != KeyColor.NOCOLOR
+        val isSaveAvailable = when {
+            originalGroup != null -> fulfilled && (newKeyColor != originalGroup?.keyColor || originSelectedNotes != newState.selectedNotes)
+            else -> fulfilled
+        }
+        newState = newState.copy(
+            isSaveAvailable = isSaveAvailable,
+            isRemoveAvailable = newState.isRemoveAvailable && !isSaveAvailable,
+        )
+        state.value = newState
     }
 
-    override fun save(appRouter: AppRouter?) = scope.launchSafe {
+    override fun save(router: AppRouter?) = scope.launchSafe {
         val curState = state.value
-        val selectedKeyColor = curState.selectedColorGroup?.keyColor
-        if (selectedKeyColor == null || selectedKeyColor == KeyColor.NOCOLOR) {
-            appRouter?.snack(R.string.select_color)
-            return@launchSafe
-        }
-        val group = interactor().saveColorGroup(
-            DecryptedColorGroup(
-                id = groupIdentifier.groupId ?: 0,
-                color = selectedKeyColor.ordinal,
-                name = curState.name
-            )
-        ).await() ?: return@launchSafe
+        val selectedKeyColor = curState.selectedColorGroup?.keyColor ?: return@launchSafe
+        router?.back()
+        clean()
+
+        // state is cleared. using collected info
+
+        val group = interactor()
+            .saveColorGroup(
+                DecryptedColorGroup(
+                    id = groupIdentifier.groupId ?: 0,
+                    color = selectedKeyColor.ordinal,
+                    name = curState.name
+                )
+            ).await()
+            ?: return@launchSafe
 
         val selectNotes = curState.selectedNotes
         val resetNotes = allNotes.firstOrNull()
@@ -113,12 +128,26 @@ open class EditNoteGroupsPresenterImpl(
 
         notesInteractor().setNotesGroup(selectNotes.toList(), group.id)
         notesInteractor().setNotesGroup(resetNotes, 0L)
-
-        appRouter?.back()
-        clear()
+        router?.snack(R.string.color_group_changed)
     }
 
-    private fun clear() = scope.launch {
+    override fun remove(router: AppRouter?) = scope.launchSafe {
+        val originGroup = originalGroup ?: return@launchSafe
+
+        router?.back()
+        clean()
+
+        val resetNotes = allNotes.firstOrNull()
+            ?.filter { note -> note.group.id == originGroup.id }
+            ?.map { it.ptnote }
+            ?: emptyList()
+
+        interactor().removeGroup(originGroup.id).join()
+        notesInteractor().setNotesGroup(resetNotes, 0L).join()
+        router?.snack(R.string.color_group_deleted)
+    }
+
+    private fun clean() {
         state.value = EditNoteGroupsState(isSkeleton = true)
     }
 
