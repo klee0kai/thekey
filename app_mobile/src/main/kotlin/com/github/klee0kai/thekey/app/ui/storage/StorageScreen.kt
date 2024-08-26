@@ -168,7 +168,8 @@ fun StorageScreen(
                             .padding(
                                 top = safeContentPaddings.calculateTopPadding() + AppBarConst.appBarSize
                                         + SecondaryTabsConst.allHeight // tabs
-                                        + 16.dp // space
+                                        + 16.dp, // space
+                                bottom = safeDrawingPaddings.calculateBottomPadding() + 16.dp,
                             ),
                         dest = dest,
                     )
