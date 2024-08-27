@@ -11,6 +11,7 @@ data class CommonColorScheme(
     val windowBackgroundColor: Color,
     val navigationBoard: NavigationBoardColors,
     val popupMenu: PopupMenuColors,
+    val whiteTextButtonColors: ButtonColors,
     val grayTextButtonColors: ButtonColors,
     val hintTextColor: Color,
     val greenColor: Color,

@@ -66,6 +66,7 @@ import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
 import com.github.klee0kai.thekey.core.utils.views.accumulate
 import com.github.klee0kai.thekey.core.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
+import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.hideOnTargetAlpha
 import com.github.klee0kai.thekey.core.utils.views.horizontal
 import com.github.klee0kai.thekey.core.utils.views.rememberAlphaAnimate
@@ -87,7 +88,7 @@ fun StorageScreen(
     dest: StorageDestination = StorageDestination()
 ) = Screen {
     val isEditMode = LocalAppConfig.current.isViewEditMode
-    val router = LocalRouter.current
+    val router by LocalRouter.currentRef
     val theme = LocalTheme.current
     val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
     val safeDrawingPaddings = WindowInsets.safeDrawing.asPaddingValues()
@@ -100,7 +101,7 @@ fun StorageScreen(
     )
     val searchFocusRequester = remember { FocusRequester() }
     val searchState by presenter!!.searchState.collectAsState(key = Unit, initial = SearchState())
-    val isNavBoardOpen by router.isNavBoardOpen.collectAsState(key = Unit, initial = false)
+    val isNavBoardOpen by router!!.isNavBoardOpen.collectAsState(key = Unit, initial = false)
     var dragProgress by remember { mutableFloatStateOf(0f) }
     val pagerState = rememberPagerState(
         initialPage = dest.selectedPage.coerceIn(titles.indices),
@@ -135,7 +136,7 @@ fun StorageScreen(
 
     BackHandler(enabled = searchState.isActive || isNavBoardOpen) {
         when {
-            isNavBoardOpen -> router.hideNavigationBoard()
+            isNavBoardOpen -> router?.hideNavigationBoard()
             searchState.isActive -> presenter?.searchFilter(SearchState())
         }
     }
@@ -194,7 +195,7 @@ fun StorageScreen(
     AppBarStates(
         navigationIcon = {
             IconButton(
-                onClick = rememberClickDebounced { router.showNavigationBoard() },
+                onClick = rememberClickDebounced { router?.showNavigationBoard() },
                 content = { BackMenuIcon(isMenu = true) },
             )
         },
