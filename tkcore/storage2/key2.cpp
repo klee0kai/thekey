@@ -1188,6 +1188,35 @@ std::shared_ptr<DecryptedPassw> KeyStorageV2::genPasswHistory(long long id, cons
     return make_shared<DecryptedPassw>(dPassw);
 }
 
+int KeyStorageV2::removePasswHistory(long long id) {
+    auto data = snapshot();
+    data.cryptedGeneratedPassws = make_shared<list<CryptedPassword>>(
+            list<CryptedPassword>(*data.cryptedGeneratedPassws));
+    data.cryptedNotes = make_shared<list<CryptedNote>>(list<CryptedNote>(*data.cryptedNotes));
+
+    {
+        auto it = find_if(data.cryptedGeneratedPassws->begin(), data.cryptedGeneratedPassws->end(),
+                          [&](const CryptedPassword &it) { return it.id == id; });
+        if (it != data.cryptedGeneratedPassws->end()) {
+            data.cryptedGeneratedPassws->erase(it);
+            snapshot(data);
+            return 0;
+        }
+    }
+
+    for (auto &note: *data.cryptedNotes) {
+        auto it = find_if(note.history.begin(), note.history.end(),
+                          [&](const CryptedPassword &it) { return it.id == id; });
+
+        if (it != note.history.end()) {
+            note.history.erase(it);
+            snapshot(data);
+            return 0;
+        }
+    }
+    return KEY_UNKNOWN_ERROR;
+}
+
 int KeyStorageV2::appendPasswHistory(const std::vector<DecryptedPassw> &hist) {
     lock_guard guard(editMutex);
     auto data = snapshot();

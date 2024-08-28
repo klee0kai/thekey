@@ -84,6 +84,8 @@ class K1Storage(
     @Synchronized
     external override fun getGenPassw(ptNote: Long): DecryptedPassw
 
+    override fun removeHist(histPt: Long): Int = -1
+
     override fun findTwins(passw: String): TwinsCollection? = null
 
 

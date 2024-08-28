@@ -54,6 +54,8 @@ interface CryptStorage {
 
     fun genHistory(info: Boolean): Array<DecryptedPassw>
 
+    fun removeHist(histPt: Long): Int
+
     fun lastGeneratedPassw(): String
 
     fun getGenPassw(ptNote: Long): DecryptedPassw

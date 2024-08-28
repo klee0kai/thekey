@@ -73,6 +73,8 @@ class K2Storage(
 
     external override fun genHistory(info: Boolean): Array<DecryptedPassw>
 
+    external override fun removeHist(histPt: Long): Int
+
     external override fun getGenPassw(ptNote: Long): DecryptedPassw
 
     external override fun findTwins(passw: String): TwinsCollection?

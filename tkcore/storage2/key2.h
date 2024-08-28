@@ -356,6 +356,18 @@ namespace thekey_v2 {
                 const uint &flags = TK2_GET_NOTE_HISTORY_FULL
         );
 
+
+        /**
+         * remove password from history.
+         * The identifier can be either from the history of generated passwords or from the history of notes.
+         *
+         * @param id history note identifier
+         * @return
+         */
+        virtual int removePasswHistory(
+                long long id
+        );
+
         /**
          * Append generated password history
          *

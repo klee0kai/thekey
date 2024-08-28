@@ -292,6 +292,13 @@ JvmDecryptedPassw JvmStorage2::getGenPassw(const int64_t &ptNote) {
     return jvmDecryptedPassw;
 }
 
+int JvmStorage2::removeHist(const int64_t &histPt) {
+    auto storage = findStorage(getEngineIdentifier());
+    if (!storage)return {};
+    storage->removePasswHistory(histPt);
+    return storage->save();
+}
+
 std::vector<JvmDecryptedOtpNote> JvmStorage2::otpNotes(const int &info) {
     auto storage = findStorage(getEngineIdentifier());
     if (!storage)return {};

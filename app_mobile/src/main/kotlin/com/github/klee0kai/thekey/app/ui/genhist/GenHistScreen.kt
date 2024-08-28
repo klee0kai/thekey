@@ -21,7 +21,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.FocusRequester
@@ -34,6 +36,7 @@ import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.ui.genhist.components.HistPasswItem
+import com.github.klee0kai.thekey.app.ui.genhist.components.popup.HistPasswPopup
 import com.github.klee0kai.thekey.app.ui.genhist.presenter.GenHistPresenterDummy
 import com.github.klee0kai.thekey.app.ui.navigation.model.GenHistDestination
 import com.github.klee0kai.thekey.app.ui.navigation.storageIdentifier
@@ -47,7 +50,10 @@ import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.SearchField
 import com.github.klee0kai.thekey.core.ui.devkit.components.settings.SectionHeader
 import com.github.klee0kai.thekey.core.ui.devkit.icons.BackMenuIcon
+import com.github.klee0kai.thekey.core.ui.devkit.overlay.PopupMenu
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
+import com.github.klee0kai.thekey.core.utils.possitions.onGlobalPositionState
+import com.github.klee0kai.thekey.core.utils.possitions.rememberViewPosition
 import com.github.klee0kai.thekey.core.utils.views.appBarVisible
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.currentRef
@@ -74,7 +80,9 @@ fun GenHistScreen(
     val safeContentPadding = WindowInsets.safeContent.asPaddingValues()
     val scrollState = rememberLazyListState()
     val appBarVisible by scrollState.appBarVisible()
-    val presenter by rememberOnScreenRef { DI.genHistPresenter(dest.storageIdentifier()) }
+    val presenter by rememberOnScreenRef {
+        DI.genHistPresenter(dest.storageIdentifier()).apply { init() }
+    }
     val histList by presenter!!.filteredHist.collectAsState(key = Unit, initial = null)
     val searchState by presenter!!.searchState.collectAsState(key = Unit, initial = SearchState())
     val searchFocusRequester = remember { FocusRequester() }
@@ -116,21 +124,46 @@ fun GenHistScreen(
                 }
             }
 
-            item(hist.passwPtr) {
+            item(hist.histPtr) {
+                var showMenu by remember { mutableStateOf(false) }
+                val position = rememberViewPosition()
+
                 HistPasswItem(
                     modifier = Modifier
+                        .onGlobalPositionState(position)
                         .ifProduction { animateItemPlacement() }
                         .combinedClickable(
                             onClick = rememberClick(hist) {
-
+                                showMenu = false
+                                presenter?.savePassw(hist.histPtr, router)
                             },
-                            onLongClick = rememberClick(hist) {
-
-                            },
+                            onLongClick = rememberClick(hist) { showMenu = !showMenu },
                         )
                         .padding(horizontal = safeContentPadding.horizontal(minValue = 16.dp)),
                     passw = hist,
                 )
+
+                PopupMenu(
+                    visible = showMenu,
+                    positionAnchor = position,
+                    horizontalBias = 0.8f,
+                    onDismissRequest = rememberClickDebounced { showMenu = false }
+                ) {
+                    HistPasswPopup(
+                        onSave = rememberClickDebounced(hist) {
+                            showMenu = false
+                            presenter?.savePassw(hist.histPtr, router)
+                        },
+                        onCopy = rememberClickDebounced(hist) {
+                            showMenu = false
+                            presenter?.copyPassw(hist.histPtr, router)
+                        },
+                        onRemove = rememberClickDebounced(hist) {
+                            showMenu = false
+                            presenter?.removePassw(hist.histPtr, router)
+                        },
+                    )
+                }
             }
         }
 

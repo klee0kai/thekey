@@ -7,7 +7,7 @@ import java.util.Date
 
 @Parcelize
 data class HistPassw(
-    val passwPtr: Long = 0,
+    val histPtr: Long = 0,
     val passw: String = "",
     /**
      * change time in milliseconds
