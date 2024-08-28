@@ -1,80 +1,191 @@
+@file:OptIn(ExperimentalFoundationApi::class)
+
 package com.github.klee0kai.thekey.app.ui.genhist
 
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.compose.ui.unit.dp
 import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.ui.genhist.components.HistPasswItem
-import com.github.klee0kai.thekey.app.ui.genhist.presenter.GenHistPresenter
+import com.github.klee0kai.thekey.app.ui.genhist.presenter.GenHistPresenterDummy
 import com.github.klee0kai.thekey.app.ui.navigation.model.GenHistDestination
 import com.github.klee0kai.thekey.app.ui.navigation.storageIdentifier
+import com.github.klee0kai.thekey.app.ui.storage.model.SearchState
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
-import com.github.klee0kai.thekey.core.domain.model.HistPassw
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
+import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.SearchField
+import com.github.klee0kai.thekey.core.ui.devkit.components.settings.SectionHeader
+import com.github.klee0kai.thekey.core.ui.devkit.icons.BackMenuIcon
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
-import com.github.klee0kai.thekey.core.utils.common.Dummy
+import com.github.klee0kai.thekey.core.utils.views.appBarVisible
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
+import com.github.klee0kai.thekey.core.utils.views.currentRef
+import com.github.klee0kai.thekey.core.utils.views.hideOnTargetAlpha
+import com.github.klee0kai.thekey.core.utils.views.horizontal
+import com.github.klee0kai.thekey.core.utils.views.ifProduction
+import com.github.klee0kai.thekey.core.utils.views.rememberClick
+import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
+import com.github.klee0kai.thekey.core.utils.views.rememberClickDebouncedArg
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
+import com.github.klee0kai.thekey.core.utils.views.rememberTargetCrossFaded
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
-import kotlinx.coroutines.flow.MutableStateFlow
 import org.jetbrains.annotations.VisibleForTesting
+import kotlin.time.Duration
+
+private const val SearchTitleId = 0
+private const val MainTitleId = 1
 
 @Composable
 fun GenHistScreen(
     dest: GenHistDestination = GenHistDestination(),
 ) {
-    val router = LocalRouter.current
+    val router by LocalRouter.currentRef
+    val safeContentPadding = WindowInsets.safeContent.asPaddingValues()
+    val scrollState = rememberLazyListState()
+    val appBarVisible by scrollState.appBarVisible()
     val presenter by rememberOnScreenRef { DI.genHistPresenter(dest.storageIdentifier()) }
-    val hist by presenter!!.histFlow.collectAsState(key = Unit, initial = null)
+    val histList by presenter!!.filteredHist.collectAsState(key = Unit, initial = null)
+    val searchState by presenter!!.searchState.collectAsState(key = Unit, initial = SearchState())
+    val searchFocusRequester = remember { FocusRequester() }
 
-    AppBarStates(
-        navigationIcon = {
-            IconButton(onClick = { router.back() }) {
-                Icon(
-                    Icons.AutoMirrored.Default.ArrowBack,
-                    contentDescription = null,
-                )
-            }
-        },
-    ) { Text(text = stringResource(id = R.string.gen_history)) }
+    val targetTitleId by rememberTargetCrossFaded {
+        when {
+            searchState.isActive -> SearchTitleId
+            else -> MainTitleId
+        }
+    }
 
-    ConstraintLayout {
-        LazyColumn(
-            modifier = Modifier
-                .windowInsetsPadding(WindowInsets.safeContent)
-                .padding(top = AppBarConst.appBarSize)
-                .fillMaxSize()
+    BackHandler(enabled = searchState.isActive) {
+        presenter?.searchFilter(SearchState())
+    }
 
-        ) {
-            hist?.forEach { passw ->
-                item {
-                    HistPasswItem(passw = passw)
+    LazyColumn(
+        state = scrollState,
+        modifier = Modifier
+            .fillMaxSize(),
+    ) {
+        item("start_spacer") {
+            Spacer(
+                modifier = Modifier
+                    .ifProduction { animateItemPlacement() }
+                    .height(safeContentPadding.calculateTopPadding() + AppBarConst.appBarSize)
+            )
+        }
+
+        var oldChDate: String? = null
+        histList?.forEach { hist ->
+            if (!hist.changeDateStr.isNullOrBlank() && hist.changeDateStr != oldChDate) {
+                oldChDate = hist.changeDateStr
+                item("sec-${hist.changeDateStr}") {
+                    SectionHeader(
+                        modifier = Modifier
+                            .ifProduction { animateItemPlacement() },
+                        text = hist.changeDateStr ?: ""
+                    )
                 }
+            }
+
+            item(hist.passwPtr) {
+                HistPasswItem(
+                    modifier = Modifier
+                        .ifProduction { animateItemPlacement() }
+                        .combinedClickable(
+                            onClick = rememberClick(hist) {
+
+                            },
+                            onLongClick = rememberClick(hist) {
+
+                            },
+                        )
+                        .padding(horizontal = safeContentPadding.horizontal(minValue = 16.dp)),
+                    passw = hist,
+                )
             }
         }
 
+        item("end_spacer") {
+            Spacer(
+                modifier = Modifier
+                    .ifProduction { animateItemPlacement() }
+                    .height(safeContentPadding.calculateBottomPadding() + 16.dp)
+            )
+        }
     }
+
+    AppBarStates(
+        isVisible = appBarVisible,
+        navigationIcon = {
+            IconButton(
+                onClick = rememberClickDebounced { router?.back() },
+                content = { BackMenuIcon() }
+            )
+        },
+        titleContent = {
+            when (targetTitleId.current) {
+                MainTitleId -> {
+                    Text(text = stringResource(id = R.string.gen_history))
+                }
+
+                SearchTitleId -> {
+                    SearchField(
+                        textModifier = Modifier
+                            .focusRequester(searchFocusRequester),
+                        searchText = searchState.searchText,
+                        onSearch = rememberClickDebouncedArg(debounce = Duration.ZERO) { newText ->
+                            presenter?.searchFilter(
+                                SearchState(
+                                    isActive = true,
+                                    searchText = newText
+                                )
+                            )
+                        },
+                        onClose = rememberClickDebounced { presenter?.searchFilter(SearchState()) }
+                    )
+                }
+            }
+        },
+        actions = {
+            if (targetTitleId.current != SearchTitleId) {
+                IconButton(
+                    modifier = Modifier
+                        .alpha(targetTitleId.hideOnTargetAlpha(SearchTitleId)),
+                    onClick = rememberClickDebounced { presenter?.searchFilter(SearchState(isActive = true)) },
+                    content = { Icon(Icons.Filled.Search, contentDescription = null) }
+                )
+            }
+        }
+    )
 }
 
 @VisibleForTesting
@@ -83,18 +194,10 @@ fun GenHistScreen(
 fun GenHistScreenPreview() = EdgeToEdgeTemplate {
     AppTheme(theme = DefaultThemes.darkTheme) {
         DI.initPresenterModule(object : PresentersModule {
-            override fun genHistPresenter(storageIdentifier: StorageIdentifier) = object : GenHistPresenter {
-                override val histFlow = MutableStateFlow(
-                    listOf(
-                        HistPassw(Dummy.dummyId, passw = "#@1", isLoaded = true),
-                        HistPassw(Dummy.dummyId, passw = "dsa#$@1", isLoaded = true),
-                        HistPassw(Dummy.dummyId, passw = "dsa#d!@", isLoaded = true),
-                        HistPassw(Dummy.dummyId),
-                        HistPassw(Dummy.dummyId),
-                        HistPassw(Dummy.dummyId, passw = "d2451", isLoaded = true),
-                    )
-                )
-            }
+            override fun genHistPresenter(storageIdentifier: StorageIdentifier) =
+                object : GenHistPresenterDummy(histCount = 30) {
+
+                }
         })
         GenHistScreen()
     }

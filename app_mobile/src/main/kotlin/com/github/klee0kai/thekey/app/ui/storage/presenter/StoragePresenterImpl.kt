@@ -14,10 +14,12 @@ import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.domain.model.feature.PaidFeature
 import com.github.klee0kai.thekey.core.domain.model.feature.PaidLimits
 import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 
 open class StoragePresenterImpl(
@@ -42,11 +44,11 @@ open class StoragePresenterImpl(
                 notes.map { it.storageItem() } + otpNotes.map { it.storageItem() }
                     .sortedBy { it.sortableFlatText() }
             }).collect(this)
-    }
+    }.flowOn(DI.defaultDispatcher())
 
     override val filteredColorGroups = flow<List<ColorGroup>> {
         groupsInteractor().groups.collect(this@flow)
-    }
+    }.flowOn(DI.defaultDispatcher())
 
     override val filteredItems = flow<List<StorageItem>> {
         combine(
@@ -62,9 +64,11 @@ open class StoragePresenterImpl(
                 filtList
             }
         ).collect(this@flow)
-    }
+    }.flowOn(DI.defaultDispatcher())
 
-    override fun searchFilter(newParams: SearchState) = scope.launch {
+    override fun searchFilter(
+        newParams: SearchState,
+    ) = scope.launch(start = CoroutineStart.UNDISPATCHED) {
         searchState.value = newParams
     }
 

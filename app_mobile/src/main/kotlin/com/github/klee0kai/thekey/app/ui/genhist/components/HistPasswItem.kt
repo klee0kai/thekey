@@ -1,5 +1,6 @@
 package com.github.klee0kai.thekey.app.ui.genhist.components
 
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -28,6 +29,7 @@ fun HistPasswItem(
 
     ConstraintLayout(
         modifier = modifier
+            .defaultMinSize(minHeight = 46.dp)
             .fillMaxWidth()
             .wrapContentHeight()
     ) {
@@ -39,7 +41,7 @@ fun HistPasswItem(
             modifier = Modifier
                 .alpha(passwAnimated.alpha)
                 .skeleton(!passwAnimated.current.isLoaded)
-                .padding(6.dp)
+                .padding(vertical = 6.dp)
                 .constrainAs(passwField) {
                     width = Dimension.fillToConstraints
                     linkTo(
@@ -49,8 +51,6 @@ fun HistPasswItem(
                         end = parent.end,
                         topMargin = 6.dp,
                         bottomMargin = 6.dp,
-                        startMargin = 16.dp,
-                        endMargin = 16.dp,
                         horizontalBias = 0f,
                         verticalBias = 0f,
                     )
