@@ -1,5 +1,6 @@
 package com.github.klee0kai.thekey.app.domain
 
+import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.data.mapping.toColoredStorage
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.engine.model.createConfig
@@ -9,9 +10,9 @@ import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.core.domain.model.feature.PaidFeature
 import com.github.klee0kai.thekey.core.domain.model.feature.PaidLimits
 import com.github.klee0kai.thekey.core.utils.common.MutexState
+import com.github.klee0kai.thekey.core.utils.common.asyncSafe
 import com.github.klee0kai.thekey.core.utils.common.launch
 import com.github.klee0kai.thekey.core.utils.common.stateFlow
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.firstOrNull
@@ -44,7 +45,7 @@ class LoginInteractor {
         storageIdentifier: StorageIdentifier,
         passw: String,
         ignoreLoginned: Boolean = false
-    ) = scope.async {
+    ) = scope.asyncSafe(globalRunDesc = R.string.logining) {
         var identifier = storageIdentifier
         if (identifier.version == 0) {
             identifier = identifier.copy(version = settingsRep().newStorageVersion())

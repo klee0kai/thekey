@@ -7,4 +7,6 @@
     <string name="creating_storage">Creating storage</string>
     <string name="moving_storage">Moving storage</string>
     <string name="deleting_storage">Deleting storage</string>
+    <string name="logining">Logining</string>
+    <string name="clean_old_hist">Clean old hist</string>
 </resources>

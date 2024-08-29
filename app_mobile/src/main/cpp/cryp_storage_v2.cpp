@@ -299,6 +299,18 @@ int JvmStorage2::removeHist(const int64_t &histPt) {
     return storage->save();
 }
 
+int JvmStorage2::removeOldHist(const int64_t &oldestTimeSec) {
+    auto storage = findStorage(getEngineIdentifier());
+    if (!storage)return {};
+    for (const auto &hist: storage->genPasswHistoryList()) {
+        if (hist.genTime < oldestTimeSec) {
+            storage->removePasswHistory(hist.id);
+        }
+    }
+    storage->save();
+    return 0;
+}
+
 std::vector<JvmDecryptedOtpNote> JvmStorage2::otpNotes(const int &info) {
     auto storage = findStorage(getEngineIdentifier());
     if (!storage)return {};

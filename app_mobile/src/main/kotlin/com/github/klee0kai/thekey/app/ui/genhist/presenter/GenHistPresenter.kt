@@ -16,8 +16,6 @@ interface GenHistPresenter {
 
     val filteredHist: Flow<List<HistPassw>> get() = emptyFlow()
 
-    fun init(): Job = emptyJob()
-
     fun searchFilter(newParams: SearchState): Job = emptyJob()
 
     fun savePassw(histPtr: Long, router: AppRouter?): Job = emptyJob()

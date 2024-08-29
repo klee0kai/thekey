@@ -1,6 +1,7 @@
 package com.github.klee0kai.thekey.app.di.dependencies
 
 import com.github.klee0kai.thekey.app.domain.EditStorageInteractor
+import com.github.klee0kai.thekey.app.domain.GenPasswInteractor
 import com.github.klee0kai.thekey.app.domain.GroupsInteractor
 import com.github.klee0kai.thekey.app.domain.LoginInteractor
 import com.github.klee0kai.thekey.app.domain.NotesInteractor
@@ -22,5 +23,7 @@ interface InteractorsDependencies {
     fun otpNotesInteractorLazy(storageIdentifier: StorageIdentifier): AsyncCoroutineProvide<OtpNotesInteractor>
 
     fun groupsInteractorLazy(storageIdentifier: StorageIdentifier): AsyncCoroutineProvide<GroupsInteractor>
+
+    fun genPasswInteractorLazy(storageIdentifier: StorageIdentifier): AsyncCoroutineProvide<GenPasswInteractor>
 
 }

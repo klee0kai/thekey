@@ -92,6 +92,12 @@ class CryptStorageSuspended(
 
     suspend fun removeHist(histPtr: Long): Int = engineRunRead { removeHist(histPtr) }
 
+    suspend fun removeOldHist(
+        oldestTimeSec: Long,
+    ): Int = engineRunWrite {
+        removeOldHist(oldestTimeSec)
+    }
+
     suspend fun getGenPassw(
         ptNote: Long,
     ): DecryptedPassw = engineRunRead {

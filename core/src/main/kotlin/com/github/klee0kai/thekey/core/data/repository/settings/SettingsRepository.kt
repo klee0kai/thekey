@@ -41,6 +41,7 @@ open class SettingsRepository {
         NewStorageSecureMode.LOW_SECURE
     }
     val histPeriod = delegate<HistPeriod>(SETTING_HISTORY_PERIOD) { HistPeriod.NORMAL }
+    val lastCleanHistTime = longDelegate(SETTING_LAST_HIST_CLEAN) { 0L }
     val analytics = booleanDelegate(SETTING_ANALYTICS) { false }
 
 
@@ -95,6 +96,7 @@ open class SettingsRepository {
         private const val SETTING_LOGIN_SECURE = "base_login_secure"
         private const val SETTING_ENCR_SEC = "base_encr_sec"
         private const val SETTING_HISTORY_PERIOD = "base_hist_period"
+        private const val SETTING_LAST_HIST_CLEAN = "base_lst_hst_cln"
         private const val SETTING_ANALYTICS = "base_analytics"
     }
 

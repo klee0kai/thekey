@@ -86,6 +86,8 @@ class K1Storage(
 
     override fun removeHist(histPt: Long): Int = -1
 
+    override fun removeOldHist(oldestTimeSec: Long): Int = -1
+
     override fun findTwins(passw: String): TwinsCollection? = null
 
 

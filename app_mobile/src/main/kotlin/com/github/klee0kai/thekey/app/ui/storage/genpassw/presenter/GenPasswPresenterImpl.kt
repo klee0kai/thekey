@@ -19,9 +19,11 @@ open class GenPasswPresenterImpl(
     val storageIdentifier: StorageIdentifier,
 ) : GenPasswPresenter {
 
-    private val clipboardManager by lazy { DI.ctx().getSystemService(CLIPBOARD_SERVICE) as ClipboardManager }
+    private val clipboardManager by lazy {
+        DI.ctx().getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+    }
     private val settings = DI.settingsRepositoryLazy()
-    private val engine = DI.cryptStorageEngineSafeLazy(storageIdentifier)
+    private val interactor = DI.genPasswInteractorLazy(storageIdentifier)
     private val router = DI.router()
     private val scope = DI.defaultThreadScope()
 
@@ -32,13 +34,13 @@ open class GenPasswPresenterImpl(
             passwLen = settings().genPasswLen(),
             symInPassw = settings().genPasswIncludeSymbols(),
             specSymbolsInPassw = settings().genPasswIncludeSpecSymbols(),
-            passw = engine().lastGeneratedPassw(),
+            passw = interactor().lastGeneratedPassw().await(),
         )
     }
 
 
     override fun generatePassw() = scope.launchLatest("gen_passw") {
-        val newPassw = engine().generateNewPassw(state.value.toGenParams())
+        val newPassw = interactor().generateNewPassw(state.value.toGenParams()).await()
 
         state.update {
             it.copy(passw = newPassw)

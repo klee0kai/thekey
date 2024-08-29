@@ -81,7 +81,7 @@ fun GenHistScreen(
     val scrollState = rememberLazyListState()
     val appBarVisible by scrollState.appBarVisible()
     val presenter by rememberOnScreenRef {
-        DI.genHistPresenter(dest.storageIdentifier()).apply { init() }
+        DI.genHistPresenter(dest.storageIdentifier())
     }
     val histList by presenter!!.filteredHist.collectAsState(key = Unit, initial = null)
     val searchState by presenter!!.searchState.collectAsState(key = Unit, initial = SearchState())
@@ -150,6 +150,7 @@ fun GenHistScreen(
                     onDismissRequest = rememberClickDebounced { showMenu = false }
                 ) {
                     HistPasswPopup(
+                        modifier = Modifier.padding(vertical = 4.dp),
                         onSave = rememberClickDebounced(hist) {
                             showMenu = false
                             presenter?.savePassw(hist.histPtr, router)

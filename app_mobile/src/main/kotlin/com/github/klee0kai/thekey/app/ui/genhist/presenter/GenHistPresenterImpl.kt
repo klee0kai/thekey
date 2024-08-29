@@ -5,7 +5,6 @@ import android.content.ClipboardManager
 import android.content.Context.CLIPBOARD_SERVICE
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
-import com.github.klee0kai.thekey.app.engine.model.histPasww
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteDestination
 import com.github.klee0kai.thekey.app.ui.storage.model.SearchState
 import com.github.klee0kai.thekey.core.R
@@ -21,7 +20,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 open class GenHistPresenterImpl(
@@ -29,14 +28,18 @@ open class GenHistPresenterImpl(
 ) : GenHistPresenter {
 
     private val scope = DI.defaultThreadScope()
-    private val engine = DI.cryptStorageEngineSafeLazy(storageIdentifier)
+    private val interactor = DI.genPasswInteractorLazy(storageIdentifier)
     private val clipboardManager by lazy {
         DI.ctx().getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
     }
     private val dateFormat by lazy { TimeFormats.simpleDateFormat() }
 
     override val searchState = MutableStateFlow(SearchState())
-    private val allHistPasswList = MutableStateFlow<List<HistPassw>>(emptyList())
+    private val allHistPasswList = flow<List<HistPassw>> {
+        interactor().history
+            .map { list -> list.map { it.updateWith(dateFormat) } }
+            .collect(this)
+    }
 
     override val filteredHist = flow<List<HistPassw>> {
         combine(
@@ -50,10 +53,6 @@ open class GenHistPresenterImpl(
             }
         ).collect(this@flow)
     }.flowOn(DI.defaultDispatcher())
-
-    override fun init() = scope.launch {
-        reloadHist()
-    }
 
     override fun searchFilter(
         newParams: SearchState,
@@ -94,28 +93,7 @@ open class GenHistPresenterImpl(
         histPtr: Long,
         router: AppRouter?,
     ) = scope.launch {
-        val fakeRemove = launch {
-            allHistPasswList.update { list -> list.filter { it.histPtr != histPtr } }
-        }
-
-        engine().removeHist(histPtr)
-        fakeRemove.join()
-        reloadHist().join()
-    }
-
-    private fun reloadHist() = scope.launch {
-        if (allHistPasswList.value.isEmpty()) {
-            allHistPasswList.value = engine().genHistory()
-                .reversed()
-                .map { it.histPasww() }
-        }
-
-        allHistPasswList.value = engine().genHistory(info = true)
-            .reversed()
-            .map { hist ->
-                hist.histPasww(isLoaded = true)
-                    .updateWith(dateFormat)
-            }
+        interactor().removeHist(histPtr)
     }
 
 }
