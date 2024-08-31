@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.ui.note.model
+package com.github.klee0kai.thekey.app.ui.noteedit.model
 
 import android.os.Parcelable
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote

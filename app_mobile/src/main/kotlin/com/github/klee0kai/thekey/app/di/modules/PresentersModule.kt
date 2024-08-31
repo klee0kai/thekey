@@ -14,8 +14,8 @@ import com.github.klee0kai.thekey.app.ui.main.presenter.MainPresenter
 import com.github.klee0kai.thekey.app.ui.main.presenter.MainPresenterImpl
 import com.github.klee0kai.thekey.app.ui.navigationboard.presenter.NavigationBoardPresenter
 import com.github.klee0kai.thekey.app.ui.navigationboard.presenter.NavigationBoardPresenterImpl
-import com.github.klee0kai.thekey.app.ui.note.presenter.EditNotePresenter
-import com.github.klee0kai.thekey.app.ui.note.presenter.EditNotePresenterImpl
+import com.github.klee0kai.thekey.app.ui.noteedit.presenter.EditNotePresenter
+import com.github.klee0kai.thekey.app.ui.noteedit.presenter.EditNotePresenterImpl
 import com.github.klee0kai.thekey.app.ui.notegroup.presenter.EditNoteGroupsPresenter
 import com.github.klee0kai.thekey.app.ui.notegroup.presenter.EditNoteGroupsPresenterImpl
 import com.github.klee0kai.thekey.app.ui.settings.plugin.presenter.PluginPresenter

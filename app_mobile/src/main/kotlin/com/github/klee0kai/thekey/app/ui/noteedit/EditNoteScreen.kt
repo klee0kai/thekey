@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalWearMaterialApi::class)
 
-package com.github.klee0kai.thekey.app.ui.note
+package com.github.klee0kai.thekey.app.ui.noteedit
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
@@ -48,12 +48,12 @@ import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteDestination
-import com.github.klee0kai.thekey.app.ui.note.model.EditNoteState
-import com.github.klee0kai.thekey.app.ui.note.model.EditTabs
-import com.github.klee0kai.thekey.app.ui.note.model.EditTabs.Account
-import com.github.klee0kai.thekey.app.ui.note.model.EditTabs.Otp
-import com.github.klee0kai.thekey.app.ui.note.model.initTab
-import com.github.klee0kai.thekey.app.ui.note.presenter.EditNotePresenter
+import com.github.klee0kai.thekey.app.ui.noteedit.model.EditNoteState
+import com.github.klee0kai.thekey.app.ui.noteedit.model.EditTabs
+import com.github.klee0kai.thekey.app.ui.noteedit.model.EditTabs.Account
+import com.github.klee0kai.thekey.app.ui.noteedit.model.EditTabs.Otp
+import com.github.klee0kai.thekey.app.ui.noteedit.model.initTab
+import com.github.klee0kai.thekey.app.ui.noteedit.presenter.EditNotePresenter
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme

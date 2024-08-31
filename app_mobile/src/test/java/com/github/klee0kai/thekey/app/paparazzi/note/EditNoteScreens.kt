@@ -1,13 +1,13 @@
 package com.github.klee0kai.thekey.app.paparazzi.note
 
 import com.github.klee0kai.thekey.app.paparazzi.BasePaparazzi
-import com.github.klee0kai.thekey.app.ui.note.CreateAccountScreenP6Preview
-import com.github.klee0kai.thekey.app.ui.note.CreateAccountScreenP6SkeletonPreview
-import com.github.klee0kai.thekey.app.ui.note.CreateOTPScreenP6SkeletonPreview
-import com.github.klee0kai.thekey.app.ui.note.EditAccountScreenP6Preview
-import com.github.klee0kai.thekey.app.ui.note.EditAccountScreenSaveP6Preview
-import com.github.klee0kai.thekey.app.ui.note.EditOTPScreenP6Preview
-import com.github.klee0kai.thekey.app.ui.note.EditOTPScreenP6SkeletonPreview
+import com.github.klee0kai.thekey.app.ui.noteedit.CreateAccountScreenP6Preview
+import com.github.klee0kai.thekey.app.ui.noteedit.CreateAccountScreenP6SkeletonPreview
+import com.github.klee0kai.thekey.app.ui.noteedit.CreateOTPScreenP6SkeletonPreview
+import com.github.klee0kai.thekey.app.ui.noteedit.EditAccountScreenP6Preview
+import com.github.klee0kai.thekey.app.ui.noteedit.EditAccountScreenSaveP6Preview
+import com.github.klee0kai.thekey.app.ui.noteedit.EditOTPScreenP6Preview
+import com.github.klee0kai.thekey.app.ui.noteedit.EditOTPScreenP6SkeletonPreview
 import org.junit.Test
 
 class EditNoteScreens : BasePaparazzi() {

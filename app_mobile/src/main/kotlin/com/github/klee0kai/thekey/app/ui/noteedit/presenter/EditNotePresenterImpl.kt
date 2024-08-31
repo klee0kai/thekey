@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.ui.note.presenter
+package com.github.klee0kai.thekey.app.ui.noteedit.presenter
 
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
@@ -8,14 +8,14 @@ import com.github.klee0kai.thekey.app.engine.model.isEmpty
 import com.github.klee0kai.thekey.app.engine.model.merge
 import com.github.klee0kai.thekey.app.ui.navigation.model.QRCodeScanDestination
 import com.github.klee0kai.thekey.app.ui.navigation.storage
-import com.github.klee0kai.thekey.app.ui.note.model.EditNoteState
-import com.github.klee0kai.thekey.app.ui.note.model.EditNoteState.Companion.otpAlgoVariants
-import com.github.klee0kai.thekey.app.ui.note.model.EditNoteState.Companion.otpTypesVariants
-import com.github.klee0kai.thekey.app.ui.note.model.EditTabs
-import com.github.klee0kai.thekey.app.ui.note.model.decryptedNote
-import com.github.klee0kai.thekey.app.ui.note.model.decryptedOtpNote
-import com.github.klee0kai.thekey.app.ui.note.model.isValid
-import com.github.klee0kai.thekey.app.ui.note.model.updateWith
+import com.github.klee0kai.thekey.app.ui.noteedit.model.EditNoteState
+import com.github.klee0kai.thekey.app.ui.noteedit.model.EditNoteState.Companion.otpAlgoVariants
+import com.github.klee0kai.thekey.app.ui.noteedit.model.EditNoteState.Companion.otpTypesVariants
+import com.github.klee0kai.thekey.app.ui.noteedit.model.EditTabs
+import com.github.klee0kai.thekey.app.ui.noteedit.model.decryptedNote
+import com.github.klee0kai.thekey.app.ui.noteedit.model.decryptedOtpNote
+import com.github.klee0kai.thekey.app.ui.noteedit.model.isValid
+import com.github.klee0kai.thekey.app.ui.noteedit.model.updateWith
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup

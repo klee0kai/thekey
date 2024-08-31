@@ -1,9 +1,9 @@
-package com.github.klee0kai.thekey.app.ui.note.presenter
+package com.github.klee0kai.thekey.app.ui.noteedit.presenter
 
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.engine.model.DecryptedOtpNote
-import com.github.klee0kai.thekey.app.ui.note.model.EditNoteState
-import com.github.klee0kai.thekey.app.ui.note.model.EditTabs
+import com.github.klee0kai.thekey.app.ui.noteedit.model.EditNoteState
+import com.github.klee0kai.thekey.app.ui.noteedit.model.EditTabs
 import com.github.klee0kai.thekey.core.utils.coroutine.emptyJob
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow

@@ -24,7 +24,7 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.SelectStorageDialogDes
 import com.github.klee0kai.thekey.app.ui.navigation.model.SettingsDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.StoragesDestination
-import com.github.klee0kai.thekey.app.ui.note.EditNoteScreen
+import com.github.klee0kai.thekey.app.ui.noteedit.EditNoteScreen
 import com.github.klee0kai.thekey.app.ui.notegroup.EditNoteGroupsScreen
 import com.github.klee0kai.thekey.app.ui.settings.SettingScreen
 import com.github.klee0kai.thekey.app.ui.settings.plugin.PluginDummyScreen
