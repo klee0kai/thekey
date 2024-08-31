@@ -6,6 +6,7 @@ import com.github.klee0kai.thekey.app.engine.model.GenPasswParams
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.domain.model.HistPassw
 import com.github.klee0kai.thekey.core.domain.model.HistPeriod
+import com.github.klee0kai.thekey.core.domain.model.feature.PaidFeature
 import com.github.klee0kai.thekey.core.utils.common.launch
 import com.github.klee0kai.thekey.core.utils.common.months
 import com.github.klee0kai.thekey.core.utils.common.years
@@ -48,11 +49,13 @@ class GenPasswInteractor(
             return@launch
         }
         settings().lastCleanHistTime.set(now)
-        val period = when (settings().histPeriod()) {
-            HistPeriod.SHORT -> 1.months
-            HistPeriod.NORMAL -> 3.months
-            HistPeriod.LONG -> 6.months
-            HistPeriod.VERY_LONG -> 1.years
+        val perMode = settings().histPeriod()
+        val period = when {
+            perMode == HistPeriod.SHORT -> 1.months
+            perMode == HistPeriod.NORMAL -> 3.months
+            billing.isAvailable(PaidFeature.UNLIMITED_HIST_PERIOD) && perMode == HistPeriod.LONG -> 6.months
+            billing.isAvailable(PaidFeature.UNLIMITED_HIST_PERIOD) && perMode == HistPeriod.VERY_LONG -> 1.years
+            else -> 3.months
         }
         rep().cleanOld((now - period.inWholeMilliseconds))
     }

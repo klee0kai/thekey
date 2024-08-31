@@ -1,11 +1,11 @@
 package com.github.klee0kai.thekey.core.utils.coroutine
 
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.runningFold
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.takeWhile
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
@@ -45,7 +46,8 @@ fun <T> Flow<T>.shareLatest(scope: CoroutineScope, clazz: Class<T>): Flow<T> {
         .filter { clazz.isInstance(it) } as Flow<T>
 }
 
-inline fun <reified T> Flow<T>.shareLatest(scope: CoroutineScope): Flow<T> = shareLatest(scope, T::class.java)
+inline fun <reified T> Flow<T>.shareLatest(scope: CoroutineScope): Flow<T> =
+    shareLatest(scope, T::class.java)
 
 inline fun <reified T> Flow<T>.changeFilter(
     crossinline filter: suspend (old: T?, new: T) -> Boolean
@@ -70,3 +72,8 @@ suspend inline fun <reified T> Flow<T>.await(timeout: Long): T? =
 
 suspend inline fun <reified T> Flow<T>.awaitSec(): T? = await(1000)
 
+fun <T> Flow<T>.collect(consumer: ProducerScope<T>) {
+    consumer.launch {
+        collect { consumer.channel.send(it) }
+    }
+}

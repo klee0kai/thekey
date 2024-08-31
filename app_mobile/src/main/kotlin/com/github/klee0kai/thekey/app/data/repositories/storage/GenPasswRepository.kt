@@ -6,12 +6,15 @@ import com.github.klee0kai.thekey.app.engine.model.GenPasswParams
 import com.github.klee0kai.thekey.app.engine.model.histPasww
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.domain.model.HistPassw
+import com.github.klee0kai.thekey.core.utils.coroutine.collect
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicInteger
 
 class GenPasswRepository(
     val identifier: StorageIdentifier,
@@ -20,10 +23,13 @@ class GenPasswRepository(
     val engine = DI.cryptStorageEngineSafeLazy(identifier)
     val scope = DI.defaultThreadScope()
 
+    private val consumers = AtomicInteger(0)
     private val _allHistPasswList = MutableStateFlow<List<HistPassw>>(emptyList())
-    val allHistPasswList = flow {
+    val allHistPasswList = channelFlow {
+        consumers.incrementAndGet()
         loadHistory()
         _allHistPasswList.collect(this)
+        awaitClose { consumers.decrementAndGet() }
     }
 
     suspend fun lastGeneratedPassw(): String {
@@ -32,7 +38,7 @@ class GenPasswRepository(
 
     suspend fun generateNewPassw(params: GenPasswParams): String {
         val res = engine().generateNewPassw(params)
-        loadHistory(force = true, ifNotEmptyOnly = true)
+        loadHistory(force = true)
         return res
     }
 
@@ -43,21 +49,24 @@ class GenPasswRepository(
 
         engine().removeHist(histPtr)
         fakeRemove.join()
-        loadHistory(force = true, ifNotEmptyOnly = true)
+        loadHistory(force = true)
     }
 
     suspend fun cleanOld(cleanTime: Long) {
         val cleanTimeSec = TimeUnit.MILLISECONDS.toSeconds(cleanTime)
         engine().removeOldHist(cleanTimeSec)
-        loadHistory(force = true, ifNotEmptyOnly = true)
+        loadHistory(force = true)
     }
 
     private fun loadHistory(
         force: Boolean = false,
-        ifNotEmptyOnly: Boolean = false,
     ) = scope.launch {
         if (_allHistPasswList.value.isNotEmpty() && !force) return@launch
-        if (_allHistPasswList.value.isEmpty() && ifNotEmptyOnly) return@launch
+        if (consumers.get() <= 0) {
+            // no consumers
+            _allHistPasswList.value = emptyList()
+            return@launch
+        }
 
         if (_allHistPasswList.value.isEmpty()) {
             _allHistPasswList.value = engine().genHistory()
