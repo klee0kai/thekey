@@ -45,6 +45,6 @@ class OtpNotesInteractor(
 
     suspend fun otpNoteFromUrl(url: String) = rep().otpNoteFromUrl(url)
 
-    fun clear() = scope.launchLatest("clear") { rep().clear() }
+    fun clearCache() = scope.launchLatest("clear") { rep().clearCache() }
 
 }

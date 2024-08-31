@@ -20,8 +20,8 @@ class GroupsInteractor(
         rep().loadGroups()
     }
 
-    fun clear() = scope.launch {
-        rep().clear()
+    fun clearCache() = scope.launch {
+        rep().clearCache()
     }
 
     fun removeGroup(id: Long) = scope.launch {

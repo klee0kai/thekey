@@ -43,6 +43,7 @@ class EditNotePresenterImpl(
     private val scope = DI.defaultThreadScope()
     private val router = DI.router()
     private val notesInteractor = DI.notesInteractorLazy(identifier.storage())
+    private val genPasswInteractor = DI.genPasswInteractorLazy(identifier.storage())
     private val otpNotesInteractor = DI.otpNotesInteractorLazy(identifier.storage())
     private val groupsInteractor = DI.groupsInteractorLazy(identifier.storage())
 
@@ -214,7 +215,7 @@ class EditNotePresenterImpl(
     }
 
     override fun generate() = scope.launchLatestSafe("gen") {
-        val newPassw = notesInteractor()
+        val newPassw = genPasswInteractor()
             .generateNewPassw(GenPasswParams(oldPassw = state.value.passw))
             .await()
 

@@ -28,8 +28,9 @@ import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
+import com.github.klee0kai.thekey.app.ui.navigation.editNote
+import com.github.klee0kai.thekey.app.ui.navigation.editOtpNote
 import com.github.klee0kai.thekey.app.ui.navigation.note
-import com.github.klee0kai.thekey.app.ui.navigation.otpNote
 import com.github.klee0kai.thekey.app.ui.storage.notes.popup.NotePopupMenu
 import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenterDummy
 import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenterLongListDummy
@@ -47,6 +48,7 @@ import com.github.klee0kai.thekey.core.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.core.utils.views.animateContentSizeProduction
 import com.github.klee0kai.thekey.core.utils.views.bottomDp
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
+import com.github.klee0kai.thekey.core.utils.views.ifProduction
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebouncedArg
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
@@ -82,7 +84,7 @@ fun NotesListContent(
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
                     .padding(start = 16.dp, top = 4.dp, bottom = 22.dp)
-                    .animateContentSizeProduction()
+                    .ifProduction { animateItemPlacement() }
                     .alpha(titleAnimatedAlpha)
             )
         }
@@ -101,7 +103,7 @@ fun NotesListContent(
 
                     ColoredNoteItem(
                         modifier = Modifier
-                            .animateContentSizeProduction()
+                            .ifProduction { animateItemPlacement() }
                             .onGlobalPositionState(position)
                             .combinedClickable(
                                 onLongClick = rememberClickDebounced(note) { showMenu = true },
@@ -127,7 +129,7 @@ fun NotesListContent(
                             },
                             onEdit = rememberClickDebounced(note) {
                                 showMenu = false
-                                router.navigate(args.note(note.ptnote))
+                                router.navigate(args.editNote(note.ptnote))
                             }
                         )
 
@@ -142,11 +144,11 @@ fun NotesListContent(
                 ) {
                     ColoredOtpNoteItem(
                         modifier = Modifier
-                            .animateContentSizeProduction()
+                            .ifProduction { animateItemPlacement() }
                             .combinedClickable(
                                 onLongClick = { },
                                 onClick = rememberClickDebounced(otp) {
-                                    router.navigate(args.otpNote(notePtr = otp.ptnote))
+                                    router.navigate(args.editOtpNote(notePtr = otp.ptnote))
                                 }
                             ),
                         otp = otp,

@@ -72,7 +72,7 @@ suspend inline fun <reified T> Flow<T>.await(timeout: Long): T? =
 
 suspend inline fun <reified T> Flow<T>.awaitSec(): T? = await(1000)
 
-fun <T> Flow<T>.collect(consumer: ProducerScope<T>) {
+fun <T> Flow<T>.collectTo(consumer: ProducerScope<T>) {
     consumer.launch {
         collect { consumer.channel.send(it) }
     }

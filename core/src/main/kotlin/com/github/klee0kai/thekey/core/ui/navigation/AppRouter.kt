@@ -49,9 +49,9 @@ interface ComposeRouter {
 
     suspend fun awaitScreenClose(destination: Destination) = Unit
 
-    fun back(exitFromApp: Boolean = false) = Unit
+    fun back(exitFromApp: Boolean = false) : Job = emptyJob()
 
-    fun resetStack(vararg destinations: Destination) = Unit
+    fun resetStack(vararg destinations: Destination) :Job = emptyJob()
 
     @Composable
     fun collectBackstackChanges() = Unit

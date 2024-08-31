@@ -31,7 +31,7 @@ import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.ui.navigation.editGroup
 import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
-import com.github.klee0kai.thekey.app.ui.navigation.note
+import com.github.klee0kai.thekey.app.ui.navigation.editNote
 import com.github.klee0kai.thekey.app.ui.storage.StorageScreen
 import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenterDummy
 import com.github.klee0kai.thekey.app.ui.storages.components.GroupsSelectContent
@@ -105,7 +105,7 @@ fun NotesContent(
     if (addButtonVisible) {
         FabSimpleInContainer(
             modifier = Modifier.alpha(addButtonAlpha),
-            onClick = rememberClickDebounced { router?.navigate(dest.note()) },
+            onClick = rememberClickDebounced { router?.navigate(dest.editNote()) },
             content = { Icon(Icons.Default.Add, contentDescription = "Add") }
         )
     }

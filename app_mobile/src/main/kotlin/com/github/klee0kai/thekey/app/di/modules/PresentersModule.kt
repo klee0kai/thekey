@@ -14,6 +14,8 @@ import com.github.klee0kai.thekey.app.ui.main.presenter.MainPresenter
 import com.github.klee0kai.thekey.app.ui.main.presenter.MainPresenterImpl
 import com.github.klee0kai.thekey.app.ui.navigationboard.presenter.NavigationBoardPresenter
 import com.github.klee0kai.thekey.app.ui.navigationboard.presenter.NavigationBoardPresenterImpl
+import com.github.klee0kai.thekey.app.ui.note.presenter.NotePresenter
+import com.github.klee0kai.thekey.app.ui.note.presenter.NotePresenterImpl
 import com.github.klee0kai.thekey.app.ui.noteedit.presenter.EditNotePresenter
 import com.github.klee0kai.thekey.app.ui.noteedit.presenter.EditNotePresenterImpl
 import com.github.klee0kai.thekey.app.ui.notegroup.presenter.EditNoteGroupsPresenter
@@ -71,12 +73,16 @@ interface PresentersModule {
         EditStoragesGroupsPresenterImpl(storageIdentifier)
 
     @Provide(cache = Provide.CacheType.Weak)
-    fun genPasswPresente(storageIdentifier: StorageIdentifier): GenPasswPresenter =
+    fun genPasswPresenter(storageIdentifier: StorageIdentifier): GenPasswPresenter =
         GenPasswPresenterImpl(storageIdentifier)
 
     @Provide(cache = Provide.CacheType.Weak)
     fun genHistPresenter(storageIdentifier: StorageIdentifier): GenHistPresenter =
         GenHistPresenterImpl(storageIdentifier)
+
+    @Provide(cache = Provide.CacheType.Weak)
+    fun notePresenter(noteIdentifier: NoteIdentifier): NotePresenter =
+        NotePresenterImpl(noteIdentifier)
 
     @Provide(cache = Provide.CacheType.Weak)
     fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter =

@@ -1,5 +1,8 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.github.klee0kai.thekey.app.ui.navigation.screenresolver
 
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -18,12 +21,14 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.EditStorageDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditStorageGroupDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.GenHistDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.LoginDestination
+import com.github.klee0kai.thekey.app.ui.navigation.model.NoteDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.PluginDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.PluginsDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.SelectStorageDialogDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.SettingsDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.StoragesDestination
+import com.github.klee0kai.thekey.app.ui.note.NoteDialog
 import com.github.klee0kai.thekey.app.ui.noteedit.EditNoteScreen
 import com.github.klee0kai.thekey.app.ui.notegroup.EditNoteGroupsScreen
 import com.github.klee0kai.thekey.app.ui.settings.SettingScreen
@@ -68,6 +73,7 @@ class ScreenResolverImpl : ScreenResolver {
             is EditStorageGroupDestination -> EditStorageGroupsScreen(destination)
             is StorageDestination -> StorageScreen(destination)
             is GenHistDestination -> GenHistScreen(destination)
+            is NoteDestination -> NoteDialog(destination)
             is EditNoteDestination -> EditNoteScreen(destination)
             is EditNoteGroupDestination -> EditNoteGroupsScreen(destination)
 

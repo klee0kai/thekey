@@ -8,6 +8,7 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteGroupDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditStorageGroupDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.GenHistDestination
+import com.github.klee0kai.thekey.app.ui.navigation.model.NoteDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.core.di.identifiers.NoteGroupIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
@@ -28,14 +29,55 @@ fun StorageIdentifier.dest() = StorageDestination(version = version, path = path
 fun StorageDestination.identifier() =
     StorageIdentifier(version = version, path = path)
 
-fun StorageDestination.note(notePtr: Long = 0) =
-    EditNoteDestination(storageVersion = version, path = path, note = DecryptedNote(ptnote = notePtr))
+fun StorageDestination.note(
+    notePtr: Long = 0,
+) = NoteDestination(
+    storageVersion = version,
+    path = path,
+    notePtr = notePtr,
+)
 
-fun StorageDestination.otpNote(notePtr: Long = 0) =
-    EditNoteDestination(storageVersion = version, path = path, otpNote = DecryptedOtpNote(ptnote = notePtr))
+fun StorageDestination.otpNote(
+    otpNotePtr: Long = 0,
+) = NoteDestination(
+    storageVersion = version,
+    path = path,
+    otpNotePtr = otpNotePtr,
+)
 
-fun StorageIdentifier.editNoteDest(prefilled: DecryptedNote, isIgnoreDelete: Boolean = false) =
-    EditNoteDestination(storageVersion = version, path = path, note = prefilled, isIgnoreRemove = isIgnoreDelete)
+fun StorageDestination.editNote(notePtr: Long = 0) =
+    EditNoteDestination(
+        storageVersion = version,
+        path = path,
+        note = DecryptedNote(ptnote = notePtr)
+    )
+
+
+fun StorageDestination.editOtpNote(notePtr: Long = 0) =
+    EditNoteDestination(
+        storageVersion = version,
+        path = path,
+        otpNote = DecryptedOtpNote(ptnote = notePtr)
+    )
+
+fun StorageIdentifier.editNoteDest(
+    prefilled: DecryptedNote,
+    isIgnoreDelete: Boolean = false,
+) = EditNoteDestination(
+    storageVersion = version,
+    path = path,
+    note = prefilled,
+    isIgnoreRemove = isIgnoreDelete
+)
+
+fun NoteIdentifier.editNoteDest(
+) = EditNoteDestination(
+    path = storagePath,
+    storageVersion = storageVersion,
+    note = if (notePtr != 0L) DecryptedNote(ptnote = notePtr) else null,
+    otpNote = if (otpNotePtr != 0L) DecryptedOtpNote(ptnote = otpNotePtr) else null,
+)
+
 
 fun StorageDestination.genHist() =
     GenHistDestination(storageVersion = version, path = path)
@@ -58,6 +100,14 @@ fun EditNoteDestination.identifier() =
         storagePath = path,
         notePtr = note?.ptnote ?: 0L,
         otpNotePtr = otpNote?.ptnote ?: 0L,
+    )
+
+fun NoteDestination.identifier() =
+    NoteIdentifier(
+        storageVersion = storageVersion,
+        storagePath = path,
+        notePtr = notePtr ?: 0L,
+        otpNotePtr = otpNotePtr ?: 0L,
     )
 
 fun EditStorageGroupDestination.identifier() = StorageGroupIdentifier(

@@ -100,7 +100,7 @@ data class NoteDestination(
      * otp note id
      */
     val otpNotePtr: Long? = null,
-) : Destination
+) : DialogDestination
 
 @Parcelize
 data class EditNoteDestination(

@@ -1,4 +1,8 @@
-@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class, ExperimentalFoundationApi::class)
+@file:OptIn(
+    ExperimentalMaterial3Api::class,
+    ExperimentalFoundationApi::class,
+    ExperimentalFoundationApi::class
+)
 
 package com.github.klee0kai.thekey.core.ui.devkit.bottomsheet
 
@@ -14,28 +18,36 @@ import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.BottomSheetScaffoldState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SheetValue
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.SimpleScaffoldConst.dragHandleSize
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
-import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
+import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.possitions.pxToDp
+import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
 import com.github.klee0kai.thekey.core.utils.views.accelerateDecelerate
 import com.github.klee0kai.thekey.core.utils.views.ratioBetween
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
+import kotlinx.coroutines.delay
 import org.jetbrains.annotations.VisibleForTesting
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun BottomSheetBigDialog(
@@ -46,12 +58,14 @@ fun BottomSheetBigDialog(
     sheetPeekHeight: Dp = 400.dp,
     scaffoldState: BottomSheetScaffoldState = rememberSafeBottomSheetScaffoldState(skipHiddenState = false),
     onDrag: (Float) -> Unit = {},
+    onClosed: () -> Unit = {},
     sheetContent: @Composable () -> Unit = {},
 ) {
     val view = LocalView.current
     val viewHeight = view.height.pxToDp()
     val colorScheme = LocalColorScheme.current.androidColorScheme
     val dragProgress = remember { mutableFloatStateOf(0f) }
+    val initValue = remember { scaffoldState.bottomSheetState.currentValue }
 
     val scaffoldTopOffset = runCatching {
         scaffoldState.bottomSheetState.requireOffset().pxToDp()
@@ -77,12 +91,31 @@ fun BottomSheetBigDialog(
             }
         }
 
+    var showUpAlpha by remember { mutableFloatStateOf(0f) }
+    var showUpElevation by remember { mutableStateOf(0.dp) }
+    LaunchedEffect(Unit) {
+        if (initValue == SheetValue.Hidden) {
+            scaffoldState.bottomSheetState.hide()
+            showUpAlpha = 1f
+            showUpElevation = BottomSheetDefaults.Elevation
+            scaffoldState.bottomSheetState.partialExpand()
+        } else {
+            showUpAlpha = 1f
+            showUpElevation = BottomSheetDefaults.Elevation
+        }
+
+        while (scaffoldState.bottomSheetState.currentValue != SheetValue.Hidden) {
+            // TODO research ModalBottomSheet
+            delay(100.milliseconds)
+        }
+        onClosed.invoke()
+    }
+
     CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
         BottomSheetScaffold(
-            modifier = modifier,
+            modifier = modifier
+                .alpha(showUpAlpha),
             scaffoldState = scaffoldState,
-            sheetPeekHeight = sheetPeekHeight,
-            sheetMaxWidth = view.width.pxToDp(),
             contentColor = Color.Transparent,
             containerColor = Color.Transparent,
             content = { _ -> },
@@ -90,6 +123,7 @@ fun BottomSheetBigDialog(
             sheetDragHandle = {
                 Box(
                     modifier = sheetDragHandleModifier
+                        .alpha(showUpAlpha)
                         .height(dragHandleSize)
                         .fillMaxWidth(),
                     contentAlignment = Alignment.Center
@@ -104,11 +138,16 @@ fun BottomSheetBigDialog(
                     )
                 }
             },
-            sheetContainerColor = colorScheme.surface,
-            sheetContentColor = colorScheme.onSurface,
+            sheetTonalElevation = showUpElevation,
+            sheetShadowElevation = showUpElevation,
+            sheetPeekHeight = sheetPeekHeight,
+            sheetMaxWidth = view.width.pxToDp(),
+            sheetContainerColor = colorScheme.surface.copy(alpha = showUpAlpha),
+            sheetContentColor = colorScheme.onSurface.copy(alpha = showUpAlpha),
             sheetContent = {
                 Box(
                     modifier = sheetModifier
+                        .alpha(showUpAlpha)
                         .fillMaxWidth()
                         .height(viewHeight - topMargin),
                     content = {
@@ -121,10 +160,11 @@ fun BottomSheetBigDialog(
 }
 
 
+@OptIn(DebugOnly::class)
 @VisibleForTesting
 @Preview
 @Composable
-fun BottomSheetBigDialogPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
+fun BottomSheetBigDialogPreview() = DebugDarkScreenPreview {
     Box(modifier = Modifier.background(Color.Yellow)) {
         BottomSheetBigDialog(
             topMargin = AppBarConst.appBarSize

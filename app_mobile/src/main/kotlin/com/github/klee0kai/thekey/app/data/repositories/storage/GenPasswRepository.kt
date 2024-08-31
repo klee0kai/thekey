@@ -6,7 +6,7 @@ import com.github.klee0kai.thekey.app.engine.model.GenPasswParams
 import com.github.klee0kai.thekey.app.engine.model.histPasww
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.domain.model.HistPassw
-import com.github.klee0kai.thekey.core.utils.coroutine.collect
+import com.github.klee0kai.thekey.core.utils.coroutine.collectTo
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,15 +20,15 @@ class GenPasswRepository(
     val identifier: StorageIdentifier,
 ) {
 
-    val engine = DI.cryptStorageEngineSafeLazy(identifier)
-    val scope = DI.defaultThreadScope()
+    private val engine = DI.cryptStorageEngineSafeLazy(identifier)
+    private val scope = DI.defaultThreadScope()
 
     private val consumers = AtomicInteger(0)
     private val _allHistPasswList = MutableStateFlow<List<HistPassw>>(emptyList())
     val allHistPasswList = channelFlow {
         consumers.incrementAndGet()
         loadHistory()
-        _allHistPasswList.collect(this)
+        _allHistPasswList.collectTo(this)
         awaitClose { consumers.decrementAndGet() }
     }
 
@@ -56,6 +56,10 @@ class GenPasswRepository(
         val cleanTimeSec = TimeUnit.MILLISECONDS.toSeconds(cleanTime)
         engine().removeOldHist(cleanTimeSec)
         loadHistory(force = true)
+    }
+
+    suspend fun clearCache() {
+        _allHistPasswList.update { emptyList() }
     }
 
     private fun loadHistory(

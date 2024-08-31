@@ -3,7 +3,6 @@ package com.github.klee0kai.thekey.app.domain
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.core.domain.model.ColoredNote
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
-import com.github.klee0kai.thekey.app.engine.model.GenPasswParams
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.utils.common.launchLatest
 import kotlinx.coroutines.async
@@ -34,8 +33,6 @@ class NotesInteractor(
 
     val loadedNotes = notes.filter { list -> list.all { it.isLoaded } }
 
-    fun loadNotes() = scope.launchLatest("load_notes") { rep().loadNotes() }
-
     fun note(notePtr: Long) = scope.async { rep().note(notePtr) }
 
     fun saveNote(note: DecryptedNote, setAll: Boolean = false) = scope.launch { rep().saveNote(note, setAll) }
@@ -44,8 +41,6 @@ class NotesInteractor(
 
     fun setNotesGroup(notesPtr: List<Long>, groupId: Long) = scope.launch { rep().setNotesGroup(notesPtr, groupId) }
 
-    fun generateNewPassw(params: GenPasswParams) = scope.async { rep().generateNewPassw(params) }
-
-    fun clear() = scope.launchLatest("clear") { rep().clear() }
+    fun clearCache() = scope.launchLatest("clear") { rep().clearCache() }
 
 }

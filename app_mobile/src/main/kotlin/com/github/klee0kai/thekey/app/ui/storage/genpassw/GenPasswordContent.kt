@@ -261,7 +261,7 @@ fun GenPasswordContent(
 fun GenPasswordContentPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     DI.hardResetToPreview()
     DI.initPresenterModule(object : PresentersModule {
-        override fun genPasswPresente(storageIdentifier: StorageIdentifier) =
+        override fun genPasswPresenter(storageIdentifier: StorageIdentifier) =
             object : GenPasswPresenter {
                 override val state = MutableStateFlow(
                     GenPasswState(

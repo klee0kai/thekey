@@ -8,6 +8,7 @@ import com.github.klee0kai.thekey.core.domain.model.HistPassw
 import com.github.klee0kai.thekey.core.domain.model.HistPeriod
 import com.github.klee0kai.thekey.core.domain.model.feature.PaidFeature
 import com.github.klee0kai.thekey.core.utils.common.launch
+import com.github.klee0kai.thekey.core.utils.common.launchLatest
 import com.github.klee0kai.thekey.core.utils.common.months
 import com.github.klee0kai.thekey.core.utils.common.years
 import kotlinx.coroutines.async
@@ -59,6 +60,8 @@ class GenPasswInteractor(
         }
         rep().cleanOld((now - period.inWholeMilliseconds))
     }
+
+    fun clearCache() = scope.launchLatest("clear") { rep().clearCache() }
 
     companion object {
         val CLEAN_PERIOD = 1.days
