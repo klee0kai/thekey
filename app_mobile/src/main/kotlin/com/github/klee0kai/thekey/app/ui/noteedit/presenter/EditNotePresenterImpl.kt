@@ -27,6 +27,7 @@ import com.github.klee0kai.thekey.core.ui.navigation.model.TextProvider
 import com.github.klee0kai.thekey.core.ui.navigation.navigate
 import com.github.klee0kai.thekey.core.utils.common.TimeFormats
 import com.github.klee0kai.thekey.core.utils.common.launch
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
@@ -112,7 +113,7 @@ class EditNotePresenterImpl(
 
     override fun input(
         block: EditNoteState.() -> EditNoteState,
-    ) = scope.launch(DI.mainDispatcher()) {
+    ) = scope.launch(start = CoroutineStart.UNDISPATCHED) {
         var newState = block.invoke(state.value)
         if (state.value == newState) return@launch
         if (!newState.isValid()) return@launch

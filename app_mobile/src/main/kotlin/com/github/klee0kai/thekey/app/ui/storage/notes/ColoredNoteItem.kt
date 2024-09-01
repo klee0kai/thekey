@@ -28,6 +28,7 @@ import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.domain.model.ColoredNote
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
+import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkContentPreview
@@ -45,6 +46,7 @@ fun ColoredNoteItem(
     note: ColoredNote = ColoredNote(),
     icon: (@Composable () -> Unit)? = null,
 ) {
+    val theme = LocalTheme.current
     val colorScheme = LocalColorScheme.current
     val animatedNote by animateTargetCrossFaded(note)
     val skeleton by animateTargetCrossFaded(!note.isLoaded)
@@ -107,7 +109,7 @@ fun ColoredNoteItem(
         Text(
             text = animatedNote.current.site.takeIf { it.isNotBlank() }
                 ?: stringResource(id = R.string.no_site),
-            style = MaterialTheme.typography.bodyMedium,
+            style = theme.typeScheme.typography.bodyMedium,
             fontWeight = FontWeight.Medium,
             modifier = Modifier
                 .alpha(skeleton.visibleOnTargetAlpha(false))
@@ -130,8 +132,8 @@ fun ColoredNoteItem(
 
         Text(
             text = animatedNote.current.login,
-            style = MaterialTheme.typography.bodyMedium
-                .copy(color = LocalColorScheme.current.androidColorScheme.primary),
+            style = theme.typeScheme.typography.bodyMedium
+                .copy(color = theme.colorScheme.androidColorScheme.primary),
             fontWeight = FontWeight.Medium,
             modifier = Modifier
                 .alpha(skeleton.visibleOnTargetAlpha(false))
@@ -154,8 +156,8 @@ fun ColoredNoteItem(
 
         Text(
             text = animatedNote.current.desc,
-            color = MaterialTheme.colorScheme.onSurface,
-            style = MaterialTheme.typography.labelSmall,
+            color = theme.colorScheme.androidColorScheme.onSurface,
+            style = theme.typeScheme.typography.labelSmall,
             fontWeight = FontWeight.Normal,
             modifier = Modifier
                 .alpha(skeleton.visibleOnTargetAlpha(false))
