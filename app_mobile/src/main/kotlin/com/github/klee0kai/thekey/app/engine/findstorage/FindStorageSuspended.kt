@@ -8,12 +8,17 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 
 open class FindStorageSuspended {
 
     private val _engine = DI.findStorageEngineLazy()
     private val dispatcher = DI.jniDispatcher()
+
+    // TODO fix fast run without mutex
+    private val readVersionMutex = Mutex()
 
     open suspend fun findStorages(
         folder: String,
@@ -22,8 +27,10 @@ open class FindStorageSuspended {
 
     open suspend fun storageVersion(
         path: String,
-    ): Int = engineRead(path) {
-        storageVersion(path)
+    ): Int = readVersionMutex.withLock {
+        engineRead(path) {
+            storageVersion(path)
+        }
     }
 
     open suspend fun storageInfo(

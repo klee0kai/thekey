@@ -16,7 +16,10 @@ typedef EngineModelStorage JvmStorageInfo;
 
 std::shared_ptr<JvmEditStorageEngine> findStorageListener = {};
 
-void JvmFindStorageEngine::findStorages(const std::string &folder, const JvmEditStorageEngine &listener) {
+void JvmFindStorageEngine::findStorages(
+        const std::string &folder,
+        const JvmEditStorageEngine &listener
+) {
     ::findStorageListener = std::make_shared<JvmEditStorageEngine>(listener);
 
     thekey::findStorages(folder, [](const Storage &item) {
@@ -29,7 +32,9 @@ void JvmFindStorageEngine::findStorages(const std::string &folder, const JvmEdit
     });
 }
 
-int JvmFindStorageEngine::storageVersion(const std::string &path) {
+int JvmFindStorageEngine::storageVersion(
+        const std::string &path
+) {
     auto storage = thekey::storage(path);
     if (storage) {
         return storage->storageVersion;
@@ -38,7 +43,9 @@ int JvmFindStorageEngine::storageVersion(const std::string &path) {
     }
 }
 
-std::shared_ptr<JvmStorageInfo> JvmFindStorageEngine::storageInfo(const std::string &path) {
+std::shared_ptr<JvmStorageInfo> JvmFindStorageEngine::storageInfo(
+        const std::string &path
+) {
     auto storage = thekey::storage(path);
     if (storage) {
         return std::make_shared<JvmStorageInfo>(JvmStorageInfo{
@@ -53,7 +60,9 @@ std::shared_ptr<JvmStorageInfo> JvmFindStorageEngine::storageInfo(const std::str
     }
 }
 
-std::shared_ptr<JvmStorageInfo> JvmFindStorageEngine::storageInfoFromDescriptor(const int &fd) {
+std::shared_ptr<JvmStorageInfo> JvmFindStorageEngine::storageInfoFromDescriptor(
+        const int &fd
+) {
     auto storage = thekey::storage(fd);
     if (storage) {
         return std::make_shared<JvmStorageInfo>(JvmStorageInfo{
