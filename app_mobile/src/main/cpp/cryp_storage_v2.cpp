@@ -154,6 +154,16 @@ std::vector<JvmDecryptedNote> JvmStorage2::notes(const int &loadInfo) {
     auto notes = std::vector<JvmDecryptedNote>();
     auto flags = loadInfo ? TK2_GET_NOTE_INFO : TK2_GET_NOTE_PTR_ONLY;
     for (const auto &dnote: storage->notes(flags)) {
+        auto history = std::vector<JvmDecryptedPassw>();
+        for (const auto &dhist: dnote.history) {
+            history.push_back(
+                    {
+                            .passwPtr= dhist.id,
+                            .passw= dhist.passw,
+                            .chTime =  (int64_t) dhist.genTime
+                    });
+        }
+
         notes.push_back(
                 {
                         .ptnote = dnote.id,
@@ -162,6 +172,7 @@ std::vector<JvmDecryptedNote> JvmStorage2::notes(const int &loadInfo) {
                         .desc =  dnote.description,
                         .chTimeSec = (int64_t) dnote.genTime,
                         .colorGroupId = dnote.colorGroupId,
+                        .hist = history,
                 });
     }
     return notes;
@@ -170,8 +181,19 @@ std::vector<JvmDecryptedNote> JvmStorage2::notes(const int &loadInfo) {
 JvmDecryptedNote JvmStorage2::note(const int64_t &notePtr) {
     auto storage = findStorage(getEngineIdentifier());
     if (!storage)return {};
-    auto dnote = storage->note(notePtr, TK2_GET_NOTE_INFO | TK2_GET_NOTE_PASSWORD);
+    auto dnote = storage->note(notePtr,
+                               TK2_GET_NOTE_INFO | TK2_GET_NOTE_PASSWORD |
+                               TK2_GET_NOTE_HISTORY_FULL);
     if (!dnote) return {};
+    auto history = std::vector<JvmDecryptedPassw>();
+    for (const auto &dhist: dnote->history) {
+        history.push_back(
+                {
+                        .passwPtr= dhist.id,
+                        .passw= dhist.passw,
+                        .chTime =  (int64_t) dhist.genTime
+                });
+    }
     auto result = JvmDecryptedNote{
             .ptnote = notePtr,
             .site = dnote->site,
@@ -180,6 +202,7 @@ JvmDecryptedNote JvmStorage2::note(const int64_t &notePtr) {
             .desc =  dnote->description,
             .chTimeSec = (int64_t) dnote->genTime,
             .colorGroupId = dnote->colorGroupId,
+            .hist = history,
     };
     return result;
 

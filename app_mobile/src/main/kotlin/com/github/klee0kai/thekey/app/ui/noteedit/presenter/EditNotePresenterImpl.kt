@@ -86,7 +86,7 @@ class EditNotePresenterImpl(
         var prefilledNote = prefilledNote
         var prefilledOtp = prefilledOtp
         if (identifier.notePtr != 0L) {
-            originNote = notesInteractor().note(identifier.notePtr).await()
+            originNote = notesInteractor().decryptedNote(identifier.notePtr).await()
             prefilledNote = prefilledNote?.merge(originNote) ?: originNote
         }
         if (identifier.otpNotePtr != 0L) {
@@ -113,24 +113,35 @@ class EditNotePresenterImpl(
         }
     }
 
-    override fun input(block: EditNoteState.() -> EditNoteState) = scope.launch(DI.mainDispatcher()) {
-        var newState = block.invoke(state.value)
-        if (!newState.isValid()) return@launch
+    override fun input(block: EditNoteState.() -> EditNoteState) =
+        scope.launch(DI.mainDispatcher()) {
+            var newState = block.invoke(state.value)
+            if (!newState.isValid()) return@launch
 
-        val isSaveAvailable = when {
-            newState.page == EditTabs.Account && originNote == null -> !newState.decryptedNote().isEmpty()
-            newState.page == EditTabs.Account && originNote != null -> newState.decryptedNote(originNote!!) != originNote
-            newState.page == EditTabs.Otp && originOtpNote == null -> !newState.decryptedOtpNote().isEmpty()
-            newState.page == EditTabs.Otp && originOtpNote != null -> newState.decryptedOtpNote(originOtpNote!!) != originOtpNote
-            else -> false
+            val isSaveAvailable = when {
+                newState.page == EditTabs.Account && originNote == null -> !newState.decryptedNote()
+                    .isEmpty()
+
+                newState.page == EditTabs.Account && originNote != null -> newState.decryptedNote(
+                    originNote!!
+                ) != originNote
+
+                newState.page == EditTabs.Otp && originOtpNote == null -> !newState.decryptedOtpNote()
+                    .isEmpty()
+
+                newState.page == EditTabs.Otp && originOtpNote != null -> newState.decryptedOtpNote(
+                    originOtpNote!!
+                ) != originOtpNote
+
+                else -> false
+            }
+
+            newState = newState.copy(
+                isSaveAvailable = isSaveAvailable,
+                isRemoveAvailable = newState.isRemoveAvailable && !isSaveAvailable,
+            )
+            state.value = newState
         }
-
-        newState = newState.copy(
-            isSaveAvailable = isSaveAvailable,
-            isRemoveAvailable = newState.isRemoveAvailable && !isSaveAvailable,
-        )
-        state.value = newState
-    }
 
     override fun showHistory() = scope.launchLatest("hist") {
 
@@ -180,7 +191,8 @@ class EditNotePresenterImpl(
     }
 
     override fun scanQRCode() = scope.launchLatest("qr") {
-        val otpUrl = router.navigate<String>(QRCodeScanDestination).firstOrNull() ?: return@launchLatest
+        val otpUrl =
+            router.navigate<String>(QRCodeScanDestination).firstOrNull() ?: return@launchLatest
         val otp = otpNotesInteractor().otpNoteFromUrl(otpUrl) ?: return@launchLatest
         input { updateWith(otp) }
     }
@@ -201,7 +213,8 @@ class EditNotePresenterImpl(
             }
 
             EditTabs.Otp -> {
-                val otpNote = curState.decryptedOtpNote(origin = originOtpNote ?: DecryptedOtpNote())
+                val otpNote =
+                    curState.decryptedOtpNote(origin = originOtpNote ?: DecryptedOtpNote())
                 if (otpNote.isEmpty()) {
                     router.snack(R.string.otpnote_is_empty)
                     return@launchLatest

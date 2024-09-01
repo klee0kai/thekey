@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.emptyFlow
 
 interface NotePresenter {
 
-    val state: Flow<ColoredNote> get() = emptyFlow()
+    val note: Flow<ColoredNote> get() = emptyFlow()
 
     fun init(): Job = emptyJob()
 

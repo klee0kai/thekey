@@ -1,15 +1,17 @@
 package com.github.klee0kai.thekey.app.domain
 
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.core.domain.model.ColoredNote
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
+import com.github.klee0kai.thekey.app.engine.model.coloredNote
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
+import com.github.klee0kai.thekey.core.domain.model.ColoredNote
+import com.github.klee0kai.thekey.core.utils.common.launch
 import com.github.klee0kai.thekey.core.utils.common.launchLatest
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
 
 class NotesInteractor(
     val identifier: StorageIdentifier,
@@ -33,14 +35,54 @@ class NotesInteractor(
 
     val loadedNotes = notes.filter { list -> list.all { it.isLoaded } }
 
-    fun note(notePtr: Long) = scope.async { rep().note(notePtr) }
+    fun note(
+        notePtr: Long,
+    ): Deferred<ColoredNote> = scope.async {
+        rep().note(notePtr)
+            .coloredNote(
+                isLoaded = true,
+                isHistLoaded = true,
+            )
+    }
 
-    fun saveNote(note: DecryptedNote, setAll: Boolean = false) = scope.launch { rep().saveNote(note, setAll) }
+    @Deprecated("use domain models")
+    fun decryptedNote(
+        notePtr: Long,
+    ): Deferred<DecryptedNote> = scope.async {
+        rep().note(notePtr)
+    }
 
-    fun removeNote(noteptr: Long) = scope.launch { rep().removeNote(noteptr) }
+    fun saveNote(
+        note: DecryptedNote,
+        setAll: Boolean = false,
+    ) = scope.launch {
+        rep().saveNote(note, setAll)
+    }
 
-    fun setNotesGroup(notesPtr: List<Long>, groupId: Long) = scope.launch { rep().setNotesGroup(notesPtr, groupId) }
+    fun setNotesGroup(
+        notesPtr: List<Long>,
+        groupId: Long,
+    ) = scope.launch {
+        rep().setNotesGroup(notesPtr, groupId)
+    }
 
-    fun clearCache() = scope.launchLatest("clear") { rep().clearCache() }
+    fun removeNote(
+        noteptr: Long,
+    ) = scope.launch {
+        rep().removeNote(noteptr)
+    }
+
+
+    fun removeHist(
+        histPtr: Long,
+    ) = scope.launch {
+        rep().removeHist(histPtr)
+    }
+
+
+    fun clearCache() = scope.launchLatest("clear") {
+        rep().clearCache()
+    }
+
 
 }

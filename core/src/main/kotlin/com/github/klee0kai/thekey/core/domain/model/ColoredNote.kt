@@ -20,6 +20,7 @@ data class ColoredNote(
 
     // combined
     val group: ColorGroup = ColorGroup.noGroup(),
+    val hist: List<HistPassw> = emptyList(),
 
     // meta
     val changeDateStr: String? = null,

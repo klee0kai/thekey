@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.ui.genhist.presenter
+package com.github.klee0kai.thekey.app.ui.hist.presenter
 
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.storage.model.SearchState
@@ -12,9 +12,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
-open class GenHistPresenterDummy(
+open class HistPresenterDummy(
     private val histCount: Int = 30,
-) : GenHistPresenter {
+) : GenHistPresenter, NoteHistPresenter {
 
     private val scope = DI.defaultThreadScope()
 

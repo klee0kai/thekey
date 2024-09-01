@@ -79,7 +79,7 @@ fun NoteDialog(
     val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
     val isIme = WindowInsets.isIme
     val presenter by rememberOnScreenRef { DI.notePresenter(dest.identifier()).apply { init() } }
-    val note by presenter!!.state.collectAsState(
+    val note by presenter!!.note.collectAsState(
         key = Unit,
         initial = ColoredNote(isLoaded = false)
     )
@@ -364,7 +364,7 @@ fun NotePreview() {
     DI.hardResetToPreview()
     DI.initPresenterModule(object : PresentersModule {
         override fun notePresenter(noteIdentifier: NoteIdentifier) = object : NotePresenter {
-            override val state = MutableStateFlow(
+            override val note = MutableStateFlow(
                 ColoredNote.dummyLoaded()
             )
         }

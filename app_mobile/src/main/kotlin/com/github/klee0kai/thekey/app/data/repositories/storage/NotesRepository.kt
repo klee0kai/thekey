@@ -32,7 +32,6 @@ class NotesRepository(
     suspend fun note(notePtr: Long) = engine().note(notePtr)
 
     suspend fun setNotesGroup(notesPtr: List<Long>, groupId: Long) {
-
         engine().setNotesGroup(notesPtr.toTypedArray(), groupId)
         loadNotes(force = true)
     }
@@ -44,6 +43,12 @@ class NotesRepository(
 
     suspend fun removeNote(noteptr: Long) {
         engine().removeNote(noteptr)
+        loadNotes(force = true)
+    }
+
+
+    suspend fun removeHist(histPtr: Long) {
+        engine().removeHist(histPtr)
         loadNotes(force = true)
     }
 

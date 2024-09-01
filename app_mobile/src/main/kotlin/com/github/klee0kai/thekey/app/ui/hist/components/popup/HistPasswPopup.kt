@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.ui.genhist.components.popup
+package com.github.klee0kai.thekey.app.ui.hist.components.popup
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

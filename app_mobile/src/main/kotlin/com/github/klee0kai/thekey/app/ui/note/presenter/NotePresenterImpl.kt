@@ -5,6 +5,7 @@ import android.content.ClipboardManager
 import android.content.Context.CLIPBOARD_SERVICE
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.navigation.editNoteDest
+import com.github.klee0kai.thekey.app.ui.navigation.histDest
 import com.github.klee0kai.thekey.app.ui.navigation.storage
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
@@ -29,20 +30,21 @@ class NotePresenterImpl(
         DI.ctx().getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
     }
 
-    val _state = MutableStateFlow<ColoredNote?>(null)
-    override val state = _state.filterNotNull()
+    private val _note = MutableStateFlow<ColoredNote?>(null)
+    override val note = _note.filterNotNull()
 
     override fun init() = scope.launch {
-        _state.value = notesInteractor().notes.firstOrNull()
+        _note.value = notesInteractor().notes.firstOrNull()
             ?.firstOrNull { identifier.notePtr == it.ptnote }
             ?.updateWith(dateFormat)
             ?.copy(isLoaded = false)
         val passw = notesInteractor().note(identifier.notePtr).await().passw
-        _state.update { it?.copy(passw = passw, isLoaded = true) }
+        _note.update { it?.copy(passw = passw, isLoaded = true) }
     }
 
     override fun showHistory(router: AppRouter?) = scope.launch {
         router?.back()?.join()
+        router?.navigate(identifier.histDest())
     }
 
     override fun edit(router: AppRouter?) = scope.launch {
@@ -51,25 +53,25 @@ class NotePresenterImpl(
     }
 
     override fun copySite(router: AppRouter?) = scope.launch {
-        val data = ClipData.newPlainText("Site", _state.value?.site)
+        val data = ClipData.newPlainText("Site", _note.value?.site)
         clipboardManager.setPrimaryClip(data)
         router?.snack(R.string.copied_to_clipboard)
     }
 
     override fun copyLogin(router: AppRouter?) = scope.launch {
-        val data = ClipData.newPlainText("Login", _state.value?.login)
+        val data = ClipData.newPlainText("Login", _note.value?.login)
         clipboardManager.setPrimaryClip(data)
         router?.snack(R.string.copied_to_clipboard)
     }
 
     override fun copyPassw(router: AppRouter?) = scope.launch {
-        val data = ClipData.newPlainText("Password", _state.value?.passw)
+        val data = ClipData.newPlainText("Password", _note.value?.passw)
         clipboardManager.setPrimaryClip(data)
         router?.snack(R.string.copied_to_clipboard)
     }
 
     override fun copyDesc(router: AppRouter?) = scope.launch {
-        val data = ClipData.newPlainText("Description", _state.value?.desc)
+        val data = ClipData.newPlainText("Description", _note.value?.desc)
         clipboardManager.setPrimaryClip(data)
         router?.snack(R.string.copied_to_clipboard)
     }

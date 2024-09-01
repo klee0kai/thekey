@@ -10,7 +10,7 @@ import com.github.klee0kai.thekey.app.BuildConfig
 import com.github.klee0kai.thekey.app.ui.about.AboutScreen
 import com.github.klee0kai.thekey.app.ui.changepassw.ChangeStoragePasswordScreen
 import com.github.klee0kai.thekey.app.ui.editstorage.EditStorageScreen
-import com.github.klee0kai.thekey.app.ui.genhist.GenHistScreen
+import com.github.klee0kai.thekey.app.ui.hist.GenHistScreen
 import com.github.klee0kai.thekey.app.ui.login.LoginScreen
 import com.github.klee0kai.thekey.app.ui.navigation.model.AboutDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.ChangeStoragePasswordDestination
@@ -19,7 +19,7 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteGroupDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditStorageDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditStorageGroupDestination
-import com.github.klee0kai.thekey.app.ui.navigation.model.GenHistDestination
+import com.github.klee0kai.thekey.app.ui.navigation.model.HistDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.LoginDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.NoteDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.PluginDestination
@@ -72,7 +72,7 @@ class ScreenResolverImpl : ScreenResolver {
             is ChangeStoragePasswordDestination -> ChangeStoragePasswordScreen(path = destination.path)
             is EditStorageGroupDestination -> EditStorageGroupsScreen(destination)
             is StorageDestination -> StorageScreen(destination)
-            is GenHistDestination -> GenHistScreen(destination)
+            is HistDestination -> GenHistScreen(destination)
             is NoteDestination -> NoteDialog(destination)
             is EditNoteDestination -> EditNoteScreen(destination)
             is EditNoteGroupDestination -> EditNoteGroupsScreen(destination)

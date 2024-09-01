@@ -1,43 +1,47 @@
-package com.github.klee0kai.thekey.app.ui.genhist.presenter
+package com.github.klee0kai.thekey.app.ui.hist.presenter
 
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context.CLIPBOARD_SERVICE
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
-import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteDestination
+import com.github.klee0kai.thekey.app.ui.navigation.storage
 import com.github.klee0kai.thekey.app.ui.storage.model.SearchState
 import com.github.klee0kai.thekey.core.R
-import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
+import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
+import com.github.klee0kai.thekey.core.domain.model.ColoredNote
 import com.github.klee0kai.thekey.core.domain.model.HistPassw
 import com.github.klee0kai.thekey.core.domain.model.filterBy
 import com.github.klee0kai.thekey.core.domain.model.updateWith
 import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
 import com.github.klee0kai.thekey.core.utils.common.TimeFormats
+import com.github.klee0kai.thekey.core.utils.common.launch
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-open class GenHistPresenterImpl(
-    val storageIdentifier: StorageIdentifier,
-) : GenHistPresenter {
+open class NotePasswHistPresenterImpl(
+    val identifier: NoteIdentifier,
+) : NoteHistPresenter {
 
     private val scope = DI.defaultThreadScope()
-    private val interactor = DI.genPasswInteractorLazy(storageIdentifier)
+    private val interactor = DI.notesInteractorLazy(identifier.storage())
     private val clipboardManager by lazy {
         DI.ctx().getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
     }
     private val dateFormat by lazy { TimeFormats.simpleDateFormat() }
-
     override val searchState = MutableStateFlow(SearchState())
+
+    private val _note = MutableStateFlow<ColoredNote?>(null)
     private val allHistPasswList = flow<List<HistPassw>> {
-        interactor().history
-            .map { list -> list.map { it.updateWith(dateFormat) } }
+        _note.map { note -> note?.hist?.map { it.updateWith(dateFormat) } }
+            .filterNotNull()
             .collect(this)
     }
 
@@ -54,26 +58,19 @@ open class GenHistPresenterImpl(
         ).collect(this@flow)
     }.flowOn(DI.defaultDispatcher())
 
+    override fun init() = scope.launch {
+        _note.value = interactor().notes.firstOrNull()
+            ?.firstOrNull { identifier.notePtr == it.ptnote }
+            ?.updateWith(dateFormat)
+            ?.copy(isLoaded = false)
+        val hist = interactor().note(identifier.notePtr).await().hist
+        _note.update { it?.copy(hist = hist) }
+    }
+
     override fun searchFilter(
         newParams: SearchState,
     ) = scope.launch(start = CoroutineStart.UNDISPATCHED) {
         searchState.value = newParams
-    }
-
-    override fun savePassw(
-        histPtr: Long,
-        router: AppRouter?,
-    ) = scope.launch {
-        val hist = filteredHist.firstOrNull()
-            ?.firstOrNull { it.histPtr == histPtr } ?: return@launch
-
-        router?.navigate(
-            EditNoteDestination(
-                path = storageIdentifier.path,
-                storageVersion = storageIdentifier.version,
-                note = DecryptedNote(passw = hist.passw)
-            )
-        )
     }
 
     override fun copyPassw(
@@ -94,6 +91,7 @@ open class GenHistPresenterImpl(
         router: AppRouter?,
     ) = scope.launch {
         interactor().removeHist(histPtr)
+        _note.update { note -> note?.copy(hist = note.hist.filter { it.histPtr != histPtr }) }
     }
 
 }

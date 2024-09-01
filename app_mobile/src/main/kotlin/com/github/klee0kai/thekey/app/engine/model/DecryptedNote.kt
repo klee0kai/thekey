@@ -18,7 +18,40 @@ data class DecryptedNote(
 
     val chTimeSec: Long = 0,
     val colorGroupId: Long = 0,
-) : Parcelable
+    val hist: Array<DecryptedPassw> = emptyArray(),
+) : Parcelable {
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as DecryptedNote
+
+        if (ptnote != other.ptnote) return false
+        if (site != other.site) return false
+        if (login != other.login) return false
+        if (passw != other.passw) return false
+        if (desc != other.desc) return false
+        if (chTimeSec != other.chTimeSec) return false
+        if (colorGroupId != other.colorGroupId) return false
+        if (!hist.contentEquals(other.hist)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = ptnote.hashCode()
+        result = 31 * result + site.hashCode()
+        result = 31 * result + login.hashCode()
+        result = 31 * result + passw.hashCode()
+        result = 31 * result + desc.hashCode()
+        result = 31 * result + chTimeSec.hashCode()
+        result = 31 * result + colorGroupId.hashCode()
+        result = 31 * result + hist.contentHashCode()
+        return result
+    }
+
+}
 
 
 fun DecryptedNote.isEmpty(
@@ -44,6 +77,7 @@ fun DecryptedNote.merge(
 fun DecryptedNote.coloredNote(
     group: ColorGroup? = null,
     isLoaded: Boolean = false,
+    isHistLoaded: Boolean = false,
 ) = ColoredNote(
     ptnote = ptnote,
     site = site,
@@ -52,5 +86,6 @@ fun DecryptedNote.coloredNote(
     desc = desc,
     chTime = TimeUnit.SECONDS.toMillis(chTimeSec),
     group = group ?: ColorGroup(id = colorGroupId),
+    hist = hist.map { it.histPasww(isHistLoaded) },
     isLoaded = isLoaded,
 )

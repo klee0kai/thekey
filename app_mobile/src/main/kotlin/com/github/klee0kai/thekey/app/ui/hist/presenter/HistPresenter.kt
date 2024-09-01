@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.ui.genhist.presenter
+package com.github.klee0kai.thekey.app.ui.hist.presenter
 
 import com.github.klee0kai.thekey.app.ui.storage.model.SearchState
 import com.github.klee0kai.thekey.core.domain.model.HistPassw
@@ -9,12 +9,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.emptyFlow
 
-interface GenHistPresenter {
+interface HistPresenter {
 
     val searchState: Flow<SearchState>
         get() = MutableStateFlow(SearchState())
 
     val filteredHist: Flow<List<HistPassw>> get() = emptyFlow()
+
+    fun init(): Job = emptyJob()
 
     fun searchFilter(newParams: SearchState): Job = emptyJob()
 
@@ -25,3 +27,7 @@ interface GenHistPresenter {
     fun removePassw(histPtr: Long, router: AppRouter?): Job = emptyJob()
 
 }
+
+interface GenHistPresenter : HistPresenter
+
+interface NoteHistPresenter : HistPresenter

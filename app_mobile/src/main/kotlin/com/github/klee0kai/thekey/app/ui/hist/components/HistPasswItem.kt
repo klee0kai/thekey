@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.ui.genhist.components
+package com.github.klee0kai.thekey.app.ui.hist.components
 
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth

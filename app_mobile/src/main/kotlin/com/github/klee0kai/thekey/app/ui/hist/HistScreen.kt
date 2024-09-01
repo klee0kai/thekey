@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalFoundationApi::class)
 
-package com.github.klee0kai.thekey.app.ui.genhist
+package com.github.klee0kai.thekey.app.ui.hist
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -35,10 +35,11 @@ import androidx.compose.ui.unit.dp
 import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
-import com.github.klee0kai.thekey.app.ui.genhist.components.HistPasswItem
-import com.github.klee0kai.thekey.app.ui.genhist.components.popup.HistPasswPopup
-import com.github.klee0kai.thekey.app.ui.genhist.presenter.GenHistPresenterDummy
-import com.github.klee0kai.thekey.app.ui.navigation.model.GenHistDestination
+import com.github.klee0kai.thekey.app.ui.hist.components.HistPasswItem
+import com.github.klee0kai.thekey.app.ui.hist.components.popup.HistPasswPopup
+import com.github.klee0kai.thekey.app.ui.hist.presenter.HistPresenterDummy
+import com.github.klee0kai.thekey.app.ui.navigation.model.HistDestination
+import com.github.klee0kai.thekey.app.ui.navigation.noteIdentifier
 import com.github.klee0kai.thekey.app.ui.navigation.storageIdentifier
 import com.github.klee0kai.thekey.app.ui.storage.model.SearchState
 import com.github.klee0kai.thekey.core.R
@@ -74,14 +75,19 @@ private const val MainTitleId = 1
 
 @Composable
 fun GenHistScreen(
-    dest: GenHistDestination = GenHistDestination(),
+    dest: HistDestination = HistDestination(),
 ) {
     val router by LocalRouter.currentRef
     val safeContentPadding = WindowInsets.safeContent.asPaddingValues()
     val scrollState = rememberLazyListState()
     val appBarVisible by scrollState.appBarVisible()
+    val noteIdentifier = remember(dest) { dest.noteIdentifier() }
     val presenter by rememberOnScreenRef {
-        DI.genHistPresenter(dest.storageIdentifier())
+        if (noteIdentifier != null) {
+            DI.noteHistPresenter(noteIdentifier).apply { init() }
+        } else {
+            DI.genHistPresenter(dest.storageIdentifier()).apply { init() }
+        }
     }
     val histList by presenter!!.filteredHist.collectAsState(key = Unit, initial = null)
     val searchState by presenter!!.searchState.collectAsState(key = Unit, initial = SearchState())
@@ -151,10 +157,10 @@ fun GenHistScreen(
                 ) {
                     HistPasswPopup(
                         modifier = Modifier.padding(vertical = 4.dp),
-                        onSave = rememberClickDebounced(hist) {
+                        onSave = if (noteIdentifier == null) rememberClickDebounced(hist) {
                             showMenu = false
                             presenter?.savePassw(hist.histPtr, router)
-                        },
+                        } else null,
                         onCopy = rememberClickDebounced(hist) {
                             showMenu = false
                             presenter?.copyPassw(hist.histPtr, router)
@@ -229,7 +235,7 @@ fun GenHistScreenPreview() = EdgeToEdgeTemplate {
     AppTheme(theme = DefaultThemes.darkTheme) {
         DI.initPresenterModule(object : PresentersModule {
             override fun genHistPresenter(storageIdentifier: StorageIdentifier) =
-                object : GenHistPresenterDummy(histCount = 30) {
+                object : HistPresenterDummy(histCount = 30) {
 
                 }
         })

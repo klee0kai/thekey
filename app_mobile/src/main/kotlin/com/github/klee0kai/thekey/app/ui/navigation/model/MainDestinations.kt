@@ -136,7 +136,7 @@ data class EditNoteDestination(
 
 
 @Parcelize
-data class GenHistDestination(
+data class HistDestination(
     /**
      * storage path
      */
@@ -145,6 +145,10 @@ data class GenHistDestination(
      * Storage version
      */
     val storageVersion: Int = 0,
+    /**
+     * note ptr for note's history
+     */
+    val notePtr: Long? = null,
 ) : Destination
 
 

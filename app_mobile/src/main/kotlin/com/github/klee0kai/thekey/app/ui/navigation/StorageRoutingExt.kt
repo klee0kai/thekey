@@ -1,19 +1,19 @@
 package com.github.klee0kai.thekey.app.ui.navigation
 
-import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.engine.model.DecryptedOtpNote
 import com.github.klee0kai.thekey.app.engine.model.Storage
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteGroupDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditStorageGroupDestination
-import com.github.klee0kai.thekey.app.ui.navigation.model.GenHistDestination
+import com.github.klee0kai.thekey.app.ui.navigation.model.HistDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.NoteDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.core.di.identifiers.NoteGroupIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.StorageGroupIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
+import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 
 fun Storage.dest() = StorageDestination(version = version, path = path)
 
@@ -80,13 +80,30 @@ fun NoteIdentifier.editNoteDest(
 
 
 fun StorageDestination.genHist() =
-    GenHistDestination(storageVersion = version, path = path)
+    HistDestination(storageVersion = version, path = path)
 
-fun GenHistDestination.storage() =
+fun HistDestination.storage() =
     StorageIdentifier(version = storageVersion, path = path)
 
-fun GenHistDestination.storageIdentifier() =
+fun HistDestination.storageIdentifier() =
     StorageIdentifier(version = storageVersion, path = path)
+
+fun HistDestination.noteIdentifier(
+) = notePtr?.let {
+    NoteIdentifier(
+        storageVersion = storageVersion,
+        storagePath = path,
+        notePtr = notePtr,
+    )
+}
+
+fun NoteIdentifier.histDest(
+) = HistDestination(
+    storageVersion = storageVersion,
+    path = storagePath,
+    notePtr = notePtr,
+)
+
 
 fun StorageIdentifier.noteDest(notePtr: Long = 0) =
     NoteIdentifier(storageVersion = version, storagePath = path, notePtr = notePtr)
