@@ -2,8 +2,10 @@ package com.github.klee0kai.thekey.app.engine.model
 
 import android.os.Parcelable
 import com.github.klee0kai.brooklyn.JniPojo
-import com.github.klee0kai.thekey.core.domain.model.ColoredOtpNote
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
+import com.github.klee0kai.thekey.core.domain.model.ColoredOtpNote
+import com.github.klee0kai.thekey.core.domain.model.OtpAlgo
+import com.github.klee0kai.thekey.core.domain.model.OtpMethod
 import kotlinx.parcelize.Parcelize
 
 @JniPojo
@@ -33,31 +35,6 @@ data class DecryptedOtpNote(
     val otpAlgo: OtpAlgo
         get() = OtpAlgo.from(otpAlgoRaw)
 
-}
-
-enum class OtpMethod(val code: Int) {
-    OTP(0),
-    HOTP(1),
-    TOTP(2),
-    YAOTP(3);
-
-    companion object {
-        fun from(code: Int): OtpMethod {
-            return entries.firstOrNull { it.code == code } ?: OTP
-        }
-    }
-}
-
-enum class OtpAlgo(val code: Int) {
-    SHA1(0),
-    SHA256(1),
-    SHA512(2);
-
-    companion object {
-        fun from(code: Int): OtpAlgo {
-            return entries.firstOrNull { it.code == code } ?: SHA1
-        }
-    }
 }
 
 fun DecryptedOtpNote.isEmpty(): Boolean =

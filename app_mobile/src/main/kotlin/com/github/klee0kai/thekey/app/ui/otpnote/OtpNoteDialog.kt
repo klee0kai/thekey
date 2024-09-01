@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.github.klee0kai.thekey.app.ui.note
+package com.github.klee0kai.thekey.app.ui.otpnote
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -40,9 +40,9 @@ import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.NoteDestination
-import com.github.klee0kai.thekey.app.ui.note.presenter.NotePresenter
+import com.github.klee0kai.thekey.app.ui.otpnote.presenter.OtpNotePresenter
 import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
-import com.github.klee0kai.thekey.core.domain.model.ColoredNote
+import com.github.klee0kai.thekey.core.domain.model.ColoredOtpNote
 import com.github.klee0kai.thekey.core.domain.model.dummyLoaded
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
@@ -68,7 +68,7 @@ import kotlinx.coroutines.launch
 import com.github.klee0kai.thekey.core.R as CoreR
 
 @Composable
-fun NoteDialog(
+fun OtpNoteDialog(
     dest: NoteDestination = NoteDestination(),
     initialValue: SheetValue = SheetValue.Hidden,
 ) {
@@ -78,10 +78,10 @@ fun NoteDialog(
     val scope = rememberCoroutineScope()
     val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
     val isIme = WindowInsets.isIme
-    val presenter by rememberOnScreenRef { DI.notePresenter(dest.identifier()).apply { init() } }
+    val presenter by rememberOnScreenRef { DI.otpNotePresenter(dest.identifier()).apply { init() } }
     val note by presenter!!.note.collectAsState(
         key = Unit,
-        initial = ColoredNote(isLoaded = false)
+        initial = ColoredOtpNote(isLoaded = false)
     )
 
     val scaffoldState = rememberSafeBottomSheetScaffoldState(
@@ -132,17 +132,15 @@ fun NoteDialog(
             ) {
 
                 val (
-                    siteHintField, siteField,
-                    loginHintField, loginField,
-                    passwHintField, passwField,
-                    descHintField, descField,
-                    chDateField,
+                    issuerHintField, issuerField,
+                    nameHintField, nameField,
+                    codeHintField, codeField,
                 ) = createRefs()
 
                 Text(
                     modifier = Modifier
                         .alpha(0.6f)
-                        .constrainAs(siteHintField) {
+                        .constrainAs(issuerHintField) {
                             linkTo(
                                 top = parent.top,
                                 bottom = parent.bottom,
@@ -154,15 +152,15 @@ fun NoteDialog(
                             )
                         },
                     style = theme.typeScheme.typography.labelMedium,
-                    text = stringResource(id = CoreR.string.site),
+                    text = stringResource(id = CoreR.string.issuer),
                 )
 
                 TextButton(
                     modifier = Modifier
                         .padding(horizontal = safeContentPaddings.horizontal(16.dp))
-                        .constrainAs(siteField) {
+                        .constrainAs(issuerField) {
                             linkTo(
-                                top = siteHintField.bottom,
+                                top = issuerHintField.bottom,
                                 bottom = parent.bottom,
                                 start = parent.start,
                                 end = parent.end,
@@ -170,18 +168,18 @@ fun NoteDialog(
                                 horizontalBias = 0f,
                             )
                         },
-                    onClick = rememberClickDebounced(presenter) { presenter?.copySite(router) },
+                    onClick = rememberClickDebounced(presenter) { presenter?.copyIssuer(router) },
                     colors = theme.colorScheme.whiteTextButtonColors,
                 ) {
-                    Text(text = note.site)
+                    Text(text = note.issuer)
                 }
 
                 Text(
                     modifier = Modifier
                         .alpha(0.6f)
-                        .constrainAs(loginHintField) {
+                        .constrainAs(nameHintField) {
                             linkTo(
-                                top = siteField.bottom,
+                                top = issuerField.bottom,
                                 bottom = parent.bottom,
                                 start = parent.start,
                                 end = parent.end,
@@ -192,15 +190,15 @@ fun NoteDialog(
                             )
                         },
                     style = theme.typeScheme.typography.labelMedium,
-                    text = stringResource(id = CoreR.string.login),
+                    text = stringResource(id = CoreR.string.name),
                 )
 
                 TextButton(
                     modifier = Modifier
                         .padding(horizontal = safeContentPaddings.horizontal(16.dp))
-                        .constrainAs(loginField) {
+                        .constrainAs(nameField) {
                             linkTo(
-                                top = loginHintField.bottom,
+                                top = nameHintField.bottom,
                                 bottom = parent.bottom,
                                 start = parent.start,
                                 end = parent.end,
@@ -208,19 +206,19 @@ fun NoteDialog(
                                 horizontalBias = 0f,
                             )
                         },
-                    onClick = rememberClickDebounced(presenter) { presenter?.copyLogin(router) },
+                    onClick = rememberClickDebounced(presenter) { presenter?.copyName(router) },
                     colors = theme.colorScheme.whiteTextButtonColors,
                 ) {
-                    Text(text = note.login)
+                    Text(text = note.name)
                 }
 
 
                 Text(
                     modifier = Modifier
                         .alpha(0.6f)
-                        .constrainAs(passwHintField) {
+                        .constrainAs(codeHintField) {
                             linkTo(
-                                top = loginField.bottom,
+                                top = nameField.bottom,
                                 bottom = parent.bottom,
                                 start = parent.start,
                                 end = parent.end,
@@ -231,87 +229,28 @@ fun NoteDialog(
                             )
                         },
                     style = theme.typeScheme.typography.labelMedium,
-                    text = stringResource(id = CoreR.string.password),
+                    text = stringResource(id = CoreR.string.code),
                 )
 
                 TextButton(
                     modifier = Modifier
                         .padding(horizontal = safeContentPaddings.horizontal(16.dp))
-                        .constrainAs(passwField) {
+                        .constrainAs(codeField) {
                             width = Dimension.preferredWrapContent
                             linkTo(
-                                top = passwHintField.bottom,
+                                top = codeHintField.bottom,
                                 bottom = parent.bottom,
                                 start = parent.start,
-                                end = chDateField.start,
+                                end = parent.end,
                                 verticalBias = 0f,
                                 horizontalBias = 0f,
                             )
                         },
-                    onClick = rememberClickDebounced(presenter) { presenter?.copyPassw(router) },
+                    onClick = rememberClickDebounced(presenter) { presenter?.copyCode(router) },
                     colors = theme.colorScheme.whiteTextButtonColors,
                 ) {
-                    Text(text = note.passw)
+                    Text(text = note.code)
                 }
-
-
-                TextButton(
-                    modifier = Modifier
-                        .padding(horizontal = safeContentPaddings.horizontal(16.dp))
-                        .constrainAs(chDateField) {
-                            linkTo(
-                                top = passwField.top,
-                                bottom = passwField.bottom,
-                                start = parent.start,
-                                end = parent.end,
-                                verticalBias = 0f,
-                                horizontalBias = 1f,
-                            )
-                        },
-                    onClick = rememberClickDebounced(presenter) { presenter?.showHistory(router) },
-                ) {
-                    Text(text = note.changeDateStr ?: "")
-                }
-
-                Text(
-                    modifier = Modifier
-                        .alpha(0.6f)
-                        .constrainAs(descHintField) {
-                            linkTo(
-                                top = passwField.bottom,
-                                bottom = parent.bottom,
-                                start = parent.start,
-                                end = parent.end,
-                                verticalBias = 0f,
-                                horizontalBias = 0f,
-                                startMargin = safeContentPaddings.horizontal(minValue = 16.dp),
-                                topMargin = 8.dp,
-                            )
-                        },
-                    style = theme.typeScheme.typography.labelMedium,
-                    text = stringResource(id = CoreR.string.description),
-                )
-
-                TextButton(
-                    modifier = Modifier
-                        .padding(horizontal = safeContentPaddings.horizontal(16.dp))
-                        .constrainAs(descField) {
-                            linkTo(
-                                top = descHintField.bottom,
-                                bottom = parent.bottom,
-                                start = parent.start,
-                                end = parent.end,
-                                verticalBias = 0f,
-                                horizontalBias = 0f,
-                            )
-                        },
-                    onClick = rememberClickDebounced(presenter) { presenter?.copyDesc(router) },
-                    colors = theme.colorScheme.whiteTextButtonColors,
-                ) {
-                    Text(text = note.desc)
-                }
-
-
             }
         }
     }
@@ -352,7 +291,7 @@ fun NoteDialog(
                 content = { BackMenuIcon() }
             )
         },
-        titleContent = { Text(text = stringResource(R.string.note)) },
+        titleContent = { Text(text = stringResource(R.string.one_time_password)) },
     )
 }
 
@@ -363,15 +302,13 @@ fun NoteDialog(
 fun NotePreview() {
     DI.hardResetToPreview()
     DI.initPresenterModule(object : PresentersModule {
-        override fun notePresenter(noteIdentifier: NoteIdentifier) = object : NotePresenter {
-            override val note = MutableStateFlow(
-                ColoredNote.dummyLoaded()
-            )
+        override fun otpNotePresenter(noteIdentifier: NoteIdentifier) = object : OtpNotePresenter {
+            override val note = MutableStateFlow(ColoredOtpNote.dummyLoaded())
         }
     })
     DebugDarkScreenPreview {
         Box(modifier = Modifier.background(Color.Yellow)) {
-            NoteDialog(
+            OtpNoteDialog(
                 initialValue = SheetValue.PartiallyExpanded,
             )
         }

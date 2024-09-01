@@ -185,4 +185,5 @@
     <string name="note_history">Note history</string>
     <string name="no_history">No history</string>
     <string name="no_issuer">No issuer</string>
+    <string name="code">Code</string>
 </resources>
