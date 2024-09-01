@@ -45,8 +45,11 @@ data class EditNoteState(
 ) : Parcelable {
 
     companion object {
-        val otpTypesVariants = listOf("HOTP", "TOTP", "YaOTP")
-        val otpAlgoVariants = listOf("SHA1", "SHA256", "SHA512")
+        val otpTypesDefVariants = listOf("HOTP", "TOTP", "YaOTP")
+        val otpAlgoDefVariants = listOf("SHA1", "SHA256", "SHA512")
+        const val defOtpInterval = "30"
+        const val defOtpDigits = "6"
+        const val defOtpCounter = "6"
 
         fun OtpMethod.typeVariant() = when (this) {
             OtpMethod.OTP, OtpMethod.HOTP -> 0
@@ -81,8 +84,19 @@ enum class EditTabs {
     Otp,
 }
 
+fun EditNoteState.initVariants() = copy(
+    otpMethodVariants = EditNoteState.otpTypesDefVariants,
+    otpMethodSelected = 1,
+    otpAlgoVariants = EditNoteState.otpAlgoDefVariants,
+    otpAlgoSelected = 0,
+    otpInterval = EditNoteState.defOtpInterval,
+    otpDigits = EditNoteState.defOtpDigits,
+    otpCounter = EditNoteState.defOtpCounter,
+)
+
 fun EditNoteState.isValid(): Boolean {
-    val allDigits = otpInterval.all { it.isDigit() } && otpDigits.all { it.isDigit() } && otpCounter.all { it.isDigit() }
+    val allDigits =
+        otpInterval.all { it.isDigit() } && otpDigits.all { it.isDigit() } && otpCounter.all { it.isDigit() }
     val correctLen = otpInterval.length <= 4 && otpDigits.length <= 2
     return allDigits && correctLen
 }
@@ -96,19 +110,20 @@ fun EditNoteState.decryptedNote(origin: DecryptedNote = DecryptedNote()) =
         colorGroupId = colorGroupVariants.getOrNull(colorGroupSelected)?.id ?: 0L
     )
 
-fun EditNoteState.decryptedOtpNote(origin: DecryptedOtpNote = DecryptedOtpNote()) = with(EditNoteState.Companion) {
-    origin.copy(
-        issuer = siteOrIssuer,
-        name = loginOrName,
-        url = otpUrl,
-        secret = otpSecret,
-        otpMethodRaw = otpMethodSelected.methodVariantToOtpMethod().code,
-        otpAlgoRaw = otpAlgoSelected.algoVariantToOtpAlgo().code,
-        interval = otpInterval.toIntOrNull() ?: 0,
-        digits = otpDigits.toIntOrNull() ?: 0,
-        counter = otpCounter.toIntOrNull() ?: 0,
-    )
-}
+fun EditNoteState.decryptedOtpNote(origin: DecryptedOtpNote = DecryptedOtpNote()) =
+    with(EditNoteState.Companion) {
+        origin.copy(
+            issuer = siteOrIssuer,
+            name = loginOrName,
+            url = otpUrl,
+            secret = otpSecret,
+            otpMethodRaw = otpMethodSelected.methodVariantToOtpMethod().code,
+            otpAlgoRaw = otpAlgoSelected.algoVariantToOtpAlgo().code,
+            interval = otpInterval.toIntOrNull() ?: 0,
+            digits = otpDigits.toIntOrNull() ?: 0,
+            counter = otpCounter.toIntOrNull() ?: 0,
+        )
+    }
 
 fun EditNoteState.updateWith(
     note: DecryptedNote,

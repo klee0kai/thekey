@@ -8,13 +8,13 @@ import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -42,6 +42,7 @@ import androidx.wear.compose.material.rememberSwipeableState
 import androidx.wear.compose.material.swipeable
 import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteDestination
@@ -51,12 +52,14 @@ import com.github.klee0kai.thekey.app.ui.noteedit.model.EditTabs.Account
 import com.github.klee0kai.thekey.app.ui.noteedit.model.EditTabs.Otp
 import com.github.klee0kai.thekey.app.ui.noteedit.model.initTab
 import com.github.klee0kai.thekey.app.ui.noteedit.presenter.EditNotePresenter
+import com.github.klee0kai.thekey.app.ui.noteedit.presenter.EditNotePresenterDummy
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
-import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
+import com.github.klee0kai.thekey.core.ui.devkit.Screen
+import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DeleteIconButton
@@ -67,18 +70,19 @@ import com.github.klee0kai.thekey.core.ui.devkit.components.dropdownfields.Color
 import com.github.klee0kai.thekey.core.ui.devkit.components.dropdownfields.DropDownField
 import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextField
 import com.github.klee0kai.thekey.core.ui.devkit.icons.BackMenuIcon
-import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
+import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.common.Dummy
 import com.github.klee0kai.thekey.core.utils.possitions.pxToDp
 import com.github.klee0kai.thekey.core.utils.possitions.toPx
+import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
 import com.github.klee0kai.thekey.core.utils.views.TargetAlpha
 import com.github.klee0kai.thekey.core.utils.views.animateSkeletonModifier
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.crossFadeAlpha
 import com.github.klee0kai.thekey.core.utils.views.currentRef
+import com.github.klee0kai.thekey.core.utils.views.horizontal
 import com.github.klee0kai.thekey.core.utils.views.isIme
-import com.github.klee0kai.thekey.core.utils.views.minInsets
 import com.github.klee0kai.thekey.core.utils.views.rememberClickArg
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
@@ -86,8 +90,6 @@ import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.core.utils.views.rememberTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.thenIf
 import com.github.klee0kai.thekey.core.utils.views.topDp
-import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -95,7 +97,7 @@ import kotlin.time.Duration.Companion.milliseconds
 @Composable
 fun EditNoteScreen(
     dest: EditNoteDestination = EditNoteDestination(),
-) {
+) = Screen {
     val scope = rememberCoroutineScope()
     val router by LocalRouter.currentRef
     val view = LocalView.current
@@ -105,6 +107,7 @@ fun EditNoteScreen(
             init(dest.tab, dest.note, dest.otpNote)
         }
     }
+    val safeContentPadding = WindowInsets.safeContent.asPaddingValues()
     val titles = listOf(stringResource(id = R.string.account), stringResource(id = R.string.otp))
     val state by presenter!!.state.collectAsState(
         key = Unit,
@@ -124,9 +127,13 @@ fun EditNoteScreen(
     val scrollState = rememberScrollState()
     val imeIsVisibleAnimated by animateTargetCrossFaded(WindowInsets.isIme)
 
-    BackHandler(state.otpMethodExpanded || state.otpAlgoExpanded) {
+    BackHandler(state.otpMethodExpanded || state.otpAlgoExpanded || state.colorGroupExpanded) {
         presenter?.input {
-            copy(otpMethodExpanded = false, otpAlgoExpanded = false)
+            copy(
+                otpMethodExpanded = false,
+                otpAlgoExpanded = false,
+                colorGroupExpanded = false,
+            )
         }
     }
     LaunchedEffect(key1 = page.current) {
@@ -142,8 +149,9 @@ fun EditNoteScreen(
             .verticalScroll(scrollState)
             .fillMaxSize()
             .defaultMinSize(minHeight = view.height.pxToDp())
-            .windowInsetsPadding(WindowInsets.safeContent.minInsets(16.dp))
-            .padding(top = AppBarConst.appBarSize + pagerHeight)
+            .padding(bottom = safeContentPadding.calculateBottomPadding() + 16.dp)
+            .padding(horizontal = safeContentPadding.horizontal(minValue = 16.dp))
+            .padding(top = AppBarConst.appBarSize + pagerHeight + safeContentPadding.calculateTopPadding())
             .thenIf(!state.isEditMode) {
                 swipeable(
                     state = pageSwipeState,
@@ -176,7 +184,7 @@ fun EditNoteScreen(
                 },
             isSkeleton = state.isSkeleton,
             value = state.siteOrIssuer,
-            onValueChange = { presenter?.input { copy(siteOrIssuer = it) } },
+            onValueChange = rememberClickArg { presenter?.input { copy(siteOrIssuer = it) } },
             label = {
                 val text = if (page.current == Account) R.string.site else R.string.issuer
                 Text(
@@ -202,7 +210,7 @@ fun EditNoteScreen(
                 },
             value = state.loginOrName,
             isSkeleton = state.isSkeleton,
-            onValueChange = { presenter?.input { copy(loginOrName = it) } },
+            onValueChange = rememberClickArg { presenter?.input { copy(loginOrName = it) } },
             label = {
                 val text = if (page.current == Account) R.string.login else R.string.name
                 Text(
@@ -232,7 +240,7 @@ fun EditNoteScreen(
                 Account -> state.passw
                 Otp -> state.otpSecret
             },
-            onValueChange = {
+            onValueChange = rememberClickArg {
                 when (page.current) {
                     Account -> presenter?.input { copy(passw = it) }
                     Otp -> presenter?.input { copy(otpSecret = it) }
@@ -289,7 +297,7 @@ fun EditNoteScreen(
                     },
                 isSkeleton = state.isSkeleton,
                 value = state.desc,
-                onValueChange = rememberClickArg(dest) { presenter?.input { copy(desc = it) } },
+                onValueChange = rememberClickArg { presenter?.input { copy(desc = it) } },
                 label = { Text(stringResource(R.string.description)) },
             )
         }
@@ -298,7 +306,6 @@ fun EditNoteScreen(
             DropDownField(
                 modifier = Modifier
                     .alpha(page.alpha)
-                    .then(skeletonModifier)
                     .constrainAs(otpTypeField) {
                         width = Dimension.fillToConstraints
                         linkTo(
@@ -428,7 +435,7 @@ fun EditNoteScreen(
                 presenter?.input {
                     copy(
                         colorGroupSelected = it,
-                        colorGroupExpanded = false
+                        colorGroupExpanded = false,
                     )
                 }
             },
@@ -452,12 +459,11 @@ fun EditNoteScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .windowInsetsPadding(WindowInsets.safeContent)
             .padding(
-                top = 16.dp + AppBarConst.appBarSize + pagerHeight,
-                bottom = 16.dp,
-                start = 16.dp,
-                end = 16.dp
+                top = 16.dp + AppBarConst.appBarSize + pagerHeight + safeContentPadding.calculateTopPadding(),
+                bottom = 16.dp + safeContentPadding.calculateBottomPadding(),
+                start = safeContentPadding.horizontal(minValue = 16.dp),
+                end = safeContentPadding.horizontal(minValue = 16.dp),
             ),
     ) {
         Spacer(modifier = Modifier.weight(1f))
@@ -524,148 +530,169 @@ fun EditNoteScreen(
 }
 
 
+@OptIn(DebugOnly::class)
 @Preview(device = Devices.PHONE)
 @Composable
-fun CreateAccountScreenP6SkeletonPreview() = EdgeToEdgeTemplate {
-    AppTheme(theme = DefaultThemes.darkTheme) {
-        DI.initPresenterModule(object : PresentersModule {
-            override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter =
-                object : EditNotePresenter {
-                    override val state = MutableStateFlow(
-                        EditNoteState(
-                            isSkeleton = true,
-                        )
-                    )
-                }
-        })
+fun CreateAccountScreenP6SkeletonPreview() {
+    DI.hardResetToPreview()
+    DI.initPresenterModule(object : PresentersModule {
+        override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter =
+            object : EditNotePresenterDummy(
+                EditNoteState(
+                    isSkeleton = true,
+                )
+            ) {
+
+            }
+    })
+
+    DebugDarkScreenPreview {
         EditNoteScreen(dest = EditNoteDestination(path = Dummy.unicString))
     }
 }
 
+@OptIn(DebugOnly::class)
 @Preview(device = Devices.PHONE)
 @Composable
-fun CreateOTPScreenP6SkeletonPreview() = EdgeToEdgeTemplate {
-    AppTheme(theme = DefaultThemes.darkTheme) {
-        DI.initPresenterModule(object : PresentersModule {
-            override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter =
-                object : EditNotePresenter {
-                    override val state = MutableStateFlow(
-                        EditNoteState(
-                            isSkeleton = true,
-                        )
-                    )
-                }
-        })
+fun CreateOTPScreenP6SkeletonPreview() {
+    DI.hardResetToPreview()
+    DI.initPresenterModule(object : PresentersModule {
+        override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter =
+            object : EditNotePresenterDummy(
+                EditNoteState(
+                    isSkeleton = true,
+                )
+            ) {
+
+            }
+    })
+    DebugDarkScreenPreview {
         EditNoteScreen(dest = EditNoteDestination(path = Dummy.unicString, tab = Otp))
     }
 }
 
+@OptIn(DebugOnly::class)
 @Preview(device = Devices.PHONE)
 @Composable
-fun CreateAccountScreenP6Preview() = EdgeToEdgeTemplate {
-    AppTheme(theme = DefaultThemes.darkTheme) {
-        DI.initPresenterModule(object : PresentersModule {
-            override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter =
-                object : EditNotePresenter {
-                    override val state = MutableStateFlow(
-                        EditNoteState(
-                            isSkeleton = false,
-                            siteOrIssuer = "some.site.com",
-                            loginOrName = "myLogin@2",
-                            passw = "123#",
-                        )
-                    )
-                }
-        })
+fun CreateAccountScreenP6Preview() {
+    DI.hardResetToPreview()
+    DI.initPresenterModule(object : PresentersModule {
+        override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter =
+            object : EditNotePresenterDummy(
+                EditNoteState(
+                    isSkeleton = false,
+                    siteOrIssuer = "some.site.com",
+                    loginOrName = "myLogin@2",
+                    passw = "123#",
+                )
+            ) {
+
+            }
+    })
+
+    DebugDarkScreenPreview {
         EditNoteScreen(EditNoteDestination(path = Dummy.unicString))
     }
 }
 
+@OptIn(DebugOnly::class)
 @Preview(device = Devices.PHONE)
 @Composable
-fun EditAccountScreenP6Preview() = EdgeToEdgeTemplate {
-    AppTheme(theme = DefaultThemes.darkTheme) {
-        DI.initPresenterModule(object : PresentersModule {
-            override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter =
-                object : EditNotePresenter {
-                    override val state = MutableStateFlow(
-                        EditNoteState(
-                            isEditMode = true,
-                            isRemoveAvailable = true,
-                            isSkeleton = false,
-                            siteOrIssuer = "some.site.com",
-                            loginOrName = "myLogin@2",
-                            passw = "123#",
-                        )
-                    )
-                }
-        })
+fun EditAccountScreenP6Preview() {
+    DI.hardResetToPreview()
+    DI.initPresenterModule(object : PresentersModule {
+        override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter =
+            object : EditNotePresenterDummy(
+                EditNoteState(
+                    isEditMode = true,
+                    isRemoveAvailable = true,
+                    isSkeleton = false,
+                    siteOrIssuer = "some.site.com",
+                    loginOrName = "myLogin@2",
+                    passw = "123#",
+                )
+            ) {
+
+            }
+    })
+
+    DebugDarkScreenPreview {
         EditNoteScreen(EditNoteDestination(path = Dummy.unicString))
     }
 }
 
+@OptIn(DebugOnly::class)
 @Preview(device = Devices.PHONE)
 @Composable
-fun EditAccountScreenSaveP6Preview() = EdgeToEdgeTemplate {
-    AppTheme(theme = DefaultThemes.darkTheme) {
-        DI.initPresenterModule(object : PresentersModule {
-            override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter =
-                object : EditNotePresenter {
-                    override val state = MutableStateFlow(
-                        EditNoteState(
-                            isEditMode = true,
-                            isRemoveAvailable = false,
-                            isSkeleton = false,
-                            isSaveAvailable = true,
-                            siteOrIssuer = "some.site.com",
-                            loginOrName = "myLogin@2",
-                            passw = "123#",
-                        )
-                    )
-                }
-        })
+fun EditAccountScreenSaveP6Preview() {
+    DI.hardResetToPreview()
+    DI.initPresenterModule(object : PresentersModule {
+        override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter =
+            object : EditNotePresenterDummy(
+                EditNoteState(
+                    isEditMode = true,
+                    isRemoveAvailable = false,
+                    isSkeleton = false,
+                    isSaveAvailable = true,
+                    siteOrIssuer = "some.site.com",
+                    loginOrName = "myLogin@2",
+                    passw = "123#",
+                    colorGroupVariants = KeyColor.selectableColorGroups,
+                )
+            ) {
+
+            }
+    })
+
+    DebugDarkScreenPreview {
         EditNoteScreen(EditNoteDestination(path = Dummy.unicString))
     }
 }
 
+@OptIn(DebugOnly::class)
 @Preview(device = Devices.PHONE)
 @Composable
-fun EditOTPScreenP6SkeletonPreview() = EdgeToEdgeTemplate {
-    AppTheme(theme = DefaultThemes.darkTheme) {
-        DI.initPresenterModule(object : PresentersModule {
-            override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter =
-                object : EditNotePresenter {
-                    override val state = MutableStateFlow(
-                        EditNoteState(
-                            isEditMode = true,
-                            isSkeleton = true,
-                        )
-                    )
-                }
-        })
+fun EditOTPScreenP6SkeletonPreview() {
+    DI.hardResetToPreview()
+    DI.initPresenterModule(object : PresentersModule {
+        override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter =
+            object : EditNotePresenterDummy(
+                EditNoteState(
+                    isEditMode = true,
+                    isSkeleton = true,
+                )
+            ) {
+
+            }
+    })
+
+    DebugDarkScreenPreview {
         EditNoteScreen(dest = EditNoteDestination(path = Dummy.unicString, tab = Otp))
     }
 }
 
+@OptIn(DebugOnly::class)
 @Preview(device = Devices.PHONE)
 @Composable
-fun EditOTPScreenP6Preview() = EdgeToEdgeTemplate {
-    AppTheme(theme = DefaultThemes.darkTheme) {
-        DI.initPresenterModule(object : PresentersModule {
-            override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter =
-                object : EditNotePresenter {
-                    override val state = MutableStateFlow(
-                        EditNoteState(
-                            isEditMode = true,
-                            isRemoveAvailable = true,
-                            isSkeleton = false,
-                            siteOrIssuer = "some.site.com",
-                            loginOrName = "myLogin@2",
-                            otpSecret = "Ot#SecteXA",
-                        )
-                    )
-                }
-        })
+fun EditOTPScreenP6Preview() {
+    DI.hardResetToPreview()
+    DI.initPresenterModule(object : PresentersModule {
+        override fun editNotePresenter(noteIdentifier: NoteIdentifier): EditNotePresenter =
+            object : EditNotePresenterDummy(
+                EditNoteState(
+                    isEditMode = true,
+                    isRemoveAvailable = true,
+                    isSkeleton = false,
+                    siteOrIssuer = "some.site.com",
+                    loginOrName = "myLogin@2",
+                    otpSecret = "Ot#SecteXA",
+                )
+            ) {
+
+            }
+    })
+
+    DebugDarkScreenPreview {
         EditNoteScreen(dest = EditNoteDestination(path = Dummy.unicString, tab = Otp))
     }
 }

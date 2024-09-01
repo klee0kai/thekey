@@ -10,11 +10,10 @@ import com.github.klee0kai.thekey.app.ui.navigation.histDest
 import com.github.klee0kai.thekey.app.ui.navigation.model.QRCodeScanDestination
 import com.github.klee0kai.thekey.app.ui.navigation.storage
 import com.github.klee0kai.thekey.app.ui.noteedit.model.EditNoteState
-import com.github.klee0kai.thekey.app.ui.noteedit.model.EditNoteState.Companion.otpAlgoVariants
-import com.github.klee0kai.thekey.app.ui.noteedit.model.EditNoteState.Companion.otpTypesVariants
 import com.github.klee0kai.thekey.app.ui.noteedit.model.EditTabs
 import com.github.klee0kai.thekey.app.ui.noteedit.model.decryptedNote
 import com.github.klee0kai.thekey.app.ui.noteedit.model.decryptedOtpNote
+import com.github.klee0kai.thekey.app.ui.noteedit.model.initVariants
 import com.github.klee0kai.thekey.app.ui.noteedit.model.isValid
 import com.github.klee0kai.thekey.app.ui.noteedit.model.updateWith
 import com.github.klee0kai.thekey.core.R
@@ -59,22 +58,20 @@ class EditNotePresenterImpl(
         prefilledOtp: DecryptedOtpNote?,
     ) = scope.launch {
         val newInitArgHash = listOf(tab, prefilledNote, prefilledOtp).hashCode()
-        if (newInitArgHash == initArgHash && !state.value.isSkeleton) return@launch
+        if (newInitArgHash == initArgHash && !state.value.isSkeleton) {
+            // add unique buttons if needed
+            state.update { it.copy(isRemoveAvailable = it.isEditMode) }
+            return@launch
+        }
         initArgHash = newInitArgHash
 
         val isEditMode = identifier.notePtr != 0L || identifier.otpNotePtr != 0L
 
         val initState = EditNoteState(
             isEditMode = isEditMode,
+            isRemoveAvailable = isEditMode,
             isSkeleton = true,
-            otpMethodVariants = otpTypesVariants,
-            otpMethodSelected = 1,
-            otpAlgoVariants = otpAlgoVariants,
-            otpAlgoSelected = 0,
-            otpInterval = "30",
-            otpDigits = "6",
-            otpCounter = "0",
-        )
+        ).initVariants()
         state.update { initState }
 
         val colorGroupUpdate = launch {
@@ -113,35 +110,37 @@ class EditNotePresenterImpl(
         }
     }
 
-    override fun input(block: EditNoteState.() -> EditNoteState) =
-        scope.launch(DI.mainDispatcher()) {
-            var newState = block.invoke(state.value)
-            if (!newState.isValid()) return@launch
+    override fun input(
+        block: EditNoteState.() -> EditNoteState,
+    ) = scope.launch(DI.mainDispatcher()) {
+        var newState = block.invoke(state.value)
+        if (state.value == newState) return@launch
+        if (!newState.isValid()) return@launch
 
-            val isSaveAvailable = when {
-                newState.page == EditTabs.Account && originNote == null -> !newState.decryptedNote()
-                    .isEmpty()
+        val isSaveAvailable = when {
+            newState.page == EditTabs.Account && originNote == null -> !newState.decryptedNote()
+                .isEmpty()
 
-                newState.page == EditTabs.Account && originNote != null -> newState.decryptedNote(
-                    originNote!!
-                ) != originNote
+            newState.page == EditTabs.Account && originNote != null -> newState.decryptedNote(
+                originNote!!
+            ) != originNote
 
-                newState.page == EditTabs.Otp && originOtpNote == null -> !newState.decryptedOtpNote()
-                    .isEmpty()
+            newState.page == EditTabs.Otp && originOtpNote == null -> !newState.decryptedOtpNote()
+                .isEmpty()
 
-                newState.page == EditTabs.Otp && originOtpNote != null -> newState.decryptedOtpNote(
-                    originOtpNote!!
-                ) != originOtpNote
+            newState.page == EditTabs.Otp && originOtpNote != null -> newState.decryptedOtpNote(
+                originOtpNote!!
+            ) != originOtpNote
 
-                else -> false
-            }
-
-            newState = newState.copy(
-                isSaveAvailable = isSaveAvailable,
-                isRemoveAvailable = newState.isRemoveAvailable && !isSaveAvailable,
-            )
-            state.value = newState
+            else -> false
         }
+
+        newState = newState.copy(
+            isSaveAvailable = isSaveAvailable,
+            isRemoveAvailable = newState.isRemoveAvailable && !isSaveAvailable,
+        )
+        state.value = newState
+    }
 
     override fun showHistory(
         router: AppRouter?,

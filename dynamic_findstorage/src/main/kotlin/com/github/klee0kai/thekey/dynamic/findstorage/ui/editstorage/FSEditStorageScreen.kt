@@ -50,6 +50,7 @@ import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
+import com.github.klee0kai.thekey.core.ui.devkit.Screen
 import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
@@ -66,7 +67,6 @@ import com.github.klee0kai.thekey.core.utils.possitions.onGlobalPositionState
 import com.github.klee0kai.thekey.core.utils.possitions.pxToDp
 import com.github.klee0kai.thekey.core.utils.possitions.rememberViewPosition
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
-import com.github.klee0kai.thekey.core.utils.views.animateSkeletonModifier
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.currentRef
@@ -90,20 +90,24 @@ import org.jetbrains.annotations.VisibleForTesting
 @Composable
 fun FSEditStorageScreen(
     path: String = "",
-) {
+) = Screen {
     val router by LocalRouter.currentRef
     val view = LocalView.current
     val theme = LocalTheme.current
-    val presenter by rememberOnScreenRef { FSDI.fsEditStoragePresenter(StorageIdentifier(path)).apply { init() } }
+    val presenter by rememberOnScreenRef {
+        FSDI.fsEditStoragePresenter(StorageIdentifier(path)).apply { init() }
+    }
     val pathInputHelper = remember { FSDI.pathInputHelper() }
-    val state by presenter!!.state.collectAsState(key = Unit, initial = FSEditStorageState(isSkeleton = false))
+    val state by presenter!!.state.collectAsState(
+        key = Unit,
+        initial = FSEditStorageState(isSkeleton = false)
+    )
     val scrollState = rememberScrollState()
     val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
 
     val imeIsVisibleAnimated by animateTargetCrossFaded(WindowInsets.isIme)
     val isSaveAvailable by rememberTargetCrossFaded { state.isSaveAvailable }
     val isRemoveAvailable by rememberTargetCrossFaded { state.isRemoveAvailable }
-    val skeletonModifier by animateSkeletonModifier { state.isSkeleton }
     val storagePathPosition = rememberViewPosition()
     val pathInteractionSource = remember { MutableInteractionSource() }
     val groupSelectPosition = rememberViewPosition()
@@ -186,7 +190,11 @@ fun FSEditStorageScreen(
                 variants = state.storagePathVariants,
                 onSelected = { selected, _ ->
                     with(pathInputHelper) {
-                        presenter?.input { copy(path = this.path.text.folderSelected(selected).toTextFieldValue()) }
+                        presenter?.input {
+                            copy(
+                                path = this.path.text.folderSelected(selected).toTextFieldValue()
+                            )
+                        }
                     }
                 }
             )
@@ -285,7 +293,8 @@ fun FSEditStorageScreen(
                     modifier = Modifier
                         .padding(4.dp),
                     colorScheme = theme.colorScheme.surfaceSchemas.surfaceScheme(
-                        state.colorGroupVariants.getOrNull(state.colorGroupSelectedIndex)?.keyColor ?: KeyColor.NOCOLOR
+                        state.colorGroupVariants.getOrNull(state.colorGroupSelectedIndex)?.keyColor
+                            ?: KeyColor.NOCOLOR
                     ),
                 )
             },
@@ -392,15 +401,16 @@ fun FSEditStorageScreenPreview() = DebugDarkScreenPreview {
     FSDI.hardResetToPreview()
     FSDI.initFSPresentersModule(object : FSPresentersModule {
 
-        override fun fsEditStoragePresenter(storageIdentifier: StorageIdentifier) = object : FSEditStoragePresenter {
-            override val state = MutableStateFlow(
-                FSEditStorageState(
-                    path = TextFieldValue("/appdata/work"),
-                    isSkeleton = false,
-                    isSaveAvailable = true,
+        override fun fsEditStoragePresenter(storageIdentifier: StorageIdentifier) =
+            object : FSEditStoragePresenter {
+                override val state = MutableStateFlow(
+                    FSEditStorageState(
+                        path = TextFieldValue("/appdata/work"),
+                        isSkeleton = false,
+                        isSaveAvailable = true,
+                    )
                 )
-            )
-        }
+            }
     })
     FSEditStorageScreen(
         path = "some/path/to/storage",
@@ -414,22 +424,23 @@ fun FSEditStorageScreenPreview() = DebugDarkScreenPreview {
 fun FSEditStorageScreenSelectPathPreview() = DebugDarkScreenPreview {
     FSDI.hardResetToPreview()
     FSDI.initFSPresentersModule(object : FSPresentersModule {
-        override fun fsEditStoragePresenter(storageIdentifier: StorageIdentifier) = object : FSEditStoragePresenter {
-            override val state = MutableStateFlow(
-                FSEditStorageState(
-                    isSkeleton = false,
-                    isEditMode = true,
-                    isSaveAvailable = true,
-                    storagePathVariants = listOf("/appdata", "/phoneData"),
-                    storagePathFieldExpanded = false,
-                    colorGroupExpanded = true,
-                    colorGroupVariants = listOf(
-                        ColorGroup(Dummy.dummyId, keyColor = KeyColor.ORANGE),
-                        ColorGroup(Dummy.dummyId, keyColor = KeyColor.CORAL),
+        override fun fsEditStoragePresenter(storageIdentifier: StorageIdentifier) =
+            object : FSEditStoragePresenter {
+                override val state = MutableStateFlow(
+                    FSEditStorageState(
+                        isSkeleton = false,
+                        isEditMode = true,
+                        isSaveAvailable = true,
+                        storagePathVariants = listOf("/appdata", "/phoneData"),
+                        storagePathFieldExpanded = false,
+                        colorGroupExpanded = true,
+                        colorGroupVariants = listOf(
+                            ColorGroup(Dummy.dummyId, keyColor = KeyColor.ORANGE),
+                            ColorGroup(Dummy.dummyId, keyColor = KeyColor.CORAL),
+                        )
                     )
                 )
-            )
-        }
+            }
     })
     FSEditStorageScreen(
         path = "some/path/to/storage",
