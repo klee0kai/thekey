@@ -5,6 +5,7 @@ package com.github.klee0kai.thekey.app.ui.hist
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -24,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.FocusRequester
@@ -34,6 +36,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.ui.hist.components.HistPasswItem
 import com.github.klee0kai.thekey.app.ui.hist.components.popup.HistPasswPopup
@@ -44,7 +47,6 @@ import com.github.klee0kai.thekey.app.ui.navigation.storageIdentifier
 import com.github.klee0kai.thekey.app.ui.storage.model.SearchState
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
-import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
@@ -52,9 +54,10 @@ import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.SearchField
 import com.github.klee0kai.thekey.core.ui.devkit.components.settings.SectionHeader
 import com.github.klee0kai.thekey.core.ui.devkit.icons.BackMenuIcon
 import com.github.klee0kai.thekey.core.ui.devkit.overlay.PopupMenu
-import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
+import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.possitions.onGlobalPositionState
 import com.github.klee0kai.thekey.core.utils.possitions.rememberViewPosition
+import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
 import com.github.klee0kai.thekey.core.utils.views.appBarVisible
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.currentRef
@@ -66,7 +69,6 @@ import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebouncedArg
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.core.utils.views.rememberTargetCrossFaded
-import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import org.jetbrains.annotations.VisibleForTesting
 import kotlin.time.Duration
 
@@ -92,6 +94,7 @@ fun GenHistScreen(
     val histList by presenter!!.filteredHist.collectAsState(key = Unit, initial = null)
     val searchState by presenter!!.searchState.collectAsState(key = Unit, initial = SearchState())
     val searchFocusRequester = remember { FocusRequester() }
+    val emptyListDummy by rememberTargetCrossFaded { histList != null && histList!!.isEmpty() }
 
     val targetTitleId by rememberTargetCrossFaded {
         when {
@@ -183,6 +186,20 @@ fun GenHistScreen(
         }
     }
 
+    if (emptyListDummy.current) {
+        Box(
+            modifier = Modifier
+                .alpha(emptyListDummy.alpha)
+                .alpha(0.4f)
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                text = stringResource(id = R.string.no_history)
+            )
+        }
+    }
+
     AppBarStates(
         isVisible = appBarVisible,
         navigationIcon = {
@@ -194,7 +211,14 @@ fun GenHistScreen(
         titleContent = {
             when (targetTitleId.current) {
                 MainTitleId -> {
-                    Text(text = stringResource(id = R.string.gen_history))
+                    Text(
+                        text = stringResource(
+                            id = when {
+                                noteIdentifier != null -> R.string.note_history
+                                else -> R.string.gen_history
+                            }
+                        )
+                    )
                 }
 
                 SearchTitleId -> {
@@ -228,17 +252,36 @@ fun GenHistScreen(
     )
 }
 
+@OptIn(DebugOnly::class)
 @VisibleForTesting
 @Preview(device = Devices.PHONE)
 @Composable
-fun GenHistScreenPreview() = EdgeToEdgeTemplate {
-    AppTheme(theme = DefaultThemes.darkTheme) {
-        DI.initPresenterModule(object : PresentersModule {
-            override fun genHistPresenter(storageIdentifier: StorageIdentifier) =
-                object : HistPresenterDummy(histCount = 30) {
+fun GenHistScreenPreview() {
+    DI.hardResetToPreview()
+    DI.initPresenterModule(object : PresentersModule {
+        override fun genHistPresenter(storageIdentifier: StorageIdentifier) =
+            object : HistPresenterDummy(histCount = 30) {
 
-                }
-        })
+            }
+    })
+    DebugDarkScreenPreview {
+        GenHistScreen()
+    }
+}
+
+@OptIn(DebugOnly::class)
+@VisibleForTesting
+@Preview(device = Devices.PHONE)
+@Composable
+fun GenHistScreenEmptyPreview() {
+    DI.hardResetToPreview()
+    DI.initPresenterModule(object : PresentersModule {
+        override fun genHistPresenter(storageIdentifier: StorageIdentifier) =
+            object : HistPresenterDummy(histCount = 0) {
+
+            }
+    })
+    DebugDarkScreenPreview {
         GenHistScreen()
     }
 }
