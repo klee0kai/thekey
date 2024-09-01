@@ -127,7 +127,6 @@ fun EditStorageScreen(
 
         AppTextField(
             modifier = Modifier
-                .then(skeletonModifier)
                 .constrainAs(nameTextField) {
                     width = Dimension.fillToConstraints
                     linkTo(
@@ -141,6 +140,7 @@ fun EditStorageScreen(
                         endMargin = safeContentPaddings.horizontal(minValue = 16.dp),
                     )
                 },
+            isSkeleton = state.isSkeleton,
             value = state.name,
             onValueChange = { presenter?.input { copy(name = it) } },
             label = { Text(stringResource(R.string.storage_name)) }
@@ -149,7 +149,6 @@ fun EditStorageScreen(
 
         AppTextField(
             modifier = Modifier
-                .then(skeletonModifier)
                 .constrainAs(descTextField) {
                     width = Dimension.fillToConstraints
                     linkTo(
@@ -161,6 +160,7 @@ fun EditStorageScreen(
                         topMargin = 8.dp,
                     )
                 },
+            isSkeleton = state.isSkeleton,
             value = state.desc,
             onValueChange = { presenter?.input { copy(desc = it) } },
             label = { Text(stringResource(R.string.storage_description)) }
@@ -188,7 +188,6 @@ fun EditStorageScreen(
         AppTextField(
             modifier = Modifier
                 .onGlobalPositionState(groupSelectPosition)
-                .then(skeletonModifier)
                 .fillMaxWidth(0.5f)
                 .constrainAs(colorGroupField) {
                     linkTo(
@@ -201,6 +200,7 @@ fun EditStorageScreen(
                         topMargin = 8.dp,
                     )
                 },
+            isSkeleton = state.isSkeleton,
             interactionSource = groupInteractionSource,
             readOnly = true,
             singleLine = true,

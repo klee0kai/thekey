@@ -25,6 +25,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 fun ColorGroupDropDownField(
     modifier: Modifier = Modifier,
     selectedIndex: Int = 0,
+    isSkeleton :Boolean = false,
     variants: List<ColorGroup> = emptyList(),
     expanded: Boolean = false,
     onExpandedChange: (Boolean) -> Unit = {},
@@ -43,6 +44,7 @@ fun ColorGroupDropDownField(
                 .menuAnchor(),
             readOnly = true,
             singleLine = true,
+            isSkeleton = isSkeleton,
             value = variants.getOrNull(selectedIndex)?.name ?: "",
             leadingIcon = {
                 GroupCircle(

@@ -4,6 +4,7 @@ import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.engine.model.DecryptedOtpNote
 import com.github.klee0kai.thekey.app.ui.noteedit.model.EditNoteState
 import com.github.klee0kai.thekey.app.ui.noteedit.model.EditTabs
+import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
 import com.github.klee0kai.thekey.core.utils.coroutine.emptyJob
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
@@ -21,14 +22,14 @@ interface EditNotePresenter {
 
     fun input(block: EditNoteState.() -> EditNoteState): Job = emptyJob()
 
-    fun showHistory(): Job = emptyJob()
+    fun showHistory(router: AppRouter?): Job = emptyJob()
 
-    fun remove(): Job = emptyJob()
+    fun remove(router: AppRouter?): Job = emptyJob()
 
-    fun scanQRCode(): Job = emptyJob()
+    fun scanQRCode(router: AppRouter?): Job = emptyJob()
 
-    fun save(): Job = emptyJob()
+    fun save(router: AppRouter?): Job = emptyJob()
 
-    fun generate(): Job = emptyJob()
+    fun generate(router: AppRouter?): Job = emptyJob()
 
 }
