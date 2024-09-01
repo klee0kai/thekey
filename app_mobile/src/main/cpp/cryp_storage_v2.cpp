@@ -369,7 +369,6 @@ JvmDecryptedOtpNote JvmStorage2::otpNote(const int64_t &notePtr) {
             .issuer =  dnote.issuer,
             .name =  dnote.name,
             .secret = dnote.secret,
-            .pin = dnote.pin,
             .otpPassw = dnote.otpPassw,
             .otpMethodRaw = dnote.method,
             .otpAlgoRaw = dnote.algo,
@@ -395,8 +394,8 @@ int JvmStorage2::saveOtpNote(const JvmDecryptedOtpNote &jOtp, const int &setAll)
             .digits = uint32_t(jOtp.digits),
             .interval = uint32_t(jOtp.interval),
             .counter = uint32_t(jOtp.counter),
-            .pin = jOtp.pin,
             .colorGroupId = jOtp.colorGroupId,
+            .otpPassw = jOtp.otpPassw,
     };
 
     if (dnote.id == 0) {

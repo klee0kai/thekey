@@ -6,13 +6,10 @@ import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.navigation.editNoteDest
 import com.github.klee0kai.thekey.app.ui.navigation.storage
 import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
-import com.github.klee0kai.thekey.core.domain.model.ColoredOtpNote
 import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
 import com.github.klee0kai.thekey.core.utils.common.TimeFormats
 import com.github.klee0kai.thekey.core.utils.common.launch
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flow
 
 class OtpNotePresenterImpl(
     val identifier: NoteIdentifier,
@@ -20,20 +17,13 @@ class OtpNotePresenterImpl(
 
     private val dateFormat by lazy { TimeFormats.simpleDateFormat() }
     private val scope = DI.defaultThreadScope()
-    private val notesInteractor = DI.otpNotesInteractorLazy(identifier.storage())
+    private val interactor = DI.otpNotesInteractorLazy(identifier.storage())
     private val clipboardManager by lazy {
         DI.ctx().getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
     }
 
-    private val _note = MutableStateFlow<ColoredOtpNote?>(null)
-    override val note = _note.filterNotNull()
-
-    override fun init() = scope.launch {
-        _note.value = notesInteractor().otpNotes.firstOrNull()
-            ?.firstOrNull { identifier.notePtr == it.ptnote }
-            ?.copy(isLoaded = false)
-        val passw = notesInteractor().otpNote(identifier.notePtr).await()
-//        _note.update { it?.copy(passw = passw, isLoaded = true) }
+    override val note = flow {
+        interactor().otpNoteUpdates(identifier.otpNotePtr).collect(this)
     }
 
     override fun edit(router: AppRouter?) = scope.launch {

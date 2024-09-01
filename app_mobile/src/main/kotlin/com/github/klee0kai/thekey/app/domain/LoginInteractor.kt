@@ -74,7 +74,6 @@ class LoginInteractor {
         File(storageIdentifier.path).parentFile?.mkdirs()
         engine().login(passw, createConfig)
 
-        otpNotesInteractor().loadOtpNotes()
         groupsInteractor().loadGroups()
         if (!ignoreLoginned) rep().auth(identifier)
 

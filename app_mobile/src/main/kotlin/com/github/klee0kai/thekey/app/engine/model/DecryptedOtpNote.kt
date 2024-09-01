@@ -7,6 +7,7 @@ import com.github.klee0kai.thekey.core.domain.model.ColoredOtpNote
 import com.github.klee0kai.thekey.core.domain.model.OtpAlgo
 import com.github.klee0kai.thekey.core.domain.model.OtpMethod
 import kotlinx.parcelize.Parcelize
+import java.util.concurrent.TimeUnit
 
 @JniPojo
 @Parcelize
@@ -17,7 +18,6 @@ data class DecryptedOtpNote(
 
     val url: String = "",
     val secret: String = "",
-    val pin: String = "",
     val otpPassw: String = "",
     val otpMethodRaw: Int = OtpMethod.TOTP.code,
     val otpAlgoRaw: Int = OtpAlgo.SHA1.code,
@@ -46,7 +46,11 @@ fun DecryptedOtpNote.coloredNote(
     isLoaded: Boolean = false,
 ) = ColoredOtpNote(
     ptnote = ptnote,
-
+    issuer = issuer,
+    name = name,
+    method = otpMethod,
+    otpPassw = otpPassw,
+    interval = TimeUnit.SECONDS.toMillis(interval.toLong()),
     group = group ?: ColorGroup(id = colorGroupId),
     isLoaded = isLoaded,
 )

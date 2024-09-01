@@ -6,17 +6,18 @@ import com.github.klee0kai.thekey.core.utils.common.Dummy
 import com.thedeanda.lorem.LoremIpsum
 import kotlinx.parcelize.Parcelize
 import java.util.concurrent.TimeUnit
+import kotlin.time.Duration.Companion.seconds
 
 @Parcelize
 data class ColoredOtpNote(
     val ptnote: Long = 0L,
     val issuer: String = "",
     val name: String = "",
-    val code: String = "",
+    val otpPassw: String = "",
 
     val method: OtpMethod = OtpMethod.OTP,
     val nextUpdateTime: Long = 0,
-    val totpUpdatePeriod: Long = 0,
+    val interval: Long = 0,
 
     val group: ColorGroup = ColorGroup.noGroup(),
     val isLoaded: Boolean = false,
@@ -49,6 +50,11 @@ enum class OtpAlgo(val code: Int) {
     }
 }
 
+fun ColoredOtpNote.findNextUpdateTime(): ColoredOtpNote {
+    val now = System.currentTimeMillis()
+    if (interval <= 0) return copy(nextUpdateTime = now + 1.seconds.inWholeMilliseconds)
+    return copy(nextUpdateTime = now + interval - now % interval)
+}
 
 @DebugOnly
 fun ColoredOtpNote.Companion.dummyLoaded() =
@@ -56,9 +62,9 @@ fun ColoredOtpNote.Companion.dummyLoaded() =
         ptnote = Dummy.dummyId,
         issuer = LoremIpsum.getInstance().url,
         name = LoremIpsum.getInstance().name,
-        code = "123456",
+        otpPassw = "123456",
         nextUpdateTime = System.currentTimeMillis() + 2000,
-        totpUpdatePeriod = TimeUnit.MILLISECONDS.toMillis(30),
+        interval = TimeUnit.MILLISECONDS.toMillis(30),
         group = ColorGroup.dummy(),
         isLoaded = true,
     )

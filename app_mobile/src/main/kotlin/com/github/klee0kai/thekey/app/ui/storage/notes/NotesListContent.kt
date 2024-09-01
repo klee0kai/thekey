@@ -26,11 +26,12 @@ import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
-import com.github.klee0kai.thekey.app.ui.navigation.identifier
-import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.app.ui.navigation.editNote
 import com.github.klee0kai.thekey.app.ui.navigation.editOtpNote
+import com.github.klee0kai.thekey.app.ui.navigation.identifier
+import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.app.ui.navigation.note
+import com.github.klee0kai.thekey.app.ui.navigation.otpNote
 import com.github.klee0kai.thekey.app.ui.storage.notes.popup.NotePopupMenu
 import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenterDummy
 import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenterLongListDummy
@@ -106,7 +107,9 @@ fun NotesListContent(
                             .ifProduction { animateItemPlacement() }
                             .onGlobalPositionState(position)
                             .combinedClickable(
-                                onLongClick = rememberClickDebounced(note) { showMenu = true },
+                                onLongClick = rememberClickDebounced(note) {
+                                    showMenu = true
+                                },
                                 onClick = rememberClickDebounced(note) {
                                     router.navigate(args.note(notePtr = note.ptnote))
                                 }
@@ -142,17 +145,49 @@ fun NotesListContent(
                     key = "otp-${otp.ptnote}",
                     contentType = otp::class,
                 ) {
+                    var showMenu by remember { mutableStateOf(false) }
+                    val position = rememberViewPosition()
+
                     ColoredOtpNoteItem(
                         modifier = Modifier
                             .ifProduction { animateItemPlacement() }
+                            .onGlobalPositionState(position)
                             .combinedClickable(
-                                onLongClick = { },
+                                onLongClick = rememberClickDebounced(note) {
+                                    showMenu = true
+                                },
                                 onClick = rememberClickDebounced(otp) {
-                                    router.navigate(args.editOtpNote(notePtr = otp.ptnote))
+                                    router.navigate(args.otpNote(otpNotePtr = otp.ptnote))
                                 }
                             ),
                         otp = otp,
                     )
+
+                    PopupMenu(
+                        visible = showMenu,
+                        positionAnchor = position,
+                        horizontalBias = 0.8f,
+                        onDismissRequest = { showMenu = false }
+                    ) {
+                        NotePopupMenu(
+                            modifier = Modifier.padding(vertical = 4.dp),
+                            colorGroups = groups,
+                            selectedGroupId = otp.group.id,
+                            onColorGroupSelected = rememberClickDebouncedArg(note) {
+                                showMenu = false
+                                presenter?.setOtpColorGroup(
+                                    otpNotePtr = otp.ptnote,
+                                    groupId = it.id,
+                                )
+                            },
+                            onEdit = rememberClickDebounced(note) {
+                                showMenu = false
+                                router.navigate(args.editOtpNote(otpNotePtr = otp.ptnote))
+                            }
+                        )
+
+                    }
+
                 }
             }
         }

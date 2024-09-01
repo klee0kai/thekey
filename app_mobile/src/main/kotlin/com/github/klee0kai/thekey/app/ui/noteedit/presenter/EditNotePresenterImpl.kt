@@ -88,7 +88,7 @@ class EditNotePresenterImpl(
             prefilledNote = prefilledNote?.merge(originNote) ?: originNote
         }
         if (identifier.otpNotePtr != 0L) {
-            originOtpNote = otpNotesInteractor().otpNote(identifier.otpNotePtr).await()
+            originOtpNote = otpNotesInteractor().otpDecryptedNote(identifier.otpNotePtr).await()
             prefilledOtp = originOtpNote
         }
 

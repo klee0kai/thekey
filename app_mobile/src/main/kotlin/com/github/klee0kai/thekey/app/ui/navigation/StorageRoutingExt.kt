@@ -53,12 +53,13 @@ fun StorageDestination.editNote(notePtr: Long = 0) =
     )
 
 
-fun StorageDestination.editOtpNote(notePtr: Long = 0) =
-    EditNoteDestination(
-        storageVersion = version,
-        path = path,
-        otpNote = DecryptedOtpNote(ptnote = notePtr)
-    )
+fun StorageDestination.editOtpNote(
+    otpNotePtr: Long = 0
+) = EditNoteDestination(
+    storageVersion = version,
+    path = path,
+    otpNote = DecryptedOtpNote(ptnote = otpNotePtr),
+)
 
 fun StorageIdentifier.editNoteDest(
     prefilled: DecryptedNote,

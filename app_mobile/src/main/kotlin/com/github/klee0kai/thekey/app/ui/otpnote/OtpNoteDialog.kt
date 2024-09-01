@@ -249,7 +249,7 @@ fun OtpNoteDialog(
                     onClick = rememberClickDebounced(presenter) { presenter?.copyCode(router) },
                     colors = theme.colorScheme.whiteTextButtonColors,
                 ) {
-                    Text(text = note.code)
+                    Text(text = note.otpPassw)
                 }
             }
         }

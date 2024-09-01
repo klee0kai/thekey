@@ -80,7 +80,10 @@ open class StoragePresenterImpl(
         }
     }
 
-    override fun setColorGroup(notePt: Long, groupId: Long) = scope.launch {
+    override fun setColorGroup(
+        notePt: Long,
+        groupId: Long,
+    ) = scope.launch {
         val oldNoteGroupId = notesInteractor().notes
             .firstOrNull()
             ?.firstOrNull { it.ptnote == notePt }
@@ -91,6 +94,23 @@ open class StoragePresenterImpl(
             notesInteractor().setNotesGroup(listOf(notePt), 0)
         } else {
             notesInteractor().setNotesGroup(listOf(notePt), groupId)
+        }
+    }
+
+    override fun setOtpColorGroup(
+        otpNotePtr: Long,
+        groupId: Long,
+    ) = scope.launch {
+        val oldNoteGroupId = otpNotesInteractor().otpNotes
+            .firstOrNull()
+            ?.firstOrNull { it.ptnote == otpNotePtr }
+            ?.group
+            ?.id
+            ?: return@launch
+        if (oldNoteGroupId == groupId) {
+            otpNotesInteractor().setOtpNotesGroup(listOf(otpNotePtr), 0)
+        } else {
+            otpNotesInteractor().setOtpNotesGroup(listOf(otpNotePtr), 0)
         }
     }
 
