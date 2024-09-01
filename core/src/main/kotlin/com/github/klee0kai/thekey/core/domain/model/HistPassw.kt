@@ -14,6 +14,7 @@ data class HistPassw(
      */
     val chTime: Long = 0,
 
+    // meta
     val changeDateStr: String? = null,
     val isLoaded: Boolean = false,
 ) : Parcelable

@@ -5,23 +5,18 @@ import android.content.ClipboardManager
 import android.content.Context.CLIPBOARD_SERVICE
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.navigation.editNoteDest
-import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteDestination
 import com.github.klee0kai.thekey.app.ui.navigation.storage
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
 import com.github.klee0kai.thekey.core.domain.model.ColoredNote
+import com.github.klee0kai.thekey.core.domain.model.updateWith
 import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
 import com.github.klee0kai.thekey.core.utils.common.TimeFormats
 import com.github.klee0kai.thekey.core.utils.common.launch
-import com.github.klee0kai.thekey.core.utils.coroutine.emptyJob
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.yield
-import kotlin.time.Duration.Companion.milliseconds
 
 class NotePresenterImpl(
     val identifier: NoteIdentifier,
@@ -40,6 +35,7 @@ class NotePresenterImpl(
     override fun init() = scope.launch {
         _state.value = notesInteractor().notes.firstOrNull()
             ?.firstOrNull { identifier.notePtr == it.ptnote }
+            ?.updateWith(dateFormat)
             ?.copy(isLoaded = false)
         val passw = notesInteractor().note(identifier.notePtr).await().passw
         _state.update { it?.copy(passw = passw, isLoaded = true) }

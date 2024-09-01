@@ -136,7 +136,7 @@ fun NoteDialog(
                     loginHintField, loginField,
                     passwHintField, passwField,
                     descHintField, descField,
-                    chDateField, editBtField,
+                    chDateField,
                 ) = createRefs()
 
                 Text(
@@ -270,7 +270,7 @@ fun NoteDialog(
                         },
                     onClick = rememberClickDebounced(presenter) { presenter?.showHistory(router) },
                 ) {
-                    Text(text = "nov 12")
+                    Text(text = note.changeDateStr ?: "")
                 }
 
                 Text(

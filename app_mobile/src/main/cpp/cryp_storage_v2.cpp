@@ -160,7 +160,7 @@ std::vector<JvmDecryptedNote> JvmStorage2::notes(const int &loadInfo) {
                         .site =  dnote.site,
                         .login =  dnote.login,
                         .desc =  dnote.description,
-                        .chTime = (int64_t) dnote.genTime,
+                        .chTimeSec = (int64_t) dnote.genTime,
                         .colorGroupId = dnote.colorGroupId,
                 });
     }
@@ -178,7 +178,7 @@ JvmDecryptedNote JvmStorage2::note(const int64_t &notePtr) {
             .login = dnote->login,
             .passw = dnote->passw,
             .desc =  dnote->description,
-            .chTime = (int64_t) dnote->genTime,
+            .chTimeSec = (int64_t) dnote->genTime,
             .colorGroupId = dnote->colorGroupId,
     };
     return result;

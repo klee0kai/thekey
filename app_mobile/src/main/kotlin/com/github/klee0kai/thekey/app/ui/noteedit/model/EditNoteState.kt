@@ -125,9 +125,9 @@ fun EditNoteState.updateWith(
             .indexOfFirst { note.colorGroupId == it.id }
             .takeIf { it >= 0 } ?: 0,
     )
-    if (dateFormat != null && note.chTime > 0L) {
+    if (dateFormat != null && note.chTimeSec > 0L) {
         state = state.copy(
-            changeTime = dateFormat.format(Date(TimeUnit.SECONDS.toMillis(note.chTime)))
+            changeTime = dateFormat.format(Date(TimeUnit.SECONDS.toMillis(note.chTimeSec)))
         )
     }
     return state
