@@ -18,10 +18,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -45,20 +45,24 @@ import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.BottomSheetBigDialo
 import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.rememberSafeBottomSheetScaffoldState
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
+import com.github.klee0kai.thekey.core.ui.devkit.icons.BackMenuIcon
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.animateAlphaAsState
+import com.github.klee0kai.thekey.core.utils.views.currentRef
+import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.core.utils.views.topDp
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
 fun SelectStorageDialog() = Box(modifier = Modifier.fillMaxSize()) {
-    val router = LocalRouter.current
+    val router by LocalRouter.currentRef
     val colorScheme = LocalColorScheme.current
+    val scope = rememberCoroutineScope()
 
     val presenter by rememberOnScreenRef { DI.storagesPresenter().apply { init() } }
     val scaffoldState = rememberSafeBottomSheetScaffoldState(
@@ -67,19 +71,25 @@ fun SelectStorageDialog() = Box(modifier = Modifier.fillMaxSize()) {
     )
     var dragProgress by remember { mutableFloatStateOf(0f) }
     val showStoragesTitle by rememberDerivedStateOf { dragProgress > 0.1f }
-
-    LaunchedEffect(key1 = Unit) {
-        while (scaffoldState.bottomSheetState.currentValue != SheetValue.Hidden) {
-            delay(100)
-        }
-        router.back()
-    }
+    val backLauncher = rememberClickDebounced { router?.back() }
     Box(
         modifier = Modifier
-            .background(colorScheme.androidColorScheme.background.copy(alpha = ((1f - dragProgress) + 0.4f).coerceIn(0f, 1f)))
-            .pointerInput(Unit) { detectTapGestures { router.back() } },
+            .background(
+                colorScheme.androidColorScheme.background
+                    .copy(alpha = ((1f - dragProgress) + 0.4f).coerceIn(0f, 1f))
+            )
+            .pointerInput(Unit) {
+                detectTapGestures {
+                    scope.launch { scaffoldState.bottomSheetState.hide() }
+                }
+            },
     ) {
-        BottomSheetBigDialog(topMargin = AppBarConst.appBarSize + WindowInsets.safeContent.topDp, scaffoldState = scaffoldState, onDrag = { dragProgress = it }) {
+        BottomSheetBigDialog(
+            topMargin = AppBarConst.appBarSize + WindowInsets.safeContent.topDp,
+            scaffoldState = scaffoldState,
+            onDrag = { dragProgress = it },
+            onClosed = backLauncher,
+        ) {
             StoragesListContent(
                 modifier = Modifier
                     .fillMaxSize()
@@ -102,11 +112,8 @@ fun SelectStorageDialog() = Box(modifier = Modifier.fillMaxSize()) {
         AppBarStates(
             modifier = Modifier.alpha(1f - dragProgress),
             navigationIcon = {
-                IconButton(onClick = { router.back() }) {
-                    Icon(
-                        Icons.AutoMirrored.Default.ArrowBack,
-                        contentDescription = null,
-                    )
+                IconButton(onClick = backLauncher) {
+                    BackMenuIcon()
                 }
             },
             titleContent = { Text(text = stringResource(id = R.string.storages)) },
