@@ -13,7 +13,6 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.channelFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import java.util.concurrent.atomic.AtomicInteger
@@ -51,7 +50,7 @@ class OtpNotesRepository(
                     OtpMethod.TOTP,
                     OtpMethod.YAOTP -> {
                         val now = System.currentTimeMillis()
-                        delay(otp.nextUpdateTime - now)
+                        delay(maxOf(otp.nextUpdateTime - now + 100, 100))
                     }
                 }
             }

@@ -53,7 +53,7 @@ enum class OtpAlgo(val code: Int) {
 fun ColoredOtpNote.findNextUpdateTime(): ColoredOtpNote {
     val now = System.currentTimeMillis()
     if (interval <= 0) return copy(nextUpdateTime = now + 1.seconds.inWholeMilliseconds)
-    return copy(nextUpdateTime = now + interval - now % interval)
+    return copy(nextUpdateTime = now + 1 + interval - now % interval)
 }
 
 @DebugOnly
@@ -63,8 +63,8 @@ fun ColoredOtpNote.Companion.dummyLoaded() =
         issuer = LoremIpsum.getInstance().url,
         name = LoremIpsum.getInstance().name,
         otpPassw = "123456",
-        nextUpdateTime = System.currentTimeMillis() + 2000,
-        interval = TimeUnit.MILLISECONDS.toMillis(30),
+        interval = TimeUnit.SECONDS.toMillis(30),
+        nextUpdateTime = System.currentTimeMillis() + 1 + TimeUnit.SECONDS.toMillis(30),
         group = ColorGroup.dummy(),
         isLoaded = true,
     )

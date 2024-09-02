@@ -2,6 +2,7 @@
 
 package com.github.klee0kai.thekey.app.ui.otpnote
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.SheetValue
@@ -32,7 +34,6 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
 import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
@@ -43,6 +44,7 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.NoteDestination
 import com.github.klee0kai.thekey.app.ui.otpnote.presenter.OtpNotePresenter
 import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
 import com.github.klee0kai.thekey.core.domain.model.ColoredOtpNote
+import com.github.klee0kai.thekey.core.domain.model.OtpMethod
 import com.github.klee0kai.thekey.core.domain.model.dummyLoaded
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
@@ -51,6 +53,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.BottomSheetBigDialo
 import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.rememberSafeBottomSheetScaffoldState
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
+import com.github.klee0kai.thekey.core.ui.devkit.components.timer.TimerCircle
 import com.github.klee0kai.thekey.core.ui.devkit.icons.BackMenuIcon
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
@@ -58,6 +61,7 @@ import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.horizontal
+import com.github.klee0kai.thekey.core.utils.views.ifProduction
 import com.github.klee0kai.thekey.core.utils.views.isIme
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
@@ -134,12 +138,13 @@ fun OtpNoteDialog(
                 val (
                     issuerHintField, issuerField,
                     nameHintField, nameField,
-                    codeHintField, codeField,
+                    codeHintField, codeField, timerField,
                 ) = createRefs()
 
                 Text(
                     modifier = Modifier
                         .alpha(0.6f)
+                        .ifProduction { animateContentSize() }
                         .constrainAs(issuerHintField) {
                             linkTo(
                                 top = parent.top,
@@ -157,6 +162,7 @@ fun OtpNoteDialog(
 
                 TextButton(
                     modifier = Modifier
+                        .ifProduction { animateContentSize() }
                         .padding(horizontal = safeContentPaddings.horizontal(16.dp))
                         .constrainAs(issuerField) {
                             linkTo(
@@ -177,6 +183,7 @@ fun OtpNoteDialog(
                 Text(
                     modifier = Modifier
                         .alpha(0.6f)
+                        .ifProduction { animateContentSize() }
                         .constrainAs(nameHintField) {
                             linkTo(
                                 top = issuerField.bottom,
@@ -195,6 +202,7 @@ fun OtpNoteDialog(
 
                 TextButton(
                     modifier = Modifier
+                        .ifProduction { animateContentSize() }
                         .padding(horizontal = safeContentPaddings.horizontal(16.dp))
                         .constrainAs(nameField) {
                             linkTo(
@@ -216,6 +224,7 @@ fun OtpNoteDialog(
                 Text(
                     modifier = Modifier
                         .alpha(0.6f)
+                        .ifProduction { animateContentSize() }
                         .constrainAs(codeHintField) {
                             linkTo(
                                 top = nameField.bottom,
@@ -234,9 +243,9 @@ fun OtpNoteDialog(
 
                 TextButton(
                     modifier = Modifier
+                        .ifProduction { animateContentSize() }
                         .padding(horizontal = safeContentPaddings.horizontal(16.dp))
                         .constrainAs(codeField) {
-                            width = Dimension.preferredWrapContent
                             linkTo(
                                 top = codeHintField.bottom,
                                 bottom = parent.bottom,
@@ -251,6 +260,37 @@ fun OtpNoteDialog(
                 ) {
                     Text(text = note.otpPassw)
                 }
+
+
+                when (note.method) {
+                    OtpMethod.OTP -> Unit
+                    OtpMethod.HOTP -> {
+
+                    }
+
+                    OtpMethod.TOTP,
+                    OtpMethod.YAOTP -> {
+                        TimerCircle(
+                            modifier = Modifier
+                                .ifProduction { animateContentSize() }
+                                .size(24.dp)
+                                .constrainAs(timerField) {
+                                    linkTo(
+                                        top = codeField.top,
+                                        bottom = codeField.bottom,
+                                        start = parent.start,
+                                        end = parent.end,
+                                        verticalBias = 0f,
+                                        horizontalBias = 1f,
+                                        endMargin = safeContentPaddings.horizontal(16.dp)
+                                    )
+                                },
+                            interval = note.interval,
+                            endTime = note.nextUpdateTime,
+                        )
+                    }
+                }
+
             }
         }
     }
@@ -263,7 +303,8 @@ fun OtpNoteDialog(
     ) {
         val (editBtField) = createRefs()
         TextButton(
-            modifier = Modifier.constrainAs(editBtField) {
+            modifier = Modifier
+                .constrainAs(editBtField) {
                 linkTo(
                     top = parent.top,
                     bottom = parent.bottom,
