@@ -1,6 +1,5 @@
 package com.github.klee0kai.thekey.app.ui.storage.presenter
 
-import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteGroupDestination
 import com.github.klee0kai.thekey.app.ui.storage.model.SearchState
@@ -21,6 +20,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
+import com.github.klee0kai.thekey.core.R as CoreR
 
 open class StoragePresenterImpl(
     val storageIdentifier: StorageIdentifier,
@@ -125,7 +125,7 @@ open class StoragePresenterImpl(
         ) {
             appRouter?.navigate(EditNoteGroupDestination(storageIdentifier))
         } else {
-            appRouter?.snack(R.string.limited_in_free_version)
+            appRouter?.snack(CoreR.string.limited_in_free_version)
         }
     }
 

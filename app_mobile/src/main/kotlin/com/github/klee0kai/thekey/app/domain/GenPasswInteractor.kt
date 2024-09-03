@@ -1,6 +1,5 @@
 package com.github.klee0kai.thekey.app.domain
 
-import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.engine.model.GenPasswParams
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
@@ -15,6 +14,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlin.time.Duration.Companion.days
+import com.github.klee0kai.thekey.core.R as CoreR
 
 class GenPasswInteractor(
     val identifier: StorageIdentifier,
@@ -43,7 +43,7 @@ class GenPasswInteractor(
         rep().removeHist(histPtr)
     }
 
-    fun cleanOldHistIfNeed() = scope.launch(globalRunDesc = R.string.clean_old_hist) {
+    fun cleanOldHistIfNeed() = scope.launch(globalRunDesc = CoreR.string.clean_old_hist) {
         val now = System.currentTimeMillis()
         if (now - settings().lastCleanHistTime() < CLEAN_PERIOD.inWholeMilliseconds) {
             // already cleaned

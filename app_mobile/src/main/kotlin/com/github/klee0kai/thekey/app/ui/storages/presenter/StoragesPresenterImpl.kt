@@ -1,7 +1,6 @@
 package com.github.klee0kai.thekey.app.ui.storages.presenter
 
 import com.github.klee0kai.hummus.collections.contains
-import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.data.mapping.toColoredStorage
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.features.findStorage
@@ -147,7 +146,7 @@ open class StoragesPresenterImpl : StoragesPresenter {
         ) {
             appRouter?.navigate(EditStorageGroupDestination())
         } else {
-            appRouter?.snack(R.string.limited_in_free_version)
+            appRouter?.snack(CoreR.string.limited_in_free_version)
         }
     }
 

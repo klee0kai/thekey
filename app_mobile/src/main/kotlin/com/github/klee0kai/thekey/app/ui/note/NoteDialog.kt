@@ -34,7 +34,6 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.github.klee0kai.stone.type.wrappers.getValue
-import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
@@ -352,7 +351,7 @@ fun NoteDialog(
                 content = { BackMenuIcon() }
             )
         },
-        titleContent = { Text(text = stringResource(R.string.note)) },
+        titleContent = { Text(text = stringResource(CoreR.string.note)) },
     )
 }
 

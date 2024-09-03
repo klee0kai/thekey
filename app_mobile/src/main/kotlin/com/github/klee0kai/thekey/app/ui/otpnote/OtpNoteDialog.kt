@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.SheetValue
@@ -35,13 +36,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.klee0kai.stone.type.wrappers.getValue
-import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.NoteDestination
 import com.github.klee0kai.thekey.app.ui.otpnote.presenter.OtpNotePresenter
+import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
 import com.github.klee0kai.thekey.core.domain.model.ColoredOtpNote
 import com.github.klee0kai.thekey.core.domain.model.OtpMethod
@@ -138,7 +139,7 @@ fun OtpNoteDialog(
                 val (
                     issuerHintField, issuerField,
                     nameHintField, nameField,
-                    codeHintField, codeField, timerField,
+                    codeHintField, codeField, otpActionField,
                 ) = createRefs()
 
                 Text(
@@ -261,33 +262,46 @@ fun OtpNoteDialog(
                     Text(text = note.otpPassw)
                 }
 
-
-                when (note.method) {
-                    OtpMethod.OTP -> Unit
-                    OtpMethod.HOTP -> {
-
-                    }
-
-                    OtpMethod.TOTP,
-                    OtpMethod.YAOTP -> {
-                        TimerCircle(
-                            modifier = Modifier
-                                .ifProduction { animateContentSize() }
-                                .size(24.dp)
-                                .constrainAs(timerField) {
-                                    linkTo(
-                                        top = codeField.top,
-                                        bottom = codeField.bottom,
-                                        start = parent.start,
-                                        end = parent.end,
-                                        verticalBias = 0f,
-                                        horizontalBias = 1f,
-                                        endMargin = safeContentPaddings.horizontal(16.dp)
-                                    )
+                Box(
+                    modifier = Modifier
+                        .ifProduction { animateContentSize() }
+                        .wrapContentSize()
+                        .constrainAs(otpActionField) {
+                            linkTo(
+                                top = codeField.top,
+                                bottom = codeField.bottom,
+                                start = parent.start,
+                                end = parent.end,
+                                verticalBias = 0f,
+                                horizontalBias = 1f,
+                                endMargin = safeContentPaddings.horizontal(16.dp)
+                            )
+                        },
+                ) {
+                    when (note.method) {
+                        OtpMethod.OTP -> Unit
+                        OtpMethod.HOTP -> {
+                            TextButton(
+                                modifier = Modifier
+                                    .ifProduction { animateContentSize() },
+                                onClick = rememberClickDebounced(presenter) {
+                                    presenter?.increment(router)
                                 },
-                            interval = note.interval,
-                            endTime = note.nextUpdateTime,
-                        )
+                            ) {
+                                Text(text = stringResource(id = R.string.next))
+                            }
+                        }
+
+                        OtpMethod.TOTP,
+                        OtpMethod.YAOTP -> {
+                            TimerCircle(
+                                modifier = Modifier
+                                    .ifProduction { animateContentSize() }
+                                    .size(24.dp),
+                                interval = note.interval,
+                                endTime = note.nextUpdateTime,
+                            )
+                        }
                     }
                 }
 
@@ -305,18 +319,18 @@ fun OtpNoteDialog(
         TextButton(
             modifier = Modifier
                 .constrainAs(editBtField) {
-                linkTo(
-                    top = parent.top,
-                    bottom = parent.bottom,
-                    start = parent.start,
-                    end = parent.end,
-                    verticalBias = 1f,
-                    horizontalBias = 1f,
-                    startMargin = safeContentPaddings.horizontal(minValue = 16.dp),
-                    endMargin = safeContentPaddings.horizontal(minValue = 16.dp),
-                    bottomMargin = safeContentPaddings.calculateBottomPadding() + 16.dp,
-                )
-            },
+                    linkTo(
+                        top = parent.top,
+                        bottom = parent.bottom,
+                        start = parent.start,
+                        end = parent.end,
+                        verticalBias = 1f,
+                        horizontalBias = 1f,
+                        startMargin = safeContentPaddings.horizontal(minValue = 16.dp),
+                        endMargin = safeContentPaddings.horizontal(minValue = 16.dp),
+                        bottomMargin = safeContentPaddings.calculateBottomPadding() + 16.dp,
+                    )
+                },
             onClick = rememberClickDebounced(presenter) { presenter?.edit(router) },
         ) {
             Text(text = stringResource(id = CoreR.string.edit))
@@ -340,11 +354,43 @@ fun OtpNoteDialog(
 @OptIn(DebugOnly::class)
 @Composable
 @Preview(device = Devices.PHONE)
-fun NotePreview() {
+fun TOTPPreview() {
     DI.hardResetToPreview()
     DI.initPresenterModule(object : PresentersModule {
         override fun otpNotePresenter(noteIdentifier: NoteIdentifier) = object : OtpNotePresenter {
-            override val note = MutableStateFlow(ColoredOtpNote.dummyLoaded())
+            override val note = MutableStateFlow(
+                ColoredOtpNote.dummyLoaded()
+                    .copy(
+                        method = OtpMethod.TOTP,
+                    )
+
+            )
+        }
+    })
+    DebugDarkScreenPreview {
+        Box(modifier = Modifier.background(Color.Yellow)) {
+            OtpNoteDialog(
+                initialValue = SheetValue.PartiallyExpanded,
+            )
+        }
+    }
+}
+
+
+@OptIn(DebugOnly::class)
+@Composable
+@Preview(device = Devices.PHONE)
+fun NOTPPreview() {
+    DI.hardResetToPreview()
+    DI.initPresenterModule(object : PresentersModule {
+        override fun otpNotePresenter(noteIdentifier: NoteIdentifier) = object : OtpNotePresenter {
+            override val note = MutableStateFlow(
+                ColoredOtpNote.dummyLoaded()
+                    .copy(
+                        method = OtpMethod.HOTP,
+                    )
+
+            )
         }
     })
     DebugDarkScreenPreview {

@@ -1,6 +1,5 @@
 package com.github.klee0kai.thekey.app.domain
 
-import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.data.mapping.toStorage
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.engine.model.ChPasswStrategy
@@ -11,6 +10,7 @@ import com.github.klee0kai.thekey.core.utils.common.launch
 import com.github.klee0kai.thekey.core.utils.error.FSDuplicateError
 import com.github.klee0kai.thekey.core.utils.error.FSNoAccessError
 import java.io.File
+import com.github.klee0kai.thekey.core.R as CoreR
 
 class EditStorageInteractor {
 
@@ -21,7 +21,7 @@ class EditStorageInteractor {
 
     fun createStorage(
         storage: ColoredStorage,
-    ) = scope.asyncResult(globalRunDesc = R.string.creating_storage) {
+    ) = scope.asyncResult(globalRunDesc = CoreR.string.creating_storage) {
         val folder = File(storage.path).parentFile
         folder?.mkdirs()
         if (folder?.canRead() != true || !folder.exists()) throw FSNoAccessError()
@@ -38,7 +38,7 @@ class EditStorageInteractor {
     fun moveStorage(
         from: String,
         storage: ColoredStorage,
-    ) = scope.asyncResult(globalRunDesc = R.string.moving_storage) {
+    ) = scope.asyncResult(globalRunDesc = CoreR.string.moving_storage) {
         File(storage.path).parentFile?.mkdirs()
         var error = engine().move(from, storage.path)
         engine().throwError(error)
@@ -61,14 +61,14 @@ class EditStorageInteractor {
         path: String,
         currentPassw: String,
         newPassw: String,
-    ) = scope.launch(globalRunDesc = R.string.changing_storage_password) {
+    ) = scope.launch(globalRunDesc = CoreR.string.changing_storage_password) {
         engine().changePassw(path, currentPassw, newPassw)
     }
 
     fun changePassw(
         path: String,
         strategies: List<ChPasswStrategy>,
-    ) = scope.launch(globalRunDesc = R.string.changing_storage_password) {
+    ) = scope.launch(globalRunDesc = CoreR.string.changing_storage_password) {
         engine().changePasswStrategy(path, strategies)
     }
 
@@ -88,7 +88,7 @@ class EditStorageInteractor {
 
     fun deleteStorage(
         path: String
-    ) = scope.asyncResult(globalRunDesc = R.string.deleting_storage) {
+    ) = scope.asyncResult(globalRunDesc = CoreR.string.deleting_storage) {
         File(path).delete()
         rep().deleteStorage(path).join()
     }

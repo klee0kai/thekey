@@ -9,7 +9,6 @@ import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
-import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.MainActivity
 import com.github.klee0kai.thekey.core.utils.common.GlobalJobsCollection
@@ -40,7 +39,7 @@ class UnfinishedJobsService : Service() {
                         NOT_FINISHED_JOBS_CHANNEL,
                         NotificationManager.IMPORTANCE_LOW
                     ).apply {
-                        description = getString(R.string.not_finished_jobs)
+                        description = getString(CoreR.string.not_finished_jobs)
                     }
                 )
             }
@@ -51,7 +50,7 @@ class UnfinishedJobsService : Service() {
 
             val notification = Notification.Builder(baseContext, NOT_FINISHED_JOBS_CHANNEL)
                 .setChannelId(NOT_FINISHED_JOBS_CHANNEL)
-                .setContentTitle(getText(R.string.not_finished_jobs))
+                .setContentTitle(getText(CoreR.string.not_finished_jobs))
                 .setContentText(jobDescriptions)
                 .setSmallIcon(CoreR.drawable.logo)
                 .setContentIntent(

@@ -18,7 +18,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.github.klee0kai.stone.type.wrappers.getValue
-import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
@@ -34,6 +33,7 @@ import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
+import com.github.klee0kai.thekey.core.R as CoreR
 
 @Composable
 fun StoragesListContent(
@@ -67,7 +67,7 @@ fun StoragesListContent(
             Text(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally),
-                text = stringResource(id = R.string.nothig_to_show),
+                text = stringResource(id = CoreR.string.nothig_to_show),
                 style = theme.typeScheme.typography.labelSmall,
                 color = theme.colorScheme.hintTextColor,
             )

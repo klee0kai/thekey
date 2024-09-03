@@ -64,7 +64,8 @@ fun ColoredOtpNote.Companion.dummyLoaded() =
         name = LoremIpsum.getInstance().name,
         otpPassw = "123456",
         interval = TimeUnit.SECONDS.toMillis(30),
-        nextUpdateTime = System.currentTimeMillis() + 1 + TimeUnit.SECONDS.toMillis(30),
+        nextUpdateTime = System.currentTimeMillis() +
+                (TimeUnit.SECONDS.toMillis(30) * 0.8f).toLong(),
         group = ColorGroup.dummy(),
         isLoaded = true,
     )

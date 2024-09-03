@@ -186,4 +186,17 @@
     <string name="no_history">No history</string>
     <string name="no_issuer">No issuer</string>
     <string name="code">Code</string>
+
+    <string name="nothig_to_show">Nothing to show</string>
+    <string name="limited_in_free_version">Limited in free version</string>
+    <string name="not_finished_jobs">Not finished jobs</string>
+    <string name="changing_storage_password">Changing storage password</string>
+    <string name="creating_storage">Creating storage</string>
+    <string name="moving_storage">Moving storage</string>
+    <string name="deleting_storage">Deleting storage</string>
+    <string name="logining">Logining</string>
+    <string name="clean_old_hist">Clean old hist</string>
+    <string name="note">Note</string>
+    <string name="one_time_password">One time password</string>
+    <string name="next">Next</string>
 </resources>

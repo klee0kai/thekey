@@ -1,6 +1,5 @@
 package com.github.klee0kai.thekey.app.domain
 
-import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.data.mapping.toColoredStorage
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.engine.model.createConfig
@@ -21,6 +20,7 @@ import kotlinx.coroutines.flow.map
 import timber.log.Timber
 import java.io.File
 import kotlin.time.Duration.Companion.milliseconds
+import com.github.klee0kai.thekey.core.R as CoreR
 
 class LoginInteractor {
 
@@ -45,7 +45,7 @@ class LoginInteractor {
         storageIdentifier: StorageIdentifier,
         passw: String,
         ignoreLoginned: Boolean = false
-    ) = scope.asyncSafe(globalRunDesc = R.string.logining) {
+    ) = scope.asyncSafe(globalRunDesc = CoreR.string.logining) {
         var identifier = storageIdentifier
         if (identifier.version == 0) {
             identifier = identifier.copy(version = settingsRep().newStorageVersion())
