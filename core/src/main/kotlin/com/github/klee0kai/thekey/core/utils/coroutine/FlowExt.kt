@@ -34,6 +34,12 @@ suspend fun Flow<Unit>.onTicks(block: suspend () -> Unit) {
     }
 }
 
+suspend fun <Arg> Flow<Arg>.onTicks(init: Arg, block: suspend (arg:Arg) -> Unit) {
+    merge(this, flowOf(init)).collect {
+        block(it)
+    }
+}
+
 fun <T> Flow<T>.shareLatest(scope: CoroutineScope, clazz: Class<T>): Flow<T> {
     val endl = object {}
     val orFlow = this

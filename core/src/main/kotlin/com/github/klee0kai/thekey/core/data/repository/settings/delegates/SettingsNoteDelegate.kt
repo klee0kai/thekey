@@ -3,6 +3,7 @@ package com.github.klee0kai.thekey.core.data.repository.settings.delegates
 import com.github.klee0kai.thekey.core.data.room.dao.SettingDao
 import com.github.klee0kai.thekey.core.data.room.entry.SettingPairEntry
 import com.github.klee0kai.thekey.core.di.wrap.AsyncCoroutineProvide
+import com.github.klee0kai.thekey.core.utils.coroutine.touch
 import com.github.klee0kai.thekey.core.utils.coroutine.touchable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred

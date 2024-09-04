@@ -10,16 +10,17 @@ import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
 import com.github.klee0kai.thekey.core.domain.model.ColoredOtpNote
 import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
-import com.github.klee0kai.thekey.core.utils.common.TimeFormats
 import com.github.klee0kai.thekey.core.utils.common.launch
+import com.github.klee0kai.thekey.core.utils.coroutine.touchableFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.withTimeoutOrNull
+import kotlin.time.Duration.Companion.seconds
 
 class OtpNotePresenterImpl(
     val identifier: NoteIdentifier,
 ) : OtpNotePresenter {
 
-    private val dateFormat by lazy { TimeFormats.simpleDateFormat() }
     private val scope = DI.defaultThreadScope()
     private val interactor = DI.otpNotesInteractorLazy(identifier.storage())
     private val clipboardManager by lazy {
@@ -27,12 +28,16 @@ class OtpNotePresenterImpl(
     }
 
     private val otpNoteShadow = MutableStateFlow<ColoredOtpNote?>(null)
-    override val otpNote = flow {
-        interactor().otpNoteUpdates(identifier.otpNotePtr)
-            .collect {
-                otpNoteShadow.emit(it)
-                emit(it)
-            }
+    override val incrementingTrackFlow = MutableStateFlow(0)
+    override val otpNote = touchableFlow(false) { increment ->
+        otpNoteShadow.value?.let { emit(it) }
+        interactor().otpNoteUpdates(
+            notePtr = identifier.otpNotePtr,
+            increment = increment,
+        ).collect {
+            otpNoteShadow.emit(it)
+            emit(it)
+        }
     }
 
     override fun edit(router: AppRouter?) = scope.launch {
@@ -69,8 +74,12 @@ class OtpNotePresenterImpl(
 
     override fun increment(
         router: AppRouter?,
-    ) = scope.launch {
-
+    ) = scope.launch(trackFlow = incrementingTrackFlow) {
+        val otp = otpNoteShadow.value ?: return@launch
+        otpNote.touch(true)
+        withTimeoutOrNull(5.seconds) {
+            otpNoteShadow.firstOrNull { otp.otpPassw != it?.otpPassw }
+        }
     }
 
 }

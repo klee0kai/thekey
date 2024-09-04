@@ -1031,6 +1031,10 @@ std::shared_ptr<DecryptedOtpNote> KeyStorageV2::otpNote(long long id, uint flags
     }
 
     if ((flags & TK2_GET_NOTE_PASSWORD) != 0) {
+        if ((flags & TK2_GET_NOTE_INCREMENT_HOTP) != 0 && cryptedNote->data.method() == HOTP) {
+            cryptedNote->data.counter(cryptedNote->data.counter() + 1);
+        }
+
         decryptedNote->secret = base32::encode(cryptedNote->data.secret.decrypt(
                 ctx->keyForOtpPassw,
                 fheader->cryptType(),
@@ -1045,10 +1049,6 @@ std::shared_ptr<DecryptedOtpNote> KeyStorageV2::otpNote(long long id, uint flags
 
         auto otpInfo = exportOtpNote(id);
         decryptedNote->otpPassw = key_otp::generate(otpInfo, now);
-
-        if ((flags & TK2_GET_NOTE_INCREMENT_HOTP) != 0 && cryptedNote->data.method() == HOTP) {
-            cryptedNote->data.counter(cryptedNote->data.counter() + 1);
-        }
     }
 
     return decryptedNote;

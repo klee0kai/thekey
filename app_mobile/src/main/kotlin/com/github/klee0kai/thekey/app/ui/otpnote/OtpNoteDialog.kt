@@ -69,6 +69,7 @@ import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.core.utils.views.visibleOnTargetAlpha
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import com.github.klee0kai.thekey.core.R as CoreR
 
@@ -88,6 +89,9 @@ fun OtpNoteDialog(
         key = Unit,
         initial = ColoredOtpNote(isLoaded = false)
     )
+    val incrementing by presenter!!.incrementingTrackFlow
+        .map { it > 0 }
+        .collectAsState(key = Unit, initial = false)
 
     val scaffoldState = rememberSafeBottomSheetScaffoldState(
         initialValue = initialValue,
@@ -284,6 +288,7 @@ fun OtpNoteDialog(
                             TextButton(
                                 modifier = Modifier
                                     .ifProduction { animateContentSize() },
+                                enabled = !incrementing,
                                 onClick = rememberClickDebounced(presenter) {
                                     presenter?.increment(router)
                                 },

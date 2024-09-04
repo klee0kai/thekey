@@ -11,10 +11,12 @@ import com.github.klee0kai.thekey.core.utils.common.launch
 import com.github.klee0kai.thekey.core.utils.coroutine.collectTo
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
+import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 
 class OtpNotesRepository(
@@ -39,26 +41,32 @@ class OtpNotesRepository(
 
     suspend fun otpNotePinUpdates(
         notePtr: Long,
-    ) = channelFlow {
-        scope.launch {
-            while (isActive) {
-                val otp = engine().otpNote(notePtr)
-                    .coloredNote(isLoaded = true)
-                    .findNextUpdateTime()
-                send(otp)
-                when (otp.method) {
-                    OtpMethod.OTP,
-                    OtpMethod.HOTP -> break
+        increment: Boolean,
+    ): Flow<ColoredOtpNote> {
+        val incrementUsed = AtomicBoolean(increment)
+        return channelFlow {
+            scope.launch {
+                while (isActive) {
+                    val otp = engine().otpNote(
+                        notePtr = notePtr,
+                        increment = incrementUsed.getAndSet(false)
+                    ).coloredNote(isLoaded = true)
+                        .findNextUpdateTime()
+                    send(otp)
+                    when (otp.method) {
+                        OtpMethod.OTP,
+                        OtpMethod.HOTP -> break
 
-                    OtpMethod.TOTP,
-                    OtpMethod.YAOTP -> {
-                        val now = System.currentTimeMillis()
-                        delay(maxOf(otp.nextUpdateTime - now + 100, 100))
+                        OtpMethod.TOTP,
+                        OtpMethod.YAOTP -> {
+                            val now = System.currentTimeMillis()
+                            delay(maxOf(otp.nextUpdateTime - now + 100, 100))
+                        }
                     }
                 }
             }
+            awaitClose()
         }
-        awaitClose()
     }
 
     suspend fun setOtpNotesGroup(notesPtr: List<Long>, groupId: Long) {

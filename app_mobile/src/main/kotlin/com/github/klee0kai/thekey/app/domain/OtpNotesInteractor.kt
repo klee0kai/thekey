@@ -37,9 +37,10 @@ class OtpNotesInteractor(
 
     fun otpNoteUpdates(
         notePtr: Long,
+        increment: Boolean,
     ) = flow {
         combine(
-            flow = rep().otpNotePinUpdates(notePtr),
+            flow = rep().otpNotePinUpdates(notePtr, increment),
             flow2 = groups,
         ) { note, groups ->
             val group = groups.firstOrNull { it.id == note.group.id } ?: note.group

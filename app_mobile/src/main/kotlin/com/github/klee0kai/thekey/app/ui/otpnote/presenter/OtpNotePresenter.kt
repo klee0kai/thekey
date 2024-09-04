@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.emptyFlow
 interface OtpNotePresenter {
 
     val otpNote: Flow<ColoredOtpNote> get() = emptyFlow()
+    val incrementingTrackFlow: Flow<Int> get() = emptyFlow()
 
     fun init(): Job = emptyJob()
 
