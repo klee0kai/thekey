@@ -57,7 +57,10 @@ class K2Storage(
 
     external override fun otpNotes(info: Boolean): Array<DecryptedOtpNote>
 
-    external override fun otpNote(notePtr: Long): DecryptedOtpNote
+    external override fun otpNote(
+        notePtr: Long,
+        increment: Boolean,
+    ): DecryptedOtpNote
 
     external override fun otpNoteFromUrl(url: String): DecryptedOtpNote?
 
@@ -75,7 +78,7 @@ class K2Storage(
 
     external override fun removeHist(histPt: Long): Int
 
-    external override  fun removeOldHist(oldestTimeSec: Long): Int
+    external override fun removeOldHist(oldestTimeSec: Long): Int
 
     external override fun getGenPassw(ptNote: Long): DecryptedPassw
 

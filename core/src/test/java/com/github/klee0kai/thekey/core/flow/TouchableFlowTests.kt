@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.core
+package com.github.klee0kai.thekey.core.flow
 
 import com.github.klee0kai.thekey.core.utils.coroutine.touchable
 import junit.framework.TestCase.assertEquals

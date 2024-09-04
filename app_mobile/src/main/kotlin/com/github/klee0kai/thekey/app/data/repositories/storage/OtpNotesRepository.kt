@@ -32,7 +32,10 @@ class OtpNotesRepository(
         awaitClose { consumers.decrementAndGet() }
     }
 
-    suspend fun otpNote(notePtr: Long) = engine().otpNote(notePtr)
+    suspend fun otpNote(
+        notePtr: Long,
+        increment: Boolean = false,
+    ) = engine().otpNote(notePtr, increment)
 
     suspend fun otpNotePinUpdates(
         notePtr: Long,

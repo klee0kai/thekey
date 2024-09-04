@@ -62,7 +62,7 @@ class K1Storage(
 
     override fun otpNotes(info: Boolean): Array<DecryptedOtpNote> = emptyArray()
 
-    override fun otpNote(notePtr: Long): DecryptedOtpNote = DecryptedOtpNote()
+    override fun otpNote(notePtr: Long, increment: Boolean): DecryptedOtpNote = DecryptedOtpNote()
 
     override fun otpNoteFromUrl(url: String): DecryptedOtpNote? = null
 

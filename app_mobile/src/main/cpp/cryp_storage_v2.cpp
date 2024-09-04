@@ -358,10 +358,17 @@ std::vector<JvmDecryptedOtpNote> JvmStorage2::otpNotes(const int &info) {
     return otpNotes;
 }
 
-JvmDecryptedOtpNote JvmStorage2::otpNote(const int64_t &notePtr) {
+JvmDecryptedOtpNote JvmStorage2::otpNote(
+        const int64_t &notePtr,
+        const int &increment
+) {
     auto storage = findStorage(getEngineIdentifier());
     if (!storage)return {};
-    auto dnotePtr = storage->otpNote(notePtr, TK2_GET_NOTE_INFO | TK2_GET_NOTE_PASSWORD);
+    auto flags = TK2_GET_NOTE_INFO | TK2_GET_NOTE_PASSWORD;
+    if (increment) {
+        flags |= TK2_GET_NOTE_INCREMENT_HOTP;
+    }
+    auto dnotePtr = storage->otpNote(notePtr, flags);
     if (!dnotePtr)return {};
     auto dnote = *dnotePtr;
     return JvmDecryptedOtpNote{

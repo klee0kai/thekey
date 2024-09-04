@@ -67,7 +67,12 @@ class CryptStorageSuspended(
     suspend fun otpNotes(info: Boolean = false): Array<DecryptedOtpNote> =
         engineRunRead { otpNotes(info) }
 
-    suspend fun otpNote(notePtr: Long): DecryptedOtpNote = engineRunRead { otpNote(notePtr) }
+    suspend fun otpNote(
+        notePtr: Long,
+        increment: Boolean = false,
+    ): DecryptedOtpNote = engineRunRead {
+        otpNote(notePtr, increment)
+    }
 
     suspend fun otpNoteFromUrl(url: String): DecryptedOtpNote? =
         engineRunRead { otpNoteFromUrl(url) }

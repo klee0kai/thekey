@@ -40,7 +40,7 @@ interface CryptStorage {
 
     fun otpNotes(info: Boolean = false): Array<DecryptedOtpNote>
 
-    fun otpNote(notePtr: Long): DecryptedOtpNote
+    fun otpNote(notePtr: Long, increment: Boolean = false): DecryptedOtpNote
 
     fun otpNoteFromUrl(url: String): DecryptedOtpNote?
 

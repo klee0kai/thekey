@@ -84,7 +84,7 @@ fun OtpNoteDialog(
     val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
     val isIme = WindowInsets.isIme
     val presenter by rememberOnScreenRef { DI.otpNotePresenter(dest.identifier()).apply { init() } }
-    val note by presenter!!.note.collectAsState(
+    val otpNote by presenter!!.otpNote.collectAsState(
         key = Unit,
         initial = ColoredOtpNote(isLoaded = false)
     )
@@ -178,7 +178,7 @@ fun OtpNoteDialog(
                     onClick = rememberClickDebounced(presenter) { presenter?.copyIssuer(router) },
                     colors = theme.colorScheme.whiteTextButtonColors,
                 ) {
-                    Text(text = note.issuer)
+                    Text(text = otpNote.issuer)
                 }
 
                 Text(
@@ -218,7 +218,7 @@ fun OtpNoteDialog(
                     onClick = rememberClickDebounced(presenter) { presenter?.copyName(router) },
                     colors = theme.colorScheme.whiteTextButtonColors,
                 ) {
-                    Text(text = note.name)
+                    Text(text = otpNote.name)
                 }
 
 
@@ -259,7 +259,7 @@ fun OtpNoteDialog(
                     onClick = rememberClickDebounced(presenter) { presenter?.copyCode(router) },
                     colors = theme.colorScheme.whiteTextButtonColors,
                 ) {
-                    Text(text = note.otpPassw)
+                    Text(text = otpNote.otpPassw)
                 }
 
                 Box(
@@ -278,7 +278,7 @@ fun OtpNoteDialog(
                             )
                         },
                 ) {
-                    when (note.method) {
+                    when (otpNote.method) {
                         OtpMethod.OTP -> Unit
                         OtpMethod.HOTP -> {
                             TextButton(
@@ -298,8 +298,8 @@ fun OtpNoteDialog(
                                 modifier = Modifier
                                     .ifProduction { animateContentSize() }
                                     .size(24.dp),
-                                interval = note.interval,
-                                endTime = note.nextUpdateTime,
+                                interval = otpNote.interval,
+                                endTime = otpNote.nextUpdateTime,
                             )
                         }
                     }
@@ -358,7 +358,7 @@ fun TOTPPreview() {
     DI.hardResetToPreview()
     DI.initPresenterModule(object : PresentersModule {
         override fun otpNotePresenter(noteIdentifier: NoteIdentifier) = object : OtpNotePresenter {
-            override val note = MutableStateFlow(
+            override val otpNote = MutableStateFlow(
                 ColoredOtpNote.dummyLoaded()
                     .copy(
                         method = OtpMethod.TOTP,
@@ -384,7 +384,7 @@ fun NOTPPreview() {
     DI.hardResetToPreview()
     DI.initPresenterModule(object : PresentersModule {
         override fun otpNotePresenter(noteIdentifier: NoteIdentifier) = object : OtpNotePresenter {
-            override val note = MutableStateFlow(
+            override val otpNote = MutableStateFlow(
                 ColoredOtpNote.dummyLoaded()
                     .copy(
                         method = OtpMethod.HOTP,
