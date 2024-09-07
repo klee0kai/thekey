@@ -38,7 +38,7 @@ import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.ui.navigation.identifier
-import com.github.klee0kai.thekey.app.ui.navigation.model.NoteDestination
+import com.github.klee0kai.thekey.app.ui.navigation.model.NoteDialogDestination
 import com.github.klee0kai.thekey.app.ui.note.presenter.NotePresenter
 import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
 import com.github.klee0kai.thekey.core.domain.model.ColoredNote
@@ -68,7 +68,7 @@ import com.github.klee0kai.thekey.core.R as CoreR
 
 @Composable
 fun NoteDialog(
-    dest: NoteDestination = NoteDestination(),
+    dest: NoteDialogDestination = NoteDialogDestination(),
     initialValue: SheetValue = SheetValue.Hidden,
 ) {
     val router by LocalRouter.currentRef

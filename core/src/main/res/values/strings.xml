@@ -199,4 +199,5 @@
     <string name="note">Note</string>
     <string name="one_time_password">One time password</string>
     <string name="next">Next</string>
+    <string name="debug_flags" translatable="false">Debug flags</string>
 </resources>

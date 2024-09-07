@@ -7,7 +7,7 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteGroupDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditStorageGroupDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.HistDestination
-import com.github.klee0kai.thekey.app.ui.navigation.model.NoteDestination
+import com.github.klee0kai.thekey.app.ui.navigation.model.NoteDialogDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.core.di.identifiers.NoteGroupIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
@@ -31,7 +31,7 @@ fun StorageDestination.identifier() =
 
 fun StorageDestination.note(
     notePtr: Long = 0,
-) = NoteDestination(
+) = NoteDialogDestination(
     storageVersion = version,
     path = path,
     notePtr = notePtr,
@@ -39,7 +39,7 @@ fun StorageDestination.note(
 
 fun StorageDestination.otpNote(
     otpNotePtr: Long = 0,
-) = NoteDestination(
+) = NoteDialogDestination(
     storageVersion = version,
     path = path,
     otpNotePtr = otpNotePtr,
@@ -120,7 +120,7 @@ fun EditNoteDestination.identifier() =
         otpNotePtr = otpNote?.ptnote ?: 0L,
     )
 
-fun NoteDestination.identifier() =
+fun NoteDialogDestination.identifier() =
     NoteIdentifier(
         storageVersion = storageVersion,
         storagePath = path,

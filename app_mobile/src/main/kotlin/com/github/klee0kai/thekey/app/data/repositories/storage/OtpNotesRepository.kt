@@ -6,6 +6,7 @@ import com.github.klee0kai.thekey.app.engine.model.coloredOtpNote
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.domain.model.ColoredOtpNote
+import com.github.klee0kai.thekey.core.domain.model.DebugConfigs
 import com.github.klee0kai.thekey.core.domain.model.OtpMethod
 import com.github.klee0kai.thekey.core.domain.model.findNextUpdateTime
 import com.github.klee0kai.thekey.core.utils.common.launch
@@ -71,12 +72,14 @@ class OtpNotesRepository(
     }
 
     suspend fun setOtpNotesGroup(otpNotePtrs: List<Long>, groupId: Long) {
-        _otpNotes.update { list ->
-            list.map { otp ->
-                if (otp.ptnote in otpNotePtrs) {
-                    otp.copy(group = ColorGroup(id = groupId))
-                } else {
-                    otp
+        if (DebugConfigs.isNotesFastUpdate) {
+            _otpNotes.update { list ->
+                list.map { otp ->
+                    if (otp.ptnote in otpNotePtrs) {
+                        otp.copy(group = ColorGroup(id = groupId))
+                    } else {
+                        otp
+                    }
                 }
             }
         }
@@ -85,16 +88,20 @@ class OtpNotesRepository(
     }
 
     suspend fun saveOtpNote(otpNote: DecryptedOtpNote, setAll: Boolean = false) {
-        _otpNotes.update { list ->
-            list.filter { it.ptnote != otpNote.ptnote } +
-                    listOf(otpNote.coloredOtpNote(isLoaded = true))
+        if (DebugConfigs.isNotesFastUpdate) {
+            _otpNotes.update { list ->
+                list.filter { it.ptnote != otpNote.ptnote } +
+                        listOf(otpNote.coloredOtpNote(isLoaded = true))
+            }
         }
         engine().saveOtpNote(otpNote, setAll = setAll)
         loadOtpNotes(force = true)
     }
 
     suspend fun removeOtpNote(noteptr: Long) {
-        _otpNotes.update { list -> list.filter { it.ptnote != noteptr } }
+        if (DebugConfigs.isNotesFastUpdate) {
+            _otpNotes.update { list -> list.filter { it.ptnote != noteptr } }
+        }
 
         engine().removeOtpNote(noteptr)
         loadOtpNotes(force = true)

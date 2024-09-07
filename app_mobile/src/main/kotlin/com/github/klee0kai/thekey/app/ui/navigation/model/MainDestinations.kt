@@ -81,7 +81,7 @@ data class StorageDestination(
 ) : Destination
 
 @Parcelize
-data class NoteDestination(
+data class NoteDialogDestination(
     /**
      * storage path
      */
@@ -201,3 +201,6 @@ data class PasswordTwinsDestination(
     val storageIdentifier: StorageIdentifier = StorageIdentifier(),
 ) : DynamicDestination(DynamicFeature.smpassw())
 
+
+@Parcelize
+data object DebugFlagsDialogDestination : DialogDestination

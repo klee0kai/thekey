@@ -21,7 +21,7 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.EditStorageDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditStorageGroupDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.HistDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.LoginDestination
-import com.github.klee0kai.thekey.app.ui.navigation.model.NoteDestination
+import com.github.klee0kai.thekey.app.ui.navigation.model.NoteDialogDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.PluginDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.PluginsDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.SelectStorageDialogDestination
@@ -74,7 +74,7 @@ class ScreenResolverImpl : ScreenResolver {
             is EditStorageGroupDestination -> EditStorageGroupsScreen(destination)
             is StorageDestination -> StorageScreen(destination)
             is HistDestination -> GenHistScreen(destination)
-            is NoteDestination -> if (destination.otpNotePtr != null) {
+            is NoteDialogDestination -> if (destination.otpNotePtr != null) {
                 OtpNoteDialog(destination)
             } else {
                 NoteDialog(destination)

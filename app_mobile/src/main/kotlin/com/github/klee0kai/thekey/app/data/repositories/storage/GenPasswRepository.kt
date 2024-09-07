@@ -5,6 +5,7 @@ import com.github.klee0kai.thekey.app.engine.model.DecryptedPassw
 import com.github.klee0kai.thekey.app.engine.model.GenPasswParams
 import com.github.klee0kai.thekey.app.engine.model.histPasww
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
+import com.github.klee0kai.thekey.core.domain.model.DebugConfigs
 import com.github.klee0kai.thekey.core.domain.model.HistPassw
 import com.github.klee0kai.thekey.core.utils.coroutine.collectTo
 import kotlinx.coroutines.channels.awaitClose
@@ -43,12 +44,11 @@ class GenPasswRepository(
     }
 
     suspend fun removeHist(histPtr: Long) = coroutineScope {
-        val fakeRemove = launch {
+        if (DebugConfigs.isNotesFastUpdate) {
             _allHistPasswList.update { list -> list.filter { it.histPtr != histPtr } }
         }
 
         engine().removeHist(histPtr)
-        fakeRemove.join()
         loadHistory(force = true)
     }
 
