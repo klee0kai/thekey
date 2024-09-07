@@ -71,6 +71,10 @@ class EditNotePresenterImpl(
         val initState = EditNoteState(
             isEditMode = isEditMode,
             isRemoveAvailable = isEditMode,
+            page = when {
+                identifier.otpNotePtr != 0L -> EditTabs.Otp
+                else -> EditTabs.Account
+            },
             isSkeleton = true,
         ).initVariants()
         state.update { initState }
