@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@file:OptIn(ExperimentalFoundationApi::class)
 
 package com.github.klee0kai.thekey.app.ui.storage
 
@@ -16,7 +16,6 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -102,7 +101,7 @@ fun StorageScreen(
     val searchFocusRequester = remember { FocusRequester() }
     val searchState by presenter!!.searchState.collectAsState(key = Unit, initial = SearchState())
     val isNavBoardOpen by router!!.isNavBoardOpen.collectAsState(key = Unit, initial = false)
-    var dragProgress by remember { mutableFloatStateOf(0f) }
+    var dragProgress by remember { mutableFloatStateOf(1f) }
     val pagerState = rememberPagerState(
         initialPage = dest.selectedPage.coerceIn(titles.indices),
     ) { titles.size }
@@ -111,10 +110,10 @@ fun StorageScreen(
     val secondaryTabsHeight by rememberDerivedStateOf { if (searchState.isActive) 0.dp else SecondaryTabsConst.allHeight }
     val isAccountTab by rememberDerivedStateOf { pagerState.currentPage == 0 && pagerState.currentPageOffsetFraction == 0f }
     val isAccountPageAlpha by animateAlphaAsState(boolean = isAccountTab)
-    val accountTitleVisibility by accumulate<Boolean?>(init = null) { old ->
+    val accountTitleVisibility by accumulate(init = false) { old ->
         when {
-            dragProgress < 0.1 -> false
-            dragProgress > 0.3 -> true
+            dragProgress < 0.1 -> true
+            dragProgress > 0.3 -> false
             else -> old
         }
     }
@@ -129,8 +128,8 @@ fun StorageScreen(
     val targetTitleId by rememberTargetCrossFaded {
         when {
             searchState.isActive -> SearchTitleId
-            !isAccountTab || accountTitleVisibility == true -> MainTitleId
-            else -> SecondTittleId
+            isAccountTab && accountTitleVisibility -> SecondTittleId
+            else -> MainTitleId
         }
     }
 
