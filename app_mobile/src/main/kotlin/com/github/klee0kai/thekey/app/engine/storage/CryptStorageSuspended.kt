@@ -82,8 +82,12 @@ class CryptStorageSuspended(
 
     suspend fun removeOtpNote(notePt: Long): Int = engineRunWrite { removeOtpNote(notePt) }
 
-    suspend fun setOtpNotesGroup(notePtrs: Array<Long>, groupId: Long): Int =
-        engineRunWrite { setOtpNotesGroup(notePtrs, groupId) }
+    suspend fun setOtpNotesGroup(
+        notePtrs: Array<Long>,
+        groupId: Long,
+    ): Int = engineRunWrite {
+        setOtpNotesGroup(notePtrs, groupId)
+    }
 
     /* gen passw  */
 

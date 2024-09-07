@@ -41,7 +41,10 @@ open class StoragePresenterImpl(
             flow = notesInteractor().notes,
             flow2 = otpNotesInteractor().otpNotes,
             transform = { notes, otpNotes ->
-                notes.map { it.storageItem() } + otpNotes.map { it.storageItem() }
+                val allStorageNotes = notes.map { it.storageItem() } +
+                        otpNotes.map { it.storageItem() }
+
+                allStorageNotes
                     .sortedBy { it.sortableFlatText() }
             }).collect(this)
     }.flowOn(DI.defaultDispatcher())
@@ -110,7 +113,7 @@ open class StoragePresenterImpl(
         if (oldNoteGroupId == groupId) {
             otpNotesInteractor().setOtpNotesGroup(listOf(otpNotePtr), 0)
         } else {
-            otpNotesInteractor().setOtpNotesGroup(listOf(otpNotePtr), 0)
+            otpNotesInteractor().setOtpNotesGroup(listOf(otpNotePtr), groupId)
         }
     }
 

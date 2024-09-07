@@ -2,8 +2,9 @@ package com.github.klee0kai.thekey.app.data.repositories.storage
 
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.engine.model.DecryptedOtpNote
-import com.github.klee0kai.thekey.app.engine.model.coloredNote
+import com.github.klee0kai.thekey.app.engine.model.coloredOtpNote
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
+import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.domain.model.ColoredOtpNote
 import com.github.klee0kai.thekey.core.domain.model.OtpMethod
 import com.github.klee0kai.thekey.core.domain.model.findNextUpdateTime
@@ -50,7 +51,7 @@ class OtpNotesRepository(
                     val otp = engine().otpNote(
                         notePtr = notePtr,
                         increment = incrementUsed.getAndSet(false)
-                    ).coloredNote(isLoaded = true)
+                    ).coloredOtpNote(isLoaded = true)
                         .findNextUpdateTime()
                     send(otp)
                     when (otp.method) {
@@ -69,17 +70,32 @@ class OtpNotesRepository(
         }
     }
 
-    suspend fun setOtpNotesGroup(notesPtr: List<Long>, groupId: Long) {
-        engine().setNotesGroup(notesPtr.toTypedArray(), groupId)
+    suspend fun setOtpNotesGroup(otpNotePtrs: List<Long>, groupId: Long) {
+        _otpNotes.update { list ->
+            list.map { otp ->
+                if (otp.ptnote in otpNotePtrs) {
+                    otp.copy(group = ColorGroup(id = groupId))
+                } else {
+                    otp
+                }
+            }
+        }
+        engine().setOtpNotesGroup(otpNotePtrs.toTypedArray(), groupId)
         loadOtpNotes(force = true)
     }
 
-    suspend fun saveOtpNote(note: DecryptedOtpNote, setAll: Boolean = false) {
-        engine().saveOtpNote(note, setAll = setAll)
+    suspend fun saveOtpNote(otpNote: DecryptedOtpNote, setAll: Boolean = false) {
+        _otpNotes.update { list ->
+            list.filter { it.ptnote != otpNote.ptnote } +
+                    listOf(otpNote.coloredOtpNote(isLoaded = true))
+        }
+        engine().saveOtpNote(otpNote, setAll = setAll)
         loadOtpNotes(force = true)
     }
 
     suspend fun removeOtpNote(noteptr: Long) {
+        _otpNotes.update { list -> list.filter { it.ptnote != noteptr } }
+
         engine().removeOtpNote(noteptr)
         loadOtpNotes(force = true)
     }
@@ -102,11 +118,11 @@ class OtpNotesRepository(
 
         if (_otpNotes.value.isEmpty()) {
             _otpNotes.value = engine().otpNotes()
-                .map { it.coloredNote(isLoaded = false) }
+                .map { it.coloredOtpNote(isLoaded = false) }
         }
 
         _otpNotes.value = engine().otpNotes(info = true)
-            .map { it.coloredNote(isLoaded = true) }
+            .map { it.coloredOtpNote(isLoaded = true) }
     }
 
 }

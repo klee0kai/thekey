@@ -405,10 +405,14 @@ int JvmStorage2::saveOtpNote(const JvmDecryptedOtpNote &jOtp, const int &setAll)
             .otpPassw = jOtp.otpPassw,
     };
 
+    auto flags = TK2_SET_NOTE_INFO;
+    if (setAll) {
+        flags |= TK2_SET_NOTE_PASSW;
+    }
     if (dnote.id == 0) {
-        storage->createOtpNote(dnote, 0);
+        storage->createOtpNote(dnote, flags);
     } else {
-        storage->setOtpNote(dnote, 0);
+        storage->setOtpNote(dnote, flags);
     }
 
     return storage->save();

@@ -934,6 +934,7 @@ int KeyStorageV2::setOtpNote(const thekey_v2::DecryptedOtpNote &dnote, uint flag
     }
 
     auto notCmpOld = (flags & TK2_SET_NOTE_FORCE);
+    auto setInfoFlag = (flags & TK2_SET_NOTE_INFO);
     auto setPasswFlag = (flags & TK2_SET_NOTE_PASSW);
     auto old = otpNote(dnote.id, TK2_GET_NOTE_FULL);
 
@@ -945,7 +946,7 @@ int KeyStorageV2::setOtpNote(const thekey_v2::DecryptedOtpNote &dnote, uint flag
     cryptedNote->data.counter(dnote.counter);
     cryptedNote->data.colorGroupId(dnote.colorGroupId);
 
-    if (notCmpOld || old->issuer != dnote.issuer) {
+    if (setInfoFlag && (notCmpOld || old->issuer != dnote.issuer)) {
         cryptedNote->data.issuer.encrypt(
                 dnote.issuer,
                 ctx->keyForLogin,
@@ -954,7 +955,7 @@ int KeyStorageV2::setOtpNote(const thekey_v2::DecryptedOtpNote &dnote, uint flag
         );
     }
 
-    if (notCmpOld || old->name != dnote.name) {
+    if (setInfoFlag && (notCmpOld || old->name != dnote.name)) {
         cryptedNote->data.name.encrypt(
                 dnote.name,
                 ctx->keyForLogin,
@@ -963,7 +964,7 @@ int KeyStorageV2::setOtpNote(const thekey_v2::DecryptedOtpNote &dnote, uint flag
         );
     }
 
-    if (notCmpOld || old->pin != dnote.pin) {
+    if (setInfoFlag && (notCmpOld || old->pin != dnote.pin)) {
         cryptedNote->data.pin.encrypt(
                 dnote.pin,
                 ctx->keyForPassw,

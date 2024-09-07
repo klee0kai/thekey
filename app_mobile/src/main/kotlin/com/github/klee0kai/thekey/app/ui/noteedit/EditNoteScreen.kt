@@ -487,7 +487,7 @@ fun EditNoteScreen(
             }
         }
 
-        if (!imeIsVisibleAnimated.current && isSaveAvailable.current) {
+        if (isSaveAvailable.current) {
             FilledTonalButton(
                 modifier = Modifier
                     .fillMaxWidth()

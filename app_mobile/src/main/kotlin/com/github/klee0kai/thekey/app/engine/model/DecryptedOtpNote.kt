@@ -41,7 +41,7 @@ fun DecryptedOtpNote.isEmpty(): Boolean =
     issuer.isEmpty() && name.isEmpty() && secret.isEmpty() && url.isEmpty()
 
 
-fun DecryptedOtpNote.coloredNote(
+fun DecryptedOtpNote.coloredOtpNote(
     group: ColorGroup? = null,
     isLoaded: Boolean = false,
 ) = ColoredOtpNote(

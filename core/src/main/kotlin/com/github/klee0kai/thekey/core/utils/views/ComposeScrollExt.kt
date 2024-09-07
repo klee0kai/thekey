@@ -18,7 +18,7 @@ fun LazyListState.appBarVisible(): State<Boolean> {
     val appBarVisible = remember { mutableStateOf(appBarVisibleTarget.value) }
     LaunchedEffect(appBarVisibleTarget.value) {
         if (appBarVisibleTarget.value) {
-            if (canScrollBackward) delay(1.2.seconds)
+            if (canScrollBackward) delay(0.3.seconds)
             appBarVisible.value = true
         } else {
             appBarVisible.value = false

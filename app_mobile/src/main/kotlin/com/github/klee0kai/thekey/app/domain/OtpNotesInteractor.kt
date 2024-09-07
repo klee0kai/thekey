@@ -70,10 +70,10 @@ class OtpNotesInteractor(
     }
 
     fun setOtpNotesGroup(
-        notesPtr: List<Long>,
+        otpNotePtrs: List<Long>,
         groupId: Long,
     ) = scope.launch {
-        rep().setOtpNotesGroup(notesPtr, groupId)
+        rep().setOtpNotesGroup(otpNotePtrs, groupId)
     }
 
     suspend fun otpNoteFromUrl(

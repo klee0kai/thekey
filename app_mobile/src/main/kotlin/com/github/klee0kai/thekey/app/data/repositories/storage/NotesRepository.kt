@@ -4,6 +4,7 @@ import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.engine.model.coloredNote
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
+import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.domain.model.ColoredNote
 import com.github.klee0kai.thekey.core.utils.common.launch
 import com.github.klee0kai.thekey.core.utils.coroutine.collectTo
@@ -32,16 +33,33 @@ class NotesRepository(
     suspend fun note(notePtr: Long) = engine().note(notePtr)
 
     suspend fun setNotesGroup(notesPtr: List<Long>, groupId: Long) {
+        _notes.update { list ->
+            list.map { note ->
+                if (note.ptnote in notesPtr) {
+                    note.copy(group = ColorGroup(id = groupId))
+                } else {
+                    note
+                }
+            }
+        }
+
         engine().setNotesGroup(notesPtr.toTypedArray(), groupId)
         loadNotes(force = true)
     }
 
     suspend fun saveNote(note: DecryptedNote, setAll: Boolean = false) {
+        _notes.update { list ->
+            list.filter { it.ptnote != note.ptnote } +
+                    listOf(note.coloredNote(isLoaded = true))
+        }
+
         engine().saveNote(note, setAll = setAll)
         loadNotes(force = true)
     }
 
     suspend fun removeNote(noteptr: Long) {
+        _notes.update { list -> list.filter { it.ptnote != noteptr } }
+
         engine().removeNote(noteptr)
         loadNotes(force = true)
     }
