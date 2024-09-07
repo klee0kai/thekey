@@ -17,8 +17,6 @@ open class FindStorageSuspended {
     private val _engine = DI.findStorageEngineLazy()
     private val dispatcher = DI.jniDispatcher()
 
-    // TODO fix fast run without mutex
-    private val readVersionMutex = Mutex()
 
     open suspend fun findStorages(
         folder: String,
@@ -27,10 +25,8 @@ open class FindStorageSuspended {
 
     open suspend fun storageVersion(
         path: String,
-    ): Int = readVersionMutex.withLock {
-        engineRead(path) {
-            storageVersion(path)
-        }
+    ): Int = engineRead(path) {
+        storageVersion(path)
     }
 
     open suspend fun storageInfo(
