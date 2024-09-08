@@ -14,6 +14,9 @@ import kotlin.random.Random
 data class StorageItem(
     val note: ColoredNote? = null,
     val otp: ColoredOtpNote? = null,
+
+    //metas
+    val selected: Boolean = false,
 ) : Parcelable, BaseModel<String> {
     companion object;
 
@@ -33,9 +36,19 @@ data class StorageItem(
 
 val StorageItem.group get() = note?.group ?: otp?.group ?: ColorGroup()
 
-fun ColoredNote.storageItem() = StorageItem(note = this)
+fun ColoredNote.storageItem(
+    selected: Boolean = false,
+) = StorageItem(
+    note = this,
+    selected = selected,
+)
 
-fun ColoredOtpNote.storageItem() = StorageItem(otp = this)
+fun ColoredOtpNote.storageItem(
+    selected: Boolean = false,
+) = StorageItem(
+    otp = this,
+    selected = selected,
+)
 
 @DebugOnly
 fun StorageItem.Companion.dummy(): StorageItem {

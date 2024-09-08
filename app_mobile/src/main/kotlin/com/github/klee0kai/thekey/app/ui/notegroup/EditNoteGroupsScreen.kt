@@ -42,7 +42,7 @@ import com.github.klee0kai.thekey.app.ui.notegroup.components.EditGroupInfoConte
 import com.github.klee0kai.thekey.app.ui.notegroup.components.NoteSelectToGroupComponent
 import com.github.klee0kai.thekey.app.ui.notegroup.model.EditNoteGroupsState
 import com.github.klee0kai.thekey.app.ui.notegroup.presenter.EditNoteGroupsPresenterDummy
-import com.github.klee0kai.thekey.app.ui.notegroup.presenter.selectNote
+import com.github.klee0kai.thekey.app.ui.notegroup.presenter.selectStorageItem
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.NoteGroupIdentifier
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
@@ -122,8 +122,8 @@ fun EditNoteGroupsScreen(
                     .padding(top = 20.dp)
                     .fillMaxSize(),
                 dest = dest,
-                onSelect = rememberClickDebouncedArg2(debounce = 50.milliseconds) { notePt, selected ->
-                    presenter?.selectNote(notePt, selected)
+                onSelect = rememberClickDebouncedArg2(debounce = 100.milliseconds) { storageItemId, selected ->
+                    presenter?.selectStorageItem(storageItemId, selected)
                 },
                 footer = { Spacer(modifier = Modifier.height(200.dp)) }
             )

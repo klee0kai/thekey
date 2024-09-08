@@ -13,7 +13,7 @@ data class EditNoteGroupsState(
     val colorGroupVariants: List<ColorGroup> = emptyList(),
     val selectedGroupId: Long = 0,
     val name: String = "",
-    val selectedNotes: Set<Long> = emptySet(),
+    val selectedStorageItems: Set<String> = emptySet(),
 ) : Parcelable
 
 

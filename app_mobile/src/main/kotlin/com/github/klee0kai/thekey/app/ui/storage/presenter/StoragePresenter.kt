@@ -7,21 +7,17 @@ import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
 import com.github.klee0kai.thekey.core.utils.coroutine.emptyJob
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.emptyFlow
 
 interface StoragePresenter {
 
-    val searchState: Flow<SearchState>
-        get() = MutableStateFlow(SearchState())
+    val searchState: Flow<SearchState> get() = emptyFlow()
 
-    val selectedGroupId: Flow<Long?>
-        get() = MutableStateFlow(null)
+    val selectedGroupId: Flow<Long?> get() = emptyFlow()
 
-    val filteredColorGroups: Flow<List<ColorGroup>>
-        get() = MutableStateFlow(emptyList())
+    val filteredColorGroups: Flow<List<ColorGroup>> get() = emptyFlow()
 
-    val filteredItems: Flow<List<StorageItem>>
-        get() = MutableStateFlow(emptyList())
+    val filteredItems: Flow<List<StorageItem>> get() = emptyFlow()
 
     fun searchFilter(newParams: SearchState): Job = emptyJob()
 

@@ -5,7 +5,6 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteGroupDestinati
 import com.github.klee0kai.thekey.app.ui.storage.model.SearchState
 import com.github.klee0kai.thekey.app.ui.storage.model.StorageItem
 import com.github.klee0kai.thekey.app.ui.storage.model.group
-import com.github.klee0kai.thekey.app.ui.storage.model.storageItem
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.domain.model.feature.PaidFeature
@@ -34,18 +33,9 @@ open class StoragePresenterImpl(
     override val searchState = MutableStateFlow(SearchState())
     override val selectedGroupId = MutableStateFlow<Long?>(null)
 
-    private val sortedStorageItems = flow<List<StorageItem>> {
-        combine(
-            flow = notesInteractor().notes,
-            flow2 = otpNotesInteractor().otpNotes,
-            transform = { notes, otpNotes ->
-                val allStorageNotes = notes.map { it.storageItem() } +
-                        otpNotes.map { it.storageItem() }
-
-                allStorageNotes
-                    .sortedBy { it.sortableFlatText() }
-            }).collect(this)
-    }.flowOn(DI.defaultDispatcher())
+    private val sortedStorageItems = StoragePresenterHelper
+        .sortedStorageItemsFlow(notesInteractor, otpNotesInteractor)
+        .flowOn(DI.defaultDispatcher())
 
     override val filteredColorGroups = flow<List<ColorGroup>> {
         groupsInteractor().groups.collect(this@flow)

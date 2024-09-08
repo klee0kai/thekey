@@ -42,11 +42,8 @@ open class EditStoragesGroupsPresenterImpl(
             flow3 = state.map { it.selectedGroupId }.distinctUntilChanged(),
         ) { storages, selectList, selectedGroupId ->
             when {
-                isExternalGroupMode || selectedGroupId == ColorGroup.externalStorages().id -> storages.filter {
-                    shortPath.isExternal(
-                        it.path
-                    )
-                }
+                isExternalGroupMode || selectedGroupId == ColorGroup.externalStorages().id ->
+                    storages.filter { shortPath.isExternal(it.path) }
 
                 else -> storages
             }.map { it.selected(selected = selectList.contains(it.path)) }
