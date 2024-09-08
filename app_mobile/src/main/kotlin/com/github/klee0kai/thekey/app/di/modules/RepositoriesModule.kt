@@ -7,6 +7,7 @@ import com.github.klee0kai.thekey.app.data.repositories.storage.GenPasswReposito
 import com.github.klee0kai.thekey.app.data.repositories.storage.GroupsRepository
 import com.github.klee0kai.thekey.app.data.repositories.storage.NotesRepository
 import com.github.klee0kai.thekey.app.data.repositories.storage.OtpNotesRepository
+import com.github.klee0kai.thekey.app.data.repositories.storage.PredefinedNoteGroupsRepository
 import com.github.klee0kai.thekey.app.data.repositories.storages.StoragesRepository
 import com.github.klee0kai.thekey.app.data.repositories.storages.StoragesRepositoryImpl
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
@@ -28,6 +29,9 @@ interface RepositoriesModule {
 
     @Provide(cache = Provide.CacheType.Soft)
     fun groupRepository(storageIdentifier: StorageIdentifier): GroupsRepository
+
+    @Provide(cache = Provide.CacheType.Soft)
+    fun predefinedNoteGroupsRepository(storageIdentifier: StorageIdentifier): PredefinedNoteGroupsRepository
 
     @Provide(cache = Provide.CacheType.Weak)
     fun genHistoryRepository(storageIdentifier: StorageIdentifier): GenPasswRepository

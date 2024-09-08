@@ -26,6 +26,8 @@ open class StoragePresenterImpl(
     private val notesInteractor = DI.notesInteractorLazy(storageIdentifier)
     private val otpNotesInteractor = DI.otpNotesInteractorLazy(storageIdentifier)
     private val groupsInteractor = DI.groupsInteractorLazy(storageIdentifier)
+    private val predefinedNoteGroupsInteractor =
+        DI.predefinedNoteGroupsInteractor(storageIdentifier)
     private val billing = DI.billingInteractor()
 
     private val scope = DI.defaultThreadScope()
@@ -38,7 +40,11 @@ open class StoragePresenterImpl(
         .flowOn(DI.defaultDispatcher())
 
     override val filteredColorGroups = flow<List<ColorGroup>> {
-        groupsInteractor().groups.collect(this@flow)
+        combine(
+            flow = predefinedNoteGroupsInteractor().predefinedGroups,
+            flow2 = groupsInteractor().groups,
+        ) { predefined, regular -> predefined + regular }
+            .collect(this@flow)
     }.flowOn(DI.defaultDispatcher())
 
     override val filteredItems = flow<List<StorageItem>> {

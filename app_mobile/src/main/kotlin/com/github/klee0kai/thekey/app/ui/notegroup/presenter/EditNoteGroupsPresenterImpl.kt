@@ -11,6 +11,7 @@ import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenterHelpe
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.NoteGroupIdentifier
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
+import com.github.klee0kai.thekey.core.domain.model.otpNotes
 import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
 import com.github.klee0kai.thekey.core.utils.common.launch
@@ -34,6 +35,9 @@ open class EditNoteGroupsPresenterImpl(
     private val interactor = DI.groupsInteractorLazy(groupIdentifier.storageIdentifier)
     private val notesInteractor = DI.notesInteractorLazy(groupIdentifier.storageIdentifier)
     private val otpNotesInteractor = DI.otpNotesInteractorLazy(groupIdentifier.storageIdentifier)
+    private val settings = DI.settingsRepositoryLazy()
+
+    private val isOtpGroupMode get() = groupIdentifier.groupId == ColorGroup.otpNotes().id
 
     private var originalGroup: ColorGroup? = null
     private var originSelectedNotes: Set<String> = emptySet()
@@ -49,8 +53,10 @@ open class EditNoteGroupsPresenterImpl(
         combine(
             flow = sortedStorageItems,
             flow2 = state.map { it.selectedStorageItems }.distinctUntilChanged(),
-            transform = { storageItems, selectList ->
-                storageItems.map { it.copy(selected = selectList.contains(it.id)) }
+            transform = { items, selectList ->
+                var storageItems = items.map { it.copy(selected = selectList.contains(it.id)) }
+                if (isOtpGroupMode) storageItems = storageItems.filter { it.otp != null }
+                storageItems
             }
         ).collect(this@flow)
     }.flowOn(DI.defaultDispatcher())
@@ -74,6 +80,8 @@ open class EditNoteGroupsPresenterImpl(
             state.update { it.copy(isRemoveAvailable = it.isEditMode) }
             return@launch
         }
+
+        val otpGroupRemoved = !settings().otpNotesGroup()
 
         originalGroup = interactor()
             .groups

@@ -23,6 +23,10 @@ data class ColorGroup(
     val isFavorite: Boolean = false,
 
     override val isLoaded: Boolean = false,
+    /**
+     * removed flag if is predefined Color Group
+     */
+    val isRemoved: Boolean = false,
 ) : Parcelable, BaseModel<Long> {
     companion object;
 
@@ -51,7 +55,7 @@ fun ColorGroup.Companion.externalStorages(): ColorGroup =
 fun ColorGroup.Companion.otpNotes(): ColorGroup =
     ColorGroup(
         id = -203,
-        name = CoreDI.ctx().resources.getString(R.string.ext),
+        name = CoreDI.ctx().resources.getString(R.string.otp),
         keyColor = KeyColor.TURQUOISE
     )
 
