@@ -29,7 +29,7 @@ open class ChangeStoragePasswordPresenterDummy(
                 add(
                     if (Random.nextBoolean()) {
                         ColoredNote(
-                            ptnote = Dummy.dummyId,
+                            id = Dummy.dummyId,
                             site = "some${it}.site",
                             login = "login${it}",
                             desc = "description${it}",
@@ -41,7 +41,7 @@ open class ChangeStoragePasswordPresenterDummy(
                         ).storageItem()
                     } else {
                         ColoredOtpNote(
-                            ptnote = Dummy.dummyId,
+                            id = Dummy.dummyId,
                             issuer = "issuer${it}",
                             name = "otp_name${it}",
                             isLoaded = true,

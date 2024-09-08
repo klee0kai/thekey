@@ -39,7 +39,7 @@ open class StoragePresenterLongListDummy(
             repeat(notesCount) {
                 add(
                     ColoredNote(
-                        ptnote = Dummy.dummyId,
+                        id = Dummy.dummyId,
                         site = "some${it}.site",
                         login = "login${it}",
                         desc = "description${it}",

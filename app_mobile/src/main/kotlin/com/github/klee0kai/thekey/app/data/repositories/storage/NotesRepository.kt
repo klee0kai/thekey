@@ -37,7 +37,7 @@ class NotesRepository(
         if (DebugConfigs.isNotesFastUpdate) {
             _notes.update { list ->
                 list.map { note ->
-                    if (note.ptnote in notesPtr) {
+                    if (note.id in notesPtr) {
                         note.copy(group = ColorGroup(id = groupId))
                     } else {
                         note
@@ -53,7 +53,7 @@ class NotesRepository(
     suspend fun saveNote(note: DecryptedNote, setAll: Boolean = false) {
         if (DebugConfigs.isNotesFastUpdate) {
             _notes.update { list ->
-                list.filter { it.ptnote != note.ptnote } +
+                list.filter { it.id != note.ptnote } +
                         listOf(note.coloredNote(isLoaded = true))
             }
         }
@@ -64,7 +64,7 @@ class NotesRepository(
 
     suspend fun removeNote(noteptr: Long) {
         if (DebugConfigs.isNotesFastUpdate) {
-            _notes.update { list -> list.filter { it.ptnote != noteptr } }
+            _notes.update { list -> list.filter { it.id != noteptr } }
         }
 
         engine().removeNote(noteptr)

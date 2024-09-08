@@ -38,7 +38,7 @@ open class EditNoteGroupsPresenterImpl(
         notes.filter { note ->
             note.group.id in listOf(0L, originalGroup?.id ?: 0L)
         }.map { note ->
-            note.selected(selected.contains(note.ptnote))
+            note.selected(selected.contains(note.id))
         }
     }.flowOn(DI.defaultDispatcher())
 
@@ -60,7 +60,7 @@ open class EditNoteGroupsPresenterImpl(
         val selectedNotes = notesInteractor().notes
             .firstOrNull()
             ?.filter { it.group.id == originalGroup?.id }
-            ?.map { it.ptnote }
+            ?.map { it.id }
             ?.toSet()
             ?: emptySet()
         originSelectedNotes = selectedNotes

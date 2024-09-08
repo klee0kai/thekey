@@ -4,9 +4,7 @@ import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteGroupDestination
 import com.github.klee0kai.thekey.app.ui.storage.model.SearchState
 import com.github.klee0kai.thekey.app.ui.storage.model.StorageItem
-import com.github.klee0kai.thekey.app.ui.storage.model.filterBy
 import com.github.klee0kai.thekey.app.ui.storage.model.group
-import com.github.klee0kai.thekey.app.ui.storage.model.sortableFlatText
 import com.github.klee0kai.thekey.app.ui.storage.model.storageItem
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
@@ -89,7 +87,7 @@ open class StoragePresenterImpl(
     ) = scope.launch {
         val oldNoteGroupId = notesInteractor().notes
             .firstOrNull()
-            ?.firstOrNull { it.ptnote == notePt }
+            ?.firstOrNull { it.id == notePt }
             ?.group
             ?.id
             ?: return@launch
@@ -106,7 +104,7 @@ open class StoragePresenterImpl(
     ) = scope.launch {
         val oldNoteGroupId = otpNotesInteractor().otpNotes
             .firstOrNull()
-            ?.firstOrNull { it.ptnote == otpNotePtr }
+            ?.firstOrNull { it.id == otpNotePtr }
             ?.group
             ?.id
             ?: return@launch

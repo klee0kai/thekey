@@ -10,7 +10,6 @@ import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
 import com.github.klee0kai.thekey.core.domain.model.ColoredNote
 import com.github.klee0kai.thekey.core.domain.model.HistPassw
-import com.github.klee0kai.thekey.core.domain.model.filterBy
 import com.github.klee0kai.thekey.core.domain.model.updateWith
 import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
 import com.github.klee0kai.thekey.core.utils.common.TimeFormats
@@ -60,7 +59,7 @@ open class NotePasswHistPresenterImpl(
 
     override fun init() = scope.launch {
         _note.value = interactor().notes.firstOrNull()
-            ?.firstOrNull { identifier.notePtr == it.ptnote }
+            ?.firstOrNull { identifier.notePtr == it.id }
             ?.updateWith(dateFormat)
             ?.copy(isLoaded = false)
         val hist = interactor().note(identifier.notePtr).await().hist
@@ -78,7 +77,7 @@ open class NotePasswHistPresenterImpl(
         router: AppRouter?,
     ) = scope.launch {
         val hist = filteredHist.firstOrNull()
-            ?.firstOrNull { it.histPtr == histPtr } ?: return@launch
+            ?.firstOrNull { it.id == histPtr } ?: return@launch
 
         val data = ClipData.newPlainText("Password", hist.passw)
         clipboardManager.setPrimaryClip(data)
@@ -91,7 +90,7 @@ open class NotePasswHistPresenterImpl(
         router: AppRouter?,
     ) = scope.launch {
         interactor().removeHist(histPtr)
-        _note.update { note -> note?.copy(hist = note.hist.filter { it.histPtr != histPtr }) }
+        _note.update { note -> note?.copy(hist = note.hist.filter { it.id != histPtr }) }
     }
 
 }

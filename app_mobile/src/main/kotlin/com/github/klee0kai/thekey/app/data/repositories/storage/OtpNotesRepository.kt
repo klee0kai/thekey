@@ -75,7 +75,7 @@ class OtpNotesRepository(
         if (DebugConfigs.isNotesFastUpdate) {
             _otpNotes.update { list ->
                 list.map { otp ->
-                    if (otp.ptnote in otpNotePtrs) {
+                    if (otp.id in otpNotePtrs) {
                         otp.copy(group = ColorGroup(id = groupId))
                     } else {
                         otp
@@ -90,7 +90,7 @@ class OtpNotesRepository(
     suspend fun saveOtpNote(otpNote: DecryptedOtpNote, setAll: Boolean = false) {
         if (DebugConfigs.isNotesFastUpdate) {
             _otpNotes.update { list ->
-                list.filter { it.ptnote != otpNote.ptnote } +
+                list.filter { it.id != otpNote.ptnote } +
                         listOf(otpNote.coloredOtpNote(isLoaded = true))
             }
         }
@@ -100,7 +100,7 @@ class OtpNotesRepository(
 
     suspend fun removeOtpNote(noteptr: Long) {
         if (DebugConfigs.isNotesFastUpdate) {
-            _otpNotes.update { list -> list.filter { it.ptnote != noteptr } }
+            _otpNotes.update { list -> list.filter { it.id != noteptr } }
         }
 
         engine().removeOtpNote(noteptr)

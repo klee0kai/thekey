@@ -21,7 +21,7 @@ data class DecryptedPassw(
 fun DecryptedPassw.histPasww(
     isLoaded: Boolean = false,
 ) = HistPassw(
-    histPtr = passwPtr,
+    id = passwPtr,
     passw = passw,
     chTime = TimeUnit.SECONDS.toMillis(chTime),
     isLoaded = isLoaded,

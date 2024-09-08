@@ -35,7 +35,7 @@ class NotePresenterImpl(
 
     override fun init() = scope.launch {
         _note.value = notesInteractor().notes.firstOrNull()
-            ?.firstOrNull { identifier.notePtr == it.ptnote }
+            ?.firstOrNull { identifier.notePtr == it.id }
             ?.updateWith(dateFormat)
             ?.copy(isLoaded = false)
         val passw = notesInteractor().note(identifier.notePtr).await().passw

@@ -45,7 +45,7 @@ class GenPasswRepository(
 
     suspend fun removeHist(histPtr: Long) = coroutineScope {
         if (DebugConfigs.isNotesFastUpdate) {
-            _allHistPasswList.update { list -> list.filter { it.histPtr != histPtr } }
+            _allHistPasswList.update { list -> list.filter { it.id != histPtr } }
         }
 
         engine().removeHist(histPtr)

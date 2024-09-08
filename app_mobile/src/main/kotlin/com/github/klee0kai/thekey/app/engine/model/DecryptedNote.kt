@@ -79,7 +79,7 @@ fun DecryptedNote.coloredNote(
     isLoaded: Boolean = false,
     isHistLoaded: Boolean = false,
 ) = ColoredNote(
-    ptnote = ptnote,
+    id = ptnote,
     site = site,
     login = login,
     passw = passw,

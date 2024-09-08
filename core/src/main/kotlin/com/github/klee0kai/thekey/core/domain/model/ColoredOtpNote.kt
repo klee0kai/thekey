@@ -1,6 +1,7 @@
 package com.github.klee0kai.thekey.core.domain.model
 
 import android.os.Parcelable
+import com.github.klee0kai.thekey.core.domain.basemodel.BaseModel
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.common.Dummy
 import com.thedeanda.lorem.LoremIpsum
@@ -10,7 +11,7 @@ import kotlin.time.Duration.Companion.seconds
 
 @Parcelize
 data class ColoredOtpNote(
-    val ptnote: Long = 0L,
+    override val id: Long = 0L,
     val issuer: String = "",
     val name: String = "",
     val otpPassw: String = "",
@@ -20,9 +21,17 @@ data class ColoredOtpNote(
     val interval: Long = 0,
 
     val group: ColorGroup = ColorGroup.noGroup(),
-    val isLoaded: Boolean = false,
-) : Parcelable {
+    override val isLoaded: Boolean = false,
+) : Parcelable, BaseModel<Long> {
     companion object;
+
+    override fun filterBy(filter: String): Boolean {
+        return issuer.contains(filter, ignoreCase = true)
+                || name.contains(filter, ignoreCase = true)
+    }
+
+    override fun sortableFlatText(): String = "$issuer-$name"
+
 }
 
 enum class OtpMethod(val code: Int) {
@@ -59,7 +68,7 @@ fun ColoredOtpNote.findNextUpdateTime(): ColoredOtpNote {
 @DebugOnly
 fun ColoredOtpNote.Companion.dummyLoaded() =
     ColoredOtpNote(
-        ptnote = Dummy.dummyId,
+        id = Dummy.dummyId,
         issuer = LoremIpsum.getInstance().url,
         name = LoremIpsum.getInstance().name,
         otpPassw = "123456",
@@ -74,6 +83,6 @@ fun ColoredOtpNote.Companion.dummyLoaded() =
 @DebugOnly
 fun ColoredOtpNote.Companion.dummySkeleton() =
     ColoredOtpNote(
-        ptnote = Dummy.dummyId,
+        id = Dummy.dummyId,
         isLoaded = false,
     )

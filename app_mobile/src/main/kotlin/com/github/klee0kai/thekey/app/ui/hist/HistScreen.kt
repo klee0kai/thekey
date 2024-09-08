@@ -133,7 +133,7 @@ fun GenHistScreen(
                 }
             }
 
-            item(hist.histPtr) {
+            item(hist.id) {
                 var showMenu by remember { mutableStateOf(false) }
                 val position = rememberViewPosition()
 
@@ -144,7 +144,7 @@ fun GenHistScreen(
                         .combinedClickable(
                             onClick = rememberClick(hist) {
                                 showMenu = false
-                                presenter?.savePassw(hist.histPtr, router)
+                                presenter?.savePassw(hist.id, router)
                             },
                             onLongClick = rememberClick(hist) { showMenu = !showMenu },
                         )
@@ -162,15 +162,15 @@ fun GenHistScreen(
                         modifier = Modifier.padding(vertical = 4.dp),
                         onSave = if (noteIdentifier == null) rememberClickDebounced(hist) {
                             showMenu = false
-                            presenter?.savePassw(hist.histPtr, router)
+                            presenter?.savePassw(hist.id, router)
                         } else null,
                         onCopy = rememberClickDebounced(hist) {
                             showMenu = false
-                            presenter?.copyPassw(hist.histPtr, router)
+                            presenter?.copyPassw(hist.id, router)
                         },
                         onRemove = rememberClickDebounced(hist) {
                             showMenu = false
-                            presenter?.removePassw(hist.histPtr, router)
+                            presenter?.removePassw(hist.id, router)
                         },
                     )
                 }

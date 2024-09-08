@@ -45,7 +45,7 @@ fun DecryptedOtpNote.coloredOtpNote(
     group: ColorGroup? = null,
     isLoaded: Boolean = false,
 ) = ColoredOtpNote(
-    ptnote = ptnote,
+    id = ptnote,
     issuer = issuer,
     name = name,
     method = otpMethod,

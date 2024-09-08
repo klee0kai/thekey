@@ -1,6 +1,7 @@
 package com.github.klee0kai.thekey.core.domain.model
 
 import android.os.Parcelable
+import com.github.klee0kai.thekey.core.domain.basemodel.BaseModel
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.common.Dummy
 import com.github.klee0kai.thekey.core.utils.common.TimeFormats
@@ -11,7 +12,7 @@ import java.util.Date
 
 @Parcelize
 data class ColoredNote(
-    val ptnote: Long = 0L,
+    override val id: Long = 0L,
     val site: String = "",
     val login: String = "",
     val passw: String = "",
@@ -24,9 +25,18 @@ data class ColoredNote(
 
     // meta
     val changeDateStr: String? = null,
-    val isLoaded: Boolean = false,
-) : Parcelable {
+    override val isLoaded: Boolean = false,
+) : Parcelable, BaseModel<Long> {
     companion object;
+
+    override fun filterBy(filter: String): Boolean {
+        return site.contains(filter, ignoreCase = true)
+                || login.contains(filter, ignoreCase = true)
+                || desc.contains(filter, ignoreCase = true)
+    }
+
+    override fun sortableFlatText(): String = "$site-$login"
+
 }
 
 fun ColoredNote.updateWith(
@@ -39,7 +49,7 @@ fun ColoredNote.updateWith(
 fun ColoredNote.Companion.dummyLoaded(
 
 ) = ColoredNote(
-    ptnote = Dummy.dummyId,
+    id = Dummy.dummyId,
     site = LoremIpsum.getInstance().url,
     login = LoremIpsum.getInstance().name,
     passw = LoremIpsum.getInstance().getWords(1),
@@ -52,6 +62,6 @@ fun ColoredNote.Companion.dummyLoaded(
 @DebugOnly
 fun ColoredNote.Companion.dummySkeleton() =
     ColoredNote(
-        ptnote = Dummy.dummyId,
+        id = Dummy.dummyId,
         isLoaded = false,
     )

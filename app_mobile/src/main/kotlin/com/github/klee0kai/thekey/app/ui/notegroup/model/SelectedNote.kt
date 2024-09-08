@@ -22,7 +22,7 @@ data class SelectedNote(
 }
 
 fun ColoredNote.selected(selected: Boolean = false) = SelectedNote(
-    ptnote = ptnote,
+    ptnote = id,
     site = site,
     login = login,
     passw = passw,

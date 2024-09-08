@@ -96,7 +96,7 @@ fun NotesListContent(
 
             if (note != null) {
                 item(
-                    key = "note-${note.ptnote}",
+                    key = "note-${note.id}",
                     contentType = note::class,
                 ) {
                     var showMenu by remember { mutableStateOf(false) }
@@ -111,7 +111,7 @@ fun NotesListContent(
                                     showMenu = true
                                 },
                                 onClick = rememberClickDebounced(note) {
-                                    router.navigate(args.note(notePtr = note.ptnote))
+                                    router.navigate(args.note(notePtr = note.id))
                                 }
                             ),
                         note = note,
@@ -128,11 +128,11 @@ fun NotesListContent(
                             selectedGroupId = note.group.id,
                             onColorGroupSelected = rememberClickDebouncedArg(note) {
                                 showMenu = false
-                                presenter?.setColorGroup(notePt = note.ptnote, groupId = it.id)
+                                presenter?.setColorGroup(notePt = note.id, groupId = it.id)
                             },
                             onEdit = rememberClickDebounced(note) {
                                 showMenu = false
-                                router.navigate(args.editNote(note.ptnote))
+                                router.navigate(args.editNote(note.id))
                             }
                         )
 
@@ -142,7 +142,7 @@ fun NotesListContent(
 
             if (otp != null) {
                 item(
-                    key = "otp-${otp.ptnote}",
+                    key = "otp-${otp.id}",
                     contentType = otp::class,
                 ) {
                     var showMenu by remember { mutableStateOf(false) }
@@ -157,7 +157,7 @@ fun NotesListContent(
                                     showMenu = true
                                 },
                                 onClick = rememberClickDebounced(otp) {
-                                    router.navigate(args.otpNote(otpNotePtr = otp.ptnote))
+                                    router.navigate(args.otpNote(otpNotePtr = otp.id))
                                 }
                             ),
                         otp = otp,
@@ -176,13 +176,13 @@ fun NotesListContent(
                             onColorGroupSelected = rememberClickDebouncedArg(note) {
                                 showMenu = false
                                 presenter?.setOtpColorGroup(
-                                    otpNotePtr = otp.ptnote,
+                                    otpNotePtr = otp.id,
                                     groupId = it.id,
                                 )
                             },
                             onEdit = rememberClickDebounced(note) {
                                 showMenu = false
-                                router.navigate(args.editOtpNote(otpNotePtr = otp.ptnote))
+                                router.navigate(args.editOtpNote(otpNotePtr = otp.id))
                             }
                         )
 
