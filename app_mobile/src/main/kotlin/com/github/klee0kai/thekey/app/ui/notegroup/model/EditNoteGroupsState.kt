@@ -10,9 +10,11 @@ data class EditNoteGroupsState(
     val isSkeleton: Boolean = false,
     val isSaveAvailable: Boolean = false,
     val isRemoveAvailable: Boolean = false,
+    val isOtpGroupMode: Boolean = false,
     val colorGroupVariants: List<ColorGroup> = emptyList(),
     val selectedGroupId: Long = 0,
     val name: String = "",
+    val otpColorName: String = "",
     val selectedStorageItems: Set<String> = emptySet(),
 ) : Parcelable
 

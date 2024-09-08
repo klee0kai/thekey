@@ -43,7 +43,7 @@ open class StoragePresenterImpl(
         combine(
             flow = predefinedNoteGroupsInteractor().predefinedGroups,
             flow2 = groupsInteractor().groups,
-        ) { predefined, regular -> predefined + regular }
+        ) { predefined, regular -> predefined + regular.sortedBy { it.sortableFlatText() } }
             .collect(this@flow)
     }.flowOn(DI.defaultDispatcher())
 

@@ -113,6 +113,8 @@ open class EditStoragesGroupsPresenterImpl(
             isSaveAvailable = isSaveAvailable,
             isRemoveAvailable = newState.isRemoveAvailable && !isSaveAvailable,
             isExternalGroupMode = isExternalGroupMode || newState.selectedGroupId == ColorGroup.externalStorages().id,
+            extStorageName = newState.extStorageName.take(3),
+            name = newState.extStorageName.take(2),
         )
         state.value = newState
     }
@@ -151,7 +153,9 @@ open class EditStoragesGroupsPresenterImpl(
         clean()
     }
 
-    override fun remove(router: AppRouter?) = scope.launchSafe {
+    override fun remove(
+        router: AppRouter?,
+    ) = scope.launchSafe {
         val originGroup = originalGroup ?: return@launchSafe
         interactor().deleteColorGroup(originGroup.id)
         router?.snack(R.string.color_group_deleted)

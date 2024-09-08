@@ -33,9 +33,10 @@ open class EditNoteGroupsPresenterImpl(
 
     private val scope = DI.defaultThreadScope()
     private val interactor = DI.groupsInteractorLazy(groupIdentifier.storageIdentifier)
+    private val predefinedGroupsInteractor =
+        DI.predefinedNoteGroupsInteractor(groupIdentifier.storageIdentifier)
     private val notesInteractor = DI.notesInteractorLazy(groupIdentifier.storageIdentifier)
     private val otpNotesInteractor = DI.otpNotesInteractorLazy(groupIdentifier.storageIdentifier)
-    private val settings = DI.settingsRepositoryLazy()
 
     private val isOtpGroupMode get() = groupIdentifier.groupId == ColorGroup.otpNotes().id
 
@@ -53,7 +54,8 @@ open class EditNoteGroupsPresenterImpl(
         combine(
             flow = sortedStorageItems,
             flow2 = state.map { it.selectedStorageItems }.distinctUntilChanged(),
-            transform = { items, selectList ->
+            flow3 = state.map { it.isOtpGroupMode }.distinctUntilChanged(),
+            transform = { items, selectList, isOtpGroupMode ->
                 var storageItems = items.map { it.copy(selected = selectList.contains(it.id)) }
                 if (isOtpGroupMode) storageItems = storageItems.filter { it.otp != null }
                 storageItems
@@ -81,12 +83,16 @@ open class EditNoteGroupsPresenterImpl(
             return@launch
         }
 
-        val otpGroupRemoved = !settings().otpNotesGroup()
+        val otpGroup = predefinedGroupsInteractor().otpNoteGroup.firstOrNull()
+        val otpGroupRemoved = otpGroup?.isRemoved ?: false
 
-        originalGroup = interactor()
-            .groups
-            .firstOrNull()
-            ?.firstOrNull { it.id == groupIdentifier.groupId }
+        originalGroup = when {
+            isOtpGroupMode -> otpGroup
+            else -> interactor()
+                .groups
+                .firstOrNull()
+                ?.firstOrNull { it.id == groupIdentifier.groupId }
+        }
 
         val selectedNotes = sortedStorageItems
             .firstOrNull()
@@ -98,7 +104,7 @@ open class EditNoteGroupsPresenterImpl(
 
 
         val colorGroupVariants = when {
-//  todo QRCODE externalGroupRemoved && groupIdentifier.groupId == null -> listOf(externalsGroup) + KeyColor.selectableColorGroups
+            otpGroupRemoved && groupIdentifier.groupId == null -> listOfNotNull(otpGroup) + KeyColor.selectableColorGroups
             else -> KeyColor.selectableColorGroups
         }
 
@@ -106,11 +112,13 @@ open class EditNoteGroupsPresenterImpl(
             isSkeleton = false,
             isEditMode = originalGroup != null,
             isRemoveAvailable = originalGroup != null,
+            isOtpGroupMode = originalGroup?.id == otpGroup?.id,
             colorGroupVariants = colorGroupVariants,
             selectedGroupId = colorGroupVariants
                 .firstOrNull { selectable -> selectable.keyColor == originalGroup?.keyColor }
                 ?.id ?: 0,
             name = originalGroup?.name ?: "",
+            otpColorName = otpGroup?.name ?: "",
             selectedStorageItems = selectedNotes,
         )
     }
@@ -135,6 +143,9 @@ open class EditNoteGroupsPresenterImpl(
         newState = newState.copy(
             isSaveAvailable = isSaveAvailable,
             isRemoveAvailable = newState.isRemoveAvailable && !isSaveAvailable,
+            isOtpGroupMode = isOtpGroupMode || newState.selectedGroupId == ColorGroup.otpNotes().id,
+            otpColorName = newState.otpColorName.take(3),
+            name = newState.name.take(2),
         )
         state.value = newState
     }
@@ -147,48 +158,59 @@ open class EditNoteGroupsPresenterImpl(
         router?.back()
         clean()
 
-        // state is cleared. using collected info
-        val group = interactor()
-            .saveColorGroup(
-                DecryptedColorGroup(
-                    id = groupIdentifier.groupId ?: 0,
-                    color = selectedKeyColor.ordinal,
-                    name = curState.name
-                )
-            ).await()
-            ?: return@launchSafe
+        if (curState.isOtpGroupMode) {
+            predefinedGroupsInteractor()
+                .setColorGroup(
+                    ColorGroup(
+                        id = ColorGroup.otpNotes().id,
+                        name = curState.otpColorName,
+                        keyColor = curState.colorGroupVariants.firstOrNull { it.id == curState.selectedGroupId }
+                            ?.keyColor ?: KeyColor.NOCOLOR,
+                    )
+                ).join()
+        } else {
+            // state is cleared. using collected info
+            val group = interactor()
+                .saveColorGroup(
+                    DecryptedColorGroup(
+                        id = groupIdentifier.groupId ?: 0,
+                        color = selectedKeyColor.ordinal,
+                        name = curState.name
+                    )
+                ).await()
+                ?: return@launchSafe
 
-        val resetNotes = sortedItems
-            ?.filter { it.id !in curState.selectedStorageItems }
-            ?.mapNotNull { it.note }
-            ?.filter { note -> note.group.id == originalGroup?.id }
-            ?.map { it.id }
-            ?: emptyList()
+            val resetNotes = sortedItems
+                ?.filter { it.id !in curState.selectedStorageItems }
+                ?.mapNotNull { it.note }
+                ?.filter { note -> note.group.id == originalGroup?.id }
+                ?.map { it.id }
+                ?: emptyList()
 
-        notesInteractor().setNotesGroup(resetNotes, 0L)
+            notesInteractor().setNotesGroup(resetNotes, 0L)
 
-        val selectNotes = sortedItems
-            ?.filter { it.id in curState.selectedStorageItems }
-            ?.mapNotNull { it.note?.id }
-            ?: emptyList()
+            val selectNotes = sortedItems
+                ?.filter { it.id in curState.selectedStorageItems }
+                ?.mapNotNull { it.note?.id }
+                ?: emptyList()
 
-        notesInteractor().setNotesGroup(selectNotes, group.id)
+            notesInteractor().setNotesGroup(selectNotes, group.id)
 
-        val resetOtpNotes = sortedItems
-            ?.filter { it.id !in curState.selectedStorageItems }
-            ?.mapNotNull { it.otp }
-            ?.filter { otpNote -> otpNote.group.id == originalGroup?.id }
-            ?.map { it.id }
-            ?: emptyList()
-        otpNotesInteractor().setOtpNotesGroup(resetOtpNotes, 0L)
+            val resetOtpNotes = sortedItems
+                ?.filter { it.id !in curState.selectedStorageItems }
+                ?.mapNotNull { it.otp }
+                ?.filter { otpNote -> otpNote.group.id == originalGroup?.id }
+                ?.map { it.id }
+                ?: emptyList()
+            otpNotesInteractor().setOtpNotesGroup(resetOtpNotes, 0L)
 
+            val selectOtpNotes = sortedItems
+                ?.filter { it.id in curState.selectedStorageItems }
+                ?.mapNotNull { it.otp?.id }
+                ?: emptyList()
 
-        val selectOtpNotes = sortedItems
-            ?.filter { it.id in curState.selectedStorageItems }
-            ?.mapNotNull { it.otp?.id }
-            ?: emptyList()
-
-        otpNotesInteractor().setOtpNotesGroup(selectOtpNotes, group.id)
+            otpNotesInteractor().setOtpNotesGroup(selectOtpNotes, group.id)
+        }
 
         router?.snack(R.string.color_group_changed)
     }
@@ -202,22 +224,29 @@ open class EditNoteGroupsPresenterImpl(
         router?.back()
         clean()
 
-        val resetNotes = sortedItems
-            ?.mapNotNull { it.note }
-            ?.filter { note -> note.group.id == originGroup.id }
-            ?.map { it.id }
-            ?: emptyList()
+        if (isOtpGroupMode) {
+            predefinedGroupsInteractor()
+                .deleteColorGroup(id = ColorGroup.otpNotes().id)
+                .join()
+        } else {
 
-        notesInteractor().setNotesGroup(resetNotes, 0L)
+            val resetNotes = sortedItems
+                ?.mapNotNull { it.note }
+                ?.filter { note -> note.group.id == originGroup.id }
+                ?.map { it.id }
+                ?: emptyList()
 
-        val resetOtpNotes = sortedItems
-            ?.mapNotNull { it.otp }
-            ?.filter { otpNote -> otpNote.group.id == originGroup.id }
-            ?.map { it.id }
-            ?: emptyList()
+            notesInteractor().setNotesGroup(resetNotes, 0L)
 
-        otpNotesInteractor().setOtpNotesGroup(resetOtpNotes, 0L)
-        interactor().removeGroup(originGroup.id).join()
+            val resetOtpNotes = sortedItems
+                ?.mapNotNull { it.otp }
+                ?.filter { otpNote -> otpNote.group.id == originGroup.id }
+                ?.map { it.id }
+                ?: emptyList()
+
+            otpNotesInteractor().setOtpNotesGroup(resetOtpNotes, 0L)
+            interactor().removeGroup(originGroup.id).join()
+        }
 
         router?.snack(R.string.color_group_deleted)
     }

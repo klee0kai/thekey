@@ -22,19 +22,24 @@ data class EditStorageGroupsState(
 ) : Parcelable
 
 
-fun EditStorageGroupsState.colorGroup(origin: ColorGroup = ColorGroup(), isExtMode: Boolean = false): ColorGroup {
+fun EditStorageGroupsState.colorGroup(
+    origin: ColorGroup = ColorGroup(),
+    isExtMode: Boolean = false,
+): ColorGroup {
     if (isExtMode) {
         return origin.copy(
             id = ColorGroup.externalStorages().id,
             name = extStorageName,
-            keyColor = colorGroupVariants.firstOrNull { it.id == selectedGroupId }?.keyColor ?: KeyColor.NOCOLOR,
+            keyColor = colorGroupVariants.firstOrNull { it.id == selectedGroupId }?.keyColor
+                ?: KeyColor.NOCOLOR,
             isFavorite = isFavorite,
         )
     }
 
     return origin.copy(
         name = name,
-        keyColor = colorGroupVariants.firstOrNull { it.id == selectedGroupId }?.keyColor ?: KeyColor.NOCOLOR,
+        keyColor = colorGroupVariants.firstOrNull { it.id == selectedGroupId }?.keyColor
+            ?: KeyColor.NOCOLOR,
         isFavorite = isFavorite,
     )
 }

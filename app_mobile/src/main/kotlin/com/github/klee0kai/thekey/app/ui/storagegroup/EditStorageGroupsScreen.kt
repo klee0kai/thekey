@@ -114,9 +114,9 @@ fun EditStorageGroupsScreen(
                 favoriteChecked = state.isFavorite,
                 onChangeGroupName = {
                     if (state.isExternalGroupMode) {
-                        presenter?.input { copy(extStorageName = it.take(3)) }
+                        presenter?.input { copy(extStorageName = it) }
                     } else {
-                        presenter?.input { copy(name = it.take(1)) }
+                        presenter?.input { copy(name = it) }
                     }
                 },
                 onSelect = rememberClickDebouncedArg(debounce = 50.milliseconds) {

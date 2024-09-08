@@ -141,9 +141,16 @@ fun EditNoteGroupsScreen(
                     .focusRequester(groupNameFieldFocusRequester),
                 selectedId = state.selectedGroupId,
                 variants = state.colorGroupVariants,
-                groupName = state.name,
+                groupName = when {
+                    state.isOtpGroupMode -> state.otpColorName
+                    else -> state.name
+                },
                 onChangeGroupName = rememberClickArg {
-                    presenter?.input { copy(name = it.take(1)) }
+                    if (state.isOtpGroupMode) {
+                        presenter?.input { copy(otpColorName = it) }
+                    } else {
+                        presenter?.input { copy(name = it) }
+                    }
                 },
                 onSelect = rememberClickDebouncedArg(debounce = 50.milliseconds) {
                     groupNameFieldFocusRequester.freeFocus()
@@ -157,6 +164,7 @@ fun EditNoteGroupsScreen(
                     .padding(top = 20.dp)
                     .fillMaxSize(),
                 dest = dest,
+                isOtpMode = state.isOtpGroupMode,
                 onSelect = rememberClickDebouncedArg2(debounce = 100.milliseconds) { storageItemId, selected ->
                     presenter?.selectStorageItem(storageItemId, selected)
                 },

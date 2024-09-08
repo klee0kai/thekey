@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.stone.type.wrappers.getValue
@@ -33,6 +34,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.icons.AddCheckedIcon
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.common.Dummy
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkContentPreview
+import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.ifProduction
@@ -44,6 +46,7 @@ import org.jetbrains.annotations.VisibleForTesting
 fun NoteSelectToGroupComponent(
     modifier: Modifier = Modifier,
     dest: EditNoteGroupDestination = EditNoteGroupDestination(),
+    isOtpMode: Boolean = false,
     onSelect: (String, Boolean) -> Unit = { id, selected -> },
     header: @Composable LazyItemScope.() -> Unit = { Spacer(modifier = Modifier.height(12.dp)) },
     footer: @Composable LazyItemScope.() -> Unit = { Spacer(modifier = Modifier.height(12.dp)) },
@@ -53,6 +56,7 @@ fun NoteSelectToGroupComponent(
     val safeContentPadding = WindowInsets.safeContent.asPaddingValues()
     val presenter by rememberOnScreenRef { DI.editNoteGroupPresenter(dest.identifier()) }
     val storageItems by presenter!!.filteredItems.collectAsState(key = Unit, initial = emptyList())
+    val isOtpModeAnimated by animateTargetCrossFaded(target = isOtpMode)
 
     if (storageItems.isEmpty()) {
         return
@@ -63,8 +67,6 @@ fun NoteSelectToGroupComponent(
             .fillMaxSize()
     ) {
         item("header") { header() }
-
-
 
         storageItems.forEach { storageItem ->
             val note = storageItem.note
@@ -82,7 +84,15 @@ fun NoteSelectToGroupComponent(
                                     },
                                 ),
                             note = note,
-                            icon = { AddCheckedIcon(isAdded = storageItem.selected) }
+                            icon = {
+                                if (!isOtpModeAnimated.current) {
+                                    AddCheckedIcon(
+                                        modifier = Modifier
+                                            .alpha(isOtpModeAnimated.alpha),
+                                        isAdded = storageItem.selected,
+                                    )
+                                }
+                            }
                         )
                     }
                 }
@@ -98,7 +108,15 @@ fun NoteSelectToGroupComponent(
                                     },
                                 ),
                             otp = otp,
-                            icon = { AddCheckedIcon(isAdded = storageItem.selected) }
+                            icon = {
+                                if (!isOtpModeAnimated.current) {
+                                    AddCheckedIcon(
+                                        modifier = Modifier
+                                            .alpha(isOtpModeAnimated.alpha),
+                                        isAdded = storageItem.selected,
+                                    )
+                                }
+                            }
                         )
                     }
                 }
