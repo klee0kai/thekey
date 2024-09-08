@@ -55,6 +55,7 @@ import com.github.klee0kai.thekey.app.ui.noteedit.presenter.EditNotePresenter
 import com.github.klee0kai.thekey.app.ui.noteedit.presenter.EditNotePresenterDummy
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
+import com.github.klee0kai.thekey.core.domain.model.OtpMethod
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
@@ -377,11 +378,31 @@ fun EditNoteScreen(
                             endMargin = 8.dp,
                         )
                     },
+                enabled = state.otpMethod() != OtpMethod.OTP,
                 isSkeleton = state.isSkeleton,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                value = state.otpInterval,
-                onValueChange = rememberClickArg { presenter?.input { copy(otpInterval = it) } },
-                label = { Text(stringResource(R.string.period)) },
+                value = when (state.otpMethod()) {
+                    OtpMethod.OTP -> ""
+                    OtpMethod.HOTP -> state.otpCounter
+                    OtpMethod.TOTP, OtpMethod.YAOTP -> state.otpInterval
+                },
+                onValueChange = rememberClickArg {
+                    when (state.otpMethod()) {
+                        OtpMethod.OTP -> Unit
+                        OtpMethod.HOTP -> presenter?.input { copy(otpCounter = it) }
+                        OtpMethod.TOTP, OtpMethod.YAOTP -> presenter?.input { copy(otpInterval = it) }
+                    }
+                },
+                label = {
+                    Text(
+                        stringResource(
+                            id = when (state.otpMethod()) {
+                                OtpMethod.OTP, OtpMethod.HOTP -> R.string.counter
+                                OtpMethod.TOTP, OtpMethod.YAOTP -> R.string.period
+                            }
+                        )
+                    )
+                },
             )
 
 

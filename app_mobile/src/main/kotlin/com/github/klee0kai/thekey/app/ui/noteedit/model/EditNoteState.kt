@@ -45,11 +45,11 @@ data class EditNoteState(
 ) : Parcelable {
 
     companion object {
+
         val otpTypesDefVariants = listOf("HOTP", "TOTP", "YaOTP")
         val otpAlgoDefVariants = listOf("SHA1", "SHA256", "SHA512")
         const val defOtpInterval = "30"
         const val defOtpDigits = "6"
-        const val defOtpCounter = "6"
 
         fun OtpMethod.typeVariant() = when (this) {
             OtpMethod.OTP, OtpMethod.HOTP -> 0
@@ -77,6 +77,12 @@ data class EditNoteState(
             else -> OtpAlgo.SHA1
         }
     }
+
+    fun otpMethod(): OtpMethod = otpMethodSelected.methodVariantToOtpMethod()
+
+    fun otpAlgo(): OtpAlgo = otpAlgoSelected.algoVariantToOtpAlgo()
+
+
 }
 
 enum class EditTabs {
@@ -91,7 +97,6 @@ fun EditNoteState.initVariants() = copy(
     otpAlgoSelected = 0,
     otpInterval = EditNoteState.defOtpInterval,
     otpDigits = EditNoteState.defOtpDigits,
-    otpCounter = EditNoteState.defOtpCounter,
 )
 
 fun EditNoteState.isValid(): Boolean {

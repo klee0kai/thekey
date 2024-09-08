@@ -75,6 +75,7 @@
     <string name="secret">Secret</string>
     <string name="algorithm">Algorithm</string>
     <string name="period">Period</string>
+    <string name="counter">Counter</string>
     <string name="digits">Digits</string>
     <string name="issuer">Issuer</string>
     <string name="name">Name</string>
