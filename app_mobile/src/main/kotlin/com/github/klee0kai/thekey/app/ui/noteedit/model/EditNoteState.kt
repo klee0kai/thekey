@@ -4,6 +4,8 @@ import android.os.Parcelable
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.engine.model.DecryptedOtpNote
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteDestination
+import com.github.klee0kai.thekey.app.ui.noteedit.model.EditNoteState.Companion.algoVariant
+import com.github.klee0kai.thekey.app.ui.noteedit.model.EditNoteState.Companion.typeVariant
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.domain.model.OtpAlgo
 import com.github.klee0kai.thekey.core.domain.model.OtpMethod
@@ -131,40 +133,34 @@ fun EditNoteState.decryptedOtpNote(origin: DecryptedOtpNote = DecryptedOtpNote()
     }
 
 fun EditNoteState.updateWith(
-    note: DecryptedNote,
-    colorGroups: List<ColorGroup> = emptyList(),
+    note: DecryptedNote? = null,
+    otp: DecryptedOtpNote? = null,
+    colorGroups: List<ColorGroup>? = null,
     dateFormat: DateFormat? = null,
 ): EditNoteState {
     var state = copy(
-        siteOrIssuer = note.site,
-        loginOrName = note.login,
-        passw = note.passw,
-        desc = note.desc,
-        colorGroupVariants = colorGroups,
+        siteOrIssuer = note?.site ?: otp?.issuer ?: siteOrIssuer,
+        loginOrName = note?.login ?: otp?.name ?: loginOrName,
+        passw = note?.passw ?: passw,
+        desc = note?.desc ?: desc,
+        otpUrl = otp?.url ?: otpUrl,
+        otpSecret = otp?.secret ?: otpSecret,
+        otpMethodSelected = otp?.otpMethod?.typeVariant() ?: otpMethodSelected,
+        otpAlgoSelected = otp?.otpAlgo?.algoVariant() ?: otpAlgoSelected,
+        otpInterval = otp?.interval?.toString() ?: otpInterval,
+        otpDigits = otp?.digits?.toString() ?: otpDigits,
+        otpCounter = otp?.counter?.toString() ?: otpCounter,
+        colorGroupVariants = colorGroups ?: colorGroupVariants,
         colorGroupSelected = colorGroups
-            .indexOfFirst { note.colorGroupId == it.id }
-            .takeIf { it >= 0 } ?: 0,
+            ?.indexOfFirst { note?.colorGroupId == it.id || otp?.colorGroupId == it.id }
+            ?.takeIf { it >= 0 } ?: 0,
     )
-    if (dateFormat != null && note.chTimeSec > 0L) {
+    if (note != null && dateFormat != null && note.chTimeSec > 0L) {
         state = state.copy(
             changeTime = dateFormat.format(Date(TimeUnit.SECONDS.toMillis(note.chTimeSec)))
         )
     }
     return state
-}
-
-fun EditNoteState.updateWith(otp: DecryptedOtpNote): EditNoteState = with(EditNoteState.Companion) {
-    copy(
-        siteOrIssuer = otp.issuer,
-        loginOrName = otp.name,
-        otpUrl = otp.url,
-        otpSecret = otp.secret,
-        otpMethodSelected = otp.otpMethod.typeVariant(),
-        otpAlgoSelected = otp.otpAlgo.algoVariant(),
-        otpInterval = otp.interval.toString(),
-        otpDigits = otp.digits.toString(),
-        otpCounter = otp.counter.toString(),
-    )
 }
 
 fun EditNoteDestination.initTab() = when {

@@ -98,20 +98,13 @@ class EditNotePresenterImpl(
 
         colorGroupUpdate.join()
 
-        input {
-            var newState = this
-            if (prefilledNote != null) {
-                newState = newState.updateWith(
-                    note = prefilledNote,
-                    colorGroups = colorGroups,
-                    dateFormat = dateFormat,
-                )
-            }
-            if (prefilledOtp != null) {
-                newState = newState.updateWith(otp = prefilledOtp)
-            }
-
-            newState.copy(isSkeleton = false)
+        state.update {
+            it.updateWith(
+                otp = prefilledOtp,
+                note = prefilledNote,
+                colorGroups = colorGroups,
+                dateFormat = dateFormat,
+            ).copy(isSkeleton = false)
         }
     }
 
@@ -203,7 +196,7 @@ class EditNotePresenterImpl(
     ) = scope.launch {
         val otpUrl = router?.navigate<String>(QRCodeScanDestination)?.firstOrNull() ?: return@launch
         val otp = otpNotesInteractor().otpNoteFromUrl(otpUrl) ?: return@launch
-        input { updateWith(otp) }
+        input { updateWith(otp = otp) }
     }
 
     override fun save(

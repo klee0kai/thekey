@@ -332,7 +332,7 @@ fun EditNoteScreen(
                         )
                     }
                 },
-                label = { Text(stringResource(R.string.type)) }
+                label = { Text(stringResource(R.string.method)) }
             )
 
             DropDownField(
@@ -425,7 +425,16 @@ fun EditNoteScreen(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 value = state.otpDigits,
                 onValueChange = rememberClickArg { presenter?.input { copy(otpDigits = it) } },
-                label = { Text(stringResource(R.string.digits)) },
+                label = {
+                    Text(
+                        stringResource(
+                            id = when (state.otpMethod()) {
+                                OtpMethod.OTP, OtpMethod.HOTP, OtpMethod.TOTP -> R.string.digits
+                                OtpMethod.YAOTP -> R.string.symbols
+                            }
+                        )
+                    )
+                },
             )
         }
 

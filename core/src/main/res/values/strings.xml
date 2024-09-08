@@ -73,10 +73,12 @@
     <string name="otp">OTP</string>
     <string name="qr_code_scan">scan QR code</string>
     <string name="secret">Secret</string>
+    <string name="method">Method</string>
     <string name="algorithm">Algorithm</string>
     <string name="period">Period</string>
     <string name="counter">Counter</string>
     <string name="digits">Digits</string>
+    <string name="symbols">Symbols</string>
     <string name="issuer">Issuer</string>
     <string name="name">Name</string>
     <string name="color_group">Color group</string>
