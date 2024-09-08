@@ -15,6 +15,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
 import com.github.klee0kai.thekey.core.utils.common.launch
 import com.github.klee0kai.thekey.core.utils.common.launchSafe
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -23,6 +24,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 open class EditNoteGroupsPresenterImpl(
     private val groupIdentifier: NoteGroupIdentifier,
@@ -103,6 +105,12 @@ open class EditNoteGroupsPresenterImpl(
             name = originalGroup?.name ?: "",
             selectedStorageItems = selectedNotes,
         )
+    }
+
+    override fun searchFilter(
+        newParams: SearchState,
+    ) = scope.launch(start = CoroutineStart.UNDISPATCHED) {
+        searchState.value = newParams
     }
 
     override fun input(

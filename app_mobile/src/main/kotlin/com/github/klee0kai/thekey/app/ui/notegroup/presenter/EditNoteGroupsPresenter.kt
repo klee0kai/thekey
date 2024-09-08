@@ -17,9 +17,11 @@ interface EditNoteGroupsPresenter {
 
     val filteredItems: Flow<List<StorageItem>> get() = emptyFlow()
 
-    fun input(block: EditNoteGroupsState.() -> EditNoteGroupsState): Job = emptyJob()
-
     fun init(): Job = emptyJob()
+
+    fun searchFilter(newParams: SearchState): Job = emptyJob()
+
+    fun input(block: EditNoteGroupsState.() -> EditNoteGroupsState): Job = emptyJob()
 
     fun save(router: AppRouter?): Job = emptyJob()
 
