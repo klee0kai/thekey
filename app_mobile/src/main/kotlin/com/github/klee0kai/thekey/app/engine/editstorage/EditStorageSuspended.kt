@@ -7,8 +7,10 @@ import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
 import com.github.klee0kai.thekey.app.engine.model.DecryptedOtpNote
 import com.github.klee0kai.thekey.app.engine.model.Storage
 import com.github.klee0kai.thekey.core.di.identifiers.FileIdentifier
+import com.github.klee0kai.thekey.core.domain.model.DebugConfigs
 import com.github.klee0kai.thekey.core.utils.error.FSNoAccessError
 import com.github.klee0kai.thekey.core.utils.error.FSNoFileName
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.io.IOException
 
@@ -86,6 +88,7 @@ class EditStorageSuspended {
     ): T = withContext(dispatcher) {
         val fileMutex = DI.fileMutex(FileIdentifier(path))
         fileMutex.withWriteLock {
+            delay(DebugConfigs.engineDelay.writeDelay)
             _engine().block()
         }
     }
@@ -96,6 +99,7 @@ class EditStorageSuspended {
     ): T = withContext(dispatcher) {
         val fileMutex = DI.fileMutex(FileIdentifier(path))
         fileMutex.withReadLock {
+            delay(DebugConfigs.engineDelay.readDelay)
             _engine().block()
         }
     }

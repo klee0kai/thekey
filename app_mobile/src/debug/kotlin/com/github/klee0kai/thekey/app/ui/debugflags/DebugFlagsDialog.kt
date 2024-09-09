@@ -5,11 +5,9 @@ package com.github.klee0kai.thekey.app.ui.debugflags
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.lazy.LazyColumn
@@ -36,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.domain.model.DebugConfigs
+import com.github.klee0kai.thekey.core.domain.model.next
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
@@ -84,8 +83,8 @@ fun DebugFlagsDialog(
     }
     val backLauncher = rememberClickDebounced { router?.back() }
 
-
     var fastUpdateState by remember { mutableStateOf(DebugConfigs.isNotesFastUpdate) }
+    var engineDelayState by remember { mutableStateOf(DebugConfigs.engineDelay) }
 
     Box(
         modifier = Modifier
@@ -119,6 +118,17 @@ fun DebugFlagsDialog(
                         onClick = rememberClickDebounced(debounce = 100.milliseconds) {
                             fastUpdateState = !fastUpdateState
                             DebugConfigs.isNotesFastUpdate = fastUpdateState
+                        },
+                    )
+                }
+
+                item("engine delay") {
+                    StatusPreference(
+                        text = "Engine delay",
+                        status = engineDelayState.name,
+                        onClick = rememberClickDebounced(debounce = 100.milliseconds) {
+                            engineDelayState = engineDelayState.next()
+                            DebugConfigs.engineDelay = engineDelayState
                         },
                     )
                 }

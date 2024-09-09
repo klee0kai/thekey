@@ -11,6 +11,8 @@ import com.github.klee0kai.thekey.app.engine.model.Storage
 import com.github.klee0kai.thekey.app.engine.model.TwinsCollection
 import com.github.klee0kai.thekey.core.di.identifiers.FileIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
+import com.github.klee0kai.thekey.core.domain.model.DebugConfigs
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 
 class CryptStorageSuspended(
@@ -122,6 +124,7 @@ class CryptStorageSuspended(
     private suspend fun <T> engineRunRead(block: suspend CryptStorage.() -> T): T =
         withContext(dispatcher) {
             fileMutex.withReadLock {
+                delay(DebugConfigs.engineDelay.readDelay)
                 _engine().block()
             }
         }
@@ -129,6 +132,7 @@ class CryptStorageSuspended(
     private suspend fun <T> engineRunWrite(block: suspend CryptStorage.() -> T): T =
         withContext(dispatcher) {
             fileMutex.withWriteLock {
+                delay(DebugConfigs.engineDelay.writeDelay)
                 _engine().block()
             }
         }
