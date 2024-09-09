@@ -48,6 +48,7 @@ import com.github.klee0kai.thekey.app.ui.storage.model.SearchState
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
+import com.github.klee0kai.thekey.core.ui.devkit.Screen
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.SearchField
@@ -78,7 +79,7 @@ private const val MainTitleId = 1
 @Composable
 fun GenHistScreen(
     dest: HistDestination = HistDestination(),
-) {
+) = Screen {
     val router by LocalRouter.currentRef
     val safeContentPadding = WindowInsets.safeContent.asPaddingValues()
     val scrollState = rememberLazyListState()
