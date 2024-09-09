@@ -1,6 +1,5 @@
 package com.github.klee0kai.thekey.app.ui.login
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -15,7 +14,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -81,7 +79,6 @@ fun LoginScreen(
     val pathInputHelper = remember { DI.pathInputHelper() }
     val currentStorageState by presenter!!.currentStorageFlow
         .collectAsState(key = Unit, initial = ColoredStorage())
-    val isNavBoardOpen by router!!.isNavBoardOpen.collectAsState(false)
     val isLoginNotProcessing by presenter!!
         .loginTrackFlow.map { it <= 0 }
         .collectAsStateCrossFaded(key = Unit, initial = true)
@@ -95,12 +92,6 @@ fun LoginScreen(
             .toAnnotationString()
             .coloredPath(accentColor = theme.colorScheme.androidColorScheme.primary)
             .coloredFileExt(extensionColor = theme.colorScheme.hintTextColor)
-    }
-
-    BackHandler(enabled = isNavBoardOpen) {
-        when {
-            isNavBoardOpen -> router?.hideNavigationBoard()
-        }
     }
 
     ConstraintLayout(
@@ -241,9 +232,10 @@ fun LoginScreen(
 
     AppBarStates(
         navigationIcon = {
-            IconButton(onClick = rememberClickDebounced { router?.showNavigationBoard() }) {
-                BackMenuIcon(isMenu = true)
-            }
+            IconButton(
+                onClick = rememberClickDebounced { router?.showNavigationBoard() },
+                content = { BackMenuIcon(isMenu = true) }
+            )
         },
         actions = {
             if (imeVisible.current) {
