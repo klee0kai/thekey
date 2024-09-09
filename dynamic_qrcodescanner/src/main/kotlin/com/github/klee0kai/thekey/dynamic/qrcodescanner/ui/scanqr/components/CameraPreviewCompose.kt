@@ -13,14 +13,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.LifecycleOwner
+import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.dynamic.qrcodescanner.utils.await
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 @Composable
 fun CameraPreviewCompose(
     modifier: Modifier = Modifier,
-    useCases: List<UseCase> = emptyList(),
+    useCasesLambda: suspend () -> List<UseCase> = { emptyList() },
     onCameraStarted: () -> Unit = {},
     onError: (Exception) -> Unit = {},
 ) {
@@ -39,17 +41,20 @@ fun CameraPreviewCompose(
                 this.implementationMode = PreviewView.ImplementationMode.PERFORMANCE
             }
 
-            scope.launch {
+            scope.launch() {
                 try {
                     val cameraProvider = ProcessCameraProvider.getInstance(context).await()
                     val preview = Preview.Builder()
                         .build()
                         .apply {
-                            setSurfaceProvider(previewView.getSurfaceProvider())
+
+                            surfaceProvider = previewView.getSurfaceProvider()
                         }
 
+                    val useCases = withContext(DI.defaultDispatcher()) { useCasesLambda() }
+
                     cameraProvider.unbindAll()
-                    val camera = cameraProvider.bindToLifecycle(
+                    cameraProvider.bindToLifecycle(
                         context as LifecycleOwner,
                         CameraSelector.DEFAULT_BACK_CAMERA,
                         UseCaseGroup.Builder()
