@@ -17,10 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -54,18 +51,17 @@ import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.Screen
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
-import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DoneIconButton
 import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextField
+import com.github.klee0kai.thekey.core.ui.devkit.icons.BackMenuIcon
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.possitions.pxToDp
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
-import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.collectAsStateCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.horizontal
 import com.github.klee0kai.thekey.core.utils.views.ifProduction
-import com.github.klee0kai.thekey.core.utils.views.isIme
+import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.core.utils.views.rememberTargetCrossFaded
 import org.jetbrains.annotations.VisibleForTesting
@@ -89,7 +85,6 @@ fun ChangeStoragePasswordScreen(path: String) = Screen {
     val isSaveAvailable by rememberTargetCrossFaded { state.isSaveAvailable }
     val scrollState = rememberLazyListState()
     val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
-    val imeIsVisibleAnimated by animateTargetCrossFaded(WindowInsets.isIme)
 
     DisposableEffect(key1 = Unit) {
         onDispose { presenter?.clean() }
@@ -140,7 +135,7 @@ fun ChangeStoragePasswordScreen(path: String) = Screen {
                 value = state.newPasswConfirm,
                 visualTransformation = PasswordVisualTransformation(),
                 supportingText = {
-                    when(state.error){
+                    when (state.error) {
                         ConfirmIsWrong -> {
                             Text(
                                 modifier = Modifier.fillMaxWidth(),
@@ -148,6 +143,7 @@ fun ChangeStoragePasswordScreen(path: String) = Screen {
                                 color = theme.colorScheme.redColor,
                             )
                         }
+
                         PasswordNotChanged -> {
                             Text(
                                 modifier = Modifier.fillMaxWidth(),
@@ -155,6 +151,7 @@ fun ChangeStoragePasswordScreen(path: String) = Screen {
                                 color = theme.colorScheme.redColor,
                             )
                         }
+
                         null -> Unit
                     }
                 },
@@ -199,7 +196,7 @@ fun ChangeStoragePasswordScreen(path: String) = Screen {
             .fillMaxSize(),
     ) {
         Spacer(modifier = Modifier.weight(1f))
-        if (!imeIsVisibleAnimated.current && isSaveAvailable.current) {
+        if (isSaveAvailable.current) {
             FilledTonalButton(
                 modifier = Modifier
                     .background(
@@ -217,7 +214,6 @@ fun ChangeStoragePasswordScreen(path: String) = Screen {
                     )
                     .padding(horizontal = safeContentPaddings.horizontal(minValue = 16.dp))
                     .fillMaxWidth()
-                    .alpha(imeIsVisibleAnimated.alpha)
                     .alpha(isSaveAvailable.alpha),
                 onClick = { presenter?.save(router) }
             ) { Text(stringResource(R.string.save)) }
@@ -227,22 +223,12 @@ fun ChangeStoragePasswordScreen(path: String) = Screen {
     AppBarStates(
         isVisible = !scrollState.canScrollBackward,
         navigationIcon = {
-            IconButton(onClick = { router?.back() }) {
-                Icon(
-                    Icons.AutoMirrored.Default.ArrowBack,
-                    contentDescription = null,
-                )
-            }
+            IconButton(
+                onClick = rememberClickDebounced { router?.back() },
+                content = { BackMenuIcon() }
+            )
         },
         titleContent = { Text(text = stringResource(R.string.change_password)) },
-        actions = {
-            if (imeIsVisibleAnimated.current && isSaveAvailable.current) {
-                DoneIconButton(
-                    modifier = Modifier.alpha(imeIsVisibleAnimated.alpha),
-                    onClick = { presenter?.save(router) }
-                )
-            }
-        }
     )
 
 }

@@ -139,7 +139,7 @@ fun FSStoragesButtonsWidget(
                 } else {
                     theme.colorScheme.androidColorScheme.secondaryContainer
                 },
-                onClick = rememberClickDebounced {
+                onClick = rememberClickDebounced(showSearchExt) {
                     if (showSearchExt) {
                         presenter?.searchStorages()
                     } else {

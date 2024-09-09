@@ -64,7 +64,6 @@ import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DeleteIconButton
-import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DoneIconButton
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.SecondaryTabs
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.SecondaryTabsConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.dropdownfields.ColorGroupDropDownField
@@ -521,7 +520,6 @@ fun EditNoteScreen(
             FilledTonalButton(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .alpha(imeIsVisibleAnimated.alpha)
                     .alpha(isSaveAvailable.alpha),
                 onClick = rememberClickDebounced { presenter?.save(router) }
             ) {
@@ -544,15 +542,6 @@ fun EditNoteScreen(
                     modifier = Modifier
                         .alpha(isRemoveAvailable.alpha),
                     onClick = rememberClickDebounced { presenter?.remove(router) }
-                )
-            }
-
-            if (imeIsVisibleAnimated.current && isSaveAvailable.current) {
-                DoneIconButton(
-                    modifier = Modifier
-                        .alpha(imeIsVisibleAnimated.alpha)
-                        .alpha(isSaveAvailable.alpha),
-                    onClick = rememberClickDebounced { presenter?.save(router) }
                 )
             }
         }

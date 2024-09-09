@@ -62,7 +62,6 @@ import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DeleteIconButton
-import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DoneIconButton
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.SearchField
 import com.github.klee0kai.thekey.core.ui.devkit.icons.BackMenuIcon
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
@@ -227,15 +226,6 @@ fun EditNoteGroupsScreen(
                     onClick = rememberClickDebounced { presenter?.remove(router) }
                 )
             }
-            if (imeIsVisibleAnimated.current
-                && isSaveAvailable.current
-                && targetTitleId.current != SearchTitleId
-            ) {
-                DoneIconButton(
-                    modifier = Modifier.alpha(imeIsVisibleAnimated.alpha),
-                    onClick = rememberClickDebounced { presenter?.save(router) }
-                )
-            }
         }
     )
 
@@ -250,7 +240,7 @@ fun EditNoteGroupsScreen(
                 end = 16.dp
             ),
     ) {
-        if (!imeIsVisibleAnimated.current && isSaveAvailable.current) {
+        if (isSaveAvailable.current) {
             FilledTonalButton(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)

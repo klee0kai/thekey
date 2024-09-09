@@ -45,7 +45,6 @@ import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.Screen
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
-import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DoneIconButton
 import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextField
 import com.github.klee0kai.thekey.core.ui.devkit.icons.BackMenuIcon
 import com.github.klee0kai.thekey.core.ui.devkit.preview.PreviewDevices
@@ -194,38 +193,35 @@ fun LoginScreen(
                 }
         )
 
-        if (!imeVisible.current) {
-            if (dest.identifier.path.isBlank() || dest.forceAllowStorageSelect) {
-                TextButton(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .alpha(imeVisible.alpha)
-                        .constrainAs(storagesButton) {
-                            bottom.linkTo(loginButton.top, margin = 12.dp)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                        },
-                    colors = LocalColorScheme.current.grayTextButtonColors,
-                    onClick = rememberClickDebounced { presenter?.selectStorage(router) }
-                ) {
-                    Text(stringResource(R.string.storages))
-                }
-            }
-
-            FilledTonalButton(
+        if (!imeVisible.current && dest.identifier.path.isBlank() || dest.forceAllowStorageSelect) {
+            TextButton(
                 modifier = Modifier
                     .fillMaxWidth()
                     .alpha(imeVisible.alpha)
-                    .constrainAs(loginButton) {
-                        bottom.linkTo(parent.bottom)
+                    .constrainAs(storagesButton) {
+                        bottom.linkTo(loginButton.top, margin = 12.dp)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                     },
-                enabled = isLoginNotProcessing.current,
-                onClick = rememberClickDebounced { presenter?.login(passwordInputText, router) }
+                colors = LocalColorScheme.current.grayTextButtonColors,
+                onClick = rememberClickDebounced { presenter?.selectStorage(router) }
             ) {
-                Text(stringResource(R.string.login))
+                Text(stringResource(R.string.storages))
             }
+        }
+
+        FilledTonalButton(
+            modifier = Modifier
+                .fillMaxWidth()
+                .constrainAs(loginButton) {
+                    bottom.linkTo(parent.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                },
+            enabled = isLoginNotProcessing.current,
+            onClick = rememberClickDebounced { presenter?.login(passwordInputText, router) }
+        ) {
+            Text(stringResource(R.string.login))
         }
     }
 
@@ -237,15 +233,6 @@ fun LoginScreen(
                 content = { BackMenuIcon(isMenu = true) }
             )
         },
-        actions = {
-            if (imeVisible.current) {
-                DoneIconButton(
-                    modifier = Modifier.alpha(imeVisible.alpha),
-                    enabled = isLoginNotProcessing.current,
-                    onClick = rememberClickDebounced { presenter?.login(passwordInputText, router) }
-                )
-            }
-        }
     )
 
 }

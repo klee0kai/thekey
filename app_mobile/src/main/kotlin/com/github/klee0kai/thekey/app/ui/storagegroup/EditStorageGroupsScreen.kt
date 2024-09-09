@@ -13,12 +13,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -57,15 +54,13 @@ import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DeleteIconButton
-import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DoneIconButton
+import com.github.klee0kai.thekey.core.ui.devkit.icons.BackMenuIcon
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.common.Dummy
-import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.horizontal
-import com.github.klee0kai.thekey.core.utils.views.isIme
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebouncedArg
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebouncedArg2
@@ -89,7 +84,6 @@ fun EditStorageGroupsScreen(
     val groupNameFieldFocusRequester = remember { FocusRequester() }
     val state by presenter!!.state.collectAsState(key = Unit, initial = EditStorageGroupsState())
 
-    val imeIsVisibleAnimated by animateTargetCrossFaded(WindowInsets.isIme)
     val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
     val isSaveAvailable by rememberTargetCrossFaded { state.isSaveAvailable }
     val isRemoveAvailable by rememberTargetCrossFaded { state.isRemoveAvailable }
@@ -149,9 +143,10 @@ fun EditStorageGroupsScreen(
     AppBarStates(
         modifier = Modifier,
         navigationIcon = {
-            IconButton(onClick = remember { { router?.back() } }) {
-                Icon(Icons.AutoMirrored.Default.ArrowBack, contentDescription = null)
-            }
+            IconButton(
+                onClick = rememberClickDebounced { router?.back() },
+                content = { BackMenuIcon() },
+            )
         },
         titleContent = { Text(text = stringResource(id = if (state.isEditMode) R.string.edit_storages_group else R.string.create_storages_group)) },
         actions = {
@@ -160,13 +155,6 @@ fun EditStorageGroupsScreen(
                     modifier = Modifier
                         .alpha(isRemoveAvailable.alpha),
                     onClick = rememberClickDebounced { presenter?.remove(router) }
-                )
-            }
-
-            if (imeIsVisibleAnimated.current && isSaveAvailable.current) {
-                DoneIconButton(
-                    modifier = Modifier.alpha(imeIsVisibleAnimated.alpha),
-                    onClick = rememberClickDebounced { presenter?.save(router) }
                 )
             }
         }
@@ -178,11 +166,10 @@ fun EditStorageGroupsScreen(
             .padding(bottom = safeContentPaddings.calculateBottomPadding() + 16.dp)
             .padding(horizontal = safeContentPaddings.horizontal(minValue = 16.dp)),
     ) {
-        if (!imeIsVisibleAnimated.current && isSaveAvailable.current) {
+        if (isSaveAvailable.current) {
             FilledTonalButton(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .alpha(isSaveAvailable.alpha)
                     .fillMaxWidth(),
                 onClick = rememberClickDebounced { presenter?.save(router) }
             ) {

@@ -19,12 +19,9 @@ import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -55,11 +52,11 @@ import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DeleteIconButton
-import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DoneIconButton
 import com.github.klee0kai.thekey.core.ui.devkit.components.buttons.GroupCircle
 import com.github.klee0kai.thekey.core.ui.devkit.components.dropdownfields.ColorGroupSelectPopupMenu
 import com.github.klee0kai.thekey.core.ui.devkit.components.dropdownfields.SimpleSelectPopupMenu
 import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextField
+import com.github.klee0kai.thekey.core.ui.devkit.icons.BackMenuIcon
 import com.github.klee0kai.thekey.core.ui.devkit.overlay.PopupMenu
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.common.Dummy
@@ -72,6 +69,7 @@ import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.horizontal
 import com.github.klee0kai.thekey.core.utils.views.isIme
+import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.core.utils.views.rememberTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.toTextFieldValue
@@ -191,9 +189,7 @@ fun FSEditStorageScreen(
                 onSelected = { selected, _ ->
                     with(pathInputHelper) {
                         presenter?.input {
-                            copy(
-                                path = this.path.text.folderSelected(selected).toTextFieldValue()
-                            )
+                            copy(path = this.path.text.folderSelected(selected).toTextFieldValue())
                         }
                     }
                 }
@@ -247,16 +243,13 @@ fun FSEditStorageScreen(
                 .windowInsetsPadding(WindowInsets.safeContent)
                 .padding(bottom = 16.dp, start = 16.dp, end = 16.dp),
         ) {
-            if (!imeIsVisibleAnimated.current) {
-                FilledTonalButton(
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .fillMaxWidth()
-                        .alpha(imeIsVisibleAnimated.alpha),
-                    onClick = { presenter?.save(router) }
-                ) {
-                    Text(stringResource(R.string.save))
-                }
+            FilledTonalButton(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth(),
+                onClick = { presenter?.save(router) }
+            ) {
+                Text(stringResource(R.string.save))
             }
         }
 
@@ -340,19 +333,20 @@ fun FSEditStorageScreen(
                     .fillMaxWidth()
                     .padding(bottom = 12.dp),
                 colors = LocalColorScheme.current.grayTextButtonColors,
-                onClick = { router?.navigate(ChangeStoragePasswordDestination(path)) }
+                onClick = rememberClickDebounced {
+                    router?.navigate(ChangeStoragePasswordDestination(path))
+                }
             ) {
                 Text(stringResource(R.string.change_password))
             }
         }
 
-        if (!imeIsVisibleAnimated.current && isSaveAvailable.current) {
+        if (isSaveAvailable.current) {
             FilledTonalButton(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .alpha(imeIsVisibleAnimated.alpha)
                     .alpha(isSaveAvailable.alpha),
-                onClick = { presenter?.save(router) }
+                onClick = rememberClickDebounced { presenter?.save(router) }
             ) { Text(stringResource(R.string.save)) }
         }
     }
@@ -360,12 +354,10 @@ fun FSEditStorageScreen(
     AppBarStates(
         isVisible = scrollState.value == 0,
         navigationIcon = {
-            IconButton(onClick = { router?.back() }) {
-                Icon(
-                    Icons.AutoMirrored.Default.ArrowBack,
-                    contentDescription = null,
-                )
-            }
+            IconButton(
+                onClick = rememberClickDebounced { router?.back() },
+                content = { BackMenuIcon() }
+            )
         },
         titleContent = {
             when {
@@ -378,14 +370,7 @@ fun FSEditStorageScreen(
                 DeleteIconButton(
                     modifier = Modifier
                         .alpha(isRemoveAvailable.alpha),
-                    onClick = { presenter?.remove(router) }
-                )
-            }
-
-            if (imeIsVisibleAnimated.current && isSaveAvailable.current) {
-                DoneIconButton(
-                    modifier = Modifier.alpha(imeIsVisibleAnimated.alpha),
-                    onClick = { presenter?.save(router) }
+                    onClick = rememberClickDebounced { presenter?.remove(router) }
                 )
             }
         }
