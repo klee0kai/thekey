@@ -145,6 +145,7 @@ fun GroupsSelectContent(
                         onDismissRequest = { showMenu = false },
                     ) {
                         GroupPopupMenu(
+                            modifier = Modifier.padding(vertical = 4.dp),
                             onEdit = {
                                 showMenu = false
                                 onGroupEdit(group)
