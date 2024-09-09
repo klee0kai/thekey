@@ -41,6 +41,7 @@ import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.isIme
+import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.dynamic.findstorage.R
 import com.github.klee0kai.thekey.dynamic.findstorage.di.FSDI
@@ -58,11 +59,20 @@ fun FSStoragesButtonsWidget(
     val router by LocalRouter.currentRef
     val theme = LocalTheme.current
     val presenter by rememberOnScreenRef { FSDI.fsStoragesPresenter() }
-    val extGroup by presenter!!.externalStoragesColorGroup.collectAsState(key = Unit, initial = ColorGroup.externalStorages())
+    val extGroup by presenter!!.externalStoragesColorGroup.collectAsState(
+        key = Unit,
+        initial = ColorGroup.externalStorages()
+    )
 
     val imeIsVisibleAnimated by animateTargetCrossFaded(WindowInsets.isIme)
-    val isPermissionsGranted by presenter!!.isPermissionGranted.collectAsState(key = Unit, initial = null)
-    val isStorageSearching by presenter!!.isStoragesSearchingProgress.collectAsState(key = Unit, initial = false)
+    val isPermissionsGranted by presenter!!.isPermissionGranted.collectAsState(
+        key = Unit,
+        initial = null
+    )
+    val isStorageSearching by presenter!!.isStoragesSearchingProgress.collectAsState(
+        key = Unit,
+        initial = false
+    )
 
     val isExtStorageSelected by animateTargetCrossFaded(
         target = widget.isExtStorageSelected,
@@ -129,7 +139,7 @@ fun FSStoragesButtonsWidget(
                 } else {
                     theme.colorScheme.androidColorScheme.secondaryContainer
                 },
-                onClick = {
+                onClick = rememberClickDebounced {
                     if (showSearchExt) {
                         presenter?.searchStorages()
                     } else {

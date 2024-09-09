@@ -42,7 +42,7 @@ android {
     }
     buildTypes {
         val releaseConf: ApplicationBuildType.() -> Unit = {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             signingConfig = signingConfigs["release"]
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -62,6 +62,7 @@ android {
 
         val debugConf: ApplicationBuildType.() -> Unit = {
             isDebuggable = true
+            isMinifyEnabled = false
             signingConfig = signingConfigs["debug"]
             externalNativeBuild {
                 cmake {

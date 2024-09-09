@@ -11,8 +11,6 @@ import com.github.klee0kai.thekey.app.ui.storage.notes.ColoredNoteSkeleton
 import com.github.klee0kai.thekey.app.ui.storage.notes.ColoredOtpNoteDummyNoGroupPreview
 import com.github.klee0kai.thekey.app.ui.storage.notes.ColoredOtpNoteDummyPreview
 import com.github.klee0kai.thekey.app.ui.storage.notes.ColoredOtpNoteSkeletonPreview
-import com.github.klee0kai.thekey.app.ui.storage.notes.NoteDropDownMenuNoPreview
-import com.github.klee0kai.thekey.app.ui.storage.notes.NoteDropDownMenuWithGroupsPreview
 import com.github.klee0kai.thekey.app.ui.storage.notes.NotesContentPreview
 import com.github.klee0kai.thekey.app.ui.storage.notes.NotesListContentPreview
 import com.github.klee0kai.thekey.app.ui.storage.notes.NotesListContentTitlePreview
@@ -80,20 +78,6 @@ class StorageScreens : BasePaparazzi() {
     fun coloredOtpNoteDummyNoGroupPreview() {
         paparazzi.snapshot {
             ColoredOtpNoteDummyNoGroupPreview()
-        }
-    }
-
-    @Test
-    fun noteDropDownMenuWithGroupsPreview() {
-        paparazzi.snapshot {
-            NoteDropDownMenuWithGroupsPreview()
-        }
-    }
-
-    @Test
-    fun noteDropDownMenuNoPreview() {
-        paparazzi.snapshot {
-            NoteDropDownMenuNoPreview()
         }
     }
 

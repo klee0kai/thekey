@@ -41,6 +41,7 @@ import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.isIme
+import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -52,7 +53,10 @@ fun StoragesButtonsWidget(
     val router by LocalRouter.currentRef
     val theme = LocalTheme.current
     val presenter by rememberOnScreenRef { DI.storagesPresenter() }
-    val isFindStoragesFeatureInstalled by presenter!!.installAutoSearchStatus.collectAsState(key = Unit, initial = null)
+    val isFindStoragesFeatureInstalled by presenter!!.installAutoSearchStatus.collectAsState(
+        key = Unit,
+        initial = null
+    )
 
     val imeIsVisibleAnimated by animateTargetCrossFaded(WindowInsets.isIme)
 
@@ -108,7 +112,7 @@ fun StoragesButtonsWidget(
             FabSimpleInContainer(
                 modifier = modifier
                     .alpha(isShowInstallPluginPromo.alpha),
-                onClick = { router?.navigate(EditStorageDestination()) },
+                onClick = rememberClickDebounced { router?.navigate(EditStorageDestination()) },
                 content = { Icon(Icons.Default.Add, contentDescription = "Add") }
             )
         }

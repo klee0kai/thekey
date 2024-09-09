@@ -20,23 +20,29 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.stone.type.wrappers.getValue
+import com.github.klee0kai.thekey.app.R
+import com.github.klee0kai.thekey.core.R as CoreR
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.ui.navigation.editGroup
+import com.github.klee0kai.thekey.app.ui.navigation.editNote
 import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
-import com.github.klee0kai.thekey.app.ui.navigation.editNote
 import com.github.klee0kai.thekey.app.ui.storage.StorageScreen
 import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenterDummy
 import com.github.klee0kai.thekey.app.ui.storages.components.GroupsSelectContent
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
+import com.github.klee0kai.thekey.core.domain.model.ColorGroup
+import com.github.klee0kai.thekey.core.domain.model.otpNotes
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
+import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.SimpleBottomSheetScaffold
 import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.topContentAlphaFromDrag
 import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.topContentOffsetFromDrag
@@ -52,6 +58,7 @@ import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebouncedArg
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
+import com.github.klee0kai.thekey.core.utils.views.rememberTargetCrossFaded
 import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
@@ -62,11 +69,20 @@ fun NotesContent(
     isPageFullyAvailable: Boolean = false,
     onDrag: (Float) -> Unit = {},
 ) {
+    val theme = LocalTheme.current
     val router by LocalRouter.currentRef
     val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
     val presenter by rememberOnScreenRef { DI.storagePresenter(dest.identifier()) }
     val selectedGroup by presenter!!.selectedGroupId.collectAsState(key = Unit, initial = null)
     val groups by presenter!!.filteredColorGroups.collectAsState(key = Unit, initial = emptyList())
+    val otpGroupSelected by rememberTargetCrossFaded {
+        if (selectedGroup == ColorGroup.otpNotes().id) {
+            groups.firstOrNull { it.id == selectedGroup }
+        } else {
+            null
+        }
+    }
+
     var dragProgress by remember { mutableFloatStateOf(0f) }
     val addButtonAlpha by animateAlphaAsState(isPageFullyAvailable)
     val addButtonVisible by rememberDerivedStateOf { addButtonAlpha > 0 }
@@ -104,9 +120,36 @@ fun NotesContent(
 
     if (addButtonVisible) {
         FabSimpleInContainer(
-            modifier = Modifier.alpha(addButtonAlpha),
-            onClick = rememberClickDebounced { router?.navigate(dest.editNote()) },
-            content = { Icon(Icons.Default.Add, contentDescription = "Add") }
+            modifier = Modifier
+                .alpha(addButtonAlpha),
+            square = otpGroupSelected.current != null,
+            containerColor = if (otpGroupSelected.current != null) {
+                theme.colorScheme.surfaceSchemas.surfaceScheme(otpGroupSelected.current!!.keyColor).surfaceColor
+            } else {
+                theme.colorScheme.androidColorScheme.secondaryContainer
+            },
+            onClick = rememberClickDebounced {
+                if (otpGroupSelected.current != null) {
+                    presenter?.scanNewOtpQRCode(router)
+                } else {
+                    router?.navigate(dest.editNote())
+                }
+            },
+            content = {
+                if (otpGroupSelected.current != null) {
+                    Icon(
+                        painter = painterResource(id = CoreR.drawable.ic_qrcode_scanner),
+                        modifier = Modifier.alpha(otpGroupSelected.alpha),
+                        contentDescription = "ScanQR",
+                    )
+                } else {
+                    Icon(
+                        Icons.Default.Add,
+                        modifier = Modifier.alpha(otpGroupSelected.alpha),
+                        contentDescription = "Add"
+                    )
+                }
+            }
         )
     }
 }

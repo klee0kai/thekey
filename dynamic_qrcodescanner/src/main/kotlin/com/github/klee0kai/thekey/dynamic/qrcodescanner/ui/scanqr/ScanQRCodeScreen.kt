@@ -18,6 +18,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.AndroidHelpersModule
@@ -28,7 +29,9 @@ import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.ui.navigation.model.TextProvider
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
+import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.dynamic.qrcodescanner.ui.navigation.cameraPermissions
 import com.github.klee0kai.thekey.dynamic.qrcodescanner.ui.scanqr.components.CameraPreviewCompose
 import com.github.klee0kai.thekey.dynamic.qrcodescanner.ui.scanqr.components.qrCodeUserScanner
@@ -45,7 +48,7 @@ sealed interface CameraState {
 @Composable
 fun ScanQRCodeScreen() {
     val scope = rememberCoroutineScope()
-    val router = LocalRouter.current
+    val router by LocalRouter.currentRef
     val context = LocalContext.current
     val permissionHelper = remember { DI.permissionsHelper() }
     var permGranded by remember { mutableStateOf(permissionHelper.checkPermissions(permissionHelper.cameraPermissions())) }
@@ -59,7 +62,7 @@ fun ScanQRCodeScreen() {
                 scope.launch {
                     if (screenClosed) return@launch
                     val barcode = barcodes.firstOrNull() ?: return@launch
-                    router.backWithResult(barcode.rawValue)
+                    router?.backWithResult(barcode.rawValue)
                     screenClosed = true
                 }
             }
@@ -95,12 +98,13 @@ fun ScanQRCodeScreen() {
                     onClick = {
                         scope.launch {
                             with(permissionHelper) {
-                                router.askPermissionsIfNeed(
+                                router?.askPermissionsIfNeed(
                                     perms = permissionHelper.cameraPermissions(),
                                     purpose = TextProvider("qrCode")
                                 )
                             }
-                            permGranded = permissionHelper.checkPermissions(permissionHelper.cameraPermissions())
+                            permGranded =
+                                permissionHelper.checkPermissions(permissionHelper.cameraPermissions())
                         }
                     }
                 ) {
@@ -135,22 +139,27 @@ fun ScanQRCodeScreen() {
 @OptIn(DebugOnly::class)
 @Preview
 @Composable
-fun ScanQRCodeScreenNoPermissionPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
+fun ScanQRCodeScreenNoPermissionPreview() {
     DI.hardResetToPreview()
     DI.initAndroidHelpersModule(object : AndroidHelpersModule {
         override fun permissionsHelper() = PermissionsHelperDummy(false)
     })
-    ScanQRCodeScreen()
+
+    DebugDarkScreenPreview {
+        ScanQRCodeScreen()
+    }
 }
 
 @VisibleForTesting
 @OptIn(DebugOnly::class)
 @Preview
 @Composable
-fun ScanQRCodeScreenPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
+fun ScanQRCodeScreenPreview() {
     DI.hardResetToPreview()
     DI.initAndroidHelpersModule(object : AndroidHelpersModule {
         override fun permissionsHelper() = PermissionsHelperDummy(true)
     })
-    ScanQRCodeScreen()
+    DebugDarkScreenPreview {
+        ScanQRCodeScreen()
+    }
 }

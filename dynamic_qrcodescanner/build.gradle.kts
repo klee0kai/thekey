@@ -18,13 +18,22 @@ android {
     buildTypes {
         val releaseConf: DynamicFeatureBuildType.() -> Unit = {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
         release(releaseConf)
         commercialRelease(releaseConf)
 
         val debugConf: DynamicFeatureBuildType.() -> Unit = {
             isDebuggable = true
+            isMinifyEnabled = false
+            isShrinkResources = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
         debug(debugConf)
         commercialDebug(debugConf)
@@ -56,6 +65,7 @@ dependencies {
     kapt(libs.stone.kapt)
 
     // BarCodeScan
+    implementation(libs.ml.dynamic)
     implementation(libs.ml.barcode)
     implementation(libs.ml.camera)
     implementation(libs.ml.vision)

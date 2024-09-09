@@ -83,12 +83,13 @@ open class StoragesPresenterImpl : StoragesPresenter {
             flow2 = selectedGroupId,
             flow3 = sortedStorages,
             transform = { search, selectedGroup, storages ->
-                val filterExt = selectedGroup == ColorGroup.externalStorages().id
                 val filter = search.searchText
                 var filtList = storages
-                if (filterExt) filtList = filtList.filter { shortPath.isExternal(it.path) }
-                else if (selectedGroup != null) filtList =
-                    filtList.filter { it.colorGroup?.id == selectedGroup }
+                if (selectedGroup == ColorGroup.externalStorages().id) {
+                    filtList = filtList.filter { shortPath.isExternal(it.path) }
+                } else if (selectedGroup != null) {
+                    filtList = filtList.filter { it.colorGroup?.id == selectedGroup }
+                }
                 if (filter.isNotBlank()) filtList = filtList.filter { it.filterBy(filter) }
                 filtList
             }

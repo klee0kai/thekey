@@ -1,7 +1,9 @@
 package com.github.klee0kai.thekey.app.ui.storage.presenter
 
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.ui.navigation.editNoteDest
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteGroupDestination
+import com.github.klee0kai.thekey.app.ui.navigation.model.QRCodeScanDestination
 import com.github.klee0kai.thekey.app.ui.storage.model.SearchState
 import com.github.klee0kai.thekey.app.ui.storage.model.StorageItem
 import com.github.klee0kai.thekey.app.ui.storage.model.group
@@ -9,8 +11,11 @@ import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.domain.model.feature.PaidFeature
 import com.github.klee0kai.thekey.core.domain.model.feature.PaidLimits
+import com.github.klee0kai.thekey.core.domain.model.otpNotes
 import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
+import com.github.klee0kai.thekey.core.ui.navigation.navigate
 import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
@@ -55,8 +60,11 @@ open class StoragePresenterImpl(
             transform = { search, selectedGroup, items ->
                 val filter = search.searchText
                 var filtList = items
-                if (selectedGroup != null) filtList =
-                    filtList.filter { it.group.id == selectedGroup }
+                if (selectedGroup == ColorGroup.otpNotes().id) {
+                    filtList = filtList.filter { it.otp != null }
+                } else if (selectedGroup != null) {
+                    filtList = filtList.filter { it.group.id == selectedGroup }
+                }
                 if (filter.isNotBlank()) filtList = filtList.filter { it.filterBy(filter) }
                 filtList
             }
@@ -109,6 +117,14 @@ open class StoragePresenterImpl(
         } else {
             otpNotesInteractor().setOtpNotesGroup(listOf(otpNotePtr), groupId)
         }
+    }
+
+    override fun scanNewOtpQRCode(
+        router: AppRouter?,
+    ) = scope.launch {
+        val otpUrl = router?.navigate<String>(QRCodeScanDestination)?.firstOrNull() ?: return@launch
+        val otp = otpNotesInteractor().otpNoteFromUrl(otpUrl) ?: return@launch
+        router.navigate(storageIdentifier.editNoteDest(prefilledOtpNote = otp))
     }
 
     override fun deleteGroup(id: Long) = scope.launch {

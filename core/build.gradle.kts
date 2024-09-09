@@ -16,11 +16,14 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            isMinifyEnabled = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
         debug {
-
+            isMinifyEnabled = false
         }
     }
 
@@ -40,6 +43,7 @@ dependencies {
     implementation(libs.bundles.androidx)
     implementation(libs.bundles.stone)
 
+    implementation(libs.ml.common)
     implementation(libs.ml.dynamic)
 
     implementation(libs.jetbrain.immutable)

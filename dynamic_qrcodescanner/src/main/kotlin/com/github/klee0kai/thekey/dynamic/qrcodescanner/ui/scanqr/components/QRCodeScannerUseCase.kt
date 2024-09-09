@@ -8,6 +8,7 @@ import com.github.klee0kai.thekey.app.di.DI
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
+import timber.log.Timber
 
 fun Context.qrCodeUserScanner(
     onFound: (List<Barcode>) -> Unit = {}
@@ -37,4 +38,6 @@ fun Context.qrCodeUserScanner(
         }
 
     qrCodeAnalyser
+}.onFailure {
+    Timber.e(it)
 }.getOrNull()

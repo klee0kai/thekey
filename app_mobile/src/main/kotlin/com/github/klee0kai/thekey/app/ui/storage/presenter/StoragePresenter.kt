@@ -27,6 +27,8 @@ interface StoragePresenter {
 
     fun setOtpColorGroup(otpNotePtr: Long, groupId: Long): Job = emptyJob()
 
+    fun scanNewOtpQRCode(router: AppRouter?): Job = emptyJob()
+
     fun deleteGroup(id: Long): Job = emptyJob()
 
     fun addNewNoteGroup(appRouter: AppRouter?): Job = emptyJob()

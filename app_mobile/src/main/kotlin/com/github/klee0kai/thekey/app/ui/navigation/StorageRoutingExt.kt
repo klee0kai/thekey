@@ -9,6 +9,7 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.EditStorageGroupDestin
 import com.github.klee0kai.thekey.app.ui.navigation.model.HistDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.NoteDialogDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
+import com.github.klee0kai.thekey.app.ui.noteedit.model.EditTabs
 import com.github.klee0kai.thekey.core.di.identifiers.NoteGroupIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.StorageGroupIdentifier
@@ -62,13 +63,16 @@ fun StorageDestination.editOtpNote(
 )
 
 fun StorageIdentifier.editNoteDest(
-    prefilled: DecryptedNote,
+    prefilledNote: DecryptedNote? = null,
+    prefilledOtpNote: DecryptedOtpNote? = null,
     isIgnoreDelete: Boolean = false,
 ) = EditNoteDestination(
     storageVersion = version,
     path = path,
-    note = prefilled,
-    isIgnoreRemove = isIgnoreDelete
+    note = prefilledNote,
+    otpNote = prefilledOtpNote,
+    tab = if (prefilledOtpNote != null) EditTabs.Otp else EditTabs.Account,
+    isIgnoreRemove = isIgnoreDelete,
 )
 
 fun NoteIdentifier.editNoteDest(

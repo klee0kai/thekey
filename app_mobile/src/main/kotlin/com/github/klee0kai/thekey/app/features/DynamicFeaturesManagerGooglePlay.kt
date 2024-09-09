@@ -4,6 +4,7 @@ import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.core.domain.model.feature.DynamicFeaturesManager
 import com.github.klee0kai.thekey.core.domain.model.feature.model.DynamicFeature
 import com.github.klee0kai.thekey.core.utils.common.launchSafe
+import com.google.android.play.core.splitinstall.SplitInstallHelper
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import com.google.android.play.core.splitinstall.SplitInstallRequest
 import com.google.android.play.core.splitinstall.SplitInstallStateUpdatedListener
@@ -53,7 +54,6 @@ class DynamicFeaturesManagerGooglePlay : DynamicFeaturesManager {
 
     override fun install(feature: DynamicFeature) = scope.launchSafe {
         Timber.d("install ${feature.moduleName}")
-
         manager.startInstall(
             SplitInstallRequest
                 .newBuilder()
