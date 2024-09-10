@@ -120,8 +120,9 @@ fun rememberTickerOf(trigger: () -> Boolean): State<Int> {
 
 @Composable
 fun Modifier.skeleton(
-    isSkeleton: Boolean,
-    color: Color = MaterialTheme.colorScheme.inverseSurface,
+    isSkeleton: Boolean = true,
+    shape: RoundedCornerShape = RoundedCornerShape(4.dp),
+    color: Color = MaterialTheme.colorScheme.inverseSurface.copy(alpha = 0.4f),
 ): Modifier {
     val shimmer = rememberShimmer(shimmerBounds = ShimmerBounds.Window)
     if (!isSkeleton) return this
@@ -129,13 +130,14 @@ fun Modifier.skeleton(
     return this then shimmer(shimmer)
         .background(
             color = color,
-            shape = RoundedCornerShape(4.dp)
+            shape = shape,
         )
 }
 
 @Composable
 fun animateSkeletonModifier(
-    color: Color = MaterialTheme.colorScheme.inverseSurface,
+    color: Color = MaterialTheme.colorScheme.inverseSurface.copy(alpha = 0.4f),
+    shape: RoundedCornerShape = RoundedCornerShape(4.dp),
     isSkeleton: () -> Boolean,
 ): State<Modifier> {
     val shimmer = rememberShimmer(shimmerBounds = ShimmerBounds.Window)
@@ -149,7 +151,7 @@ fun animateSkeletonModifier(
                 .shimmer(shimmer)
                 .background(
                     color = color,
-                    shape = RoundedCornerShape(4.dp)
+                    shape = shape,
                 )
         }
     }
@@ -166,6 +168,20 @@ fun Modifier.ifProduction(block: Modifier.() -> Modifier) =
 
 fun Modifier.thenIf(condition: Boolean, block: Modifier.() -> Modifier) =
     if (condition) block() else this
+
+
+@Composable
+fun Modifier.thenIfCrossFade(
+    condition: Boolean,
+    block: @Composable Modifier.() -> Modifier,
+): Modifier {
+    val target by animateTargetCrossFaded(target = condition)
+    return if (target.current) {
+        block().alpha(target.alpha)
+    } else {
+        this.alpha(target.alpha)
+    }
+}
 
 fun Modifier.tappable(onTap: ((Offset) -> Unit)? = null) =
     this.pointerInput(Unit) { detectTapGestures(onTap = onTap) }

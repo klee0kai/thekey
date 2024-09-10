@@ -8,10 +8,12 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.SheetValue
@@ -61,6 +63,8 @@ import com.github.klee0kai.thekey.core.utils.views.isIme
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
+import com.github.klee0kai.thekey.core.utils.views.skeleton
+import com.github.klee0kai.thekey.core.utils.views.thenIfCrossFade
 import com.github.klee0kai.thekey.core.utils.views.visibleOnTargetAlpha
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -172,7 +176,15 @@ fun NoteDialog(
                     onClick = rememberClickDebounced(presenter) { presenter?.copySite(router) },
                     colors = theme.colorScheme.whiteTextButtonColors,
                 ) {
-                    Text(text = note.site)
+                    Text(
+                        modifier = Modifier
+                            .thenIfCrossFade(note.site.isBlank() && !note.isLoaded) {
+                                defaultMinSize(minWidth = 106.dp)
+                                    .skeleton(shape = RoundedCornerShape(16.dp))
+                            }
+                            .padding(vertical = 8.dp),
+                        text = note.site,
+                    )
                 }
 
                 Text(
@@ -210,7 +222,15 @@ fun NoteDialog(
                     onClick = rememberClickDebounced(presenter) { presenter?.copyLogin(router) },
                     colors = theme.colorScheme.whiteTextButtonColors,
                 ) {
-                    Text(text = note.login)
+                    Text(
+                        modifier = Modifier
+                            .thenIfCrossFade(note.login.isBlank() && !note.isLoaded) {
+                                defaultMinSize(minWidth = 106.dp)
+                                    .skeleton(shape = RoundedCornerShape(16.dp))
+                            }
+                            .padding(vertical = 8.dp),
+                        text = note.login,
+                    )
                 }
 
 
@@ -250,7 +270,15 @@ fun NoteDialog(
                     onClick = rememberClickDebounced(presenter) { presenter?.copyPassw(router) },
                     colors = theme.colorScheme.whiteTextButtonColors,
                 ) {
-                    Text(text = note.passw)
+                    Text(
+                        modifier = Modifier
+                            .thenIfCrossFade(note.passw.isBlank() && !note.isLoaded) {
+                                defaultMinSize(minWidth = 106.dp)
+                                    .skeleton(shape = RoundedCornerShape(16.dp))
+                            }
+                            .padding(vertical = 8.dp),
+                        text = note.passw,
+                    )
                 }
 
 
@@ -307,7 +335,15 @@ fun NoteDialog(
                     onClick = rememberClickDebounced(presenter) { presenter?.copyDesc(router) },
                     colors = theme.colorScheme.whiteTextButtonColors,
                 ) {
-                    Text(text = note.desc)
+                    Text(
+                        modifier = Modifier
+                            .thenIfCrossFade(note.desc.isBlank() && !note.isLoaded) {
+                                defaultMinSize(minWidth = 206.dp)
+                                    .skeleton(shape = RoundedCornerShape(16.dp))
+                            }
+                            .padding(vertical = 8.dp),
+                        text = note.desc,
+                    )
                 }
 
 
@@ -359,7 +395,7 @@ fun NoteDialog(
 @OptIn(DebugOnly::class)
 @Composable
 @Preview(device = Devices.PHONE)
-fun NotePreview() {
+fun NoteDialogPreview() {
     DI.hardResetToPreview()
     DI.initPresenterModule(object : PresentersModule {
         override fun notePresenter(noteIdentifier: NoteIdentifier) = object : NotePresenter {
@@ -376,4 +412,26 @@ fun NotePreview() {
         }
     }
 }
+
+@OptIn(DebugOnly::class)
+@Composable
+@Preview(device = Devices.PHONE)
+fun NoteSkeletonPreview() {
+    DI.hardResetToPreview()
+    DI.initPresenterModule(object : PresentersModule {
+        override fun notePresenter(noteIdentifier: NoteIdentifier) = object : NotePresenter {
+            override val note = MutableStateFlow(
+                ColoredNote()
+            )
+        }
+    })
+    DebugDarkScreenPreview {
+        Box(modifier = Modifier.background(Color.Yellow)) {
+            NoteDialog(
+                initialValue = SheetValue.PartiallyExpanded,
+            )
+        }
+    }
+}
+
 

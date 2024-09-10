@@ -69,7 +69,7 @@ fun AppTextField(
                 .shimmer(shimmer)
                 .background(
                     color = color,
-                    shape = RoundedCornerShape(10.dp)
+                    shape = RoundedCornerShape(16.dp)
                 )
         )
     } else {
@@ -92,7 +92,7 @@ fun AppTextField(
             singleLine = singleLine,
             maxLines = maxLines,
             minLines = minLines,
-            shape = RoundedCornerShape(10.dp),
+            shape = RoundedCornerShape(16.dp),
             interactionSource = interactionSource,
             colors = colors,
         )
@@ -137,7 +137,7 @@ fun AppTextField(
                 .shimmer(shimmer)
                 .background(
                     color = color,
-                    shape = RoundedCornerShape(10.dp)
+                    shape = RoundedCornerShape(16.dp)
                 )
         )
     } else {
@@ -161,7 +161,7 @@ fun AppTextField(
             singleLine = singleLine,
             maxLines = maxLines,
             minLines = minLines,
-            shape = RoundedCornerShape(10.dp),
+            shape = RoundedCornerShape(16.dp),
             interactionSource = interactionSource,
             colors = colors,
         )

@@ -77,7 +77,7 @@ fun StoragePopupMenu(
             LazyRow(
                 modifier = Modifier
                     .sizeIn(maxWidth = 300.dp)
-                    .padding(vertical = 8.dp)
+                    .padding(bottom = 4.dp)
                     .background(
                         color = surfaceColor,
                         shape = RoundedCornerShape(
@@ -119,7 +119,7 @@ fun StoragePopupMenu(
 
             Spacer(
                 modifier = Modifier
-                    .padding(vertical = 8.dp)
+                    .padding(vertical = 4.dp)
                     .background(
                         Brush.linearGradient(
                             0f to shadowStartColor,

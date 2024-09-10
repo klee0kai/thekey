@@ -9,12 +9,14 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.SheetValue
@@ -67,6 +69,8 @@ import com.github.klee0kai.thekey.core.utils.views.isIme
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
+import com.github.klee0kai.thekey.core.utils.views.skeleton
+import com.github.klee0kai.thekey.core.utils.views.thenIfCrossFade
 import com.github.klee0kai.thekey.core.utils.views.visibleOnTargetAlpha
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
@@ -182,7 +186,15 @@ fun OtpNoteDialog(
                     onClick = rememberClickDebounced(presenter) { presenter?.copyIssuer(router) },
                     colors = theme.colorScheme.whiteTextButtonColors,
                 ) {
-                    Text(text = otpNote.issuer)
+                    Text(
+                        modifier = Modifier
+                            .thenIfCrossFade(otpNote.issuer.isBlank() && !otpNote.isLoaded) {
+                                defaultMinSize(minWidth = 206.dp)
+                                    .skeleton(shape = RoundedCornerShape(16.dp))
+                            }
+                            .padding(vertical = 8.dp),
+                        text = otpNote.issuer,
+                    )
                 }
 
                 Text(
@@ -222,7 +234,15 @@ fun OtpNoteDialog(
                     onClick = rememberClickDebounced(presenter) { presenter?.copyName(router) },
                     colors = theme.colorScheme.whiteTextButtonColors,
                 ) {
-                    Text(text = otpNote.name)
+                    Text(
+                        modifier = Modifier
+                            .thenIfCrossFade(otpNote.name.isBlank() && !otpNote.isLoaded) {
+                                defaultMinSize(minWidth = 186.dp)
+                                    .skeleton(shape = RoundedCornerShape(16.dp))
+                            }
+                            .padding(vertical = 8.dp),
+                        text = otpNote.name,
+                    )
                 }
 
 
@@ -263,7 +283,15 @@ fun OtpNoteDialog(
                     onClick = rememberClickDebounced(presenter) { presenter?.copyCode(router) },
                     colors = theme.colorScheme.whiteTextButtonColors,
                 ) {
-                    Text(text = otpNote.otpPassw)
+                    Text(
+                        modifier = Modifier
+                            .thenIfCrossFade(otpNote.name.isBlank() && !otpNote.isLoaded) {
+                                defaultMinSize(minWidth = 86.dp)
+                                    .skeleton(shape = RoundedCornerShape(16.dp))
+                            }
+                            .padding(vertical = 8.dp),
+                        text = otpNote.otpPassw,
+                    )
                 }
 
                 Box(
@@ -395,6 +423,27 @@ fun NOTPPreview() {
                         method = OtpMethod.HOTP,
                     )
 
+            )
+        }
+    })
+    DebugDarkScreenPreview {
+        Box(modifier = Modifier.background(Color.Yellow)) {
+            OtpNoteDialog(
+                initialValue = SheetValue.PartiallyExpanded,
+            )
+        }
+    }
+}
+
+@OptIn(DebugOnly::class)
+@Composable
+@Preview(device = Devices.PHONE)
+fun NOTPSkeletonPreview() {
+    DI.hardResetToPreview()
+    DI.initPresenterModule(object : PresentersModule {
+        override fun otpNotePresenter(noteIdentifier: NoteIdentifier) = object : OtpNotePresenter {
+            override val otpNote = MutableStateFlow(
+                ColoredOtpNote()
             )
         }
     })
