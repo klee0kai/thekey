@@ -197,3 +197,17 @@ private fun StoragePopupMenuPreview() = DebugDarkContentPreview {
     }
 }
 
+@OptIn(DebugOnly::class)
+@Preview
+@Composable
+private fun StorageNoGroupsPopupMenuPreview() = DebugDarkContentPreview {
+    Box(modifier = Modifier.background(Color.White)) {
+        StoragePopupMenu(
+            onEdit = {},
+            onBackup = {},
+            onExport = {},
+        )
+    }
+}
+
+
