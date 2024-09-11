@@ -42,12 +42,9 @@ android {
     }
     buildTypes {
         val releaseConf: ApplicationBuildType.() -> Unit = {
-            isMinifyEnabled = true
+            isMinifyEnabled = false
             signingConfig = signingConfigs["release"]
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+            proguardFiles("proguard-rules.pro")
             ndk {
                 abiFilters.addAll(listOf("x86", "x86_64", "armeabi-v7a", "arm64-v8a"))
             }

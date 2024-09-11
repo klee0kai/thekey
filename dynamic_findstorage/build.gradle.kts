@@ -18,8 +18,6 @@ android {
 
     buildTypes {
         val releaseConf: DynamicFeatureBuildType.() -> Unit = {
-            isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
         release(releaseConf)
         commercialRelease(releaseConf)

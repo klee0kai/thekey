@@ -52,7 +52,7 @@ fun FindStorageComponent.hardResetToPreview() {
     CoreDI.initDummyModule()
 }
 
-private fun initFindStorageComponent() = Stone.createComponent(FindStorageComponent::class.java).apply {
+private fun initFindStorageComponent() = FindStorageComponentStoneComponent().apply {
     initCoreDeps(CoreDI)
     initAppDeps(DI)
 }
