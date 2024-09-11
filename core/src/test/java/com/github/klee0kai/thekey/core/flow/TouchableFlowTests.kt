@@ -1,5 +1,6 @@
 package com.github.klee0kai.thekey.core.flow
 
+import com.github.klee0kai.thekey.core.utils.coroutine.touch
 import com.github.klee0kai.thekey.core.utils.coroutine.touchable
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.delay

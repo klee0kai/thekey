@@ -79,7 +79,7 @@ TEST(Storage2ChangePasswStrategy, ChangePasswToNewFile) {
                                                   TK2_GET_NOTE_INFO).front();
     createOtpNote3.colorGroupId = orangeGroup->id;
     createOtpNote3.pin = "1234";
-    storage->setOtpNote(createOtpNote3);
+    storage->setOtpNote(createOtpNote3, TK2_SET_NOTE_INFO);
 
     expectedPassw.push_back(storage->genPassword(findSchemeByFlags(SCHEME_NUMBERS | SCHEME_ENGLISH), 6));
     expectedPassw.push_back(
@@ -429,7 +429,7 @@ TEST(Storage2ChangePasswStrategy, ChangePasswToSameFile) {
                                                   TK2_GET_NOTE_INFO).front();
     createOtpNote3.colorGroupId = orangeGroup->id;
     createOtpNote3.pin = "1234";
-    storage->setOtpNote(createOtpNote3);
+    storage->setOtpNote(createOtpNote3, TK2_SET_NOTE_INFO);
 
     expectedPassw.push_back(storage->genPassword(findSchemeByFlags(SCHEME_NUMBERS | SCHEME_ENGLISH), 6));
     expectedPassw.push_back(

@@ -211,11 +211,14 @@ TEST(Storage2_Issue44, GenOtpGoogleExample) {
     ASSERT_EQ("Example", alise.issuer);
     ASSERT_EQ("alice@google.com", alise.name);
 
-    storage->otpNote(alise.id, TK2_GET_NOTE_FULL | TK2_GET_NOTE_INCREMENT_HOTP);// counter 0
     storage->otpNote(alise.id, TK2_GET_NOTE_FULL | TK2_GET_NOTE_INCREMENT_HOTP);// counter 1
     auto otpFull = storage->otpNote(alise.id, TK2_GET_NOTE_FULL | TK2_GET_NOTE_INCREMENT_HOTP);// counter 2
+    auto otpFull2 = storage->otpNote(alise.id, TK2_GET_NOTE_FULL);// counter 2
+    auto otpFull3 = storage->otpNote(alise.id, TK2_GET_NOTE_FULL);// counter 2
 
     ASSERT_EQ("602287", otpFull->otpPassw);
+    ASSERT_EQ("602287", otpFull2->otpPassw) << "increment not enabled";
+    ASSERT_EQ("602287", otpFull3->otpPassw) << "increment not enabled";
 }
 
 // RUN AFTER Storage2_Issue44::CreateStorage

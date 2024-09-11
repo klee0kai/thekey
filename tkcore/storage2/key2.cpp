@@ -432,7 +432,7 @@ int KeyStorageV2::saveNewPassw(
         destNote.colorGroupId = srcNote.colorGroupId;
         destNote.pin = srcNote.pin;
 
-        destStorage->setOtpNote(destNote);
+        destStorage->setOtpNote(destNote, TK2_SET_NOTE_INFO);
 
         if (progress) progress(MIN(1, progressCount++ / allItemsCount));
     }
@@ -503,7 +503,7 @@ int KeyStorageV2::saveNewPasswStrategy(
             destOtpNote.colorGroupId = srcOtpNote.colorGroupId;
             destOtpNote.pin = srcOtpNote.pin;
 
-            virtDest->setOtpNote(destOtpNote);
+            virtDest->setOtpNote(destOtpNote, TK2_SET_NOTE_INFO);
 
             if (progress) progress(MIN(1, progressCount++ / allItemsCount));
         }
@@ -916,7 +916,7 @@ KeyStorageV2::createOtpNote(const thekey_v2::DecryptedOtpNote &dnote, uint flags
     dNote->id = createdId;
     snapshot(data);
 
-    setOtpNote(*dNote, flags | TK2_SET_NOTE_FORCE | TK2_SET_NOTE_PASSW);
+    setOtpNote(*dNote, flags | TK2_SET_NOTE_FORCE | TK2_SET_NOTE_INFO | TK2_SET_NOTE_PASSW);
     return dNote;
 }
 
