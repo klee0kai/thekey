@@ -90,7 +90,6 @@ fun StorageScreen(
     val router by LocalRouter.currentRef
     val theme = LocalTheme.current
     val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
-    val safeDrawingPaddings = WindowInsets.safeDrawing.asPaddingValues()
     val scope = rememberCoroutineScope()
     val presenter by rememberOnScreenRef { DI.storagePresenter(dest.identifier()) }
 
@@ -169,7 +168,7 @@ fun StorageScreen(
                                 top = safeContentPaddings.calculateTopPadding() + AppBarConst.appBarSize
                                         + SecondaryTabsConst.allHeight // tabs
                                         + 16.dp, // space
-                                bottom = safeDrawingPaddings.calculateBottomPadding() + 16.dp,
+                                bottom = safeContentPaddings.calculateBottomPadding() + 16.dp,
                             ),
                         dest = dest,
                     )

@@ -34,7 +34,7 @@ suspend fun Flow<Unit>.onTicks(block: suspend () -> Unit) {
     }
 }
 
-suspend fun <Arg> Flow<Arg>.onTicks(init: Arg, block: suspend (arg:Arg) -> Unit) {
+suspend fun <Arg> Flow<Arg>.onTicks(init: Arg, block: suspend (arg: Arg) -> Unit) {
     merge(this, flowOf(init)).collect {
         block(it)
     }
@@ -57,20 +57,19 @@ inline fun <reified T> Flow<T>.shareLatest(scope: CoroutineScope): Flow<T> =
 
 inline fun <reified T> Flow<T>.changeFilter(
     crossinline filter: suspend (old: T?, new: T) -> Boolean
-): Flow<T> =
-    runningFold(arrayOf()) { accumulator: Array<T>, value: T ->
-        if (accumulator.isEmpty()) {
-            arrayOf(value)
-        } else {
-            arrayOf(accumulator.last(), value)
-        }
-    }.filter { array ->
-        when (array.size) {
-            0 -> false
-            1 -> filter.invoke(null, array.last())
-            else -> filter.invoke(array.first(), array.last())
-        }
-    }.map { it.last() }
+): Flow<T> = runningFold(arrayOf()) { accumulator: Array<T>, value: T ->
+    if (accumulator.isEmpty()) {
+        arrayOf(value)
+    } else {
+        arrayOf(accumulator.last(), value)
+    }
+}.filter { array ->
+    when (array.size) {
+        0 -> false
+        1 -> filter.invoke(null, array.last())
+        else -> filter.invoke(array.first(), array.last())
+    }
+}.map { it.last() }
 
 
 suspend inline fun <reified T> Flow<T>.await(timeout: Long): T? =

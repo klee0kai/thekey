@@ -52,7 +52,6 @@ fun GroupsSelectContent(
     onGroupEdit: (ColorGroup) -> Unit = {},
 ) {
     val theme = LocalTheme.current
-    val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
     val lazyListState = rememberLazyListState()
     val scrollPosition by rememberDerivedStateOf { lazyListState.scrollPosition() }
 

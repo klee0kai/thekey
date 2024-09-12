@@ -59,6 +59,7 @@ fun ScanQRCodeScreen() {
     val permGrandedAnimated by animateTargetCrossFaded(permGranded)
     var cameraState by remember { mutableStateOf<CameraState>(CameraState.NoState) }
     var screenClosed by remember { mutableStateOf(false) }
+    var isQrCodeError by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -68,7 +69,7 @@ fun ScanQRCodeScreen() {
             CameraPreviewCompose(
                 useCasesLambda = rememberSuspendLambda {
                     buildList {
-                        context.qrCodeUserScanner(
+                        val useCase = context.qrCodeUserScanner(
                             onFound = { barcodes ->
                                 scope.launch {
                                     if (screenClosed) return@launch
@@ -77,7 +78,12 @@ fun ScanQRCodeScreen() {
                                     screenClosed = true
                                 }
                             }
-                        )?.also { add(it) }
+                        )
+                        if (useCase != null) {
+                            add(useCase)
+                        } else {
+                            isQrCodeError = true
+                        }
                     }
                 },
                 onCameraStarted = { cameraState = CameraState.Started },
@@ -113,7 +119,7 @@ fun ScanQRCodeScreen() {
                 }
             }
 
-            cameraState == CameraState.Error -> {
+            isQrCodeError || cameraState == CameraState.Error -> {
                 Text(
                     modifier = Modifier
                         .padding(

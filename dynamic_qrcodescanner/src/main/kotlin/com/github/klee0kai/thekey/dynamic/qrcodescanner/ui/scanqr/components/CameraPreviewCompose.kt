@@ -41,7 +41,7 @@ fun CameraPreviewCompose(
                 this.implementationMode = PreviewView.ImplementationMode.PERFORMANCE
             }
 
-            scope.launch() {
+            scope.launch {
                 try {
                     val cameraProvider = ProcessCameraProvider.getInstance(context).await()
                     val preview = Preview.Builder()

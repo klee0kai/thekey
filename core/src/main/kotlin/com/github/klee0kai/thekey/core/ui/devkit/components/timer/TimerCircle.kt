@@ -68,7 +68,6 @@ fun TimerCircle(
             sweepAngle = 360f * (1f - ratio),
             useCenter = true,
             style = Fill,
-//            style = Stroke((buttonSize / 2.4f).toPx(), cap = StrokeCap.Round)
         )
     }
 

@@ -153,7 +153,7 @@ fun NotesListContent(
                             .ifProduction { animateItemPlacement() }
                             .onGlobalPositionState(position)
                             .combinedClickable(
-                                onLongClick = rememberClickDebounced(note) {
+                                onLongClick = rememberClickDebounced(otp) {
                                     showMenu = true
                                 },
                                 onClick = rememberClickDebounced(otp) {

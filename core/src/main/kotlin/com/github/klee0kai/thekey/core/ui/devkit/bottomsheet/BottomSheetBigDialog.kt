@@ -18,7 +18,6 @@ import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.BottomSheetScaffoldState
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetValue
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -95,6 +94,7 @@ fun BottomSheetBigDialog(
     var showUpElevation by remember { mutableStateOf(0.dp) }
     LaunchedEffect(Unit) {
         if (initValue == SheetValue.Hidden) {
+            // TODO research ModalBottomSheet
             scaffoldState.bottomSheetState.hide()
             showUpAlpha = 1f
             showUpElevation = BottomSheetDefaults.Elevation
@@ -105,7 +105,6 @@ fun BottomSheetBigDialog(
         }
 
         while (scaffoldState.bottomSheetState.currentValue != SheetValue.Hidden) {
-            // TODO research ModalBottomSheet
             delay(100.milliseconds)
         }
         onClosed.invoke()
