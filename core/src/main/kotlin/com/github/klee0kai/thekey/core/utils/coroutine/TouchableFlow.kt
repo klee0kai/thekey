@@ -50,6 +50,7 @@ fun <T, Arg> touchableFlow(
     init: Arg,
     block: suspend FlowCollector<T>.(arg: Arg) -> Unit,
 ): TouchableFlow<T, Arg> {
+    // FixMe argument not reset after use
     val ticker = MutableSharedFlow<Arg>(replay = 1)
     val touchBody = channelFlow {
         val lastJob = AtomicReference<Job?>()

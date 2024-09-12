@@ -10,16 +10,14 @@ import com.github.klee0kai.thekey.core.domain.model.DebugConfigs
 import com.github.klee0kai.thekey.core.domain.model.OtpMethod
 import com.github.klee0kai.thekey.core.domain.model.findNextUpdateTime
 import com.github.klee0kai.thekey.core.utils.common.launch
-import com.github.klee0kai.thekey.core.utils.coroutine.collectTo
+import com.github.klee0kai.thekey.core.utils.coroutine.lazyStateFlow
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import java.util.concurrent.atomic.AtomicBoolean
-import java.util.concurrent.atomic.AtomicInteger
 
 class OtpNotesRepository(
     val identifier: StorageIdentifier,
@@ -27,13 +25,21 @@ class OtpNotesRepository(
 
     private val engine = DI.cryptStorageEngineSafeLazy(identifier)
     private val scope = DI.defaultThreadScope()
-    private val consumers = AtomicInteger(0)
-    private val _otpNotes = MutableStateFlow<List<ColoredOtpNote>>(emptyList())
-    val otpNotes = channelFlow {
-        consumers.incrementAndGet()
-        loadOtpNotes()
-        _otpNotes.collectTo(this)
-        awaitClose { consumers.decrementAndGet() }
+
+    val otpNotes = lazyStateFlow(
+        init = emptyList<ColoredOtpNote>(),
+        defaultArg = false,
+        scope = scope,
+    ) { force ->
+        if (value.isNotEmpty() && !force) return@lazyStateFlow
+
+        if (value.isEmpty()) {
+            value = engine().otpNotes()
+                .map { it.coloredOtpNote(isLoaded = false) }
+        }
+
+        value = engine().otpNotes(info = true)
+            .map { it.coloredOtpNote(isLoaded = true) }
     }
 
     suspend fun otpNote(
@@ -73,7 +79,7 @@ class OtpNotesRepository(
 
     suspend fun setOtpNotesGroup(otpNotePtrs: List<Long>, groupId: Long) {
         if (DebugConfigs.isNotesFastUpdate) {
-            _otpNotes.update { list ->
+            otpNotes.update { list ->
                 list.map { otp ->
                     if (otp.id in otpNotePtrs) {
                         otp.copy(group = ColorGroup(id = groupId))
@@ -84,27 +90,27 @@ class OtpNotesRepository(
             }
         }
         engine().setOtpNotesGroup(otpNotePtrs.toTypedArray(), groupId)
-        loadOtpNotes(force = true)
+        otpNotes.touch(true)
     }
 
     suspend fun saveOtpNote(otpNote: DecryptedOtpNote, setAll: Boolean = false) {
         if (DebugConfigs.isNotesFastUpdate) {
-            _otpNotes.update { list ->
+            otpNotes.update { list ->
                 list.filter { it.id != otpNote.ptnote } +
                         listOf(otpNote.coloredOtpNote(isLoaded = true))
             }
         }
         engine().saveOtpNote(otpNote, setAll = setAll)
-        loadOtpNotes(force = true)
+        otpNotes.touch(true)
     }
 
     suspend fun removeOtpNote(noteptr: Long) {
         if (DebugConfigs.isNotesFastUpdate) {
-            _otpNotes.update { list -> list.filter { it.id != noteptr } }
+            otpNotes.update { list -> list.filter { it.id != noteptr } }
         }
 
         engine().removeOtpNote(noteptr)
-        loadOtpNotes(force = true)
+        otpNotes.touch(true)
     }
 
     suspend fun otpNoteFromUrl(url: String): DecryptedOtpNote? {
@@ -112,24 +118,7 @@ class OtpNotesRepository(
     }
 
     suspend fun clearCache() {
-        _otpNotes.update { emptyList() }
-    }
-
-    private fun loadOtpNotes(force: Boolean = false) = scope.launch {
-        if (_otpNotes.value.isNotEmpty() && !force) return@launch
-        if (consumers.get() <= 0) {
-            // no consumers
-            _otpNotes.value = emptyList()
-            return@launch
-        }
-
-        if (_otpNotes.value.isEmpty()) {
-            _otpNotes.value = engine().otpNotes()
-                .map { it.coloredOtpNote(isLoaded = false) }
-        }
-
-        _otpNotes.value = engine().otpNotes(info = true)
-            .map { it.coloredOtpNote(isLoaded = true) }
+        otpNotes.value = emptyList()
     }
 
 }
