@@ -325,7 +325,8 @@ int JvmStorage2::removeHist(const int64_t &histPt) {
 int JvmStorage2::removeOldHist(const int64_t &oldestTimeSec) {
     auto storage = findStorage(getEngineIdentifier());
     if (!storage)return {};
-    for (const auto &hist: storage->genPasswHistoryList()) {
+    auto history = storage->genPasswHistoryList();
+    for (const auto &hist: history) {
         if (hist.genTime < oldestTimeSec) {
             storage->removePasswHistory(hist.id);
         }

@@ -5,6 +5,7 @@ import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
@@ -35,7 +36,7 @@ suspend fun Flow<Unit>.onTicks(block: suspend () -> Unit) {
 }
 
 suspend fun <Arg> Flow<Arg>.onTicks(init: Arg, block: suspend (arg: Arg) -> Unit) {
-    merge(this, flowOf(init)).collect {
+    merge(flowOf(init), this).collectLatest {
         block(it)
     }
 }

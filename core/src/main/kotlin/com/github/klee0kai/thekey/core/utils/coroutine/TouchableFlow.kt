@@ -46,12 +46,15 @@ fun <T> Flow<T>.touchable(): TouchableFlow<T, Unit> {
     }
 }
 
+/**
+ * restartable flow with arg
+ * be careful. flow restart for each subscriber
+ */
 fun <T, Arg> touchableFlow(
     init: Arg,
     block: suspend FlowCollector<T>.(arg: Arg) -> Unit,
 ): TouchableFlow<T, Arg> {
-    // FixMe argument not reset after use
-    val ticker = MutableSharedFlow<Arg>(replay = 1)
+    val ticker = MutableSharedFlow<Arg>()
     val touchBody = channelFlow {
         val lastJob = AtomicReference<Job?>()
         ticker.onTicks(init) { arg ->
