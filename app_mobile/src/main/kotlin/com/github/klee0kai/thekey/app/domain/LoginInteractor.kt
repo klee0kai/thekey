@@ -63,18 +63,19 @@ class LoginInteractor {
         val otpNotesInteractor = DI.otpNotesInteractorLazy(identifier)
         val groupsInteractor = DI.groupsInteractorLazy(identifier)
         val genPasswInteractor = DI.genPasswInteractorLazy(identifier)
+        val predefinedNoteGroupsRepository = DI.predefinedNoteGroupsRepository(identifier)
 
         notesInteractor().clearCache()
         otpNotesInteractor().clearCache()
         groupsInteractor().clearCache()
         genPasswInteractor().clearCache()
+        predefinedNoteGroupsRepository().clearCache()
 
         val createConfig = settingsRep().encryptionComplexity().createConfig()
 
         File(storageIdentifier.path).parentFile?.mkdirs()
         engine().login(passw, createConfig)
 
-        groupsInteractor().loadGroups()
         if (!ignoreLoginned) rep().auth(identifier)
 
         if (storagesRep().findStorage(identifier.path).await() == null) {
@@ -97,11 +98,13 @@ class LoginInteractor {
         val otpNotesInteractor = DI.otpNotesInteractorLazy(identifier)
         val groupsInteractor = DI.groupsInteractorLazy(identifier)
         val genPasswInteractor = DI.genPasswInteractorLazy(identifier)
+        val predefinedNoteGroupsRepository = DI.predefinedNoteGroupsRepository(identifier)
 
         notesInteractor().clearCache()
         otpNotesInteractor().clearCache()
         groupsInteractor().clearCache()
         genPasswInteractor().clearCache()
+        predefinedNoteGroupsRepository().clearCache()
 
         engine().unlogin()
         rep().logout(identifier)

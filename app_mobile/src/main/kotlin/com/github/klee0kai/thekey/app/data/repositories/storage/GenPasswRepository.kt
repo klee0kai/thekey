@@ -8,6 +8,7 @@ import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.domain.model.DebugConfigs
 import com.github.klee0kai.thekey.core.domain.model.HistPassw
 import com.github.klee0kai.thekey.core.utils.coroutine.collectTo
+import com.github.klee0kai.thekey.core.utils.coroutine.lazyStateFlow
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,13 +25,22 @@ class GenPasswRepository(
     private val engine = DI.cryptStorageEngineSafeLazy(identifier)
     private val scope = DI.defaultThreadScope()
 
-    private val consumers = AtomicInteger(0)
-    private val _allHistPasswList = MutableStateFlow<List<HistPassw>>(emptyList())
-    val allHistPasswList = channelFlow {
-        consumers.incrementAndGet()
-        loadHistory()
-        _allHistPasswList.collectTo(this)
-        awaitClose { consumers.decrementAndGet() }
+    val allHistPasswList = lazyStateFlow(
+        init = emptyList<HistPassw>(),
+        defaultArg = false,
+        scope = scope,
+    ) { force ->
+        if (value.isNotEmpty() && !force) return@lazyStateFlow
+
+        if (value.isEmpty()) {
+            value = engine().genHistory()
+                .reversed()
+                .map { hist: DecryptedPassw -> hist.histPasww() }
+        }
+
+        value = engine().genHistory(info = true)
+            .reversed()
+            .map { hist: DecryptedPassw -> hist.histPasww(isLoaded = true) }
     }
 
     suspend fun lastGeneratedPassw(): String {
@@ -39,48 +49,28 @@ class GenPasswRepository(
 
     suspend fun generateNewPassw(params: GenPasswParams): String {
         val res = engine().generateNewPassw(params)
-        loadHistory(force = true)
+        allHistPasswList.touch(true)
         return res
     }
 
     suspend fun removeHist(histPtr: Long) = coroutineScope {
         if (DebugConfigs.isNotesFastUpdate) {
-            _allHistPasswList.update { list -> list.filter { it.id != histPtr } }
+            allHistPasswList.update { list -> list.filter { it.id != histPtr } }
         }
 
         engine().removeHist(histPtr)
-        loadHistory(force = true)
+        allHistPasswList.touch(true)
     }
 
     suspend fun cleanOld(cleanTime: Long) {
         val cleanTimeSec = TimeUnit.MILLISECONDS.toSeconds(cleanTime)
         engine().removeOldHist(cleanTimeSec)
-        loadHistory(force = true)
+        allHistPasswList.touch(true)
     }
 
     suspend fun clearCache() {
-        _allHistPasswList.update { emptyList() }
+        allHistPasswList.update { emptyList() }
     }
 
-    private fun loadHistory(
-        force: Boolean = false,
-    ) = scope.launch {
-        if (_allHistPasswList.value.isNotEmpty() && !force) return@launch
-        if (consumers.get() <= 0) {
-            // no consumers
-            _allHistPasswList.value = emptyList()
-            return@launch
-        }
-
-        if (_allHistPasswList.value.isEmpty()) {
-            _allHistPasswList.value = engine().genHistory()
-                .reversed()
-                .map { hist: DecryptedPassw -> hist.histPasww() }
-        }
-
-        _allHistPasswList.value = engine().genHistory(info = true)
-            .reversed()
-            .map { hist: DecryptedPassw -> hist.histPasww(isLoaded = true) }
-    }
 
 }

@@ -16,10 +16,6 @@ class GroupsInteractor(
 
     val groups = flow { rep().groups.collect(this) }
 
-    fun loadGroups() = scope.launch {
-        rep().loadGroups()
-    }
-
     fun clearCache() = scope.launch {
         rep().clearCache()
     }

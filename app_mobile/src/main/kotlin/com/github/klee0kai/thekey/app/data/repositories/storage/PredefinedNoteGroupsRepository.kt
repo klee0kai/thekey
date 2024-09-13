@@ -5,6 +5,7 @@ import com.github.klee0kai.thekey.core.data.room.entry.toColorGroup
 import com.github.klee0kai.thekey.core.data.room.entry.toNoteColorGroupEntry
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
+import com.github.klee0kai.thekey.core.utils.coroutine.lazyStateFlow
 import com.github.klee0kai.thekey.core.utils.coroutine.touch
 import com.github.klee0kai.thekey.core.utils.coroutine.touchable
 import kotlinx.coroutines.flow.flow
@@ -17,11 +18,15 @@ class PredefinedNoteGroupsRepository(
     private val noteColorGroupDao = DI.noteColorGroupDaoLazy()
     private val scope = DI.ioThreadScope()
 
-    val allPredefinedGroups = flow<List<ColorGroup>> {
+    val allPredefinedGroups = lazyStateFlow(
+        init = emptyList<ColorGroup>(),
+        defaultArg = Unit,
+        scope = scope,
+    ) {
         noteColorGroupDao().getAll(storageIdentifier.path)
             .map { it.toColorGroup() }
             .also { list -> emit(list) }
-    }.touchable()
+    }
 
     fun setColorGroup(colorGroup: ColorGroup) = scope.launch {
         noteColorGroupDao().update(
@@ -40,6 +45,10 @@ class PredefinedNoteGroupsRepository(
             ).toNoteColorGroupEntry(storageIdentifier.path)
         )
         allPredefinedGroups.touch()
+    }
+
+    fun clearCache() {
+        allPredefinedGroups.value = emptyList()
     }
 
 }
