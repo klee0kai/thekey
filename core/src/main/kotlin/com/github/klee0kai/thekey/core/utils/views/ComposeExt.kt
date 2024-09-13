@@ -163,10 +163,10 @@ fun Modifier.animateContentSizeProduction() = run {
     else animateContentSize()
 }
 
-fun Modifier.ifProduction(block: Modifier.() -> Modifier) =
+inline fun Modifier.ifProduction(block: Modifier.() -> Modifier) =
     if (!CoreDI.config().isViewEditMode) block() else this
 
-fun Modifier.thenIf(condition: Boolean, block: Modifier.() -> Modifier) =
+inline fun Modifier.thenIf(condition: Boolean, block: Modifier.() -> Modifier) =
     if (condition) block() else this
 
 

@@ -70,7 +70,7 @@ import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.core.utils.views.skeleton
-import com.github.klee0kai.thekey.core.utils.views.thenIfCrossFade
+import com.github.klee0kai.thekey.core.utils.views.thenIf
 import com.github.klee0kai.thekey.core.utils.views.visibleOnTargetAlpha
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
@@ -186,14 +186,21 @@ fun OtpNoteDialog(
                     onClick = rememberClickDebounced(presenter) { presenter?.copyIssuer(router) },
                     colors = theme.colorScheme.whiteTextButtonColors,
                 ) {
+                    val isSkeletonAnimated by animateTargetCrossFaded(
+                        target = otpNote.issuer.isBlank() && !otpNote.isLoaded
+                    )
                     Text(
                         modifier = Modifier
-                            .thenIfCrossFade(otpNote.issuer.isBlank() && !otpNote.isLoaded) {
+                            .thenIf(isSkeletonAnimated.current) {
                                 defaultMinSize(minWidth = 206.dp)
-                                    .skeleton(shape = RoundedCornerShape(16.dp))
+                                    .skeleton(
+                                        isSkeleton = true,
+                                        shape = RoundedCornerShape(16.dp),
+                                    )
                             }
+                            .alpha(isSkeletonAnimated.alpha)
                             .padding(vertical = 8.dp),
-                        text = otpNote.issuer,
+                        text = if (isSkeletonAnimated.current) "" else otpNote.issuer,
                     )
                 }
 
@@ -234,14 +241,21 @@ fun OtpNoteDialog(
                     onClick = rememberClickDebounced(presenter) { presenter?.copyName(router) },
                     colors = theme.colorScheme.whiteTextButtonColors,
                 ) {
+                    val isSkeletonAnimated by animateTargetCrossFaded(
+                        target = otpNote.name.isBlank() && !otpNote.isLoaded
+                    )
                     Text(
                         modifier = Modifier
-                            .thenIfCrossFade(otpNote.name.isBlank() && !otpNote.isLoaded) {
-                                defaultMinSize(minWidth = 186.dp)
-                                    .skeleton(shape = RoundedCornerShape(16.dp))
+                            .thenIf(isSkeletonAnimated.current) {
+                                defaultMinSize(minWidth = 106.dp)
+                                    .skeleton(
+                                        isSkeleton = true,
+                                        shape = RoundedCornerShape(16.dp),
+                                    )
                             }
+                            .alpha(isSkeletonAnimated.alpha)
                             .padding(vertical = 8.dp),
-                        text = otpNote.name,
+                        text = if (isSkeletonAnimated.current) "" else otpNote.name,
                     )
                 }
 
@@ -283,14 +297,21 @@ fun OtpNoteDialog(
                     onClick = rememberClickDebounced(presenter) { presenter?.copyCode(router) },
                     colors = theme.colorScheme.whiteTextButtonColors,
                 ) {
+                    val isSkeletonAnimated by animateTargetCrossFaded(
+                        target = otpNote.otpPassw.isBlank() && !otpNote.isLoaded
+                    )
                     Text(
                         modifier = Modifier
-                            .thenIfCrossFade(otpNote.name.isBlank() && !otpNote.isLoaded) {
-                                defaultMinSize(minWidth = 86.dp)
-                                    .skeleton(shape = RoundedCornerShape(16.dp))
+                            .thenIf(isSkeletonAnimated.current) {
+                                defaultMinSize(minWidth = 106.dp)
+                                    .skeleton(
+                                        isSkeleton = true,
+                                        shape = RoundedCornerShape(16.dp),
+                                    )
                             }
+                            .alpha(isSkeletonAnimated.alpha)
                             .padding(vertical = 8.dp),
-                        text = otpNote.otpPassw,
+                        text = if (isSkeletonAnimated.current) "" else otpNote.otpPassw,
                     )
                 }
 
