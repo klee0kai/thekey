@@ -19,12 +19,9 @@ import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -50,15 +47,16 @@ import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
+import com.github.klee0kai.thekey.core.ui.devkit.Screen
 import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DeleteIconButton
-import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DoneIconButton
 import com.github.klee0kai.thekey.core.ui.devkit.components.buttons.GroupCircle
 import com.github.klee0kai.thekey.core.ui.devkit.components.dropdownfields.ColorGroupSelectPopupMenu
 import com.github.klee0kai.thekey.core.ui.devkit.components.dropdownfields.SimpleSelectPopupMenu
 import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextField
+import com.github.klee0kai.thekey.core.ui.devkit.icons.BackMenuIcon
 import com.github.klee0kai.thekey.core.ui.devkit.overlay.PopupMenu
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.common.Dummy
@@ -66,12 +64,12 @@ import com.github.klee0kai.thekey.core.utils.possitions.onGlobalPositionState
 import com.github.klee0kai.thekey.core.utils.possitions.pxToDp
 import com.github.klee0kai.thekey.core.utils.possitions.rememberViewPosition
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
-import com.github.klee0kai.thekey.core.utils.views.animateSkeletonModifier
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.horizontal
 import com.github.klee0kai.thekey.core.utils.views.isIme
+import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.core.utils.views.rememberTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.toTextFieldValue
@@ -90,20 +88,24 @@ import org.jetbrains.annotations.VisibleForTesting
 @Composable
 fun FSEditStorageScreen(
     path: String = "",
-) {
+) = Screen {
     val router by LocalRouter.currentRef
     val view = LocalView.current
     val theme = LocalTheme.current
-    val presenter by rememberOnScreenRef { FSDI.fsEditStoragePresenter(StorageIdentifier(path)).apply { init() } }
+    val presenter by rememberOnScreenRef {
+        FSDI.fsEditStoragePresenter(StorageIdentifier(path)).apply { init() }
+    }
     val pathInputHelper = remember { FSDI.pathInputHelper() }
-    val state by presenter!!.state.collectAsState(key = Unit, initial = FSEditStorageState(isSkeleton = false))
+    val state by presenter!!.state.collectAsState(
+        key = Unit,
+        initial = FSEditStorageState(isSkeleton = false)
+    )
     val scrollState = rememberScrollState()
     val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
 
     val imeIsVisibleAnimated by animateTargetCrossFaded(WindowInsets.isIme)
     val isSaveAvailable by rememberTargetCrossFaded { state.isSaveAvailable }
     val isRemoveAvailable by rememberTargetCrossFaded { state.isRemoveAvailable }
-    val skeletonModifier by animateSkeletonModifier { state.isSkeleton }
     val storagePathPosition = rememberViewPosition()
     val pathInteractionSource = remember { MutableInteractionSource() }
     val groupSelectPosition = rememberViewPosition()
@@ -186,7 +188,9 @@ fun FSEditStorageScreen(
                 variants = state.storagePathVariants,
                 onSelected = { selected, _ ->
                     with(pathInputHelper) {
-                        presenter?.input { copy(path = this.path.text.folderSelected(selected).toTextFieldValue()) }
+                        presenter?.input {
+                            copy(path = this.path.text.folderSelected(selected).toTextFieldValue())
+                        }
                     }
                 }
             )
@@ -194,7 +198,6 @@ fun FSEditStorageScreen(
 
         AppTextField(
             modifier = Modifier
-                .then(skeletonModifier)
                 .constrainAs(nameTextField) {
                     width = Dimension.fillToConstraints
                     linkTo(
@@ -208,6 +211,7 @@ fun FSEditStorageScreen(
                         endMargin = safeContentPaddings.horizontal(minValue = 16.dp),
                     )
                 },
+            isSkeleton = state.isSkeleton,
             value = state.name,
             onValueChange = { presenter?.input { copy(name = it) } },
             label = { Text(stringResource(R.string.storage_name)) }
@@ -216,7 +220,6 @@ fun FSEditStorageScreen(
 
         AppTextField(
             modifier = Modifier
-                .then(skeletonModifier)
                 .constrainAs(descTextField) {
                     width = Dimension.fillToConstraints
                     linkTo(
@@ -228,6 +231,7 @@ fun FSEditStorageScreen(
                         topMargin = 8.dp,
                     )
                 },
+            isSkeleton = state.isSkeleton,
             value = state.desc,
             onValueChange = { presenter?.input { copy(desc = it) } },
             label = { Text(stringResource(R.string.storage_description)) }
@@ -239,16 +243,13 @@ fun FSEditStorageScreen(
                 .windowInsetsPadding(WindowInsets.safeContent)
                 .padding(bottom = 16.dp, start = 16.dp, end = 16.dp),
         ) {
-            if (!imeIsVisibleAnimated.current) {
-                FilledTonalButton(
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .fillMaxWidth()
-                        .alpha(imeIsVisibleAnimated.alpha),
-                    onClick = { presenter?.save(router) }
-                ) {
-                    Text(stringResource(R.string.save))
-                }
+            FilledTonalButton(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth(),
+                onClick = { presenter?.save(router) }
+            ) {
+                Text(stringResource(R.string.save))
             }
         }
 
@@ -256,7 +257,6 @@ fun FSEditStorageScreen(
         AppTextField(
             modifier = Modifier
                 .onGlobalPositionState(groupSelectPosition)
-                .then(skeletonModifier)
                 .fillMaxWidth(0.5f)
                 .constrainAs(colorGroupField) {
                     linkTo(
@@ -269,6 +269,7 @@ fun FSEditStorageScreen(
                         topMargin = 8.dp,
                     )
                 },
+            isSkeleton = state.isSkeleton,
             interactionSource = groupInteractionSource,
             readOnly = true,
             singleLine = true,
@@ -285,7 +286,8 @@ fun FSEditStorageScreen(
                     modifier = Modifier
                         .padding(4.dp),
                     colorScheme = theme.colorScheme.surfaceSchemas.surfaceScheme(
-                        state.colorGroupVariants.getOrNull(state.colorGroupSelectedIndex)?.keyColor ?: KeyColor.NOCOLOR
+                        state.colorGroupVariants.getOrNull(state.colorGroupSelectedIndex)?.keyColor
+                            ?: KeyColor.NOCOLOR
                     ),
                 )
             },
@@ -331,19 +333,20 @@ fun FSEditStorageScreen(
                     .fillMaxWidth()
                     .padding(bottom = 12.dp),
                 colors = LocalColorScheme.current.grayTextButtonColors,
-                onClick = { router?.navigate(ChangeStoragePasswordDestination(path)) }
+                onClick = rememberClickDebounced {
+                    router?.navigate(ChangeStoragePasswordDestination(path))
+                }
             ) {
                 Text(stringResource(R.string.change_password))
             }
         }
 
-        if (!imeIsVisibleAnimated.current && isSaveAvailable.current) {
+        if (isSaveAvailable.current) {
             FilledTonalButton(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .alpha(imeIsVisibleAnimated.alpha)
                     .alpha(isSaveAvailable.alpha),
-                onClick = { presenter?.save(router) }
+                onClick = rememberClickDebounced { presenter?.save(router) }
             ) { Text(stringResource(R.string.save)) }
         }
     }
@@ -351,12 +354,10 @@ fun FSEditStorageScreen(
     AppBarStates(
         isVisible = scrollState.value == 0,
         navigationIcon = {
-            IconButton(onClick = { router?.back() }) {
-                Icon(
-                    Icons.AutoMirrored.Default.ArrowBack,
-                    contentDescription = null,
-                )
-            }
+            IconButton(
+                onClick = rememberClickDebounced { router?.back() },
+                content = { BackMenuIcon() }
+            )
         },
         titleContent = {
             when {
@@ -369,14 +370,7 @@ fun FSEditStorageScreen(
                 DeleteIconButton(
                     modifier = Modifier
                         .alpha(isRemoveAvailable.alpha),
-                    onClick = { presenter?.remove(router) }
-                )
-            }
-
-            if (imeIsVisibleAnimated.current && isSaveAvailable.current) {
-                DoneIconButton(
-                    modifier = Modifier.alpha(imeIsVisibleAnimated.alpha),
-                    onClick = { presenter?.save(router) }
+                    onClick = rememberClickDebounced { presenter?.remove(router) }
                 )
             }
         }
@@ -392,15 +386,16 @@ fun FSEditStorageScreenPreview() = DebugDarkScreenPreview {
     FSDI.hardResetToPreview()
     FSDI.initFSPresentersModule(object : FSPresentersModule {
 
-        override fun fsEditStoragePresenter(storageIdentifier: StorageIdentifier) = object : FSEditStoragePresenter {
-            override val state = MutableStateFlow(
-                FSEditStorageState(
-                    path = TextFieldValue("/appdata/work"),
-                    isSkeleton = false,
-                    isSaveAvailable = true,
+        override fun fsEditStoragePresenter(storageIdentifier: StorageIdentifier) =
+            object : FSEditStoragePresenter {
+                override val state = MutableStateFlow(
+                    FSEditStorageState(
+                        path = TextFieldValue("/appdata/work"),
+                        isSkeleton = false,
+                        isSaveAvailable = true,
+                    )
                 )
-            )
-        }
+            }
     })
     FSEditStorageScreen(
         path = "some/path/to/storage",
@@ -414,22 +409,23 @@ fun FSEditStorageScreenPreview() = DebugDarkScreenPreview {
 fun FSEditStorageScreenSelectPathPreview() = DebugDarkScreenPreview {
     FSDI.hardResetToPreview()
     FSDI.initFSPresentersModule(object : FSPresentersModule {
-        override fun fsEditStoragePresenter(storageIdentifier: StorageIdentifier) = object : FSEditStoragePresenter {
-            override val state = MutableStateFlow(
-                FSEditStorageState(
-                    isSkeleton = false,
-                    isEditMode = true,
-                    isSaveAvailable = true,
-                    storagePathVariants = listOf("/appdata", "/phoneData"),
-                    storagePathFieldExpanded = false,
-                    colorGroupExpanded = true,
-                    colorGroupVariants = listOf(
-                        ColorGroup(Dummy.dummyId, keyColor = KeyColor.ORANGE),
-                        ColorGroup(Dummy.dummyId, keyColor = KeyColor.CORAL),
+        override fun fsEditStoragePresenter(storageIdentifier: StorageIdentifier) =
+            object : FSEditStoragePresenter {
+                override val state = MutableStateFlow(
+                    FSEditStorageState(
+                        isSkeleton = false,
+                        isEditMode = true,
+                        isSaveAvailable = true,
+                        storagePathVariants = listOf("/appdata", "/phoneData"),
+                        storagePathFieldExpanded = false,
+                        colorGroupExpanded = true,
+                        colorGroupVariants = listOf(
+                            ColorGroup(Dummy.dummyId, keyColor = KeyColor.ORANGE),
+                            ColorGroup(Dummy.dummyId, keyColor = KeyColor.CORAL),
+                        )
                     )
                 )
-            )
-        }
+            }
     })
     FSEditStorageScreen(
         path = "some/path/to/storage",

@@ -62,7 +62,7 @@ class K1Storage(
 
     override fun otpNotes(info: Boolean): Array<DecryptedOtpNote> = emptyArray()
 
-    override fun otpNote(notePtr: Long): DecryptedOtpNote = DecryptedOtpNote()
+    override fun otpNote(notePtr: Long, increment: Boolean): DecryptedOtpNote = DecryptedOtpNote()
 
     override fun otpNoteFromUrl(url: String): DecryptedOtpNote? = null
 
@@ -83,6 +83,10 @@ class K1Storage(
 
     @Synchronized
     external override fun getGenPassw(ptNote: Long): DecryptedPassw
+
+    override fun removeHist(histPt: Long): Int = -1
+
+    override fun removeOldHist(oldestTimeSec: Long): Int = -1
 
     override fun findTwins(passw: String): TwinsCollection? = null
 

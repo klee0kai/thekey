@@ -2,9 +2,12 @@ package com.github.klee0kai.thekey.app.engine.model
 
 import android.os.Parcelable
 import com.github.klee0kai.brooklyn.JniPojo
-import com.github.klee0kai.thekey.core.domain.model.ColoredOtpNote
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
+import com.github.klee0kai.thekey.core.domain.model.ColoredOtpNote
+import com.github.klee0kai.thekey.core.domain.model.OtpAlgo
+import com.github.klee0kai.thekey.core.domain.model.OtpMethod
 import kotlinx.parcelize.Parcelize
+import java.util.concurrent.TimeUnit
 
 @JniPojo
 @Parcelize
@@ -15,7 +18,6 @@ data class DecryptedOtpNote(
 
     val url: String = "",
     val secret: String = "",
-    val pin: String = "",
     val otpPassw: String = "",
     val otpMethodRaw: Int = OtpMethod.TOTP.code,
     val otpAlgoRaw: Int = OtpAlgo.SHA1.code,
@@ -35,41 +37,20 @@ data class DecryptedOtpNote(
 
 }
 
-enum class OtpMethod(val code: Int) {
-    OTP(0),
-    HOTP(1),
-    TOTP(2),
-    YAOTP(3);
-
-    companion object {
-        fun from(code: Int): OtpMethod {
-            return entries.firstOrNull { it.code == code } ?: OTP
-        }
-    }
-}
-
-enum class OtpAlgo(val code: Int) {
-    SHA1(0),
-    SHA256(1),
-    SHA512(2);
-
-    companion object {
-        fun from(code: Int): OtpAlgo {
-            return entries.firstOrNull { it.code == code } ?: SHA1
-        }
-    }
-}
-
 fun DecryptedOtpNote.isEmpty(): Boolean =
     issuer.isEmpty() && name.isEmpty() && secret.isEmpty() && url.isEmpty()
 
 
-fun DecryptedOtpNote.coloredNote(
+fun DecryptedOtpNote.coloredOtpNote(
     group: ColorGroup? = null,
     isLoaded: Boolean = false,
 ) = ColoredOtpNote(
-    ptnote = ptnote,
-
+    id = ptnote,
+    issuer = issuer,
+    name = name,
+    method = otpMethod,
+    otpPassw = otpPassw,
+    interval = TimeUnit.SECONDS.toMillis(interval.toLong()),
     group = group ?: ColorGroup(id = colorGroupId),
     isLoaded = isLoaded,
 )

@@ -13,12 +13,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -53,35 +50,40 @@ import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.SimpleBottomSheetScaffold
 import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.topContentAlphaFromDrag
 import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.topContentOffsetFromDrag
+import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DeleteIconButton
-import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DoneIconButton
+import com.github.klee0kai.thekey.core.ui.devkit.icons.BackMenuIcon
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.common.Dummy
-import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.horizontal
-import com.github.klee0kai.thekey.core.utils.views.isIme
+import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
+import com.github.klee0kai.thekey.core.utils.views.rememberClickDebouncedArg
+import com.github.klee0kai.thekey.core.utils.views.rememberClickDebouncedArg2
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.core.utils.views.rememberTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.topDp
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.jetbrains.annotations.VisibleForTesting
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun EditStorageGroupsScreen(
     dest: EditStorageGroupDestination = EditStorageGroupDestination(),
 ) {
-    val presenter by rememberOnScreenRef { DI.editStorageGroupPresenter(dest.identifier()).apply { init() } }
     val router by LocalRouter.currentRef
+
+    val presenter by rememberOnScreenRef {
+        DI.editStorageGroupPresenter(dest.identifier()).apply { init() }
+    }
     val groupNameFieldFocusRequester = remember { FocusRequester() }
     val state by presenter!!.state.collectAsState(key = Unit, initial = EditStorageGroupsState())
 
-    val imeIsVisibleAnimated by animateTargetCrossFaded(WindowInsets.isIme)
     val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
     val isSaveAvailable by rememberTargetCrossFaded { state.isSaveAvailable }
     val isRemoveAvailable by rememberTargetCrossFaded { state.isRemoveAvailable }
@@ -106,16 +108,16 @@ fun EditStorageGroupsScreen(
                 favoriteChecked = state.isFavorite,
                 onChangeGroupName = {
                     if (state.isExternalGroupMode) {
-                        presenter?.input { copy(extStorageName = it.take(3)) }
+                        presenter?.input { copy(extStorageName = it) }
                     } else {
-                        presenter?.input { copy(name = it.take(1)) }
+                        presenter?.input { copy(name = it) }
                     }
                 },
-                onSelect = {
+                onSelect = rememberClickDebouncedArg(debounce = 50.milliseconds) {
                     groupNameFieldFocusRequester.freeFocus()
                     presenter?.input { copy(selectedGroupId = it.id) }
                 },
-                onFavoriteChecked = {
+                onFavoriteChecked = rememberClickDebouncedArg(debounce = 50.milliseconds) {
                     presenter?.input { copy(isFavorite = it) }
                 }
 
@@ -128,7 +130,7 @@ fun EditStorageGroupsScreen(
                     .fillMaxSize(),
                 dest = dest,
                 isSelectAvailable = !state.isExternalGroupMode,
-                onSelect = { storagePath, selected ->
+                onSelect = rememberClickDebouncedArg2(debounce = 50.milliseconds) { storagePath, selected ->
                     presenter?.selectStorage(storagePath, selected)
                 },
                 footer = {
@@ -141,9 +143,10 @@ fun EditStorageGroupsScreen(
     AppBarStates(
         modifier = Modifier,
         navigationIcon = {
-            IconButton(onClick = remember { { router?.back() } }) {
-                Icon(Icons.AutoMirrored.Default.ArrowBack, contentDescription = null)
-            }
+            IconButton(
+                onClick = rememberClickDebounced { router?.back() },
+                content = { BackMenuIcon() },
+            )
         },
         titleContent = { Text(text = stringResource(id = if (state.isEditMode) R.string.edit_storages_group else R.string.create_storages_group)) },
         actions = {
@@ -151,14 +154,7 @@ fun EditStorageGroupsScreen(
                 DeleteIconButton(
                     modifier = Modifier
                         .alpha(isRemoveAvailable.alpha),
-                    onClick = { presenter?.remove() }
-                )
-            }
-
-            if (imeIsVisibleAnimated.current && isSaveAvailable.current) {
-                DoneIconButton(
-                    modifier = Modifier.alpha(imeIsVisibleAnimated.alpha),
-                    onClick = { presenter?.save() }
+                    onClick = rememberClickDebounced { presenter?.remove(router) }
                 )
             }
         }
@@ -170,13 +166,12 @@ fun EditStorageGroupsScreen(
             .padding(bottom = safeContentPaddings.calculateBottomPadding() + 16.dp)
             .padding(horizontal = safeContentPaddings.horizontal(minValue = 16.dp)),
     ) {
-        if (!imeIsVisibleAnimated.current && isSaveAvailable.current) {
+        if (isSaveAvailable.current) {
             FilledTonalButton(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .alpha(isSaveAvailable.alpha)
                     .fillMaxWidth(),
-                onClick = { presenter?.save() }
+                onClick = rememberClickDebounced { presenter?.save(router) }
             ) {
                 Text(stringResource(R.string.save))
             }
@@ -193,15 +188,17 @@ fun EditStorageGroupPreview() = EdgeToEdgeTemplate {
     AppTheme(theme = DefaultThemes.darkTheme) {
         DI.hardResetToPreview()
         DI.initPresenterModule(object : PresentersModule {
-            override fun editStorageGroupPresenter(storageIdentifier: StorageGroupIdentifier) = object : EditStoragesGroupPresenterDummy() {
-                override val state = MutableStateFlow(
-                    EditStorageGroupsState(
-                        isSkeleton = false,
-                        isRemoveAvailable = false,
-                        isSaveAvailable = true,
+            override fun editStorageGroupPresenter(storageIdentifier: StorageGroupIdentifier) =
+                object : EditStoragesGroupPresenterDummy() {
+                    override val state = MutableStateFlow(
+                        EditStorageGroupsState(
+                            isSkeleton = false,
+                            isRemoveAvailable = false,
+                            isSaveAvailable = true,
+                            colorGroupVariants = KeyColor.selectableColorGroups,
+                        )
                     )
-                )
-            }
+                }
         })
         EditStorageGroupsScreen(dest = EditStorageGroupDestination(groupId = Dummy.dummyId))
     }
@@ -216,15 +213,17 @@ fun EditStorageGroupBigListPreview() = EdgeToEdgeTemplate {
     AppTheme(theme = DefaultThemes.darkTheme) {
         DI.hardResetToPreview()
         DI.initPresenterModule(object : PresentersModule {
-            override fun editStorageGroupPresenter(storageIdentifier: StorageGroupIdentifier) = object : EditStoragesGroupPresenterDummy(storagesCount = 24) {
-                override val state = MutableStateFlow(
-                    EditStorageGroupsState(
-                        isSkeleton = false,
-                        isRemoveAvailable = false,
-                        isSaveAvailable = true,
+            override fun editStorageGroupPresenter(storageIdentifier: StorageGroupIdentifier) =
+                object : EditStoragesGroupPresenterDummy(storagesCount = 24) {
+                    override val state = MutableStateFlow(
+                        EditStorageGroupsState(
+                            isSkeleton = false,
+                            isRemoveAvailable = false,
+                            isSaveAvailable = true,
+                            colorGroupVariants = KeyColor.selectableColorGroups,
+                        )
                     )
-                )
-            }
+                }
         })
         EditStorageGroupsScreen(dest = EditStorageGroupDestination(groupId = Dummy.dummyId))
     }

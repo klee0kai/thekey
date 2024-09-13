@@ -27,14 +27,16 @@ import androidx.wear.compose.material.Icon
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.domain.model.ColoredNote
-import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
+import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
-import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
+import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
+import com.github.klee0kai.thekey.core.utils.views.DebugDarkContentPreview
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.horizontal
 import com.github.klee0kai.thekey.core.utils.views.skeleton
 import com.github.klee0kai.thekey.core.utils.views.visibleOnTargetAlpha
+import com.thedeanda.lorem.LoremIpsum
 import org.jetbrains.annotations.VisibleForTesting
 
 
@@ -43,8 +45,8 @@ fun ColoredNoteItem(
     modifier: Modifier = Modifier,
     note: ColoredNote = ColoredNote(),
     icon: (@Composable () -> Unit)? = null,
-    overlayContent: @Composable () -> Unit = {},
 ) {
+    val theme = LocalTheme.current
     val colorScheme = LocalColorScheme.current
     val animatedNote by animateTargetCrossFaded(note)
     val skeleton by animateTargetCrossFaded(!note.isLoaded)
@@ -52,7 +54,7 @@ fun ColoredNoteItem(
 
     ConstraintLayout(
         modifier = modifier
-            .defaultMinSize(minHeight = 46.dp)
+            .defaultMinSize(minHeight = 56.dp)
             .fillMaxWidth()
     ) {
         val (
@@ -107,7 +109,7 @@ fun ColoredNoteItem(
         Text(
             text = animatedNote.current.site.takeIf { it.isNotBlank() }
                 ?: stringResource(id = R.string.no_site),
-            style = MaterialTheme.typography.bodyMedium,
+            style = theme.typeScheme.typography.bodyMedium,
             fontWeight = FontWeight.Medium,
             modifier = Modifier
                 .alpha(skeleton.visibleOnTargetAlpha(false))
@@ -130,8 +132,8 @@ fun ColoredNoteItem(
 
         Text(
             text = animatedNote.current.login,
-            style = MaterialTheme.typography.bodyMedium
-                .copy(color = LocalColorScheme.current.androidColorScheme.primary),
+            style = theme.typeScheme.typography.bodyMedium
+                .copy(color = theme.colorScheme.androidColorScheme.primary),
             fontWeight = FontWeight.Medium,
             modifier = Modifier
                 .alpha(skeleton.visibleOnTargetAlpha(false))
@@ -154,8 +156,8 @@ fun ColoredNoteItem(
 
         Text(
             text = animatedNote.current.desc,
-            color = MaterialTheme.colorScheme.onSurface,
-            style = MaterialTheme.typography.labelSmall,
+            color = theme.colorScheme.androidColorScheme.onSurface,
+            style = theme.typeScheme.typography.labelSmall,
             fontWeight = FontWeight.Normal,
             modifier = Modifier
                 .alpha(skeleton.visibleOnTargetAlpha(false))
@@ -194,26 +196,27 @@ fun ColoredNoteItem(
             }
         }
 
-        overlayContent()
     }
 }
 
+@OptIn(DebugOnly::class)
 @VisibleForTesting
 @Composable
 @Preview
-fun ColoredNoteSkeleton() = AppTheme(theme = DefaultThemes.darkTheme) {
+fun ColoredNoteSkeleton() = DebugDarkContentPreview {
     ColoredNoteItem(note = ColoredNote(isLoaded = false))
 }
 
+@OptIn(DebugOnly::class)
 @VisibleForTesting
 @Composable
 @Preview
-fun ColoredNoteDummy() = AppTheme(theme = DefaultThemes.darkTheme) {
+fun ColoredNoteDummy() = DebugDarkContentPreview {
     ColoredNoteItem(
         note = ColoredNote(
-            site = "some.super.site.com",
-            login = "potato",
-            desc = "my work note",
+            site = LoremIpsum.getInstance().url,
+            login = LoremIpsum.getInstance().getWords(1),
+            desc = LoremIpsum.getInstance().getWords(6),
             group = ColorGroup(
                 name = "CO",
                 keyColor = KeyColor.CORAL,
@@ -223,10 +226,11 @@ fun ColoredNoteDummy() = AppTheme(theme = DefaultThemes.darkTheme) {
     )
 }
 
+@OptIn(DebugOnly::class)
 @VisibleForTesting
 @Composable
 @Preview
-fun ColoredNoteDummyNoGroup() = AppTheme(theme = DefaultThemes.darkTheme) {
+fun ColoredNoteDummyNoGroup() = DebugDarkContentPreview {
     ColoredNoteItem(
         note = ColoredNote(
             site = "some.super.site.com",
@@ -238,10 +242,11 @@ fun ColoredNoteDummyNoGroup() = AppTheme(theme = DefaultThemes.darkTheme) {
     )
 }
 
+@OptIn(DebugOnly::class)
 @VisibleForTesting
 @Composable
 @Preview
-fun ColoredNoteIcon() = AppTheme(theme = DefaultThemes.darkTheme) {
+fun ColoredNoteIcon() = DebugDarkContentPreview {
     ColoredNoteItem(
         note = ColoredNote(
             site = "some.super.site.com",

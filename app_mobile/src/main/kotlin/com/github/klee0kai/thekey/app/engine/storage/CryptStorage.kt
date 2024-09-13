@@ -40,7 +40,7 @@ interface CryptStorage {
 
     fun otpNotes(info: Boolean = false): Array<DecryptedOtpNote>
 
-    fun otpNote(notePtr: Long): DecryptedOtpNote
+    fun otpNote(notePtr: Long, increment: Boolean = false): DecryptedOtpNote
 
     fun otpNoteFromUrl(url: String): DecryptedOtpNote?
 
@@ -53,6 +53,10 @@ interface CryptStorage {
     fun generateNewPassw(params: GenPasswParams): String
 
     fun genHistory(info: Boolean): Array<DecryptedPassw>
+
+    fun removeHist(histPt: Long): Int
+
+    fun removeOldHist(oldestTimeSec: Long): Int
 
     fun lastGeneratedPassw(): String
 

@@ -4,17 +4,14 @@ package com.github.klee0kai.thekey.app.ui.storage.genpassw
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -24,6 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -35,21 +34,30 @@ import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.ui.navigation.genHist
 import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
+import com.github.klee0kai.thekey.app.ui.storage.StorageScreen
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.model.GenPasswState
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.presenter.GenPasswPresenter
+import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenterDummy
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
-import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
+import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
+import com.github.klee0kai.thekey.core.ui.devkit.components.settings.SwitchPreference
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.common.Dummy
+import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
+import com.github.klee0kai.thekey.core.utils.views.currentRef
+import com.github.klee0kai.thekey.core.utils.views.rememberClickArg
+import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
+import com.github.klee0kai.thekey.core.utils.views.rememberClickableDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.core.utils.views.rememberTargetCrossFaded
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.jetbrains.annotations.VisibleForTesting
+import kotlin.time.Duration.Companion.milliseconds
 
 
 @Composable
@@ -57,12 +65,13 @@ fun GenPasswordContent(
     modifier: Modifier = Modifier,
     dest: StorageDestination = StorageDestination(),
 ) {
+    val router by LocalRouter.currentRef
+    val theme = LocalTheme.current
     val scope = rememberCoroutineScope()
     val presenter by rememberOnScreenRef {
         DI.genPasswPresenter(dest.identifier())
             .also { it.init() }
     }
-    val router = LocalRouter.current
     val sliderValues = presenter!!.passwLenRange
     val state by presenter!!.state.collectAsState(key = Unit, initial = GenPasswState())
     val passw by rememberTargetCrossFaded { state.passw }
@@ -70,7 +79,7 @@ fun GenPasswordContent(
     ConstraintLayout(
         modifier = modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(theme.colorScheme.androidColorScheme.background)
     ) {
         val (generateParams, passwText,
             histButton, generateButton, saveButton
@@ -79,10 +88,10 @@ fun GenPasswordContent(
         ConstraintLayout(
             modifier = Modifier
                 .background(
-                    color = MaterialTheme.colorScheme.surface,
+                    color = theme.colorScheme.androidColorScheme.surface,
                     shape = RoundedCornerShape(12.dp)
                 )
-                .padding(top = 22.dp, bottom = 22.dp, start = 16.dp, end = 16.dp)
+                .padding(vertical = 8.dp)
                 .constrainAs(generateParams) {
                     width = Dimension.fillToConstraints
                     height = Dimension.wrapContent
@@ -96,105 +105,84 @@ fun GenPasswordContent(
                 }
         ) {
 
-            val (lenText, lenSlider,
-                symbolsText, symbolsSwitch,
-                specSymbolsText, specSymbolsSwitch
+            val (
+                passwLenField,
+                lenSliderField,
+                simblsSwitchField,
+                specSymbolsText,
             ) = createRefs()
 
 
             Text(
                 text = stringResource(id = R.string.passw_len_is, state.passwLen),
-                style = MaterialTheme.typography.bodySmall,
+                style = theme.typeScheme.typography.bodyLarge,
                 fontWeight = FontWeight.Medium,
-                modifier = Modifier.constrainAs(lenText) {
+                modifier = Modifier.constrainAs(passwLenField) {
                     width = Dimension.fillToConstraints
                     height = Dimension.wrapContent
                     top.linkTo(parent.top, margin = 16.dp)
                     linkTo(
                         start = parent.start,
                         end = parent.end,
+                        startMargin = 16.dp,
+                        endMargin = 16.dp,
                     )
                 }
             )
 
             Slider(
                 value = state.passwLen.toFloat(),
-                onValueChange = { presenter?.input { copy(passwLen = it.toInt()) } },
+                onValueChange = rememberClickArg { presenter?.input { copy(passwLen = it.toInt()) } },
                 colors = SliderDefaults.colors(
-                    thumbColor = MaterialTheme.colorScheme.primary,
-                    activeTrackColor = MaterialTheme.colorScheme.primary,
-                    inactiveTrackColor = MaterialTheme.colorScheme.inverseSurface.copy(alpha = 0.4f),
+                    thumbColor = theme.colorScheme.androidColorScheme.primary,
+                    activeTrackColor = theme.colorScheme.androidColorScheme.primary,
+                    inactiveTrackColor = theme.colorScheme.androidColorScheme.inverseSurface
+                        .copy(alpha = 0.4f),
                 ),
                 steps = sliderValues.last - sliderValues.first - 1,
                 valueRange = (sliderValues.first.toFloat()..sliderValues.last.toFloat()),
                 modifier = Modifier
-                    .constrainAs(lenSlider) {
+                    .constrainAs(lenSliderField) {
                         width = Dimension.fillToConstraints
                         height = Dimension.wrapContent
-                        top.linkTo(lenText.bottom, margin = 4.dp)
+                        top.linkTo(passwLenField.bottom)
                         linkTo(
                             start = parent.start,
                             end = parent.end,
+                            startMargin = 16.dp,
+                            endMargin = 16.dp,
                         )
                     }
             )
 
-            Text(
-                modifier = Modifier.constrainAs(symbolsText) {
-                    top.linkTo(lenSlider.bottom, margin = 16.dp)
-                    linkTo(
-                        start = parent.start,
-                        end = parent.end,
-                        bias = 0f,
-                    )
-                },
-                style = MaterialTheme.typography.bodySmall,
-                fontWeight = FontWeight.Medium,
-                text = stringResource(id = R.string.symbols_in_passw),
-            )
-
-            Switch(checked = state.symInPassw,
-                onCheckedChange = { presenter?.input { copy(symInPassw = it) } },
-                modifier = Modifier.constrainAs(symbolsSwitch) {
-                    linkTo(
-                        start = symbolsText.end,
-                        end = parent.end,
-                        top = symbolsText.top,
-                        bottom = symbolsText.bottom,
-                        horizontalBias = 1f,
-                    )
-                }
-            )
-
-
-            Text(
-                modifier = Modifier.constrainAs(specSymbolsText) {
-                    top.linkTo(symbolsText.bottom, margin = 22.dp)
-                    linkTo(
-                        start = parent.start,
-                        end = parent.end,
-                        bias = 0f,
-                    )
-                },
-                style = MaterialTheme.typography.bodySmall,
-                fontWeight = FontWeight.Medium,
-                text = stringResource(id = R.string.spec_in_passw),
-            )
-
-
-            Switch(
+            SwitchPreference(
                 modifier = Modifier
-                    .constrainAs(specSymbolsSwitch) {
-                        linkTo(
-                            start = specSymbolsText.end,
-                            end = parent.end,
-                            top = specSymbolsText.top,
-                            bottom = specSymbolsText.bottom,
-                            horizontalBias = 1f,
-                        )
-                    },
+                    .constrainAs(simblsSwitchField) {
+                        width = Dimension.fillToConstraints
+                        top.linkTo(lenSliderField.bottom, margin = 4.dp)
+                        linkTo(start = parent.start, end = parent.end)
+                    }
+                    .rememberClickableDebounced(debounce = 50.milliseconds) {
+                        presenter?.input { copy(symInPassw = !state.symInPassw) }
+                    }
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                text = stringResource(id = R.string.symbols_in_passw),
+                checked = state.symInPassw,
+            )
+
+            SwitchPreference(
+                modifier = Modifier
+                    .constrainAs(specSymbolsText) {
+                        width = Dimension.fillToConstraints
+                        top.linkTo(simblsSwitchField.bottom, margin = 4.dp)
+                        linkTo(start = parent.start, end = parent.end)
+                    }
+                    .rememberClickableDebounced(debounce = 50.milliseconds) {
+                        presenter?.input { copy(specSymbolsInPassw = !state.specSymbolsInPassw) }
+                    }
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                text = stringResource(id = R.string.spec_in_passw),
                 checked = state.specSymbolsInPassw,
-                onCheckedChange = { presenter?.input { copy(specSymbolsInPassw = it) } },
             )
         }
 
@@ -207,7 +195,7 @@ fun GenPasswordContent(
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 },
-            onClick = { presenter?.saveAsNewNote() }
+            onClick = rememberClickDebounced { presenter?.saveAsNewNote() }
         ) {
             Text(stringResource(R.string.save))
         }
@@ -221,10 +209,8 @@ fun GenPasswordContent(
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 },
-            colors = LocalColorScheme.current.grayTextButtonColors,
-            onClick = {
-                presenter?.generatePassw()
-            },
+            colors = theme.colorScheme.grayTextButtonColors,
+            onClick = rememberClickDebounced { presenter?.generatePassw() },
         ) {
             Text(stringResource(R.string.passw_generate))
         }
@@ -237,17 +223,13 @@ fun GenPasswordContent(
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 },
-            colors = LocalColorScheme.current.grayTextButtonColors,
-            onClick = { router.navigate(dest.genHist()) }
+            colors = theme.colorScheme.grayTextButtonColors,
+            onClick = rememberClickDebounced { router?.navigate(dest.genHist()) }
         ) { Text(stringResource(R.string.hist)) }
 
-        Text(
-            text = passw.current,
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
+        TextButton(
             modifier = Modifier
                 .alpha(passw.alpha)
-                .clickable { presenter?.copyToClipboard() }
                 .constrainAs(passwText) {
                     linkTo(
                         top = generateParams.bottom,
@@ -255,8 +237,18 @@ fun GenPasswordContent(
                         start = parent.start,
                         end = parent.end
                     )
-                }
-        )
+                },
+            colors = theme.colorScheme.whiteTextButtonColors,
+            onClick = rememberClickDebounced { presenter?.copyToClipboard() }
+        ) {
+            Text(
+                modifier = Modifier.padding(16.dp),
+                text = passw.current,
+                style = theme.typeScheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+            )
+        }
     }
 
 }
@@ -269,17 +261,45 @@ fun GenPasswordContent(
 fun GenPasswordContentPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     DI.hardResetToPreview()
     DI.initPresenterModule(object : PresentersModule {
-        override fun genPasswPresente(storageIdentifier: StorageIdentifier) = object : GenPasswPresenter {
-            override val state = MutableStateFlow(
-                GenPasswState(
-                    passwLen = 8,
-                    symInPassw = true,
-                    passw = "GE@#!1"
+        override fun genPasswPresenter(storageIdentifier: StorageIdentifier) =
+            object : GenPasswPresenter {
+                override val state = MutableStateFlow(
+                    GenPasswState(
+                        passwLen = 8,
+                        symInPassw = true,
+                        passw = "GE@#!1"
+                    )
                 )
-            )
-        }
+            }
     })
     GenPasswordContent(
-        dest = StorageDestination(path = Dummy.unicString, version = 2, selectedPage = 1)
+        dest = StorageDestination(
+            path = Dummy.unicString,
+            version = 2,
+            selectedPage = 1,
+        )
     )
+}
+
+
+@OptIn(DebugOnly::class)
+@VisibleForTesting
+@Preview(device = Devices.PHONE)
+@Composable
+fun GenPasswordContentPreviewScreenPreview() {
+    DI.hardResetToPreview()
+    DI.initPresenterModule(object : PresentersModule {
+        override fun storagePresenter(storageIdentifier: StorageIdentifier) =
+            StoragePresenterDummy()
+    })
+
+    DebugDarkScreenPreview {
+        StorageScreen(
+            dest = StorageDestination(
+                path = Dummy.unicString,
+                version = 2,
+                selectedPage = 1,
+            )
+        )
+    }
 }

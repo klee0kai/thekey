@@ -7,6 +7,7 @@ import com.github.klee0kai.thekey.core.data.room.entry.toColorGroup
 import com.github.klee0kai.thekey.core.data.room.entry.toColorGroupEntry
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
+import com.github.klee0kai.thekey.core.utils.coroutine.lazyStateFlow
 import com.github.klee0kai.thekey.core.utils.coroutine.onTicks
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
@@ -22,42 +23,45 @@ class StoragesRepositoryImpl : StoragesRepository {
     private val colorGroupsDao = DI.colorGroupDaoLazy()
     private val scope = DI.ioThreadScope()
 
-    private val updateTicker = MutableSharedFlow<Unit>()
+    override val allColorGroups = lazyStateFlow(
+        init = emptyList<ColorGroup>(),
+        defaultArg = false,
+        scope = scope,
+    ) {
+        value = colorGroupsDao()
+            .getAll()
+            .map { it.toColorGroup() }
+    }
 
-    override val allColorGroups = flow {
-        updateTicker.onTicks {
-            colorGroupsDao()
-                .getAll()
-                .map { it.toColorGroup() }
-                .also { emit(it) }
-        }
-    }.flowOn(DI.ioDispatcher())
+    override val allStorages = lazyStateFlow(
+        init = emptyList<ColoredStorage>(),
+        defaultArg = false,
+        scope = scope,
+    ) {
+        val allColorGroups = colorGroupsDao()
+            .getAll()
+            .map { it.toColorGroup() }
 
-    override val allStorages = flow {
-        updateTicker.onTicks {
-            val allColorGroups = colorGroupsDao()
-                .getAll()
-                .map { it.toColorGroup() }
-
-            storagesDao()
-                .getAll()
-                .map { entry ->
-                    entry.toColoredStorage()
-                        .copy(colorGroup = allColorGroups.firstOrNull { group -> entry.coloredGroupId == group.id })
-                }
-                .also { emit(it) }
-        }
-    }.flowOn(DI.ioDispatcher())
+        value = storagesDao()
+            .getAll()
+            .map { entry ->
+                entry.toColoredStorage()
+                    .copy(
+                        colorGroup = allColorGroups
+                            .firstOrNull { group -> entry.coloredGroupId == group.id }
+                    )
+            }
+    }
 
     override fun setColorGroup(colorGroup: ColorGroup) = scope.async {
         val id = colorGroupsDao().update(colorGroup.toColorGroupEntry())
-        updateTicker.emit(Unit)
+        allColorGroups.touch(true)
         colorGroupsDao()[id]?.toColorGroup() ?: ColorGroup()
     }
 
     override fun deleteColorGroup(id: Long): Job = scope.launch {
         colorGroupsDao().delete(id)
-        updateTicker.emit(Unit)
+        allColorGroups.touch(true)
     }
 
     override fun findStorage(path: String) = scope.async {
@@ -71,7 +75,7 @@ class StoragesRepositoryImpl : StoragesRepository {
 
         val cachedStorage = storagesDao().get(storage.path)
         storagesDao().update(storage.toStorageEntry(id = cachedStorage?.id))
-        updateTicker.emit(Unit)
+        allStorages.touch(true)
     }
 
     override fun setStoragesGroup(storagePaths: List<String>, groupId: Long) = scope.launch {
@@ -79,12 +83,12 @@ class StoragesRepositoryImpl : StoragesRepository {
             val cachedStorage = storagesDao().get(path) ?: return@forEach
             storagesDao().update(cachedStorage.copy(coloredGroupId = groupId))
         }
-        updateTicker.emit(Unit)
+        allStorages.touch(true)
     }
 
     override fun deleteStorage(path: String): Job = scope.launch {
         storagesDao().delete(path)
-        updateTicker.emit(Unit)
+        allStorages.touch(true)
     }
 
 }

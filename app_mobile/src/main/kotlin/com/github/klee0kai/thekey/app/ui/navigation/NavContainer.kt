@@ -12,11 +12,11 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Snackbar
@@ -41,6 +41,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.EmptyScreen
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.navigation.model.Destination
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
+import com.github.klee0kai.thekey.core.utils.views.horizontal
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.core.utils.views.rememberTickerOf
 import com.github.klee0kai.thekey.core.utils.views.thenIf
@@ -99,6 +100,7 @@ fun MainNavContainer() {
 fun SnackContainer() {
     val snackbarHostState = LocalRouter.current.snackbarHostState
     val density = LocalDensity.current
+    val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
     val positionalThreshold = SwipeToDismissBoxDefaults.positionalThreshold
     val newSnackTicker by rememberTickerOf { snackbarHostState.currentSnackbarData != null }
 
@@ -125,7 +127,9 @@ fun SnackContainer() {
         SnackbarHost(
             hostState = snackbarHostState,
             modifier = Modifier
-                .align(Alignment.BottomCenter),
+                .align(Alignment.BottomCenter)
+                .padding(bottom = safeContentPaddings.calculateBottomPadding())
+                .padding(bottom = 92.dp),
         ) { data ->
             SwipeToDismissBox(
                 state = dismissSnackbarState,
@@ -137,8 +141,7 @@ fun SnackContainer() {
                 content = {
                     Snackbar(
                         modifier = Modifier
-                            .windowInsetsPadding(WindowInsets.safeContent)
-                            .padding(bottom = 92.dp)
+                            .padding(horizontal = safeContentPaddings.horizontal(minValue = 16.dp))
                             .alpha(swipeAlpha),
                         snackbarData = data,
                     )

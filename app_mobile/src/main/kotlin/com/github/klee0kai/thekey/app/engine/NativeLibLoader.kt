@@ -1,15 +1,22 @@
+@file:OptIn(InternalCoroutinesApi::class)
+
 package com.github.klee0kai.thekey.app.engine
 
 import com.github.klee0kai.brooklyn.Brooklyn
-import java.util.concurrent.atomic.AtomicBoolean
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.internal.synchronized
 
 object NativeLibLoader {
 
-    private var loaded = AtomicBoolean(false)
+    var loaded = false
+        private set
 
     fun loadIfNeed() {
-        if (!loaded.getAndSet(true)) {
-            Brooklyn.loadLibrary("crypt-storage-lib")
+        synchronized(this) {
+            if (!loaded) {
+                Brooklyn.loadLibrary("crypt-storage-lib")
+                loaded = true
+            }
         }
     }
 

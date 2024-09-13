@@ -6,7 +6,7 @@ import com.github.klee0kai.thekey.app.features.autofill
 import com.github.klee0kai.thekey.app.features.gdrive
 import com.github.klee0kai.thekey.app.features.qrcodeScanner
 import com.github.klee0kai.thekey.app.features.smpassw
-import com.github.klee0kai.thekey.app.ui.note.model.EditTabs
+import com.github.klee0kai.thekey.app.ui.noteedit.model.EditTabs
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.domain.model.feature.model.DynamicFeature
 import com.github.klee0kai.thekey.core.ui.navigation.model.Destination
@@ -81,6 +81,28 @@ data class StorageDestination(
 ) : Destination
 
 @Parcelize
+data class NoteDialogDestination(
+    /**
+     * storage path
+     */
+    val path: String = "",
+    /**
+     * Storage version
+     */
+    val storageVersion: Int = 0,
+
+    /**
+     * note id
+     */
+    val notePtr: Long? = null,
+
+    /**
+     * otp note id
+     */
+    val otpNotePtr: Long? = null,
+) : DialogDestination
+
+@Parcelize
 data class EditNoteDestination(
     /**
      * storage path
@@ -114,7 +136,7 @@ data class EditNoteDestination(
 
 
 @Parcelize
-data class GenHistDestination(
+data class HistDestination(
     /**
      * storage path
      */
@@ -123,6 +145,10 @@ data class GenHistDestination(
      * Storage version
      */
     val storageVersion: Int = 0,
+    /**
+     * note ptr for note's history
+     */
+    val notePtr: Long? = null,
 ) : Destination
 
 
@@ -175,3 +201,6 @@ data class PasswordTwinsDestination(
     val storageIdentifier: StorageIdentifier = StorageIdentifier(),
 ) : DynamicDestination(DynamicFeature.smpassw())
 
+
+@Parcelize
+data object DebugFlagsDialogDestination : DialogDestination

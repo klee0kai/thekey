@@ -8,8 +8,17 @@ import kotlinx.parcelize.Parcelize
 data class EditNoteGroupsState(
     val isEditMode: Boolean = false,
     val isSkeleton: Boolean = false,
+    val isSaveAvailable: Boolean = false,
+    val isRemoveAvailable: Boolean = false,
+    val isOtpGroupMode: Boolean = false,
     val colorGroupVariants: List<ColorGroup> = emptyList(),
     val selectedGroupId: Long = 0,
     val name: String = "",
-    val selectedNotes: Set<Long> = emptySet(),
+    val otpColorName: String = "",
+    val selectedStorageItems: Set<String> = emptySet(),
 ) : Parcelable
+
+
+val EditNoteGroupsState.selectedColorGroup
+    get() = colorGroupVariants
+        .firstOrNull { selectable -> selectable.id == selectedGroupId }

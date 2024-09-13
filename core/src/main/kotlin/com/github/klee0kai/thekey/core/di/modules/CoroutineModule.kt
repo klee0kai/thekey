@@ -30,7 +30,7 @@ interface CoroutineModule {
     @JniDispatcher
     @Provide(cache = Provide.CacheType.Strong)
     fun jniDispatcher(): CoroutineDispatcher {
-        return Executors.newFixedThreadPool(5).asCoroutineDispatcher()
+        return Executors.newFixedThreadPool(20).asCoroutineDispatcher()
     }
 
     @MainDispatcher

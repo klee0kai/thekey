@@ -1,5 +1,8 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.github.klee0kai.thekey.app.ui.navigation.screenresolver
 
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -7,7 +10,7 @@ import com.github.klee0kai.thekey.app.BuildConfig
 import com.github.klee0kai.thekey.app.ui.about.AboutScreen
 import com.github.klee0kai.thekey.app.ui.changepassw.ChangeStoragePasswordScreen
 import com.github.klee0kai.thekey.app.ui.editstorage.EditStorageScreen
-import com.github.klee0kai.thekey.app.ui.genhist.GenHistScreen
+import com.github.klee0kai.thekey.app.ui.hist.GenHistScreen
 import com.github.klee0kai.thekey.app.ui.login.LoginScreen
 import com.github.klee0kai.thekey.app.ui.navigation.model.AboutDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.ChangeStoragePasswordDestination
@@ -16,16 +19,19 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteGroupDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditStorageDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditStorageGroupDestination
-import com.github.klee0kai.thekey.app.ui.navigation.model.GenHistDestination
+import com.github.klee0kai.thekey.app.ui.navigation.model.HistDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.LoginDestination
+import com.github.klee0kai.thekey.app.ui.navigation.model.NoteDialogDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.PluginDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.PluginsDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.SelectStorageDialogDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.SettingsDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.StoragesDestination
-import com.github.klee0kai.thekey.app.ui.note.EditNoteScreen
+import com.github.klee0kai.thekey.app.ui.note.NoteDialog
+import com.github.klee0kai.thekey.app.ui.noteedit.EditNoteScreen
 import com.github.klee0kai.thekey.app.ui.notegroup.EditNoteGroupsScreen
+import com.github.klee0kai.thekey.app.ui.otpnote.OtpNoteDialog
 import com.github.klee0kai.thekey.app.ui.settings.SettingScreen
 import com.github.klee0kai.thekey.app.ui.settings.plugin.PluginDummyScreen
 import com.github.klee0kai.thekey.app.ui.settings.plugin.PluginScreen
@@ -67,7 +73,13 @@ class ScreenResolverImpl : ScreenResolver {
             is ChangeStoragePasswordDestination -> ChangeStoragePasswordScreen(path = destination.path)
             is EditStorageGroupDestination -> EditStorageGroupsScreen(destination)
             is StorageDestination -> StorageScreen(destination)
-            is GenHistDestination -> GenHistScreen(destination)
+            is HistDestination -> GenHistScreen(destination)
+            is NoteDialogDestination -> if (destination.otpNotePtr != null) {
+                OtpNoteDialog(destination)
+            } else {
+                NoteDialog(destination)
+            }
+
             is EditNoteDestination -> EditNoteScreen(destination)
             is EditNoteGroupDestination -> EditNoteGroupsScreen(destination)
 

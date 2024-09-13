@@ -5,6 +5,7 @@ import com.github.klee0kai.thekey.app.engine.model.DecryptedColorGroup
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 
 class GroupsInteractor(
@@ -15,13 +16,10 @@ class GroupsInteractor(
     private val rep = DI.groupRepLazy(identifier)
 
     val groups = flow { rep().groups.collect(this) }
+        .flowOn(DI.defaultDispatcher())
 
-    fun loadGroups() = scope.launch {
-        rep().loadGroups()
-    }
-
-    fun clear() = scope.launch {
-        rep().clear()
+    fun clearCache() = scope.launch {
+        rep().clearCache()
     }
 
     fun removeGroup(id: Long) = scope.launch {

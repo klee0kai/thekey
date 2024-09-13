@@ -38,7 +38,7 @@ import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 import org.jetbrains.annotations.VisibleForTesting
 
 object SecondaryTabsConst {
-    val topPadding = 8.dp
+    val topPadding = 0.dp
     val textHeight = 48.dp
     val allHeight = topPadding + textHeight   // should be 74
 }

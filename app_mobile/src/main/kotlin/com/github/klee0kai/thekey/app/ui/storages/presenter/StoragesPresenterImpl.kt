@@ -1,7 +1,6 @@
 package com.github.klee0kai.thekey.app.ui.storages.presenter
 
 import com.github.klee0kai.hummus.collections.contains
-import com.github.klee0kai.thekey.app.R
 import com.github.klee0kai.thekey.app.data.mapping.toColoredStorage
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.features.findStorage
@@ -17,8 +16,6 @@ import com.github.klee0kai.thekey.core.domain.model.externalStorages
 import com.github.klee0kai.thekey.core.domain.model.feature.PaidFeature
 import com.github.klee0kai.thekey.core.domain.model.feature.PaidLimits
 import com.github.klee0kai.thekey.core.domain.model.feature.model.DynamicFeature
-import com.github.klee0kai.thekey.core.domain.model.filterBy
-import com.github.klee0kai.thekey.core.domain.model.sortableFlatText
 import com.github.klee0kai.thekey.core.helpers.path.tKeyExtension
 import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
 import com.github.klee0kai.thekey.core.utils.file.createNewWithSuffix
@@ -86,12 +83,13 @@ open class StoragesPresenterImpl : StoragesPresenter {
             flow2 = selectedGroupId,
             flow3 = sortedStorages,
             transform = { search, selectedGroup, storages ->
-                val filterExt = selectedGroup == ColorGroup.externalStorages().id
                 val filter = search.searchText
                 var filtList = storages
-                if (filterExt) filtList = filtList.filter { shortPath.isExternal(it.path) }
-                else if (selectedGroup != null) filtList =
-                    filtList.filter { it.colorGroup?.id == selectedGroup }
+                if (selectedGroup == ColorGroup.externalStorages().id) {
+                    filtList = filtList.filter { shortPath.isExternal(it.path) }
+                } else if (selectedGroup != null) {
+                    filtList = filtList.filter { it.colorGroup?.id == selectedGroup }
+                }
                 if (filter.isNotBlank()) filtList = filtList.filter { it.filterBy(filter) }
                 filtList
             }
@@ -143,11 +141,11 @@ open class StoragesPresenterImpl : StoragesPresenter {
     override fun addNewStorageGroup(appRouter: AppRouter?) = scope.launch {
         val currentColorGroups = filteredColorGroups.firstOrNull()?.size ?: 0
         if (billing.isAvailable(PaidFeature.UNLIMITED_STORAGE_GROUPS)
-            || currentColorGroups < PaidLimits.PAID_GROUPS_LIMIT
+            || currentColorGroups < PaidLimits.PAID_STORAGE_GROUPS_LIMIT
         ) {
             appRouter?.navigate(EditStorageGroupDestination())
         } else {
-            appRouter?.snack(R.string.limited_in_free_version)
+            appRouter?.snack(CoreR.string.limited_in_free_version)
         }
     }
 

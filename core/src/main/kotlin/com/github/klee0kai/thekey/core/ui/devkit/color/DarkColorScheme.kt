@@ -47,6 +47,12 @@ fun darkCommonColorScheme() = CommonColorScheme(
         contentColor = Color(0xffB7B7B7),
         shadowColor = Color.Black.copy(alpha = 0.2f)
     ),
+    whiteTextButtonColors = ButtonColors(
+        contentColor = whiteColor,
+        containerColor = Color.Transparent,
+        disabledContainerColor = whiteColor,
+        disabledContentColor = Color.Transparent,
+    ),
     grayTextButtonColors = ButtonColors(
         contentColor = Color(0xffB7B7B7),
         containerColor = Color.Transparent,

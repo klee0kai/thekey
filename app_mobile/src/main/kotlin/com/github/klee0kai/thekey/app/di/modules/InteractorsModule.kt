@@ -3,10 +3,12 @@ package com.github.klee0kai.thekey.app.di.modules
 import com.github.klee0kai.stone.annotations.module.Module
 import com.github.klee0kai.stone.annotations.module.Provide
 import com.github.klee0kai.thekey.app.domain.EditStorageInteractor
+import com.github.klee0kai.thekey.app.domain.GenPasswInteractor
 import com.github.klee0kai.thekey.app.domain.GroupsInteractor
 import com.github.klee0kai.thekey.app.domain.LoginInteractor
 import com.github.klee0kai.thekey.app.domain.NotesInteractor
 import com.github.klee0kai.thekey.app.domain.OtpNotesInteractor
+import com.github.klee0kai.thekey.app.domain.PredefinedNoteGroupsInteractor
 import com.github.klee0kai.thekey.app.domain.StoragesInteractor
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 
@@ -30,5 +32,11 @@ interface InteractorsModule {
 
     @Provide(cache = Provide.CacheType.Weak)
     fun groupsInteractor(storageIdentifier: StorageIdentifier): GroupsInteractor
+
+    @Provide(cache = Provide.CacheType.Weak)
+    fun predefinedNoteGroupsInteractor(storageIdentifier: StorageIdentifier): PredefinedNoteGroupsInteractor
+
+    @Provide(cache = Provide.CacheType.Weak)
+    fun genPasswInteractor(storageIdentifier: StorageIdentifier): GenPasswInteractor
 
 }

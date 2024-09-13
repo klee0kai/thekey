@@ -1,31 +1,40 @@
 package com.github.klee0kai.thekey.app.ui.notegroup.presenter
 
 import com.github.klee0kai.thekey.app.ui.notegroup.model.EditNoteGroupsState
-import com.github.klee0kai.thekey.app.ui.notegroup.model.SelectedNote
+import com.github.klee0kai.thekey.app.ui.storage.model.SearchState
+import com.github.klee0kai.thekey.app.ui.storage.model.StorageItem
+import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
+import com.github.klee0kai.thekey.core.utils.coroutine.emptyJob
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
 interface EditNoteGroupsPresenter {
 
+    val searchState: Flow<SearchState> get() = emptyFlow()
+
     val state: Flow<EditNoteGroupsState> get() = emptyFlow()
 
-    val allNotes: Flow<List<SelectedNote>> get() = emptyFlow()
+    val filteredItems: Flow<List<StorageItem>> get() = emptyFlow()
 
-    fun input(block: EditNoteGroupsState.() -> EditNoteGroupsState): Job = Job()
+    fun init(): Job = emptyJob()
 
-    fun init(): Job = Job()
+    fun searchFilter(newParams: SearchState): Job = emptyJob()
 
-    fun save(): Job = Job()
+    fun input(block: EditNoteGroupsState.() -> EditNoteGroupsState): Job = emptyJob()
+
+    fun save(router: AppRouter?): Job = emptyJob()
+
+    fun remove(router: AppRouter?): Job = emptyJob()
 
 }
 
-fun EditNoteGroupsPresenter.selectNote(ptnote: Long, selected: Boolean) = input {
+fun EditNoteGroupsPresenter.selectStorageItem(id: String, selected: Boolean) = input {
     copy(
-        selectedNotes = if (!selected) {
-            selectedNotes.toMutableSet().apply { remove(ptnote) }
+        selectedStorageItems = if (!selected) {
+            selectedStorageItems.toMutableSet().apply { remove(id) }
         } else {
-            selectedNotes + setOf(ptnote)
+            selectedStorageItems + setOf(id)
         }
     )
 }

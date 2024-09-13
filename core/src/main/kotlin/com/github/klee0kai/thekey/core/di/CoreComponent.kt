@@ -80,6 +80,6 @@ fun CoreComponent.initDummyModule() {
     )
 }
 
-private fun initCoreComponent() = Stone.createComponent(CoreComponent::class.java).apply {
+private fun initCoreComponent() = CoreComponentStoneComponent().apply {
     config(AppConfig())
 }

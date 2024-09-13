@@ -1,18 +1,17 @@
-@file:OptIn(ExperimentalFoundationApi::class)
-
 package com.github.klee0kai.thekey.app.ui.storages.components
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -64,8 +63,8 @@ fun GroupsSelectContent(
 
         Text(
             text = stringResource(id = R.string.groups),
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+            style = theme.typeScheme.typography.labelSmall,
+            color = theme.colorScheme.androidColorScheme.onSurface.copy(alpha = 0.4f),
             fontWeight = FontWeight.Bold,
             modifier = Modifier.constrainAs(groupsHint) {
                 linkTo(
@@ -111,7 +110,7 @@ fun GroupsSelectContent(
                     )
                 })
         {
-            item {
+            item("start_spacer") {
                 Spacer(modifier = Modifier.width(14.dp))
             }
 
@@ -145,6 +144,7 @@ fun GroupsSelectContent(
                         onDismissRequest = { showMenu = false },
                     ) {
                         GroupPopupMenu(
+                            modifier = Modifier.padding(vertical = 4.dp),
                             onEdit = {
                                 showMenu = false
                                 onGroupEdit(group)
@@ -154,7 +154,7 @@ fun GroupsSelectContent(
                 }
             }
 
-            item {
+            item("add_button") {
                 AddCircle(
                     modifier = Modifier
                         .padding(
@@ -168,7 +168,7 @@ fun GroupsSelectContent(
                 )
             }
 
-            item {
+            item("end_spacer") {
                 Spacer(modifier = Modifier.width(14.dp))
             }
         }

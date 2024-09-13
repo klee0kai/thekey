@@ -9,17 +9,19 @@ import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.core.domain.model.feature.PaidFeature
 import com.github.klee0kai.thekey.core.domain.model.feature.PaidLimits
 import com.github.klee0kai.thekey.core.utils.common.MutexState
+import com.github.klee0kai.thekey.core.utils.common.asyncSafe
 import com.github.klee0kai.thekey.core.utils.common.launch
 import com.github.klee0kai.thekey.core.utils.common.stateFlow
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
 import java.io.File
 import kotlin.time.Duration.Companion.milliseconds
+import com.github.klee0kai.thekey.core.R as CoreR
 
 class LoginInteractor {
 
@@ -38,13 +40,13 @@ class LoginInteractor {
                         ?: ColoredStorage(path = storage.path)
                 }
             }.collect(this)
-    }
+    }.flowOn(DI.defaultDispatcher())
 
     fun login(
         storageIdentifier: StorageIdentifier,
         passw: String,
         ignoreLoginned: Boolean = false
-    ) = scope.async {
+    ) = scope.asyncSafe(globalRunDesc = CoreR.string.logining) {
         var identifier = storageIdentifier
         if (identifier.version == 0) {
             identifier = identifier.copy(version = settingsRep().newStorageVersion())
@@ -61,19 +63,20 @@ class LoginInteractor {
         val notesInteractor = DI.notesInteractorLazy(identifier)
         val otpNotesInteractor = DI.otpNotesInteractorLazy(identifier)
         val groupsInteractor = DI.groupsInteractorLazy(identifier)
+        val genPasswInteractor = DI.genPasswInteractorLazy(identifier)
+        val predefinedNoteGroupsRepository = DI.predefinedNoteGroupsRepository(identifier)
 
-        notesInteractor().clear()
-        otpNotesInteractor().clear()
-        groupsInteractor().clear()
+        notesInteractor().clearCache()
+        otpNotesInteractor().clearCache()
+        groupsInteractor().clearCache()
+        genPasswInteractor().clearCache()
+        predefinedNoteGroupsRepository().clearCache()
 
         val createConfig = settingsRep().encryptionComplexity().createConfig()
 
         File(storageIdentifier.path).parentFile?.mkdirs()
         engine().login(passw, createConfig)
 
-        notesInteractor().loadNotes()
-        otpNotesInteractor().loadOtpNotes()
-        groupsInteractor().loadGroups()
         if (!ignoreLoginned) rep().auth(identifier)
 
         if (storagesRep().findStorage(identifier.path).await() == null) {
@@ -95,10 +98,14 @@ class LoginInteractor {
         val notesInteractor = DI.notesInteractorLazy(identifier)
         val otpNotesInteractor = DI.otpNotesInteractorLazy(identifier)
         val groupsInteractor = DI.groupsInteractorLazy(identifier)
+        val genPasswInteractor = DI.genPasswInteractorLazy(identifier)
+        val predefinedNoteGroupsRepository = DI.predefinedNoteGroupsRepository(identifier)
 
-        notesInteractor().clear()
-        otpNotesInteractor().clear()
-        groupsInteractor().clear()
+        notesInteractor().clearCache()
+        otpNotesInteractor().clearCache()
+        groupsInteractor().clearCache()
+        genPasswInteractor().clearCache()
+        predefinedNoteGroupsRepository().clearCache()
 
         engine().unlogin()
         rep().logout(identifier)

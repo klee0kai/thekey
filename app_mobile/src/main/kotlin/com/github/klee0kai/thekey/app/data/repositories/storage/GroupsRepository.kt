@@ -5,41 +5,46 @@ import com.github.klee0kai.thekey.app.engine.model.DecryptedColorGroup
 import com.github.klee0kai.thekey.app.engine.model.colorGroup
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.update
+import com.github.klee0kai.thekey.core.utils.coroutine.lazyStateFlow
 
 class GroupsRepository(
     val identifier: StorageIdentifier,
 ) {
 
-    val engine = DI.cryptStorageEngineSafeLazy(identifier)
+    private val engine = DI.cryptStorageEngineSafeLazy(identifier)
+    private val scope = DI.defaultThreadScope()
 
-    val groups = MutableStateFlow<List<ColorGroup>>(emptyList())
+    val groups = lazyStateFlow(
+        init = emptyList<ColorGroup>(),
+        defaultArg = false,
+        scope = scope
+    ) { force ->
+        if (value.isNotEmpty() && !force) return@lazyStateFlow
 
-    suspend fun loadGroups() = coroutineScope {
-        if (groups.value.isEmpty()) {
-            groups.value = engine()
+        if (value.isEmpty()) {
+            value = engine()
                 .colorGroups()
                 .map { it.colorGroup(isLoaded = false) }
         }
 
-        groups.value = engine()
+        value = engine()
             .colorGroups(info = true)
             .map { it.colorGroup(isLoaded = true) }
     }
 
     suspend fun saveColorGroup(decryptedColorGroup: DecryptedColorGroup): DecryptedColorGroup? {
-        return engine().saveColorGroup(decryptedColorGroup).also {
-            loadGroups()
-        }
+        val result = engine().saveColorGroup(decryptedColorGroup)
+        groups.touch(true)
+        return result
     }
 
     suspend fun removeGroup(id: Long) {
         engine().removeColorGroup(id)
-        loadGroups()
+        groups.touch(true)
     }
 
-    suspend fun clear() = groups.update { emptyList() }
+    suspend fun clearCache() {
+        groups.value = emptyList()
+    }
 
 }

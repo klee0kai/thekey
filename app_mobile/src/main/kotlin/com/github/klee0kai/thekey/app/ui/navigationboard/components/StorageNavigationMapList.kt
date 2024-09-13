@@ -84,6 +84,7 @@ fun StorageNavigationMapList(
                     onDismissRequest = rememberClickDebounced { showMenu = false }
                 ) {
                     OpenedStoragePopupMenu(
+                        modifier = Modifier.padding(vertical = 4.dp),
                         onLogout = rememberClickDebounced(storage.path) {
                             showMenu = false
                             presenter?.logout(storage.path, router)

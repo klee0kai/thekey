@@ -1,14 +1,12 @@
 package com.github.klee0kai.thekey.app.ui.login
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.FilledTonalButton
@@ -16,7 +14,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,7 +45,6 @@ import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.Screen
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
-import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DoneIconButton
 import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextField
 import com.github.klee0kai.thekey.core.ui.devkit.icons.BackMenuIcon
 import com.github.klee0kai.thekey.core.ui.devkit.preview.PreviewDevices
@@ -57,6 +53,8 @@ import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.collectAsStateCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.currentRef
+import com.github.klee0kai.thekey.core.utils.views.horizontal
 import com.github.klee0kai.thekey.core.utils.views.isIme
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebouncedCons
@@ -73,13 +71,13 @@ fun LoginScreen(
     dest: LoginDestination = LoginDestination(),
 ) = Screen {
     val scope = rememberCoroutineScope()
-    val router = LocalRouter.current
+    val router by LocalRouter.currentRef
     val theme = LocalTheme.current
+    val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
     val presenter by rememberOnScreenRef { DI.loginPresenter(dest.identifier) }
     val pathInputHelper = remember { DI.pathInputHelper() }
     val currentStorageState by presenter!!.currentStorageFlow
         .collectAsState(key = Unit, initial = ColoredStorage())
-    val isNavBoardOpen by router.isNavBoardOpen.collectAsState(false)
     val isLoginNotProcessing by presenter!!
         .loginTrackFlow.map { it <= 0 }
         .collectAsStateCrossFaded(key = Unit, initial = true)
@@ -95,21 +93,13 @@ fun LoginScreen(
             .coloredFileExt(extensionColor = theme.colorScheme.hintTextColor)
     }
 
-    BackHandler(enabled = isNavBoardOpen) {
-        when {
-            isNavBoardOpen -> router.hideNavigationBoard()
-        }
-    }
-
     ConstraintLayout(
         modifier = Modifier
-            .imePadding()
-            .windowInsetsPadding(WindowInsets.safeContent)
             .padding(
-                start = 16.dp,
-                end = 16.dp,
-                bottom = 16.dp,
+                top = safeContentPaddings.calculateTopPadding(),
+                bottom = safeContentPaddings.calculateBottomPadding() + 16.dp,
             )
+            .padding(horizontal = safeContentPaddings.horizontal(minValue = 16.dp))
             .fillMaxSize()
     ) {
         val (
@@ -203,57 +193,46 @@ fun LoginScreen(
                 }
         )
 
-        if (!imeVisible.current) {
-            if (dest.identifier.path.isBlank() || dest.forceAllowStorageSelect) {
-                TextButton(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .alpha(imeVisible.alpha)
-                        .constrainAs(storagesButton) {
-                            bottom.linkTo(loginButton.top, margin = 12.dp)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                        },
-                    colors = LocalColorScheme.current.grayTextButtonColors,
-                    onClick = rememberClickDebounced { presenter?.selectStorage(router) }
-                ) {
-                    Text(stringResource(R.string.storages))
-                }
-            }
-
-            FilledTonalButton(
+        if (!imeVisible.current && dest.identifier.path.isBlank() || dest.forceAllowStorageSelect) {
+            TextButton(
                 modifier = Modifier
                     .fillMaxWidth()
                     .alpha(imeVisible.alpha)
-                    .constrainAs(loginButton) {
-                        bottom.linkTo(parent.bottom)
+                    .constrainAs(storagesButton) {
+                        bottom.linkTo(loginButton.top, margin = 12.dp)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                     },
-                enabled = isLoginNotProcessing.current,
-                onClick = rememberClickDebounced { presenter?.login(passwordInputText, router) }
+                colors = LocalColorScheme.current.grayTextButtonColors,
+                onClick = rememberClickDebounced { presenter?.selectStorage(router) }
             ) {
-                Text(stringResource(R.string.login))
+                Text(stringResource(R.string.storages))
             }
+        }
+
+        FilledTonalButton(
+            modifier = Modifier
+                .fillMaxWidth()
+                .constrainAs(loginButton) {
+                    bottom.linkTo(parent.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                },
+            enabled = isLoginNotProcessing.current,
+            onClick = rememberClickDebounced { presenter?.login(passwordInputText, router) }
+        ) {
+            Text(stringResource(R.string.login))
         }
     }
 
 
     AppBarStates(
         navigationIcon = {
-            IconButton(onClick = rememberClickDebounced { router.showNavigationBoard() }) {
-                BackMenuIcon(isMenu = true)
-            }
+            IconButton(
+                onClick = rememberClickDebounced { router?.showNavigationBoard() },
+                content = { BackMenuIcon(isMenu = true) }
+            )
         },
-        actions = {
-            if (imeVisible.current) {
-                DoneIconButton(
-                    modifier = Modifier.alpha(imeVisible.alpha),
-                    enabled = isLoginNotProcessing.current,
-                    onClick = rememberClickDebounced { presenter?.login(passwordInputText, router) }
-                )
-            }
-        }
     )
 
 }

@@ -92,9 +92,7 @@ fun StoragesScreen() = Screen {
                 selectedGroup = selectedGroup,
                 onAdd = rememberClickDebounced { presenter?.addNewStorageGroup(router) },
                 onGroupEdit = rememberClickDebouncedArg {
-                    router?.navigate(
-                        EditStorageGroupDestination(it.id)
-                    )
+                    router?.navigate(EditStorageGroupDestination(it.id))
                 },
                 onGroupSelected = rememberClickDebouncedArg { presenter?.selectGroup(it.id) },
             )
@@ -119,7 +117,10 @@ fun StoragesScreen() = Screen {
 
     AppBarStates(
         navigationIcon = {
-            IconButton(onClick = { router?.back() }) { BackMenuIcon() }
+            IconButton(
+                onClick = rememberClickDebounced { router?.back() },
+                content = { BackMenuIcon() },
+            )
         },
         titleContent = {
             screenResolver?.widget(

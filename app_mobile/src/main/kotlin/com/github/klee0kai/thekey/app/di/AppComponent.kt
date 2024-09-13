@@ -1,7 +1,6 @@
 package com.github.klee0kai.thekey.app.di
 
 import com.github.klee0kai.stone.KotlinWrappersStone
-import com.github.klee0kai.stone.Stone
 import com.github.klee0kai.stone.annotations.component.Component
 import com.github.klee0kai.stone.annotations.component.ExtendOf
 import com.github.klee0kai.thekey.app.BuildConfig
@@ -108,7 +107,7 @@ fun AppComponent.configRouting(
     }
 }
 
-private fun initAppComponent() = Stone.createComponent(AppComponent::class.java).apply {
+private fun initAppComponent() = AppComponentStoneComponent().apply {
     ext(CoreDI)
     config(AppConfig(isDebug = BuildConfig.DEBUG))
 

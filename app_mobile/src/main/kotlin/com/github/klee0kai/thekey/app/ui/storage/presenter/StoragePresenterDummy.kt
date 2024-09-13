@@ -38,11 +38,11 @@ open class StoragePresenterDummy(
 
     override val filteredItems = MutableStateFlow(
         listOf(
-            ColoredNote(ptnote = Dummy.dummyId).storageItem(),
-            ColoredNote(ptnote = Dummy.dummyId).storageItem(),
-            ColoredOtpNote(ptnote = Dummy.dummyId).storageItem(),
+            ColoredNote(id = Dummy.dummyId).storageItem(),
+            ColoredNote(id = Dummy.dummyId).storageItem(),
+            ColoredOtpNote(id = Dummy.dummyId).storageItem(),
             ColoredNote(
-                ptnote = Dummy.dummyId,
+                id = Dummy.dummyId,
                 site = "some.site",
                 login = "login",
                 desc = "description",
@@ -53,7 +53,7 @@ open class StoragePresenterDummy(
                 isLoaded = true,
             ).storageItem(),
             ColoredNote(
-                ptnote = Dummy.dummyId,
+                id = Dummy.dummyId,
                 site = "some.site2",
                 login = "login2",
                 desc = "description2",
@@ -64,7 +64,7 @@ open class StoragePresenterDummy(
                 isLoaded = true,
             ).storageItem(),
             ColoredOtpNote(
-                ptnote = Dummy.dummyId,
+                id = Dummy.dummyId,
                 issuer = "Example@otp.su",
                 name = "ExampleName",
                 group = ColorGroup(
@@ -74,7 +74,7 @@ open class StoragePresenterDummy(
                 isLoaded = true,
             ).storageItem(),
 
-            ColoredNote(ptnote = Dummy.dummyId).storageItem(),
+            ColoredNote(id = Dummy.dummyId).storageItem(),
         )
     )
 

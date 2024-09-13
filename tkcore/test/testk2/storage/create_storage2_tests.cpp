@@ -86,7 +86,7 @@ TEST(CreateStorage2, CreateStorage) {
             .front();
     createOtpNote.colorGroupId = orangeGroup->id;
     createOtpNote.pin = "5239";
-    storage->setOtpNote(createOtpNote);
+    storage->setOtpNote(createOtpNote, TK2_SET_NOTE_INFO);
 
     expectedPasswHist.push_back(
             storage->genPassword(findSchemeByFlags(SCHEME_NUMBERS | SCHEME_ENGLISH), 6)

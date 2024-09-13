@@ -154,14 +154,25 @@ std::vector<JvmDecryptedNote> JvmStorage2::notes(const int &loadInfo) {
     auto notes = std::vector<JvmDecryptedNote>();
     auto flags = loadInfo ? TK2_GET_NOTE_INFO : TK2_GET_NOTE_PTR_ONLY;
     for (const auto &dnote: storage->notes(flags)) {
+        auto history = std::vector<JvmDecryptedPassw>();
+        for (const auto &dhist: dnote.history) {
+            history.push_back(
+                    {
+                            .passwPtr= dhist.id,
+                            .passw= dhist.passw,
+                            .chTime =  (int64_t) dhist.genTime
+                    });
+        }
+
         notes.push_back(
                 {
                         .ptnote = dnote.id,
                         .site =  dnote.site,
                         .login =  dnote.login,
                         .desc =  dnote.description,
-                        .chTime = (int64_t) dnote.genTime,
+                        .chTimeSec = (int64_t) dnote.genTime,
                         .colorGroupId = dnote.colorGroupId,
+                        .hist = history,
                 });
     }
     return notes;
@@ -170,16 +181,28 @@ std::vector<JvmDecryptedNote> JvmStorage2::notes(const int &loadInfo) {
 JvmDecryptedNote JvmStorage2::note(const int64_t &notePtr) {
     auto storage = findStorage(getEngineIdentifier());
     if (!storage)return {};
-    auto dnote = storage->note(notePtr, TK2_GET_NOTE_INFO | TK2_GET_NOTE_PASSWORD);
+    auto dnote = storage->note(notePtr,
+                               TK2_GET_NOTE_INFO | TK2_GET_NOTE_PASSWORD |
+                               TK2_GET_NOTE_HISTORY_FULL);
     if (!dnote) return {};
+    auto history = std::vector<JvmDecryptedPassw>();
+    for (const auto &dhist: dnote->history) {
+        history.push_back(
+                {
+                        .passwPtr= dhist.id,
+                        .passw= dhist.passw,
+                        .chTime =  (int64_t) dhist.genTime
+                });
+    }
     auto result = JvmDecryptedNote{
             .ptnote = notePtr,
             .site = dnote->site,
             .login = dnote->login,
             .passw = dnote->passw,
             .desc =  dnote->description,
-            .chTime = (int64_t) dnote->genTime,
+            .chTimeSec = (int64_t) dnote->genTime,
             .colorGroupId = dnote->colorGroupId,
+            .hist = history,
     };
     return result;
 
@@ -292,6 +315,26 @@ JvmDecryptedPassw JvmStorage2::getGenPassw(const int64_t &ptNote) {
     return jvmDecryptedPassw;
 }
 
+int JvmStorage2::removeHist(const int64_t &histPt) {
+    auto storage = findStorage(getEngineIdentifier());
+    if (!storage)return {};
+    storage->removePasswHistory(histPt);
+    return storage->save();
+}
+
+int JvmStorage2::removeOldHist(const int64_t &oldestTimeSec) {
+    auto storage = findStorage(getEngineIdentifier());
+    if (!storage)return {};
+    auto history = storage->genPasswHistoryList();
+    for (const auto &hist: history) {
+        if (hist.genTime < oldestTimeSec) {
+            storage->removePasswHistory(hist.id);
+        }
+    }
+    storage->save();
+    return 0;
+}
+
 std::vector<JvmDecryptedOtpNote> JvmStorage2::otpNotes(const int &info) {
     auto storage = findStorage(getEngineIdentifier());
     if (!storage)return {};
@@ -316,10 +359,17 @@ std::vector<JvmDecryptedOtpNote> JvmStorage2::otpNotes(const int &info) {
     return otpNotes;
 }
 
-JvmDecryptedOtpNote JvmStorage2::otpNote(const int64_t &notePtr) {
+JvmDecryptedOtpNote JvmStorage2::otpNote(
+        const int64_t &notePtr,
+        const int &increment
+) {
     auto storage = findStorage(getEngineIdentifier());
     if (!storage)return {};
-    auto dnotePtr = storage->otpNote(notePtr, TK2_GET_NOTE_INFO | TK2_GET_NOTE_PASSWORD);
+    auto flags = TK2_GET_NOTE_INFO | TK2_GET_NOTE_PASSWORD;
+    if (increment) {
+        flags |= TK2_GET_NOTE_INCREMENT_HOTP;
+    }
+    auto dnotePtr = storage->otpNote(notePtr, flags);
     if (!dnotePtr)return {};
     auto dnote = *dnotePtr;
     return JvmDecryptedOtpNote{
@@ -327,7 +377,6 @@ JvmDecryptedOtpNote JvmStorage2::otpNote(const int64_t &notePtr) {
             .issuer =  dnote.issuer,
             .name =  dnote.name,
             .secret = dnote.secret,
-            .pin = dnote.pin,
             .otpPassw = dnote.otpPassw,
             .otpMethodRaw = dnote.method,
             .otpAlgoRaw = dnote.algo,
@@ -353,14 +402,18 @@ int JvmStorage2::saveOtpNote(const JvmDecryptedOtpNote &jOtp, const int &setAll)
             .digits = uint32_t(jOtp.digits),
             .interval = uint32_t(jOtp.interval),
             .counter = uint32_t(jOtp.counter),
-            .pin = jOtp.pin,
             .colorGroupId = jOtp.colorGroupId,
+            .otpPassw = jOtp.otpPassw,
     };
 
+    auto flags = TK2_SET_NOTE_INFO;
+    if (setAll) {
+        flags |= TK2_SET_NOTE_PASSW;
+    }
     if (dnote.id == 0) {
-        storage->createOtpNote(dnote, 0);
+        storage->createOtpNote(dnote, flags);
     } else {
-        storage->setOtpNote(dnote, 0);
+        storage->setOtpNote(dnote, flags);
     }
 
     return storage->save();

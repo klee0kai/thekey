@@ -3,6 +3,7 @@ package com.github.klee0kai.thekey.app.ui.storagegroup.presenter
 import com.github.klee0kai.thekey.app.ui.storagegroup.model.EditStorageGroupsState
 import com.github.klee0kai.thekey.app.ui.storagegroup.model.SelectedStorage
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
+import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
 import com.github.klee0kai.thekey.core.utils.coroutine.emptyJob
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
@@ -20,9 +21,9 @@ interface EditStoragesGroupPresenter {
 
     fun init(): Job = emptyJob()
 
-    fun save(): Job = emptyJob()
+    fun save(router: AppRouter?): Job = emptyJob()
 
-    fun remove(): Job = emptyJob()
+    fun remove(router: AppRouter?): Job = emptyJob()
 
 }
 

@@ -86,22 +86,18 @@ class ComposeRouterImpl(context: RouterContext) : ComposeRouter, RouterContext b
         return popResult
     }
 
-    override fun back(exitFromApp: Boolean) {
-        scope.launch {
-            val popResult = navFullController.pop()
+    override fun back(exitFromApp: Boolean) = scope.launch {
+        val popResult = navFullController.pop()
 
-            if (!popResult && exitFromApp) {
-                backDispatcher?.onBackPressed()
-                return@launch
-            }
+        if (!popResult && exitFromApp) {
+            backDispatcher?.onBackPressed()
+            return@launch
         }
     }
 
-    override fun resetStack(vararg destinations: Destination) {
-        scope.launch {
-            val navEntries = destinations.map { navEntry(it) }.toList()
-            navFullController.setNewBackstack(navEntries)
-        }
+    override fun resetStack(vararg destinations: Destination) = scope.launch {
+        val navEntries = destinations.map { navEntry(it) }.toList()
+        navFullController.setNewBackstack(navEntries)
     }
 
     @Composable

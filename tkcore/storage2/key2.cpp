@@ -432,7 +432,7 @@ int KeyStorageV2::saveNewPassw(
         destNote.colorGroupId = srcNote.colorGroupId;
         destNote.pin = srcNote.pin;
 
-        destStorage->setOtpNote(destNote);
+        destStorage->setOtpNote(destNote, TK2_SET_NOTE_INFO);
 
         if (progress) progress(MIN(1, progressCount++ / allItemsCount));
     }
@@ -503,7 +503,7 @@ int KeyStorageV2::saveNewPasswStrategy(
             destOtpNote.colorGroupId = srcOtpNote.colorGroupId;
             destOtpNote.pin = srcOtpNote.pin;
 
-            virtDest->setOtpNote(destOtpNote);
+            virtDest->setOtpNote(destOtpNote, TK2_SET_NOTE_INFO);
 
             if (progress) progress(MIN(1, progressCount++ / allItemsCount));
         }
@@ -916,7 +916,7 @@ KeyStorageV2::createOtpNote(const thekey_v2::DecryptedOtpNote &dnote, uint flags
     dNote->id = createdId;
     snapshot(data);
 
-    setOtpNote(*dNote, flags | TK2_SET_NOTE_FORCE | TK2_SET_NOTE_PASSW);
+    setOtpNote(*dNote, flags | TK2_SET_NOTE_FORCE | TK2_SET_NOTE_INFO | TK2_SET_NOTE_PASSW);
     return dNote;
 }
 
@@ -934,6 +934,7 @@ int KeyStorageV2::setOtpNote(const thekey_v2::DecryptedOtpNote &dnote, uint flag
     }
 
     auto notCmpOld = (flags & TK2_SET_NOTE_FORCE);
+    auto setInfoFlag = (flags & TK2_SET_NOTE_INFO);
     auto setPasswFlag = (flags & TK2_SET_NOTE_PASSW);
     auto old = otpNote(dnote.id, TK2_GET_NOTE_FULL);
 
@@ -945,7 +946,7 @@ int KeyStorageV2::setOtpNote(const thekey_v2::DecryptedOtpNote &dnote, uint flag
     cryptedNote->data.counter(dnote.counter);
     cryptedNote->data.colorGroupId(dnote.colorGroupId);
 
-    if (notCmpOld || old->issuer != dnote.issuer) {
+    if (setInfoFlag && (notCmpOld || old->issuer != dnote.issuer)) {
         cryptedNote->data.issuer.encrypt(
                 dnote.issuer,
                 ctx->keyForLogin,
@@ -954,7 +955,7 @@ int KeyStorageV2::setOtpNote(const thekey_v2::DecryptedOtpNote &dnote, uint flag
         );
     }
 
-    if (notCmpOld || old->name != dnote.name) {
+    if (setInfoFlag && (notCmpOld || old->name != dnote.name)) {
         cryptedNote->data.name.encrypt(
                 dnote.name,
                 ctx->keyForLogin,
@@ -963,7 +964,7 @@ int KeyStorageV2::setOtpNote(const thekey_v2::DecryptedOtpNote &dnote, uint flag
         );
     }
 
-    if (notCmpOld || old->pin != dnote.pin) {
+    if (setInfoFlag && (notCmpOld || old->pin != dnote.pin)) {
         cryptedNote->data.pin.encrypt(
                 dnote.pin,
                 ctx->keyForPassw,
@@ -1031,6 +1032,10 @@ std::shared_ptr<DecryptedOtpNote> KeyStorageV2::otpNote(long long id, uint flags
     }
 
     if ((flags & TK2_GET_NOTE_PASSWORD) != 0) {
+        if ((flags & TK2_GET_NOTE_INCREMENT_HOTP) != 0 && cryptedNote->data.method() == HOTP) {
+            cryptedNote->data.counter(cryptedNote->data.counter() + 1);
+        }
+
         decryptedNote->secret = base32::encode(cryptedNote->data.secret.decrypt(
                 ctx->keyForOtpPassw,
                 fheader->cryptType(),
@@ -1045,10 +1050,6 @@ std::shared_ptr<DecryptedOtpNote> KeyStorageV2::otpNote(long long id, uint flags
 
         auto otpInfo = exportOtpNote(id);
         decryptedNote->otpPassw = key_otp::generate(otpInfo, now);
-
-        if ((flags & TK2_GET_NOTE_INCREMENT_HOTP) != 0 && cryptedNote->data.method() == HOTP) {
-            cryptedNote->data.counter(cryptedNote->data.counter() + 1);
-        }
     }
 
     return decryptedNote;
@@ -1186,6 +1187,35 @@ std::shared_ptr<DecryptedPassw> KeyStorageV2::genPasswHistory(long long id, cons
         );
     }
     return make_shared<DecryptedPassw>(dPassw);
+}
+
+int KeyStorageV2::removePasswHistory(long long id) {
+    auto data = snapshot();
+    data.cryptedGeneratedPassws = make_shared<list<CryptedPassword>>(
+            list<CryptedPassword>(*data.cryptedGeneratedPassws));
+    data.cryptedNotes = make_shared<list<CryptedNote>>(list<CryptedNote>(*data.cryptedNotes));
+
+    {
+        auto it = find_if(data.cryptedGeneratedPassws->begin(), data.cryptedGeneratedPassws->end(),
+                          [&](const CryptedPassword &it) { return it.id == id; });
+        if (it != data.cryptedGeneratedPassws->end()) {
+            data.cryptedGeneratedPassws->erase(it);
+            snapshot(data);
+            return 0;
+        }
+    }
+
+    for (auto &note: *data.cryptedNotes) {
+        auto it = find_if(note.history.begin(), note.history.end(),
+                          [&](const CryptedPassword &it) { return it.id == id; });
+
+        if (it != note.history.end()) {
+            note.history.erase(it);
+            snapshot(data);
+            return 0;
+        }
+    }
+    return KEY_UNKNOWN_ERROR;
 }
 
 int KeyStorageV2::appendPasswHistory(const std::vector<DecryptedPassw> &hist) {

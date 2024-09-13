@@ -11,6 +11,8 @@ import com.github.klee0kai.thekey.app.engine.model.Storage
 import com.github.klee0kai.thekey.app.engine.model.TwinsCollection
 import com.github.klee0kai.thekey.core.di.identifiers.FileIdentifier
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
+import com.github.klee0kai.thekey.core.domain.model.DebugConfigs
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 
 class CryptStorageSuspended(
@@ -67,7 +69,12 @@ class CryptStorageSuspended(
     suspend fun otpNotes(info: Boolean = false): Array<DecryptedOtpNote> =
         engineRunRead { otpNotes(info) }
 
-    suspend fun otpNote(notePtr: Long): DecryptedOtpNote = engineRunRead { otpNote(notePtr) }
+    suspend fun otpNote(
+        notePtr: Long,
+        increment: Boolean = false,
+    ): DecryptedOtpNote = engineRunRead {
+        otpNote(notePtr, increment)
+    }
 
     suspend fun otpNoteFromUrl(url: String): DecryptedOtpNote? =
         engineRunRead { otpNoteFromUrl(url) }
@@ -77,8 +84,12 @@ class CryptStorageSuspended(
 
     suspend fun removeOtpNote(notePt: Long): Int = engineRunWrite { removeOtpNote(notePt) }
 
-    suspend fun setOtpNotesGroup(notePtrs: Array<Long>, groupId: Long): Int =
-        engineRunWrite { setOtpNotesGroup(notePtrs, groupId) }
+    suspend fun setOtpNotesGroup(
+        notePtrs: Array<Long>,
+        groupId: Long,
+    ): Int = engineRunWrite {
+        setOtpNotesGroup(notePtrs, groupId)
+    }
 
     /* gen passw  */
 
@@ -89,6 +100,14 @@ class CryptStorageSuspended(
         engineRunRead { genHistory(info) }
 
     suspend fun lastGeneratedPassw(): String = engineRunRead { lastGeneratedPassw() }
+
+    suspend fun removeHist(histPtr: Long): Int = engineRunRead { removeHist(histPtr) }
+
+    suspend fun removeOldHist(
+        oldestTimeSec: Long,
+    ): Int = engineRunWrite {
+        removeOldHist(oldestTimeSec)
+    }
 
     suspend fun getGenPassw(
         ptNote: Long,
@@ -105,6 +124,7 @@ class CryptStorageSuspended(
     private suspend fun <T> engineRunRead(block: suspend CryptStorage.() -> T): T =
         withContext(dispatcher) {
             fileMutex.withReadLock {
+                delay(DebugConfigs.engineDelay.readDelay)
                 _engine().block()
             }
         }
@@ -112,6 +132,7 @@ class CryptStorageSuspended(
     private suspend fun <T> engineRunWrite(block: suspend CryptStorage.() -> T): T =
         withContext(dispatcher) {
             fileMutex.withWriteLock {
+                delay(DebugConfigs.engineDelay.writeDelay)
                 _engine().block()
             }
         }

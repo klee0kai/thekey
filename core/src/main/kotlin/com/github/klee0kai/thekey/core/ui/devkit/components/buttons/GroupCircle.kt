@@ -68,7 +68,7 @@ fun GroupCircle(
         Text(
             modifier = Modifier.align(Alignment.Center),
             color = colorScheme.onSurfaceColor,
-            text = name
+            text = name.take(3)
         )
 
         overlayContent()
@@ -91,7 +91,7 @@ fun GroupCirclePreview() = AppTheme(theme = DefaultThemes.darkTheme) {
 @Composable
 fun GroupCircleCheckedPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     GroupCircle(
-        name = "CH",
+        name = "CHTaaaa", // should truncate
         colorScheme = SurfaceScheme(Color.Magenta, Color.White),
         checked = true,
     )

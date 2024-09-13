@@ -9,6 +9,7 @@ import com.github.klee0kai.thekey.core.di.identifiers.StorageGroupIdentifier
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.domain.model.externalStorages
 import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
+import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
 import com.github.klee0kai.thekey.core.utils.common.launchSafe
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -16,15 +17,15 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 open class EditStoragesGroupsPresenterImpl(
-    val groupIdentifier: StorageGroupIdentifier,
+    private val groupIdentifier: StorageGroupIdentifier,
 ) : EditStoragesGroupPresenter {
 
-    private val router = DI.router()
     private val scope = DI.defaultThreadScope()
     private val interactor = DI.storagesInteractorLazy()
     private val settings = DI.settingsRepositoryLazy()
@@ -41,17 +42,23 @@ open class EditStoragesGroupsPresenterImpl(
             flow3 = state.map { it.selectedGroupId }.distinctUntilChanged(),
         ) { storages, selectList, selectedGroupId ->
             when {
-                isExternalGroupMode || selectedGroupId == ColorGroup.externalStorages().id -> storages.filter { shortPath.isExternal(it.path) }
+                isExternalGroupMode || selectedGroupId == ColorGroup.externalStorages().id ->
+                    storages.filter { shortPath.isExternal(it.path) }
+
                 else -> storages
             }.map { it.selected(selected = selectList.contains(it.path)) }
         }.collect(this)
-    }
+    }.flowOn(DI.defaultDispatcher())
 
     private var originalGroup: ColorGroup? = null
     private var originSelectedStorages: List<String> = emptyList()
 
     override fun init() = scope.launch {
-        if (!state.value.isSkeleton) return@launch
+        if (!state.value.isSkeleton) {
+            // add unique buttons if needed
+            state.update { it.copy(isRemoveAvailable = it.isEditMode) }
+            return@launch
+        }
 
         val externalGroupRemoved = !settings().externalStoragesGroup()
         val externalsGroup = interactor().externalStoragesGroup.first()
@@ -75,23 +82,25 @@ open class EditStoragesGroupsPresenterImpl(
             externalGroupRemoved && groupIdentifier.groupId == null -> listOf(externalsGroup) + KeyColor.selectableColorGroups
             else -> KeyColor.selectableColorGroups
         }
-        state.update {
-            it.copy(
-                isSkeleton = false,
-                isEditMode = originalGroup != null,
-                isRemoveAvailable = originalGroup != null,
-                isExternalGroupMode = originalGroup?.id == externalsGroup.id,
-                colorGroupVariants = colorGroupVariants,
-                selectedGroupId = colorGroupVariants.firstOrNull { selectable -> selectable.keyColor == originalGroup?.keyColor }?.id ?: 0,
-                name = originalGroup?.name ?: "",
-                extStorageName = externalsGroup.name,
-                isFavorite = originalGroup?.isFavorite ?: false,
-                selectedStorages = selectedStorages.toSet()
-            )
-        }
+        state.value = EditStorageGroupsState(
+            isSkeleton = false,
+            isEditMode = originalGroup != null,
+            isRemoveAvailable = originalGroup != null,
+            isExternalGroupMode = originalGroup?.id == externalsGroup.id,
+            colorGroupVariants = colorGroupVariants,
+            selectedGroupId = colorGroupVariants
+                .firstOrNull { selectable -> selectable.keyColor == originalGroup?.keyColor }
+                ?.id ?: 0,
+            name = originalGroup?.name ?: "",
+            extStorageName = externalsGroup.name,
+            isFavorite = originalGroup?.isFavorite ?: false,
+            selectedStorages = selectedStorages.toSet()
+        )
     }
 
-    override fun input(block: EditStorageGroupsState.() -> EditStorageGroupsState) = scope.launch(DI.mainDispatcher()) {
+    override fun input(
+        block: EditStorageGroupsState.() -> EditStorageGroupsState,
+    ) = scope.launch(DI.mainDispatcher()) {
         var newState = block.invoke(state.value)
 
         val newColorGroup = newState.colorGroup(originalGroup ?: ColorGroup())
@@ -104,11 +113,13 @@ open class EditStoragesGroupsPresenterImpl(
             isSaveAvailable = isSaveAvailable,
             isRemoveAvailable = newState.isRemoveAvailable && !isSaveAvailable,
             isExternalGroupMode = isExternalGroupMode || newState.selectedGroupId == ColorGroup.externalStorages().id,
+            extStorageName = newState.extStorageName.take(3),
+            name = newState.extStorageName.take(2),
         )
         state.value = newState
     }
 
-    override fun save() = scope.launchSafe {
+    override fun save(router: AppRouter?) = scope.launchSafe {
         val curState = state.value
         val ext = ColorGroup.externalStorages()
         val newColorGroup = curState.colorGroup(
@@ -116,7 +127,7 @@ open class EditStoragesGroupsPresenterImpl(
             isExtMode = isExternalGroupMode || curState.selectedGroupId == ext.id
         )
         if (newColorGroup.keyColor == KeyColor.NOCOLOR) {
-            router.snack(R.string.select_color)
+            router?.snack(R.string.select_color)
             return@launchSafe
         }
         if (isExternalGroupMode) {
@@ -137,20 +148,24 @@ open class EditStoragesGroupsPresenterImpl(
             interactor().setStoragesGroup(selectedStorages.toList(), group.id)
         }
 
-        router.snack(R.string.save_success)
-        router.back()
+        router?.snack(R.string.save_success)
+        router?.back()
         clean()
     }
 
-    override fun remove() = scope.launchSafe {
+    override fun remove(
+        router: AppRouter?,
+    ) = scope.launchSafe {
         val originGroup = originalGroup ?: return@launchSafe
         interactor().deleteColorGroup(originGroup.id)
-        router.snack(R.string.color_group_deleted)
-        router.back()
+        router?.snack(R.string.color_group_deleted)
+        router?.back()
         clean()
     }
 
-    private fun clean() = input { copy(isSkeleton = true) }
+    private fun clean() {
+        state.value = EditStorageGroupsState(isSkeleton = true)
+    }
 
 }
 

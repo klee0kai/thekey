@@ -1,16 +1,18 @@
 package com.github.klee0kai.thekey.app.domain
 
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.core.domain.model.ColoredNote
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
-import com.github.klee0kai.thekey.app.engine.model.GenPasswParams
+import com.github.klee0kai.thekey.app.engine.model.coloredNote
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
+import com.github.klee0kai.thekey.core.domain.model.ColoredNote
+import com.github.klee0kai.thekey.core.utils.common.launch
 import com.github.klee0kai.thekey.core.utils.common.launchLatest
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.flowOn
 
 class NotesInteractor(
     val identifier: StorageIdentifier,
@@ -30,22 +32,60 @@ class NotesInteractor(
                 note.copy(group = group)
             }
         }.collect(this)
+    }.flowOn(DI.defaultDispatcher())
+
+    val loadedNotes = notes
+        .filter { list -> list.all { it.isLoaded } }
+        .flowOn(DI.defaultDispatcher())
+
+    fun note(
+        notePtr: Long,
+    ): Deferred<ColoredNote> = scope.async {
+        rep().note(notePtr)
+            .coloredNote(
+                isLoaded = true,
+                isHistLoaded = true,
+            )
     }
 
-    val loadedNotes = notes.filter { list -> list.all { it.isLoaded } }
+    @Deprecated("use domain models")
+    fun decryptedNote(
+        notePtr: Long,
+    ): Deferred<DecryptedNote> = scope.async {
+        rep().note(notePtr)
+    }
 
-    fun loadNotes() = scope.launchLatest("load_notes") { rep().loadNotes() }
+    fun saveNote(
+        note: DecryptedNote,
+        setAll: Boolean = false,
+    ) = scope.launch {
+        rep().saveNote(note, setAll)
+    }
 
-    fun note(notePtr: Long) = scope.async { rep().note(notePtr) }
+    fun setNotesGroup(
+        notesPtr: List<Long>,
+        groupId: Long,
+    ) = scope.launch {
+        rep().setNotesGroup(notesPtr, groupId)
+    }
 
-    fun saveNote(note: DecryptedNote, setAll: Boolean = false) = scope.launch { rep().saveNote(note, setAll) }
+    fun removeNote(
+        noteptr: Long,
+    ) = scope.launch {
+        rep().removeNote(noteptr)
+    }
 
-    fun removeNote(noteptr: Long) = scope.launch { rep().removeNote(noteptr) }
 
-    fun setNotesGroup(notesPtr: List<Long>, groupId: Long) = scope.launch { rep().setNotesGroup(notesPtr, groupId) }
+    fun removeHist(
+        histPtr: Long,
+    ) = scope.launch {
+        rep().removeHist(histPtr)
+    }
 
-    fun generateNewPassw(params: GenPasswParams) = scope.async { rep().generateNewPassw(params) }
 
-    fun clear() = scope.launchLatest("clear") { rep().clear() }
+    fun clearCache() = scope.launchLatest("clear") {
+        rep().clearCache()
+    }
+
 
 }

@@ -1,18 +1,21 @@
 package com.github.klee0kai.thekey.app.ui.notegroup.components
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -28,6 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.domain.model.externalStorages
@@ -41,6 +45,8 @@ import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextField
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkContentPreview
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.horizontal
+import com.github.klee0kai.thekey.core.utils.views.rememberClick
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.core.utils.views.thenIf
 import com.github.klee0kai.thekey.core.utils.views.transparentColors
@@ -64,6 +70,7 @@ fun EditGroupInfoContent(
     onFavoriteChecked: (Boolean) -> Unit = {},
 ) {
     val theme = LocalTheme.current
+    val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
     val lazyListState = rememberLazyListState()
     val scrollPosition by rememberDerivedStateOf { lazyListState.scrollPosition() }
 
@@ -83,8 +90,8 @@ fun EditGroupInfoContent(
 
         Text(
             text = stringResource(id = R.string.select_color),
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+            style = theme.typeScheme.typography.labelSmall,
+            color = theme.colorScheme.androidColorScheme.onSurface.copy(alpha = 0.4f),
             modifier = Modifier.constrainAs(groupsHintField) {
                 linkTo(
                     start = parent.start,
@@ -93,7 +100,7 @@ fun EditGroupInfoContent(
                     end = parent.end,
                     horizontalBias = 0f,
                     topMargin = 16.dp,
-                    startMargin = 16.dp,
+                    startMargin = safeContentPaddings.horizontal(minValue = 16.dp),
                     verticalBias = 1f,
                 )
             }
@@ -131,11 +138,15 @@ fun EditGroupInfoContent(
                     )
                 })
         {
-            item {
-                Spacer(modifier = Modifier.width(14.dp))
+            item("start_spacer") {
+                Spacer(
+                    modifier = Modifier.width(
+                        safeContentPaddings.horizontal(minValue = 16.dp) - 4.dp
+                    )
+                )
             }
 
-            variants.forEachIndexed { index, group ->
+            variants.forEachIndexed { _, group ->
                 item(key = group.id) {
                     GroupCircle(
                         modifier = Modifier
@@ -150,25 +161,30 @@ fun EditGroupInfoContent(
                         checked = group.id == selectedId,
                         name = group.name,
                         colorScheme = theme.colorScheme.surfaceSchemas.surfaceScheme(group.keyColor),
-                        onClick = { onSelect(group) },
+                        onClick = rememberClick(group) { onSelect(group) },
                     )
                 }
+            }
+
+            item("end_spacer") {
+                Spacer(
+                    modifier = Modifier.width(
+                        safeContentPaddings.horizontal(minValue = 16.dp) - 4.dp
+                    )
+                )
             }
         }
 
         AppTextField(
             modifier = groupNameFieldModifier
                 .wrapContentHeight()
-                .width(224.dp)
                 .constrainAs(groupNameField) {
+                    width = Dimension.fillToConstraints
                     linkTo(
                         start = parent.start,
                         end = parent.end,
                         top = groupsListField.bottom,
                         bottom = favoriteSwitchField.top,
-                        verticalBias = 0f,
-                        horizontalBias = 0f,
-                        startMargin = 16.dp,
                         topMargin = 8.dp
                     )
                 },
@@ -191,13 +207,13 @@ fun EditGroupInfoContent(
                         end = parent.end,
                         top = groupNameField.bottom,
                         bottom = parent.bottom,
-                        verticalBias = 0f,
-                        topMargin = 8.dp
                     )
-                },
+                }
+                .clickable(onClick = { onFavoriteChecked(!favoriteChecked) })
+                .padding(horizontal = safeContentPaddings.horizontal(minValue = 16.dp))
+                .padding(vertical = 12.dp),
             text = stringResource(id = R.string.favorite),
             checked = favoriteChecked,
-            onCheckedChange = onFavoriteChecked,
         )
 
     }
@@ -220,6 +236,7 @@ fun EditGroupInfoContentPreview() = DebugDarkContentPreview {
 @Composable
 fun EditGroupInfoContentFavoritePreview() = DebugDarkContentPreview {
     var favoriteVisible by remember { mutableStateOf(true) }
+    var favoriteChecked by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) {
         while (true) {
             delay(1.seconds)
@@ -230,6 +247,8 @@ fun EditGroupInfoContentFavoritePreview() = DebugDarkContentPreview {
         variants = KeyColor.selectableColorGroups,
         forceIndicatorVisible = true,
         favoriteVisible = favoriteVisible,
+        favoriteChecked = favoriteChecked,
+        onFavoriteChecked = { favoriteChecked = !favoriteChecked }
     )
 }
 

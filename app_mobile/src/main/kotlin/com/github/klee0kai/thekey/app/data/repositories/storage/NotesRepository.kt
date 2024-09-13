@@ -1,54 +1,87 @@
 package com.github.klee0kai.thekey.app.data.repositories.storage
 
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.core.domain.model.ColoredNote
 import com.github.klee0kai.thekey.app.engine.model.DecryptedNote
-import com.github.klee0kai.thekey.app.engine.model.GenPasswParams
 import com.github.klee0kai.thekey.app.engine.model.coloredNote
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
-import kotlinx.coroutines.flow.MutableStateFlow
+import com.github.klee0kai.thekey.core.domain.model.ColorGroup
+import com.github.klee0kai.thekey.core.domain.model.ColoredNote
+import com.github.klee0kai.thekey.core.domain.model.DebugConfigs
+import com.github.klee0kai.thekey.core.utils.coroutine.lazyStateFlow
 import kotlinx.coroutines.flow.update
 
 class NotesRepository(
     val identifier: StorageIdentifier,
 ) {
 
-    val engine = DI.cryptStorageEngineSafeLazy(identifier)
+    private val engine = DI.cryptStorageEngineSafeLazy(identifier)
+    private val scope = DI.defaultThreadScope()
 
-    val notes = MutableStateFlow<List<ColoredNote>>(emptyList())
+    val notes = lazyStateFlow(
+        init = emptyList<ColoredNote>(),
+        defaultArg = false,
+        scope = scope
+    ) { force ->
+        if (value.isNotEmpty() && !force) return@lazyStateFlow
 
-    suspend fun loadNotes() {
-        if (notes.value.isEmpty()) {
-            notes.value = engine().notes()
+        if (value.isEmpty()) {
+            value = engine().notes()
                 .map { it.coloredNote(isLoaded = false) }
         }
 
-        notes.value = engine().notes(info = true)
+        value = engine().notes(info = true)
             .map { it.coloredNote(isLoaded = true) }
     }
+
 
     suspend fun note(notePtr: Long) = engine().note(notePtr)
 
     suspend fun setNotesGroup(notesPtr: List<Long>, groupId: Long) {
+        if (DebugConfigs.isNotesFastUpdate) {
+            notes.update { list ->
+                list.map { note ->
+                    if (note.id in notesPtr) {
+                        note.copy(group = ColorGroup(id = groupId))
+                    } else {
+                        note
+                    }
+                }
+            }
+        }
+
         engine().setNotesGroup(notesPtr.toTypedArray(), groupId)
-        loadNotes()
+        notes.touch(true)
     }
 
     suspend fun saveNote(note: DecryptedNote, setAll: Boolean = false) {
+        if (DebugConfigs.isNotesFastUpdate) {
+            notes.update { list ->
+                list.filter { it.id != note.ptnote } +
+                        listOf(note.coloredNote(isLoaded = true))
+            }
+        }
+
         engine().saveNote(note, setAll = setAll)
-        loadNotes()
+        notes.touch(true)
     }
 
     suspend fun removeNote(noteptr: Long) {
+        if (DebugConfigs.isNotesFastUpdate) {
+            notes.update { list -> list.filter { it.id != noteptr } }
+        }
+
         engine().removeNote(noteptr)
-        loadNotes()
+        notes.touch(true)
     }
 
-    suspend fun generateNewPassw(params: GenPasswParams) =
-        engine().generateNewPassw(params)
 
-    suspend fun clear() {
-        notes.update { emptyList() }
+    suspend fun removeHist(histPtr: Long) {
+        engine().removeHist(histPtr)
+        notes.touch(true)
+    }
+
+    suspend fun clearCache() {
+        notes.value = emptyList()
     }
 
 }

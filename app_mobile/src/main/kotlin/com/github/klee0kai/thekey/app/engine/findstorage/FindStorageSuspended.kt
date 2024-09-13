@@ -3,6 +3,7 @@ package com.github.klee0kai.thekey.app.engine.findstorage
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.engine.model.Storage
 import com.github.klee0kai.thekey.core.di.identifiers.FileIdentifier
+import com.github.klee0kai.thekey.core.domain.model.DebugConfigs
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -14,6 +15,7 @@ open class FindStorageSuspended {
 
     private val _engine = DI.findStorageEngineLazy()
     private val dispatcher = DI.jniDispatcher()
+
 
     open suspend fun findStorages(
         folder: String,
@@ -50,6 +52,7 @@ open class FindStorageSuspended {
     ): T = withContext(dispatcher) {
         val fileMutex = DI.fileMutex(FileIdentifier(path))
         fileMutex.withWriteLock {
+            delay(DebugConfigs.engineDelay.writeDelay)
             _engine().block()
         }
     }
@@ -59,7 +62,8 @@ open class FindStorageSuspended {
         block: suspend FindStorageEngine.() -> T
     ): T = withContext(dispatcher) {
         val fileMutex = DI.fileMutex(FileIdentifier(path))
-        fileMutex.withWriteLock {
+        fileMutex.withReadLock {
+            delay(DebugConfigs.engineDelay.readDelay)
             _engine().block()
         }
     }
