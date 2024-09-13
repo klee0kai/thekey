@@ -38,7 +38,7 @@ class PredefinedNoteGroupsInteractor(
                 else -> precreated.copy(isRemoved = true)
             }
         }.collect(this)
-    }
+    }.flowOn(DI.defaultDispatcher())
 
     fun setColorGroup(
         colorGroup: ColorGroup,

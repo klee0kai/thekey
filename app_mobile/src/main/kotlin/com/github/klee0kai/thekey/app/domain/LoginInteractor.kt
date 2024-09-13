@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
 import java.io.File
@@ -39,7 +40,7 @@ class LoginInteractor {
                         ?: ColoredStorage(path = storage.path)
                 }
             }.collect(this)
-    }
+    }.flowOn(DI.defaultDispatcher())
 
     fun login(
         storageIdentifier: StorageIdentifier,

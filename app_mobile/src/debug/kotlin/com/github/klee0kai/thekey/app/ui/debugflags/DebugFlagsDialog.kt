@@ -32,7 +32,6 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.stone.type.wrappers.getValue
-import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.domain.model.DebugConfigs
 import com.github.klee0kai.thekey.core.domain.model.next
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
@@ -54,6 +53,7 @@ import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.core.utils.views.visibleOnTargetAlpha
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
+import com.github.klee0kai.thekey.core.R as CoreR
 
 @Composable
 fun DebugFlagsDialog(
@@ -146,7 +146,7 @@ fun DebugFlagsDialog(
                 content = { BackMenuIcon() }
             )
         },
-        titleContent = { Text(text = stringResource(R.string.debug_flags)) },
+        titleContent = { Text(text = stringResource(CoreR.string.debug_flags)) },
     )
 }
 

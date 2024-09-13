@@ -12,6 +12,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 
 class NotesInteractor(
     val identifier: StorageIdentifier,
@@ -31,9 +32,11 @@ class NotesInteractor(
                 note.copy(group = group)
             }
         }.collect(this)
-    }
+    }.flowOn(DI.defaultDispatcher())
 
-    val loadedNotes = notes.filter { list -> list.all { it.isLoaded } }
+    val loadedNotes = notes
+        .filter { list -> list.all { it.isLoaded } }
+        .flowOn(DI.defaultDispatcher())
 
     fun note(
         notePtr: Long,

@@ -16,6 +16,8 @@ import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.overlay.OverlayContainer
 import com.github.klee0kai.thekey.core.utils.common.GlobalJobsCollection
 import com.github.klee0kai.thekey.core.utils.common.launch
+import com.github.klee0kai.thekey.core.utils.views.toDp
+import timber.log.Timber
 
 open class MainActivity : BaseActivity() {
 
@@ -47,6 +49,12 @@ open class MainActivity : BaseActivity() {
         super.onStart()
         scope.launch {
             lifeCycleInteractor.appResumed()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                val bounds = windowManager.currentWindowMetrics.bounds
+                val height = bounds.height().toDp()
+                val width = bounds.width().toDp()
+                Timber.d("display size ( $width : $height ) dp or $bounds px ")
+            }
         }
     }
 

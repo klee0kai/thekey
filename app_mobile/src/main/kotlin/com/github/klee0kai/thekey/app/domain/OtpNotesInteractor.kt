@@ -9,6 +9,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 
 class OtpNotesInteractor(
@@ -31,7 +32,7 @@ class OtpNotesInteractor(
                 note.copy(group = group)
             }
         }.collect(this)
-    }
+    }.flowOn(DI.defaultDispatcher())
 
     val loadedOtpNotes = otpNotes.filter { list -> list.all { it.isLoaded } }
 
@@ -46,7 +47,7 @@ class OtpNotesInteractor(
             val group = groups.firstOrNull { it.id == note.group.id } ?: note.group
             note.copy(group = group)
         }.collect(this)
-    }
+    }.flowOn(DI.defaultDispatcher())
 
     @Deprecated("use domain models")
     fun otpDecryptedNote(

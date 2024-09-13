@@ -6,6 +6,7 @@ import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.core.domain.model.externalStorages
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
@@ -18,20 +19,20 @@ class StoragesInteractor {
 
     val allColorGroups = flow<List<ColorGroup>> {
         rep().allColorGroups.collect(this)
-    }
+    }.flowOn(DI.defaultDispatcher())
 
     val allStorages = flow<List<ColoredStorage>> {
         rep().allStorages
             .map { list -> list.map { storage -> storage.updateVersion() } }
             .collect(this)
-    }
+    }.flowOn(DI.defaultDispatcher())
 
     val externalStoragesGroup = flow<ColorGroup> {
         val precreated = ColorGroup.externalStorages()
         rep().allColorGroups
             .map { list -> list.firstOrNull { it.id == precreated.id } ?: precreated }
             .collect(this)
-    }
+    }.flowOn(DI.defaultDispatcher())
 
     fun findStorage(path: String, mockNew: Boolean = false) = scope.async {
         var storage = rep().findStorage(path).await()?.updateVersion()
