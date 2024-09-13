@@ -16,7 +16,6 @@ android {
 
     buildTypes {
         release {
-            proguardFiles("proguard-rules.pro")
         }
         debug {
             isMinifyEnabled = false
@@ -38,6 +37,7 @@ dependencies {
     implementation(libs.bundles.compose.debug)
     implementation(libs.bundles.androidx)
     implementation(libs.bundles.stone)
+    implementation(libs.bundles.fix.doubles)
 
     implementation(libs.ml.common)
     implementation(libs.ml.dynamic)

@@ -20,3 +20,5 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
+-keep class com.github.klee0kai.thekey.dynamic.findstorage.FindStorageImpl { *; }
+

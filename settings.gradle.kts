@@ -35,8 +35,8 @@ val isPrivateAvailable = file("private").list()?.isNotEmpty() ?: false
 if (isPrivateAvailable) {
     include(":private:feature_firebase")
     include(":private:feature_billing")
-    include(":private:dynamic_autofill")
-    include(":private:dynamic_gdrive")
-    include(":private:dynamic_chpassw")
-    include(":private:dynamic_smpassw")
+//    include(":private:dynamic_autofill")
+//    include(":private:dynamic_gdrive")
+//    include(":private:dynamic_chpassw")
+//    include(":private:dynamic_smpassw")
 }

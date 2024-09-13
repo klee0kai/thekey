@@ -20,10 +20,9 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
+-keep class com.github.klee0kai.thekey.dynamic.qrcodescanner.QRCodeScannerImpl { *; }
+
 -keep public class com.google.mlkit.**{
   *;
 }
 
--keepclassmembers class * {
-    native<methods>;
-}

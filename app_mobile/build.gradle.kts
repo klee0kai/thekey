@@ -20,10 +20,10 @@ android {
     dynamicFeatures += setOf(":dynamic_qrcodescanner", ":dynamic_findstorage")
     if (Commercial.isCommercialAvailable) {
         dynamicFeatures += setOf(
-            ":private:dynamic_autofill",
-            ":private:dynamic_gdrive",
-            ":private:dynamic_chpassw",
-            ":private:dynamic_smpassw",
+//            ":private:dynamic_autofill",
+//            ":private:dynamic_gdrive",
+//            ":private:dynamic_chpassw",
+//            ":private:dynamic_smpassw",
         )
     }
 
@@ -42,7 +42,7 @@ android {
     }
     buildTypes {
         val releaseConf: ApplicationBuildType.() -> Unit = {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             signingConfig = signingConfigs["release"]
             proguardFiles("proguard-rules.pro")
             ndk {
@@ -121,7 +121,6 @@ dependencies {
     implementation(libs.bundles.compose.debug)
     implementation(libs.bundles.androidx)
     implementation(libs.bundles.stone)
-    implementation(libs.bundles.fix.doubles)
 
     implementation(libs.jetbrain.immutable)
     implementation(libs.jetbrain.coroutines)
