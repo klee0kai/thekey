@@ -21,6 +21,7 @@
 #-renamesourcefileattribute SourceFile
 
 -dontwarn java.lang.reflect.AnnotatedType
+-dontwarn com.google.j2objc.annotations.RetainedWith
 
 -keep public class com.github.klee0kai.thekey.app.di.**{
   *;
