@@ -42,7 +42,7 @@ room = "2.6.1"
 
 lorem = "2.2"
 
-guava = "31.0.1-jre"
+guava = "33.0.0-jre"
 auto-annotations = "1.6.3"
 
 junit = "4.13.2"

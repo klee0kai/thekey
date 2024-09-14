@@ -18,6 +18,7 @@ android {
 
     buildTypes {
         val releaseConf: DynamicFeatureBuildType.() -> Unit = {
+            proguardFiles("proguard-rules.pro")
         }
         release(releaseConf)
         commercialRelease(releaseConf)

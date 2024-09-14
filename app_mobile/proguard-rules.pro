@@ -20,18 +20,13 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
+-dontwarn java.lang.reflect.AnnotatedType
+-dontwarn com.google.j2objc.annotations.RetainedWith
+
 -keep public class com.github.klee0kai.thekey.app.di.**{
   *;
 }
 
 -keep public class com.github.klee0kai.thekey.app.engine.**{
-  *;
-}
-
--keep public class com.google.common.annotations.**{
-  *;
-}
-
--keepnames public class **{
   *;
 }
