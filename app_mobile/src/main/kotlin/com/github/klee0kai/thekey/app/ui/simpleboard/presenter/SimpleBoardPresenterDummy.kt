@@ -1,15 +1,15 @@
-package com.github.klee0kai.thekey.app.ui.navigationboard.presenter
+package com.github.klee0kai.thekey.app.ui.simpleboard.presenter
 
 import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import com.thedeanda.lorem.LoremIpsum
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.emptyFlow
 
-class NavigationBoardPresenterDummy(
+class SimpleBoardPresenterDummy(
     val hasCurrentStorage: Boolean = false,
     val favoriteCount: Int = 3,
     val opennedCount: Int = 3,
-) : NavigationBoardPresenter {
+) : SimpleBoardPresenter {
 
     override val currentStorage = when {
         hasCurrentStorage -> MutableStateFlow(

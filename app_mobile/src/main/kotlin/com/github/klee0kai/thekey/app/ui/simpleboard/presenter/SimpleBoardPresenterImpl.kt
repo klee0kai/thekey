@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.ui.navigationboard.presenter
+package com.github.klee0kai.thekey.app.ui.simpleboard.presenter
 
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.navigation.dest
@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
-class NavigationBoardPresenterImpl : NavigationBoardPresenter {
+class SimpleBoardPresenterImpl : SimpleBoardPresenter {
 
     private val scope = DI.defaultThreadScope()
     private val router = DI.router()

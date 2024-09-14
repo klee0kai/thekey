@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.ui.navigationboard.components.popup
+package com.github.klee0kai.thekey.app.ui.simpleboard.components.popup
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

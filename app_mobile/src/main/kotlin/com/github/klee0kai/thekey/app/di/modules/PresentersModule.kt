@@ -14,8 +14,6 @@ import com.github.klee0kai.thekey.app.ui.login.presenter.LoginPresenter
 import com.github.klee0kai.thekey.app.ui.login.presenter.LoginPresenterImpl
 import com.github.klee0kai.thekey.app.ui.main.presenter.MainPresenter
 import com.github.klee0kai.thekey.app.ui.main.presenter.MainPresenterImpl
-import com.github.klee0kai.thekey.app.ui.navigationboard.presenter.NavigationBoardPresenter
-import com.github.klee0kai.thekey.app.ui.navigationboard.presenter.NavigationBoardPresenterImpl
 import com.github.klee0kai.thekey.app.ui.note.presenter.NotePresenter
 import com.github.klee0kai.thekey.app.ui.note.presenter.NotePresenterImpl
 import com.github.klee0kai.thekey.app.ui.noteedit.presenter.EditNotePresenter
@@ -30,6 +28,8 @@ import com.github.klee0kai.thekey.app.ui.settings.plugins.presenter.PluginsPrese
 import com.github.klee0kai.thekey.app.ui.settings.plugins.presenter.PluginsPresenterImpl
 import com.github.klee0kai.thekey.app.ui.settings.presenter.SettingsPresenter
 import com.github.klee0kai.thekey.app.ui.settings.presenter.SettingsPresenterImpl
+import com.github.klee0kai.thekey.app.ui.simpleboard.presenter.SimpleBoardPresenter
+import com.github.klee0kai.thekey.app.ui.simpleboard.presenter.SimpleBoardPresenterImpl
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.presenter.GenPasswPresenter
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.presenter.GenPasswPresenterImpl
 import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenter
@@ -55,7 +55,7 @@ interface PresentersModule {
         LoginPresenterImpl(storageIdentifier)
 
     @Provide(cache = Provide.CacheType.Weak)
-    fun navigationBoardPresenter(): NavigationBoardPresenter = NavigationBoardPresenterImpl()
+    fun simpleBoardPresenter(): SimpleBoardPresenter = SimpleBoardPresenterImpl()
 
     @Provide(cache = Provide.CacheType.Weak)
     fun storagesPresenter(): StoragesPresenter = StoragesPresenterImpl()

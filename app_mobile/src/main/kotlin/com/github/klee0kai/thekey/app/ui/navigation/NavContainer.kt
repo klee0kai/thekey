@@ -36,7 +36,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.ui.navigationboard.StorageNavigationBoard
+import com.github.klee0kai.thekey.app.ui.simpleboard.SimpleNavigationBoard
 import com.github.klee0kai.thekey.core.ui.devkit.EmptyScreen
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.navigation.model.Destination
@@ -68,7 +68,7 @@ fun MainNavContainer() {
                 controller = LocalRouter.current.navBoardController,
                 transitionQueueing = NavTransitionQueueing.QueueAll,
                 transitionSpec = customTransitionSpec,
-                emptyBackstackPlaceholder = { StorageNavigationBoard() }
+                emptyBackstackPlaceholder = { SimpleNavigationBoard() }
             ) { destination ->
                 DI.screenResolver().screenOf(destination = destination)
             }

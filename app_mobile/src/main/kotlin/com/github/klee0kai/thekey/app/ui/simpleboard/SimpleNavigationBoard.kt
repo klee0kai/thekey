@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.ui.navigationboard
+package com.github.klee0kai.thekey.app.ui.simpleboard
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer
@@ -30,10 +30,10 @@ import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.ui.navigation.model.SettingsDestination
-import com.github.klee0kai.thekey.app.ui.navigationboard.components.CurrentStorageHeader
-import com.github.klee0kai.thekey.app.ui.navigationboard.components.DefaultHeader
-import com.github.klee0kai.thekey.app.ui.navigationboard.components.StorageNavigationMapList
-import com.github.klee0kai.thekey.app.ui.navigationboard.presenter.NavigationBoardPresenterDummy
+import com.github.klee0kai.thekey.app.ui.simpleboard.components.CurrentStorageHeader
+import com.github.klee0kai.thekey.app.ui.simpleboard.components.DefaultHeader
+import com.github.klee0kai.thekey.app.ui.simpleboard.components.StorageNavigationMapList
+import com.github.klee0kai.thekey.app.ui.simpleboard.presenter.SimpleBoardPresenterDummy
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
@@ -50,14 +50,16 @@ import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
-fun StorageNavigationBoard(modifier: Modifier = Modifier) {
+fun SimpleNavigationBoard(
+    modifier: Modifier = Modifier,
+) {
     val theme = LocalTheme.current
     val colorScheme = LocalColorScheme.current.navigationBoard
     val router by LocalRouter.currentRef
     val scope = rememberCoroutineScope()
     val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
     val safeDrawingPaddings = WindowInsets.safeDrawing.asPaddingValues()
-    val presenter by rememberOnScreenRef { DI.navigationBoardPresenter() }
+    val presenter by rememberOnScreenRef { DI.simpleBoardPresenter() }
     val currentStorage by presenter!!.currentStorage.collectAsStateCrossFaded(
         key = Unit,
         initial = null
@@ -157,17 +159,17 @@ fun StorageNavigationBoard(modifier: Modifier = Modifier) {
 @OptIn(DebugOnly::class)
 @Preview(device = Devices.PHONE)
 @Composable
-fun StorageNavigationBoardPreview() {
+fun SimpleBoardPreview() {
     DI.hardResetToPreview()
     DI.initPresenterModule(object : PresentersModule {
-        override fun navigationBoardPresenter() = NavigationBoardPresenterDummy(
+        override fun simpleBoardPresenter() = SimpleBoardPresenterDummy(
             hasCurrentStorage = true,
             opennedCount = 10,
             favoriteCount = 10,
         )
     })
     DebugDarkScreenPreview {
-        StorageNavigationBoard()
+        SimpleNavigationBoard()
     }
 }
 
@@ -176,14 +178,14 @@ fun StorageNavigationBoardPreview() {
 @OptIn(DebugOnly::class)
 @Preview(device = Devices.PHONE)
 @Composable
-fun StorageNavigationBoardNoCurrentPreview() {
+fun SimpleBoardNoCurrentPreview() {
     DI.hardResetToPreview()
     DI.initPresenterModule(object : PresentersModule {
-        override fun navigationBoardPresenter() = NavigationBoardPresenterDummy(
+        override fun simpleBoardPresenter() = SimpleBoardPresenterDummy(
         )
     })
     DebugDarkScreenPreview {
-        StorageNavigationBoard()
+        SimpleNavigationBoard()
     }
 }
 
@@ -191,13 +193,13 @@ fun StorageNavigationBoardNoCurrentPreview() {
 @OptIn(DebugOnly::class)
 @Preview(device = Devices.PHONE)
 @Composable
-fun StorageNavigationBoardEmptyPreview() {
+fun SimpleBoardEmptyPreview() {
     DI.hardResetToPreview()
     DI.initPresenterModule(object : PresentersModule {
-        override fun navigationBoardPresenter() = NavigationBoardPresenterDummy()
+        override fun simpleBoardPresenter() = SimpleBoardPresenterDummy()
     })
     DebugDarkScreenPreview {
-        StorageNavigationBoard()
+        SimpleNavigationBoard()
     }
 }
 
@@ -206,12 +208,12 @@ fun StorageNavigationBoardEmptyPreview() {
 @OptIn(DebugOnly::class)
 @Preview(device = Devices.TABLET)
 @Composable
-fun StorageNavigationBoardTabletPreview() {
+fun SimpleBoardTabletPreview() {
     DI.hardResetToPreview()
     DI.initPresenterModule(object : PresentersModule {
-        override fun navigationBoardPresenter() = NavigationBoardPresenterDummy()
+        override fun simpleBoardPresenter() = SimpleBoardPresenterDummy()
     })
     DebugDarkScreenPreview {
-        StorageNavigationBoard()
+        SimpleNavigationBoard()
     }
 }
