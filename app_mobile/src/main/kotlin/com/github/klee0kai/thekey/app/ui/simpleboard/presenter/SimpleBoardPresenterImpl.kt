@@ -13,6 +13,7 @@ import com.github.klee0kai.thekey.core.utils.common.launch
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 class SimpleBoardPresenterImpl : SimpleBoardPresenter {
@@ -42,7 +43,7 @@ class SimpleBoardPresenterImpl : SimpleBoardPresenter {
 
     override val openedStoragesFlow = flow<List<ColoredStorage>> {
         loginInteractor().authorizedStorages.collect(this)
-    }
+    }.flowOn(DI.defaultDispatcher())
 
     override val favoritesStorages: Flow<List<ColoredStorage>> = flow {
         storagesInteractor().allStorages.map { list ->
@@ -51,7 +52,7 @@ class SimpleBoardPresenterImpl : SimpleBoardPresenter {
                 storages = storages.take(PaidLimits.PAID_FAVORITE_STORAGE_LIMITS)
             storages
         }.collect(this)
-    }
+    }.flowOn(DI.defaultDispatcher())
 
     override fun openStorage(storagePath: String, router: AppRouter?) = scope.launch {
         val currentLogined = currentStorage.firstOrNull()

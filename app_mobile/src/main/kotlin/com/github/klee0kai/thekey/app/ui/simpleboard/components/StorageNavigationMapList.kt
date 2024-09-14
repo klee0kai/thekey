@@ -68,7 +68,7 @@ fun StorageNavigationMapList(
                 val position = rememberViewPosition()
 
                 FavoriteStorageItem(
-                    modifier = modifier
+                    modifier = Modifier
                         .onGlobalPositionState(position),
                     storage = storage,
                     onClick = rememberClickDebounced(storage.path) {

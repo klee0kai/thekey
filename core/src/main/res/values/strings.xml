@@ -203,4 +203,5 @@
     <string name="one_time_password">One time password</string>
     <string name="next">Next</string>
     <string name="debug_flags" translatable="false">Debug flags</string>
+    <string name="select_storage_to_move">Select storage to move</string>
 </resources>

@@ -10,6 +10,7 @@ import com.github.klee0kai.thekey.app.ui.note.presenter.NotePresenter
 import com.github.klee0kai.thekey.app.ui.noteedit.presenter.EditNotePresenter
 import com.github.klee0kai.thekey.app.ui.notegroup.presenter.EditNoteGroupsPresenter
 import com.github.klee0kai.thekey.app.ui.otpnote.presenter.OtpNotePresenter
+import com.github.klee0kai.thekey.app.ui.selectstorageboard.presenter.SelectStorageToNoteMoveBoardPresenter
 import com.github.klee0kai.thekey.app.ui.settings.plugin.presenter.PluginPresenter
 import com.github.klee0kai.thekey.app.ui.settings.plugins.presenter.PluginsPresenter
 import com.github.klee0kai.thekey.app.ui.settings.presenter.SettingsPresenter
@@ -31,6 +32,8 @@ interface PresentersDependencies {
     fun loginPresenter(identifier: StorageIdentifier = StorageIdentifier()): LoginPresenter
 
     fun simpleBoardPresenter(): SimpleBoardPresenter
+
+    fun selectStorageToNoteMoveBoardPresenter(): SelectStorageToNoteMoveBoardPresenter
 
     fun storagesPresenter(): StoragesPresenter
 
