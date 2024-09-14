@@ -64,7 +64,14 @@ fun MainNavContainer() {
     ModalNavigationDrawer(
         drawerState = LocalRouter.current.navBoardState,
         drawerContent = {
-            StorageNavigationBoard()
+            AnimatedNavHost(
+                controller = LocalRouter.current.navBoardController,
+                transitionQueueing = NavTransitionQueueing.QueueAll,
+                transitionSpec = customTransitionSpec,
+                emptyBackstackPlaceholder = { StorageNavigationBoard() }
+            ) { destination ->
+                DI.screenResolver().screenOf(destination = destination)
+            }
         }
     ) {
         // screens

@@ -127,6 +127,7 @@ interface RouterContext {
     val navFullController: NavController<Destination> get() = TODO()
     val navScreensController: NavController<Destination> get() = TODO()
     val navDialogsController: NavController<Destination> get() = TODO()
+    val navBoardController: NavController<Destination> get() = TODO()
     val activity: ComponentActivity? get() = TODO()
 
     val backDispatcher: OnBackPressedDispatcher? get() = TODO()

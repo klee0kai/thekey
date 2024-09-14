@@ -35,6 +35,7 @@ open class AppRouterImp(
     override val navFullController get() = ctx.navFullController
     override val navScreensController get() = ctx.navScreensController
     override val navDialogsController get() = ctx.navDialogsController
+    override val navBoardController get() = ctx.navBoardController
 
     override val activity get() = ctx.activity
 

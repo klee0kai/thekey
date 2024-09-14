@@ -7,6 +7,7 @@ import com.github.klee0kai.thekey.core.ui.navigation.ComposeRouter
 import com.github.klee0kai.thekey.core.ui.navigation.RouterContext
 import com.github.klee0kai.thekey.core.ui.navigation.model.Destination
 import com.github.klee0kai.thekey.core.ui.navigation.model.DialogDestination
+import com.github.klee0kai.thekey.core.ui.navigation.model.NavBoardDestination
 import com.github.klee0kai.thekey.core.ui.navigation.model.NavigateBackstackChange
 import com.github.klee0kai.thekey.core.utils.coroutine.awaitSec
 import com.github.klee0kai.thekey.core.utils.coroutine.shareLatest
@@ -113,6 +114,11 @@ class ComposeRouterImpl(context: RouterContext) : ComposeRouter, RouterContext b
             navDialogsController.setNewBackstack(
                 navFullController.backstack.entries
                     .takeLastWhile { it.destination is DialogDestination }
+            )
+
+            navBoardController.setNewBackstack(
+                navFullController.backstack.entries
+                    .takeLastWhile { it.destination is NavBoardDestination }
             )
 
         }
