@@ -10,10 +10,8 @@ import com.github.klee0kai.thekey.app.ui.noteedit.model.EditTabs
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.domain.model.feature.model.DynamicFeature
 import com.github.klee0kai.thekey.core.ui.navigation.model.Destination
-import com.github.klee0kai.thekey.core.ui.navigation.model.DialogDestination
 import com.github.klee0kai.thekey.core.ui.navigation.model.DynamicDestination
 import kotlinx.parcelize.Parcelize
-
 
 object MainDestinations {
     val InitDest = LoginDestination()
@@ -31,9 +29,6 @@ data class LoginDestination(
 
 @Parcelize
 data object StoragesDestination : Destination
-
-@Parcelize
-data object SelectStorageDialogDestination : DialogDestination
 
 @Parcelize
 data class EditStorageDestination(
@@ -79,28 +74,6 @@ data class StorageDestination(
      */
     val selectedPage: Int = 0,
 ) : Destination
-
-@Parcelize
-data class NoteDialogDestination(
-    /**
-     * storage path
-     */
-    val path: String = "",
-    /**
-     * Storage version
-     */
-    val storageVersion: Int = 0,
-
-    /**
-     * note id
-     */
-    val notePtr: Long? = null,
-
-    /**
-     * otp note id
-     */
-    val otpNotePtr: Long? = null,
-) : DialogDestination
 
 @Parcelize
 data class EditNoteDestination(
@@ -201,6 +174,3 @@ data class PasswordTwinsDestination(
     val storageIdentifier: StorageIdentifier = StorageIdentifier(),
 ) : DynamicDestination(DynamicFeature.smpassw())
 
-
-@Parcelize
-data object DebugFlagsDialogDestination : DialogDestination
