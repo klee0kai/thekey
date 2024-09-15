@@ -37,12 +37,14 @@ fun NotePopupMenu(
     colorGroups: List<ColorGroup> = emptyList(),
     selectedGroupId: Long? = null,
     onEdit: (() -> Unit)? = null,
+    onMove: (() -> Unit)? = null,
     onColorGroupSelected: ((ColorGroup) -> Unit)? = null,
 ) {
     val theme = LocalTheme.current
     val colorScheme = theme.colorScheme
     val surfaceColor = LocalTheme.current.colorScheme.popupMenu.surfaceColor
     val editText = stringResource(id = R.string.edit)
+    val moveText = stringResource(id = R.string.move)
 
     ConstraintLayout(modifier = modifier) {
         val (menuField) = createRefs()
@@ -148,10 +150,12 @@ fun NotePopupMenu(
             },
             variants = buildList {
                 if (onEdit != null) add(editText)
+                if (onMove != null) add(moveText)
             },
             onSelected = { text, _ ->
                 when (text) {
                     editText -> onEdit?.invoke()
+                    moveText -> onMove?.invoke()
                 }
             }
         )
@@ -178,6 +182,7 @@ private fun NotePopupMenuPreview() = DebugDarkContentPreview {
                 ColorGroup(Dummy.dummyId, "E", KeyColor.VIOLET),
             ),
             onEdit = {},
+            onMove = {},
             onColorGroupSelected = { },
         )
     }

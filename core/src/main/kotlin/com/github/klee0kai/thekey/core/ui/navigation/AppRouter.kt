@@ -51,6 +51,10 @@ interface ComposeRouter {
 
     fun back(exitFromApp: Boolean = false) : Job = emptyJob()
 
+    fun backFromDialog() : Job = emptyJob()
+
+    fun backFromBoard() : Job = emptyJob()
+
     fun resetStack(vararg destinations: Destination) :Job = emptyJob()
 
     @Composable

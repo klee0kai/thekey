@@ -26,6 +26,7 @@ import androidx.compose.material3.SwipeToDismissBoxDefaults
 import androidx.compose.material3.SwipeToDismissBoxState
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -41,6 +42,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.EmptyScreen
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.navigation.model.Destination
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
+import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.horizontal
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.core.utils.views.rememberTickerOf
@@ -54,15 +56,23 @@ import dev.olshevski.navigation.reimagined.NavTransitionSpec
 
 @Composable
 fun MainNavContainer() {
+    val router by LocalRouter.currentRef
     NavBackHandler(LocalRouter.current.navFullController)
     LocalRouter.current.collectBackstackChanges()
     val presenter by rememberOnScreenRef { DI.mainPresenter() }
     val isBlur by presenter!!.isMakeBlur
         .collectAsState(key = Unit, initial = false)
     val blurDp by animateDpAsState(targetValue = if (isBlur) 10.dp else 0.dp, label = "blur")
+    val drawerState = LocalRouter.current.navBoardState
+
+    LaunchedEffect(key1 = drawerState.isClosed) {
+        if (drawerState.isClosed) {
+            router?.backFromBoard()
+        }
+    }
 
     ModalNavigationDrawer(
-        drawerState = LocalRouter.current.navBoardState,
+        drawerState = drawerState,
         drawerContent = {
             AnimatedNavHost(
                 controller = LocalRouter.current.navBoardController,

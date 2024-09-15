@@ -26,7 +26,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
 import timber.log.Timber
 
-class ComposeRouterImpl(context: RouterContext) : ComposeRouter, RouterContext by context {
+class ComposeRouterImpl(
+    context: RouterContext,
+) : ComposeRouter, RouterContext by context {
 
     override fun navigate(vararg destination: Destination): Flow<Any?> =
         navigate(destinations = destination, resultClazz = Any::class.java)
@@ -47,6 +49,7 @@ class ComposeRouterImpl(context: RouterContext) : ComposeRouter, RouterContext b
                         change.currentNavIds.contains(navEntry.id)
                     }
                 }
+
                 // wait close target
                 val result = navChanges
                     .first { change ->
@@ -96,6 +99,24 @@ class ComposeRouterImpl(context: RouterContext) : ComposeRouter, RouterContext b
         }
     }
 
+    override fun backFromDialog() = scope.launch {
+        var entries = navFullController.backstack.entries.toList()
+        val lastBoardIndex = entries.indexOfLast { it.destination is DialogDestination }
+        if (lastBoardIndex > 0) {
+            entries = entries.filterIndexed { index, _ -> index != lastBoardIndex }
+            navFullController.setNewBackstack(entries)
+        }
+    }
+
+    override fun backFromBoard() = scope.launch {
+        var entries = navFullController.backstack.entries.toList()
+        val lastBoardIndex = entries.indexOfLast { it.destination is NavBoardDestination }
+        if (lastBoardIndex > 0) {
+            entries = entries.filterIndexed { index, _ -> index != lastBoardIndex }
+            navFullController.setNewBackstack(entries)
+        }
+    }
+
     override fun resetStack(vararg destinations: Destination) = scope.launch {
         val navEntries = destinations.map { navEntry(it) }.toList()
         navFullController.setNewBackstack(navEntries)
@@ -108,7 +129,10 @@ class ComposeRouterImpl(context: RouterContext) : ComposeRouter, RouterContext b
         LaunchedEffect(backstackHash) {
             navScreensController.setNewBackstack(
                 navFullController.backstack.entries
-                    .filter { it.destination !is DialogDestination }
+                    .filter {
+                        it.destination !is DialogDestination
+                                && it.destination !is NavBoardDestination
+                    }
             )
 
             navDialogsController.setNewBackstack(
