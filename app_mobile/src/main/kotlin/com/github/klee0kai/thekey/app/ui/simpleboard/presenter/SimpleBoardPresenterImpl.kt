@@ -10,6 +10,7 @@ import com.github.klee0kai.thekey.core.domain.model.feature.PaidFeature
 import com.github.klee0kai.thekey.core.domain.model.feature.PaidLimits
 import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
 import com.github.klee0kai.thekey.core.utils.common.launch
+import com.github.klee0kai.thekey.core.utils.coroutine.lazyStateFlow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
@@ -25,7 +26,11 @@ class SimpleBoardPresenterImpl : SimpleBoardPresenter {
     private val storagesInteractor = DI.storagesInteractorLazy()
     private val billing = DI.billingInteractor()
 
-    override val currentStorage = flow<ColoredStorage?> {
+    override val currentStorage = lazyStateFlow(
+        init = null as? ColoredStorage?,
+        defaultArg = Unit,
+        scope = scope,
+    ) {
         router.navChanges
             .map { backChange ->
                 val storageDest = backChange.currentNavStack
@@ -41,9 +46,11 @@ class SimpleBoardPresenterImpl : SimpleBoardPresenter {
             }.collect(this)
     }
 
-    override val openedStoragesFlow = flow<List<ColoredStorage>> {
-        loginInteractor().authorizedStorages.collect(this)
-    }.flowOn(DI.defaultDispatcher())
+    override val openedStoragesFlow = lazyStateFlow(
+        init = emptyList<ColoredStorage>(),
+        defaultArg = Unit,
+        scope = scope,
+    ) { loginInteractor().authorizedStorages.collect(this) }
 
     override val favoritesStorages: Flow<List<ColoredStorage>> = flow {
         storagesInteractor().allStorages.map { list ->
@@ -59,10 +66,14 @@ class SimpleBoardPresenterImpl : SimpleBoardPresenter {
         val openedStorage = openedStoragesFlow.firstOrNull()?.firstOrNull { it.path == storagePath }
         router?.hideNavigationBoard()
         if (currentLogined?.path == storagePath) return@launch
-        val storage = storagesInteractor().findStorage(storagePath).await() ?: return@launch
         if (openedStorage != null) {
-            router?.resetStack(LoginDestination(), storage.dest())
+            router?.resetStack(LoginDestination(), openedStorage.dest())
         } else {
+            val storage = storagesInteractor()
+                .findStorage(storagePath)
+                .await()
+                ?: return@launch
+
             router?.resetStack(
                 LoginDestination(
                     identifier = storage.identifier(),
