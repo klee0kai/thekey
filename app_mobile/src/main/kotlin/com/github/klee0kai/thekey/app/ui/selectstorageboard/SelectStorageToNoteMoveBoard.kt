@@ -33,7 +33,7 @@ fun SelectStorageToNoteMoveBoard(
 ) {
     val router by LocalRouter.currentRef
     val presenter by rememberOnScreenRef { DI.selectStorageToNoteMoveBoardPresenter() }
-    val opened by presenter!!.openedStoragesFlow.collectAsState(key = Unit, initial = emptyList())
+    val opened by presenter!!.selectableOpenStorages.collectAsState(key = Unit, initial = emptyList())
 
     LazyColumn(
         modifier = modifier

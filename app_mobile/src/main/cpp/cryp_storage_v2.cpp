@@ -243,6 +243,26 @@ int JvmStorage2::removeNote(const int64_t &notePt) {
     return 0;
 }
 
+int JvmStorage2::moveNote(
+        const int64_t &notePt,
+        const std::string &targetStorageIdentifier
+) {
+    auto storage = findStorage(getEngineIdentifier());
+    auto targetStorage = findStorage(targetStorageIdentifier);
+    if (!storage || !targetStorage) return -1;
+    auto flags = TK2_GET_NOTE_FULL;
+    auto note = storage->note(notePt, TK2_GET_NOTE_FULL);
+    if (!note)return -1;
+    note->id = 0;
+    note->colorGroupId = 0;
+    targetStorage->createNote(*note);
+    targetStorage->save();
+
+    storage->removeNote(notePt);
+    storage->save();
+    return 0;
+}
+
 std::string JvmStorage2::generateNewPassw(const JvmGenPasswParams &params) {
     auto storage = findStorage(getEngineIdentifier());
     if (!storage) return "";
@@ -425,6 +445,27 @@ int JvmStorage2::removeOtpNote(const int64_t &notePt) {
 
     storage->removeOtpNote(notePt);
     return storage->save();
+}
+
+int JvmStorage2::moveOtpNote(
+        const int64_t &notePt,
+        const std::string &targetStorageIdentifier
+) {
+    auto storage = findStorage(getEngineIdentifier());
+    auto targetStorage = findStorage(targetStorageIdentifier);
+    if (!storage || !targetStorage) return -1;
+    auto flags = TK2_GET_NOTE_FULL;
+    auto srcNote = storage->otpNote(notePt, TK2_GET_NOTE_FULL);
+    if (!srcNote)return -1;
+    srcNote->id = 0;
+    srcNote->colorGroupId = 0;
+
+    targetStorage->createOtpNote(*srcNote);
+    targetStorage->save();
+
+    storage->removeOtpNote(notePt);
+    storage->save();
+    return 0;
 }
 
 shared_ptr<JvmDecryptedOtpNote> JvmStorage2::otpNoteFromUrl(const std::string &url) {

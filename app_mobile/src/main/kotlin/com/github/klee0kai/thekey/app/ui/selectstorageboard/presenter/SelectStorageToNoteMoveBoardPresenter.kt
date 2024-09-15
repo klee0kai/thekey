@@ -11,7 +11,7 @@ interface SelectStorageToNoteMoveBoardPresenter {
 
     val currentStorage: Flow<ColoredStorage?> get() = emptyFlow()
 
-    val openedStoragesFlow: Flow<List<ColoredStorage>> get() = emptyFlow()
+    val selectableOpenStorages: Flow<List<ColoredStorage>> get() = emptyFlow()
 
     fun select(storagePath: String, router: AppRouter?): Job = emptyJob()
 

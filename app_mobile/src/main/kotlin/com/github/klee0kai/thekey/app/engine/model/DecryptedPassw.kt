@@ -26,3 +26,10 @@ fun DecryptedPassw.histPasww(
     chTime = TimeUnit.SECONDS.toMillis(chTime),
     isLoaded = isLoaded,
 )
+
+fun HistPassw.decryptedPasww(
+) = DecryptedPassw(
+    passwPtr = id,
+    passw = passw,
+    chTime = TimeUnit.MILLISECONDS.toSeconds(chTime),
+)

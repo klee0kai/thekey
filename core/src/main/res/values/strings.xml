@@ -205,4 +205,5 @@
     <string name="debug_flags" translatable="false">Debug flags</string>
     <string name="select_storage_to_move">Select storage to move</string>
     <string name="move">Move</string>
+    <string name="note_moved">Note has been moved</string>
 </resources>

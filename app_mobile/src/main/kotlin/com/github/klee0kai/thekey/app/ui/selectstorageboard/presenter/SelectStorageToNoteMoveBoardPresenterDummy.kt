@@ -17,7 +17,7 @@ class SelectStorageToNoteMoveBoardPresenterDummy(
         else -> emptyFlow()
     }
 
-    override val openedStoragesFlow = MutableStateFlow(
+    override val selectableOpenStorages = MutableStateFlow(
         buildList { repeat(opennedCount) { add(ColoredStorage.dummy()) } }
     )
 }

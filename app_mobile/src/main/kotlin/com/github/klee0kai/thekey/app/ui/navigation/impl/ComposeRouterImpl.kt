@@ -5,6 +5,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.NonRestartableComposable
 import com.github.klee0kai.thekey.core.ui.navigation.ComposeRouter
 import com.github.klee0kai.thekey.core.ui.navigation.RouterContext
+import com.github.klee0kai.thekey.core.ui.navigation.model.BackType
 import com.github.klee0kai.thekey.core.ui.navigation.model.Destination
 import com.github.klee0kai.thekey.core.ui.navigation.model.DialogDestination
 import com.github.klee0kai.thekey.core.ui.navigation.model.NavBoardDestination
@@ -12,6 +13,7 @@ import com.github.klee0kai.thekey.core.ui.navigation.model.NavigateBackstackChan
 import com.github.klee0kai.thekey.core.utils.coroutine.awaitSec
 import com.github.klee0kai.thekey.core.utils.coroutine.shareLatest
 import dev.olshevski.navigation.reimagined.NavAction
+import dev.olshevski.navigation.reimagined.NavId
 import dev.olshevski.navigation.reimagined.navEntry
 import dev.olshevski.navigation.reimagined.pop
 import kotlinx.coroutines.delay
@@ -71,49 +73,88 @@ class ComposeRouterImpl(
 
     override fun <R> backWithResult(
         result: R,
-        exitFromApp: Boolean,
-    ): Boolean = navFullController.run {
-        val navId = backstack.entries.lastOrNull()?.id ?: return false
-        val popResult = pop()
-        scope.launch {
-            navChanges.emit(
-                NavigateBackstackChange(
-                    currentNavStack = backstack.entries,
-                    closedDestination = navId to result
+        type: BackType,
+    ): Boolean {
+        var entries = navFullController.backstack.entries.toList()
+        val notifyResult: (result: R, navId: NavId) -> Unit = { result, navId ->
+            scope.launch {
+                navChanges.emit(
+                    NavigateBackstackChange(
+                        currentNavStack = entries,
+                        closedDestination = navId to result
+                    )
                 )
-            )
+            }
         }
-        if (!popResult && exitFromApp) {
-            backDispatcher?.onBackPressed()
-            return true
+        return when (type) {
+            BackType.DialogOnly -> {
+                val lastBoardIndex = entries.indexOfLast { it.destination is DialogDestination }
+                if (lastBoardIndex > 0) {
+                    notifyResult(result, entries[lastBoardIndex].id)
+                    entries = entries.filterIndexed { index, _ -> index != lastBoardIndex }
+                    navFullController.setNewBackstack(entries)
+                    true
+                } else {
+                    false
+                }
+            }
+
+            BackType.BoardOnly -> {
+                val lastBoardIndex = entries.indexOfLast { it.destination is NavBoardDestination }
+                if (lastBoardIndex > 0) {
+                    notifyResult(result, entries[lastBoardIndex].id)
+                    entries = entries.filterIndexed { index, _ -> index != lastBoardIndex }
+                    navFullController.setNewBackstack(entries)
+                    true
+                } else {
+                    false
+                }
+            }
+
+            BackType.Default,
+            BackType.FromAppIfNeed -> {
+                val navId = entries.lastOrNull()?.id ?: return false
+                notifyResult(result, navId)
+                val popResult = navFullController.pop()
+                if (!popResult && type == BackType.FromAppIfNeed) {
+                    backDispatcher?.onBackPressed()
+                    true
+                } else {
+                    popResult
+                }
+            }
         }
-        return popResult
     }
 
-    override fun back(exitFromApp: Boolean) = scope.launch {
-        val popResult = navFullController.pop()
+    override fun back(
+        type: BackType,
+    ) = scope.launch {
+        when (type) {
+            BackType.DialogOnly -> {
+                var entries = navFullController.backstack.entries.toList()
+                val lastBoardIndex = entries.indexOfLast { it.destination is DialogDestination }
+                if (lastBoardIndex > 0) {
+                    entries = entries.filterIndexed { index, _ -> index != lastBoardIndex }
+                    navFullController.setNewBackstack(entries)
+                }
+            }
 
-        if (!popResult && exitFromApp) {
-            backDispatcher?.onBackPressed()
-            return@launch
-        }
-    }
+            BackType.BoardOnly -> {
+                var entries = navFullController.backstack.entries.toList()
+                val lastBoardIndex = entries.indexOfLast { it.destination is NavBoardDestination }
+                if (lastBoardIndex > 0) {
+                    entries = entries.filterIndexed { index, _ -> index != lastBoardIndex }
+                    navFullController.setNewBackstack(entries)
+                }
+            }
 
-    override fun backFromDialog() = scope.launch {
-        var entries = navFullController.backstack.entries.toList()
-        val lastBoardIndex = entries.indexOfLast { it.destination is DialogDestination }
-        if (lastBoardIndex > 0) {
-            entries = entries.filterIndexed { index, _ -> index != lastBoardIndex }
-            navFullController.setNewBackstack(entries)
-        }
-    }
-
-    override fun backFromBoard() = scope.launch {
-        var entries = navFullController.backstack.entries.toList()
-        val lastBoardIndex = entries.indexOfLast { it.destination is NavBoardDestination }
-        if (lastBoardIndex > 0) {
-            entries = entries.filterIndexed { index, _ -> index != lastBoardIndex }
-            navFullController.setNewBackstack(entries)
+            BackType.Default,
+            BackType.FromAppIfNeed -> {
+                val popResult = navFullController.pop()
+                if (!popResult && type == BackType.FromAppIfNeed) {
+                    backDispatcher?.onBackPressed()
+                }
+            }
         }
     }
 

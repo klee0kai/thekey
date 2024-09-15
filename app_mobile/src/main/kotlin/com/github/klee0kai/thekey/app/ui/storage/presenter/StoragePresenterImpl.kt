@@ -2,6 +2,7 @@ package com.github.klee0kai.thekey.app.ui.storage.presenter
 
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.navigation.editNoteDest
+import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteGroupDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.QRCodeScanDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.SelectStorageToNoteMoveBoardDestination
@@ -135,7 +136,12 @@ open class StoragePresenterImpl(
         router?.showNavigationBoard()
         val selected = router?.navigate<ColoredStorage>(SelectStorageToNoteMoveBoardDestination)
             ?.firstOrNull() ?: return@launch
+        val targetIdentifier = selected.identifier()
 
+        notesInteractor().moveNote(notePt, targetIdentifier)
+            .join()
+
+        router.snack(CoreR.string.note_moved)
     }
 
 

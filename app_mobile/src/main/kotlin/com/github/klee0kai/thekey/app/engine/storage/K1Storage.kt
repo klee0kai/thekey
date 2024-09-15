@@ -57,6 +57,8 @@ class K1Storage(
     @Synchronized
     external override fun saveNote(decryptedNote: DecryptedNote, setAll: Boolean): Int
 
+    override fun moveNote(notePt: Long, targetStorageIdentifier: String): Int = -1
+
     @Synchronized
     external override fun removeNote(notePt: Long): Int
 
@@ -71,6 +73,8 @@ class K1Storage(
     override fun removeOtpNote(notePt: Long): Int = -1
 
     override fun setOtpNotesGroup(notePtrs: Array<Long>, groupId: Long): Int = -1
+
+    override fun moveOtpNote(notePt: Long, targetStorageIdentifier: String): Int = -1
 
     @Synchronized
     external override fun generateNewPassw(params: GenPasswParams): String

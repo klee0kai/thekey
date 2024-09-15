@@ -74,6 +74,21 @@ class NotesRepository(
         notes.touch(true)
     }
 
+    suspend fun moveNote(
+        notePt: Long,
+        targetIdentifier: StorageIdentifier,
+    ) {
+        if (DebugConfigs.isNotesFastUpdate) {
+            notes.update { list -> list.filter { it.id != notePt } }
+        }
+        engine().moveNote(
+            notePt = notePt,
+            targetStoragePath = targetIdentifier.path,
+            targetEngineIdentifier = targetIdentifier.engineIdentifier,
+        )
+        DI.notesRepLazy(targetIdentifier).get().notes.touch(true)
+        notes.touch(true)
+    }
 
     suspend fun removeHist(histPtr: Long) {
         engine().removeHist(histPtr)

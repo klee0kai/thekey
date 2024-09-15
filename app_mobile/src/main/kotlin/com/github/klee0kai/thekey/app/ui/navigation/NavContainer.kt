@@ -40,6 +40,7 @@ import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.simpleboard.NavigationBoardContainer
 import com.github.klee0kai.thekey.core.ui.devkit.EmptyScreen
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
+import com.github.klee0kai.thekey.core.ui.navigation.model.BackType
 import com.github.klee0kai.thekey.core.ui.navigation.model.Destination
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.currentRef
@@ -67,7 +68,7 @@ fun MainNavContainer() {
 
     LaunchedEffect(key1 = drawerState.isClosed) {
         if (drawerState.isClosed) {
-            router?.backFromBoard()
+            router?.back(BackType.BoardOnly)
         }
     }
 
