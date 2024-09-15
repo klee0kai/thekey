@@ -98,6 +98,19 @@ class CryptStorageSuspended(
 
     suspend fun removeOtpNote(notePt: Long): Int = engineRunWrite { removeOtpNote(notePt) }
 
+    suspend fun moveOtpNote(
+        notePt: Long,
+        targetStoragePath: String,
+        targetEngineIdentifier: String,
+    ): Int {
+        return DI.fileMutex(FileIdentifier(targetStoragePath))
+            .withWriteLock {
+                engineRunRead {
+                    moveOtpNote(notePt, targetEngineIdentifier)
+                }
+            }
+    }
+
     suspend fun setOtpNotesGroup(
         notePtrs: Array<Long>,
         groupId: Long,

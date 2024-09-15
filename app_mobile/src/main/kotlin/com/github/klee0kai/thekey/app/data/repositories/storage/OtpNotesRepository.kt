@@ -113,6 +113,22 @@ class OtpNotesRepository(
         otpNotes.touch(true)
     }
 
+    suspend fun moveOtpNote(
+        noteptr: Long,
+        targetIdentifier: StorageIdentifier,
+    ) {
+        if (DebugConfigs.isNotesFastUpdate) {
+            otpNotes.update { list -> list.filter { it.id != noteptr } }
+        }
+        engine().moveOtpNote(
+            notePt = noteptr,
+            targetStoragePath = targetIdentifier.path,
+            targetEngineIdentifier = targetIdentifier.engineIdentifier,
+        )
+        DI.notesRepLazy(targetIdentifier).get().notes.touch(true)
+        otpNotes.touch(true)
+    }
+
     suspend fun otpNoteFromUrl(url: String): DecryptedOtpNote? {
         return engine().otpNoteFromUrl(url)
     }

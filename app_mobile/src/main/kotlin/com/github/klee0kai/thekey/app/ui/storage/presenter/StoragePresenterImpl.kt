@@ -152,7 +152,12 @@ open class StoragePresenterImpl(
         router?.showNavigationBoard()
         val selected = router?.navigate<ColoredStorage>(SelectStorageToNoteMoveBoardDestination)
             ?.firstOrNull() ?: return@launch
+        val targetIdentifier = selected.identifier()
 
+        otpNotesInteractor().moveOtpNote(otpPtr, targetIdentifier)
+            .join()
+
+        router.snack(CoreR.string.otp_moved)
     }
 
     override fun deleteGroup(id: Long) = scope.launch {

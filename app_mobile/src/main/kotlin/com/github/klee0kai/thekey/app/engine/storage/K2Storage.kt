@@ -55,7 +55,7 @@ class K2Storage(
 
     external override fun moveNote(
         notePt: Long,
-        targetStorageIdentifier: String,
+        targetEngineIdentifier: String,
     ): Int
 
     external override fun removeNote(notePt: Long): Int
@@ -73,7 +73,7 @@ class K2Storage(
 
     external override fun moveOtpNote(
         notePt: Long,
-        targetStorageIdentifier: String,
+        targetEngineIdentifier: String,
     ): Int
 
     external override fun removeOtpNote(notePt: Long): Int

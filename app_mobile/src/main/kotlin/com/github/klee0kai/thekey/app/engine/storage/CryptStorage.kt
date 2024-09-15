@@ -36,7 +36,10 @@ interface CryptStorage {
 
     fun saveNote(decryptedNote: DecryptedNote, setAll: Boolean = false): Int
 
-    fun moveNote(notePt: Long, targetStorageIdentifier: String): Int
+    fun moveNote(
+        notePt: Long,
+        targetEngineIdentifier: String
+    ): Int
 
     fun removeNote(notePt: Long): Int
 
@@ -50,7 +53,10 @@ interface CryptStorage {
 
     fun saveOtpNote(decryptedNote: DecryptedOtpNote, setAll: Boolean = false): Int
 
-    fun moveOtpNote(notePt: Long, targetStorageIdentifier: String): Int
+    fun moveOtpNote(
+        notePt: Long,
+        targetEngineIdentifier: String
+    ): Int
 
     fun removeOtpNote(notePt: Long): Int
 

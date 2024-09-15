@@ -206,4 +206,5 @@
     <string name="select_storage_to_move">Select storage to move</string>
     <string name="move">Move</string>
     <string name="note_moved">Note has been moved</string>
+    <string name="otp_moved">OTP has been moved</string>
 </resources>
