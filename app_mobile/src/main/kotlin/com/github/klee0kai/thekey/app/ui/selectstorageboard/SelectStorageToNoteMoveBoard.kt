@@ -68,7 +68,7 @@ fun SelectStorageToNoteMoveBoard(
 @OptIn(DebugOnly::class)
 @Preview
 @Composable
-private fun SelectStorageToNoteMoveBoardPreview() {
+fun SelectStorageToNoteMoveBoardPreview() {
     DI.hardResetToPreview()
     DI.initPresenterModule(object : PresentersModule {
         override fun selectStorageToNoteMoveBoardPresenter() =
