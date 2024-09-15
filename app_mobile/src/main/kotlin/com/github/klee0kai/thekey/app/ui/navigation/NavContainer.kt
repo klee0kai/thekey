@@ -37,7 +37,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.app.ui.simpleboard.SimpleNavigationBoard
+import com.github.klee0kai.thekey.app.ui.simpleboard.NavigationBoardContainer
 import com.github.klee0kai.thekey.core.ui.devkit.EmptyScreen
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.navigation.model.Destination
@@ -73,16 +73,7 @@ fun MainNavContainer() {
 
     ModalNavigationDrawer(
         drawerState = drawerState,
-        drawerContent = {
-            AnimatedNavHost(
-                controller = LocalRouter.current.navBoardController,
-                transitionQueueing = NavTransitionQueueing.QueueAll,
-                transitionSpec = customTransitionSpec,
-                emptyBackstackPlaceholder = { SimpleNavigationBoard() }
-            ) { destination ->
-                DI.screenResolver().screenOf(destination = destination)
-            }
-        }
+        drawerContent = { NavigationBoardContainer() }
     ) {
         // screens
         AnimatedNavHost(
@@ -169,7 +160,7 @@ fun SnackContainer() {
 }
 
 
-private val customTransitionSpec = object : NavTransitionSpec<Destination> {
+val customTransitionSpec = object : NavTransitionSpec<Destination> {
 
     override fun NavTransitionScope.getContentTransform(
         action: NavAction,

@@ -1,25 +1,18 @@
 package com.github.klee0kai.thekey.app.ui.simpleboard
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -29,35 +22,32 @@ import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
-import com.github.klee0kai.thekey.app.ui.navigation.model.SettingsDestination
+import com.github.klee0kai.thekey.app.ui.navigation.customTransitionSpec
 import com.github.klee0kai.thekey.app.ui.simpleboard.components.CurrentStorageHeader
 import com.github.klee0kai.thekey.app.ui.simpleboard.components.DefaultHeader
-import com.github.klee0kai.thekey.app.ui.simpleboard.components.StorageNavigationMapList
 import com.github.klee0kai.thekey.app.ui.simpleboard.presenter.SimpleBoardPresenterDummy
-import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
-import com.github.klee0kai.thekey.core.ui.devkit.components.settings.Preference
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
 import com.github.klee0kai.thekey.core.utils.views.collectAsStateCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.horizontal
-import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
+import dev.olshevski.navigation.reimagined.AnimatedNavHost
+import dev.olshevski.navigation.reimagined.NavTransitionQueueing
 import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
-fun SimpleNavigationBoard(
+fun NavigationBoardContainer(
     modifier: Modifier = Modifier,
 ) {
     val theme = LocalTheme.current
     val colorScheme = LocalColorScheme.current.navigationBoard
     val router by LocalRouter.currentRef
     val scope = rememberCoroutineScope()
-    val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
     val safeDrawingPaddings = WindowInsets.safeDrawing.asPaddingValues()
     val presenter by rememberOnScreenRef { DI.simpleBoardPresenter() }
     val currentStorage by presenter!!.currentStorage.collectAsStateCrossFaded(
@@ -72,9 +62,8 @@ fun SimpleNavigationBoard(
             .background(colorScheme.bodySurfaceColor),
     ) {
         val (
-            headerLayout,
-            storagesListLayout,
-            settingButtonField,
+            headerField,
+            navBoardContentField,
         ) = createRefs()
 
         if (currentStorage.current != null) {
@@ -85,7 +74,7 @@ fun SimpleNavigationBoard(
                     .background(colorScheme.headerSurfaceColor)
                     .padding(top = safeDrawingPaddings.calculateTopPadding())
                     .padding(start = safeDrawingPaddings.horizontal(minValue = 16.dp))
-                    .constrainAs(headerLayout) { },
+                    .constrainAs(headerField) { },
                 storage = currentStorage.current ?: ColoredStorage(),
             )
         } else {
@@ -96,61 +85,30 @@ fun SimpleNavigationBoard(
                     .background(colorScheme.headerSurfaceColor)
                     .padding(top = safeDrawingPaddings.calculateTopPadding())
                     .padding(start = safeDrawingPaddings.horizontal(minValue = 16.dp))
-                    .constrainAs(headerLayout) { },
+                    .constrainAs(headerField) { },
             )
         }
 
-        StorageNavigationMapList(
-            modifier = Modifier
-                .constrainAs(storagesListLayout) {
-                    width = Dimension.fillToConstraints
-                    height = Dimension.fillToConstraints
-                    linkTo(
-                        top = headerLayout.bottom,
-                        bottom = parent.bottom,
-                        start = parent.start,
-                        end = parent.end,
-                    )
-                },
-            footer = {
-                Spacer(
-                    modifier = Modifier.height(safeContentPaddings.calculateBottomPadding() + 56.dp)
+
+        AnimatedNavHost(
+            modifier = Modifier.constrainAs(navBoardContentField) {
+                width = Dimension.fillToConstraints
+                height = Dimension.fillToConstraints
+                linkTo(
+                    top = headerField.bottom,
+                    bottom = parent.bottom,
+                    start = parent.start,
+                    end = parent.end,
                 )
             },
-        )
+            controller = LocalRouter.current.navBoardController,
+            transitionQueueing = NavTransitionQueueing.QueueAll,
+            transitionSpec = customTransitionSpec,
+            emptyBackstackPlaceholder = { SimpleBoard() }
+        ) { destination ->
+            DI.screenResolver().screenOf(destination = destination)
+        }
 
-
-        Preference(
-            text = stringResource(id = R.string.settings),
-            modifier = Modifier
-                .background(
-                    Brush.linearGradient(
-                        0f to Color.Transparent,
-                        0.5f to colorScheme.bodySurfaceColor,
-                        1f to colorScheme.bodySurfaceColor,
-                        start = Offset.Zero,
-                        end = Offset(0f, Float.POSITIVE_INFINITY)
-                    )
-                )
-                .padding(
-                    top = 16.dp,
-                    bottom = safeContentPaddings.calculateBottomPadding(),
-                )
-                .fillMaxWidth()
-                .constrainAs(settingButtonField) {
-                    linkTo(
-                        top = headerLayout.bottom,
-                        bottom = parent.bottom,
-                        start = parent.start,
-                        end = parent.end,
-                        verticalBias = 1f,
-                    )
-                },
-            onClick = rememberClickDebounced {
-                router?.navigate(SettingsDestination)
-                router?.hideNavigationBoard()
-            }
-        )
     }
 }
 
@@ -159,7 +117,7 @@ fun SimpleNavigationBoard(
 @OptIn(DebugOnly::class)
 @Preview(device = Devices.PHONE)
 @Composable
-fun SimpleBoardPreview() {
+fun NavigationBoardContainerPreview() {
     DI.hardResetToPreview()
     DI.initPresenterModule(object : PresentersModule {
         override fun simpleBoardPresenter() = SimpleBoardPresenterDummy(
@@ -169,7 +127,7 @@ fun SimpleBoardPreview() {
         )
     })
     DebugDarkScreenPreview {
-        SimpleNavigationBoard()
+        NavigationBoardContainer()
     }
 }
 
@@ -178,14 +136,14 @@ fun SimpleBoardPreview() {
 @OptIn(DebugOnly::class)
 @Preview(device = Devices.PHONE)
 @Composable
-fun SimpleBoardNoCurrentPreview() {
+fun NavigationBoardNoCurrentPreview() {
     DI.hardResetToPreview()
     DI.initPresenterModule(object : PresentersModule {
         override fun simpleBoardPresenter() = SimpleBoardPresenterDummy(
         )
     })
     DebugDarkScreenPreview {
-        SimpleNavigationBoard()
+        NavigationBoardContainer()
     }
 }
 
@@ -193,13 +151,13 @@ fun SimpleBoardNoCurrentPreview() {
 @OptIn(DebugOnly::class)
 @Preview(device = Devices.PHONE)
 @Composable
-fun SimpleBoardEmptyPreview() {
+fun NavigationBoardEmptyPreview() {
     DI.hardResetToPreview()
     DI.initPresenterModule(object : PresentersModule {
         override fun simpleBoardPresenter() = SimpleBoardPresenterDummy()
     })
     DebugDarkScreenPreview {
-        SimpleNavigationBoard()
+        NavigationBoardContainer()
     }
 }
 
@@ -208,12 +166,12 @@ fun SimpleBoardEmptyPreview() {
 @OptIn(DebugOnly::class)
 @Preview(device = Devices.TABLET)
 @Composable
-fun SimpleBoardTabletPreview() {
+fun NavigationBoardTabletPreview() {
     DI.hardResetToPreview()
     DI.initPresenterModule(object : PresentersModule {
         override fun simpleBoardPresenter() = SimpleBoardPresenterDummy()
     })
     DebugDarkScreenPreview {
-        SimpleNavigationBoard()
+        NavigationBoardContainer()
     }
 }
