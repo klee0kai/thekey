@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.ui.navigationboard.presenter
+package com.github.klee0kai.thekey.app.ui.simpleboard.presenter
 
 import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
@@ -7,7 +7,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
-interface NavigationBoardPresenter {
+interface SimpleBoardPresenter {
 
     val currentStorage: Flow<ColoredStorage?> get() = emptyFlow()
 

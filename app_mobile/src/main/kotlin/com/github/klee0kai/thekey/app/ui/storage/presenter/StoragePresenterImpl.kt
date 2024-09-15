@@ -2,13 +2,16 @@ package com.github.klee0kai.thekey.app.ui.storage.presenter
 
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.ui.navigation.editNoteDest
+import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteGroupDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.QRCodeScanDestination
+import com.github.klee0kai.thekey.app.ui.navigation.model.SelectStorageToNoteMoveBoardDestination
 import com.github.klee0kai.thekey.app.ui.storage.model.SearchState
 import com.github.klee0kai.thekey.app.ui.storage.model.StorageItem
 import com.github.klee0kai.thekey.app.ui.storage.model.group
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
+import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.core.domain.model.feature.PaidFeature
 import com.github.klee0kai.thekey.core.domain.model.feature.PaidLimits
 import com.github.klee0kai.thekey.core.domain.model.otpNotes
@@ -124,6 +127,37 @@ open class StoragePresenterImpl(
         val otpUrl = router?.navigate<String>(QRCodeScanDestination)?.firstOrNull() ?: return@launch
         val otp = otpNotesInteractor().otpNoteFromUrl(otpUrl) ?: return@launch
         router.navigate(storageIdentifier.editNoteDest(prefilledOtpNote = otp))
+    }
+
+    override fun moveNote(
+        notePt: Long,
+        router: AppRouter?,
+    ) = scope.launch {
+        router?.showNavigationBoard()
+        val selected = router?.navigate<ColoredStorage>(SelectStorageToNoteMoveBoardDestination)
+            ?.firstOrNull() ?: return@launch
+        val targetIdentifier = selected.identifier()
+
+        notesInteractor().moveNote(notePt, targetIdentifier)
+            .join()
+
+        router.snack(CoreR.string.note_moved)
+    }
+
+
+    override fun moveOtp(
+        otpPtr: Long,
+        router: AppRouter?,
+    ) = scope.launch {
+        router?.showNavigationBoard()
+        val selected = router?.navigate<ColoredStorage>(SelectStorageToNoteMoveBoardDestination)
+            ?.firstOrNull() ?: return@launch
+        val targetIdentifier = selected.identifier()
+
+        otpNotesInteractor().moveOtpNote(otpPtr, targetIdentifier)
+            .join()
+
+        router.snack(CoreR.string.otp_moved)
     }
 
     override fun deleteGroup(id: Long) = scope.launch {

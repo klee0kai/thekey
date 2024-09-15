@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import com.github.klee0kai.thekey.core.di.identifiers.ActivityIdentifier
 import com.github.klee0kai.thekey.core.ui.navigation.deeplink.DeeplinkRoute
 import com.github.klee0kai.thekey.core.ui.navigation.model.ActivityResult
+import com.github.klee0kai.thekey.core.ui.navigation.model.BackType
 import com.github.klee0kai.thekey.core.ui.navigation.model.Destination
 import com.github.klee0kai.thekey.core.ui.navigation.model.NavigateBackstackChange
 import com.github.klee0kai.thekey.core.ui.navigation.model.RequestPermResult
@@ -45,13 +46,18 @@ interface ComposeRouter {
     fun <R> navigate(vararg destinations: Destination, resultClazz: Class<R>): Flow<R?> =
         emptyFlow()
 
-    fun <R> backWithResult(result: R, exitFromApp: Boolean = false): Boolean = false
+    fun <R> backWithResult(
+        result: R,
+        type: BackType = BackType.Default,
+    ): Boolean = false
 
     suspend fun awaitScreenClose(destination: Destination) = Unit
 
-    fun back(exitFromApp: Boolean = false) : Job = emptyJob()
+    fun back(
+        type: BackType = BackType.Default,
+    ): Job = emptyJob()
 
-    fun resetStack(vararg destinations: Destination) :Job = emptyJob()
+    fun resetStack(vararg destinations: Destination): Job = emptyJob()
 
     @Composable
     fun collectBackstackChanges() = Unit
@@ -127,6 +133,7 @@ interface RouterContext {
     val navFullController: NavController<Destination> get() = TODO()
     val navScreensController: NavController<Destination> get() = TODO()
     val navDialogsController: NavController<Destination> get() = TODO()
+    val navBoardController: NavController<Destination> get() = TODO()
     val activity: ComponentActivity? get() = TODO()
 
     val backDispatcher: OnBackPressedDispatcher? get() = TODO()

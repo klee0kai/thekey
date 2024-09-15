@@ -25,6 +25,7 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.NoteDialogDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.PluginDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.PluginsDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.SelectStorageDialogDestination
+import com.github.klee0kai.thekey.app.ui.navigation.model.SelectStorageToNoteMoveBoardDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.SettingsDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.StoragesDestination
@@ -32,6 +33,7 @@ import com.github.klee0kai.thekey.app.ui.note.NoteDialog
 import com.github.klee0kai.thekey.app.ui.noteedit.EditNoteScreen
 import com.github.klee0kai.thekey.app.ui.notegroup.EditNoteGroupsScreen
 import com.github.klee0kai.thekey.app.ui.otpnote.OtpNoteDialog
+import com.github.klee0kai.thekey.app.ui.selectstorageboard.SelectStorageToNoteMoveBoard
 import com.github.klee0kai.thekey.app.ui.settings.SettingScreen
 import com.github.klee0kai.thekey.app.ui.settings.plugin.PluginDummyScreen
 import com.github.klee0kai.thekey.app.ui.settings.plugin.PluginScreen
@@ -86,6 +88,9 @@ class ScreenResolverImpl : ScreenResolver {
             // dialogs
             is AlertDialogDestination -> AlertDialogScreen(destination)
             is SelectStorageDialogDestination -> SelectStorageDialog()
+
+            // nav boards
+            is SelectStorageToNoteMoveBoardDestination -> SelectStorageToNoteMoveBoard()
 
             // dynamic features
             is DynamicDestination -> PluginDummyScreen(destination)

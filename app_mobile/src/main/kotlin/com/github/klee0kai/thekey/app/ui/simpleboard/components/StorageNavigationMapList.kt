@@ -1,4 +1,4 @@
-package com.github.klee0kai.thekey.app.ui.navigationboard.components
+package com.github.klee0kai.thekey.app.ui.simpleboard.components
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,8 +19,8 @@ import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
-import com.github.klee0kai.thekey.app.ui.navigationboard.components.popup.OpenedStoragePopupMenu
-import com.github.klee0kai.thekey.app.ui.navigationboard.presenter.NavigationBoardPresenterDummy
+import com.github.klee0kai.thekey.app.ui.simpleboard.components.popup.OpenedStoragePopupMenu
+import com.github.klee0kai.thekey.app.ui.simpleboard.presenter.SimpleBoardPresenterDummy
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
@@ -41,7 +41,7 @@ fun StorageNavigationMapList(
     footer: @Composable () -> Unit = {},
 ) {
     val router by LocalRouter.currentRef
-    val presenter by rememberOnScreenRef { DI.navigationBoardPresenter() }
+    val presenter by rememberOnScreenRef { DI.simpleBoardPresenter() }
     val opened by presenter!!.openedStoragesFlow.collectAsState(key = Unit, initial = emptyList())
     val favorites by presenter!!.favoritesStorages.collectAsState(key = Unit, initial = emptyList())
 
@@ -68,7 +68,7 @@ fun StorageNavigationMapList(
                 val position = rememberViewPosition()
 
                 FavoriteStorageItem(
-                    modifier = modifier
+                    modifier = Modifier
                         .onGlobalPositionState(position),
                     storage = storage,
                     onClick = rememberClickDebounced(storage.path) {
@@ -122,14 +122,13 @@ fun StorageNavigationMapList(
 
 }
 
-
 @OptIn(DebugOnly::class)
 @Preview
 @Composable
 private fun NavigationMapListPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     DI.hardResetToPreview()
     DI.initPresenterModule(object : PresentersModule {
-        override fun navigationBoardPresenter() = NavigationBoardPresenterDummy(
+        override fun simpleBoardPresenter() = SimpleBoardPresenterDummy(
         )
     })
     StorageNavigationMapList()

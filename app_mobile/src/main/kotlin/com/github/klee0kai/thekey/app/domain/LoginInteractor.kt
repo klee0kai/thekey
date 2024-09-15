@@ -30,14 +30,20 @@ class LoginInteractor {
     private val billing = DI.billingInteractor()
     private val storagesRep = DI.storagesRepositoryLazy()
     private val settingsRep = DI.settingsRepositoryLazy()
+    private val engine = DI.findStorageEngineSaveLazy()
 
     val authorizedStorages = flow {
         val foundStorageRep = storagesRep()
         rep().authorizedStorages
             .map { storages ->
                 storages.map { storage ->
-                    foundStorageRep.findStorage(storage.path).await()
-                        ?: ColoredStorage(path = storage.path)
+                    foundStorageRep.findStorage(storage.path)
+                        .await()
+                        ?.updateVersion()
+                        ?: ColoredStorage(
+                            path = storage.path,
+                            version = settingsRep().newStorageVersion(),
+                        )
                 }
             }.collect(this)
     }.flowOn(DI.defaultDispatcher())
@@ -126,6 +132,11 @@ class LoginInteractor {
 
         engine().logoutAll()
         rep().logoutAll()
+    }
+
+    private suspend fun ColoredStorage.updateVersion(): ColoredStorage {
+        val version = engine().storageVersion(path = path)
+        return copy(version = if (version > 0) version else settingsRep().newStorageVersion())
     }
 
 }

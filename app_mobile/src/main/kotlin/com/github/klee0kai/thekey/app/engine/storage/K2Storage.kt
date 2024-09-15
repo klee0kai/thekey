@@ -53,6 +53,11 @@ class K2Storage(
         setAll: Boolean,
     ): Int
 
+    external override fun moveNote(
+        notePt: Long,
+        targetEngineIdentifier: String,
+    ): Int
+
     external override fun removeNote(notePt: Long): Int
 
     external override fun otpNotes(info: Boolean): Array<DecryptedOtpNote>
@@ -65,6 +70,11 @@ class K2Storage(
     external override fun otpNoteFromUrl(url: String): DecryptedOtpNote?
 
     external override fun saveOtpNote(decryptedNote: DecryptedOtpNote, setAll: Boolean): Int
+
+    external override fun moveOtpNote(
+        notePt: Long,
+        targetEngineIdentifier: String,
+    ): Int
 
     external override fun removeOtpNote(notePt: Long): Int
 

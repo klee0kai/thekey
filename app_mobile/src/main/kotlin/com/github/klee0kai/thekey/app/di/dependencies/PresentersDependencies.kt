@@ -6,14 +6,15 @@ import com.github.klee0kai.thekey.app.ui.hist.presenter.GenHistPresenter
 import com.github.klee0kai.thekey.app.ui.hist.presenter.NoteHistPresenter
 import com.github.klee0kai.thekey.app.ui.login.presenter.LoginPresenter
 import com.github.klee0kai.thekey.app.ui.main.presenter.MainPresenter
-import com.github.klee0kai.thekey.app.ui.navigationboard.presenter.NavigationBoardPresenter
 import com.github.klee0kai.thekey.app.ui.note.presenter.NotePresenter
 import com.github.klee0kai.thekey.app.ui.noteedit.presenter.EditNotePresenter
 import com.github.klee0kai.thekey.app.ui.notegroup.presenter.EditNoteGroupsPresenter
 import com.github.klee0kai.thekey.app.ui.otpnote.presenter.OtpNotePresenter
+import com.github.klee0kai.thekey.app.ui.selectstorageboard.presenter.SelectStorageToNoteMoveBoardPresenter
 import com.github.klee0kai.thekey.app.ui.settings.plugin.presenter.PluginPresenter
 import com.github.klee0kai.thekey.app.ui.settings.plugins.presenter.PluginsPresenter
 import com.github.klee0kai.thekey.app.ui.settings.presenter.SettingsPresenter
+import com.github.klee0kai.thekey.app.ui.simpleboard.presenter.SimpleBoardPresenter
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.presenter.GenPasswPresenter
 import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenter
 import com.github.klee0kai.thekey.app.ui.storagegroup.presenter.EditStoragesGroupPresenter
@@ -30,7 +31,9 @@ interface PresentersDependencies {
 
     fun loginPresenter(identifier: StorageIdentifier = StorageIdentifier()): LoginPresenter
 
-    fun navigationBoardPresenter(): NavigationBoardPresenter
+    fun simpleBoardPresenter(): SimpleBoardPresenter
+
+    fun selectStorageToNoteMoveBoardPresenter(): SelectStorageToNoteMoveBoardPresenter
 
     fun storagesPresenter(): StoragesPresenter
 

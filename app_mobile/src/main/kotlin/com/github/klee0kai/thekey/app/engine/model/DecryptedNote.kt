@@ -89,3 +89,13 @@ fun DecryptedNote.coloredNote(
     hist = hist.map { it.histPasww(isHistLoaded) },
     isLoaded = isLoaded,
 )
+
+fun ColoredNote.decryptedNote(
+) = DecryptedNote(
+    ptnote = id,
+    site = site,
+    login = login,
+    passw = passw,
+    desc = desc,
+    hist = hist.map { it.decryptedPasww() }.toTypedArray(),
+)

@@ -22,7 +22,12 @@ fun Storage.toColoredStorage(): ColoredStorage = this.run {
 
 
 fun StorageFileEntry.toColoredStorage(): ColoredStorage = this.run {
-    ColoredStorage(path = path, name = name, description = description, colorGroup = ColorGroup(id = coloredGroupId))
+    ColoredStorage(
+        path = path,
+        name = name,
+        description = description,
+        colorGroup = ColorGroup(id = coloredGroupId)
+    )
 }
 
 
@@ -43,5 +48,6 @@ fun ColoredStorage.toStorage(): Storage = this.run {
         path = path,
         name = name,
         description = description,
+        version = version,
     )
 }

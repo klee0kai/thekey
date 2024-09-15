@@ -75,6 +75,13 @@ class NotesInteractor(
         rep().removeNote(noteptr)
     }
 
+    fun moveNote(
+        notePt: Long,
+        targetIdentifier: StorageIdentifier,
+    ) = scope.launch {
+        rep().moveNote(notePt,targetIdentifier)
+    }
+
 
     fun removeHist(
         histPtr: Long,

@@ -56,7 +56,6 @@ class OtpNotesInteractor(
         rep().otpNote(notePtr)
     }
 
-
     fun saveOtpNote(
         note: DecryptedOtpNote,
         setAll: Boolean = false,
@@ -68,6 +67,13 @@ class OtpNotesInteractor(
         noteptr: Long,
     ) = scope.launch {
         rep().removeOtpNote(noteptr)
+    }
+
+    fun moveOtpNote(
+        noteptr: Long,
+        targetIdentifier: StorageIdentifier,
+    ) = scope.launch {
+        rep().moveOtpNote(noteptr, targetIdentifier)
     }
 
     fun setOtpNotesGroup(

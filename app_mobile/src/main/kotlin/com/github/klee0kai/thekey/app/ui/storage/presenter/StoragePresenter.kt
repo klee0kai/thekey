@@ -29,6 +29,16 @@ interface StoragePresenter {
 
     fun scanNewOtpQRCode(router: AppRouter?): Job = emptyJob()
 
+    fun moveNote(
+        notePt: Long,
+        router: AppRouter?,
+    ): Job = emptyJob()
+
+    fun moveOtp(
+        otpPtr: Long,
+        router: AppRouter?,
+    ): Job = emptyJob()
+
     fun deleteGroup(id: Long): Job = emptyJob()
 
     fun addNewNoteGroup(appRouter: AppRouter?): Job = emptyJob()

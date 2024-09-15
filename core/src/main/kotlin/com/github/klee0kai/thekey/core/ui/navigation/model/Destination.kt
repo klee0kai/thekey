@@ -12,9 +12,11 @@ abstract class DynamicDestination(
     val feature: DynamicFeature
 ) : Destination
 
-
 @Stable
 interface DialogDestination : Destination
+
+@Stable
+interface NavBoardDestination : Destination
 
 @Stable
 abstract class DialogDynamicDestination(

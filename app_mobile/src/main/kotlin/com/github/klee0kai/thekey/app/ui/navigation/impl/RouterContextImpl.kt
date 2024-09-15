@@ -38,6 +38,8 @@ class RouterContextImpl(
     }
     override val navDialogsController: NavController<Destination> by lazy { navController(emptyList()) }
 
+    override val navBoardController: NavController<Destination> by lazy { navController(emptyList()) }
+
     override val navChanges = MutableSharedFlow<NavigateBackstackChange>(replay = 1)
     override val scope = DI.androidUiScope()
 

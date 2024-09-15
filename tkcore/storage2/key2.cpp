@@ -420,19 +420,8 @@ int KeyStorageV2::saveNewPassw(
         if (progress) progress(MIN(1, progressCount++ / allItemsCount));
     }
 
-    for (const auto &srcNote: otpNotes(TK2_GET_NOTE_FULL)) {
-        auto destNoteList = destStorage->createOtpNotes(
-                exportOtpNote(srcNote.id).toUri(),
-                TK2_GET_NOTE_FULL
-        );
-        if (destNoteList.empty())continue;
-        auto destNote = destNoteList.front();
-
-        // not export meta
-        destNote.colorGroupId = srcNote.colorGroupId;
-        destNote.pin = srcNote.pin;
-
-        destStorage->setOtpNote(destNote, TK2_SET_NOTE_INFO);
+    for (const auto &otpNote: otpNotes(TK2_GET_NOTE_FULL)) {
+        destStorage->createOtpNote(otpNote);
 
         if (progress) progress(MIN(1, progressCount++ / allItemsCount));
     }
@@ -494,16 +483,7 @@ int KeyStorageV2::saveNewPasswStrategy(
                 continue;
             }
 
-            auto destOtpNoteList = virtDest->createOtpNotes(
-                    virtSrc->exportOtpNote(srcOtpNote.id).toUri(), TK2_GET_NOTE_FULL);
-            if (destOtpNoteList.empty()) continue;
-            auto destOtpNote = destOtpNoteList.front();
-
-            // not export meta
-            destOtpNote.colorGroupId = srcOtpNote.colorGroupId;
-            destOtpNote.pin = srcOtpNote.pin;
-
-            virtDest->setOtpNote(destOtpNote, TK2_SET_NOTE_INFO);
+            virtDest->createOtpNote(srcOtpNote, TK2_SET_NOTE_INFO);
 
             if (progress) progress(MIN(1, progressCount++ / allItemsCount));
         }
@@ -976,7 +956,7 @@ int KeyStorageV2::setOtpNote(const thekey_v2::DecryptedOtpNote &dnote, uint flag
     if (setPasswFlag && (notCmpOld || old->secret != dnote.secret)) {
         cryptedNote->data.secret.encrypt(
                 base32::decodeRaw(dnote.secret),
-                ctx->keyForPassw,
+                ctx->keyForOtpPassw,
                 fheader->cryptType(),
                 fheader->interactionsCount()
         );

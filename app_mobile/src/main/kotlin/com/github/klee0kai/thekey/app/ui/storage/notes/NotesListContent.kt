@@ -133,6 +133,10 @@ fun NotesListContent(
                             onEdit = rememberClickDebounced(note) {
                                 showMenu = false
                                 router.navigate(args.editNote(note.id))
+                            },
+                            onMove = rememberClickDebounced(note) {
+                                showMenu = false
+                                presenter?.moveNote(note.id, router)
                             }
                         )
 
@@ -180,9 +184,13 @@ fun NotesListContent(
                                     groupId = it.id,
                                 )
                             },
-                            onEdit = rememberClickDebounced(note) {
+                            onEdit = rememberClickDebounced(otp) {
                                 showMenu = false
                                 router.navigate(args.editOtpNote(otpNotePtr = otp.id))
+                            },
+                            onMove = rememberClickDebounced(otp) {
+                                showMenu = false
+                                presenter?.moveOtp(otp.id, router)
                             }
                         )
 
