@@ -86,13 +86,17 @@ fun PopupMenu(
         LocalOverlayProvider.current.Overlay(overlayKey) {
             val density = LocalDensity.current
             val view = LocalView.current
-            val bias = if (LocalLayoutDirection.current == LayoutDirection.Ltr) horizontalBias else 1f - horizontalBias
+            val bias =
+                if (LocalLayoutDirection.current == LayoutDirection.Ltr) horizontalBias else 1f - horizontalBias
             val anchorDelegated by rememberDerivedStateOf { positionAnchor.value?.toDp(density) }
             val contentPosPx = remember { mutableStateOf<ViewPositionPx?>(null) }
-            val contentPosDp by rememberDerivedStateOf { contentPosPx.value?.toDp(density) ?: ViewPositionDp() }
+            val contentPosDp by rememberDerivedStateOf {
+                contentPosPx.value?.toDp(density) ?: ViewPositionDp()
+            }
             val offset by rememberDerivedStateOf {
                 with(density) {
-                    val anchor = anchorDelegated ?: return@rememberDerivedStateOf DpOffset(0.dp, 0.dp)
+                    val anchor =
+                        anchorDelegated ?: return@rememberDerivedStateOf DpOffset(0.dp, 0.dp)
                     var offset = when {
                         view.height.toDp() - safeContentPaddings.calculateBottomPadding() < anchor.globalPos.y + anchor.size.height + contentPosDp.size.height
                                 && anchor.globalPos.y > view.height.toDp() / 2f -> {
@@ -123,7 +127,10 @@ fun PopupMenu(
                 with(density) {
                     ViewPositionDp(
                         globalPos = DpOffset(x = 0.dp, y = contentPosDp.globalPos.y),
-                        size = DpSize(width = contentPosDp.globalPos.x, height = contentPosDp.size.height)
+                        size = DpSize(
+                            width = contentPosDp.globalPos.x,
+                            height = contentPosDp.size.height
+                        )
                     )
                 }
             }
@@ -131,8 +138,14 @@ fun PopupMenu(
             val rightPopupShadow by rememberDerivedStateOf {
                 with(density) {
                     ViewPositionDp(
-                        globalPos = DpOffset(x = contentPosDp.globalPos.x + contentPosDp.size.width, y = contentPosDp.globalPos.y),
-                        size = DpSize(width = view.width.toDp() - (contentPosDp.globalPos.x + contentPosDp.size.width), height = contentPosDp.size.height)
+                        globalPos = DpOffset(
+                            x = contentPosDp.globalPos.x + contentPosDp.size.width,
+                            y = contentPosDp.globalPos.y
+                        ),
+                        size = DpSize(
+                            width = view.width.toDp() - (contentPosDp.globalPos.x + contentPosDp.size.width),
+                            height = contentPosDp.size.height
+                        )
                     )
                 }
             }
@@ -151,8 +164,14 @@ fun PopupMenu(
                 with(density) {
                     val anchor = anchorDelegated ?: return@rememberDerivedStateOf ViewPositionDp()
                     ViewPositionDp(
-                        globalPos = DpOffset(x = anchor.globalPos.x + anchor.size.width, y = anchor.globalPos.y),
-                        size = DpSize(width = view.width.toDp() - (anchor.globalPos.x + anchor.size.width), height = anchor.size.height)
+                        globalPos = DpOffset(
+                            x = anchor.globalPos.x + anchor.size.width,
+                            y = anchor.globalPos.y
+                        ),
+                        size = DpSize(
+                            width = view.width.toDp() - (anchor.globalPos.x + anchor.size.width),
+                            height = anchor.size.height
+                        )
                     )
                 }
             }
@@ -160,7 +179,10 @@ fun PopupMenu(
             val bottomShadow by rememberDerivedStateOf {
                 with(density) {
                     val anchor = anchorDelegated ?: return@rememberDerivedStateOf ViewPositionDp()
-                    val y = max(anchor.globalPos.y + anchor.size.height, contentPosDp.globalPos.y + contentPosDp.size.height)
+                    val y = max(
+                        anchor.globalPos.y + anchor.size.height,
+                        contentPosDp.globalPos.y + contentPosDp.size.height
+                    )
                     ViewPositionDp(
                         globalPos = DpOffset(x = 0.dp, y = y),
                         size = DpSize(width = view.width.toDp(), height = view.height.toDp() - y)
@@ -173,7 +195,10 @@ fun PopupMenu(
                     val anchor = anchorDelegated ?: return@rememberDerivedStateOf ViewPositionDp()
                     ViewPositionDp(
                         globalPos = DpOffset(x = 0.dp, y = 0.dp),
-                        size = DpSize(width = view.width.toDp(), height = min(anchor.globalPos.y, contentPosDp.globalPos.y))
+                        size = DpSize(
+                            width = view.width.toDp(),
+                            height = min(anchor.globalPos.y, contentPosDp.globalPos.y)
+                        )
                     )
                 }
             }
@@ -182,7 +207,11 @@ fun PopupMenu(
             val fullAnimatedAlpha by rememberDerivedStateOf { positionAvailableAlpha * visibleAlpha }
             Box(
                 modifier = Modifier
-                    .thenIf(!ignoreAnchorSize) { sizeIn(maxWidth = anchorDelegated?.size?.width ?: 0.dp) }
+                    .thenIf(!ignoreAnchorSize) {
+                        sizeIn(
+                            maxWidth = anchorDelegated?.size?.width ?: 0.dp
+                        )
+                    }
                     .absoluteOffset(offset.x, offset.y)
                     .onGlobalPositionState(contentPosPx)
                     .background(shadowColor.copy(alpha = shadowColor.alpha * fullAnimatedAlpha))

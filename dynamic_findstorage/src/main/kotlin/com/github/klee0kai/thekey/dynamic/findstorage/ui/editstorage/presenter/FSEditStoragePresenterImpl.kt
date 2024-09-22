@@ -17,13 +17,11 @@ import com.github.klee0kai.thekey.core.utils.error.cause
 import com.github.klee0kai.thekey.dynamic.findstorage.di.FSDI
 import com.github.klee0kai.thekey.dynamic.findstorage.ui.editstorage.model.FSEditStorageState
 import com.github.klee0kai.thekey.dynamic.findstorage.ui.editstorage.model.storage
-import com.github.klee0kai.thekey.dynamic.findstorage.domain.model.toFileItem
 import com.github.klee0kai.thekey.dynamic.findstorage.ui.editstorage.model.updateWith
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.io.File
 
 class FSEditStoragePresenterImpl(
     val storageIdentifier: StorageIdentifier?,
@@ -33,6 +31,7 @@ class FSEditStoragePresenterImpl(
     private val storagesInteractor = FSDI.storagesInteractorLazy()
     private val interactor = FSDI.editStorageInteractorLazy()
     private val settingsRep = FSDI.settingsRepositoryLazy()
+    private val fileSystemInteractor = FSDI.fileSystemInteractorLazy()
     private val pathInputHelper = FSDI.pathInputHelper()
     private val shortPathHelper = FSDI.userShortPaths()
 
@@ -147,23 +146,7 @@ class FSEditStoragePresenterImpl(
 
     private fun updatePathVariants(
     ) = scope.launchLatest("path_variants") {
-        val input = state.value.path.text
-        state.update { it.copy(storagePathVariants = emptyList()) }
-        val variants = when {
-            input.isBlank() -> {
-                shortPathHelper
-                    .rootAbsolutePaths
-                    .map { File(it).toFileItem() }
-            }
-
-            else -> {
-                with(pathInputHelper) {
-                    input.fileVariables()
-                        .map { it.toFileItem() }
-                }
-            }
-        }
-
+        val variants = fileSystemInteractor().listFiles(state.value.path.text).await()
         state.update { it.copy(storagePathVariants = variants) }
     }
 

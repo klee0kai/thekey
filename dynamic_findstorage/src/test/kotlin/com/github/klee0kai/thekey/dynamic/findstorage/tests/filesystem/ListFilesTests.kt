@@ -27,14 +27,14 @@ class ListFilesTests {
                 FileItem(
                     absPath = "/app/thekey/data",
                     userPath = "/appdata",
-                    isFolder = false,
+                    isFolder = true,
                     isAppInner = true,
                     isExternal = false,
                 ),
                 FileItem(
                     absPath = "/storage/emulated/0",
                     userPath = "/phoneStorage",
-                    isFolder = false,
+                    isFolder = true,
                     isAppInner = false,
                     isExternal = true
                 )
@@ -60,14 +60,14 @@ class ListFilesTests {
                 FileItem(
                     absPath = "/app/thekey/data",
                     userPath = "/appdata",
-                    isFolder = false,
+                    isFolder = true,
                     isAppInner = true,
                     isExternal = false,
                 ),
                 FileItem(
                     absPath = "/storage/emulated/0",
                     userPath = "/phoneStorage",
-                    isFolder = false,
+                    isFolder = true,
                     isAppInner = false,
                     isExternal = true
                 ),
@@ -127,6 +127,59 @@ class ListFilesTests {
             files,
         )
     }
+
+    @Test
+    fun listSinglePhoneStorage3Files() = runBlocking {
+        // given
+        FSDI.hardResetToPreview()
+        FSDI.initFsRepositoriesModule(object : FSRepositoriesModule {
+            override fun fsFileSystemRepositoryLazy() = FileSystemRepositoryDummy()
+        })
+        val interactor = FSDI.fileSystemInteractorLazy()
+
+        // when
+        val files = interactor().listFiles("emulated").await()
+
+        assertEquals(
+            listOf(
+                FileItem(
+                    absPath = "/storage/emulated/0",
+                    userPath = "/phoneStorage",
+                    isFolder = true,
+                    isAppInner = false,
+                    isExternal = true
+                ),
+            ),
+            files,
+        )
+    }
+
+    @Test
+    fun listSinglePhoneStorage4Files() = runBlocking {
+        // given
+        FSDI.hardResetToPreview()
+        FSDI.initFsRepositoriesModule(object : FSRepositoriesModule {
+            override fun fsFileSystemRepositoryLazy() = FileSystemRepositoryDummy()
+        })
+        val interactor = FSDI.fileSystemInteractorLazy()
+
+        // when
+        val files = interactor().listFiles("/emulated").await()
+
+        assertEquals(
+            listOf(
+                FileItem(
+                    absPath = "/storage/emulated/0",
+                    userPath = "/phoneStorage",
+                    isFolder = true,
+                    isAppInner = false,
+                    isExternal = true
+                ),
+            ),
+            files,
+        )
+    }
+
 
     @Test
     fun listPhoneStorageFiles() = runBlocking {
@@ -296,6 +349,32 @@ class ListFilesTests {
                     isAppInner = false,
                     isExternal = true
                 ),
+            ),
+            files,
+        )
+    }
+
+    @Test
+    fun userPathIsWorking2() = runBlocking {
+        // given
+        FSDI.hardResetToPreview()
+        FSDI.initFsRepositoriesModule(object : FSRepositoriesModule {
+            override fun fsFileSystemRepositoryLazy() = FileSystemRepositoryDummy()
+        })
+        val interactor = FSDI.fileSystemInteractorLazy()
+
+        // when
+        val files = interactor().listFiles("/phoneStorage").await()
+
+        assertEquals(
+            listOf(
+                FileItem(
+                    absPath = "/storage/emulated/0",
+                    userPath = "/phoneStorage",
+                    isFolder = true,
+                    isAppInner = false,
+                    isExternal = true
+                )
             ),
             files,
         )

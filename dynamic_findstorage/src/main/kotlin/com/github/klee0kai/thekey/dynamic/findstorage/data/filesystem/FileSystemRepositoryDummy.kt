@@ -1,7 +1,6 @@
 package com.github.klee0kai.thekey.dynamic.findstorage.data.filesystem
 
-import com.github.klee0kai.thekey.core.utils.common.appendPrefix
-import com.github.klee0kai.thekey.core.utils.common.parents
+import com.github.klee0kai.thekey.core.utils.file.parents
 import com.github.klee0kai.thekey.dynamic.findstorage.di.FSDI
 import com.github.klee0kai.thekey.dynamic.findstorage.domain.model.FileItem
 import com.github.klee0kai.thekey.dynamic.findstorage.domain.model.absParent
@@ -28,16 +27,18 @@ open class FileSystemRepositoryDummy : FileSystemRepository {
         .toList()
 
     override fun listFileItems(absFolderPath: String): List<FileItem> {
-        val folderPath = absFolderPath.appendPrefix(File.separator)
         return when {
-            folderPath == File.separator -> {
+            absFolderPath == File.separator
+                    || userShortPaths.rootAbsolutePaths
+                .any { it.dropLast(1).startsWith(absFolderPath) } -> {
                 userShortPaths.rootAbsolutePaths
+                    .filter { it.startsWith(absFolderPath) }
                     .map { File(it) }
-                    .map { fileItemFrom(it) }
+                    .map { fileItemFrom(it).copy(isFolder = true) }
             }
 
             else -> {
-                files.filter { it.absParent == folderPath }
+                files.filter { it.absParent == absFolderPath.removeSuffix("/") }
             }
         }
     }

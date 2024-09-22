@@ -33,11 +33,13 @@ import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextField
 import com.github.klee0kai.thekey.core.ui.devkit.overlay.PopupMenu
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
-import com.github.klee0kai.thekey.core.utils.common.appendSuffix
+import com.github.klee0kai.thekey.core.utils.file.appendSuffix
+import com.github.klee0kai.thekey.core.utils.file.removeFileExtension
 import com.github.klee0kai.thekey.core.utils.possitions.onGlobalPositionState
 import com.github.klee0kai.thekey.core.utils.possitions.pxToDp
 import com.github.klee0kai.thekey.core.utils.possitions.rememberViewPosition
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
+import com.github.klee0kai.thekey.core.utils.views.thenIf
 import com.github.klee0kai.thekey.core.utils.views.toTextFieldValue
 import com.github.klee0kai.thekey.core.utils.views.toTransformationText
 import com.github.klee0kai.thekey.core.utils.views.withTKeyExtension
@@ -129,25 +131,10 @@ fun PathTextField(
                         modifier = Modifier
                             .clickable {
                                 onValueChange(
-                                    with(pathInputHelper) {
-                                        when {
-                                            !file.isFolder -> {
-                                                value.text
-                                                    .fileSelected(File(file.absPath))
-                                                    .shortPath()
-                                                    .toTextFieldValue()
-                                            }
-
-                                            else -> {
-                                                value.text
-                                                    .folderSelected(File(file.absPath))
-                                                    .shortPath()
-                                                    .appendSuffix(File.separator)
-                                                    .toTextFieldValue()
-                                            }
-                                        }
-
-                                    }
+                                    file.userPath
+                                        .thenIf(!file.isFolder) { removeFileExtension() }
+                                        .thenIf(file.isFolder) { appendSuffix(File.separator) }
+                                        .toTextFieldValue()
                                 )
                             }
                             .defaultMinSize(

@@ -1,6 +1,5 @@
 package com.github.klee0kai.thekey.dynamic.findstorage.data.filesystem
 
-import com.github.klee0kai.thekey.core.utils.common.appendPrefix
 import com.github.klee0kai.thekey.dynamic.findstorage.di.FSDI
 import com.github.klee0kai.thekey.dynamic.findstorage.domain.model.FileItem
 import java.io.File
@@ -10,16 +9,17 @@ class FileSystemRepositoryImpl : FileSystemRepository {
     private val userShortPaths = FSDI.userShortPaths()
 
     override fun listFileItems(absFolderPath: String): List<FileItem> {
-        val folderPath = absFolderPath.appendPrefix(File.separator)
         return when {
-            folderPath == File.separator -> {
+            absFolderPath == File.separator
+                    || userShortPaths.rootAbsolutePaths.any { it.startsWith(absFolderPath) } -> {
                 userShortPaths.rootAbsolutePaths
+                    .filter { it.startsWith(absFolderPath) }
                     .map { File(it) }
                     .map { fileItemFrom(it) }
             }
 
             else -> {
-                File(folderPath)
+                File(absFolderPath)
                     .listFiles()
                     ?.toList()
                     ?.map { fileItemFrom(it) }
