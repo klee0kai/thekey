@@ -7,3 +7,11 @@ fun String.appendSuffix(suffix: String): String {
         this + suffix
     }
 }
+
+fun String.appendPrefix(prefix: String): String {
+    return if (startsWith(prefix)) {
+        this
+    } else {
+        prefix + this
+    }
+}

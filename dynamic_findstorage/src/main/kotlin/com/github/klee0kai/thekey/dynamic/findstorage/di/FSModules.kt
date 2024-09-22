@@ -26,7 +26,7 @@ interface FSModules {
     fun initCoreDeps(deps: CoreDependencyProvider)
 
     @Init
-    fun initRepositoriesModule(deps: FSRepositoriesModule)
+    fun initFsRepositoriesModule(deps: FSRepositoriesModule)
 
     @Init
     fun initFSInteractorsModule(deps: FSInteractorsModule)

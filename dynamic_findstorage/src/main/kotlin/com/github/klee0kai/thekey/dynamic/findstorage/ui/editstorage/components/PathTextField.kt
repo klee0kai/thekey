@@ -133,14 +133,14 @@ fun PathTextField(
                                         when {
                                             !file.isFolder -> {
                                                 value.text
-                                                    .fileSelected(File(file.path))
+                                                    .fileSelected(File(file.absPath))
                                                     .shortPath()
                                                     .toTextFieldValue()
                                             }
 
                                             else -> {
                                                 value.text
-                                                    .folderSelected(File(file.path))
+                                                    .folderSelected(File(file.absPath))
                                                     .shortPath()
                                                     .appendSuffix(File.separator)
                                                     .toTextFieldValue()

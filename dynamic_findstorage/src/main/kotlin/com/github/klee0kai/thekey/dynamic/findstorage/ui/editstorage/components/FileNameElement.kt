@@ -35,11 +35,11 @@ fun FileNameElement(
     val pathInputHelper = remember { FSDI.pathInputHelper() }
     val shortPathsHelper = remember { FSDI.userShortPaths() }
 
-    val file = remember(fileItem) { File(fileItem.path) }
+    val file = remember(fileItem) { File(fileItem.absPath) }
 
     val short = remember(fileItem) {
         with(pathInputHelper) {
-            shortPathsHelper.shortPathName(fileItem.path)
+            shortPathsHelper.shortPathName(fileItem.absPath)
                 .let { File(it).name }
                 .toAnnotationString()
         }
@@ -113,7 +113,7 @@ fun FileNameElementHintPreview() {
             FileNameElement(
                 modifier = Modifier.fillMaxWidth(),
                 fileItem = FileItem(
-                    path = "/storage/emulated/0",
+                    absPath = "/storage/emulated/0",
                     isFolder = true,
                 )
             )
@@ -131,7 +131,7 @@ fun FileNameElementDocumentsPreview() {
             FileNameElement(
                 modifier = Modifier.fillMaxWidth(),
                 fileItem = FileItem(
-                    path = "/storage/emulated/0/Documents",
+                    absPath = "/storage/emulated/0/Documents",
                     isFolder = true,
                 )
             )
@@ -149,7 +149,7 @@ fun FileNameElementTxtPreview() {
             FileNameElement(
                 modifier = Modifier.fillMaxWidth(),
                 fileItem = FileItem(
-                    path = "/storage/emulated/0/Documents/simple.txt",
+                    absPath = "/storage/emulated/0/Documents/simple.txt",
                     isFolder = false,
                 )
             )
