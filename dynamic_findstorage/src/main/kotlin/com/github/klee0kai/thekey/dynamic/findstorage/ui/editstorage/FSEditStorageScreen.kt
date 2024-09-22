@@ -3,8 +3,6 @@
 package com.github.klee0kai.thekey.dynamic.findstorage.ui.editstorage
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -20,13 +18,11 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -52,37 +48,31 @@ import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DeleteIconButton
-import com.github.klee0kai.thekey.core.ui.devkit.components.buttons.GroupCircle
-import com.github.klee0kai.thekey.core.ui.devkit.components.dropdownfields.ColorGroupSelectPopupMenu
-import com.github.klee0kai.thekey.core.ui.devkit.components.dropdownfields.SimpleSelectPopupMenu
+import com.github.klee0kai.thekey.core.ui.devkit.components.dropdownfields.ColorGroupDropDownField
 import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextField
 import com.github.klee0kai.thekey.core.ui.devkit.icons.BackMenuIcon
-import com.github.klee0kai.thekey.core.ui.devkit.overlay.PopupMenu
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.common.Dummy
-import com.github.klee0kai.thekey.core.utils.possitions.onGlobalPositionState
 import com.github.klee0kai.thekey.core.utils.possitions.pxToDp
-import com.github.klee0kai.thekey.core.utils.possitions.rememberViewPosition
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.horizontal
 import com.github.klee0kai.thekey.core.utils.views.isIme
+import com.github.klee0kai.thekey.core.utils.views.rememberClickArg
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.core.utils.views.rememberTargetCrossFaded
-import com.github.klee0kai.thekey.core.utils.views.toTextFieldValue
-import com.github.klee0kai.thekey.core.utils.views.toTransformationText
-import com.github.klee0kai.thekey.core.utils.views.withTKeyExtension
 import com.github.klee0kai.thekey.dynamic.findstorage.R
 import com.github.klee0kai.thekey.dynamic.findstorage.di.FSDI
 import com.github.klee0kai.thekey.dynamic.findstorage.di.hardResetToPreview
 import com.github.klee0kai.thekey.dynamic.findstorage.di.modules.FSPresentersModule
+import com.github.klee0kai.thekey.dynamic.findstorage.ui.editstorage.components.PathTextField
 import com.github.klee0kai.thekey.dynamic.findstorage.ui.editstorage.model.FSEditStorageState
+import com.github.klee0kai.thekey.dynamic.findstorage.ui.editstorage.model.FileItem
 import com.github.klee0kai.thekey.dynamic.findstorage.ui.editstorage.presenter.FSEditStoragePresenter
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.filterIsInstance
 import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
@@ -106,24 +96,12 @@ fun FSEditStorageScreen(
     val imeIsVisibleAnimated by animateTargetCrossFaded(WindowInsets.isIme)
     val isSaveAvailable by rememberTargetCrossFaded { state.isSaveAvailable }
     val isRemoveAvailable by rememberTargetCrossFaded { state.isRemoveAvailable }
-    val storagePathPosition = rememberViewPosition()
-    val pathInteractionSource = remember { MutableInteractionSource() }
-    val groupSelectPosition = rememberViewPosition()
-    val groupInteractionSource = remember { MutableInteractionSource() }
 
-    LaunchedEffect(Unit) {
-        groupInteractionSource.interactions.filterIsInstance<PressInteraction.Press>().collect {
-            presenter?.input { copy(colorGroupExpanded = !colorGroupExpanded) }
-        }
-    }
-    LaunchedEffect(Unit) {
-        pathInteractionSource.interactions.filterIsInstance<PressInteraction.Press>().collect {
-            presenter?.input { copy(storagePathFieldExpanded = !storagePathFieldExpanded) }
-        }
-    }
+
     BackHandler(enabled = state.storagePathFieldExpanded || state.colorGroupExpanded) {
         presenter?.input { copy(storagePathFieldExpanded = false, colorGroupExpanded = false) }
     }
+
     ConstraintLayout(
         modifier = Modifier
             .imePadding()
@@ -138,9 +116,9 @@ fun FSEditStorageScreen(
             colorGroupField,
         ) = createRefs()
 
-        AppTextField(
+
+        PathTextField(
             modifier = Modifier
-                .onGlobalPositionState(storagePathPosition)
                 .constrainAs(pathTextField) {
                     width = Dimension.fillToConstraints
                     linkTo(
@@ -154,47 +132,15 @@ fun FSEditStorageScreen(
                         endMargin = safeContentPaddings.horizontal(minValue = 16.dp),
                     )
                 },
-            visualTransformation = { input ->
-                with(pathInputHelper) {
-                    input.coloredPath(theme.colorScheme.androidColorScheme.primary)
-                        .toTransformationText()
-                        .withTKeyExtension(theme.colorScheme.hintTextColor)
-                }
-            },
             value = state.path,
-            onValueChange = {
-                with(pathInputHelper) {
-                    presenter?.input {
-                        copy(
-                            storagePathFieldExpanded = true,
-                            path = it.pathInputMask(),
-                        )
-                    }
-                }
-            },
-            interactionSource = pathInteractionSource,
-            label = { Text(stringResource(R.string.storage_path)) }
+            isSkeleton = state.isSkeleton,
+            variants = state.storagePathVariants.map { FileItem(it) },
+            label = stringResource(R.string.storage_path),
+            providerHint = "available storages and files",
+            expanded = state.storagePathFieldExpanded,
+            onExpandedChange = rememberClickArg { presenter?.input { copy(storagePathFieldExpanded = it) } },
+            onValueChange = rememberClickArg { presenter?.input { copy(path = it) } }
         )
-
-        PopupMenu(
-            visible = state.storagePathFieldExpanded && state.storagePathVariants.isNotEmpty(),
-            positionAnchor = storagePathPosition,
-            onDismissRequest = { presenter?.input { copy(storagePathFieldExpanded = false) } }
-        ) {
-            SimpleSelectPopupMenu(
-                modifier = Modifier
-                    .padding(top = 10.dp, bottom = 10.dp)
-                    .fillMaxWidth(),
-                variants = state.storagePathVariants,
-                onSelected = { selected, _ ->
-                    with(pathInputHelper) {
-                        presenter?.input {
-                            copy(path = this.path.text.folderSelected(selected).toTextFieldValue())
-                        }
-                    }
-                }
-            )
-        }
 
         AppTextField(
             modifier = Modifier
@@ -253,10 +199,8 @@ fun FSEditStorageScreen(
             }
         }
 
-
-        AppTextField(
+        ColorGroupDropDownField(
             modifier = Modifier
-                .onGlobalPositionState(groupSelectPosition)
                 .fillMaxWidth(0.5f)
                 .constrainAs(colorGroupField) {
                     linkTo(
@@ -270,53 +214,22 @@ fun FSEditStorageScreen(
                     )
                 },
             isSkeleton = state.isSkeleton,
-            interactionSource = groupInteractionSource,
-            readOnly = true,
-            singleLine = true,
-            value = when {
-                state.colorGroupSelectedIndex < 0 -> stringResource(id = R.string.no_group)
-                else -> state.colorGroupVariants
-                    .getOrNull(state.colorGroupSelectedIndex)
-                    ?.name
-                    ?.takeIf { it.isNotBlank() }
-                    ?: stringResource(id = R.string.no_name)
+            selectedIndex = state.colorGroupSelectedIndex,
+            variants = state.colorGroupVariants,
+            expanded = state.colorGroupExpanded,
+            onExpandedChange = rememberClickArg { presenter?.input { copy(colorGroupExpanded = it) } },
+            onSelected = rememberClickArg {
+                presenter?.input {
+                    copy(
+                        colorGroupSelectedIndex = it,
+                        colorGroupExpanded = false,
+                    )
+                }
             },
-            leadingIcon = {
-                GroupCircle(
-                    modifier = Modifier
-                        .padding(4.dp),
-                    colorScheme = theme.colorScheme.surfaceSchemas.surfaceScheme(
-                        state.colorGroupVariants.getOrNull(state.colorGroupSelectedIndex)?.keyColor
-                            ?: KeyColor.NOCOLOR
-                    ),
-                )
-            },
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = state.colorGroupExpanded) },
-            onValueChange = { },
             label = { Text(stringResource(R.string.group)) }
         )
 
 
-        PopupMenu(
-            visible = state.colorGroupExpanded,
-            positionAnchor = groupSelectPosition,
-            onDismissRequest = { presenter?.input { copy(colorGroupExpanded = false) } }
-        ) {
-            ColorGroupSelectPopupMenu(
-                modifier = Modifier
-                    .padding(top = 10.dp, bottom = 10.dp)
-                    .fillMaxWidth(),
-                variants = state.colorGroupVariants,
-                onSelected = { _, idx ->
-                    presenter?.input {
-                        copy(
-                            colorGroupSelectedIndex = idx,
-                            colorGroupExpanded = false,
-                        )
-                    }
-                }
-            )
-        }
     }
 
     Column(
