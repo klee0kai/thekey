@@ -6,12 +6,15 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -30,16 +33,19 @@ import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextField
 import com.github.klee0kai.thekey.core.ui.devkit.overlay.PopupMenu
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
+import com.github.klee0kai.thekey.core.utils.common.appendSuffix
 import com.github.klee0kai.thekey.core.utils.possitions.onGlobalPositionState
 import com.github.klee0kai.thekey.core.utils.possitions.pxToDp
 import com.github.klee0kai.thekey.core.utils.possitions.rememberViewPosition
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
+import com.github.klee0kai.thekey.core.utils.views.toTextFieldValue
 import com.github.klee0kai.thekey.core.utils.views.toTransformationText
 import com.github.klee0kai.thekey.core.utils.views.withTKeyExtension
 import com.github.klee0kai.thekey.dynamic.findstorage.di.FSDI
 import com.github.klee0kai.thekey.dynamic.findstorage.di.hardResetToPreview
-import com.github.klee0kai.thekey.dynamic.findstorage.ui.editstorage.model.FileItem
+import com.github.klee0kai.thekey.dynamic.findstorage.domain.model.FileItem
 import kotlinx.coroutines.flow.filterIsInstance
+import java.io.File
 
 @Composable
 fun PathTextField(
@@ -58,6 +64,7 @@ fun PathTextField(
     val textFieldPosition = rememberViewPosition()
     val textFieldInteractionSource = remember { MutableInteractionSource() }
     val pathInputHelper = remember { FSDI.pathInputHelper() }
+    val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
 
     LaunchedEffect(Unit) {
         textFieldInteractionSource.interactions
@@ -95,7 +102,7 @@ fun PathTextField(
                 .padding(top = 10.dp, bottom = 10.dp)
                 .fillMaxWidth()
                 .onGlobalPositionState(container)
-                .heightIn(0.dp, 200.dp)
+                .heightIn(0.dp, 400.dp)
                 .background(
                     color = surface,
                     shape = RoundedCornerShape(16.dp)
@@ -120,7 +127,29 @@ fun PathTextField(
                 item {
                     FileNameElement(
                         modifier = Modifier
-                            .clickable { }
+                            .clickable {
+                                onValueChange(
+                                    with(pathInputHelper) {
+                                        when {
+                                            !file.isFolder -> {
+                                                value.text
+                                                    .fileSelected(File(file.path))
+                                                    .shortPath()
+                                                    .toTextFieldValue()
+                                            }
+
+                                            else -> {
+                                                value.text
+                                                    .folderSelected(File(file.path))
+                                                    .shortPath()
+                                                    .appendSuffix(File.separator)
+                                                    .toTextFieldValue()
+                                            }
+                                        }
+
+                                    }
+                                )
+                            }
                             .defaultMinSize(
                                 minWidth = container.value?.size?.width?.pxToDp() ?: 200.dp
                             ),

@@ -23,7 +23,7 @@ import com.github.klee0kai.thekey.core.utils.views.toAnnotationString
 import com.github.klee0kai.thekey.dynamic.findstorage.R
 import com.github.klee0kai.thekey.dynamic.findstorage.di.FSDI
 import com.github.klee0kai.thekey.dynamic.findstorage.di.hardResetToPreview
-import com.github.klee0kai.thekey.dynamic.findstorage.ui.editstorage.model.FileItem
+import com.github.klee0kai.thekey.dynamic.findstorage.domain.model.FileItem
 import java.io.File
 
 @Composable

@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.github.klee0kai.thekey.dynamic.findstorage.ui.editstorage
 
 import androidx.activity.compose.BackHandler
@@ -17,7 +15,6 @@ import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -70,7 +67,7 @@ import com.github.klee0kai.thekey.dynamic.findstorage.di.hardResetToPreview
 import com.github.klee0kai.thekey.dynamic.findstorage.di.modules.FSPresentersModule
 import com.github.klee0kai.thekey.dynamic.findstorage.ui.editstorage.components.PathTextField
 import com.github.klee0kai.thekey.dynamic.findstorage.ui.editstorage.model.FSEditStorageState
-import com.github.klee0kai.thekey.dynamic.findstorage.ui.editstorage.model.FileItem
+import com.github.klee0kai.thekey.dynamic.findstorage.domain.model.FileItem
 import com.github.klee0kai.thekey.dynamic.findstorage.ui.editstorage.presenter.FSEditStoragePresenter
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.jetbrains.annotations.VisibleForTesting
@@ -134,7 +131,7 @@ fun FSEditStorageScreen(
                 },
             value = state.path,
             isSkeleton = state.isSkeleton,
-            variants = state.storagePathVariants.map { FileItem(it) },
+            variants = state.storagePathVariants,
             label = stringResource(R.string.storage_path),
             providerHint = "available storages and files",
             expanded = state.storagePathFieldExpanded,
@@ -329,7 +326,10 @@ fun FSEditStorageScreenSelectPathPreview() = DebugDarkScreenPreview {
                         isSkeleton = false,
                         isEditMode = true,
                         isSaveAvailable = true,
-                        storagePathVariants = listOf("/appdata", "/phoneData"),
+                        storagePathVariants = listOf(
+                            FileItem("/appdata"),
+                            FileItem("/phoneData"),
+                        ),
                         storagePathFieldExpanded = false,
                         colorGroupExpanded = true,
                         colorGroupVariants = listOf(
