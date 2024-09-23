@@ -11,6 +11,7 @@ data class TextProvider internal constructor(
     private val text: String? = null,
 ) : Parcelable {
 
+    constructor() : this(null, null)
     constructor(text: String) : this(textRes = null, text = text)
     constructor(textRes: Int) : this(textRes = textRes, text = null)
 

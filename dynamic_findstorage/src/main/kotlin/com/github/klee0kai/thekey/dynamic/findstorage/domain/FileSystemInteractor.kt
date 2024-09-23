@@ -52,4 +52,10 @@ class FileSystemInteractor {
         repository().fileItemFrom(file)
     }
 
+    fun fileItemFrom(
+        path: String,
+    ) = scope.async {
+        repository().fileItemFrom(File(userShortPaths.absolutePath(path) ?: ""))
+    }
+
 }

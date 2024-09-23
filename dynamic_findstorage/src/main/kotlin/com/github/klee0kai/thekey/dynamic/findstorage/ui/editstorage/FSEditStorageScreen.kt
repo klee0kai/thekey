@@ -65,9 +65,11 @@ import com.github.klee0kai.thekey.dynamic.findstorage.R
 import com.github.klee0kai.thekey.dynamic.findstorage.di.FSDI
 import com.github.klee0kai.thekey.dynamic.findstorage.di.hardResetToPreview
 import com.github.klee0kai.thekey.dynamic.findstorage.di.modules.FSPresentersModule
+import com.github.klee0kai.thekey.dynamic.findstorage.domain.model.FileItem
 import com.github.klee0kai.thekey.dynamic.findstorage.ui.editstorage.components.PathTextField
 import com.github.klee0kai.thekey.dynamic.findstorage.ui.editstorage.model.FSEditStorageState
-import com.github.klee0kai.thekey.dynamic.findstorage.domain.model.FileItem
+import com.github.klee0kai.thekey.dynamic.findstorage.ui.editstorage.model.StoragePathLabelState
+import com.github.klee0kai.thekey.dynamic.findstorage.ui.editstorage.model.StoragePathProviderHintState
 import com.github.klee0kai.thekey.dynamic.findstorage.ui.editstorage.presenter.FSEditStoragePresenter
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.jetbrains.annotations.VisibleForTesting
@@ -132,8 +134,19 @@ fun FSEditStorageScreen(
             value = state.path,
             isSkeleton = state.isSkeleton,
             variants = state.storagePathVariants,
-            label = stringResource(R.string.storage_path),
-            providerHint = "available storages and files",
+            label = when (state.storagePathLabel) {
+                is StoragePathLabelState.CreateStoragePath -> stringResource(R.string.storage_path_to_create)
+                is StoragePathLabelState.MovingStoragePath -> stringResource(R.string.storage_path_to_move)
+                is StoragePathLabelState.Simple -> stringResource(R.string.storage_path)
+            },
+            providerHint = when (val hint = state.storagePathProviderHint) {
+                is StoragePathProviderHintState.Empty -> stringResource(id = R.string.not_found_files)
+                is StoragePathProviderHintState.AvailableStorages -> stringResource(id = R.string.available_files)
+                is StoragePathProviderHintState.CreateFolderFrom -> stringResource(
+                    id = R.string.creating_folder_from,
+                    hint.parentFolder.userPath,
+                )
+            },
             expanded = state.storagePathFieldExpanded,
             onExpandedChange = rememberClickArg { presenter?.input { copy(storagePathFieldExpanded = it) } },
             onValueChange = rememberClickArg { presenter?.input { copy(path = it) } }

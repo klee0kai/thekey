@@ -23,6 +23,8 @@ data class FSEditStorageState(
 
     val storagePathVariants: List<FileItem> = emptyList(),
     val storagePathFieldExpanded: Boolean = false,
+    val storagePathLabel: StoragePathLabelState = StoragePathLabelState.Simple,
+    val storagePathProviderHint: StoragePathProviderHintState = StoragePathProviderHintState.Empty,
 
     val colorGroupExpanded: Boolean = false,
     val colorGroupSelectedIndex: Int = 0,
