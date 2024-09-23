@@ -8,12 +8,8 @@ import com.github.klee0kai.thekey.core.data.room.entry.toColorGroupEntry
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.core.utils.coroutine.lazyStateFlow
-import com.github.klee0kai.thekey.core.utils.coroutine.onTicks
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -48,7 +44,7 @@ class StoragesRepositoryImpl : StoragesRepository {
                 entry.toColoredStorage()
                     .copy(
                         colorGroup = allColorGroups
-                            .firstOrNull { group -> entry.coloredGroupId == group.id }
+                            .firstOrNull { group -> entry.coloredGroupId == group.id },
                     )
             }
     }
@@ -66,7 +62,7 @@ class StoragesRepositoryImpl : StoragesRepository {
 
     override fun findStorage(path: String) = scope.async {
         val storage = storagesDao().get(path) ?: return@async null
-        val colorGroup = colorGroupsDao()[storage.id]
+        val colorGroup = colorGroupsDao()[storage.coloredGroupId]
         storage.toColoredStorage().copy(colorGroup = colorGroup?.toColorGroup())
     }
 
