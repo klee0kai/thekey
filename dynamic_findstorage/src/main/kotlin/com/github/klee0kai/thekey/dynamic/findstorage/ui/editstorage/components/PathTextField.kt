@@ -104,7 +104,7 @@ fun PathTextField(
                 .padding(top = 10.dp, bottom = 10.dp)
                 .fillMaxWidth()
                 .onGlobalPositionState(container)
-                .heightIn(0.dp, 400.dp)
+                .heightIn(0.dp, 600.dp)
                 .background(
                     color = surface,
                     shape = RoundedCornerShape(16.dp)

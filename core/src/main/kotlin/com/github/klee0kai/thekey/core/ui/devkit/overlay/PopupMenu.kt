@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -64,6 +65,11 @@ import com.github.klee0kai.thekey.core.utils.views.thenIf
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 
+private enum class PopupGravity {
+    TOP,
+    BOTTOM,
+}
+
 @Composable
 fun PopupMenu(
     visible: Boolean,
@@ -86,32 +92,49 @@ fun PopupMenu(
         LocalOverlayProvider.current.Overlay(overlayKey) {
             val density = LocalDensity.current
             val view = LocalView.current
-            val bias =
-                if (LocalLayoutDirection.current == LayoutDirection.Ltr) horizontalBias else 1f - horizontalBias
-            val anchorDelegated by rememberDerivedStateOf { positionAnchor.value?.toDp(density) }
+            val bias = if (LocalLayoutDirection.current == LayoutDirection.Ltr) {
+                horizontalBias
+            } else {
+                1f - horizontalBias
+            }
+            val anchorDp by rememberDerivedStateOf { positionAnchor.value?.toDp(density) }
             val contentPosPx = remember { mutableStateOf<ViewPositionPx?>(null) }
             val contentPosDp by rememberDerivedStateOf {
                 contentPosPx.value?.toDp(density) ?: ViewPositionDp()
             }
+            val gravity by rememberDerivedStateOf {
+                with(density) {
+                    val anchor = anchorDp ?: return@rememberDerivedStateOf null
+
+                    when {
+                        view.height.toDp() - safeContentPaddings.calculateBottomPadding()
+                                < anchor.globalPos.y + anchor.size.height + contentPosDp.size.height
+                                && anchor.globalPos.y > view.height.toDp() / 2f -> PopupGravity.TOP
+
+                        else -> PopupGravity.BOTTOM
+                    }
+                }
+            }
             val offset by rememberDerivedStateOf {
                 with(density) {
-                    val anchor =
-                        anchorDelegated ?: return@rememberDerivedStateOf DpOffset(0.dp, 0.dp)
-                    var offset = when {
-                        view.height.toDp() - safeContentPaddings.calculateBottomPadding() < anchor.globalPos.y + anchor.size.height + contentPosDp.size.height
-                                && anchor.globalPos.y > view.height.toDp() / 2f -> {
+                    val anchor = anchorDp ?: return@rememberDerivedStateOf DpOffset(0.dp, 0.dp)
+
+                    var offset = when (gravity) {
+                        PopupGravity.TOP -> {
                             DpOffset(
                                 x = anchor.globalPos.x + (anchor.size.width - contentPosDp.size.width) * bias,
                                 y = anchor.globalPos.y - contentPosDp.size.height,
                             )
                         }
 
-                        else -> {
+                        PopupGravity.BOTTOM -> {
                             DpOffset(
                                 x = anchor.globalPos.x + (anchor.size.width - contentPosDp.size.width) * bias,
                                 y = anchor.globalPos.y + anchor.size.height,
                             )
                         }
+
+                        else -> return@rememberDerivedStateOf DpOffset(0.dp, 0.dp)
                     }
                     if (offset.x + contentPosDp.size.width > view.width.toDp() - safeContentPaddings.horizontal()) {
                         offset = offset.copy(
@@ -120,6 +143,22 @@ fun PopupMenu(
                     }
 
                     offset
+                }
+            }
+            val contentMaxHeight by rememberDerivedStateOf {
+                with(density) {
+                    val anchor = anchorDp ?: return@rememberDerivedStateOf 0.dp
+                    when (gravity) {
+                        PopupGravity.TOP -> {
+                            anchor.globalPos.y - safeContentPaddings.calculateTopPadding()
+                        }
+
+                        PopupGravity.BOTTOM -> {
+                            view.height.toDp() - safeContentPaddings.calculateBottomPadding() - anchor.globalPos.y - anchor.size.height
+                        }
+
+                        null -> 0.dp
+                    }
                 }
             }
 
@@ -152,7 +191,7 @@ fun PopupMenu(
 
             val leftAnchorShadow by rememberDerivedStateOf {
                 with(density) {
-                    val anchor = anchorDelegated ?: return@rememberDerivedStateOf ViewPositionDp()
+                    val anchor = anchorDp ?: return@rememberDerivedStateOf ViewPositionDp()
                     ViewPositionDp(
                         globalPos = DpOffset(x = 0.dp, y = anchor.globalPos.y),
                         size = DpSize(width = anchor.globalPos.x, height = anchor.size.height)
@@ -162,7 +201,7 @@ fun PopupMenu(
 
             val rightAnchorShadow by rememberDerivedStateOf {
                 with(density) {
-                    val anchor = anchorDelegated ?: return@rememberDerivedStateOf ViewPositionDp()
+                    val anchor = anchorDp ?: return@rememberDerivedStateOf ViewPositionDp()
                     ViewPositionDp(
                         globalPos = DpOffset(
                             x = anchor.globalPos.x + anchor.size.width,
@@ -178,7 +217,7 @@ fun PopupMenu(
 
             val bottomShadow by rememberDerivedStateOf {
                 with(density) {
-                    val anchor = anchorDelegated ?: return@rememberDerivedStateOf ViewPositionDp()
+                    val anchor = anchorDp ?: return@rememberDerivedStateOf ViewPositionDp()
                     val y = max(
                         anchor.globalPos.y + anchor.size.height,
                         contentPosDp.globalPos.y + contentPosDp.size.height
@@ -192,7 +231,7 @@ fun PopupMenu(
 
             val topShadow by rememberDerivedStateOf {
                 with(density) {
-                    val anchor = anchorDelegated ?: return@rememberDerivedStateOf ViewPositionDp()
+                    val anchor = anchorDp ?: return@rememberDerivedStateOf ViewPositionDp()
                     ViewPositionDp(
                         globalPos = DpOffset(x = 0.dp, y = 0.dp),
                         size = DpSize(
@@ -209,7 +248,8 @@ fun PopupMenu(
                 modifier = Modifier
                     .thenIf(!ignoreAnchorSize) {
                         sizeIn(
-                            maxWidth = anchorDelegated?.size?.width ?: 0.dp
+                            maxWidth = anchorDp?.size?.width ?: 0.dp,
+                            maxHeight = contentMaxHeight ?: 0.dp,
                         )
                     }
                     .absoluteOffset(offset.x, offset.y)
@@ -434,6 +474,80 @@ fun PopupMenuInsetsPreview() = DebugDarkScreenPreview(
             modifier = Modifier
                 .height(300.dp)
                 .fillMaxWidth(0.6f)
+                .background(theme.colorScheme.popupMenu.surfaceColor),
+        )
+    }
+}
+
+@OptIn(DebugOnly::class)
+@Composable
+@Preview
+fun PopupMenuMaxSizePreview() = DebugDarkScreenPreview(
+    layoutDirection = LayoutDirection.Ltr,
+) {
+    val theme = LocalTheme.current
+    val view = LocalView.current
+    var popupVisible by remember { mutableStateOf(true) }
+    val storagePathPosition = rememberViewPosition()
+    val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
+    var additionalPadding by remember { mutableStateOf(0.dp) }
+
+    LaunchedEffect(Unit) {
+        while (isActive) {
+            repeat(60) {
+                delay(100)
+                additionalPadding += 10.dp
+            }
+            repeat(60) {
+                delay(100)
+                additionalPadding -= 10.dp
+            }
+        }
+    }
+
+    ConstraintLayout(
+        modifier = Modifier
+            .imePadding()
+            .fillMaxSize()
+            .defaultMinSize(minHeight = view.height.pxToDp()),
+    ) {
+        val (
+            pathTextField,
+        ) = createRefs()
+
+        AppTextField(
+            modifier = Modifier
+                .onFocusChanged { }
+                .onGlobalPositionState(storagePathPosition)
+                .constrainAs(pathTextField) {
+                    width = Dimension.fillToConstraints
+                    linkTo(
+                        start = parent.start,
+                        top = parent.top,
+                        end = parent.end,
+                        bottom = parent.bottom,
+                        verticalBias = 0f,
+                        topMargin = 8.dp + AppBarConst.appBarSize + additionalPadding,
+                        startMargin = safeContentPaddings.horizontal(16.dp),
+                        endMargin = safeContentPaddings.horizontal(16.dp)
+                    )
+                },
+            value = "text",
+            label = { "text" }
+        )
+    }
+
+    PopupMenu(
+        visible = popupVisible,
+        positionAnchor = storagePathPosition,
+        horizontalBias = 0.8f,
+        onDismissRequest = { popupVisible = false },
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxHeight()
+                .fillMaxWidth(0.6f)
+                .padding(vertical = 10.dp)
                 .background(theme.colorScheme.popupMenu.surfaceColor),
         )
     }
