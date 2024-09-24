@@ -166,8 +166,10 @@ fun Modifier.animateContentSizeProduction() = run {
 inline fun Modifier.ifProduction(block: Modifier.() -> Modifier) =
     if (!CoreDI.config().isViewEditMode) block() else this
 
-inline fun Modifier.thenIf(condition: Boolean, block: Modifier.() -> Modifier) =
-    if (condition) block() else this
+inline fun <reified Res, reified T : Res> T.thenIf(
+    condition: Boolean,
+    block: T.() -> Res,
+) = if (condition) block() else this
 
 
 @Composable

@@ -1,7 +1,6 @@
 package com.github.klee0kai.thekey.dynamic.findstorage.di
 
 import com.github.klee0kai.stone.KotlinWrappersStone
-import com.github.klee0kai.stone.Stone
 import com.github.klee0kai.stone.annotations.component.Component
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.dependencies.AppComponentProviders
@@ -19,7 +18,9 @@ import com.github.klee0kai.thekey.core.di.initDummyModule
 import com.github.klee0kai.thekey.core.di.wrap.AppWrappersStone
 import com.github.klee0kai.thekey.core.domain.model.feature.model.DynamicFeature
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
+import com.github.klee0kai.thekey.dynamic.findstorage.data.filesystem.FileSystemRepositoryDummy
 import com.github.klee0kai.thekey.dynamic.findstorage.di.deps.FSProviders
+import com.github.klee0kai.thekey.dynamic.findstorage.di.modules.FSRepositoriesModule
 
 var FSDI: FindStorageComponent = initFindStorageComponent()
     private set
@@ -50,6 +51,10 @@ fun FindStorageComponent.hardResetToPreview() {
     FSDI = initFindStorageComponent()
 
     CoreDI.initDummyModule()
+
+    FSDI.initFsRepositoriesModule(object : FSRepositoriesModule {
+        override fun fsFileSystemRepositoryLazy() = FileSystemRepositoryDummy()
+    })
 }
 
 private fun initFindStorageComponent() = FindStorageComponentStoneComponent().apply {

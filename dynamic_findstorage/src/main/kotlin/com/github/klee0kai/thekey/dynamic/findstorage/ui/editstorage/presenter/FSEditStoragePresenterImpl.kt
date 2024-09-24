@@ -2,7 +2,6 @@ package com.github.klee0kai.thekey.dynamic.findstorage.ui.editstorage.presenter
 
 import androidx.compose.ui.text.input.TextFieldValue
 import com.github.klee0kai.thekey.app.di.DI
-import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
@@ -14,14 +13,19 @@ import com.github.klee0kai.thekey.core.utils.error.FSDuplicateError
 import com.github.klee0kai.thekey.core.utils.error.FSNoAccessError
 import com.github.klee0kai.thekey.core.utils.error.FSNoFileName
 import com.github.klee0kai.thekey.core.utils.error.cause
+import com.github.klee0kai.thekey.core.utils.file.parents
 import com.github.klee0kai.thekey.dynamic.findstorage.di.FSDI
 import com.github.klee0kai.thekey.dynamic.findstorage.ui.editstorage.model.FSEditStorageState
+import com.github.klee0kai.thekey.dynamic.findstorage.ui.editstorage.model.StoragePathLabelState
+import com.github.klee0kai.thekey.dynamic.findstorage.ui.editstorage.model.StoragePathProviderHintState
 import com.github.klee0kai.thekey.dynamic.findstorage.ui.editstorage.model.storage
 import com.github.klee0kai.thekey.dynamic.findstorage.ui.editstorage.model.updateWith
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.File
+import com.github.klee0kai.thekey.core.R as CoreR
 
 class FSEditStoragePresenterImpl(
     val storageIdentifier: StorageIdentifier?,
@@ -31,6 +35,7 @@ class FSEditStoragePresenterImpl(
     private val storagesInteractor = FSDI.storagesInteractorLazy()
     private val interactor = FSDI.editStorageInteractorLazy()
     private val settingsRep = FSDI.settingsRepositoryLazy()
+    private val fileSystemInteractor = FSDI.fileSystemInteractorLazy()
     private val pathInputHelper = FSDI.pathInputHelper()
 
     private var originStorage: ColoredStorage? = null
@@ -58,6 +63,8 @@ class FSEditStoragePresenterImpl(
                 path = TextFieldValue(originStorage?.path?.shortPath()?.removeTKeyFormat() ?: ""),
                 name = originStorage?.name ?: "",
                 desc = originStorage?.description ?: "",
+                storagePathLabel = StoragePathLabelState.Simple,
+                storagePathProviderHint = StoragePathProviderHintState.AvailableStorages,
             )
             state.update { initState }
         }
@@ -71,52 +78,66 @@ class FSEditStoragePresenterImpl(
         }
     }
 
-    override fun input(block: FSEditStorageState.() -> FSEditStorageState) = scope.launch(DI.mainDispatcher()) {
-        state.update {
-            var newState = block(it)
-            val fulfilled = newState.path.text.isNotBlank()
-                    && !newState.path.text.endsWith("/")
-                    && newState.name.isNotBlank()
-            val isSaveAvailable = when {
-                originStorage != null -> fulfilled && newState.storage(pathInputHelper, originStorage!!) != originStorage
-                else -> fulfilled
+    override fun input(block: FSEditStorageState.() -> FSEditStorageState) =
+        scope.launch(DI.mainDispatcher()) {
+            state.update {
+                var newState = block(it)
+                val fulfilled = newState.path.text.isNotBlank()
+                        && !newState.path.text.endsWith("/")
+                        && newState.name.isNotBlank()
+                val newStateStorage = newState
+                    .storage(pathInputHelper, originStorage ?: ColoredStorage())
+
+                val isSaveAvailable = when {
+                    originStorage != null -> fulfilled && newStateStorage != originStorage
+                    else -> fulfilled
+                }
+                newState = newState.copy(
+                    isSaveAvailable = isSaveAvailable,
+                    isRemoveAvailable = newState.isRemoveAvailable && !isSaveAvailable,
+                    storagePathLabel = when {
+                        originStorage != null && newStateStorage.path != originStorage?.path -> StoragePathLabelState.MovingStoragePath
+                        originStorage == null && newState.path.text.isNotBlank() -> StoragePathLabelState.CreateStoragePath
+                        else -> StoragePathLabelState.Simple
+                    },
+
+                    )
+
+                newState
             }
-            newState = newState.copy(
-                isSaveAvailable = isSaveAvailable,
-                isRemoveAvailable = newState.isRemoveAvailable && !isSaveAvailable,
-            )
 
-            newState
+            updatePathVariants()
         }
-
-        updatePathVariants()
-    }
 
     override fun remove(router: AppRouter?) = scope.launch {
         val path = originStorage?.path ?: return@launch
         interactor().deleteStorage(path).await()
-        router?.snack(R.string.storage_deleted)
+        router?.snack(CoreR.string.storage_deleted)
         backFromScreen(router)
     }
 
     override fun save(router: AppRouter?) = scope.launch {
         val curState = state.value
-        val storage = curState.storage(pathInputHelper, originStorage ?: ColoredStorage(version = settingsRep().newStorageVersion()))
+        val storage = curState
+            .storage(
+                pathInputHelper,
+                originStorage ?: ColoredStorage(version = settingsRep().newStorageVersion())
+            )
 
         val (result, messageRes) = when {
             originStorage == null -> {
                 val result = interactor().createStorage(storage).await()
-                result to R.string.storage_created
+                result to CoreR.string.storage_created
             }
 
             originStorage?.path != storage.path -> {
                 val result = interactor().moveStorage(originStorage!!.path, storage).await()
-                result to R.string.storage_moved
+                result to CoreR.string.storage_moved
             }
 
             else -> {
                 val result = interactor().setStorage(storage).await()
-                result to R.string.storage_saved
+                result to CoreR.string.storage_saved
             }
         }
 
@@ -127,22 +148,35 @@ class FSEditStoragePresenterImpl(
                 backFromScreen(router)
             }
 
-            error?.cause(FSNoFileName::class) != null -> router?.snack(R.string.fill_the_file_name)
-            error?.cause(FSDuplicateError::class) != null -> router?.snack(R.string.duplicate)
-            error?.cause(FSNoAccessError::class) != null -> router?.snack(R.string.no_access)
-            else -> router?.snack(R.string.unknown_error)
+            error?.cause(FSNoFileName::class) != null -> router?.snack(CoreR.string.fill_the_file_name)
+            error?.cause(FSDuplicateError::class) != null -> router?.snack(CoreR.string.duplicate)
+            error?.cause(FSNoAccessError::class) != null -> router?.snack(CoreR.string.no_access)
+            else -> router?.snack(CoreR.string.unknown_error)
         }
     }
 
-    private fun updatePathVariants() = scope.launchLatest("path_variants", FSDI.defaultDispatcher()) {
-        with(pathInputHelper) {
-            state.value.path.text
-                .pathVariables()
-                .collect { pathVariants ->
-                    state.update {
-                        it.copy(storagePathVariants = pathVariants)
-                    }
+    private fun updatePathVariants(
+    ) = scope.launchLatest("path_variants") {
+        val variants = fileSystemInteractor().listFiles(state.value.path.text).await()
+
+        val absPath = with(pathInputHelper) { state.value.path.text.absolutePath() } ?: ""
+        val inputParent = File(absPath).parentFile
+        val existParent = inputParent?.parents?.firstOrNull { it.exists() && it.isDirectory }
+        val exitParentFileItem = existParent?.let {
+            fileSystemInteractor().fileItemFrom(it).await()
+        }
+
+        state.update {
+            it.copy(
+                storagePathVariants = variants,
+                storagePathProviderHint = when {
+                    variants.isEmpty() && existParent != inputParent && exitParentFileItem != null ->
+                        StoragePathProviderHintState.CreateFolderFrom(exitParentFileItem)
+
+                    variants.isEmpty() -> StoragePathProviderHintState.Empty
+                    else -> StoragePathProviderHintState.AvailableStorages
                 }
+            )
         }
     }
 

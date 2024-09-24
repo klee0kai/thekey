@@ -71,10 +71,11 @@ open class UserShortPaths {
         }
         val lowerCase = userShortPath.lowercase(Locale.getDefault())
         shortPaths.runForEach {
-            if (lowerCase.startsWith(short)) {
+            val shortLower = short.lowercase(Locale.getDefault())
+            if (lowerCase.startsWith(shortLower)) {
                 return absolutePath + userShortPath.substring(short.length)
             }
-            if (lowerCase.startsWith(short.fromRootPath())) {
+            if (lowerCase.startsWith(shortLower.fromRootPath())) {
                 return absolutePath + userShortPath.substring(short.length + 1)
             }
         }

@@ -6,6 +6,7 @@ import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.core.helpers.path.PathInputHelper
 import com.github.klee0kai.thekey.core.helpers.path.appendTKeyFormat
+import com.github.klee0kai.thekey.dynamic.findstorage.domain.model.FileItem
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
 
@@ -20,8 +21,10 @@ data class FSEditStorageState(
     val name: String = "",
     val desc: String = "",
 
-    val storagePathVariants: List<String> = emptyList(),
+    val storagePathVariants: List<FileItem> = emptyList(),
     val storagePathFieldExpanded: Boolean = false,
+    val storagePathLabel: StoragePathLabelState = StoragePathLabelState.Simple,
+    val storagePathProviderHint: StoragePathProviderHintState = StoragePathProviderHintState.Empty,
 
     val colorGroupExpanded: Boolean = false,
     val colorGroupSelectedIndex: Int = 0,

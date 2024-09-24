@@ -26,4 +26,9 @@
     <string name="storage_auto_search_disabled_hint">Enable automatic storage search on your device</string>
     <string name="enabled">Enabled</string>
     <string name="disabled">Disabled</string>
+    <string name="storage_path_to_move">Storage path to move</string>
+    <string name="storage_path_to_create">Storage path to create</string>
+    <string name="not_found_files">Not found files</string>
+    <string name="available_files">Available files and folders</string>
+    <string name="creating_folder_from">Creating folder from %s</string>
 </resources>

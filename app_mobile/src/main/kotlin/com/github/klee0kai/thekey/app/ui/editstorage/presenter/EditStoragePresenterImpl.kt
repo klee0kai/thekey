@@ -68,7 +68,7 @@ class EditStoragePresenterImpl(
         state.update {
             it.updateWith(
                 storage = originStorage,
-                colorGroups = colorGroups
+                colorGroups = colorGroups,
             )
         }
     }
