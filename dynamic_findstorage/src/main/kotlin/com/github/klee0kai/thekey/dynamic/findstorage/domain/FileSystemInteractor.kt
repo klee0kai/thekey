@@ -27,10 +27,10 @@ class FileSystemInteractor {
 
         when {
             parent == File.separator -> {
-                val filterName = absSearchFile.name.lowercase(locale)
+                val searchPathLower = searchPath.lowercase(locale)
                 allAvailableFiles.filter { file ->
-                    file.absPath.lowercase(locale).contains(filterName)
-                            || file.userPath.lowercase(locale).contains(filterName)
+                    file.absPath.lowercase(locale).contains(searchPathLower)
+                            || file.userPath.lowercase(locale).contains(searchPathLower)
                 }
             }
 

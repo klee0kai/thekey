@@ -340,8 +340,16 @@ fun FSEditStorageScreenSelectPathPreview() = DebugDarkScreenPreview {
                         isEditMode = true,
                         isSaveAvailable = true,
                         storagePathVariants = listOf(
-                            FileItem("/appdata"),
-                            FileItem("/phoneData"),
+                            FileItem(
+                                absPath = "/app/thekey/data",
+                                userPath = "/appdata",
+                                isFolder = true,
+                            ),
+                            FileItem(
+                                absPath = "/storage/emulated/0",
+                                userPath = "/phoneStorage",
+                                isFolder = true,
+                            ),
                         ),
                         storagePathFieldExpanded = false,
                         colorGroupExpanded = true,
