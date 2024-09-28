@@ -9,7 +9,7 @@
     <option name="ALL_USERS" value="false" />
     <option name="ALWAYS_INSTALL_WITH_PM" value="true" />
     <option name="CLEAR_APP_STORAGE" value="false" />
-    <option name="DYNAMIC_FEATURES_DISABLED_LIST" value="TheKey.private.dynamic_autofill" />
+    <option name="DYNAMIC_FEATURES_DISABLED_LIST" value="TheKey.dynamic_findstorage,TheKey.dynamic_qrcodescanner,TheKey.private.dynamic_autofill,TheKey.private.dynamic_chpassw,TheKey.private.dynamic_gdrive,TheKey.private.dynamic_smpassw" />
     <option name="ACTIVITY_EXTRA_FLAGS" value="" />
     <option name="MODE" value="default_activity" />
     <option name="CLEAR_LOGCAT" value="false" />

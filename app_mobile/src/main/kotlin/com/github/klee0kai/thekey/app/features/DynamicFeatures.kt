@@ -4,6 +4,7 @@ import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.domain.model.feature.model.DynamicFeature
 
 fun DynamicFeature.Companion.allFeatures() = listOf(
+    commercial(),
     findStorage(),
     qrcodeScanner(),
     autofill(),
@@ -12,8 +13,19 @@ fun DynamicFeature.Companion.allFeatures() = listOf(
     smpassw(),
 )
 
+fun DynamicFeature.Companion.visiblePlugins() = allFeatures().filter { !it.isHidden }
+
 fun DynamicFeature.Companion.byName(moduleName: String) =
     allFeatures().firstOrNull { it.moduleName == moduleName }
+
+fun DynamicFeature.Companion.commercial() = DynamicFeature(
+    moduleName = "dynamic_commercial",
+    titleRes = R.string.title_commercial,
+    descRes = R.string.desc_commercial,
+    featureLibApiClass = "com.github.klee0kai.thekey.dynamic.commercial.CommercialImpl",
+    isCommunity = true,
+    isHidden = true,
+)
 
 fun DynamicFeature.Companion.qrcodeScanner() = DynamicFeature(
     moduleName = "dynamic_qrcodescanner",

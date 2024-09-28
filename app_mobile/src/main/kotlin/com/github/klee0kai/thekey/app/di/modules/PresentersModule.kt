@@ -22,8 +22,6 @@ import com.github.klee0kai.thekey.app.ui.notegroup.presenter.EditNoteGroupsPrese
 import com.github.klee0kai.thekey.app.ui.notegroup.presenter.EditNoteGroupsPresenterImpl
 import com.github.klee0kai.thekey.app.ui.otpnote.presenter.OtpNotePresenter
 import com.github.klee0kai.thekey.app.ui.otpnote.presenter.OtpNotePresenterImpl
-import com.github.klee0kai.thekey.app.ui.selectstorageboard.presenter.SelectStorageToNoteMoveBoardPresenter
-import com.github.klee0kai.thekey.app.ui.selectstorageboard.presenter.SelectStorageToNoteMoveBoardPresenterImpl
 import com.github.klee0kai.thekey.app.ui.settings.plugin.presenter.PluginPresenter
 import com.github.klee0kai.thekey.app.ui.settings.plugin.presenter.PluginPresenterImpl
 import com.github.klee0kai.thekey.app.ui.settings.plugins.presenter.PluginsPresenter
@@ -58,10 +56,6 @@ interface PresentersModule {
 
     @Provide(cache = Provide.CacheType.Weak)
     fun simpleBoardPresenter(): SimpleBoardPresenter = SimpleBoardPresenterImpl()
-
-    @Provide(cache = Provide.CacheType.Weak)
-    fun selectStorageToNoteMoveBoardPresenter(): SelectStorageToNoteMoveBoardPresenter =
-        SelectStorageToNoteMoveBoardPresenterImpl()
 
     @Provide(cache = Provide.CacheType.Weak)
     fun storagesPresenter(): StoragesPresenter = StoragesPresenterImpl()

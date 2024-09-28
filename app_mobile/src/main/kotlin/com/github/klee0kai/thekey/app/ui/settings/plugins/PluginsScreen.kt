@@ -23,7 +23,7 @@ import androidx.wear.compose.material.Text
 import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
-import com.github.klee0kai.thekey.app.features.allFeatures
+import com.github.klee0kai.thekey.app.features.visiblePlugins
 import com.github.klee0kai.thekey.app.ui.navigation.model.PluginDestination
 import com.github.klee0kai.thekey.app.ui.settings.plugins.presenter.PluginsPresenter
 import com.github.klee0kai.thekey.core.R
@@ -99,7 +99,7 @@ fun PluginsScreenPreview() = EdgeToEdgeTemplate {
             override fun pluginsPresenter() = object : PluginsPresenter {
                 override val features = MutableStateFlow(
                     DynamicFeature
-                        .allFeatures()
+                        .visiblePlugins()
                         .map { InstallDynamicFeature(it) }
                 )
             }
