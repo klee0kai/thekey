@@ -1,6 +1,7 @@
 package com.github.klee0kai.thekey.app.ui.storage.presenter
 
 import com.github.klee0kai.thekey.app.di.DI
+import com.github.klee0kai.thekey.app.features.commercial
 import com.github.klee0kai.thekey.app.ui.navigation.editNoteDest
 import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteGroupDestination
@@ -14,8 +15,13 @@ import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.core.domain.model.feature.PaidFeature
 import com.github.klee0kai.thekey.core.domain.model.feature.PaidLimits
+import com.github.klee0kai.thekey.core.domain.model.feature.model.DynamicFeature
+import com.github.klee0kai.thekey.core.domain.model.feature.model.Installed
+import com.github.klee0kai.thekey.core.domain.model.feature.status
 import com.github.klee0kai.thekey.core.domain.model.otpNotes
 import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
+import com.github.klee0kai.thekey.core.ui.navigation.model.AlertDialogDestination
+import com.github.klee0kai.thekey.core.ui.navigation.model.TextProvider
 import com.github.klee0kai.thekey.core.ui.navigation.navigate
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,6 +41,7 @@ open class StoragePresenterImpl(
     private val groupsInteractor = DI.groupsInteractorLazy(storageIdentifier)
     private val predefinedNoteGroupsInteractor =
         DI.predefinedNoteGroupsInteractor(storageIdentifier)
+    private val featuresManager = DI.dynamicFeaturesManagerLazy()
     private val billing = DI.billingInteractor()
 
     private val scope = DI.defaultThreadScope()
@@ -133,6 +140,16 @@ open class StoragePresenterImpl(
         notePt: Long,
         router: AppRouter?,
     ) = scope.launch {
+        if (featuresManager().status(DynamicFeature.commercial()) != Installed) {
+            router?.navigate(
+                AlertDialogDestination(
+                    title = TextProvider(CoreR.string.feature_not_available),
+                    message = TextProvider(CoreR.string.install_commercial_version),
+                )
+            )
+            return@launch
+        }
+
         router?.showNavigationBoard()
         val selected = router?.navigate<ColoredStorage>(SelectStorageToNoteMoveBoardDestination)
             ?.firstOrNull() ?: return@launch

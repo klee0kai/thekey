@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.map
 open class PluginsPresenterImpl : PluginsPresenter {
 
     private val scope = DI.defaultThreadScope()
-    private val manager = DI.dynamicFeaturesManager()
+    private val manager = DI.dynamicFeaturesManagerLazy()
 
     override val features = flow {
         manager().features

@@ -209,4 +209,6 @@
     <string name="move">Move</string>
     <string name="note_moved">Note has been moved</string>
     <string name="otp_moved">OTP has been moved</string>
+    <string name="feature_not_available">Feature not available</string>
+    <string name="install_commercial_version">Feature available in commercial version. Dowload and install this application from play market.</string>
 </resources>
