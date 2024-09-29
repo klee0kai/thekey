@@ -20,7 +20,7 @@ import com.github.klee0kai.thekey.core.domain.model.feature.model.Installed
 import com.github.klee0kai.thekey.core.domain.model.feature.status
 import com.github.klee0kai.thekey.core.domain.model.otpNotes
 import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
-import com.github.klee0kai.thekey.core.ui.navigation.model.AlertDialogDestination
+import com.github.klee0kai.thekey.core.ui.navigation.model.SimpleDialogDestination
 import com.github.klee0kai.thekey.core.ui.navigation.model.TextProvider
 import com.github.klee0kai.thekey.core.ui.navigation.navigate
 import kotlinx.coroutines.CoroutineStart
@@ -142,7 +142,7 @@ open class StoragePresenterImpl(
     ) = scope.launch {
         if (featuresManager().status(DynamicFeature.commercial()) != Installed) {
             router?.navigate(
-                AlertDialogDestination(
+                SimpleDialogDestination(
                     title = TextProvider(CoreR.string.feature_not_available),
                     message = TextProvider(CoreR.string.install_commercial_version),
                 )

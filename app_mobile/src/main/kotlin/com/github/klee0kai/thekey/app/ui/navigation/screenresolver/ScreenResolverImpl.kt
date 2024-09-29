@@ -46,10 +46,10 @@ import com.github.klee0kai.thekey.app.ui.storages.widgets.StoragesListWidget
 import com.github.klee0kai.thekey.app.ui.storages.widgets.StoragesStatusBarWidget
 import com.github.klee0kai.thekey.core.ui.devkit.DesignScreen
 import com.github.klee0kai.thekey.core.ui.devkit.EmptyScreen
-import com.github.klee0kai.thekey.core.ui.devkit.dialogs.AlertDialogScreen
-import com.github.klee0kai.thekey.core.ui.navigation.model.AlertDialogDestination
+import com.github.klee0kai.thekey.core.ui.devkit.dialogs.SimpleDialog
 import com.github.klee0kai.thekey.core.ui.navigation.model.Destination
 import com.github.klee0kai.thekey.core.ui.navigation.model.DynamicDestination
+import com.github.klee0kai.thekey.core.ui.navigation.model.SimpleDialogDestination
 import com.github.klee0kai.thekey.core.ui.navigation.model.StorageItemWidgetState
 import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesButtonsWidgetState
 import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesListWidgetState
@@ -84,7 +84,7 @@ class ScreenResolverImpl : ScreenResolver {
             is EditNoteGroupDestination -> EditNoteGroupsScreen(destination)
 
             // dialogs
-            is AlertDialogDestination -> AlertDialogScreen(destination)
+            is SimpleDialogDestination -> SimpleDialog(destination)
             is SelectStorageDialogDestination -> SelectStorageDialog()
 
             // nav boards

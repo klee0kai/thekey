@@ -10,8 +10,13 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomSheetDefaults
@@ -24,7 +29,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -35,13 +39,17 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
+import androidx.wear.compose.material.Text
+import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.SimpleScaffoldConst.dragHandleSize
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.possitions.pxToDp
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
 import com.github.klee0kai.thekey.core.utils.views.accelerateDecelerate
+import com.github.klee0kai.thekey.core.utils.views.createDialogBottomAnchor
 import com.github.klee0kai.thekey.core.utils.views.ratioBetween
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 import kotlinx.coroutines.delay
@@ -62,7 +70,8 @@ fun BottomSheetBigDialog(
 ) {
     val view = LocalView.current
     val viewHeight = view.height.pxToDp()
-    val colorScheme = LocalColorScheme.current.androidColorScheme
+    val theme = LocalTheme.current
+    val colorScheme = theme.colorScheme.androidColorScheme
     val dragProgress = remember { mutableFloatStateOf(0f) }
     val initValue = remember { scaffoldState.bottomSheetState.currentValue }
 
@@ -80,7 +89,7 @@ fun BottomSheetBigDialog(
 
     val topContentSize = viewHeight - sheetPeekHeight
     scaffoldTopOffset.ratioBetween(
-        start = topMargin,
+        start = topMargin - dragHandleSize,
         end = topContentSize
     ).coerceIn(0f, 1f)
         .also { newDrag ->
@@ -91,17 +100,14 @@ fun BottomSheetBigDialog(
         }
 
     var showUpAlpha by remember { mutableFloatStateOf(0f) }
-    var showUpElevation by remember { mutableStateOf(0.dp) }
     LaunchedEffect(Unit) {
         if (initValue == SheetValue.Hidden) {
             // TODO research ModalBottomSheet
             scaffoldState.bottomSheetState.hide()
             showUpAlpha = 1f
-            showUpElevation = BottomSheetDefaults.Elevation
             scaffoldState.bottomSheetState.partialExpand()
         } else {
             showUpAlpha = 1f
-            showUpElevation = BottomSheetDefaults.Elevation
         }
 
         while (scaffoldState.bottomSheetState.currentValue != SheetValue.Hidden) {
@@ -110,7 +116,9 @@ fun BottomSheetBigDialog(
         onClosed.invoke()
     }
 
-    CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
+    CompositionLocalProvider(
+        LocalOverscrollConfiguration provides null,
+    ) {
         BottomSheetScaffold(
             modifier = modifier
                 .alpha(showUpAlpha),
@@ -137,8 +145,8 @@ fun BottomSheetBigDialog(
                     )
                 }
             },
-            sheetTonalElevation = showUpElevation,
-            sheetShadowElevation = showUpElevation,
+            sheetTonalElevation = 0.dp,
+            sheetShadowElevation = 0.dp,
             sheetPeekHeight = sheetPeekHeight,
             sheetMaxWidth = view.width.pxToDp(),
             sheetContainerColor = colorScheme.surface.copy(alpha = showUpAlpha),
@@ -164,9 +172,53 @@ fun BottomSheetBigDialog(
 @Preview
 @Composable
 fun BottomSheetBigDialogPreview() = DebugDarkScreenPreview {
+    var dragProgress by remember { mutableFloatStateOf(1f) }
+    val sheetPeekHeight = 400.dp
+    val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
+
     Box(modifier = Modifier.background(Color.Yellow)) {
         BottomSheetBigDialog(
-            topMargin = AppBarConst.appBarSize
-        )
+            topMargin = AppBarConst.appBarSize,
+            onDrag = { dragProgress = it },
+        ) {
+            ConstraintLayout(
+                modifier = Modifier
+                    .fillMaxSize(),
+            ) {
+                val (boxField, messageField) = createRefs()
+                val dialogBottom = createDialogBottomAnchor(
+                    sheetPeekHeight = sheetPeekHeight,
+                    dragProcess = dragProgress,
+                    bottomMargin = safeContentPaddings.calculateBottomPadding(),
+                )
+
+                Box(modifier = Modifier
+                    .padding(10.dp)
+                    .background(Color.Black.copy(alpha = 0.4f))
+                    .constrainAs(boxField) {
+                        width = Dimension.fillToConstraints
+                        height = Dimension.fillToConstraints
+                        linkTo(
+                            start = parent.start,
+                            end = parent.end,
+                            top = parent.top,
+                            bottom = dialogBottom.bottom,
+                        )
+                    })
+
+                Text(
+                    modifier = Modifier
+                        .constrainAs(messageField) {
+                            linkTo(
+                                start = parent.start,
+                                end = parent.end,
+                                top = parent.top,
+                                bottom = dialogBottom.bottom,
+                            )
+                        },
+                    text = "drag $dragProgress"
+                )
+            }
+        }
     }
 }

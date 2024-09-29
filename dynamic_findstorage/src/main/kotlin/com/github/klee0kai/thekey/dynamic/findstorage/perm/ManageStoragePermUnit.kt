@@ -10,8 +10,8 @@ import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.CoreDI
 import com.github.klee0kai.thekey.core.perm.PermUnit
 import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
-import com.github.klee0kai.thekey.core.ui.navigation.model.AlertDialogDestination
 import com.github.klee0kai.thekey.core.ui.navigation.model.ConfirmDialogResult
+import com.github.klee0kai.thekey.core.ui.navigation.model.SimpleDialogDestination
 import com.github.klee0kai.thekey.core.ui.navigation.model.TextProvider
 import com.github.klee0kai.thekey.core.ui.navigation.navigate
 import com.github.klee0kai.thekey.core.utils.coroutine.shareLatest
@@ -39,7 +39,7 @@ class ManageStoragePermUnit : PermUnit {
         if (isGranted()) return@singleEventFlow true
         if (!skipDialog) {
             val goToSettingsResult = navigate<ConfirmDialogResult>(
-                AlertDialogDestination(
+                SimpleDialogDestination(
                     title = TextProvider(R.string.grant_permissions),
                     message = TextProvider(buildString {
                         appendLine(purpose.text(app.resources))

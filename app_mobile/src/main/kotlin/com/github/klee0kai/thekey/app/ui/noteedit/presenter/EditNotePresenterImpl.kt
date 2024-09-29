@@ -21,8 +21,8 @@ import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.domain.model.noGroup
 import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
-import com.github.klee0kai.thekey.core.ui.navigation.model.AlertDialogDestination
 import com.github.klee0kai.thekey.core.ui.navigation.model.ConfirmDialogResult
+import com.github.klee0kai.thekey.core.ui.navigation.model.SimpleDialogDestination
 import com.github.klee0kai.thekey.core.ui.navigation.model.TextProvider
 import com.github.klee0kai.thekey.core.ui.navigation.navigate
 import com.github.klee0kai.thekey.core.utils.common.TimeFormats
@@ -154,7 +154,7 @@ class EditNotePresenterImpl(
             EditTabs.Account -> {
                 val note = originNote ?: return@launch
                 val deleteConfirm = router?.navigate<ConfirmDialogResult>(
-                    AlertDialogDestination(
+                    SimpleDialogDestination(
                         title = TextProvider(R.string.confirm_delete),
                         message = TextProvider(buildString {
                             appendLine(ctx.resources.getString(R.string.confirm_delete_note))
@@ -173,7 +173,7 @@ class EditNotePresenterImpl(
             EditTabs.Otp -> {
                 val otp = originOtpNote ?: return@launch
                 val deleteConfirm = router?.navigate<ConfirmDialogResult>(
-                    AlertDialogDestination(
+                    SimpleDialogDestination(
                         title = TextProvider(R.string.confirm_delete),
                         message = TextProvider(buildString {
                             appendLine(ctx.resources.getString(R.string.confirm_delete_otp))
