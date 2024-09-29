@@ -13,6 +13,7 @@ import com.github.klee0kai.thekey.app.ui.storage.model.group
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
+import com.github.klee0kai.thekey.core.domain.model.Subscription
 import com.github.klee0kai.thekey.core.domain.model.feature.PaidFeature
 import com.github.klee0kai.thekey.core.domain.model.feature.PaidLimits
 import com.github.klee0kai.thekey.core.domain.model.feature.model.DynamicFeature
@@ -21,6 +22,7 @@ import com.github.klee0kai.thekey.core.domain.model.feature.status
 import com.github.klee0kai.thekey.core.domain.model.otpNotes
 import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
 import com.github.klee0kai.thekey.core.ui.navigation.model.SimpleDialogDestination
+import com.github.klee0kai.thekey.core.ui.navigation.model.SubscriptionsDialogDestination
 import com.github.klee0kai.thekey.core.ui.navigation.model.TextProvider
 import com.github.klee0kai.thekey.core.ui.navigation.navigate
 import kotlinx.coroutines.CoroutineStart
@@ -188,7 +190,11 @@ open class StoragePresenterImpl(
         ) {
             appRouter?.navigate(EditNoteGroupDestination(storageIdentifier))
         } else {
-            appRouter?.snack(CoreR.string.limited_in_free_version)
+            appRouter?.navigate(
+                SubscriptionsDialogDestination(subscriptionToBuy = Subscription.STANDARD)
+            )
+
+//            appRouter?.snack(CoreR.string.limited_in_free_version)
         }
     }
 
