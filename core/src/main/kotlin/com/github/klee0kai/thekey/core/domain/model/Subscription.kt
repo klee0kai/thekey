@@ -1,6 +1,5 @@
 package com.github.klee0kai.thekey.core.domain.model
 
-
 /**
  * Paid in-app subscriptions
  */
