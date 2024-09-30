@@ -7,6 +7,7 @@ import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteGroupDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.QRCodeScanDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.SelectStorageToNoteMoveBoardDestination
+import com.github.klee0kai.thekey.app.ui.navigation.model.SubscriptionsDialogDestination
 import com.github.klee0kai.thekey.app.ui.storage.model.SearchState
 import com.github.klee0kai.thekey.app.ui.storage.model.StorageItem
 import com.github.klee0kai.thekey.app.ui.storage.model.group
@@ -22,7 +23,6 @@ import com.github.klee0kai.thekey.core.domain.model.feature.status
 import com.github.klee0kai.thekey.core.domain.model.otpNotes
 import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
 import com.github.klee0kai.thekey.core.ui.navigation.model.SimpleDialogDestination
-import com.github.klee0kai.thekey.core.ui.navigation.model.SubscriptionsDialogDestination
 import com.github.klee0kai.thekey.core.ui.navigation.model.TextProvider
 import com.github.klee0kai.thekey.core.ui.navigation.navigate
 import kotlinx.coroutines.CoroutineStart

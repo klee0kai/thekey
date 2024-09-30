@@ -44,10 +44,14 @@ import com.github.klee0kai.thekey.app.ui.storages.widgets.ColoredStorageItemWidg
 import com.github.klee0kai.thekey.app.ui.storages.widgets.StoragesButtonsWidget
 import com.github.klee0kai.thekey.app.ui.storages.widgets.StoragesListWidget
 import com.github.klee0kai.thekey.app.ui.storages.widgets.StoragesStatusBarWidget
+import com.github.klee0kai.thekey.core.ui.commercial.InstallCommercialScreen
+import com.github.klee0kai.thekey.core.ui.commercial.InstallCommercialVersionDialog
 import com.github.klee0kai.thekey.core.ui.devkit.DesignScreen
 import com.github.klee0kai.thekey.core.ui.devkit.EmptyScreen
 import com.github.klee0kai.thekey.core.ui.devkit.dialogs.SimpleDialog
+import com.github.klee0kai.thekey.core.ui.navigation.model.CommercialDestination
 import com.github.klee0kai.thekey.core.ui.navigation.model.Destination
+import com.github.klee0kai.thekey.core.ui.navigation.model.DialogDestination
 import com.github.klee0kai.thekey.core.ui.navigation.model.DynamicDestination
 import com.github.klee0kai.thekey.core.ui.navigation.model.SimpleDialogDestination
 import com.github.klee0kai.thekey.core.ui.navigation.model.StorageItemWidgetState
@@ -92,6 +96,14 @@ class ScreenResolverImpl : ScreenResolver {
 
             // dynamic features
             is DynamicDestination -> PluginDummyScreen(destination)
+
+            is CommercialDestination -> {
+                if (destination is DialogDestination) {
+                    InstallCommercialVersionDialog()
+                } else {
+                    InstallCommercialScreen()
+                }
+            }
 
             // debug
             is DesignDestination -> if (BuildConfig.DEBUG) DesignScreen() else EmptyScreen()
