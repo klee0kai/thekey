@@ -12,12 +12,14 @@ import com.github.klee0kai.thekey.app.ui.navigation.openFileIntent
 import com.github.klee0kai.thekey.app.ui.storage.model.SearchState
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
+import com.github.klee0kai.thekey.core.domain.model.Subscription
 import com.github.klee0kai.thekey.core.domain.model.externalStorages
 import com.github.klee0kai.thekey.core.domain.model.feature.PaidFeature
 import com.github.klee0kai.thekey.core.domain.model.feature.PaidLimits
 import com.github.klee0kai.thekey.core.domain.model.feature.model.DynamicFeature
 import com.github.klee0kai.thekey.core.helpers.path.tKeyExtension
 import com.github.klee0kai.thekey.core.ui.navigation.AppRouter
+import com.github.klee0kai.thekey.core.ui.navigation.model.SubscriptionsDialogDestination
 import com.github.klee0kai.thekey.core.utils.file.createNewWithSuffix
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -140,12 +142,18 @@ open class StoragesPresenterImpl : StoragesPresenter {
 
     override fun addNewStorageGroup(appRouter: AppRouter?) = scope.launch {
         val currentColorGroups = filteredColorGroups.firstOrNull()?.size ?: 0
-        if (billing.isAvailable(PaidFeature.UNLIMITED_STORAGE_GROUPS)
-            || currentColorGroups < PaidLimits.PAID_STORAGE_GROUPS_LIMIT
-        ) {
+        val isLimited: () -> Boolean = {
+            !billing.isAvailable(PaidFeature.UNLIMITED_STORAGE_GROUPS)
+                    && currentColorGroups >= PaidLimits.PAID_STORAGE_GROUPS_LIMIT
+        }
+        if (isLimited()) {
+            appRouter?.navigate(
+                SubscriptionsDialogDestination(subscriptionToBuy = Subscription.STANDARD)
+            )?.firstOrNull()
+        }
+
+        if (!isLimited()) {
             appRouter?.navigate(EditStorageGroupDestination())
-        } else {
-            appRouter?.snack(CoreR.string.limited_in_free_version)
         }
     }
 

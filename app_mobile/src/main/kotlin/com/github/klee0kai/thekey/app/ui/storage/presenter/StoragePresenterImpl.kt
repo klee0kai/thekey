@@ -185,17 +185,19 @@ open class StoragePresenterImpl(
 
     override fun addNewNoteGroup(appRouter: AppRouter?) = scope.launch {
         val currentColorGroups = filteredColorGroups.firstOrNull()?.size ?: 0
-        if (billing.isAvailable(PaidFeature.UNLIMITED_NOTE_GROUPS)
-            || currentColorGroups < PaidLimits.PAID_NOTE_GROUPS_LIMIT
-        ) {
-            appRouter?.navigate(EditNoteGroupDestination(storageIdentifier))
-        } else {
+        val isLimited: () -> Boolean = {
+            !billing.isAvailable(PaidFeature.UNLIMITED_NOTE_GROUPS)
+                    && currentColorGroups >= PaidLimits.PAID_NOTE_GROUPS_LIMIT
+        }
+        if (isLimited()) {
             appRouter?.navigate(
                 SubscriptionsDialogDestination(subscriptionToBuy = Subscription.STANDARD)
-            )
-
-//            appRouter?.snack(CoreR.string.limited_in_free_version)
+            )?.firstOrNull()
         }
+        if (!isLimited()) {
+            appRouter?.navigate(EditNoteGroupDestination(storageIdentifier))
+        }
+
     }
 
 }
