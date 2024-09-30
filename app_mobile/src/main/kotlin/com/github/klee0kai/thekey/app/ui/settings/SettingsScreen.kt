@@ -89,7 +89,7 @@ fun SettingScreen() = Screen {
         item("subscriptions") {
             Preference(
                 text = stringResource(id = R.string.subscriptions),
-                onClick = rememberClickDebounced { router.navigate(SubscriptionsDestination) },
+                onClick = rememberClickDebounced { router.navigate(SubscriptionsDestination()) },
                 icon = { RightArrowIcon() },
             )
         }
