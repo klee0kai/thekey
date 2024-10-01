@@ -25,7 +25,6 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.NoteDialogDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.PluginDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.PluginsDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.SelectStorageDialogDestination
-import com.github.klee0kai.thekey.app.ui.navigation.model.SelectStorageToNoteMoveBoardDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.SettingsDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.app.ui.navigation.model.StoragesDestination
@@ -33,7 +32,6 @@ import com.github.klee0kai.thekey.app.ui.note.NoteDialog
 import com.github.klee0kai.thekey.app.ui.noteedit.EditNoteScreen
 import com.github.klee0kai.thekey.app.ui.notegroup.EditNoteGroupsScreen
 import com.github.klee0kai.thekey.app.ui.otpnote.OtpNoteDialog
-import com.github.klee0kai.thekey.app.ui.selectstorageboard.SelectStorageToNoteMoveBoard
 import com.github.klee0kai.thekey.app.ui.settings.SettingScreen
 import com.github.klee0kai.thekey.app.ui.settings.plugin.PluginDummyScreen
 import com.github.klee0kai.thekey.app.ui.settings.plugin.PluginScreen
@@ -46,12 +44,16 @@ import com.github.klee0kai.thekey.app.ui.storages.widgets.ColoredStorageItemWidg
 import com.github.klee0kai.thekey.app.ui.storages.widgets.StoragesButtonsWidget
 import com.github.klee0kai.thekey.app.ui.storages.widgets.StoragesListWidget
 import com.github.klee0kai.thekey.app.ui.storages.widgets.StoragesStatusBarWidget
+import com.github.klee0kai.thekey.core.ui.commercial.InstallCommercialScreen
+import com.github.klee0kai.thekey.core.ui.commercial.InstallCommercialVersionDialog
 import com.github.klee0kai.thekey.core.ui.devkit.DesignScreen
 import com.github.klee0kai.thekey.core.ui.devkit.EmptyScreen
-import com.github.klee0kai.thekey.core.ui.devkit.dialogs.AlertDialogScreen
-import com.github.klee0kai.thekey.core.ui.navigation.model.AlertDialogDestination
+import com.github.klee0kai.thekey.core.ui.devkit.dialogs.SimpleDialog
+import com.github.klee0kai.thekey.core.ui.navigation.model.CommercialDestination
 import com.github.klee0kai.thekey.core.ui.navigation.model.Destination
+import com.github.klee0kai.thekey.core.ui.navigation.model.DialogDestination
 import com.github.klee0kai.thekey.core.ui.navigation.model.DynamicDestination
+import com.github.klee0kai.thekey.core.ui.navigation.model.SimpleDialogDestination
 import com.github.klee0kai.thekey.core.ui.navigation.model.StorageItemWidgetState
 import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesButtonsWidgetState
 import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesListWidgetState
@@ -86,14 +88,22 @@ class ScreenResolverImpl : ScreenResolver {
             is EditNoteGroupDestination -> EditNoteGroupsScreen(destination)
 
             // dialogs
-            is AlertDialogDestination -> AlertDialogScreen(destination)
+            is SimpleDialogDestination -> SimpleDialog(destination)
             is SelectStorageDialogDestination -> SelectStorageDialog()
 
             // nav boards
-            is SelectStorageToNoteMoveBoardDestination -> SelectStorageToNoteMoveBoard()
+
 
             // dynamic features
             is DynamicDestination -> PluginDummyScreen(destination)
+
+            is CommercialDestination -> {
+                if (destination is DialogDestination) {
+                    InstallCommercialVersionDialog()
+                } else {
+                    InstallCommercialScreen()
+                }
+            }
 
             // debug
             is DesignDestination -> if (BuildConfig.DEBUG) DesignScreen() else EmptyScreen()

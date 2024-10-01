@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:dist="http://schemas.android.com/apk/distribution"
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
 
     <application
         android:name=".App"
@@ -25,7 +26,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -37,7 +37,6 @@
                     android:scheme="content" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".ui.MainTranparentActivity"
             android:configChanges="orientation|keyboard|keyboardHidden|screenLayout|screenSize"
@@ -47,24 +46,20 @@
 
         <service
             android:name=".service.UnfinishedJobsService"
-            android:foregroundServiceType="dataSync"
-            android:exported="false">
+            android:exported="false"
+            android:foregroundServiceType="dataSync">
         </service>
-
 
         <!-- fix crash https://stackoverflow.com/questions/68153515 -->
         <provider
             android:name="com.google.mlkit.common.internal.MlKitInitProvider"
             android:authorities=".crash_fix"
             tools:node="remove" />
-
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="com.github.klee0kai.thekey.app.androidx-startup"
             tools:ignore="MissingClass"
             tools:node="remove" />
-
-
     </application>
 
 </manifest>

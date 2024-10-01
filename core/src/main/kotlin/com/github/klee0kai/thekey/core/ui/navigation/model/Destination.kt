@@ -13,6 +13,9 @@ abstract class DynamicDestination(
 ) : Destination
 
 @Stable
+interface CommercialDestination : Destination
+
+@Stable
 interface DialogDestination : Destination
 
 @Stable

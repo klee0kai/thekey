@@ -12,6 +12,10 @@ data class DynamicFeature(
     val featureLibApiClass: String? = null,
     val purchase: String = "",
     val isCommunity: Boolean = false,
+    /**
+     * Hidden in plugin list
+     */
+    val isHidden: Boolean = false,
 ) : Parcelable {
     companion object;
 }

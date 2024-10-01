@@ -15,6 +15,8 @@
     <string name="no">NO</string>
 
 
+    <string name="title_commercial">Commercial</string>
+    <string name="desc_commercial">Commercial screens and features</string>
     <string name="title_qrcodescanner">QR Code Scanner</string>
     <string name="desc_qrcodescanner">Scan QR code to add OTP passwords.</string>
     <string name="title_autofill">Autofill</string>
@@ -207,4 +209,6 @@
     <string name="move">Move</string>
     <string name="note_moved">Note has been moved</string>
     <string name="otp_moved">OTP has been moved</string>
+    <string name="feature_not_available">Feature not available</string>
+    <string name="install_commercial_version">Feature available in commercial version. Download and install this application from play market.</string>
 </resources>

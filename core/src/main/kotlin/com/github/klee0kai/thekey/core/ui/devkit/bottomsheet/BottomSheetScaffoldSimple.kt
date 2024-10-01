@@ -1,4 +1,8 @@
-@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class, ExperimentalFoundationApi::class)
+@file:OptIn(
+    ExperimentalMaterial3Api::class,
+    ExperimentalFoundationApi::class,
+    ExperimentalFoundationApi::class
+)
 
 package com.github.klee0kai.thekey.core.ui.devkit.bottomsheet
 
@@ -40,7 +44,7 @@ import com.github.klee0kai.thekey.core.utils.views.ratioBetween
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 import org.jetbrains.annotations.VisibleForTesting
 
-internal object SimpleScaffoldConst {
+object SimpleScaffoldConst {
     val dragHandleSize = 48.dp
 }
 
@@ -60,7 +64,11 @@ fun SimpleBottomSheetScaffold(
     val dragProgress = remember { mutableFloatStateOf(0f) }
 
     val viewHeight = view.height.pxToDp()
-    val sheetMinSize = remember(viewHeight, topMargin, topContentSize) { maxOf(viewHeight - topMargin - topContentSize, 0.dp) }
+    val sheetMinSize = remember(
+        viewHeight,
+        topMargin,
+        topContentSize
+    ) { maxOf(viewHeight - topMargin - topContentSize, 0.dp) }
     val sheetMaxSize = remember(viewHeight, topMargin) { maxOf(viewHeight - topMargin, 0.dp) }
 
     val scaffoldTopOffset = runCatching {
@@ -124,6 +132,8 @@ fun SimpleBottomSheetScaffold(
             },
             sheetContainerColor = colorScheme.surface,
             sheetContentColor = colorScheme.onSurface,
+            sheetTonalElevation = 0.dp,
+            sheetShadowElevation = 0.dp,
             sheetContent = {
                 Box(
                     modifier = Modifier

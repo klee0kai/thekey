@@ -17,7 +17,7 @@ interface CoreAndroidHelpersDependencies {
 
     fun router(activity: ActivityIdentifier? = null): AppRouter
 
-    fun dynamicFeaturesManager(): AsyncCoroutineProvide<DynamicFeaturesManager>
+    fun dynamicFeaturesManagerLazy(): AsyncCoroutineProvide<DynamicFeaturesManager>
 
     fun userShortPaths(): UserShortPaths
 

@@ -18,7 +18,7 @@ open class PluginPresenterImpl(
 ) : PluginPresenter {
 
     private val scope = DI.defaultThreadScope()
-    private val featuresManager = DI.dynamicFeaturesManager()
+    private val featuresManager = DI.dynamicFeaturesManagerLazy()
 
     override val status = flow {
         featuresManager()
