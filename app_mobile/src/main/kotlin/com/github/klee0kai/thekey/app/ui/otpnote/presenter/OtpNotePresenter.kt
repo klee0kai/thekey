@@ -6,6 +6,7 @@ import com.github.klee0kai.thekey.core.utils.coroutine.emptyJob
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.map
 
 interface OtpNotePresenter {
 
@@ -25,3 +26,5 @@ interface OtpNotePresenter {
     fun increment(router: AppRouter?): Job = emptyJob()
 
 }
+
+val OtpNotePresenter.isIncrementingFlow get() = incrementingTrackFlow.map { it > 0 }

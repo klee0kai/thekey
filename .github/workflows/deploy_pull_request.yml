@@ -5,6 +5,16 @@ on:
     types: [ opened, synchronize, reopened ]
 
 jobs:
+  lint_code:
+    name: Build Android App
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/prepare
+
+      - name: Lint Code
+        run: ./gradlew lint
+
   term_tests:
     name: Run Term Unit Tests
     runs-on: ubuntu-latest

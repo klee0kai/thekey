@@ -6,10 +6,12 @@ import com.github.klee0kai.thekey.core.utils.coroutine.emptyJob
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.map
 
 interface LoginPresenter {
 
     val currentStorageFlow: Flow<ColoredStorage> get() = emptyFlow()
+
     val loginTrackFlow: Flow<Int> get() = emptyFlow()
 
     fun selectStorage(router: AppRouter?): Job = emptyJob()
@@ -17,3 +19,5 @@ interface LoginPresenter {
     fun login(passw: String, router: AppRouter?): Job = emptyJob()
 
 }
+
+val LoginPresenter.isLoginNotProcessingFlow get() = loginTrackFlow.map { it <= 0 }

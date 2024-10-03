@@ -35,6 +35,7 @@ import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.ui.login.presenter.LoginPresenter
+import com.github.klee0kai.thekey.app.ui.login.presenter.isLoginNotProcessingFlow
 import com.github.klee0kai.thekey.app.ui.navigation.model.LoginDestination
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
@@ -62,7 +63,6 @@ import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.core.utils.views.toAnnotationString
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.map
 import org.jetbrains.annotations.VisibleForTesting
 import com.github.klee0kai.thekey.core.R as CoreR
 
@@ -78,8 +78,7 @@ fun LoginScreen(
     val pathInputHelper = remember { DI.pathInputHelper() }
     val currentStorageState by presenter!!.currentStorageFlow
         .collectAsState(key = Unit, initial = ColoredStorage())
-    val isLoginNotProcessing by presenter!!
-        .loginTrackFlow.map { it <= 0 }
+    val isLoginNotProcessing by presenter!!.isLoginNotProcessingFlow
         .collectAsStateCrossFaded(key = Unit, initial = true)
 
     var passwordInputText by remember { mutableStateOf(dest.prefilledPassw ?: "") }
