@@ -120,7 +120,7 @@ jobs:
   mikepenz_report:
     name: Prepare Mikepenz Test Report
     if: ${{ always() }}
-    needs: app_tests
+    needs: app_unit_tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
