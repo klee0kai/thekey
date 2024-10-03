@@ -75,24 +75,15 @@ jobs:
             ./builds
             ./*/build/outputs
 
-  app_tests:
-    name: Run App Unit Tests
+  assemble:
+    name: Assemble build all code
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/prepare
 
-      - name: Test with Gradle
-        continue-on-error: true
-        run: ./gradlew testDebug
-      - name: Upload test artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: test-report
-          path: |
-            ./**/build/reports
-            ./**/build/test-results
-
+      - name: Gradle assemble
+        run: ./gradlew assemble
 
   app_unit_tests:
     name: Run App Unit Tests
@@ -100,11 +91,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/prepare
-
       - name: Test with Gradle
-        continue-on-error: true
         run: ./gradlew testDebugUnitTest
       - name: Upload test artifacts
+        if: ${{ always() }}
         uses: actions/upload-artifact@v3
         with:
           name: test-report
@@ -118,9 +108,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/prepare
-
       - name: Test with Gradle
-        continue-on-error: true
         run: ./gradlew recordPaparazziDebug
       - name: Upload test artifacts
         uses: actions/upload-artifact@v3
@@ -131,9 +119,9 @@ jobs:
 
   mikepenz_report:
     name: Prepare Mikepenz Test Report
+    if: ${{ always() }}
     needs: app_tests
     runs-on: ubuntu-latest
-    if: ${{ always() }}
     steps:
       - uses: actions/checkout@v4
       - name: Download Test Artifact
