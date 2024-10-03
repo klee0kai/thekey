@@ -44,6 +44,7 @@ import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.NoteDialogDestination
 import com.github.klee0kai.thekey.app.ui.otpnote.presenter.OtpNotePresenter
+import com.github.klee0kai.thekey.app.ui.otpnote.presenter.isIncrementingFlow
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
 import com.github.klee0kai.thekey.core.domain.model.ColoredOtpNote
@@ -73,7 +74,6 @@ import com.github.klee0kai.thekey.core.utils.views.skeleton
 import com.github.klee0kai.thekey.core.utils.views.thenIf
 import com.github.klee0kai.thekey.core.utils.views.visibleOnTargetAlpha
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import com.github.klee0kai.thekey.core.R as CoreR
 
@@ -93,8 +93,7 @@ fun OtpNoteDialog(
         key = Unit,
         initial = ColoredOtpNote(isLoaded = false)
     )
-    val incrementing by presenter!!.incrementingTrackFlow
-        .map { it > 0 }
+    val incrementing by presenter!!.isIncrementingFlow
         .collectAsState(key = Unit, initial = false)
 
     val scaffoldState = rememberSafeBottomSheetScaffoldState(

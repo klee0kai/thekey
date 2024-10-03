@@ -44,6 +44,7 @@ dependencies {
     implementation(project(":app_mobile"))
     implementation(project(":core"))
 
+    implementation(platform(libs.compose.bom))
     implementation(libs.bundles.compose)
     implementation(libs.bundles.compose.debug)
     implementation(libs.bundles.androidx)
@@ -60,7 +61,10 @@ dependencies {
 
     implementation(libs.lorem)
 
+    testImplementation(platform(libs.compose.bom))
     testImplementation(libs.junit)
+
+    androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso)
 }
