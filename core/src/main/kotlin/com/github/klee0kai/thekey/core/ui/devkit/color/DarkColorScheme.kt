@@ -68,6 +68,10 @@ fun darkCommonColorScheme() = CommonColorScheme(
         orange = orange,
         coral = coral,
     ),
+    textColors = TextColors(
+        bodyTextColor = Color(0xFFFFFFFF),
+        hintTextColor = Color(0xFFB7B7B7),
+    ),
     greenColor = green.surfaceColor,
     yellowColor = yellow.surfaceColor,
     redColor = coral.surfaceColor,

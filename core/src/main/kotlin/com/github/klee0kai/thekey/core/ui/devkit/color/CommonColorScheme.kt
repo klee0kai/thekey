@@ -13,10 +13,14 @@ data class CommonColorScheme(
     val popupMenu: PopupMenuColors,
     val whiteTextButtonColors: ButtonColors,
     val grayTextButtonColors: ButtonColors,
+    val textColors: TextColors,
+    @Deprecated("use text colors")
     val hintTextColor: Color,
     val greenColor: Color,
     val yellowColor: Color,
     val redColor: Color,
     val surfaceSchemas: SurfaceSchemas,
+
+    @Deprecated("used as a plug for m3")
     val androidColorScheme: ColorScheme,
 )
