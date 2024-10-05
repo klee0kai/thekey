@@ -37,7 +37,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesButtonsWidgetState
 import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesListWidgetState
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
-import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.animateTargetFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.isIme
@@ -64,7 +64,7 @@ fun FSStoragesButtonsWidget(
         initial = ColorGroup.externalStorages()
     )
 
-    val imeIsVisibleAnimated by animateTargetCrossFaded(WindowInsets.isIme)
+    val imeIsVisibleAnimated by animateTargetFaded(WindowInsets.isIme)
     val isPermissionsGranted by presenter!!.isPermissionGranted.collectAsState(
         key = Unit,
         initial = null
@@ -74,15 +74,15 @@ fun FSStoragesButtonsWidget(
         initial = false
     )
 
-    val isExtStorageSelected by animateTargetCrossFaded(
+    val isExtStorageSelected by animateTargetFaded(
         target = widget.isExtStorageSelected,
     )
-    val showPermissionAnimated by animateTargetCrossFaded(
+    val showPermissionAnimated by animateTargetFaded(
         target = isPermissionsGranted?.let { widget.isExtStorageSelected && !it },
         skipStates = listOf(null),
     )
     val showSearchExt = isExtStorageSelected.current && showPermissionAnimated.current == false
-    val hideSearchWhileSearching by animateTargetCrossFaded(target = showSearchExt && isStorageSearching)
+    val hideSearchWhileSearching by animateTargetFaded(target = showSearchExt && isStorageSearching)
 
     when {
         showPermissionAnimated.current == null -> Unit

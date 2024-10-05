@@ -34,7 +34,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.icons.AddCheckedIcon
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.common.Dummy
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkContentPreview
-import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.animateTargetFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.ifProduction
@@ -56,7 +56,7 @@ fun NoteSelectToGroupComponent(
     val safeContentPadding = WindowInsets.safeContent.asPaddingValues()
     val presenter by rememberOnScreenRef { DI.editNoteGroupPresenter(dest.identifier()) }
     val storageItems by presenter!!.filteredItems.collectAsState(key = Unit, initial = emptyList())
-    val isOtpModeAnimated by animateTargetCrossFaded(target = isOtpMode)
+    val isOtpModeAnimated by animateTargetFaded(target = isOtpMode)
 
     if (storageItems.isEmpty()) {
         return

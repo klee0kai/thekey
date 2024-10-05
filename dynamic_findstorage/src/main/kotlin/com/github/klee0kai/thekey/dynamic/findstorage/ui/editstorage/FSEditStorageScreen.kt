@@ -52,7 +52,7 @@ import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.common.Dummy
 import com.github.klee0kai.thekey.core.utils.possitions.pxToDp
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
-import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.animateTargetFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.horizontal
@@ -60,7 +60,7 @@ import com.github.klee0kai.thekey.core.utils.views.isIme
 import com.github.klee0kai.thekey.core.utils.views.rememberClickArg
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
-import com.github.klee0kai.thekey.core.utils.views.rememberTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.rememberTargetFaded
 import com.github.klee0kai.thekey.dynamic.findstorage.R
 import com.github.klee0kai.thekey.dynamic.findstorage.di.FSDI
 import com.github.klee0kai.thekey.dynamic.findstorage.di.hardResetToPreview
@@ -92,9 +92,9 @@ fun FSEditStorageScreen(
     val scrollState = rememberScrollState()
     val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
 
-    val imeIsVisibleAnimated by animateTargetCrossFaded(WindowInsets.isIme)
-    val isSaveAvailable by rememberTargetCrossFaded { state.isSaveAvailable }
-    val isRemoveAvailable by rememberTargetCrossFaded { state.isRemoveAvailable }
+    val imeIsVisibleAnimated by animateTargetFaded(WindowInsets.isIme)
+    val isSaveAvailable by rememberTargetFaded { state.isSaveAvailable }
+    val isRemoveAvailable by rememberTargetFaded { state.isRemoveAvailable }
 
 
     BackHandler(enabled = state.storagePathFieldExpanded || state.colorGroupExpanded) {

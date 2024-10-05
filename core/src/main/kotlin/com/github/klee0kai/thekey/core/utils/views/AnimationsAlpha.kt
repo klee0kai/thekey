@@ -36,6 +36,11 @@ data class TargetAlpha<T>(
     val alpha: Float = 0f,
 )
 
+enum class FadeType {
+    FadeOutIn,
+    CrossFaded,
+}
+
 fun <T> TargetAlpha<T>.hideOnTargetAlpha(vararg targetsToHide: T): Float {
     return when {
         targetsToHide.any { current == it } -> 0f
@@ -63,23 +68,23 @@ inline fun animateAlphaAsState(
 )
 
 @Composable
-inline fun <T> Flow<T>.collectAsStateCrossFaded(
+inline fun <T> Flow<T>.collectAsStateFaded(
     key: Any?,
     initial: T,
     skipStates: List<T> = emptyList(),
     context: CoroutineContext = EmptyCoroutineContext,
 ): State<TargetAlpha<T>> {
     val target by collectAsState(key = key, initial = initial, context = context)
-    return animateTargetCrossFaded(target, skipStates = skipStates)
+    return animateTargetFaded(target, skipStates = skipStates)
 }
 
 @Composable
-inline fun <T> rememberTargetCrossFaded(
+inline fun <T> rememberTargetFaded(
     skipStates: List<T> = emptyList(),
     noinline calculation: () -> T
 ): State<TargetAlpha<T>> {
     val target = rememberDerivedStateOf(calculation)
-    return animateTargetCrossFaded(target = target.value, skipStates = skipStates)
+    return animateTargetFaded(target = target.value, skipStates = skipStates)
 }
 
 @Composable
@@ -107,7 +112,7 @@ fun <T> SwipeProgress<T>.crossFadeAlpha(): TargetAlpha<T> = when {
 }
 
 @Composable
-inline fun <T> animateTargetCrossFaded(
+inline fun <T> animateTargetFaded(
     target: T,
     skipStates: List<T> = emptyList(),
     delay: Duration = Duration.ZERO,
@@ -126,7 +131,6 @@ inline fun <T> animateTargetCrossFaded(
         targetAlpha = targetAlpha.copy(next = target)
         if (targetAlpha.current != target) {
             if (delay > Duration.ZERO) delay(delay)
-
             animate(
                 initialValue = targetAlpha.alpha,
                 targetValue = 0f,

@@ -37,7 +37,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.components.FabSimpleInContainer
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesButtonsWidgetState
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
-import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.animateTargetFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.isIme
@@ -58,9 +58,9 @@ fun StoragesButtonsWidget(
         initial = null
     )
 
-    val imeIsVisibleAnimated by animateTargetCrossFaded(WindowInsets.isIme)
+    val imeIsVisibleAnimated by animateTargetFaded(WindowInsets.isIme)
 
-    val isShowInstallPluginPromo by animateTargetCrossFaded(
+    val isShowInstallPluginPromo by animateTargetFaded(
         target = isFindStoragesFeatureInstalled?.let {
             state.isExtStorageSelected && !it.isInstalled
         },

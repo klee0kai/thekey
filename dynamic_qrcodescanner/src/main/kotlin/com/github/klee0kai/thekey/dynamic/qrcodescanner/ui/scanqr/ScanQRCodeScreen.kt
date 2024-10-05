@@ -32,7 +32,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.navigation.model.TextProvider
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
-import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.animateTargetFaded
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.horizontal
 import com.github.klee0kai.thekey.dynamic.qrcodescanner.ui.navigation.cameraPermissions
@@ -58,7 +58,7 @@ fun ScanQRCodeScreen() {
     val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
     val permissionHelper = remember { DI.permissionsHelper() }
     var permGranded by remember { mutableStateOf(permissionHelper.checkPermissions(permissionHelper.cameraPermissions())) }
-    val permGrandedAnimated by animateTargetCrossFaded(permGranded)
+    val permGrandedAnimated by animateTargetFaded(permGranded)
     var cameraState by remember { mutableStateOf<CameraState>(CameraState.NoState) }
     var screenClosed by remember { mutableStateOf(false) }
     var isQrCodeError by remember { mutableStateOf(false) }

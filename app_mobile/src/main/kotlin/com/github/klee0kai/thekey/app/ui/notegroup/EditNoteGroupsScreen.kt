@@ -67,7 +67,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.icons.BackMenuIcon
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.common.Dummy
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
-import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.animateTargetFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.hideOnTargetAlpha
@@ -77,7 +77,7 @@ import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebouncedArg
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebouncedArg2
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
-import com.github.klee0kai.thekey.core.utils.views.rememberTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.rememberTargetFaded
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.jetbrains.annotations.VisibleForTesting
 import kotlin.time.Duration
@@ -93,7 +93,7 @@ fun EditNoteGroupsScreen(
     val router by LocalRouter.currentRef
     val theme = LocalTheme.current
     val safeContentPadding = WindowInsets.safeContent.asPaddingValues()
-    val imeIsVisibleAnimated by animateTargetCrossFaded(WindowInsets.isIme)
+    val imeIsVisibleAnimated by animateTargetFaded(WindowInsets.isIme)
     val isNavBoardOpen by router!!.isNavBoardOpen.collectAsState(key = Unit, initial = false)
     val presenter by rememberOnScreenRef {
         DI.editNoteGroupPresenter(dest.identifier()).apply { init() }
@@ -102,11 +102,11 @@ fun EditNoteGroupsScreen(
     val searchState by presenter!!.searchState.collectAsState(key = Unit, initial = SearchState())
     val groupNameFieldFocusRequester = remember { FocusRequester() }
     val state by presenter!!.state.collectAsState(key = Unit, initial = EditNoteGroupsState())
-    val isSaveAvailable by rememberTargetCrossFaded { state.isSaveAvailable }
-    val isRemoveAvailable by rememberTargetCrossFaded { state.isRemoveAvailable }
+    val isSaveAvailable by rememberTargetFaded { state.isSaveAvailable }
+    val isRemoveAvailable by rememberTargetFaded { state.isRemoveAvailable }
     var dragProgress by remember { mutableFloatStateOf(0f) }
 
-    val targetTitleId by rememberTargetCrossFaded {
+    val targetTitleId by rememberTargetFaded {
         when {
             searchState.isActive -> SearchTitleId
             else -> MainTitleId

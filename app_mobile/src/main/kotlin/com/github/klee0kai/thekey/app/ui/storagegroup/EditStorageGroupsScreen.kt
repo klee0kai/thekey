@@ -66,7 +66,7 @@ import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebouncedArg
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebouncedArg2
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
-import com.github.klee0kai.thekey.core.utils.views.rememberTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.rememberTargetFaded
 import com.github.klee0kai.thekey.core.utils.views.topDp
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -87,8 +87,8 @@ fun EditStorageGroupsScreen(
     val state by presenter!!.state.collectAsState(key = Unit, initial = EditStorageGroupsState())
 
     val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
-    val isSaveAvailable by rememberTargetCrossFaded { state.isSaveAvailable }
-    val isRemoveAvailable by rememberTargetCrossFaded { state.isRemoveAvailable }
+    val isSaveAvailable by rememberTargetFaded { state.isSaveAvailable }
+    val isRemoveAvailable by rememberTargetFaded { state.isRemoveAvailable }
     var dragProgress by remember { mutableFloatStateOf(0f) }
 
     SimpleBottomSheetScaffold(

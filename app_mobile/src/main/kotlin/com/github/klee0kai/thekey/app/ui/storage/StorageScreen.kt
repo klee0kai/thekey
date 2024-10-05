@@ -72,7 +72,7 @@ import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebouncedArg
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
-import com.github.klee0kai.thekey.core.utils.views.rememberTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.rememberTargetFaded
 import kotlinx.coroutines.launch
 import org.jetbrains.annotations.VisibleForTesting
 import kotlin.time.Duration
@@ -123,7 +123,7 @@ fun StorageScreen(
             else -> false
         }
     }
-    val targetTitleId by rememberTargetCrossFaded {
+    val targetTitleId by rememberTargetFaded {
         when {
             searchState.isActive -> SearchTitleId
             isAccountTab && accountTitleVisibility -> SecondTittleId

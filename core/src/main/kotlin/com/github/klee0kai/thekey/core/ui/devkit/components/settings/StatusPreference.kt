@@ -24,7 +24,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.views.animateContentSizeProduction
-import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.animateTargetFaded
 import com.github.klee0kai.thekey.core.utils.views.createAnchor
 import com.github.klee0kai.thekey.core.utils.views.horizontal
 import com.thedeanda.lorem.LoremIpsum
@@ -45,9 +45,9 @@ fun StatusPreference(
         targetValue = statusColor,
         label = "status color"
     )
-    val textAnimated by animateTargetCrossFaded(target = text)
-    val hintAnimated by animateTargetCrossFaded(target = hint)
-    val statusAnimated by animateTargetCrossFaded(target = status)
+    val textAnimated by animateTargetFaded(target = text)
+    val hintAnimated by animateTargetFaded(target = hint)
+    val statusAnimated by animateTargetFaded(target = status)
 
     ConstraintLayout(
         modifier = modifier

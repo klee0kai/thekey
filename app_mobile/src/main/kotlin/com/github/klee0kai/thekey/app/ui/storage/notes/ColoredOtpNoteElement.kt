@@ -31,7 +31,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkContentPreview
-import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.animateTargetFaded
 import com.github.klee0kai.thekey.core.utils.views.horizontal
 import com.github.klee0kai.thekey.core.utils.views.skeleton
 import com.github.klee0kai.thekey.core.utils.views.visibleOnTargetAlpha
@@ -45,8 +45,8 @@ fun ColoredOtpNoteElement(
 ) {
     val theme = LocalTheme.current
     val colorScheme = LocalColorScheme.current
-    val animatedNote by animateTargetCrossFaded(otp)
-    val skeleton by animateTargetCrossFaded(!otp.isLoaded)
+    val animatedNote by animateTargetFaded(otp)
+    val skeleton by animateTargetFaded(!otp.isLoaded)
     val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
 
 

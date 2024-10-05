@@ -141,7 +141,7 @@ fun animateSkeletonModifier(
     isSkeleton: () -> Boolean,
 ): State<Modifier> {
     val shimmer = rememberShimmer(shimmerBounds = ShimmerBounds.Window)
-    val isSkeletonAnimated by rememberTargetCrossFaded { isSkeleton() }
+    val isSkeletonAnimated by rememberTargetFaded { isSkeleton() }
     return rememberDerivedStateOf {
         val modifier = Modifier.alpha(isSkeletonAnimated.alpha)
         if (!isSkeletonAnimated.current) {
@@ -177,7 +177,7 @@ fun Modifier.thenIfCrossFade(
     condition: Boolean,
     block: @Composable Modifier.() -> Modifier,
 ): Modifier {
-    val target by animateTargetCrossFaded(target = condition)
+    val target by animateTargetFaded(target = condition)
     return if (target.current) {
         block().alpha(target.alpha)
     } else {

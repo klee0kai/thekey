@@ -28,7 +28,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.navigation.model.StorageItemWidgetState
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkContentPreview
-import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.animateTargetFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
@@ -48,7 +48,7 @@ fun StoragesListContent(
     val presenter by rememberOnScreenRef { DI.storagesPresenter() }
     val storages by presenter!!.filteredStorages.collectAsState(key = Unit, initial = null)
     val groups by presenter!!.filteredColorGroups.collectAsState(key = Unit, initial = null)
-    val showEmpty by animateTargetCrossFaded(storages?.isEmpty(), skipStates = listOf(null))
+    val showEmpty by animateTargetFaded(storages?.isEmpty(), skipStates = listOf(null))
 
     if (showEmpty.current == null) {
         // show empty state if need

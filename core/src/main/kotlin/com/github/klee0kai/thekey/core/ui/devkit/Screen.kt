@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.core.ui.devkit.overlay.OverlayContainer
-import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.animateTargetFaded
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.isIme
 
@@ -22,7 +22,7 @@ fun Screen(
     val router by LocalRouter.currentRef
     val isNavBoardOpen by router!!.isNavBoardOpen.collectAsState(false)
 
-    val imeVisible by animateTargetCrossFaded(WindowInsets.isIme)
+    val imeVisible by animateTargetFaded(WindowInsets.isIme)
     BackHandler(enabled = imeVisible.current) {
         when {
             isNavBoardOpen -> router?.hideNavigationBoard()

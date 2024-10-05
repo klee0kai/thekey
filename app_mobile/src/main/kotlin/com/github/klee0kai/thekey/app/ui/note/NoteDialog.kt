@@ -55,7 +55,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.core.ui.devkit.icons.BackMenuIcon
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
-import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.animateTargetFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.horizontal
@@ -98,7 +98,7 @@ fun NoteDialog(
             .background
             .copy(alpha = ((1f - dragProgress) + 0.4f).coerceIn(0f, 1f))
     }
-    val imeAnimated by animateTargetCrossFaded(target = isIme)
+    val imeAnimated by animateTargetFaded(target = isIme)
     val appBarAlpha by rememberDerivedStateOf {
         maxOf(1f - dragProgress, imeAnimated.visibleOnTargetAlpha(true))
     }

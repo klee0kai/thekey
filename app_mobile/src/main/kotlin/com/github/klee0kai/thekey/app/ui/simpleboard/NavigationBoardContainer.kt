@@ -32,7 +32,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
-import com.github.klee0kai.thekey.core.utils.views.collectAsStateCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.collectAsStateFaded
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.horizontal
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
@@ -50,7 +50,7 @@ fun NavigationBoardContainer(
     val scope = rememberCoroutineScope()
     val safeDrawingPaddings = WindowInsets.safeDrawing.asPaddingValues()
     val presenter by rememberOnScreenRef { DI.simpleBoardPresenter() }
-    val currentStorage by presenter!!.currentStorage.collectAsStateCrossFaded(
+    val currentStorage by presenter!!.currentStorage.collectAsStateFaded(
         key = Unit,
         initial = null
     )

@@ -34,7 +34,7 @@ import com.github.klee0kai.thekey.core.utils.common.Dummy
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkContentPreview
 import com.github.klee0kai.thekey.core.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.core.utils.views.animateContentSizeProduction
-import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.animateTargetFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import org.jetbrains.annotations.VisibleForTesting
@@ -66,8 +66,8 @@ fun StorageSelectToGroupComponent(
 
         storages.forEach { storage ->
             item(contentType = storage::class, key = storage.path) {
-                val animatedStorage by animateTargetCrossFaded(storage)
-                val icon by animateTargetCrossFaded(target = if (storage.selected) Icons.Default.Check else Icons.Filled.Add)
+                val animatedStorage by animateTargetFaded(storage)
+                val icon by animateTargetFaded(target = if (storage.selected) Icons.Default.Check else Icons.Filled.Add)
 
                 screenResolver.widget(
                     modifier = Modifier.animateContentSizeProduction(),

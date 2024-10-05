@@ -32,5 +32,5 @@ fun LazyListState.appBarVisible(): State<Boolean> {
 @Composable
 fun LazyListState.animateAppBarVisible(): State<TargetAlpha<Boolean>> {
     val appBarVisible by appBarVisible()
-    return rememberTargetCrossFaded { appBarVisible }
+    return rememberTargetFaded { appBarVisible }
 }

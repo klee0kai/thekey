@@ -5,13 +5,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
-import com.github.klee0kai.thekey.core.utils.views.collectAsStateCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.collectAsStateFaded
 
 @Composable
 fun PluginApplyingOverlay(
     content: @Composable () -> Unit,
 ) {
-    val initDIScreen by LocalRouter.current.showInitDynamicFeatureScreen.collectAsStateCrossFaded(key = Unit, initial = false)
+    val initDIScreen by LocalRouter.current.showInitDynamicFeatureScreen.collectAsStateFaded(key = Unit, initial = false)
 
     if (initDIScreen.current) {
         PluginApplyingScreen(modifier = Modifier.alpha(initDIScreen.alpha))

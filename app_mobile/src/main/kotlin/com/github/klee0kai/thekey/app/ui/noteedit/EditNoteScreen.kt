@@ -77,7 +77,7 @@ import com.github.klee0kai.thekey.core.utils.possitions.toPx
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
 import com.github.klee0kai.thekey.core.utils.views.TargetAlpha
 import com.github.klee0kai.thekey.core.utils.views.animateSkeletonModifier
-import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.animateTargetFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.crossFadeAlpha
 import com.github.klee0kai.thekey.core.utils.views.currentRef
@@ -87,7 +87,7 @@ import com.github.klee0kai.thekey.core.utils.views.rememberClickArg
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
-import com.github.klee0kai.thekey.core.utils.views.rememberTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.rememberTargetFaded
 import com.github.klee0kai.thekey.core.utils.views.thenIf
 import com.github.klee0kai.thekey.core.utils.views.topDp
 import kotlinx.coroutines.launch
@@ -113,8 +113,8 @@ fun EditNoteScreen(
         key = Unit,
         initial = EditNoteState(isSkeleton = true)
     )
-    val isSaveAvailable by rememberTargetCrossFaded { state.isSaveAvailable }
-    val isRemoveAvailable by rememberTargetCrossFaded { state.isRemoveAvailable && !dest.isIgnoreRemove }
+    val isSaveAvailable by rememberTargetFaded { state.isSaveAvailable }
+    val isRemoveAvailable by rememberTargetFaded { state.isRemoveAvailable && !dest.isIgnoreRemove }
     val skeletonModifier by animateSkeletonModifier { state.isSkeleton }
 
     val pagerHeight = if (!state.isEditMode) SecondaryTabsConst.allHeight else 0.dp
@@ -125,7 +125,7 @@ fun EditNoteScreen(
             ?: TargetAlpha(dest.tab, dest.tab, 1f)
     }
     val scrollState = rememberScrollState()
-    val imeIsVisibleAnimated by animateTargetCrossFaded(WindowInsets.isIme)
+    val imeIsVisibleAnimated by animateTargetFaded(WindowInsets.isIme)
 
     BackHandler(state.otpMethodExpanded || state.otpAlgoExpanded || state.colorGroupExpanded) {
         presenter?.input {

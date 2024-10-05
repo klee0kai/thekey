@@ -13,7 +13,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppTitleImage
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesStatusBarWidgetState
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
-import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.animateTargetFaded
 
 @Composable
 fun StoragesStatusBarWidget(
@@ -21,7 +21,7 @@ fun StoragesStatusBarWidget(
     state: StoragesStatusBarWidgetState = StoragesStatusBarWidgetState(),
     parent: @Composable (Modifier, StoragesStatusBarWidgetState) -> Unit = { _, _ -> },
 ) {
-    val expandedAnimated by animateTargetCrossFaded(target = state.isContentExpanded)
+    val expandedAnimated by animateTargetFaded(target = state.isContentExpanded)
 
     when {
         expandedAnimated.current == true -> {

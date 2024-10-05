@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkContentPreview
-import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.animateTargetFaded
 import com.github.klee0kai.thekey.core.utils.views.grayColors
 import com.github.klee0kai.thekey.core.utils.views.transparentColors
 import com.valentinilk.shimmer.ShimmerBounds
@@ -61,7 +61,7 @@ fun AppTextField(
     labelStyle: TextStyle = LocalTheme.current.typeScheme.bodySmall,
     skeletonColor: Color = LocalTheme.current.colorScheme.skeletonColor,
 ) {
-    val skeletonAnimated by animateTargetCrossFaded(target = isSkeleton)
+    val skeletonAnimated by animateTargetFaded(target = isSkeleton)
     if (skeletonAnimated.current) {
         val shimmer = rememberShimmer(shimmerBounds = ShimmerBounds.Window)
         Box(
@@ -139,7 +139,7 @@ fun AppTextField(
     labelStyle: TextStyle = LocalTheme.current.typeScheme.bodySmall,
     skeletonColor: Color = LocalTheme.current.colorScheme.skeletonColor,
 ) {
-    val skeletonAnimated by animateTargetCrossFaded(target = isSkeleton)
+    val skeletonAnimated by animateTargetFaded(target = isSkeleton)
     if (skeletonAnimated.current) {
         val shimmer = rememberShimmer(shimmerBounds = ShimmerBounds.Window)
         Box(

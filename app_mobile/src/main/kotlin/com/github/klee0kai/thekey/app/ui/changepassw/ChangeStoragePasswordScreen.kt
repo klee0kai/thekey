@@ -57,13 +57,13 @@ import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.possitions.pxToDp
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
-import com.github.klee0kai.thekey.core.utils.views.collectAsStateCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.collectAsStateFaded
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.horizontal
 import com.github.klee0kai.thekey.core.utils.views.ifProduction
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
-import com.github.klee0kai.thekey.core.utils.views.rememberTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.rememberTargetFaded
 import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
@@ -78,11 +78,11 @@ fun ChangeStoragePasswordScreen(path: String) = Screen {
         key = Unit,
         initial = ChangePasswordStorageState()
     )
-    val storageItems by presenter!!.sortedStorageItems.collectAsStateCrossFaded(
+    val storageItems by presenter!!.sortedStorageItems.collectAsStateFaded(
         key = Unit,
         initial = null
     )
-    val isSaveAvailable by rememberTargetCrossFaded { state.isSaveAvailable }
+    val isSaveAvailable by rememberTargetFaded { state.isSaveAvailable }
     val scrollState = rememberLazyListState()
     val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
 

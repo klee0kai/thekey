@@ -44,7 +44,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.components.settings.SwitchPrefe
 import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextField
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkContentPreview
-import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.animateTargetFaded
 import com.github.klee0kai.thekey.core.utils.views.horizontal
 import com.github.klee0kai.thekey.core.utils.views.rememberClick
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
@@ -74,7 +74,7 @@ fun EditGroupInfoContent(
     val lazyListState = rememberLazyListState()
     val scrollPosition by rememberDerivedStateOf { lazyListState.scrollPosition() }
 
-    val favoriteVisibleAnimated by animateTargetCrossFaded(favoriteVisible)
+    val favoriteVisibleAnimated by animateTargetFaded(favoriteVisible)
 
     ConstraintLayout(
         modifier = modifier

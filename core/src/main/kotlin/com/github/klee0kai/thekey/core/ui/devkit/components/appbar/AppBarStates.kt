@@ -30,7 +30,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.views.animateAlphaAsState
-import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.animateTargetFaded
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 import org.jetbrains.annotations.VisibleForTesting
 
@@ -49,7 +49,7 @@ fun AppBarStates(
     titleContent: (@Composable (titleId: Int) -> Unit)? = null,
 ) {
     val theme = LocalTheme.current
-    val animateTargetAlpha by animateTargetCrossFaded(target = titleId.value)
+    val animateTargetAlpha by animateTargetFaded(target = titleId.value)
     val appBarAlpha by animateAlphaAsState(isVisible)
     val isNotVisible by rememberDerivedStateOf { appBarAlpha <= 0 }
 

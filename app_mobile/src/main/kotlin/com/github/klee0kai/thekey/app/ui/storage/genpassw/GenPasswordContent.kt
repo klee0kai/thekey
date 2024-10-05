@@ -54,7 +54,7 @@ import com.github.klee0kai.thekey.core.utils.views.rememberClickArg
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberClickableDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
-import com.github.klee0kai.thekey.core.utils.views.rememberTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.rememberTargetFaded
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.jetbrains.annotations.VisibleForTesting
 import kotlin.time.Duration.Companion.milliseconds
@@ -74,7 +74,7 @@ fun GenPasswordContent(
     }
     val sliderValues = presenter!!.passwLenRange
     val state by presenter!!.state.collectAsState(key = Unit, initial = GenPasswState())
-    val passw by rememberTargetCrossFaded { state.passw }
+    val passw by rememberTargetFaded { state.passw }
 
     ConstraintLayout(
         modifier = modifier

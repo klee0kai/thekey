@@ -51,9 +51,9 @@ import com.github.klee0kai.thekey.core.ui.devkit.icons.BackMenuIcon
 import com.github.klee0kai.thekey.core.ui.devkit.preview.PreviewDevices
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
-import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.animateTargetFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
-import com.github.klee0kai.thekey.core.utils.views.collectAsStateCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.collectAsStateFaded
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.horizontal
 import com.github.klee0kai.thekey.core.utils.views.isIme
@@ -79,10 +79,10 @@ fun LoginScreen(
     val currentStorageState by presenter!!.currentStorageFlow
         .collectAsState(key = Unit, initial = ColoredStorage())
     val isLoginNotProcessing by presenter!!.isLoginNotProcessingFlow
-        .collectAsStateCrossFaded(key = Unit, initial = true)
+        .collectAsStateFaded(key = Unit, initial = true)
 
     var passwordInputText by remember { mutableStateOf(dest.prefilledPassw ?: "") }
-    val imeVisible by animateTargetCrossFaded(WindowInsets.isIme)
+    val imeVisible by animateTargetFaded(WindowInsets.isIme)
 
     val shortStoragePath = with(pathInputHelper) {
         currentStorageState.path

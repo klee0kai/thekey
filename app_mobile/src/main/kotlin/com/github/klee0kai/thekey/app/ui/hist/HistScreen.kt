@@ -69,7 +69,7 @@ import com.github.klee0kai.thekey.core.utils.views.rememberClick
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebouncedArg
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
-import com.github.klee0kai.thekey.core.utils.views.rememberTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.rememberTargetFaded
 import org.jetbrains.annotations.VisibleForTesting
 import kotlin.time.Duration
 
@@ -95,9 +95,9 @@ fun GenHistScreen(
     val histList by presenter!!.filteredHist.collectAsState(key = Unit, initial = null)
     val searchState by presenter!!.searchState.collectAsState(key = Unit, initial = SearchState())
     val searchFocusRequester = remember { FocusRequester() }
-    val emptyListDummy by rememberTargetCrossFaded { histList != null && histList!!.isEmpty() }
+    val emptyListDummy by rememberTargetFaded { histList != null && histList!!.isEmpty() }
 
-    val targetTitleId by rememberTargetCrossFaded {
+    val targetTitleId by rememberTargetFaded {
         when {
             searchState.isActive -> SearchTitleId
             else -> MainTitleId
