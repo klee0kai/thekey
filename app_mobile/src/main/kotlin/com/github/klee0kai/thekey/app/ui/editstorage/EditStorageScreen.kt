@@ -190,7 +190,10 @@ fun EditStorageScreen(
                 colors = LocalColorScheme.current.grayTextButtonColors,
                 onClick = rememberClickDebounced { presenter?.changePassw(router) }
             ) {
-                Text(stringResource(R.string.change_password))
+                Text(
+                    text = stringResource(R.string.change_password),
+                    style = theme.typeScheme.buttonText,
+                )
             }
         }
 
@@ -200,7 +203,12 @@ fun EditStorageScreen(
                     .fillMaxWidth()
                     .alpha(isSaveAvailable.alpha),
                 onClick = rememberClickDebounced { presenter?.save(router) }
-            ) { Text(stringResource(R.string.save)) }
+            ) {
+                Text(
+                    text = stringResource(R.string.save),
+                    style = theme.typeScheme.buttonText,
+                )
+            }
         }
     }
 

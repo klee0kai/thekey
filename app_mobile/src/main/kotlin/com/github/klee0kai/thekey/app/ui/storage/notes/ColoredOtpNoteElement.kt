@@ -38,7 +38,7 @@ import com.github.klee0kai.thekey.core.utils.views.visibleOnTargetAlpha
 import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
-fun ColoredOtpNoteItem(
+fun ColoredOtpNoteElement(
     modifier: Modifier = Modifier,
     otp: ColoredOtpNote = ColoredOtpNote(),
     icon: (@Composable () -> Unit)? = null,
@@ -107,7 +107,7 @@ fun ColoredOtpNoteItem(
         Text(
             text = animatedNote.current.issuer.takeIf { it.isNotBlank() }
                 ?: stringResource(id = R.string.no_issuer),
-            style = theme.typeScheme.typography.bodyMedium,
+            style = theme.typeScheme.body,
             fontWeight = FontWeight.Medium,
             modifier = Modifier
                 .alpha(skeleton.visibleOnTargetAlpha(false))
@@ -130,8 +130,8 @@ fun ColoredOtpNoteItem(
 
         Text(
             text = animatedNote.current.name,
-            style = theme.typeScheme.typography.bodyMedium
-                .copy(color = theme.colorScheme.androidColorScheme.primary),
+            style = theme.typeScheme.body
+                .copy(color = theme.colorScheme.textColors.primaryTextColor),
             fontWeight = FontWeight.Medium,
             modifier = Modifier
                 .alpha(skeleton.visibleOnTargetAlpha(false))
@@ -178,7 +178,7 @@ fun ColoredOtpNoteItem(
 @Composable
 @Preview
 fun ColoredOtpNoteSkeletonPreview() = DebugDarkContentPreview {
-    ColoredOtpNoteItem(otp = ColoredOtpNote(isLoaded = false))
+    ColoredOtpNoteElement(otp = ColoredOtpNote(isLoaded = false))
 }
 
 @OptIn(DebugOnly::class)
@@ -186,7 +186,7 @@ fun ColoredOtpNoteSkeletonPreview() = DebugDarkContentPreview {
 @Composable
 @Preview
 fun ColoredOtpNoteDummyPreview() = DebugDarkContentPreview {
-    ColoredOtpNoteItem(
+    ColoredOtpNoteElement(
         otp = ColoredOtpNote(
             issuer = "some.super.site.com",
             name = "potato",
@@ -204,7 +204,7 @@ fun ColoredOtpNoteDummyPreview() = DebugDarkContentPreview {
 @Composable
 @Preview
 fun ColoredOtpNoteDummyNoGroupPreview() = DebugDarkContentPreview {
-    ColoredOtpNoteItem(
+    ColoredOtpNoteElement(
         otp = ColoredOtpNote(
             issuer = "some.super.site.com",
             name = "potato",
@@ -219,7 +219,7 @@ fun ColoredOtpNoteDummyNoGroupPreview() = DebugDarkContentPreview {
 @Composable
 @Preview
 fun ColoredOtpNoteDummyIconPreview() = DebugDarkContentPreview {
-    ColoredOtpNoteItem(
+    ColoredOtpNoteElement(
         otp = ColoredOtpNote(
             issuer = "some.super.site.com",
             name = "potato",

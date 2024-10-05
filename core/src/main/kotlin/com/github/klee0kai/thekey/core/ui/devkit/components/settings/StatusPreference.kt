@@ -84,13 +84,13 @@ fun StatusPreference(
                     )
                 },
             text = textAnimated.current,
+            style = theme.typeScheme.header,
         )
 
         if (hint.isNotBlank()) {
             Text(
                 modifier = Modifier
                     .animateContentSizeProduction()
-                    .alpha(0.5f)
                     .alpha(hintAnimated.alpha)
                     .constrainAs(hintField) {
                         width = Dimension.fillToConstraints
@@ -105,7 +105,8 @@ fun StatusPreference(
                         )
                     },
                 text = hintAnimated.current,
-                style = theme.typeScheme.typography.labelSmall,
+                style = theme.typeScheme.bodySmall,
+                color = theme.colorScheme.textColors.hintTextColor,
             )
         }
 
@@ -126,7 +127,7 @@ fun StatusPreference(
                 },
             text = statusAnimated.current,
             textAlign = TextAlign.Center,
-            style = theme.typeScheme.typography.bodyLarge,
+            style = theme.typeScheme.buttonText,
             color = statusColorAnimated,
         )
     }

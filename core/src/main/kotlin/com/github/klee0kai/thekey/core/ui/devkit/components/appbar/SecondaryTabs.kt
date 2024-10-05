@@ -1,9 +1,10 @@
-@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@file:OptIn(
+    ExperimentalMaterial3Api::class,
+)
 
 package com.github.klee0kai.thekey.core.ui.devkit.components.appbar
 
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,13 +26,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
-import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
+import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
@@ -54,6 +54,7 @@ fun SecondaryTabs(
     selectedTab: Int = 0,
     onTabClicked: (Int) -> Unit = { },
 ) {
+    val theme = LocalTheme.current
     val appBarAlpha by animateAlphaAsState(isVisible)
     val isNotVisible by rememberDerivedStateOf { appBarAlpha <= 0 }
     if (isNotVisible) return
@@ -62,10 +63,10 @@ fun SecondaryTabs(
         modifier = modifier
             .padding(top = SecondaryTabsConst.topPadding)
             .alpha(appBarAlpha)
-            .background(MaterialTheme.colorScheme.background),
+            .background(theme.colorScheme.androidColorScheme.background),
         selectedTabIndex = selectedTab,
-        containerColor = MaterialTheme.colorScheme.background,
-        contentColor = MaterialTheme.colorScheme.onBackground,
+        containerColor = theme.colorScheme.androidColorScheme.background,
+        contentColor = theme.colorScheme.androidColorScheme.onBackground,
         indicator = {
             Box(
                 Modifier
@@ -84,8 +85,11 @@ fun SecondaryTabs(
         titles.forEachIndexed { index, title ->
             val selected = selectedTab == index
             val textColor by animateColorAsState(
-                targetValue = if (selected) MaterialTheme.colorScheme.secondary
-                else LocalColorScheme.current.grayTextButtonColors.contentColor,
+                targetValue = if (selected) {
+                    theme.colorScheme.textColors.secondaryTextColor
+                } else {
+                    theme.colorScheme.textColors.hintTextColor
+                },
                 label = "tab title color",
             )
 
@@ -103,8 +107,7 @@ fun SecondaryTabs(
                     Text(
                         text = title,
                         textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Bold,
+                        style = theme.typeScheme.screenHeader,
                         color = textColor,
                     )
                 }

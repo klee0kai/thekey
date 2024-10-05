@@ -205,7 +205,10 @@ fun LoginScreen(
                 colors = LocalColorScheme.current.grayTextButtonColors,
                 onClick = rememberClickDebounced { presenter?.selectStorage(router) }
             ) {
-                Text(stringResource(R.string.storages))
+                Text(
+                    text = stringResource(R.string.storages),
+                    style = theme.typeScheme.buttonText,
+                )
             }
         }
 
@@ -220,7 +223,10 @@ fun LoginScreen(
             enabled = isLoginNotProcessing.current,
             onClick = rememberClickDebounced { presenter?.login(passwordInputText, router) }
         ) {
-            Text(stringResource(R.string.login))
+            Text(
+                text = stringResource(R.string.login),
+                style = theme.typeScheme.buttonText,
+            )
         }
     }
 

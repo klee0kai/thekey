@@ -102,7 +102,7 @@ fun NotesListContent(
                     var showMenu by remember { mutableStateOf(false) }
                     val position = rememberViewPosition()
 
-                    ColoredNoteItem(
+                    ColoredNoteElement(
                         modifier = Modifier
                             .ifProduction { animateItemPlacement() }
                             .onGlobalPositionState(position)
@@ -152,7 +152,7 @@ fun NotesListContent(
                     var showMenu by remember { mutableStateOf(false) }
                     val position = rememberViewPosition()
 
-                    ColoredOtpNoteItem(
+                    ColoredOtpNoteElement(
                         modifier = Modifier
                             .ifProduction { animateItemPlacement() }
                             .onGlobalPositionState(position)

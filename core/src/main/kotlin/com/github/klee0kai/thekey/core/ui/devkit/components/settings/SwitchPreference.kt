@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkContentPreview
 import org.jetbrains.annotations.VisibleForTesting
@@ -26,6 +27,7 @@ fun SwitchPreference(
     text: String = "",
     checked: Boolean = false,
 ) {
+    val theme = LocalTheme.current
 
     Row(
         modifier = modifier,
@@ -33,7 +35,8 @@ fun SwitchPreference(
         Text(
             text = text,
             modifier = Modifier
-                .align(Alignment.CenterVertically)
+                .align(Alignment.CenterVertically),
+            style = theme.typeScheme.header,
         )
         Spacer(modifier = Modifier.weight(1f))
         Switch(

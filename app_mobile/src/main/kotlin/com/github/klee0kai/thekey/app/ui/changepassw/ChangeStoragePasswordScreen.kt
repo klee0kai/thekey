@@ -42,8 +42,8 @@ import com.github.klee0kai.thekey.app.ui.changepassw.model.ChangePasswordStorage
 import com.github.klee0kai.thekey.app.ui.changepassw.model.ConfirmIsWrong
 import com.github.klee0kai.thekey.app.ui.changepassw.model.PasswordNotChanged
 import com.github.klee0kai.thekey.app.ui.changepassw.presenter.ChangeStoragePasswordPresenterDummy
-import com.github.klee0kai.thekey.app.ui.storage.notes.ColoredNoteItem
-import com.github.klee0kai.thekey.app.ui.storage.notes.ColoredOtpNoteItem
+import com.github.klee0kai.thekey.app.ui.storage.notes.ColoredNoteElement
+import com.github.klee0kai.thekey.app.ui.storage.notes.ColoredOtpNoteElement
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
@@ -170,7 +170,7 @@ fun ChangeStoragePasswordScreen(path: String) = Screen {
             item(key = item) {
                 when {
                     item.note != null -> {
-                        ColoredNoteItem(
+                        ColoredNoteElement(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .ifProduction { animateItemPlacement() },
@@ -179,7 +179,7 @@ fun ChangeStoragePasswordScreen(path: String) = Screen {
                     }
 
                     item.otp != null -> {
-                        ColoredOtpNoteItem(
+                        ColoredOtpNoteElement(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .ifProduction { animateItemPlacement() },
@@ -216,7 +216,12 @@ fun ChangeStoragePasswordScreen(path: String) = Screen {
                     .fillMaxWidth()
                     .alpha(isSaveAvailable.alpha),
                 onClick = { presenter?.save(router) }
-            ) { Text(stringResource(R.string.save)) }
+            ) {
+                Text(
+                    text = stringResource(R.string.save),
+                    style = theme.typeScheme.buttonText,
+                )
+            }
         }
     }
 

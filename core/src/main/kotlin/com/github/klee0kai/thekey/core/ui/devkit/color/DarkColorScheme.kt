@@ -71,6 +71,9 @@ fun darkCommonColorScheme() = CommonColorScheme(
     textColors = TextColors(
         bodyTextColor = Color(0xFFFFFFFF),
         hintTextColor = Color(0xFFB7B7B7),
+        primaryTextColor = turquoise.surfaceColor,
+        secondaryTextColor = orange.surfaceColor,
+        errorTextColor = coral.surfaceColor,
     ),
     greenColor = green.surfaceColor,
     yellowColor = yellow.surfaceColor,

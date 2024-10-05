@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -41,7 +40,7 @@ import org.jetbrains.annotations.VisibleForTesting
 
 
 @Composable
-fun ColoredNoteItem(
+fun ColoredNoteElement(
     modifier: Modifier = Modifier,
     note: ColoredNote = ColoredNote(),
     icon: (@Composable () -> Unit)? = null,
@@ -109,7 +108,7 @@ fun ColoredNoteItem(
         Text(
             text = animatedNote.current.site.takeIf { it.isNotBlank() }
                 ?: stringResource(id = R.string.no_site),
-            style = theme.typeScheme.typography.bodyMedium,
+            style = theme.typeScheme.body,
             fontWeight = FontWeight.Medium,
             modifier = Modifier
                 .alpha(skeleton.visibleOnTargetAlpha(false))
@@ -132,8 +131,8 @@ fun ColoredNoteItem(
 
         Text(
             text = animatedNote.current.login,
-            style = theme.typeScheme.typography.bodyMedium
-                .copy(color = theme.colorScheme.androidColorScheme.primary),
+            style = theme.typeScheme.body
+                .copy(color = theme.colorScheme.textColors.primaryTextColor),
             fontWeight = FontWeight.Medium,
             modifier = Modifier
                 .alpha(skeleton.visibleOnTargetAlpha(false))
@@ -156,8 +155,8 @@ fun ColoredNoteItem(
 
         Text(
             text = animatedNote.current.desc,
-            color = theme.colorScheme.androidColorScheme.onSurface,
-            style = theme.typeScheme.typography.labelSmall,
+            color = theme.colorScheme.textColors.bodyTextColor,
+            style = theme.typeScheme.bodySmall,
             fontWeight = FontWeight.Normal,
             modifier = Modifier
                 .alpha(skeleton.visibleOnTargetAlpha(false))
@@ -204,7 +203,7 @@ fun ColoredNoteItem(
 @Composable
 @Preview
 fun ColoredNoteSkeleton() = DebugDarkContentPreview {
-    ColoredNoteItem(note = ColoredNote(isLoaded = false))
+    ColoredNoteElement(note = ColoredNote(isLoaded = false))
 }
 
 @OptIn(DebugOnly::class)
@@ -212,7 +211,7 @@ fun ColoredNoteSkeleton() = DebugDarkContentPreview {
 @Composable
 @Preview
 fun ColoredNoteDummy() = DebugDarkContentPreview {
-    ColoredNoteItem(
+    ColoredNoteElement(
         note = ColoredNote(
             site = LoremIpsum.getInstance().url,
             login = LoremIpsum.getInstance().getWords(1),
@@ -231,7 +230,7 @@ fun ColoredNoteDummy() = DebugDarkContentPreview {
 @Composable
 @Preview
 fun ColoredNoteDummyNoGroup() = DebugDarkContentPreview {
-    ColoredNoteItem(
+    ColoredNoteElement(
         note = ColoredNote(
             site = "some.super.site.com",
             login = "potato",
@@ -247,7 +246,7 @@ fun ColoredNoteDummyNoGroup() = DebugDarkContentPreview {
 @Composable
 @Preview
 fun ColoredNoteIcon() = DebugDarkContentPreview {
-    ColoredNoteItem(
+    ColoredNoteElement(
         note = ColoredNote(
             site = "some.super.site.com",
             login = "potato",

@@ -28,6 +28,7 @@ import com.github.klee0kai.thekey.app.di.modules.AndroidHelpersModule
 import com.github.klee0kai.thekey.app.perm.PermissionsHelperDummy
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
+import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.navigation.model.TextProvider
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
@@ -51,6 +52,7 @@ sealed interface CameraState {
 @Composable
 fun ScanQRCodeScreen() {
     val scope = rememberCoroutineScope()
+    val theme = LocalTheme.current
     val router by LocalRouter.currentRef
     val context = LocalContext.current
     val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
@@ -115,7 +117,10 @@ fun ScanQRCodeScreen() {
                         }
                     }
                 ) {
-                    Text(text = "grand permission")
+                    Text(
+                        text = "grand permission",
+                        style = theme.typeScheme.buttonText,
+                    )
                 }
             }
 

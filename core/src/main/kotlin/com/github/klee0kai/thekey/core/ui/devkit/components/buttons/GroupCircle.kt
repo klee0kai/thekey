@@ -23,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
+import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.color.SurfaceScheme
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import org.jetbrains.annotations.VisibleForTesting
@@ -38,8 +39,15 @@ fun GroupCircle(
     onLongClick: (() -> Unit)? = null,
     overlayContent: @Composable () -> Unit = {},
 ) {
-    val checkedState by animateDpAsState(if (checked) 12.dp else buttonSize / 2, label = "color group checked")
-    val rotate by animateFloatAsState(targetValue = if (checked) 70f else 0f, label = "color group select")
+    val theme = LocalTheme.current
+    val checkedState by animateDpAsState(
+        if (checked) 12.dp else buttonSize / 2,
+        label = "color group checked"
+    )
+    val rotate by animateFloatAsState(
+        targetValue = if (checked) 70f else 0f,
+        label = "color group select"
+    )
 
     Box(
         modifier = modifier
@@ -51,7 +59,10 @@ fun GroupCircle(
                 .minimumInteractiveComponentSize()
                 .rotate(rotate)
                 .size(buttonSize)
-                .background(color = colorScheme.surfaceColor, shape = RoundedCornerShape(checkedState))
+                .background(
+                    color = colorScheme.surfaceColor,
+                    shape = RoundedCornerShape(checkedState),
+                )
                 .clip(RoundedCornerShape(checkedState))
                 .align(Alignment.Center)
                 .run {
@@ -68,7 +79,8 @@ fun GroupCircle(
         Text(
             modifier = Modifier.align(Alignment.Center),
             color = colorScheme.onSurfaceColor,
-            text = name.take(3)
+            text = name.take(3),
+            style = theme.typeScheme.buttonText,
         )
 
         overlayContent()

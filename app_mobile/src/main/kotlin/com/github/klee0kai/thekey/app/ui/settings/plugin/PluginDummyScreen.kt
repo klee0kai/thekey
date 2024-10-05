@@ -41,6 +41,7 @@ import com.github.klee0kai.thekey.core.domain.model.feature.model.isNotInstalled
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
+import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
@@ -54,6 +55,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
 fun PluginDummyScreen(dest: DynamicDestination) {
+    val theme = LocalTheme.current
     val router = LocalRouter.current
     val presenter by rememberOnScreenRef { DI.pluginPresenter(dest.feature) }
     val feature = dest.feature
@@ -131,7 +133,8 @@ fun PluginDummyScreen(dest: DynamicDestination) {
                                     R.string.buy
                                 }
                         }
-                    )
+                    ),
+                    style = theme.typeScheme.buttonText,
                 )
             }
         }

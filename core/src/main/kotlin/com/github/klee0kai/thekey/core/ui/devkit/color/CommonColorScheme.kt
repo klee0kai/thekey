@@ -21,6 +21,5 @@ data class CommonColorScheme(
     val redColor: Color,
     val surfaceSchemas: SurfaceSchemas,
 
-    @Deprecated("used as a plug for m3")
     val androidColorScheme: ColorScheme,
 )

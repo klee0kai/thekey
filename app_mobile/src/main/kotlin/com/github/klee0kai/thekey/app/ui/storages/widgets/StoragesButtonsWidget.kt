@@ -91,7 +91,10 @@ fun StoragesButtonsWidget(
                         onClick = { presenter?.importStorage(router) }
                     ) {
                         val textRes = R.string.import_storage
-                        Text(stringResource(textRes))
+                        Text(
+                            text = stringResource(textRes),
+                            style = theme.typeScheme.buttonText,
+                        )
                     }
                 }
 
@@ -102,7 +105,10 @@ fun StoragesButtonsWidget(
                             .alpha(imeIsVisibleAnimated.alpha),
                         onClick = { presenter?.installAutoSearchPlugin(router) }
                     ) {
-                        Text(stringResource(R.string.install))
+                        Text(
+                            text = stringResource(R.string.install),
+                            style = theme.typeScheme.buttonText,
+                        )
                     }
                 }
             }

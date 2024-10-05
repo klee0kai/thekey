@@ -41,12 +41,11 @@ fun Preference(
 ) {
     val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
     val theme = LocalTheme.current
-    val hintAlpha by animateFloatAsState(
-        targetValue = if (hintIsError) 1f else 0.4f,
-        label = "hint alpha"
-    )
     val hintColor by animateColorAsState(
-        targetValue = if (hintIsError) theme.colorScheme.redColor else theme.colorScheme.androidColorScheme.onBackground,
+        targetValue = when {
+            hintIsError -> theme.colorScheme.textColors.errorTextColor
+            else -> theme.colorScheme.textColors.hintTextColor
+        },
         label = "hint color"
     )
 
@@ -76,13 +75,12 @@ fun Preference(
                     )
                 },
             text = text,
-
-            )
+            style = theme.typeScheme.header,
+        )
 
         if (hint.isNotBlank()) {
             Text(
                 modifier = Modifier
-                    .alpha(hintAlpha)
                     .constrainAs(hintField) {
                         width = Dimension.fillToConstraints
                         linkTo(
@@ -96,7 +94,7 @@ fun Preference(
                         )
                     },
                 text = hint,
-                style = theme.typeScheme.typography.labelSmall,
+                style = theme.typeScheme.bodySmall,
                 color = hintColor,
             )
         }

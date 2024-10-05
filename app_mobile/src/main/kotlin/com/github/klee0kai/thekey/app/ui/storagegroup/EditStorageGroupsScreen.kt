@@ -47,6 +47,7 @@ import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.StorageGroupIdentifier
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
+import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.SimpleBottomSheetScaffold
 import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.topContentAlphaFromDrag
 import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.topContentOffsetFromDrag
@@ -76,6 +77,7 @@ import kotlin.time.Duration.Companion.milliseconds
 fun EditStorageGroupsScreen(
     dest: EditStorageGroupDestination = EditStorageGroupDestination(),
 ) {
+    val theme = LocalTheme.current
     val router by LocalRouter.currentRef
 
     val presenter by rememberOnScreenRef {
@@ -173,7 +175,10 @@ fun EditStorageGroupsScreen(
                     .fillMaxWidth(),
                 onClick = rememberClickDebounced { presenter?.save(router) }
             ) {
-                Text(stringResource(R.string.save))
+                Text(
+                    text = stringResource(R.string.save),
+                    style = theme.typeScheme.buttonText,
+                )
             }
         }
     }

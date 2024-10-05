@@ -386,7 +386,10 @@ fun OtpNoteDialog(
                 },
             onClick = rememberClickDebounced(presenter) { presenter?.edit(router) },
         ) {
-            Text(text = stringResource(id = CoreR.string.edit))
+            Text(
+                text = stringResource(id = CoreR.string.edit),
+                style = theme.typeScheme.buttonText,
+            )
         }
     }
 

@@ -25,8 +25,8 @@ import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteGroupDestination
 import com.github.klee0kai.thekey.app.ui.notegroup.presenter.EditNoteGroupsPresenterDummy
-import com.github.klee0kai.thekey.app.ui.storage.notes.ColoredNoteItem
-import com.github.klee0kai.thekey.app.ui.storage.notes.ColoredOtpNoteItem
+import com.github.klee0kai.thekey.app.ui.storage.notes.ColoredNoteElement
+import com.github.klee0kai.thekey.app.ui.storage.notes.ColoredOtpNoteElement
 import com.github.klee0kai.thekey.core.di.identifiers.NoteGroupIdentifier
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
@@ -75,7 +75,7 @@ fun NoteSelectToGroupComponent(
             when {
                 note != null -> {
                     item(key = storageItem.id, contentType = note::class) {
-                        ColoredNoteItem(
+                        ColoredNoteElement(
                             modifier = Modifier
                                 .ifProduction { animateItemPlacement() }
                                 .combinedClickable(
@@ -99,7 +99,7 @@ fun NoteSelectToGroupComponent(
 
                 otp != null -> {
                     item(key = storageItem.id, contentType = otp::class) {
-                        ColoredOtpNoteItem(
+                        ColoredOtpNoteElement(
                             modifier = Modifier
                                 .ifProduction { animateItemPlacement() }
                                 .combinedClickable(

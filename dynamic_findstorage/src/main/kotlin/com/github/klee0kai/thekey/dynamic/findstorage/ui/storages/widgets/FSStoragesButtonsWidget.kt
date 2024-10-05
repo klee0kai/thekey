@@ -109,7 +109,10 @@ fun FSStoragesButtonsWidget(
                     onClick = { presenter?.importStorage(router) }
                 ) {
                     val textRes = R.string.import_storage
-                    Text(stringResource(textRes))
+                    Text(
+                        text = stringResource(textRes),
+                        style = theme.typeScheme.buttonText,
+                    )
                 }
 
                 FilledTonalButton(
@@ -118,7 +121,10 @@ fun FSStoragesButtonsWidget(
                         .alpha(imeIsVisibleAnimated.alpha),
                     onClick = { presenter?.requestPermissions(router) }
                 ) {
-                    Text(stringResource(R.string.grant_permissions))
+                    Text(
+                        text = stringResource(R.string.grant_permissions),
+                        style = theme.typeScheme.buttonText,
+                    )
                 }
             }
         }

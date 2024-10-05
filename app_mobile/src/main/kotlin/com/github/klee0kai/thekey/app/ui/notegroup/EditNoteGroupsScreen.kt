@@ -248,7 +248,10 @@ fun EditNoteGroupsScreen(
                     .fillMaxWidth(),
                 onClick = rememberClickDebounced { presenter?.save(router) }
             ) {
-                Text(stringResource(R.string.save))
+                Text(
+                    text = stringResource(R.string.save),
+                    style = theme.typeScheme.buttonText,
+                )
             }
         }
     }

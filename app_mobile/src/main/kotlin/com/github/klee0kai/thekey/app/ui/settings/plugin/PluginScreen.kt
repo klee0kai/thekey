@@ -40,6 +40,7 @@ import com.github.klee0kai.thekey.core.domain.model.feature.model.NotInstalled
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
+import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
@@ -54,6 +55,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 fun PluginScreen(
     dest: PluginDestination,
 ) {
+    val theme = LocalTheme.current
     val router = LocalRouter.current
     val presenter by rememberOnScreenRef { DI.pluginPresenter(dest.feature) }
     val featureStatus by presenter!!.status.collectAsState(key = Unit, initial = NotInstalled)
@@ -129,7 +131,8 @@ fun PluginScreen(
                                 R.string.buy
                             }
                     }
-                )
+                ),
+                style = theme.typeScheme.buttonText,
             )
         }
 

@@ -205,7 +205,10 @@ fun FSEditStorageScreen(
                     .fillMaxWidth(),
                 onClick = { presenter?.save(router) }
             ) {
-                Text(stringResource(R.string.save))
+                Text(
+                    text = stringResource(R.string.save),
+                    style = theme.typeScheme.buttonText,
+                )
             }
         }
 
@@ -260,7 +263,10 @@ fun FSEditStorageScreen(
                     router?.navigate(ChangeStoragePasswordDestination(path))
                 }
             ) {
-                Text(stringResource(R.string.change_password))
+                Text(
+                    text = stringResource(R.string.change_password),
+                    style = theme.typeScheme.buttonText,
+                )
             }
         }
 
@@ -270,7 +276,12 @@ fun FSEditStorageScreen(
                     .fillMaxWidth()
                     .alpha(isSaveAvailable.alpha),
                 onClick = rememberClickDebounced { presenter?.save(router) }
-            ) { Text(stringResource(R.string.save)) }
+            ) {
+                Text(
+                    text = stringResource(R.string.save),
+                    style = theme.typeScheme.buttonText,
+                )
+            }
         }
     }
 

@@ -7,4 +7,7 @@ import androidx.compose.ui.graphics.Color
 data class TextColors(
     val bodyTextColor: Color,
     val hintTextColor: Color,
+    val primaryTextColor: Color,
+    val secondaryTextColor: Color,
+    val errorTextColor: Color,
 )

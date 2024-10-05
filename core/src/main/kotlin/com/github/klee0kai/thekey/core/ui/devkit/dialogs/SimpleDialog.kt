@@ -150,6 +150,7 @@ fun SimpleDialog(
                             )
                         },
                     text = dest.title.text(resources),
+                    style = theme.typeScheme.screenHeader,
                 )
 
 
@@ -173,7 +174,7 @@ fun SimpleDialog(
                         },
                     text = dest.message.text(resources),
                     textAlign = if (isMessageLongText) TextAlign.Start else TextAlign.Center,
-                    style = theme.typeScheme.typography.labelMedium,
+                    style = theme.typeScheme.body,
                 )
 
             }
@@ -229,7 +230,10 @@ fun SimpleDialog(
                 router?.backWithResult(ConfirmDialogResult.CONFIRMED)
             },
         ) {
-            Text(text = dest.confirm.text(resources))
+            Text(
+                text = dest.confirm.text(resources),
+                style = theme.typeScheme.buttonText,
+            )
         }
 
         if (dest.reject != null) {
@@ -251,7 +255,10 @@ fun SimpleDialog(
                     router?.backWithResult(ConfirmDialogResult.REJECTED)
                 },
             ) {
-                Text(text = dest.reject.text(resources))
+                Text(
+                    text = dest.reject.text(resources),
+                    style = theme.typeScheme.buttonText,
+                )
             }
         }
     }

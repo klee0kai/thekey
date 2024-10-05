@@ -197,7 +197,10 @@ fun GenPasswordContent(
                 },
             onClick = rememberClickDebounced { presenter?.saveAsNewNote() }
         ) {
-            Text(stringResource(R.string.save))
+            Text(
+                text = stringResource(R.string.save),
+                style = theme.typeScheme.buttonText,
+            )
         }
 
 
@@ -212,7 +215,10 @@ fun GenPasswordContent(
             colors = theme.colorScheme.grayTextButtonColors,
             onClick = rememberClickDebounced { presenter?.generatePassw() },
         ) {
-            Text(stringResource(R.string.passw_generate))
+            Text(
+                text = stringResource(R.string.passw_generate),
+                style = theme.typeScheme.buttonText,
+            )
         }
 
         TextButton(
@@ -225,7 +231,12 @@ fun GenPasswordContent(
                 },
             colors = theme.colorScheme.grayTextButtonColors,
             onClick = rememberClickDebounced { router?.navigate(dest.genHist()) }
-        ) { Text(stringResource(R.string.hist)) }
+        ) {
+            Text(
+                text = stringResource(R.string.hist),
+                style = theme.typeScheme.buttonText,
+            )
+        }
 
         TextButton(
             modifier = Modifier

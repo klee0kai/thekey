@@ -38,7 +38,7 @@ import java.io.File
 
 
 @Composable
-fun ColoredStorageItem(
+fun ColoredStorageElement(
     modifier: Modifier = Modifier,
     storage: ColoredStorage = ColoredStorage(),
     onClick: () -> Unit = {},
@@ -90,7 +90,7 @@ fun ColoredStorageItem(
                 storage.name.isNotBlank() -> storage.name
                 else -> File(storage.path).nameWithoutExtension
             },
-            style = theme.typeScheme.typography.bodyMedium,
+            style = theme.typeScheme.body,
             modifier = Modifier
                 .constrainAs(nameField) {
                     width = Dimension.fillToConstraints
@@ -112,7 +112,7 @@ fun ColoredStorageItem(
         if (storage.description.isNotBlank()) {
             Text(
                 text = storage.description,
-                style = theme.typeScheme.typography.bodySmall,
+                style = theme.typeScheme.bodySmall,
                 modifier = Modifier
                     .constrainAs(descriptionField) {
                         width = Dimension.fillToConstraints
@@ -164,7 +164,7 @@ fun ColoredStorageItem(
 @Composable
 fun ColoredStorageItemPreview() = DebugDarkContentPreview {
     DI.hardResetToPreview()
-    ColoredStorageItem(
+    ColoredStorageElement(
         storage = ColoredStorage(
             path = "path",
             name = "name",
@@ -179,7 +179,7 @@ fun ColoredStorageItemPreview() = DebugDarkContentPreview {
 @Composable
 fun ColoredStorageNoDescItemPreview() = DebugDarkContentPreview {
     DI.hardResetToPreview()
-    ColoredStorageItem(
+    ColoredStorageElement(
         storage = ColoredStorage(
             path = "path",
             name = "name",
@@ -193,7 +193,7 @@ fun ColoredStorageNoDescItemPreview() = DebugDarkContentPreview {
 @Composable
 fun ColoredStorageNoValidItemPreview() = DebugDarkContentPreview {
     DI.hardResetToPreview()
-    ColoredStorageItem(
+    ColoredStorageElement(
         storage = ColoredStorage(
             path = "path",
             name = "name",
@@ -207,7 +207,7 @@ fun ColoredStorageNoValidItemPreview() = DebugDarkContentPreview {
 @Composable
 fun ColoredStorageLargeItemPreview() = DebugDarkContentPreview {
     DI.hardResetToPreview()
-    ColoredStorageItem(
+    ColoredStorageElement(
         storage = ColoredStorage(
             path = "/some/file.ext",
             name = LoremIpsum().getWords(10, 15),
