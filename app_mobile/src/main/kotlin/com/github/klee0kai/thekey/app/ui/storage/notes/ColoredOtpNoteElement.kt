@@ -31,10 +31,10 @@ import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkContentPreview
+import com.github.klee0kai.thekey.core.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.core.utils.views.animateTargetFaded
 import com.github.klee0kai.thekey.core.utils.views.horizontal
 import com.github.klee0kai.thekey.core.utils.views.skeleton
-import com.github.klee0kai.thekey.core.utils.views.visibleOnTargetAlpha
 import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
@@ -46,7 +46,7 @@ fun ColoredOtpNoteElement(
     val theme = LocalTheme.current
     val colorScheme = LocalColorScheme.current
     val animatedNote by animateTargetFaded(otp)
-    val skeleton by animateTargetFaded(!otp.isLoaded)
+    val skeletonAlpha by animateAlphaAsState(!otp.isLoaded)
     val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
 
 
@@ -61,10 +61,10 @@ fun ColoredOtpNoteElement(
             siteField, loginField, iconField,
         ) = createRefs()
 
-        if (skeleton.current) {
+        if (skeletonAlpha > 0f) {
             Box(
                 modifier = Modifier
-                    .alpha(skeleton.visibleOnTargetAlpha(true))
+                    .alpha(skeletonAlpha)
                     .skeleton(true)
                     .constrainAs(skeletonField) {
                         width = Dimension.fillToConstraints
@@ -85,7 +85,7 @@ fun ColoredOtpNoteElement(
 
         Box(
             modifier = Modifier
-                .alpha(skeleton.visibleOnTargetAlpha(false))
+                .alpha(1f - skeletonAlpha)
                 .size(2.dp, 24.dp)
                 .background(
                     color = colorScheme.surfaceSchemas.surfaceScheme(animatedNote.current.group.keyColor).surfaceColor,
@@ -110,7 +110,7 @@ fun ColoredOtpNoteElement(
             style = theme.typeScheme.body,
             fontWeight = FontWeight.Medium,
             modifier = Modifier
-                .alpha(skeleton.visibleOnTargetAlpha(false))
+                .alpha(1f - skeletonAlpha)
                 .constrainAs(siteField) {
                     width = Dimension.fillToConstraints
                     linkTo(
@@ -134,7 +134,7 @@ fun ColoredOtpNoteElement(
                 .copy(color = theme.colorScheme.textColors.primaryTextColor),
             fontWeight = FontWeight.Medium,
             modifier = Modifier
-                .alpha(skeleton.visibleOnTargetAlpha(false))
+                .alpha(1f - skeletonAlpha)
                 .constrainAs(loginField) {
                     width = Dimension.fillToConstraints
                     linkTo(
@@ -153,7 +153,7 @@ fun ColoredOtpNoteElement(
         )
 
         Box(modifier = Modifier
-            .alpha(skeleton.visibleOnTargetAlpha(false))
+            .alpha(1f - skeletonAlpha)
             .constrainAs(iconField) {
                 linkTo(
                     top = parent.top,

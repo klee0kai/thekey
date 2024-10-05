@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkContentPreview
-import com.github.klee0kai.thekey.core.utils.views.animateTargetFaded
+import com.github.klee0kai.thekey.core.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.core.utils.views.grayColors
 import com.github.klee0kai.thekey.core.utils.views.transparentColors
 import com.valentinilk.shimmer.ShimmerBounds
@@ -61,12 +61,12 @@ fun AppTextField(
     labelStyle: TextStyle = LocalTheme.current.typeScheme.bodySmall,
     skeletonColor: Color = LocalTheme.current.colorScheme.skeletonColor,
 ) {
-    val skeletonAnimated by animateTargetFaded(target = isSkeleton)
-    if (skeletonAnimated.current) {
+    val skeletonAlpha by animateAlphaAsState(isSkeleton)
+    if (skeletonAlpha > 0) {
         val shimmer = rememberShimmer(shimmerBounds = ShimmerBounds.Window)
         Box(
             modifier = modifier
-                .alpha(skeletonAnimated.alpha)
+                .alpha(skeletonAlpha)
                 .defaultMinSize(
                     minWidth = TextFieldDefaults.MinWidth,
                     minHeight = TextFieldDefaults.MinHeight
@@ -77,7 +77,8 @@ fun AppTextField(
                     shape = RoundedCornerShape(16.dp)
                 )
         )
-    } else {
+    }
+    if (skeletonAlpha < 1f) {
         // using at CommonDecorationBox
         MaterialTheme(
             typography = MaterialTheme.typography.copy(
@@ -86,7 +87,8 @@ fun AppTextField(
             )
         ) {
             TextField(
-                modifier = modifier,
+                modifier = modifier
+                    .alpha(1f - skeletonAlpha),
                 value = value,
                 enabled = enabled,
                 readOnly = readOnly,
@@ -139,12 +141,12 @@ fun AppTextField(
     labelStyle: TextStyle = LocalTheme.current.typeScheme.bodySmall,
     skeletonColor: Color = LocalTheme.current.colorScheme.skeletonColor,
 ) {
-    val skeletonAnimated by animateTargetFaded(target = isSkeleton)
-    if (skeletonAnimated.current) {
+    val skeletonAlpha by animateAlphaAsState(isSkeleton)
+    if (skeletonAlpha > 0) {
         val shimmer = rememberShimmer(shimmerBounds = ShimmerBounds.Window)
         Box(
             modifier = modifier
-                .alpha(skeletonAnimated.alpha)
+                .alpha(skeletonAlpha)
                 .defaultMinSize(
                     minWidth = TextFieldDefaults.MinWidth,
                     minHeight = TextFieldDefaults.MinHeight,
@@ -155,7 +157,8 @@ fun AppTextField(
                     shape = RoundedCornerShape(16.dp)
                 )
         )
-    } else {
+    }
+    if (skeletonAlpha < 1f) {
         // using at CommonDecorationBox
         MaterialTheme(
             typography = MaterialTheme.typography.copy(
@@ -165,7 +168,7 @@ fun AppTextField(
         ) {
             TextField(
                 modifier = modifier
-                    .alpha(skeletonAnimated.alpha),
+                    .alpha(1f - skeletonAlpha),
                 value = value,
                 enabled = enabled,
                 readOnly = readOnly,

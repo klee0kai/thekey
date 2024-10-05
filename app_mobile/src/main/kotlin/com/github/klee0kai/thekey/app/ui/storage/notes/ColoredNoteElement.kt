@@ -31,13 +31,12 @@ import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkContentPreview
+import com.github.klee0kai.thekey.core.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.core.utils.views.animateTargetFaded
 import com.github.klee0kai.thekey.core.utils.views.horizontal
 import com.github.klee0kai.thekey.core.utils.views.skeleton
-import com.github.klee0kai.thekey.core.utils.views.visibleOnTargetAlpha
 import com.thedeanda.lorem.LoremIpsum
 import org.jetbrains.annotations.VisibleForTesting
-
 
 @Composable
 fun ColoredNoteElement(
@@ -48,7 +47,7 @@ fun ColoredNoteElement(
     val theme = LocalTheme.current
     val colorScheme = LocalColorScheme.current
     val animatedNote by animateTargetFaded(note)
-    val skeleton by animateTargetFaded(!note.isLoaded)
+    val skeletonAlpha by animateAlphaAsState(!note.isLoaded)
     val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
 
     ConstraintLayout(
@@ -62,10 +61,10 @@ fun ColoredNoteElement(
             siteField, loginField, descriptionField, iconField,
         ) = createRefs()
 
-        if (skeleton.current) {
+        if (skeletonAlpha > 0) {
             Box(
                 modifier = Modifier
-                    .alpha(skeleton.visibleOnTargetAlpha(true))
+                    .alpha(skeletonAlpha)
                     .skeleton(true)
                     .constrainAs(skeletonField) {
                         width = Dimension.fillToConstraints
@@ -86,7 +85,7 @@ fun ColoredNoteElement(
 
         Box(
             modifier = Modifier
-                .alpha(skeleton.visibleOnTargetAlpha(false))
+                .alpha(1f - skeletonAlpha)
                 .size(2.dp, 24.dp)
                 .background(
                     color = colorScheme.surfaceSchemas.surfaceScheme(animatedNote.current.group.keyColor).surfaceColor,
@@ -111,7 +110,7 @@ fun ColoredNoteElement(
             style = theme.typeScheme.body,
             fontWeight = FontWeight.Medium,
             modifier = Modifier
-                .alpha(skeleton.visibleOnTargetAlpha(false))
+                .alpha(1f - skeletonAlpha)
                 .constrainAs(siteField) {
                     width = Dimension.fillToConstraints
                     linkTo(
@@ -135,7 +134,7 @@ fun ColoredNoteElement(
                 .copy(color = theme.colorScheme.textColors.primaryTextColor),
             fontWeight = FontWeight.Medium,
             modifier = Modifier
-                .alpha(skeleton.visibleOnTargetAlpha(false))
+                .alpha(1f - skeletonAlpha)
                 .constrainAs(loginField) {
                     width = Dimension.fillToConstraints
                     linkTo(
@@ -159,7 +158,7 @@ fun ColoredNoteElement(
             style = theme.typeScheme.bodySmall,
             fontWeight = FontWeight.Normal,
             modifier = Modifier
-                .alpha(skeleton.visibleOnTargetAlpha(false))
+                .alpha(1f - skeletonAlpha)
                 .constrainAs(descriptionField) {
                     width = Dimension.fillToConstraints
                     linkTo(
@@ -178,7 +177,7 @@ fun ColoredNoteElement(
 
 
         Box(modifier = Modifier
-            .alpha(skeleton.visibleOnTargetAlpha(false))
+            .alpha(1f - skeletonAlpha)
             .constrainAs(iconField) {
                 linkTo(
                     top = parent.top,

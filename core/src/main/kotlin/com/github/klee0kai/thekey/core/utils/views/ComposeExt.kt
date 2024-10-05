@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.core.di.CoreDI
+import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.utils.common.Cleanable
 import com.github.klee0kai.thekey.core.utils.common.ObjHolder
 import com.valentinilk.shimmer.ShimmerBounds
@@ -122,7 +123,7 @@ fun rememberTickerOf(trigger: () -> Boolean): State<Int> {
 fun Modifier.skeleton(
     isSkeleton: Boolean = true,
     shape: RoundedCornerShape = RoundedCornerShape(4.dp),
-    color: Color = MaterialTheme.colorScheme.inverseSurface.copy(alpha = 0.4f),
+    color: Color = LocalTheme.current.colorScheme.skeletonColor,
 ): Modifier {
     val shimmer = rememberShimmer(shimmerBounds = ShimmerBounds.Window)
     if (!isSkeleton) return this
