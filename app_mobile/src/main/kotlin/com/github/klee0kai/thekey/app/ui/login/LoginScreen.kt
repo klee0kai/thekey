@@ -158,7 +158,7 @@ fun LoginScreen(
             visualTransformation = PasswordVisualTransformation(),
             value = passwordInputText,
             onValueChange = { passwordInputText = it },
-            label = { Text(stringResource(R.string.password)) },
+            label = { Text(text = stringResource(R.string.password)) },
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
             keyboardActions = KeyboardActions(
                 onDone = rememberClickDebouncedCons { presenter?.login(passwordInputText, router) })

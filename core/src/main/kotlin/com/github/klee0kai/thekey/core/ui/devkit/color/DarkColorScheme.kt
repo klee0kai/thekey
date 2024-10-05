@@ -38,8 +38,9 @@ internal object DarkColorCollection {
 fun darkCommonColorScheme() = CommonColorScheme(
     isDark = true,
     windowBackgroundColor = background,
+    skeletonColor = Color(0xFF3A3D52),
     navigationBoard = NavigationBoardColors(
-        headerSurfaceColor = Color(0xFF3A3D52),
+        headerSurfaceColor = Color(0x3F1C1D27),
         bodySurfaceColor = Color(0xFF1C1D27),
     ),
     popupMenu = PopupMenuColors(

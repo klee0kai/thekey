@@ -18,12 +18,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
-import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
+import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
+import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
+import com.github.klee0kai.thekey.core.utils.views.DebugDarkContentPreview
 import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
 import com.github.klee0kai.thekey.core.utils.views.grayColors
 import com.github.klee0kai.thekey.core.utils.views.transparentColors
@@ -54,11 +57,13 @@ fun AppTextField(
     minLines: Int = 1,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     colors: TextFieldColors = TextFieldDefaults.grayColors(),
+    textStyle: TextStyle = LocalTheme.current.typeScheme.header,
+    labelStyle: TextStyle = LocalTheme.current.typeScheme.bodySmall,
+    skeletonColor: Color = LocalTheme.current.colorScheme.skeletonColor,
 ) {
     val skeletonAnimated by animateTargetCrossFaded(target = isSkeleton)
     if (skeletonAnimated.current) {
         val shimmer = rememberShimmer(shimmerBounds = ShimmerBounds.Window)
-        val color = MaterialTheme.colorScheme.inverseSurface
         Box(
             modifier = modifier
                 .alpha(skeletonAnimated.alpha)
@@ -68,34 +73,42 @@ fun AppTextField(
                 )
                 .shimmer(shimmer)
                 .background(
-                    color = color,
+                    color = skeletonColor,
                     shape = RoundedCornerShape(16.dp)
                 )
         )
     } else {
-        TextField(
-            modifier = modifier,
-            value = value,
-            enabled = enabled,
-            readOnly = readOnly,
-            onValueChange = onValueChange,
-            label = label,
-            placeholder = placeholder,
-            leadingIcon = leadingIcon,
-            trailingIcon = trailingIcon,
-            prefix = prefix,
-            suffix = suffix,
-            supportingText = supportingText,
-            visualTransformation = visualTransformation,
-            keyboardOptions = keyboardOptions,
-            keyboardActions = keyboardActions,
-            singleLine = singleLine,
-            maxLines = maxLines,
-            minLines = minLines,
-            shape = RoundedCornerShape(16.dp),
-            interactionSource = interactionSource,
-            colors = colors,
-        )
+        // using at CommonDecorationBox
+        MaterialTheme(
+            typography = MaterialTheme.typography.copy(
+                bodyLarge = textStyle,
+                bodySmall = labelStyle,
+            )
+        ) {
+            TextField(
+                modifier = modifier,
+                value = value,
+                enabled = enabled,
+                readOnly = readOnly,
+                onValueChange = onValueChange,
+                label = label,
+                placeholder = placeholder,
+                leadingIcon = leadingIcon,
+                trailingIcon = trailingIcon,
+                prefix = prefix,
+                suffix = suffix,
+                supportingText = supportingText,
+                visualTransformation = visualTransformation,
+                keyboardOptions = keyboardOptions,
+                keyboardActions = keyboardActions,
+                singleLine = singleLine,
+                maxLines = maxLines,
+                minLines = minLines,
+                shape = RoundedCornerShape(16.dp),
+                interactionSource = interactionSource,
+                colors = colors,
+            )
+        }
     }
 }
 
@@ -122,56 +135,67 @@ fun AppTextField(
     minLines: Int = 1,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     colors: TextFieldColors = TextFieldDefaults.grayColors(),
+    textStyle: TextStyle = LocalTheme.current.typeScheme.header,
+    labelStyle: TextStyle = LocalTheme.current.typeScheme.bodySmall,
+    skeletonColor: Color = LocalTheme.current.colorScheme.skeletonColor,
 ) {
     val skeletonAnimated by animateTargetCrossFaded(target = isSkeleton)
     if (skeletonAnimated.current) {
         val shimmer = rememberShimmer(shimmerBounds = ShimmerBounds.Window)
-        val color = MaterialTheme.colorScheme.inverseSurface
         Box(
             modifier = modifier
                 .alpha(skeletonAnimated.alpha)
                 .defaultMinSize(
                     minWidth = TextFieldDefaults.MinWidth,
-                    minHeight = TextFieldDefaults.MinHeight
+                    minHeight = TextFieldDefaults.MinHeight,
                 )
                 .shimmer(shimmer)
                 .background(
-                    color = color,
+                    color = skeletonColor,
                     shape = RoundedCornerShape(16.dp)
                 )
         )
     } else {
-        TextField(
-            modifier = modifier
-                .alpha(skeletonAnimated.alpha),
-            value = value,
-            enabled = enabled,
-            readOnly = readOnly,
-            onValueChange = onValueChange,
-            label = label,
-            placeholder = placeholder,
-            leadingIcon = leadingIcon,
-            trailingIcon = trailingIcon,
-            prefix = prefix,
-            suffix = suffix,
-            supportingText = supportingText,
-            visualTransformation = visualTransformation,
-            keyboardOptions = keyboardOptions,
-            keyboardActions = keyboardActions,
-            singleLine = singleLine,
-            maxLines = maxLines,
-            minLines = minLines,
-            shape = RoundedCornerShape(16.dp),
-            interactionSource = interactionSource,
-            colors = colors,
-        )
+        // using at CommonDecorationBox
+        MaterialTheme(
+            typography = MaterialTheme.typography.copy(
+                bodyLarge = textStyle,
+                bodySmall = labelStyle,
+            )
+        ) {
+            TextField(
+                modifier = modifier
+                    .alpha(skeletonAnimated.alpha),
+                value = value,
+                enabled = enabled,
+                readOnly = readOnly,
+                onValueChange = onValueChange,
+                label = label,
+                placeholder = placeholder,
+                leadingIcon = leadingIcon,
+                trailingIcon = trailingIcon,
+                prefix = prefix,
+                suffix = suffix,
+                supportingText = supportingText,
+                visualTransformation = visualTransformation,
+                keyboardOptions = keyboardOptions,
+                keyboardActions = keyboardActions,
+                singleLine = singleLine,
+                maxLines = maxLines,
+                minLines = minLines,
+                shape = RoundedCornerShape(16.dp),
+                interactionSource = interactionSource,
+                colors = colors,
+            )
+        }
     }
 }
 
 
+@OptIn(DebugOnly::class)
 @Composable
 @Preview
-fun AppTextFieldPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
+fun AppTextFieldPreview() = DebugDarkContentPreview {
     Box(
         modifier = Modifier.padding(10.dp)
     ) {
@@ -185,9 +209,10 @@ fun AppTextFieldPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     }
 }
 
+@OptIn(DebugOnly::class)
 @Composable
 @Preview
-fun AppTextFieldSkeletonPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
+fun AppTextFieldSkeletonPreview() = DebugDarkContentPreview {
     Box(
         modifier = Modifier.padding(10.dp),
     ) {
@@ -202,9 +227,10 @@ fun AppTextFieldSkeletonPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
     }
 }
 
+@OptIn(DebugOnly::class)
 @Composable
 @Preview
-fun AppTextEmptyFieldPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
+fun AppTextEmptyFieldPreview() = DebugDarkContentPreview {
     Box(
         modifier = Modifier.padding(10.dp)
     ) {
@@ -219,9 +245,10 @@ fun AppTextEmptyFieldPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
 }
 
 
+@OptIn(DebugOnly::class)
 @Composable
 @Preview
-fun AppTransparentTextFieldPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
+fun AppTransparentTextFieldPreview() = DebugDarkContentPreview {
     Box(
         modifier = Modifier.padding(10.dp)
     ) {
@@ -236,9 +263,10 @@ fun AppTransparentTextFieldPreview() = AppTheme(theme = DefaultThemes.darkTheme)
     }
 }
 
+@OptIn(DebugOnly::class)
 @Composable
 @Preview
-fun AppTransparentTextEmptyFieldPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
+fun AppTransparentTextEmptyFieldPreview() = DebugDarkContentPreview {
     Box(
         modifier = Modifier.padding(10.dp)
     ) {

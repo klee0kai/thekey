@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.Color
 data class CommonColorScheme(
     val isDark: Boolean,
     val windowBackgroundColor: Color,
+    val skeletonColor: Color,
     val navigationBoard: NavigationBoardColors,
     val popupMenu: PopupMenuColors,
     val whiteTextButtonColors: ButtonColors,
