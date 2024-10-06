@@ -68,8 +68,8 @@ fun StoragesListContent(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally),
                 text = stringResource(id = CoreR.string.nothig_to_show),
-                style = theme.typeScheme.typography.labelSmall,
-                color = theme.colorScheme.hintTextColor,
+                style = theme.typeScheme.header,
+                color = theme.colorScheme.textColors.hintTextColor,
             )
             Spacer(modifier = Modifier.weight(4f))
         }
@@ -122,3 +122,21 @@ fun StoragesListContentPreview() {
         StoragesListContent()
     }
 }
+
+@OptIn(DebugOnly::class)
+@Composable
+@Preview
+fun StoragesEmptyListContentPreview() {
+    DI.hardResetToPreview()
+    DI.initPresenterModule(object : PresentersModule {
+        override fun storagesPresenter() = StoragesPresenterDummy(
+            groupsCount = 0,
+            storagesCount = 0,
+        )
+    })
+
+    DebugDarkContentPreview {
+        StoragesListContent()
+    }
+}
+

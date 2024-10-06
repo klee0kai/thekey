@@ -28,7 +28,6 @@ import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 
-
 @Composable
 fun ColoredStorageItemWidget(
     modifier: Modifier = Modifier,

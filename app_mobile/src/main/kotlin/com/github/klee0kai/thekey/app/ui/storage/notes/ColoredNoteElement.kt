@@ -17,7 +17,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -34,6 +33,7 @@ import com.github.klee0kai.thekey.core.utils.views.DebugDarkContentPreview
 import com.github.klee0kai.thekey.core.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.core.utils.views.animateTargetFaded
 import com.github.klee0kai.thekey.core.utils.views.horizontal
+import com.github.klee0kai.thekey.core.utils.views.linkToParent
 import com.github.klee0kai.thekey.core.utils.views.skeleton
 import com.thedeanda.lorem.LoremIpsum
 import org.jetbrains.annotations.VisibleForTesting
@@ -69,11 +69,7 @@ fun ColoredNoteElement(
                     .constrainAs(skeletonField) {
                         width = Dimension.fillToConstraints
                         height = Dimension.fillToConstraints
-                        linkTo(
-                            top = parent.top,
-                            bottom = parent.bottom,
-                            start = parent.start,
-                            end = parent.end,
+                        linkToParent(
                             topMargin = 6.dp,
                             bottomMargin = 6.dp,
                             startMargin = safeContentPaddings.horizontal(minValue = 16.dp),
@@ -92,11 +88,7 @@ fun ColoredNoteElement(
                     shape = RoundedCornerShape(2.dp),
                 )
                 .constrainAs(colorGroupField) {
-                    linkTo(
-                        start = parent.start,
-                        top = parent.top,
-                        bottom = parent.bottom,
-                        end = parent.end,
+                    linkToParent(
                         verticalBias = 0.5f,
                         horizontalBias = 0f,
                         startMargin = safeContentPaddings.horizontal(minValue = 16.dp),
@@ -108,14 +100,11 @@ fun ColoredNoteElement(
             text = animatedNote.current.site.takeIf { it.isNotBlank() }
                 ?: stringResource(id = R.string.no_site),
             style = theme.typeScheme.body,
-            fontWeight = FontWeight.Medium,
             modifier = Modifier
                 .alpha(1f - skeletonAlpha)
                 .constrainAs(siteField) {
                     width = Dimension.fillToConstraints
-                    linkTo(
-                        top = parent.top,
-                        bottom = parent.bottom,
+                    linkToParent(
                         start = colorGroupField.end,
                         end = loginField.start,
                         topMargin = 6.dp,
@@ -132,14 +121,11 @@ fun ColoredNoteElement(
             text = animatedNote.current.login,
             style = theme.typeScheme.body
                 .copy(color = theme.colorScheme.textColors.primaryTextColor),
-            fontWeight = FontWeight.Medium,
             modifier = Modifier
                 .alpha(1f - skeletonAlpha)
                 .constrainAs(loginField) {
                     width = Dimension.fillToConstraints
-                    linkTo(
-                        top = parent.top,
-                        bottom = parent.bottom,
+                    linkToParent(
                         start = siteField.end,
                         end = iconField.start,
                         topMargin = 6.dp,
@@ -156,14 +142,12 @@ fun ColoredNoteElement(
             text = animatedNote.current.desc,
             color = theme.colorScheme.textColors.bodyTextColor,
             style = theme.typeScheme.bodySmall,
-            fontWeight = FontWeight.Normal,
             modifier = Modifier
                 .alpha(1f - skeletonAlpha)
                 .constrainAs(descriptionField) {
                     width = Dimension.fillToConstraints
-                    linkTo(
+                    linkToParent(
                         top = siteField.bottom,
-                        bottom = parent.bottom,
                         start = colorGroupField.end,
                         end = siteField.end,
                         topMargin = 4.dp,
@@ -179,11 +163,7 @@ fun ColoredNoteElement(
         Box(modifier = Modifier
             .alpha(1f - skeletonAlpha)
             .constrainAs(iconField) {
-                linkTo(
-                    top = parent.top,
-                    bottom = parent.bottom,
-                    start = parent.start,
-                    end = parent.end,
+                linkToParent(
                     startMargin = safeContentPaddings.horizontal(minValue = 16.dp),
                     endMargin = safeContentPaddings.horizontal(minValue = 16.dp),
                     horizontalBias = 1f,

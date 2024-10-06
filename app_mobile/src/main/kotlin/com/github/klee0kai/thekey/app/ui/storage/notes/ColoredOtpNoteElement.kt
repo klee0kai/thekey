@@ -34,6 +34,7 @@ import com.github.klee0kai.thekey.core.utils.views.DebugDarkContentPreview
 import com.github.klee0kai.thekey.core.utils.views.animateAlphaAsState
 import com.github.klee0kai.thekey.core.utils.views.animateTargetFaded
 import com.github.klee0kai.thekey.core.utils.views.horizontal
+import com.github.klee0kai.thekey.core.utils.views.linkToParent
 import com.github.klee0kai.thekey.core.utils.views.skeleton
 import org.jetbrains.annotations.VisibleForTesting
 
@@ -48,7 +49,6 @@ fun ColoredOtpNoteElement(
     val animatedNote by animateTargetFaded(otp)
     val skeletonAlpha by animateAlphaAsState(!otp.isLoaded)
     val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
-
 
     ConstraintLayout(
         modifier = modifier
@@ -65,15 +65,11 @@ fun ColoredOtpNoteElement(
             Box(
                 modifier = Modifier
                     .alpha(skeletonAlpha)
-                    .skeleton(true)
+                    .skeleton()
                     .constrainAs(skeletonField) {
                         width = Dimension.fillToConstraints
                         height = Dimension.fillToConstraints
-                        linkTo(
-                            top = parent.top,
-                            bottom = parent.bottom,
-                            start = parent.start,
-                            end = parent.end,
+                        linkToParent(
                             topMargin = 6.dp,
                             bottomMargin = 6.dp,
                             startMargin = safeContentPaddings.horizontal(minValue = 16.dp),
@@ -92,11 +88,7 @@ fun ColoredOtpNoteElement(
                     shape = RoundedCornerShape(2.dp),
                 )
                 .constrainAs(colorGroupField) {
-                    linkTo(
-                        start = parent.start,
-                        top = parent.top,
-                        bottom = parent.bottom,
-                        end = parent.end,
+                    linkToParent(
                         verticalBias = 0.5f,
                         horizontalBias = 0f,
                         startMargin = safeContentPaddings.horizontal(minValue = 16.dp),
@@ -113,9 +105,7 @@ fun ColoredOtpNoteElement(
                 .alpha(1f - skeletonAlpha)
                 .constrainAs(siteField) {
                     width = Dimension.fillToConstraints
-                    linkTo(
-                        top = parent.top,
-                        bottom = parent.bottom,
+                    linkToParent(
                         start = colorGroupField.end,
                         end = loginField.start,
                         topMargin = 6.dp,
@@ -137,9 +127,7 @@ fun ColoredOtpNoteElement(
                 .alpha(1f - skeletonAlpha)
                 .constrainAs(loginField) {
                     width = Dimension.fillToConstraints
-                    linkTo(
-                        top = parent.top,
-                        bottom = parent.bottom,
+                    linkToParent(
                         start = siteField.end,
                         end = iconField.start,
                         topMargin = 6.dp,
@@ -155,11 +143,7 @@ fun ColoredOtpNoteElement(
         Box(modifier = Modifier
             .alpha(1f - skeletonAlpha)
             .constrainAs(iconField) {
-                linkTo(
-                    top = parent.top,
-                    bottom = parent.bottom,
-                    start = parent.start,
-                    end = parent.end,
+                linkToParent(
                     startMargin = safeContentPaddings.horizontal(minValue = 16.dp),
                     endMargin = safeContentPaddings.horizontal(minValue = 16.dp),
                     horizontalBias = 1f,

@@ -29,7 +29,6 @@ import com.github.klee0kai.thekey.app.ui.storages.presenter.StoragesPresenter
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.domain.model.externalStorages
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
-import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.components.FabSimpleInContainer
@@ -105,8 +104,8 @@ fun FSStoragesButtonsWidget(
                     modifier = Modifier
                         .padding(bottom = 12.dp)
                         .fillMaxWidth(),
-                    colors = LocalColorScheme.current.grayTextButtonColors,
-                    onClick = { presenter?.importStorage(router) }
+                    colors = theme.colorScheme.grayTextButtonColors,
+                    onClick = rememberClickDebounced { presenter?.importStorage(router) }
                 ) {
                     val textRes = R.string.import_storage
                     Text(
@@ -119,7 +118,7 @@ fun FSStoragesButtonsWidget(
                     modifier = Modifier
                         .fillMaxWidth()
                         .alpha(imeIsVisibleAnimated.alpha),
-                    onClick = { presenter?.requestPermissions(router) }
+                    onClick = rememberClickDebounced { presenter?.requestPermissions(router) }
                 ) {
                     Text(
                         text = stringResource(R.string.grant_permissions),

@@ -202,8 +202,6 @@ fun StorageScreen(
                 SecondTittleId -> {
                     Text(
                         modifier = Modifier.alpha(targetTitleId.alpha),
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.Bold,
                         text = stringResource(id = R.string.accounts)
                     )
                 }

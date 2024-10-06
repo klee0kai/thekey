@@ -36,11 +36,6 @@ data class TargetAlpha<T>(
     val alpha: Float = 0f,
 )
 
-enum class FadeType {
-    FadeOutIn,
-    CrossFaded,
-}
-
 fun <T> TargetAlpha<T>.hideOnTargetAlpha(vararg targetsToHide: T): Float {
     return when {
         targetsToHide.any { current == it } -> 0f
@@ -52,6 +47,15 @@ fun <T> TargetAlpha<T>.hideOnTargetAlpha(vararg targetsToHide: T): Float {
 fun <T> TargetAlpha<T>.visibleOnTargetAlpha(vararg targetsToVisible: T): Float {
     return when {
         targetsToVisible.any { current == it } -> alpha
+        else -> 0f
+    }
+}
+
+
+fun <T> TargetAlpha<T>.visibleOnTargetAlpha(targetsToVisible: T.() -> Boolean): Float {
+    return when {
+        targetsToVisible(current) != targetsToVisible(next) -> alpha
+        targetsToVisible(current) -> 1f
         else -> 0f
     }
 }

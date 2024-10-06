@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.safeContent
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
@@ -27,10 +26,10 @@ fun SectionHeader(
     Text(
         text = text,
         style = theme.typeScheme.header,
+        color = theme.colorScheme.textColors.hintTextColor,
         modifier = modifier
             .padding(top = 16.dp)
-            .padding(horizontal = safeContentPadding.horizontal(minValue = 16.dp))
-            .alpha(0.4f)
+            .padding(horizontal = safeContentPadding.horizontal(minValue = 16.dp)),
     )
 }
 

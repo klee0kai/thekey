@@ -25,6 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.github.klee0kai.stone.type.wrappers.getValue
@@ -50,6 +51,7 @@ import com.github.klee0kai.thekey.core.utils.common.Dummy
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.currentRef
+import com.github.klee0kai.thekey.core.utils.views.linkToParent
 import com.github.klee0kai.thekey.core.utils.views.rememberClickArg
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberClickableDebounced
@@ -89,17 +91,13 @@ fun GenPasswordContent(
             modifier = Modifier
                 .background(
                     color = theme.colorScheme.cardsBackground,
-                    shape = RoundedCornerShape(12.dp)
+                    shape = RoundedCornerShape(16.dp)
                 )
                 .padding(vertical = 8.dp)
                 .constrainAs(generateParams) {
                     width = Dimension.fillToConstraints
                     height = Dimension.wrapContent
-                    linkTo(
-                        top = parent.top,
-                        bottom = parent.bottom,
-                        start = parent.start,
-                        end = parent.end,
+                    linkToParent(
                         verticalBias = 0f,
                     )
                 }
@@ -115,7 +113,7 @@ fun GenPasswordContent(
 
             Text(
                 text = stringResource(id = R.string.passw_len_is, state.passwLen),
-                style = theme.typeScheme.typography.bodyLarge,
+                style = theme.typeScheme.header,
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier.constrainAs(passwLenField) {
                     width = Dimension.fillToConstraints
@@ -255,8 +253,8 @@ fun GenPasswordContent(
             Text(
                 modifier = Modifier.padding(16.dp),
                 text = passw.current,
-                style = theme.typeScheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
+                style = theme.typeScheme.screenHeader,
+                fontSize = 20.sp,
                 textAlign = TextAlign.Center,
             )
         }

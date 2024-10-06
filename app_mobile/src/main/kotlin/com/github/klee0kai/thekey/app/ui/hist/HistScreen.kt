@@ -38,7 +38,7 @@ import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
-import com.github.klee0kai.thekey.app.ui.hist.components.HistPasswItem
+import com.github.klee0kai.thekey.app.ui.hist.components.HistPasswElement
 import com.github.klee0kai.thekey.app.ui.hist.components.popup.HistPasswPopup
 import com.github.klee0kai.thekey.app.ui.hist.presenter.HistPresenterDummy
 import com.github.klee0kai.thekey.app.ui.navigation.model.HistDestination
@@ -48,6 +48,7 @@ import com.github.klee0kai.thekey.app.ui.storage.model.SearchState
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
+import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.Screen
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
@@ -80,6 +81,7 @@ private const val MainTitleId = 1
 fun GenHistScreen(
     dest: HistDestination = HistDestination(),
 ) = Screen {
+    val theme = LocalTheme.current
     val router by LocalRouter.currentRef
     val safeContentPadding = WindowInsets.safeContent.asPaddingValues()
     val scrollState = rememberLazyListState()
@@ -138,7 +140,7 @@ fun GenHistScreen(
                 var showMenu by remember { mutableStateOf(false) }
                 val position = rememberViewPosition()
 
-                HistPasswItem(
+                HistPasswElement(
                     modifier = Modifier
                         .onGlobalPositionState(position)
                         .ifProduction { animateItemPlacement() }
@@ -147,7 +149,9 @@ fun GenHistScreen(
                                 showMenu = false
                                 presenter?.savePassw(hist.id, router)
                             },
-                            onLongClick = rememberClick(hist) { showMenu = !showMenu },
+                            onLongClick = rememberClick(hist) {
+                                showMenu = !showMenu
+                            },
                         )
                         .padding(horizontal = safeContentPadding.horizontal(minValue = 16.dp)),
                     passw = hist,
@@ -164,7 +168,9 @@ fun GenHistScreen(
                         onSave = if (noteIdentifier == null) rememberClickDebounced(hist) {
                             showMenu = false
                             presenter?.savePassw(hist.id, router)
-                        } else null,
+                        } else {
+                            null
+                        },
                         onCopy = rememberClickDebounced(hist) {
                             showMenu = false
                             presenter?.copyPassw(hist.id, router)
@@ -191,12 +197,13 @@ fun GenHistScreen(
         Box(
             modifier = Modifier
                 .alpha(emptyListDummy.alpha)
-                .alpha(0.4f)
                 .fillMaxSize(),
             contentAlignment = Alignment.Center,
         ) {
             Text(
-                text = stringResource(id = R.string.no_history)
+                text = stringResource(id = R.string.no_history),
+                style = theme.typeScheme.header,
+                color = theme.colorScheme.textColors.hintTextColor,
             )
         }
     }

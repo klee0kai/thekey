@@ -53,10 +53,8 @@ fun StoragesButtonsWidget(
     val router by LocalRouter.currentRef
     val theme = LocalTheme.current
     val presenter by rememberOnScreenRef { DI.storagesPresenter() }
-    val isFindStoragesFeatureInstalled by presenter!!.installAutoSearchStatus.collectAsState(
-        key = Unit,
-        initial = null
-    )
+    val isFindStoragesFeatureInstalled by presenter!!.installAutoSearchStatus
+        .collectAsState(key = Unit, initial = null)
 
     val imeIsVisibleAnimated by animateTargetFaded(WindowInsets.isIme)
 
@@ -88,7 +86,7 @@ fun StoragesButtonsWidget(
                             .fillMaxWidth()
                             .padding(bottom = 12.dp),
                         colors = LocalColorScheme.current.grayTextButtonColors,
-                        onClick = { presenter?.importStorage(router) }
+                        onClick = rememberClickDebounced { presenter?.importStorage(router) }
                     ) {
                         val textRes = R.string.import_storage
                         Text(
@@ -103,7 +101,7 @@ fun StoragesButtonsWidget(
                         modifier = Modifier
                             .fillMaxWidth()
                             .alpha(imeIsVisibleAnimated.alpha),
-                        onClick = { presenter?.installAutoSearchPlugin(router) }
+                        onClick = rememberClickDebounced { presenter?.installAutoSearchPlugin(router) }
                     ) {
                         Text(
                             text = stringResource(R.string.install),

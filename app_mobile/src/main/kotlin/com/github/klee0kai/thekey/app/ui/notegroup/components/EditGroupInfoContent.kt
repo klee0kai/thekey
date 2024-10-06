@@ -46,6 +46,7 @@ import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkContentPreview
 import com.github.klee0kai.thekey.core.utils.views.animateTargetFaded
 import com.github.klee0kai.thekey.core.utils.views.horizontal
+import com.github.klee0kai.thekey.core.utils.views.linkToParent
 import com.github.klee0kai.thekey.core.utils.views.rememberClick
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.core.utils.views.thenIf
@@ -90,14 +91,11 @@ fun EditGroupInfoContent(
 
         Text(
             text = stringResource(id = R.string.select_color),
-            style = theme.typeScheme.typography.labelSmall,
-            color = theme.colorScheme.androidColorScheme.onSurface.copy(alpha = 0.4f),
+            style = theme.typeScheme.header,
+            color = theme.colorScheme.textColors.hintTextColor,
             modifier = Modifier.constrainAs(groupsHintField) {
-                linkTo(
-                    start = parent.start,
-                    top = parent.top,
+                linkToParent(
                     bottom = groupsListField.top,
-                    end = parent.end,
                     horizontalBias = 0f,
                     topMargin = 16.dp,
                     startMargin = safeContentPaddings.horizontal(minValue = 16.dp),
@@ -113,11 +111,8 @@ fun EditGroupInfoContent(
             modifier = Modifier
                 .size(52.dp, 4.dp)
                 .constrainAs(indicatorField) {
-                    linkTo(
-                        start = parent.start,
-                        end = parent.end,
+                    linkToParent(
                         top = groupsListField.bottom,
-                        bottom = parent.bottom,
                         verticalBias = 0f,
                     )
                 },
@@ -129,12 +124,10 @@ fun EditGroupInfoContent(
                 .wrapContentHeight()
                 .fillMaxWidth()
                 .constrainAs(groupsListField) {
-                    linkTo(
+                    linkToParent(
                         top = groupsHintField.bottom,
-                        start = parent.start,
                         bottom = groupNameField.top,
-                        end = parent.end,
-                        verticalBias = 0f
+                        verticalBias = 0f,
                     )
                 })
         {

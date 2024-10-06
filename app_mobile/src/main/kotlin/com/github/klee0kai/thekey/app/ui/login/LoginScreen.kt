@@ -180,6 +180,7 @@ fun LoginScreen(
                     },
                     textAlign = TextAlign.Center,
                     color = theme.colorScheme.textColors.primaryTextColor,
+                    style = theme.typeScheme.buttonText,
                 )
             }
         }

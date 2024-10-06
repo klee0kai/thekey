@@ -76,7 +76,7 @@ fun StoragesListWidget(
                 header = {
                     Text(
                         text = stringResource(id = R.string.storages),
-                        style = MaterialTheme.typography.titleMedium,
+                        style = theme.typeScheme.header,
                         modifier = Modifier
                             .padding(start = 16.dp, top = 4.dp, bottom = 22.dp)
                             .alpha(showStoragesTitle.visibleOnTargetAlpha(true))

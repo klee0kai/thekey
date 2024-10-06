@@ -82,13 +82,13 @@ fun FileNameElement(
                         horizontalBias = 0f,
                     )
                 },
+            style = theme.typeScheme.body,
         )
 
         if (isShowHint) {
             Text(
                 text = file.absolutePath,
                 modifier = Modifier
-                    .alpha(0.4f)
                     .constrainAs(hintField) {
                         linkToParent(
                             start = iconField.end,
@@ -96,7 +96,8 @@ fun FileNameElement(
                             top = shortField.bottom,
                         )
                     },
-                style = theme.typeScheme.typography.labelSmall,
+                style = theme.typeScheme.bodySmall,
+                color = theme.colorScheme.textColors.hintTextColor,
             )
         }
     }

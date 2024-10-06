@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,6 +37,7 @@ import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
+import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.BottomSheetBigDialog
 import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.rememberSafeBottomSheetScaffoldState
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
@@ -59,6 +59,7 @@ import org.jetbrains.annotations.VisibleForTesting
 fun SelectStorageDialog() = Box(modifier = Modifier.fillMaxSize()) {
     val router by LocalRouter.currentRef
     val colorScheme = LocalColorScheme.current
+    val theme = LocalTheme.current
     val scope = rememberCoroutineScope()
 
     val presenter by rememberOnScreenRef { DI.storagesPresenter().apply { init() } }
@@ -96,7 +97,7 @@ fun SelectStorageDialog() = Box(modifier = Modifier.fillMaxSize()) {
 
                     Text(
                         text = stringResource(id = R.string.storages),
-                        style = MaterialTheme.typography.titleMedium,
+                        style = theme.typeScheme.header,
                         modifier = Modifier
                             .padding(start = 16.dp, top = 4.dp, bottom = 22.dp)
                             .alpha(titleAnimatedAlpha)
@@ -109,9 +110,10 @@ fun SelectStorageDialog() = Box(modifier = Modifier.fillMaxSize()) {
         AppBarStates(
             modifier = Modifier.alpha(1f - dragProgress),
             navigationIcon = {
-                IconButton(onClick = backLauncher) {
-                    BackMenuIcon()
-                }
+                IconButton(
+                    onClick = backLauncher,
+                    content = { BackMenuIcon() },
+                )
             },
             titleContent = { Text(text = stringResource(id = R.string.storages)) },
         )

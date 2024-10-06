@@ -33,6 +33,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkContentPreview
 import com.github.klee0kai.thekey.core.utils.views.horizontal
+import com.github.klee0kai.thekey.core.utils.views.linkToParent
 import com.thedeanda.lorem.LoremIpsum
 import java.io.File
 
@@ -70,11 +71,7 @@ fun ColoredStorageElement(
                     shape = RoundedCornerShape(1.dp)
                 )
                 .constrainAs(colorGroupField) {
-                    linkTo(
-                        top = parent.top,
-                        bottom = parent.bottom,
-                        start = parent.start,
-                        end = parent.end,
+                    linkToParent(
                         topMargin = 12.dp,
                         bottomMargin = 12.dp,
                         startMargin = safeContentPaddings.horizontal(minValue = 16.dp),
@@ -94,9 +91,7 @@ fun ColoredStorageElement(
             modifier = Modifier
                 .constrainAs(nameField) {
                     width = Dimension.fillToConstraints
-                    linkTo(
-                        top = parent.top,
-                        bottom = parent.bottom,
+                    linkToParent(
                         start = colorGroupField.end,
                         end = iconField.start,
                         topMargin = 6.dp,
@@ -116,9 +111,8 @@ fun ColoredStorageElement(
                 modifier = Modifier
                     .constrainAs(descriptionField) {
                         width = Dimension.fillToConstraints
-                        linkTo(
+                        linkToParent(
                             top = nameField.bottom,
-                            bottom = parent.bottom,
                             start = colorGroupField.end,
                             end = iconField.start,
                             topMargin = 4.dp,
@@ -134,11 +128,7 @@ fun ColoredStorageElement(
         }
 
         Box(modifier = Modifier.constrainAs(iconField) {
-            linkTo(
-                top = parent.top,
-                bottom = parent.bottom,
-                start = parent.start,
-                end = parent.end,
+            linkToParent(
                 startMargin = safeContentPaddings.horizontal(minValue = 16.dp),
                 endMargin = safeContentPaddings.horizontal(minValue = 16.dp),
                 horizontalBias = 1f,

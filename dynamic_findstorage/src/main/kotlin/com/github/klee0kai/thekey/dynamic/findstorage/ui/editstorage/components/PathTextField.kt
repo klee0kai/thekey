@@ -121,7 +121,7 @@ fun PathTextField(
                         horizontal = 8.dp,
                         vertical = 8.dp,
                     ),
-                    style = theme.typeScheme.typography.labelMedium,
+                    style = theme.typeScheme.body,
                 )
             }
 

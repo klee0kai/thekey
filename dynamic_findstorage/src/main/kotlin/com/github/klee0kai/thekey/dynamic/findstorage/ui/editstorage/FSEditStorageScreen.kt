@@ -57,6 +57,7 @@ import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.horizontal
 import com.github.klee0kai.thekey.core.utils.views.isIme
+import com.github.klee0kai.thekey.core.utils.views.linkToParent
 import com.github.klee0kai.thekey.core.utils.views.rememberClickArg
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
@@ -120,11 +121,7 @@ fun FSEditStorageScreen(
             modifier = Modifier
                 .constrainAs(pathTextField) {
                     width = Dimension.fillToConstraints
-                    linkTo(
-                        start = parent.start,
-                        top = parent.top,
-                        end = parent.end,
-                        bottom = parent.bottom,
+                    linkToParent(
                         verticalBias = 0f,
                         topMargin = 8.dp + AppBarConst.appBarSize + safeContentPaddings.calculateTopPadding(),
                         startMargin = safeContentPaddings.horizontal(minValue = 16.dp),
@@ -156,11 +153,8 @@ fun FSEditStorageScreen(
             modifier = Modifier
                 .constrainAs(nameTextField) {
                     width = Dimension.fillToConstraints
-                    linkTo(
+                    linkToParent(
                         top = pathTextField.bottom,
-                        start = parent.start,
-                        end = parent.end,
-                        bottom = parent.bottom,
                         verticalBias = 0f,
                         topMargin = 8.dp,
                         startMargin = safeContentPaddings.horizontal(minValue = 16.dp),
@@ -169,7 +163,7 @@ fun FSEditStorageScreen(
                 },
             isSkeleton = state.isSkeleton,
             value = state.name,
-            onValueChange = { presenter?.input { copy(name = it) } },
+            onValueChange = rememberClickArg { presenter?.input { copy(name = it) } },
             label = { Text(stringResource(R.string.storage_name)) }
         )
 
@@ -189,7 +183,7 @@ fun FSEditStorageScreen(
                 },
             isSkeleton = state.isSkeleton,
             value = state.desc,
-            onValueChange = { presenter?.input { copy(desc = it) } },
+            onValueChange = rememberClickArg { presenter?.input { copy(desc = it) } },
             label = { Text(stringResource(R.string.storage_description)) }
         )
 
@@ -203,7 +197,7 @@ fun FSEditStorageScreen(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .fillMaxWidth(),
-                onClick = { presenter?.save(router) }
+                onClick = rememberClickDebounced { presenter?.save(router) }
             ) {
                 Text(
                     text = stringResource(R.string.save),
@@ -216,11 +210,10 @@ fun FSEditStorageScreen(
             modifier = Modifier
                 .fillMaxWidth(0.5f)
                 .constrainAs(colorGroupField) {
-                    linkTo(
+                    linkToParent(
                         top = descTextField.bottom,
                         start = descTextField.start,
                         end = descTextField.end,
-                        bottom = parent.bottom,
                         verticalBias = 0f,
                         horizontalBias = 0f,
                         topMargin = 8.dp,

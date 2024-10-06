@@ -71,6 +71,7 @@ import com.github.klee0kai.thekey.core.utils.views.animateTargetFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.hideOnTargetAlpha
+import com.github.klee0kai.thekey.core.utils.views.horizontal
 import com.github.klee0kai.thekey.core.utils.views.isIme
 import com.github.klee0kai.thekey.core.utils.views.rememberClickArg
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
@@ -185,7 +186,6 @@ fun EditNoteGroupsScreen(
                 MainTitleId -> {
                     Text(
                         modifier = Modifier.alpha(targetTitleId.alpha),
-                        style = theme.typeScheme.typography.labelLarge,
                         fontWeight = FontWeight.Bold,
                         text = stringResource(id = if (state.isEditMode) R.string.edit_group else R.string.create_storages_group),
                     )
@@ -236,8 +236,8 @@ fun EditNoteGroupsScreen(
             .padding(
                 top = 16.dp + AppBarConst.appBarSize,
                 bottom = 16.dp,
-                start = 16.dp,
-                end = 16.dp
+                start = safeContentPadding.horizontal(minValue = 16.dp),
+                end = safeContentPadding.horizontal(minValue = 16.dp)
             ),
     ) {
         if (isSaveAvailable.current) {

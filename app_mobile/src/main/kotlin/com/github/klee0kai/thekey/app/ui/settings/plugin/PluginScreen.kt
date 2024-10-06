@@ -6,10 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -17,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,15 +34,17 @@ import com.github.klee0kai.thekey.core.domain.model.feature.model.Installed
 import com.github.klee0kai.thekey.core.domain.model.feature.model.Installing
 import com.github.klee0kai.thekey.core.domain.model.feature.model.NotInstalled
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
-import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
+import com.github.klee0kai.thekey.core.ui.devkit.icons.BackMenuIcon
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
+import com.github.klee0kai.thekey.core.utils.views.linkToParent
 import com.github.klee0kai.thekey.core.utils.views.minInsets
+import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -73,14 +71,11 @@ fun PluginScreen(
         ) = createRefs()
 
         Text(
+            text = stringResource(id = dest.feature.titleRes),
             modifier = Modifier
                 .constrainAs(descField) {
                     width = Dimension.fillToConstraints
-                    linkTo(
-                        start = parent.start,
-                        end = parent.end,
-                        top = parent.top,
-                        bottom = parent.bottom,
+                    linkToParent(
                         verticalBias = 0.1f,
                         topMargin = 16.dp,
                         bottomMargin = 16.dp,
@@ -88,20 +83,15 @@ fun PluginScreen(
                         endMargin = 30.dp,
                     )
                 },
-            fontWeight = FontWeight.Normal,
             textAlign = TextAlign.Center,
-            text = stringResource(id = dest.feature.titleRes)
+            style = theme.typeScheme.body,
         )
 
         TextButton(
             modifier = Modifier
                 .fillMaxWidth()
                 .constrainAs(installField) {
-                    linkTo(
-                        start = parent.start,
-                        end = parent.end,
-                        top = parent.top,
-                        bottom = parent.bottom,
+                    linkToParent(
                         verticalBias = 1f,
                         horizontalBias = 1f,
                     )
@@ -113,7 +103,7 @@ fun PluginScreen(
                 }
             },
             colors = when (featureStatus) {
-                InstallError, Installed, is Installing -> LocalColorScheme.current.grayTextButtonColors
+                InstallError, Installed, is Installing -> theme.colorScheme.grayTextButtonColors
                 InstallError, NotInstalled -> ButtonDefaults.textButtonColors()
             }
         ) {
@@ -139,29 +129,23 @@ fun PluginScreen(
         Text(
             modifier = Modifier
                 .constrainAs(statusField) {
-                    linkTo(
-                        start = parent.start,
-                        end = parent.end,
-                        top = parent.top,
-                        bottom = parent.bottom,
+                    linkToParent(
                         verticalBias = 0.8f,
                     )
                 },
-            text = "status $featureStatus"
+            text = "status $featureStatus",
+            style = theme.typeScheme.header,
         )
     }
 
     AppBarStates(
         navigationIcon = {
-            IconButton(onClick = { router.back() }) {
-                Icon(Icons.AutoMirrored.Default.ArrowBack, contentDescription = null)
-            }
-        },
-        titleContent = {
-            Text(
-                text = stringResource(id = dest.feature.titleRes)
+            IconButton(
+                onClick = rememberClickDebounced { router.back() },
+                content = { BackMenuIcon() },
             )
         },
+        titleContent = { Text(text = stringResource(id = dest.feature.titleRes)) },
     )
 }
 

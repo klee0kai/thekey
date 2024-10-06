@@ -61,13 +61,16 @@ import com.github.klee0kai.thekey.core.utils.views.collectAsStateFaded
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.horizontal
 import com.github.klee0kai.thekey.core.utils.views.ifProduction
+import com.github.klee0kai.thekey.core.utils.views.rememberClickArg
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.core.utils.views.rememberTargetFaded
 import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
-fun ChangeStoragePasswordScreen(path: String) = Screen {
+fun ChangeStoragePasswordScreen(
+    path: String,
+) = Screen {
     val router by LocalRouter.currentRef
     val view = LocalView.current
     val theme = LocalTheme.current
@@ -110,7 +113,7 @@ fun ChangeStoragePasswordScreen(path: String) = Screen {
                     .ifProduction { animateItemPlacement() },
                 value = state.currentPassw,
                 visualTransformation = PasswordVisualTransformation(),
-                onValueChange = { presenter?.input { copy(currentPassw = it) } },
+                onValueChange = rememberClickArg { presenter?.input { copy(currentPassw = it) } },
                 label = { Text(stringResource(R.string.current_password)) }
             )
 
@@ -122,7 +125,7 @@ fun ChangeStoragePasswordScreen(path: String) = Screen {
                     .ifProduction { animateItemPlacement() },
                 value = state.newPassw,
                 visualTransformation = PasswordVisualTransformation(),
-                onValueChange = { presenter?.input { copy(newPassw = it) } },
+                onValueChange = rememberClickArg { presenter?.input { copy(newPassw = it) } },
                 label = { Text(stringResource(R.string.new_password)) }
             )
 
@@ -155,7 +158,7 @@ fun ChangeStoragePasswordScreen(path: String) = Screen {
                         null -> Unit
                     }
                 },
-                onValueChange = { presenter?.input { copy(newPasswConfirm = it) } },
+                onValueChange = rememberClickArg { presenter?.input { copy(newPasswConfirm = it) } },
                 label = { Text(stringResource(R.string.confirm_password)) }
             )
 
@@ -215,7 +218,7 @@ fun ChangeStoragePasswordScreen(path: String) = Screen {
                     .padding(horizontal = safeContentPaddings.horizontal(minValue = 16.dp))
                     .fillMaxWidth()
                     .alpha(isSaveAvailable.alpha),
-                onClick = { presenter?.save(router) }
+                onClick = rememberClickDebounced { presenter?.save(router) }
             ) {
                 Text(
                     text = stringResource(R.string.save),

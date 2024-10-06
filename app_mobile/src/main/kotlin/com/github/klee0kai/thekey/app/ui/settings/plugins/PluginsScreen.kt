@@ -31,12 +31,15 @@ import com.github.klee0kai.thekey.core.domain.model.feature.model.DynamicFeature
 import com.github.klee0kai.thekey.core.domain.model.feature.model.InstallDynamicFeature
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
+import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.core.ui.devkit.components.settings.Preference
 import com.github.klee0kai.thekey.core.ui.devkit.components.settings.RightArrowIcon
+import com.github.klee0kai.thekey.core.ui.devkit.icons.BackMenuIcon
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
+import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.core.utils.views.truncate
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
@@ -47,6 +50,7 @@ import kotlinx.coroutines.launch
 fun PluginsScreen() {
     val scope = rememberCoroutineScope()
     val router = LocalRouter.current
+    val theme = LocalTheme.current
     val presenter by rememberOnScreenRef { DI.pluginsPresenter() }
     val features by presenter!!.features.collectAsState(key = Unit, initial = emptyList())
 
@@ -62,7 +66,7 @@ fun PluginsScreen() {
             item {
                 Preference(
                     text = stringResource(id = feature.feature.titleRes),
-                    onClick = { router.navigate(PluginDestination(feature = feature.feature)) },
+                    onClick = rememberClickDebounced { router.navigate(PluginDestination(feature = feature.feature)) },
                     icon = { RightArrowIcon() },
                 )
             }
@@ -72,21 +76,12 @@ fun PluginsScreen() {
 
     AppBarStates(
         navigationIcon = {
-            IconButton(onClick = { scope.launch { router.back() } }) {
-                Icon(
-                    Icons.AutoMirrored.Default.ArrowBack,
-                    contentDescription = null,
-                )
-            }
-        },
-        titleContent = {
-            Text(
-                modifier = Modifier,
-                style = MaterialTheme.typography.labelLarge,
-                fontWeight = FontWeight.Bold,
-                text = stringResource(id = R.string.plugins)
+            IconButton(
+                onClick = rememberClickDebounced { router.back() },
+                content = { BackMenuIcon() }
             )
-        }
+        },
+        titleContent = { Text(text = stringResource(id = R.string.plugins)) }
     )
 }
 

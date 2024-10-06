@@ -122,7 +122,7 @@ fun rememberTickerOf(trigger: () -> Boolean): State<Int> {
 @Composable
 fun Modifier.skeleton(
     isSkeleton: Boolean = true,
-    shape: RoundedCornerShape = RoundedCornerShape(4.dp),
+    shape: RoundedCornerShape = RoundedCornerShape(16.dp),
     color: Color = LocalTheme.current.colorScheme.skeletonColor,
 ): Modifier {
     val shimmer = rememberShimmer(shimmerBounds = ShimmerBounds.Window)

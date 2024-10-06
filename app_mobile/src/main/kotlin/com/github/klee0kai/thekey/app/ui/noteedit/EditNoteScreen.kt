@@ -56,7 +56,6 @@ import com.github.klee0kai.thekey.app.ui.noteedit.presenter.EditNotePresenterDum
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.NoteIdentifier
 import com.github.klee0kai.thekey.core.domain.model.OtpMethod
-import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.Screen
@@ -83,6 +82,7 @@ import com.github.klee0kai.thekey.core.utils.views.crossFadeAlpha
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.horizontal
 import com.github.klee0kai.thekey.core.utils.views.isIme
+import com.github.klee0kai.thekey.core.utils.views.linkToParent
 import com.github.klee0kai.thekey.core.utils.views.rememberClickArg
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
@@ -173,11 +173,7 @@ fun EditNoteScreen(
             modifier = Modifier
                 .constrainAs(siteTextField) {
                     width = Dimension.fillToConstraints
-                    linkTo(
-                        start = parent.start,
-                        top = parent.top,
-                        end = parent.end,
-                        bottom = parent.bottom,
+                    linkToParent(
                         verticalBias = 0f,
                         topMargin = 8.dp,
                     )
@@ -199,11 +195,8 @@ fun EditNoteScreen(
             modifier = Modifier
                 .constrainAs(loginTextField) {
                     width = Dimension.fillToConstraints
-                    linkTo(
+                    linkToParent(
                         top = siteTextField.bottom,
-                        start = parent.start,
-                        end = parent.end,
-                        bottom = parent.bottom,
                         verticalBias = 0f,
                         topMargin = 8.dp,
                     )
@@ -226,11 +219,8 @@ fun EditNoteScreen(
                 .alpha(page.alpha)
                 .constrainAs(passwTextField) {
                     width = Dimension.fillToConstraints
-                    linkTo(
+                    linkToParent(
                         top = loginTextField.bottom,
-                        start = parent.start,
-                        end = parent.end,
-                        bottom = parent.bottom,
                         verticalBias = 0f,
                         topMargin = 8.dp,
                     )
@@ -262,11 +252,8 @@ fun EditNoteScreen(
                 modifier = Modifier
                     .then(skeletonModifier)
                     .constrainAs(passwChangeDateField) {
-                        linkTo(
+                        linkToParent(
                             top = passwTextField.bottom,
-                            start = parent.start,
-                            end = parent.end,
-                            bottom = parent.bottom,
                             horizontalBias = 1f,
                             verticalBias = 0f,
                             topMargin = 8.dp,
@@ -283,14 +270,11 @@ fun EditNoteScreen(
                     .alpha(page.alpha)
                     .constrainAs(descriptionTextField) {
                         width = Dimension.fillToConstraints
-                        linkTo(
+                        linkToParent(
                             top = when {
                                 state.changeTime.isNotBlank() -> passwChangeDateField.bottom
                                 else -> passwTextField.bottom
                             },
-                            start = parent.start,
-                            end = parent.end,
-                            bottom = parent.bottom,
                             verticalBias = 0f,
                             topMargin = 8.dp,
                         )
@@ -308,11 +292,9 @@ fun EditNoteScreen(
                     .alpha(page.alpha)
                     .constrainAs(otpTypeField) {
                         width = Dimension.fillToConstraints
-                        linkTo(
+                        linkToParent(
                             top = passwTextField.bottom,
-                            start = parent.start,
                             end = otpAlgoField.start,
-                            bottom = parent.bottom,
                             verticalBias = 0f,
                             topMargin = 8.dp,
                             endMargin = 8.dp,
@@ -339,11 +321,9 @@ fun EditNoteScreen(
                     .alpha(page.alpha)
                     .constrainAs(otpAlgoField) {
                         width = Dimension.fillToConstraints
-                        linkTo(
+                        linkToParent(
                             top = passwTextField.bottom,
                             start = otpTypeField.end,
-                            end = parent.end,
-                            bottom = parent.bottom,
                             verticalBias = 0f,
                             topMargin = 8.dp,
                             startMargin = 8.dp,
@@ -367,11 +347,9 @@ fun EditNoteScreen(
                     .alpha(page.alpha)
                     .constrainAs(otpPeriodField) {
                         width = Dimension.fillToConstraints
-                        linkTo(
+                        linkToParent(
                             top = otpTypeField.bottom,
-                            start = parent.start,
                             end = otpDigitsField.start,
-                            bottom = parent.bottom,
                             verticalBias = 0f,
                             topMargin = 8.dp,
                             endMargin = 8.dp,
@@ -410,11 +388,9 @@ fun EditNoteScreen(
                     .alpha(page.alpha)
                     .constrainAs(otpDigitsField) {
                         width = Dimension.fillToConstraints
-                        linkTo(
+                        linkToParent(
                             top = otpTypeField.bottom,
                             start = otpPeriodField.end,
-                            end = parent.end,
-                            bottom = parent.bottom,
                             verticalBias = 0f,
                             topMargin = 8.dp,
                             startMargin = 8.dp,
@@ -442,14 +418,11 @@ fun EditNoteScreen(
                 .alpha(page.alpha)
                 .fillMaxWidth(0.5f)
                 .constrainAs(colorGroupField) {
-                    linkTo(
+                    linkToParent(
                         top = when (page.current) {
                             Account -> descriptionTextField.bottom
                             Otp -> otpPeriodField.bottom
                         },
-                        start = parent.start,
-                        end = parent.end,
-                        bottom = parent.bottom,
                         verticalBias = 0f,
                         horizontalBias = 0f,
                         topMargin = 8.dp,
@@ -501,7 +474,7 @@ fun EditNoteScreen(
                 modifier = Modifier
                     .alpha(page.alpha)
                     .fillMaxWidth(),
-                colors = LocalColorScheme.current.grayTextButtonColors,
+                colors = theme.colorScheme.grayTextButtonColors,
                 onClick = rememberClickDebounced(debounce = 100.milliseconds) {
                     if (page.current == Account) {
                         presenter?.generate(router)
@@ -510,9 +483,15 @@ fun EditNoteScreen(
                     }
                 }
             ) {
-                val textRes =
-                    if (page.current == Account) R.string.passw_generate else R.string.qr_code_scan
-                Text(stringResource(textRes))
+                val textRes = if (page.current == Account) {
+                    R.string.passw_generate
+                } else {
+                    R.string.qr_code_scan
+                }
+                Text(
+                    text = stringResource(textRes),
+                    style = theme.typeScheme.buttonText,
+                )
             }
         }
 
@@ -534,9 +513,10 @@ fun EditNoteScreen(
     AppBarStates(
         isVisible = scrollState.value <= 30.dp.toPx(),
         navigationIcon = {
-            IconButton(onClick = rememberClickDebounced { router?.back() }) {
-                BackMenuIcon()
-            }
+            IconButton(
+                onClick = rememberClickDebounced { router?.back() },
+                content = { BackMenuIcon() }
+            )
         },
         titleContent = { Text(text = stringResource(id = if (state.isEditMode) R.string.edit else R.string.create)) },
         actions = {

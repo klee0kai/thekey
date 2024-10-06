@@ -51,7 +51,7 @@ fun FSAutoSearchSettingsWidget(
         statusColor = when (enabled) {
             true -> theme.colorScheme.greenColor
             false -> theme.colorScheme.redColor
-            null -> theme.colorScheme.hintTextColor
+            null -> theme.colorScheme.textColors.hintTextColor
         },
         hint = when (enabled) {
             true -> stringResource(id = R.string.storage_auto_search_enabled_hint)
