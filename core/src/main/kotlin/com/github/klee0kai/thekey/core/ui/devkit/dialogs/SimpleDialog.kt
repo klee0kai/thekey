@@ -194,8 +194,8 @@ fun SimpleDialog(
                 .background(
                     Brush.verticalGradient(
                         0f to Color.Transparent,
-                        0.5f to colorScheme.androidColorScheme.surface,
-                        1f to colorScheme.androidColorScheme.surface,
+                        0.5f to colorScheme.cardsBackground,
+                        1f to colorScheme.cardsBackground,
                     )
                 )
                 .constrainAs(shadowField) {

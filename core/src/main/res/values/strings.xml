@@ -34,7 +34,6 @@
 
     <string name="login">Login</string>
     <string name="password">Password</string>
-    <string name="app_login_description">Create and remember your passport for your key masster storage</string>
     <string name="storages">Storages</string>
     <string name="approve_permissions">Approve permissions</string>
     <string name="groups">groups</string>
@@ -212,4 +211,20 @@
     <string name="feature_not_available">Feature not available</string>
     <string name="install_commercial_version">Feature available in commercial version. Download and install this application from play market.</string>
     <string name="master_passw">Master password</string>
+    <string name="enable_analyrics_offer">Manage analytics</string>
+
+
+    <string name="enable_password_autofill_offer">Turn on autofill passwords</string>
+    <string name="enable_autosearch_offer">Search storages on your phone</string>
+    <string name="enable_backup_offer">Backup your storages</string>
+    <string name="how_it_work_offer">How it work</string>
+    <string name="promo_offer">More options with subscription</string>
+    <string name="rate_app_offer">Like the app? Leave feedback</string>
+    <string name="enable_app_analytics">Enable analytics</string>
+    <string name="enable_app_analytics_message">Confirm this application to collect annalytics</string>
+    <string name="confirm">Confirm</string>
+    <string name="enable_password_autofill">Enable password autocomplete</string>
+    <string name="enable_password_autofill_message">Password autocomplete</string>
+    <string name="how_it_work">How it work</string>
+    <string name="how_it_work_message">Welcome to the key application</string>
 </resources>

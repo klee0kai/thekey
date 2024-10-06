@@ -38,13 +38,13 @@ import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.ui.login.components.SelectedStorageElement
+import com.github.klee0kai.thekey.app.ui.login.model.AppOffer
 import com.github.klee0kai.thekey.app.ui.login.presenter.LoginPresenter
 import com.github.klee0kai.thekey.app.ui.login.presenter.isLoginNotProcessingFlow
 import com.github.klee0kai.thekey.app.ui.navigation.model.LoginDestination
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
-import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
@@ -53,7 +53,6 @@ import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextField
 import com.github.klee0kai.thekey.core.ui.devkit.icons.BackMenuIcon
 import com.github.klee0kai.thekey.core.ui.devkit.preview.PreviewDevices
-import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
 import com.github.klee0kai.thekey.core.utils.views.animateTargetFaded
@@ -66,8 +65,6 @@ import com.github.klee0kai.thekey.core.utils.views.linkToParent
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebouncedCons
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
-import com.github.klee0kai.thekey.core.utils.views.visibleOnTargetAlpha
-import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.jetbrains.annotations.VisibleForTesting
 import com.github.klee0kai.thekey.core.R as CoreR
@@ -85,6 +82,7 @@ fun LoginScreen(
         .collectAsState(key = Unit, initial = ColoredStorage())
     val isLoginNotProcessing by presenter!!.isLoginNotProcessingFlow
         .collectAsStateFaded(key = Unit, initial = true)
+    val appOffer by presenter!!.appOffer.collectAsStateFaded(key = Unit, initial = null)
 
     var passwordInputText by remember { mutableStateOf(dest.prefilledPassw ?: "") }
     val imeVisible by animateTargetFaded(WindowInsets.isIme)
@@ -156,20 +154,30 @@ fun LoginScreen(
                 },
         )
 
-        if (!imeVisible.current) {
+        if (!imeVisible.current && appOffer.current != null) {
             TextButton(
                 modifier = Modifier
                     .alpha(imeVisible.alpha)
+                    .alpha(appOffer.alpha)
                     .constrainAs(offerBtnField) {
                         linkToParent(
                             top = passwTextField.bottom,
                         )
                     },
                 colors = LocalColorScheme.current.grayTextButtonColors,
-                onClick = rememberClickDebounced { }
+                onClick = rememberClickDebounced { presenter?.appOfferClicked(router) }
             ) {
                 Text(
-                    text = stringResource(id = R.string.app_login_description),
+                    text = when (appOffer.current) {
+                        AppOffer.EnableAnalytics -> stringResource(id = R.string.enable_analyrics_offer)
+                        AppOffer.EnableAutoFill -> stringResource(id = R.string.enable_password_autofill_offer)
+                        AppOffer.EnableAutoSearch -> stringResource(id = R.string.enable_autosearch_offer)
+                        AppOffer.EnableBackup -> stringResource(id = R.string.enable_backup_offer)
+                        AppOffer.HowItWork -> stringResource(id = R.string.how_it_work_offer)
+                        is AppOffer.Promo -> stringResource(id = R.string.promo_offer)
+                        AppOffer.RateApp -> stringResource(id = R.string.rate_app_offer)
+                        null -> ""
+                    },
                     textAlign = TextAlign.Center,
                     color = theme.colorScheme.textColors.primaryTextColor,
                 )
@@ -242,6 +250,8 @@ fun LoginScreenPreview() {
                             name = "editModeStorage"
                         )
                     )
+
+                    override val appOffer = MutableStateFlow(AppOffer.HowItWork)
                 }
             }
         }
