@@ -26,7 +26,6 @@ import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.AndroidHelpersModule
 import com.github.klee0kai.thekey.app.perm.PermissionsHelperDummy
-import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.navigation.model.TextProvider
@@ -103,7 +102,7 @@ fun ScanQRCodeScreen() {
                         )
                         .fillMaxWidth()
                         .align(Alignment.BottomCenter),
-                    colors = LocalColorScheme.current.grayTextButtonColors,
+                    colors = theme.colorScheme.grayTextButtonColors,
                     onClick = {
                         scope.launch {
                             with(permissionHelper) {
@@ -133,7 +132,8 @@ fun ScanQRCodeScreen() {
                         )
                         .fillMaxWidth()
                         .align(Alignment.BottomCenter),
-                    text = stringResource(id = R.string.camera_error)
+                    text = stringResource(id = R.string.camera_error),
+                    style = theme.typeScheme.header,
                 )
             }
 
@@ -146,7 +146,8 @@ fun ScanQRCodeScreen() {
                         )
                         .fillMaxWidth()
                         .align(Alignment.BottomCenter),
-                    text = stringResource(id = R.string.camera_starting)
+                    text = stringResource(id = R.string.camera_starting),
+                    style = theme.typeScheme.header,
                 )
             }
         }
