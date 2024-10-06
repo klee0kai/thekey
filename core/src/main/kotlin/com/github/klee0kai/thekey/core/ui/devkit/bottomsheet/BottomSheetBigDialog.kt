@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.wear.compose.material.Text
+import com.github.klee0kai.thekey.core.di.CoreDI
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.SimpleScaffoldConst.dragHandleSize
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
@@ -53,6 +54,7 @@ import com.github.klee0kai.thekey.core.utils.views.createDialogBottomAnchor
 import com.github.klee0kai.thekey.core.utils.views.ratioBetween
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import org.jetbrains.annotations.VisibleForTesting
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -69,6 +71,7 @@ fun BottomSheetBigDialog(
     sheetContent: @Composable () -> Unit = {},
 ) {
     val view = LocalView.current
+    val fastScope = CoreDI.androidFastUiScope()
     val viewHeight = view.height.pxToDp()
     val theme = LocalTheme.current
     val colorScheme = theme.colorScheme.androidColorScheme
@@ -102,8 +105,9 @@ fun BottomSheetBigDialog(
     var showUpAlpha by remember { mutableFloatStateOf(0f) }
     LaunchedEffect(Unit) {
         if (initValue == SheetValue.Hidden) {
-            // TODO research ModalBottomSheet
-            scaffoldState.bottomSheetState.hide()
+            withContext(fastScope.coroutineContext) {
+                scaffoldState.bottomSheetState.hide()
+            }
             showUpAlpha = 1f
             scaffoldState.bottomSheetState.partialExpand()
         } else {
@@ -149,7 +153,7 @@ fun BottomSheetBigDialog(
             sheetShadowElevation = 0.dp,
             sheetPeekHeight = sheetPeekHeight,
             sheetMaxWidth = view.width.pxToDp(),
-            sheetContainerColor = colorScheme.surface.copy(alpha = showUpAlpha),
+            sheetContainerColor = theme.colorScheme.cardsBackground.copy(alpha = showUpAlpha),
             sheetContentColor = colorScheme.onSurface.copy(alpha = showUpAlpha),
             sheetContent = {
                 Box(

@@ -57,6 +57,7 @@ import com.github.klee0kai.thekey.core.utils.views.collectAsStateFaded
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.horizontal
 import com.github.klee0kai.thekey.core.utils.views.isIme
+import com.github.klee0kai.thekey.core.utils.views.linkToParent
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebouncedCons
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
@@ -146,13 +147,7 @@ fun LoginScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .constrainAs(passwTextField) {
-                    linkTo(
-                        start = parent.start,
-                        top = parent.top,
-                        end = parent.end,
-                        bottom = parent.bottom,
-                        verticalBias = 0.53f,
-                    )
+                    linkToParent(verticalBias = 0.51f)
                 },
             enabled = isLoginNotProcessing.current,
             visualTransformation = PasswordVisualTransformation(),
@@ -166,7 +161,7 @@ fun LoginScreen(
 
         Text(
             text = currentStorageState.name,
-            style = theme.typeScheme.typography.labelSmall,
+            style = theme.typeScheme.bodySmall,
             modifier = Modifier
                 .constrainAs(storageName) {
                     linkTo(
@@ -180,7 +175,7 @@ fun LoginScreen(
 
         Text(
             text = shortStoragePath,
-            style = theme.typeScheme.typography.labelSmall,
+            style = theme.typeScheme.bodySmall,
             modifier = Modifier
                 .constrainAs(storagePath) {
                     linkTo(

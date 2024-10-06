@@ -59,7 +59,7 @@ fun NavigationBoardContainer(
         modifier = modifier
             .width(300.dp)
             .fillMaxHeight()
-            .background(colorScheme.bodySurfaceColor),
+            .background(colorScheme.bodyBackgroundColor),
     ) {
         val (
             headerField,
@@ -71,7 +71,7 @@ fun NavigationBoardContainer(
                 modifier = Modifier
                     .fillMaxWidth()
                     .defaultMinSize(minHeight = 150.dp)
-                    .background(colorScheme.headerSurfaceColor)
+                    .background(colorScheme.headerBackgroundColor)
                     .padding(top = safeDrawingPaddings.calculateTopPadding())
                     .padding(start = safeDrawingPaddings.horizontal(minValue = 16.dp))
                     .constrainAs(headerField) { },
@@ -82,7 +82,7 @@ fun NavigationBoardContainer(
                 modifier = Modifier
                     .fillMaxWidth()
                     .defaultMinSize(minHeight = 150.dp)
-                    .background(colorScheme.headerSurfaceColor)
+                    .background(colorScheme.headerBackgroundColor)
                     .padding(top = safeDrawingPaddings.calculateTopPadding())
                     .padding(start = safeDrawingPaddings.horizontal(minValue = 16.dp))
                     .constrainAs(headerField) { },

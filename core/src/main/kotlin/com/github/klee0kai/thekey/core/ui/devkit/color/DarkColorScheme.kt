@@ -6,19 +6,34 @@ import androidx.compose.ui.graphics.Color
 import com.github.klee0kai.thekey.core.ui.devkit.color.DarkColorCollection.background
 import com.github.klee0kai.thekey.core.ui.devkit.color.DarkColorCollection.blackColor
 import com.github.klee0kai.thekey.core.ui.devkit.color.DarkColorCollection.coral
+import com.github.klee0kai.thekey.core.ui.devkit.color.DarkColorCollection.grayColor
 import com.github.klee0kai.thekey.core.ui.devkit.color.DarkColorCollection.green
 import com.github.klee0kai.thekey.core.ui.devkit.color.DarkColorCollection.lightBackground
 import com.github.klee0kai.thekey.core.ui.devkit.color.DarkColorCollection.noColor
 import com.github.klee0kai.thekey.core.ui.devkit.color.DarkColorCollection.orange
 import com.github.klee0kai.thekey.core.ui.devkit.color.DarkColorCollection.pink
+import com.github.klee0kai.thekey.core.ui.devkit.color.DarkColorCollection.surfaceColor
 import com.github.klee0kai.thekey.core.ui.devkit.color.DarkColorCollection.turquoise
 import com.github.klee0kai.thekey.core.ui.devkit.color.DarkColorCollection.violet
 import com.github.klee0kai.thekey.core.ui.devkit.color.DarkColorCollection.whiteColor
 import com.github.klee0kai.thekey.core.ui.devkit.color.DarkColorCollection.yellow
 
 internal object DarkColorCollection {
-    val lightBackground = Color(0xFF242738)
+    /**
+     * window background
+     */
     val background = Color(0xFF1B1D2D)
+
+    /**
+     * bottom sheet / cards background
+     */
+    val lightBackground = Color(0xFF242738)
+
+    /**
+     * NavBoard headed
+     * input fields, skeletons
+     */
+    val surfaceColor = Color(0xFF3A3D52)
 
     val blackColor = Color.Black
     val whiteColor = Color.White
@@ -38,14 +53,15 @@ internal object DarkColorCollection {
 fun darkCommonColorScheme() = CommonColorScheme(
     isDark = true,
     windowBackgroundColor = background,
-    skeletonColor = Color(0xFF3A3D52),
+    cardsBackground = lightBackground,
+    skeletonColor = surfaceColor,
     navigationBoard = NavigationBoardColors(
-        headerSurfaceColor = Color(0x3F1C1D27),
-        bodySurfaceColor = Color(0xFF1C1D27),
+        headerBackgroundColor = surfaceColor,
+        bodyBackgroundColor = Color(0xFF1C1D27),
     ),
     popupMenu = PopupMenuColors(
-        surfaceColor = Color(0xFF3A3D52),
-        contentColor = Color(0xffB7B7B7),
+        surfaceColor = surfaceColor,
+        contentColor = grayColor,
         shadowColor = Color.Black.copy(alpha = 0.2f)
     ),
     whiteTextButtonColors = ButtonColors(
@@ -55,12 +71,12 @@ fun darkCommonColorScheme() = CommonColorScheme(
         disabledContentColor = Color.Transparent,
     ),
     grayTextButtonColors = ButtonColors(
-        contentColor = Color(0xffB7B7B7),
+        contentColor = grayColor,
         containerColor = Color.Transparent,
-        disabledContainerColor = Color(0xffB7B7B7),
+        disabledContainerColor = grayColor,
         disabledContentColor = Color.Transparent,
     ),
-    hintTextColor = Color(0xFFA9A9A9),
+    hintTextColor = grayColor,
     surfaceSchemas = SurfaceSchemas(
         noColor = noColor,
         violet = violet,
@@ -70,8 +86,8 @@ fun darkCommonColorScheme() = CommonColorScheme(
         coral = coral,
     ),
     textColors = TextColors(
-        bodyTextColor = Color(0xFFFFFFFF),
-        hintTextColor = Color(0xFFB7B7B7),
+        bodyTextColor = whiteColor,
+        hintTextColor = grayColor,
         primaryTextColor = turquoise.surfaceColor,
         secondaryTextColor = orange.surfaceColor,
         errorTextColor = coral.surfaceColor,
@@ -98,9 +114,9 @@ fun darkCommonColorScheme() = CommonColorScheme(
         onBackground = whiteColor,
         outline = whiteColor,
 
-        surface = lightBackground,
+        surface = surfaceColor,
         onSurface = whiteColor,
-        surfaceVariant = lightBackground,
+        surfaceVariant = surfaceColor,
         onSurfaceVariant = whiteColor,
         inverseSurface = whiteColor,
         inverseOnSurface = blackColor,

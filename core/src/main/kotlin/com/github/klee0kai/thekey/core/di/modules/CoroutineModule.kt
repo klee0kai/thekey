@@ -1,8 +1,10 @@
 package com.github.klee0kai.thekey.core.di.modules
 
+import androidx.compose.ui.MotionDurationScale
 import androidx.compose.ui.platform.AndroidUiDispatcher
 import com.github.klee0kai.stone.annotations.module.Module
 import com.github.klee0kai.stone.annotations.module.Provide
+import com.github.klee0kai.thekey.core.di.AndrFastUiDispatcher
 import com.github.klee0kai.thekey.core.di.AndrUiDispatcher
 import com.github.klee0kai.thekey.core.di.DefaultDispatcher
 import com.github.klee0kai.thekey.core.di.IODispatcher
@@ -51,6 +53,13 @@ interface CoroutineModule {
 
     @AndrUiDispatcher
     fun androidUiScope(): SafeContextScope = SafeContextScope(AndroidUiDispatcher.Main)
+
+    @AndrFastUiDispatcher
+    fun androidFastUiScope(): SafeContextScope = SafeContextScope(
+        AndroidUiDispatcher.Main + object : MotionDurationScale {
+            override val scaleFactor: Float = 0.1f
+        }
+    )
 
     @IODispatcher
     fun ioThreadScope(

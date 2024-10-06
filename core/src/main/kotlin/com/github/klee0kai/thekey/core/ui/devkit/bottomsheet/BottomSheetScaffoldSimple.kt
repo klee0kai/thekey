@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
+import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.bottomsheet.SimpleScaffoldConst.dragHandleSize
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
@@ -43,10 +44,6 @@ import com.github.klee0kai.thekey.core.utils.views.accelerateDecelerate
 import com.github.klee0kai.thekey.core.utils.views.ratioBetween
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 import org.jetbrains.annotations.VisibleForTesting
-
-object SimpleScaffoldConst {
-    val dragHandleSize = 48.dp
-}
 
 @Composable
 fun SimpleBottomSheetScaffold(
@@ -59,6 +56,7 @@ fun SimpleBottomSheetScaffold(
     topContent: @Composable () -> Unit = {},
     sheetContent: @Composable () -> Unit = {},
 ) {
+    val theme = LocalTheme.current
     val view = LocalView.current
     val colorScheme = LocalColorScheme.current.androidColorScheme
     val dragProgress = remember { mutableFloatStateOf(0f) }
@@ -130,7 +128,7 @@ fun SimpleBottomSheetScaffold(
                     )
                 }
             },
-            sheetContainerColor = colorScheme.surface,
+            sheetContainerColor = theme.colorScheme.cardsBackground,
             sheetContentColor = colorScheme.onSurface,
             sheetTonalElevation = 0.dp,
             sheetShadowElevation = 0.dp,

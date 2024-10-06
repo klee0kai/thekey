@@ -88,7 +88,7 @@ fun GenPasswordContent(
         ConstraintLayout(
             modifier = Modifier
                 .background(
-                    color = theme.colorScheme.androidColorScheme.surface,
+                    color = theme.colorScheme.cardsBackground,
                     shape = RoundedCornerShape(12.dp)
                 )
                 .padding(vertical = 8.dp)

@@ -65,8 +65,8 @@ fun SimpleBoard(
                 .background(
                     Brush.linearGradient(
                         0f to Color.Transparent,
-                        0.5f to colorScheme.bodySurfaceColor,
-                        1f to colorScheme.bodySurfaceColor,
+                        0.5f to colorScheme.bodyBackgroundColor,
+                        1f to colorScheme.bodyBackgroundColor,
                         start = Offset.Zero,
                         end = Offset(0f, Float.POSITIVE_INFINITY)
                     )
