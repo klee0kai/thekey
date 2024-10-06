@@ -36,7 +36,7 @@ fun StatusPreference(
     text: String = "",
     hint: String = "",
     status: String = "",
-    statusColor: Color = LocalTheme.current.colorScheme.hintTextColor,
+    statusColor: Color = LocalTheme.current.colorScheme.textColors.hintTextColor,
     onClick: () -> Unit = {},
 ) {
     val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()

@@ -19,8 +19,6 @@ data class CommonColorScheme(
     val whiteTextButtonColors: ButtonColors,
     val grayTextButtonColors: ButtonColors,
     val textColors: TextColors,
-    @Deprecated("use text colors")
-    val hintTextColor: Color,
     val greenColor: Color,
     val yellowColor: Color,
     val redColor: Color,

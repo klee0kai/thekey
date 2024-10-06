@@ -39,7 +39,6 @@ internal object DarkColorCollection {
     val whiteColor = Color.White
     val grayColor = Color(0xFFB7B7B7)
 
-
     val noColor = SurfaceScheme(grayColor, whiteColor)
     val violet = SurfaceScheme(Color(0xFF837AE8), whiteColor)
     val green = SurfaceScheme(Color(0xFF36C817), whiteColor)
@@ -76,7 +75,6 @@ fun darkCommonColorScheme() = CommonColorScheme(
         disabledContainerColor = grayColor,
         disabledContentColor = Color.Transparent,
     ),
-    hintTextColor = grayColor,
     surfaceSchemas = SurfaceSchemas(
         noColor = noColor,
         violet = violet,
