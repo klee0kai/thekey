@@ -19,7 +19,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
@@ -81,6 +83,8 @@ fun PopupMenu(
     content: @Composable BoxScope.() -> Unit = {},
 ) {
     val visibleAlpha by animateAlphaAsState(visible)
+    val theme = LocalTheme.current
+
     if (visibleAlpha > 0f) {
         val overlayProvider = LocalOverlayProvider.current
         val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
@@ -257,7 +261,11 @@ fun PopupMenu(
                     .background(shadowColor.copy(alpha = shadowColor.alpha * fullAnimatedAlpha))
                     .alpha(fullAnimatedAlpha),
             ) {
-                content()
+                CompositionLocalProvider(
+                    LocalTextStyle provides theme.typeScheme.header,
+                ) {
+                    content()
+                }
             }
 
             Box(
