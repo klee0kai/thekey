@@ -11,14 +11,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -32,24 +30,24 @@ import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkContentPreview
-import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.animateAlphaAsState
+import com.github.klee0kai.thekey.core.utils.views.animateTargetFaded
 import com.github.klee0kai.thekey.core.utils.views.horizontal
+import com.github.klee0kai.thekey.core.utils.views.linkToParent
 import com.github.klee0kai.thekey.core.utils.views.skeleton
-import com.github.klee0kai.thekey.core.utils.views.visibleOnTargetAlpha
 import com.thedeanda.lorem.LoremIpsum
 import org.jetbrains.annotations.VisibleForTesting
 
-
 @Composable
-fun ColoredNoteItem(
+fun ColoredNoteElement(
     modifier: Modifier = Modifier,
     note: ColoredNote = ColoredNote(),
     icon: (@Composable () -> Unit)? = null,
 ) {
     val theme = LocalTheme.current
     val colorScheme = LocalColorScheme.current
-    val animatedNote by animateTargetCrossFaded(note)
-    val skeleton by animateTargetCrossFaded(!note.isLoaded)
+    val animatedNote by animateTargetFaded(note)
+    val skeletonAlpha by animateAlphaAsState(!note.isLoaded)
     val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
 
     ConstraintLayout(
@@ -63,19 +61,15 @@ fun ColoredNoteItem(
             siteField, loginField, descriptionField, iconField,
         ) = createRefs()
 
-        if (skeleton.current) {
+        if (skeletonAlpha > 0) {
             Box(
                 modifier = Modifier
-                    .alpha(skeleton.visibleOnTargetAlpha(true))
+                    .alpha(skeletonAlpha)
                     .skeleton(true)
                     .constrainAs(skeletonField) {
                         width = Dimension.fillToConstraints
                         height = Dimension.fillToConstraints
-                        linkTo(
-                            top = parent.top,
-                            bottom = parent.bottom,
-                            start = parent.start,
-                            end = parent.end,
+                        linkToParent(
                             topMargin = 6.dp,
                             bottomMargin = 6.dp,
                             startMargin = safeContentPaddings.horizontal(minValue = 16.dp),
@@ -87,18 +81,14 @@ fun ColoredNoteItem(
 
         Box(
             modifier = Modifier
-                .alpha(skeleton.visibleOnTargetAlpha(false))
+                .alpha(1f - skeletonAlpha)
                 .size(2.dp, 24.dp)
                 .background(
                     color = colorScheme.surfaceSchemas.surfaceScheme(animatedNote.current.group.keyColor).surfaceColor,
                     shape = RoundedCornerShape(2.dp),
                 )
                 .constrainAs(colorGroupField) {
-                    linkTo(
-                        start = parent.start,
-                        top = parent.top,
-                        bottom = parent.bottom,
-                        end = parent.end,
+                    linkToParent(
                         verticalBias = 0.5f,
                         horizontalBias = 0f,
                         startMargin = safeContentPaddings.horizontal(minValue = 16.dp),
@@ -109,15 +99,12 @@ fun ColoredNoteItem(
         Text(
             text = animatedNote.current.site.takeIf { it.isNotBlank() }
                 ?: stringResource(id = R.string.no_site),
-            style = theme.typeScheme.typography.bodyMedium,
-            fontWeight = FontWeight.Medium,
+            style = theme.typeScheme.body,
             modifier = Modifier
-                .alpha(skeleton.visibleOnTargetAlpha(false))
+                .alpha(1f - skeletonAlpha)
                 .constrainAs(siteField) {
                     width = Dimension.fillToConstraints
-                    linkTo(
-                        top = parent.top,
-                        bottom = parent.bottom,
+                    linkToParent(
                         start = colorGroupField.end,
                         end = loginField.start,
                         topMargin = 6.dp,
@@ -132,16 +119,13 @@ fun ColoredNoteItem(
 
         Text(
             text = animatedNote.current.login,
-            style = theme.typeScheme.typography.bodyMedium
-                .copy(color = theme.colorScheme.androidColorScheme.primary),
-            fontWeight = FontWeight.Medium,
+            style = theme.typeScheme.body
+                .copy(color = theme.colorScheme.textColors.primaryTextColor),
             modifier = Modifier
-                .alpha(skeleton.visibleOnTargetAlpha(false))
+                .alpha(1f - skeletonAlpha)
                 .constrainAs(loginField) {
                     width = Dimension.fillToConstraints
-                    linkTo(
-                        top = parent.top,
-                        bottom = parent.bottom,
+                    linkToParent(
                         start = siteField.end,
                         end = iconField.start,
                         topMargin = 6.dp,
@@ -156,16 +140,14 @@ fun ColoredNoteItem(
 
         Text(
             text = animatedNote.current.desc,
-            color = theme.colorScheme.androidColorScheme.onSurface,
-            style = theme.typeScheme.typography.labelSmall,
-            fontWeight = FontWeight.Normal,
+            color = theme.colorScheme.textColors.bodyTextColor,
+            style = theme.typeScheme.bodySmall,
             modifier = Modifier
-                .alpha(skeleton.visibleOnTargetAlpha(false))
+                .alpha(1f - skeletonAlpha)
                 .constrainAs(descriptionField) {
                     width = Dimension.fillToConstraints
-                    linkTo(
+                    linkToParent(
                         top = siteField.bottom,
-                        bottom = parent.bottom,
                         start = colorGroupField.end,
                         end = siteField.end,
                         topMargin = 4.dp,
@@ -179,13 +161,9 @@ fun ColoredNoteItem(
 
 
         Box(modifier = Modifier
-            .alpha(skeleton.visibleOnTargetAlpha(false))
+            .alpha(1f - skeletonAlpha)
             .constrainAs(iconField) {
-                linkTo(
-                    top = parent.top,
-                    bottom = parent.bottom,
-                    start = parent.start,
-                    end = parent.end,
+                linkToParent(
                     startMargin = safeContentPaddings.horizontal(minValue = 16.dp),
                     endMargin = safeContentPaddings.horizontal(minValue = 16.dp),
                     horizontalBias = 1f,
@@ -204,7 +182,7 @@ fun ColoredNoteItem(
 @Composable
 @Preview
 fun ColoredNoteSkeleton() = DebugDarkContentPreview {
-    ColoredNoteItem(note = ColoredNote(isLoaded = false))
+    ColoredNoteElement(note = ColoredNote(isLoaded = false))
 }
 
 @OptIn(DebugOnly::class)
@@ -212,7 +190,7 @@ fun ColoredNoteSkeleton() = DebugDarkContentPreview {
 @Composable
 @Preview
 fun ColoredNoteDummy() = DebugDarkContentPreview {
-    ColoredNoteItem(
+    ColoredNoteElement(
         note = ColoredNote(
             site = LoremIpsum.getInstance().url,
             login = LoremIpsum.getInstance().getWords(1),
@@ -231,7 +209,7 @@ fun ColoredNoteDummy() = DebugDarkContentPreview {
 @Composable
 @Preview
 fun ColoredNoteDummyNoGroup() = DebugDarkContentPreview {
-    ColoredNoteItem(
+    ColoredNoteElement(
         note = ColoredNote(
             site = "some.super.site.com",
             login = "potato",
@@ -247,7 +225,7 @@ fun ColoredNoteDummyNoGroup() = DebugDarkContentPreview {
 @Composable
 @Preview
 fun ColoredNoteIcon() = DebugDarkContentPreview {
-    ColoredNoteItem(
+    ColoredNoteElement(
         note = ColoredNote(
             site = "some.super.site.com",
             login = "potato",

@@ -27,7 +27,7 @@ import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.dynamic.findstorage.di.FSDI
-import com.github.klee0kai.thekey.dynamic.findstorage.ui.storages.content.FSColoredStorageItem
+import com.github.klee0kai.thekey.dynamic.findstorage.ui.storages.content.FSColoredStorageElement
 
 
 @Composable
@@ -44,7 +44,7 @@ fun FSColoredStorageItemWidget(
         initial = emptyList()
     )
 
-    FSColoredStorageItem(
+    FSColoredStorageElement(
         modifier = modifier
             .onGlobalPositionState(position),
         storage = state.coloredStorage,

@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
-import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
@@ -73,7 +72,7 @@ import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebouncedArg
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
-import com.github.klee0kai.thekey.core.utils.views.rememberTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.rememberTargetFaded
 import kotlinx.coroutines.launch
 import org.jetbrains.annotations.VisibleForTesting
 import kotlin.time.Duration
@@ -124,7 +123,7 @@ fun StorageScreen(
             else -> false
         }
     }
-    val targetTitleId by rememberTargetCrossFaded {
+    val targetTitleId by rememberTargetFaded {
         when {
             searchState.isActive -> SearchTitleId
             isAccountTab && accountTitleVisibility -> SecondTittleId
@@ -203,8 +202,6 @@ fun StorageScreen(
                 SecondTittleId -> {
                     Text(
                         modifier = Modifier.alpha(targetTitleId.alpha),
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.Bold,
                         text = stringResource(id = R.string.accounts)
                     )
                 }

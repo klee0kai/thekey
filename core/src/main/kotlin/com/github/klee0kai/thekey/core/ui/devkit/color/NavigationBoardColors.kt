@@ -5,6 +5,6 @@ import androidx.compose.ui.graphics.Color
 
 @Stable
 data class NavigationBoardColors(
-    val headerSurfaceColor: Color,
-    val bodySurfaceColor: Color,
+    val headerBackgroundColor: Color,
+    val bodyBackgroundColor: Color,
 )

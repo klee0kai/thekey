@@ -114,7 +114,7 @@ fun SettingScreen() = Screen {
                     LoginSecureMode.LOW_SECURE -> theme.colorScheme.redColor
                     LoginSecureMode.MIDDLE_SECURE -> theme.colorScheme.yellowColor
                     LoginSecureMode.HARD_SECURE -> theme.colorScheme.greenColor
-                    null -> theme.colorScheme.hintTextColor
+                    null -> theme.colorScheme.textColors.hintTextColor
                 },
                 hint = when (state?.loginSecure) {
                     LoginSecureMode.LOW_SECURE -> stringResource(id = R.string.secure_low_hint)
@@ -158,7 +158,7 @@ fun SettingScreen() = Screen {
                     HistPeriod.VERY_LONG -> stringResource(id = R.string.hist_period_very_long)
                     null -> ""
                 },
-                statusColor = theme.colorScheme.hintTextColor,
+                statusColor = theme.colorScheme.textColors.hintTextColor,
                 hint = when (state?.histPeriod) {
                     HistPeriod.SHORT -> stringResource(id = R.string.hist_period_short_hint)
                     HistPeriod.NORMAL -> stringResource(id = R.string.hist_period_normal_hint)
@@ -196,7 +196,7 @@ fun SettingScreen() = Screen {
                     NewStorageSecureMode.LOW_SECURE -> theme.colorScheme.redColor
                     NewStorageSecureMode.MIDDLE_SECURE -> theme.colorScheme.yellowColor
                     NewStorageSecureMode.HARD_SECURE -> theme.colorScheme.greenColor
-                    null -> theme.colorScheme.hintTextColor
+                    null -> theme.colorScheme.textColors.hintTextColor
                 },
                 hint = when (state?.encryptionComplexity) {
                     NewStorageSecureMode.LOW_SECURE -> stringResource(id = R.string.encryption_low_hint)
@@ -236,7 +236,7 @@ fun SettingScreen() = Screen {
                 statusColor = when (state?.analytics) {
                     true -> theme.colorScheme.greenColor
                     false -> theme.colorScheme.redColor
-                    null -> theme.colorScheme.hintTextColor
+                    null -> theme.colorScheme.textColors.hintTextColor
                 },
                 hint = when (state?.analytics) {
                     true -> stringResource(id = R.string.analytics_enabled_hint)
@@ -282,12 +282,7 @@ fun SettingScreen() = Screen {
             IconButton(onClick = rememberClickDebounced { router.back() }) { BackMenuIcon() }
         },
         titleContent = {
-            Text(
-                modifier = Modifier,
-                style = MaterialTheme.typography.labelLarge,
-                fontWeight = FontWeight.Bold,
-                text = stringResource(id = R.string.settings)
-            )
+            Text(text = stringResource(id = R.string.settings))
         }
     )
 }

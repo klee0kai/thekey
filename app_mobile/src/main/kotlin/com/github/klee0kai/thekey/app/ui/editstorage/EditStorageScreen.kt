@@ -3,6 +3,7 @@
 package com.github.klee0kai.thekey.app.ui.editstorage
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -15,11 +16,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -42,31 +40,33 @@ import com.github.klee0kai.thekey.app.ui.editstorage.model.EditStorageState
 import com.github.klee0kai.thekey.app.ui.editstorage.presenter.EditStoragePresenter
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
-import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
+import com.github.klee0kai.thekey.core.ui.devkit.Screen
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.DeleteIconButton
 import com.github.klee0kai.thekey.core.ui.devkit.components.dropdownfields.ColorGroupDropDownField
 import com.github.klee0kai.thekey.core.ui.devkit.components.text.AppTextField
+import com.github.klee0kai.thekey.core.ui.devkit.icons.BackMenuIcon
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.possitions.pxToDp
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.horizontal
+import com.github.klee0kai.thekey.core.utils.views.ifProduction
 import com.github.klee0kai.thekey.core.utils.views.rememberClickArg
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
-import com.github.klee0kai.thekey.core.utils.views.rememberTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.rememberTargetFaded
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
 fun EditStorageScreen(
     path: String = "",
-) {
+) = Screen {
     val router by LocalRouter.currentRef
     val view = LocalView.current
     val theme = LocalTheme.current
@@ -81,8 +81,8 @@ fun EditStorageScreen(
     val scrollState = rememberScrollState()
     val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
 
-    val isSaveAvailable by rememberTargetCrossFaded { state.isSaveAvailable }
-    val isRemoveAvailable by rememberTargetCrossFaded { state.isRemoveAvailable }
+    val isSaveAvailable by rememberTargetFaded { state.isSaveAvailable }
+    val isRemoveAvailable by rememberTargetFaded { state.isRemoveAvailable }
 
     BackHandler(enabled = state.colorGroupExpanded) {
         presenter?.input { copy(colorGroupExpanded = false) }
@@ -102,6 +102,7 @@ fun EditStorageScreen(
 
         AppTextField(
             modifier = Modifier
+                .ifProduction { animateContentSize() }
                 .constrainAs(nameTextField) {
                     width = Dimension.fillToConstraints
                     linkTo(
@@ -117,13 +118,13 @@ fun EditStorageScreen(
                 },
             isSkeleton = state.isSkeleton,
             value = state.name,
-            onValueChange = { presenter?.input { copy(name = it) } },
+            onValueChange = rememberClickArg { presenter?.input { copy(name = it) } },
             label = { Text(stringResource(R.string.storage_name)) }
         )
 
-
         AppTextField(
             modifier = Modifier
+                .ifProduction { animateContentSize() }
                 .constrainAs(descTextField) {
                     width = Dimension.fillToConstraints
                     linkTo(
@@ -137,12 +138,13 @@ fun EditStorageScreen(
                 },
             isSkeleton = state.isSkeleton,
             value = state.desc,
-            onValueChange = { presenter?.input { copy(desc = it) } },
+            onValueChange = rememberClickArg { presenter?.input { copy(desc = it) } },
             label = { Text(stringResource(R.string.storage_description)) }
         )
 
         ColorGroupDropDownField(
             modifier = Modifier
+                .ifProduction { animateContentSize() }
                 .fillMaxWidth(0.5f)
                 .constrainAs(colorGroupField) {
                     linkTo(
@@ -171,7 +173,6 @@ fun EditStorageScreen(
             label = { Text(stringResource(R.string.group)) }
         )
 
-
     }
 
     Column(
@@ -187,10 +188,13 @@ fun EditStorageScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 12.dp),
-                colors = LocalColorScheme.current.grayTextButtonColors,
+                colors = theme.colorScheme.grayTextButtonColors,
                 onClick = rememberClickDebounced { presenter?.changePassw(router) }
             ) {
-                Text(stringResource(R.string.change_password))
+                Text(
+                    text = stringResource(R.string.change_password),
+                    style = theme.typeScheme.buttonText,
+                )
             }
         }
 
@@ -200,19 +204,22 @@ fun EditStorageScreen(
                     .fillMaxWidth()
                     .alpha(isSaveAvailable.alpha),
                 onClick = rememberClickDebounced { presenter?.save(router) }
-            ) { Text(stringResource(R.string.save)) }
+            ) {
+                Text(
+                    text = stringResource(R.string.save),
+                    style = theme.typeScheme.buttonText,
+                )
+            }
         }
     }
 
     AppBarStates(
         isVisible = scrollState.value == 0,
         navigationIcon = {
-            IconButton(onClick = { router?.back() }) {
-                Icon(
-                    Icons.AutoMirrored.Default.ArrowBack,
-                    contentDescription = null,
-                )
-            }
+            IconButton(
+                onClick = rememberClickDebounced { router?.back() },
+                content = { BackMenuIcon() },
+            )
         },
         titleContent = {
             when {
@@ -237,7 +244,7 @@ fun EditStorageScreen(
 @VisibleForTesting
 @Preview(device = Devices.PHONE)
 @Composable
-fun EditStorageScreenPreview() = DebugDarkScreenPreview {
+fun EditStorageScreenPreview() {
     DI.hardResetToPreview()
     DI.initPresenterModule(object : PresentersModule {
 
@@ -252,5 +259,8 @@ fun EditStorageScreenPreview() = DebugDarkScreenPreview {
                 )
             }
     })
-    EditStorageScreen(path = "some/path/to/storage")
+
+    DebugDarkScreenPreview {
+        EditStorageScreen(path = "some/path/to/storage")
+    }
 }

@@ -7,10 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -39,21 +36,25 @@ import com.github.klee0kai.thekey.core.domain.model.feature.model.Installing
 import com.github.klee0kai.thekey.core.domain.model.feature.model.NotInstalled
 import com.github.klee0kai.thekey.core.domain.model.feature.model.isNotInstalled
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
-import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
+import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
+import com.github.klee0kai.thekey.core.ui.devkit.icons.BackMenuIcon
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.ui.navigation.model.DynamicDestination
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
+import com.github.klee0kai.thekey.core.utils.views.linkToParent
 import com.github.klee0kai.thekey.core.utils.views.minInsets
+import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
 fun PluginDummyScreen(dest: DynamicDestination) {
+    val theme = LocalTheme.current
     val router = LocalRouter.current
     val presenter by rememberOnScreenRef { DI.pluginPresenter(dest.feature) }
     val feature = dest.feature
@@ -75,11 +76,7 @@ fun PluginDummyScreen(dest: DynamicDestination) {
             modifier = Modifier
                 .constrainAs(descField) {
                     width = Dimension.fillToConstraints
-                    linkTo(
-                        start = parent.start,
-                        end = parent.end,
-                        top = parent.top,
-                        bottom = parent.bottom,
+                    linkToParent(
                         verticalBias = 0.1f,
                         topMargin = 16.dp,
                         bottomMargin = 16.dp,
@@ -97,11 +94,7 @@ fun PluginDummyScreen(dest: DynamicDestination) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .constrainAs(installField) {
-                        linkTo(
-                            start = parent.start,
-                            end = parent.end,
-                            top = parent.top,
-                            bottom = parent.bottom,
+                        linkToParent(
                             verticalBias = 1f,
                             horizontalBias = 1f,
                         )
@@ -113,7 +106,7 @@ fun PluginDummyScreen(dest: DynamicDestination) {
                     }
                 },
                 colors = when (featureStatus) {
-                    InstallError, Installed, is Installing -> LocalColorScheme.current.grayTextButtonColors
+                    InstallError, Installed, is Installing -> theme.colorScheme.grayTextButtonColors
                     InstallError, NotInstalled -> ButtonDefaults.textButtonColors()
                 }
             ) {
@@ -131,7 +124,8 @@ fun PluginDummyScreen(dest: DynamicDestination) {
                                     R.string.buy
                                 }
                         }
-                    )
+                    ),
+                    style = theme.typeScheme.buttonText,
                 )
             }
         }
@@ -139,11 +133,7 @@ fun PluginDummyScreen(dest: DynamicDestination) {
         Text(
             modifier = Modifier
                 .constrainAs(statusField) {
-                    linkTo(
-                        start = parent.start,
-                        end = parent.end,
-                        top = parent.top,
-                        bottom = parent.bottom,
+                    linkToParent(
                         verticalBias = 0.8f,
                     )
                 },
@@ -153,15 +143,12 @@ fun PluginDummyScreen(dest: DynamicDestination) {
 
     AppBarStates(
         navigationIcon = {
-            IconButton(onClick = { router.back() }) {
-                Icon(Icons.AutoMirrored.Default.ArrowBack, contentDescription = null)
-            }
-        },
-        titleContent = {
-            Text(
-                text = stringResource(id = feature.titleRes)
+            IconButton(
+                onClick = rememberClickDebounced { router.back() },
+                content = { BackMenuIcon() }
             )
         },
+        titleContent = { Text(text = stringResource(id = feature.titleRes)) },
     )
 }
 

@@ -29,7 +29,6 @@ import com.github.klee0kai.thekey.app.ui.storages.presenter.StoragesPresenter
 import com.github.klee0kai.thekey.core.domain.model.ColorGroup
 import com.github.klee0kai.thekey.core.domain.model.externalStorages
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
-import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.components.FabSimpleInContainer
@@ -37,7 +36,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesButtonsWidgetState
 import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesListWidgetState
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
-import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.animateTargetFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.isIme
@@ -64,7 +63,7 @@ fun FSStoragesButtonsWidget(
         initial = ColorGroup.externalStorages()
     )
 
-    val imeIsVisibleAnimated by animateTargetCrossFaded(WindowInsets.isIme)
+    val imeIsVisibleAnimated by animateTargetFaded(WindowInsets.isIme)
     val isPermissionsGranted by presenter!!.isPermissionGranted.collectAsState(
         key = Unit,
         initial = null
@@ -74,15 +73,15 @@ fun FSStoragesButtonsWidget(
         initial = false
     )
 
-    val isExtStorageSelected by animateTargetCrossFaded(
+    val isExtStorageSelected by animateTargetFaded(
         target = widget.isExtStorageSelected,
     )
-    val showPermissionAnimated by animateTargetCrossFaded(
+    val showPermissionAnimated by animateTargetFaded(
         target = isPermissionsGranted?.let { widget.isExtStorageSelected && !it },
         skipStates = listOf(null),
     )
     val showSearchExt = isExtStorageSelected.current && showPermissionAnimated.current == false
-    val hideSearchWhileSearching by animateTargetCrossFaded(target = showSearchExt && isStorageSearching)
+    val hideSearchWhileSearching by animateTargetFaded(target = showSearchExt && isStorageSearching)
 
     when {
         showPermissionAnimated.current == null -> Unit
@@ -105,20 +104,26 @@ fun FSStoragesButtonsWidget(
                     modifier = Modifier
                         .padding(bottom = 12.dp)
                         .fillMaxWidth(),
-                    colors = LocalColorScheme.current.grayTextButtonColors,
-                    onClick = { presenter?.importStorage(router) }
+                    colors = theme.colorScheme.grayTextButtonColors,
+                    onClick = rememberClickDebounced { presenter?.importStorage(router) }
                 ) {
                     val textRes = R.string.import_storage
-                    Text(stringResource(textRes))
+                    Text(
+                        text = stringResource(textRes),
+                        style = theme.typeScheme.buttonText,
+                    )
                 }
 
                 FilledTonalButton(
                     modifier = Modifier
                         .fillMaxWidth()
                         .alpha(imeIsVisibleAnimated.alpha),
-                    onClick = { presenter?.requestPermissions(router) }
+                    onClick = rememberClickDebounced { presenter?.requestPermissions(router) }
                 ) {
-                    Text(stringResource(R.string.grant_permissions))
+                    Text(
+                        text = stringResource(R.string.grant_permissions),
+                        style = theme.typeScheme.buttonText,
+                    )
                 }
             }
         }

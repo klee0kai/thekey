@@ -52,15 +52,16 @@ import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.common.Dummy
 import com.github.klee0kai.thekey.core.utils.possitions.pxToDp
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
-import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.animateTargetFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.horizontal
 import com.github.klee0kai.thekey.core.utils.views.isIme
+import com.github.klee0kai.thekey.core.utils.views.linkToParent
 import com.github.klee0kai.thekey.core.utils.views.rememberClickArg
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
-import com.github.klee0kai.thekey.core.utils.views.rememberTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.rememberTargetFaded
 import com.github.klee0kai.thekey.dynamic.findstorage.R
 import com.github.klee0kai.thekey.dynamic.findstorage.di.FSDI
 import com.github.klee0kai.thekey.dynamic.findstorage.di.hardResetToPreview
@@ -92,9 +93,9 @@ fun FSEditStorageScreen(
     val scrollState = rememberScrollState()
     val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
 
-    val imeIsVisibleAnimated by animateTargetCrossFaded(WindowInsets.isIme)
-    val isSaveAvailable by rememberTargetCrossFaded { state.isSaveAvailable }
-    val isRemoveAvailable by rememberTargetCrossFaded { state.isRemoveAvailable }
+    val imeIsVisibleAnimated by animateTargetFaded(WindowInsets.isIme)
+    val isSaveAvailable by rememberTargetFaded { state.isSaveAvailable }
+    val isRemoveAvailable by rememberTargetFaded { state.isRemoveAvailable }
 
 
     BackHandler(enabled = state.storagePathFieldExpanded || state.colorGroupExpanded) {
@@ -120,11 +121,7 @@ fun FSEditStorageScreen(
             modifier = Modifier
                 .constrainAs(pathTextField) {
                     width = Dimension.fillToConstraints
-                    linkTo(
-                        start = parent.start,
-                        top = parent.top,
-                        end = parent.end,
-                        bottom = parent.bottom,
+                    linkToParent(
                         verticalBias = 0f,
                         topMargin = 8.dp + AppBarConst.appBarSize + safeContentPaddings.calculateTopPadding(),
                         startMargin = safeContentPaddings.horizontal(minValue = 16.dp),
@@ -156,11 +153,8 @@ fun FSEditStorageScreen(
             modifier = Modifier
                 .constrainAs(nameTextField) {
                     width = Dimension.fillToConstraints
-                    linkTo(
+                    linkToParent(
                         top = pathTextField.bottom,
-                        start = parent.start,
-                        end = parent.end,
-                        bottom = parent.bottom,
                         verticalBias = 0f,
                         topMargin = 8.dp,
                         startMargin = safeContentPaddings.horizontal(minValue = 16.dp),
@@ -169,7 +163,7 @@ fun FSEditStorageScreen(
                 },
             isSkeleton = state.isSkeleton,
             value = state.name,
-            onValueChange = { presenter?.input { copy(name = it) } },
+            onValueChange = rememberClickArg { presenter?.input { copy(name = it) } },
             label = { Text(stringResource(R.string.storage_name)) }
         )
 
@@ -189,7 +183,7 @@ fun FSEditStorageScreen(
                 },
             isSkeleton = state.isSkeleton,
             value = state.desc,
-            onValueChange = { presenter?.input { copy(desc = it) } },
+            onValueChange = rememberClickArg { presenter?.input { copy(desc = it) } },
             label = { Text(stringResource(R.string.storage_description)) }
         )
 
@@ -203,9 +197,12 @@ fun FSEditStorageScreen(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .fillMaxWidth(),
-                onClick = { presenter?.save(router) }
+                onClick = rememberClickDebounced { presenter?.save(router) }
             ) {
-                Text(stringResource(R.string.save))
+                Text(
+                    text = stringResource(R.string.save),
+                    style = theme.typeScheme.buttonText,
+                )
             }
         }
 
@@ -213,11 +210,10 @@ fun FSEditStorageScreen(
             modifier = Modifier
                 .fillMaxWidth(0.5f)
                 .constrainAs(colorGroupField) {
-                    linkTo(
+                    linkToParent(
                         top = descTextField.bottom,
                         start = descTextField.start,
                         end = descTextField.end,
-                        bottom = parent.bottom,
                         verticalBias = 0f,
                         horizontalBias = 0f,
                         topMargin = 8.dp,
@@ -260,7 +256,10 @@ fun FSEditStorageScreen(
                     router?.navigate(ChangeStoragePasswordDestination(path))
                 }
             ) {
-                Text(stringResource(R.string.change_password))
+                Text(
+                    text = stringResource(R.string.change_password),
+                    style = theme.typeScheme.buttonText,
+                )
             }
         }
 
@@ -270,7 +269,12 @@ fun FSEditStorageScreen(
                     .fillMaxWidth()
                     .alpha(isSaveAvailable.alpha),
                 onClick = rememberClickDebounced { presenter?.save(router) }
-            ) { Text(stringResource(R.string.save)) }
+            ) {
+                Text(
+                    text = stringResource(R.string.save),
+                    style = theme.typeScheme.buttonText,
+                )
+            }
         }
     }
 

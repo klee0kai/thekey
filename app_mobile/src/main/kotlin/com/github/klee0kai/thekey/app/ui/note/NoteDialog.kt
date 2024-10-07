@@ -55,11 +55,12 @@ import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.core.ui.devkit.icons.BackMenuIcon
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
-import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.animateTargetFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.horizontal
 import com.github.klee0kai.thekey.core.utils.views.isIme
+import com.github.klee0kai.thekey.core.utils.views.linkToParent
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
@@ -98,7 +99,7 @@ fun NoteDialog(
             .background
             .copy(alpha = ((1f - dragProgress) + 0.4f).coerceIn(0f, 1f))
     }
-    val imeAnimated by animateTargetCrossFaded(target = isIme)
+    val imeAnimated by animateTargetFaded(target = isIme)
     val appBarAlpha by rememberDerivedStateOf {
         maxOf(1f - dragProgress, imeAnimated.visibleOnTargetAlpha(true))
     }
@@ -143,8 +144,8 @@ fun NoteDialog(
                 ) = createRefs()
 
                 Text(
+                    text = stringResource(id = CoreR.string.site),
                     modifier = Modifier
-                        .alpha(0.6f)
                         .constrainAs(siteHintField) {
                             linkTo(
                                 top = parent.top,
@@ -156,8 +157,8 @@ fun NoteDialog(
                                 startMargin = safeContentPaddings.horizontal(minValue = 16.dp),
                             )
                         },
-                    style = theme.typeScheme.typography.labelMedium,
-                    text = stringResource(id = CoreR.string.site),
+                    style = theme.typeScheme.header,
+                    color = theme.colorScheme.textColors.hintTextColor,
                 )
 
                 TextButton(
@@ -180,16 +181,17 @@ fun NoteDialog(
                         modifier = Modifier
                             .thenIfCrossFade(note.site.isBlank() && !note.isLoaded) {
                                 defaultMinSize(minWidth = 106.dp)
-                                    .skeleton(shape = RoundedCornerShape(16.dp))
+                                    .skeleton()
                             }
                             .padding(vertical = 8.dp),
                         text = note.site,
+                        style = theme.typeScheme.buttonText,
                     )
                 }
 
                 Text(
+                    text = stringResource(id = CoreR.string.login),
                     modifier = Modifier
-                        .alpha(0.6f)
                         .constrainAs(loginHintField) {
                             linkTo(
                                 top = siteField.bottom,
@@ -202,8 +204,8 @@ fun NoteDialog(
                                 topMargin = 8.dp,
                             )
                         },
-                    style = theme.typeScheme.typography.labelMedium,
-                    text = stringResource(id = CoreR.string.login),
+                    style = theme.typeScheme.header,
+                    color = theme.colorScheme.textColors.hintTextColor,
                 )
 
                 TextButton(
@@ -223,20 +225,21 @@ fun NoteDialog(
                     colors = theme.colorScheme.whiteTextButtonColors,
                 ) {
                     Text(
+                        text = note.login,
                         modifier = Modifier
                             .thenIfCrossFade(note.login.isBlank() && !note.isLoaded) {
                                 defaultMinSize(minWidth = 106.dp)
                                     .skeleton(shape = RoundedCornerShape(16.dp))
                             }
                             .padding(vertical = 8.dp),
-                        text = note.login,
+                        style = theme.typeScheme.buttonText,
                     )
                 }
 
 
                 Text(
+                    text = stringResource(id = CoreR.string.password),
                     modifier = Modifier
-                        .alpha(0.6f)
                         .constrainAs(passwHintField) {
                             linkTo(
                                 top = loginField.bottom,
@@ -249,8 +252,8 @@ fun NoteDialog(
                                 topMargin = 8.dp,
                             )
                         },
-                    style = theme.typeScheme.typography.labelMedium,
-                    text = stringResource(id = CoreR.string.password),
+                    style = theme.typeScheme.header,
+                    color = theme.colorScheme.textColors.hintTextColor,
                 )
 
                 TextButton(
@@ -271,13 +274,14 @@ fun NoteDialog(
                     colors = theme.colorScheme.whiteTextButtonColors,
                 ) {
                     Text(
+                        text = note.passw,
                         modifier = Modifier
                             .thenIfCrossFade(note.passw.isBlank() && !note.isLoaded) {
                                 defaultMinSize(minWidth = 106.dp)
-                                    .skeleton(shape = RoundedCornerShape(16.dp))
+                                    .skeleton()
                             }
                             .padding(vertical = 8.dp),
-                        text = note.passw,
+                        style = theme.typeScheme.buttonText,
                     )
                 }
 
@@ -297,12 +301,16 @@ fun NoteDialog(
                         },
                     onClick = rememberClickDebounced(presenter) { presenter?.showHistory(router) },
                 ) {
-                    Text(text = note.changeDateStr ?: "")
+                    Text(
+                        text = note.changeDateStr ?: "",
+                        style = theme.typeScheme.buttonText,
+                        color = theme.colorScheme.textColors.primaryTextColor,
+                    )
                 }
 
                 Text(
+                    text = stringResource(id = CoreR.string.description),
                     modifier = Modifier
-                        .alpha(0.6f)
                         .constrainAs(descHintField) {
                             linkTo(
                                 top = passwField.bottom,
@@ -315,8 +323,8 @@ fun NoteDialog(
                                 topMargin = 8.dp,
                             )
                         },
-                    style = theme.typeScheme.typography.labelMedium,
-                    text = stringResource(id = CoreR.string.description),
+                    style = theme.typeScheme.header,
+                    color = theme.colorScheme.textColors.hintTextColor,
                 )
 
                 TextButton(
@@ -336,17 +344,16 @@ fun NoteDialog(
                     colors = theme.colorScheme.whiteTextButtonColors,
                 ) {
                     Text(
+                        text = note.desc,
                         modifier = Modifier
                             .thenIfCrossFade(note.desc.isBlank() && !note.isLoaded) {
                                 defaultMinSize(minWidth = 206.dp)
-                                    .skeleton(shape = RoundedCornerShape(16.dp))
+                                    .skeleton()
                             }
                             .padding(vertical = 8.dp),
-                        text = note.desc,
+                        style = theme.typeScheme.buttonText,
                     )
                 }
-
-
             }
         }
     }
@@ -360,11 +367,7 @@ fun NoteDialog(
         val (editBtField) = createRefs()
         TextButton(
             modifier = Modifier.constrainAs(editBtField) {
-                linkTo(
-                    top = parent.top,
-                    bottom = parent.bottom,
-                    start = parent.start,
-                    end = parent.end,
+                linkToParent(
                     verticalBias = 1f,
                     horizontalBias = 1f,
                     startMargin = safeContentPaddings.horizontal(minValue = 16.dp),
@@ -374,7 +377,10 @@ fun NoteDialog(
             },
             onClick = rememberClickDebounced(presenter) { presenter?.edit(router) },
         ) {
-            Text(text = stringResource(id = CoreR.string.edit))
+            Text(
+                text = stringResource(id = CoreR.string.edit),
+                style = theme.typeScheme.buttonText,
+            )
         }
     }
 

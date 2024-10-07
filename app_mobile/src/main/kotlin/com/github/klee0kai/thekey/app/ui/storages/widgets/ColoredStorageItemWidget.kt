@@ -14,7 +14,7 @@ import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.PasswordTwinsDestination
-import com.github.klee0kai.thekey.app.ui.storages.components.ColoredStorageItem
+import com.github.klee0kai.thekey.app.ui.storages.components.ColoredStorageElement
 import com.github.klee0kai.thekey.app.ui.storages.components.popup.StoragePopupMenu
 import com.github.klee0kai.thekey.core.domain.model.ColoredStorage
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
@@ -27,7 +27,6 @@ import com.github.klee0kai.thekey.core.utils.views.DebugDarkContentPreview
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
-
 
 @Composable
 fun ColoredStorageItemWidget(
@@ -43,7 +42,7 @@ fun ColoredStorageItemWidget(
         initial = emptyList()
     )
 
-    ColoredStorageItem(
+    ColoredStorageElement(
         modifier = modifier
             .onGlobalPositionState(position),
         storage = state.coloredStorage,

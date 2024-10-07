@@ -42,8 +42,8 @@ import com.github.klee0kai.thekey.app.ui.changepassw.model.ChangePasswordStorage
 import com.github.klee0kai.thekey.app.ui.changepassw.model.ConfirmIsWrong
 import com.github.klee0kai.thekey.app.ui.changepassw.model.PasswordNotChanged
 import com.github.klee0kai.thekey.app.ui.changepassw.presenter.ChangeStoragePasswordPresenterDummy
-import com.github.klee0kai.thekey.app.ui.storage.notes.ColoredNoteItem
-import com.github.klee0kai.thekey.app.ui.storage.notes.ColoredOtpNoteItem
+import com.github.klee0kai.thekey.app.ui.storage.notes.ColoredNoteElement
+import com.github.klee0kai.thekey.app.ui.storage.notes.ColoredOtpNoteElement
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
@@ -57,17 +57,20 @@ import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.possitions.pxToDp
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
-import com.github.klee0kai.thekey.core.utils.views.collectAsStateCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.collectAsStateFaded
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.horizontal
 import com.github.klee0kai.thekey.core.utils.views.ifProduction
+import com.github.klee0kai.thekey.core.utils.views.rememberClickArg
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
-import com.github.klee0kai.thekey.core.utils.views.rememberTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.rememberTargetFaded
 import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
-fun ChangeStoragePasswordScreen(path: String) = Screen {
+fun ChangeStoragePasswordScreen(
+    path: String,
+) = Screen {
     val router by LocalRouter.currentRef
     val view = LocalView.current
     val theme = LocalTheme.current
@@ -78,11 +81,11 @@ fun ChangeStoragePasswordScreen(path: String) = Screen {
         key = Unit,
         initial = ChangePasswordStorageState()
     )
-    val storageItems by presenter!!.sortedStorageItems.collectAsStateCrossFaded(
+    val storageItems by presenter!!.sortedStorageItems.collectAsStateFaded(
         key = Unit,
         initial = null
     )
-    val isSaveAvailable by rememberTargetCrossFaded { state.isSaveAvailable }
+    val isSaveAvailable by rememberTargetFaded { state.isSaveAvailable }
     val scrollState = rememberLazyListState()
     val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
 
@@ -110,7 +113,7 @@ fun ChangeStoragePasswordScreen(path: String) = Screen {
                     .ifProduction { animateItemPlacement() },
                 value = state.currentPassw,
                 visualTransformation = PasswordVisualTransformation(),
-                onValueChange = { presenter?.input { copy(currentPassw = it) } },
+                onValueChange = rememberClickArg { presenter?.input { copy(currentPassw = it) } },
                 label = { Text(stringResource(R.string.current_password)) }
             )
 
@@ -122,7 +125,7 @@ fun ChangeStoragePasswordScreen(path: String) = Screen {
                     .ifProduction { animateItemPlacement() },
                 value = state.newPassw,
                 visualTransformation = PasswordVisualTransformation(),
-                onValueChange = { presenter?.input { copy(newPassw = it) } },
+                onValueChange = rememberClickArg { presenter?.input { copy(newPassw = it) } },
                 label = { Text(stringResource(R.string.new_password)) }
             )
 
@@ -155,7 +158,7 @@ fun ChangeStoragePasswordScreen(path: String) = Screen {
                         null -> Unit
                     }
                 },
-                onValueChange = { presenter?.input { copy(newPasswConfirm = it) } },
+                onValueChange = rememberClickArg { presenter?.input { copy(newPasswConfirm = it) } },
                 label = { Text(stringResource(R.string.confirm_password)) }
             )
 
@@ -170,7 +173,7 @@ fun ChangeStoragePasswordScreen(path: String) = Screen {
             item(key = item) {
                 when {
                     item.note != null -> {
-                        ColoredNoteItem(
+                        ColoredNoteElement(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .ifProduction { animateItemPlacement() },
@@ -179,7 +182,7 @@ fun ChangeStoragePasswordScreen(path: String) = Screen {
                     }
 
                     item.otp != null -> {
-                        ColoredOtpNoteItem(
+                        ColoredOtpNoteElement(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .ifProduction { animateItemPlacement() },
@@ -215,8 +218,13 @@ fun ChangeStoragePasswordScreen(path: String) = Screen {
                     .padding(horizontal = safeContentPaddings.horizontal(minValue = 16.dp))
                     .fillMaxWidth()
                     .alpha(isSaveAvailable.alpha),
-                onClick = { presenter?.save(router) }
-            ) { Text(stringResource(R.string.save)) }
+                onClick = rememberClickDebounced { presenter?.save(router) }
+            ) {
+                Text(
+                    text = stringResource(R.string.save),
+                    style = theme.typeScheme.buttonText,
+                )
+            }
         }
     }
 

@@ -11,10 +11,12 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -25,9 +27,10 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
+import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.views.animateAlphaAsState
-import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.animateTargetFaded
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 import org.jetbrains.annotations.VisibleForTesting
 
@@ -45,7 +48,8 @@ fun AppBarStates(
     actions: @Composable RowScope.() -> Unit = {},
     titleContent: (@Composable (titleId: Int) -> Unit)? = null,
 ) {
-    val animateTargetAlpha by animateTargetCrossFaded(target = titleId.value)
+    val theme = LocalTheme.current
+    val animateTargetAlpha by animateTargetFaded(target = titleId.value)
     val appBarAlpha by animateAlphaAsState(isVisible)
     val isNotVisible by rememberDerivedStateOf { appBarAlpha <= 0 }
 
@@ -59,13 +63,17 @@ fun AppBarStates(
         ),
         actions = actions,
         title = {
-            Box(
-                modifier = modifier
-                    .padding(4.dp),
-                contentAlignment = Alignment.Center
+            CompositionLocalProvider(
+                LocalTextStyle provides theme.typeScheme.screenHeader,
             ) {
-                Box(modifier = Modifier.alpha(animateTargetAlpha.alpha)) {
-                    titleContent?.invoke(animateTargetAlpha.current)
+                Box(
+                    modifier = modifier
+                        .padding(4.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Box(modifier = Modifier.alpha(animateTargetAlpha.alpha)) {
+                        titleContent?.invoke(animateTargetAlpha.current)
+                    }
                 }
             }
         },

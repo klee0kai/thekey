@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.SheetValue
@@ -61,12 +60,13 @@ import com.github.klee0kai.thekey.core.ui.devkit.components.timer.TimerCircle
 import com.github.klee0kai.thekey.core.ui.devkit.icons.BackMenuIcon
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
-import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.animateTargetFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.horizontal
 import com.github.klee0kai.thekey.core.utils.views.ifProduction
 import com.github.klee0kai.thekey.core.utils.views.isIme
+import com.github.klee0kai.thekey.core.utils.views.linkToParent
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
@@ -107,7 +107,7 @@ fun OtpNoteDialog(
             .background
             .copy(alpha = ((1f - dragProgress) + 0.4f).coerceIn(0f, 1f))
     }
-    val imeAnimated by animateTargetCrossFaded(target = isIme)
+    val imeAnimated by animateTargetFaded(target = isIme)
     val appBarAlpha by rememberDerivedStateOf {
         maxOf(1f - dragProgress, imeAnimated.visibleOnTargetAlpha(true))
     }
@@ -150,22 +150,18 @@ fun OtpNoteDialog(
                 ) = createRefs()
 
                 Text(
+                    text = stringResource(id = CoreR.string.issuer),
                     modifier = Modifier
-                        .alpha(0.6f)
                         .ifProduction { animateContentSize() }
                         .constrainAs(issuerHintField) {
-                            linkTo(
-                                top = parent.top,
-                                bottom = parent.bottom,
-                                start = parent.start,
-                                end = parent.end,
+                            linkToParent(
                                 verticalBias = siteVerticalRatio,
                                 horizontalBias = 0f,
                                 startMargin = safeContentPaddings.horizontal(minValue = 16.dp),
                             )
                         },
-                    style = theme.typeScheme.typography.labelMedium,
-                    text = stringResource(id = CoreR.string.issuer),
+                    style = theme.typeScheme.header,
+                    color = theme.colorScheme.textColors.hintTextColor,
                 )
 
                 TextButton(
@@ -173,11 +169,8 @@ fun OtpNoteDialog(
                         .ifProduction { animateContentSize() }
                         .padding(horizontal = safeContentPaddings.horizontal(16.dp))
                         .constrainAs(issuerField) {
-                            linkTo(
+                            linkToParent(
                                 top = issuerHintField.bottom,
-                                bottom = parent.bottom,
-                                start = parent.start,
-                                end = parent.end,
                                 verticalBias = 0f,
                                 horizontalBias = 0f,
                             )
@@ -185,42 +178,37 @@ fun OtpNoteDialog(
                     onClick = rememberClickDebounced(presenter) { presenter?.copyIssuer(router) },
                     colors = theme.colorScheme.whiteTextButtonColors,
                 ) {
-                    val isSkeletonAnimated by animateTargetCrossFaded(
+                    val isSkeletonAnimated by animateTargetFaded(
                         target = otpNote.issuer.isBlank() && !otpNote.isLoaded
                     )
                     Text(
+                        text = if (isSkeletonAnimated.current) "" else otpNote.issuer,
                         modifier = Modifier
                             .thenIf(isSkeletonAnimated.current) {
                                 defaultMinSize(minWidth = 206.dp)
-                                    .skeleton(
-                                        isSkeleton = true,
-                                        shape = RoundedCornerShape(16.dp),
-                                    )
+                                    .skeleton()
                             }
                             .alpha(isSkeletonAnimated.alpha)
                             .padding(vertical = 8.dp),
-                        text = if (isSkeletonAnimated.current) "" else otpNote.issuer,
+                        style = theme.typeScheme.buttonText,
                     )
                 }
 
                 Text(
+                    text = stringResource(id = CoreR.string.name),
                     modifier = Modifier
-                        .alpha(0.6f)
                         .ifProduction { animateContentSize() }
                         .constrainAs(nameHintField) {
-                            linkTo(
+                            linkToParent(
                                 top = issuerField.bottom,
-                                bottom = parent.bottom,
-                                start = parent.start,
-                                end = parent.end,
                                 verticalBias = 0f,
                                 horizontalBias = 0f,
                                 startMargin = safeContentPaddings.horizontal(minValue = 16.dp),
                                 topMargin = 8.dp,
                             )
                         },
-                    style = theme.typeScheme.typography.labelMedium,
-                    text = stringResource(id = CoreR.string.name),
+                    style = theme.typeScheme.header,
+                    color = theme.colorScheme.textColors.hintTextColor,
                 )
 
                 TextButton(
@@ -228,11 +216,8 @@ fun OtpNoteDialog(
                         .ifProduction { animateContentSize() }
                         .padding(horizontal = safeContentPaddings.horizontal(16.dp))
                         .constrainAs(nameField) {
-                            linkTo(
+                            linkToParent(
                                 top = nameHintField.bottom,
-                                bottom = parent.bottom,
-                                start = parent.start,
-                                end = parent.end,
                                 verticalBias = 0f,
                                 horizontalBias = 0f,
                             )
@@ -240,28 +225,26 @@ fun OtpNoteDialog(
                     onClick = rememberClickDebounced(presenter) { presenter?.copyName(router) },
                     colors = theme.colorScheme.whiteTextButtonColors,
                 ) {
-                    val isSkeletonAnimated by animateTargetCrossFaded(
+                    val isSkeletonAnimated by animateTargetFaded(
                         target = otpNote.name.isBlank() && !otpNote.isLoaded
                     )
                     Text(
+                        text = if (isSkeletonAnimated.current) "" else otpNote.name,
                         modifier = Modifier
                             .thenIf(isSkeletonAnimated.current) {
                                 defaultMinSize(minWidth = 106.dp)
-                                    .skeleton(
-                                        isSkeleton = true,
-                                        shape = RoundedCornerShape(16.dp),
-                                    )
+                                    .skeleton()
                             }
                             .alpha(isSkeletonAnimated.alpha)
                             .padding(vertical = 8.dp),
-                        text = if (isSkeletonAnimated.current) "" else otpNote.name,
+                        style = theme.typeScheme.buttonText,
                     )
                 }
 
 
                 Text(
+                    text = stringResource(id = CoreR.string.code),
                     modifier = Modifier
-                        .alpha(0.6f)
                         .ifProduction { animateContentSize() }
                         .constrainAs(codeHintField) {
                             linkTo(
@@ -275,8 +258,8 @@ fun OtpNoteDialog(
                                 topMargin = 8.dp,
                             )
                         },
-                    style = theme.typeScheme.typography.labelMedium,
-                    text = stringResource(id = CoreR.string.code),
+                    style = theme.typeScheme.header,
+                    color = theme.colorScheme.textColors.hintTextColor,
                 )
 
                 TextButton(
@@ -296,21 +279,19 @@ fun OtpNoteDialog(
                     onClick = rememberClickDebounced(presenter) { presenter?.copyCode(router) },
                     colors = theme.colorScheme.whiteTextButtonColors,
                 ) {
-                    val isSkeletonAnimated by animateTargetCrossFaded(
+                    val isSkeletonAnimated by animateTargetFaded(
                         target = otpNote.otpPassw.isBlank() && !otpNote.isLoaded
                     )
                     Text(
+                        text = if (isSkeletonAnimated.current) "" else otpNote.otpPassw,
                         modifier = Modifier
                             .thenIf(isSkeletonAnimated.current) {
                                 defaultMinSize(minWidth = 106.dp)
-                                    .skeleton(
-                                        isSkeleton = true,
-                                        shape = RoundedCornerShape(16.dp),
-                                    )
+                                    .skeleton()
                             }
                             .alpha(isSkeletonAnimated.alpha)
                             .padding(vertical = 8.dp),
-                        text = if (isSkeletonAnimated.current) "" else otpNote.otpPassw,
+                        style = theme.typeScheme.buttonText,
                     )
                 }
 
@@ -341,7 +322,10 @@ fun OtpNoteDialog(
                                     presenter?.increment(router)
                                 },
                             ) {
-                                Text(text = stringResource(id = R.string.next))
+                                Text(
+                                    text = stringResource(id = R.string.next),
+                                    style = theme.typeScheme.buttonText,
+                                )
                             }
                         }
 
@@ -372,11 +356,7 @@ fun OtpNoteDialog(
         TextButton(
             modifier = Modifier
                 .constrainAs(editBtField) {
-                    linkTo(
-                        top = parent.top,
-                        bottom = parent.bottom,
-                        start = parent.start,
-                        end = parent.end,
+                    linkToParent(
                         verticalBias = 1f,
                         horizontalBias = 1f,
                         startMargin = safeContentPaddings.horizontal(minValue = 16.dp),
@@ -386,7 +366,10 @@ fun OtpNoteDialog(
                 },
             onClick = rememberClickDebounced(presenter) { presenter?.edit(router) },
         ) {
-            Text(text = stringResource(id = CoreR.string.edit))
+            Text(
+                text = stringResource(id = CoreR.string.edit),
+                style = theme.typeScheme.buttonText,
+            )
         }
     }
 

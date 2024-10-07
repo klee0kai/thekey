@@ -15,6 +15,11 @@ annotation class AndrUiDispatcher
 @Qualifier
 @MustBeDocumented
 @Retention(AnnotationRetention.BINARY)
+annotation class AndrFastUiDispatcher
+
+@Qualifier
+@MustBeDocumented
+@Retention(AnnotationRetention.BINARY)
 annotation class IODispatcher
 
 @Qualifier

@@ -24,6 +24,7 @@ import com.github.klee0kai.thekey.app.ui.simpleboard.presenter.SimpleBoardPresen
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
+import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.overlay.PopupMenu
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
@@ -41,6 +42,7 @@ fun StorageNavigationMapList(
     footer: @Composable () -> Unit = {},
 ) {
     val router by LocalRouter.currentRef
+    val theme = LocalTheme.current
     val presenter by rememberOnScreenRef { DI.simpleBoardPresenter() }
     val opened by presenter!!.openedStoragesFlow.collectAsState(key = Unit, initial = emptyList())
     val favorites by presenter!!.favoritesStorages.collectAsState(key = Unit, initial = emptyList())
@@ -53,11 +55,12 @@ fun StorageNavigationMapList(
         if (opened.isNotEmpty()) {
             item("openned_header") {
                 Text(
+                    text = stringResource(id = R.string.openned),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 16.dp, top = 30.dp, bottom = 4.dp)
-                        .alpha(0.4f),
-                    text = stringResource(id = R.string.openned)
+                        .padding(start = 16.dp, top = 30.dp, bottom = 4.dp),
+                    style = theme.typeScheme.header,
+                    color = theme.colorScheme.textColors.hintTextColor,
                 )
             }
         }
@@ -67,7 +70,7 @@ fun StorageNavigationMapList(
                 var showMenu by remember { mutableStateOf(false) }
                 val position = rememberViewPosition()
 
-                FavoriteStorageItem(
+                FavoriteStorageElement(
                     modifier = Modifier
                         .onGlobalPositionState(position),
                     storage = storage,
@@ -99,16 +102,17 @@ fun StorageNavigationMapList(
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 16.dp, top = 30.dp, bottom = 4.dp)
-                        .alpha(0.4f),
-                    text = stringResource(id = R.string.favorites)
+                        .padding(start = 16.dp, top = 30.dp, bottom = 4.dp),
+                    text = stringResource(id = R.string.favorites),
+                    style = theme.typeScheme.header,
+                    color = theme.colorScheme.textColors.hintTextColor,
                 )
             }
         }
 
         favorites.forEach { storage ->
             item(key = "favorites-${storage.path}") {
-                FavoriteStorageItem(
+                FavoriteStorageElement(
                     storage = storage,
                     onClick = rememberClickDebounced(storage.path) {
                         presenter?.openStorage(storage.path, router)

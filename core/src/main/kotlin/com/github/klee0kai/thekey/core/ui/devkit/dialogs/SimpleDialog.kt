@@ -52,7 +52,7 @@ import com.github.klee0kai.thekey.core.ui.navigation.model.SimpleDialogDestinati
 import com.github.klee0kai.thekey.core.ui.navigation.model.TextProvider
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
-import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.animateTargetFaded
 import com.github.klee0kai.thekey.core.utils.views.createDialogBottomAnchor
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.horizontal
@@ -88,7 +88,7 @@ fun SimpleDialog(
             .background
             .copy(alpha = ((1f - dragProgress) + 0.4f).coerceIn(0f, 1f))
     }
-    val imeAnimated by animateTargetCrossFaded(target = isIme)
+    val imeAnimated by animateTargetFaded(target = isIme)
     val appBarAlpha by rememberDerivedStateOf {
         maxOf(1f - dragProgress, imeAnimated.visibleOnTargetAlpha(true))
     }
@@ -150,6 +150,7 @@ fun SimpleDialog(
                             )
                         },
                     text = dest.title.text(resources),
+                    style = theme.typeScheme.screenHeader,
                 )
 
 
@@ -173,7 +174,7 @@ fun SimpleDialog(
                         },
                     text = dest.message.text(resources),
                     textAlign = if (isMessageLongText) TextAlign.Start else TextAlign.Center,
-                    style = theme.typeScheme.typography.labelMedium,
+                    style = theme.typeScheme.body,
                 )
 
             }
@@ -193,8 +194,8 @@ fun SimpleDialog(
                 .background(
                     Brush.verticalGradient(
                         0f to Color.Transparent,
-                        0.5f to colorScheme.androidColorScheme.surface,
-                        1f to colorScheme.androidColorScheme.surface,
+                        0.5f to colorScheme.cardsBackground,
+                        1f to colorScheme.cardsBackground,
                     )
                 )
                 .constrainAs(shadowField) {
@@ -229,7 +230,10 @@ fun SimpleDialog(
                 router?.backWithResult(ConfirmDialogResult.CONFIRMED)
             },
         ) {
-            Text(text = dest.confirm.text(resources))
+            Text(
+                text = dest.confirm.text(resources),
+                style = theme.typeScheme.buttonText,
+            )
         }
 
         if (dest.reject != null) {
@@ -251,7 +255,10 @@ fun SimpleDialog(
                     router?.backWithResult(ConfirmDialogResult.REJECTED)
                 },
             ) {
-                Text(text = dest.reject.text(resources))
+                Text(
+                    text = dest.reject.text(resources),
+                    style = theme.typeScheme.buttonText,
+                )
             }
         }
     }

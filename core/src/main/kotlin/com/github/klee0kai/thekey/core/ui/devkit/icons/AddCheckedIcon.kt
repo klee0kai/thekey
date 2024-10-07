@@ -8,14 +8,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.animateTargetFaded
 
 @Composable
 fun AddCheckedIcon(
     modifier: Modifier = Modifier,
     isAdded: Boolean = false,
 ) {
-    val isAddedAnimated by animateTargetCrossFaded(target = isAdded)
+    val isAddedAnimated by animateTargetFaded(target = isAdded)
     Icon(
         modifier = modifier
             .alpha(isAddedAnimated.alpha),

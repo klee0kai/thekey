@@ -25,6 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.github.klee0kai.stone.type.wrappers.getValue
@@ -50,11 +51,12 @@ import com.github.klee0kai.thekey.core.utils.common.Dummy
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.currentRef
+import com.github.klee0kai.thekey.core.utils.views.linkToParent
 import com.github.klee0kai.thekey.core.utils.views.rememberClickArg
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberClickableDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
-import com.github.klee0kai.thekey.core.utils.views.rememberTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.rememberTargetFaded
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.jetbrains.annotations.VisibleForTesting
 import kotlin.time.Duration.Companion.milliseconds
@@ -74,7 +76,7 @@ fun GenPasswordContent(
     }
     val sliderValues = presenter!!.passwLenRange
     val state by presenter!!.state.collectAsState(key = Unit, initial = GenPasswState())
-    val passw by rememberTargetCrossFaded { state.passw }
+    val passw by rememberTargetFaded { state.passw }
 
     ConstraintLayout(
         modifier = modifier
@@ -88,18 +90,14 @@ fun GenPasswordContent(
         ConstraintLayout(
             modifier = Modifier
                 .background(
-                    color = theme.colorScheme.androidColorScheme.surface,
-                    shape = RoundedCornerShape(12.dp)
+                    color = theme.colorScheme.cardsBackground,
+                    shape = RoundedCornerShape(16.dp)
                 )
                 .padding(vertical = 8.dp)
                 .constrainAs(generateParams) {
                     width = Dimension.fillToConstraints
                     height = Dimension.wrapContent
-                    linkTo(
-                        top = parent.top,
-                        bottom = parent.bottom,
-                        start = parent.start,
-                        end = parent.end,
+                    linkToParent(
                         verticalBias = 0f,
                     )
                 }
@@ -115,7 +113,7 @@ fun GenPasswordContent(
 
             Text(
                 text = stringResource(id = R.string.passw_len_is, state.passwLen),
-                style = theme.typeScheme.typography.bodyLarge,
+                style = theme.typeScheme.header,
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier.constrainAs(passwLenField) {
                     width = Dimension.fillToConstraints
@@ -197,7 +195,10 @@ fun GenPasswordContent(
                 },
             onClick = rememberClickDebounced { presenter?.saveAsNewNote() }
         ) {
-            Text(stringResource(R.string.save))
+            Text(
+                text = stringResource(R.string.save),
+                style = theme.typeScheme.buttonText,
+            )
         }
 
 
@@ -212,7 +213,10 @@ fun GenPasswordContent(
             colors = theme.colorScheme.grayTextButtonColors,
             onClick = rememberClickDebounced { presenter?.generatePassw() },
         ) {
-            Text(stringResource(R.string.passw_generate))
+            Text(
+                text = stringResource(R.string.passw_generate),
+                style = theme.typeScheme.buttonText,
+            )
         }
 
         TextButton(
@@ -225,7 +229,12 @@ fun GenPasswordContent(
                 },
             colors = theme.colorScheme.grayTextButtonColors,
             onClick = rememberClickDebounced { router?.navigate(dest.genHist()) }
-        ) { Text(stringResource(R.string.hist)) }
+        ) {
+            Text(
+                text = stringResource(R.string.hist),
+                style = theme.typeScheme.buttonText,
+            )
+        }
 
         TextButton(
             modifier = Modifier
@@ -244,8 +253,8 @@ fun GenPasswordContent(
             Text(
                 modifier = Modifier.padding(16.dp),
                 text = passw.current,
-                style = theme.typeScheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
+                style = theme.typeScheme.screenHeader,
+                fontSize = 20.sp,
                 textAlign = TextAlign.Center,
             )
         }

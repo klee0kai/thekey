@@ -128,7 +128,9 @@ class LoginInteractor {
             }?.debounce(100.milliseconds)
             ?.firstOrNull { it }
 
-        val engine = DI.cryptStorageEngineSafeLazy(StorageIdentifier())
+        val engine = DI.cryptStorageEngineSafeLazy(
+            StorageIdentifier(version = settingsRep().newStorageVersion())
+        )
 
         engine().logoutAll()
         rep().logoutAll()

@@ -32,7 +32,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesListWidgetState
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
-import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.animateTargetFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
@@ -50,13 +50,13 @@ fun StoragesListWidget(
     val presenter by rememberOnScreenRef { DI.storagesPresenter() }
     val isFindStoragesNoteInstalled by presenter!!.installAutoSearchStatus.collectAsState(key = Unit, initial = null)
 
-    val isShowInstallPluginPromo by animateTargetCrossFaded(
+    val isShowInstallPluginPromo by animateTargetFaded(
         target = isFindStoragesNoteInstalled?.let {
             state.isExtStorageSelected && !it.isInstalled
         },
         skipStates = listOf(null),
     )
-    val showStoragesTitle by animateTargetCrossFaded(target = state.isShowStoragesTitle)
+    val showStoragesTitle by animateTargetFaded(target = state.isShowStoragesTitle)
 
     when {
         isShowInstallPluginPromo.current == null -> Unit
@@ -76,7 +76,7 @@ fun StoragesListWidget(
                 header = {
                     Text(
                         text = stringResource(id = R.string.storages),
-                        style = MaterialTheme.typography.titleMedium,
+                        style = theme.typeScheme.header,
                         modifier = Modifier
                             .padding(start = 16.dp, top = 4.dp, bottom = 22.dp)
                             .alpha(showStoragesTitle.visibleOnTargetAlpha(true))

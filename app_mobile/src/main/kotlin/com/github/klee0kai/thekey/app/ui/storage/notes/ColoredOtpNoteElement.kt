@@ -31,24 +31,24 @@ import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkContentPreview
-import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.animateAlphaAsState
+import com.github.klee0kai.thekey.core.utils.views.animateTargetFaded
 import com.github.klee0kai.thekey.core.utils.views.horizontal
+import com.github.klee0kai.thekey.core.utils.views.linkToParent
 import com.github.klee0kai.thekey.core.utils.views.skeleton
-import com.github.klee0kai.thekey.core.utils.views.visibleOnTargetAlpha
 import org.jetbrains.annotations.VisibleForTesting
 
 @Composable
-fun ColoredOtpNoteItem(
+fun ColoredOtpNoteElement(
     modifier: Modifier = Modifier,
     otp: ColoredOtpNote = ColoredOtpNote(),
     icon: (@Composable () -> Unit)? = null,
 ) {
     val theme = LocalTheme.current
     val colorScheme = LocalColorScheme.current
-    val animatedNote by animateTargetCrossFaded(otp)
-    val skeleton by animateTargetCrossFaded(!otp.isLoaded)
+    val animatedNote by animateTargetFaded(otp)
+    val skeletonAlpha by animateAlphaAsState(!otp.isLoaded)
     val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
-
 
     ConstraintLayout(
         modifier = modifier
@@ -61,19 +61,15 @@ fun ColoredOtpNoteItem(
             siteField, loginField, iconField,
         ) = createRefs()
 
-        if (skeleton.current) {
+        if (skeletonAlpha > 0f) {
             Box(
                 modifier = Modifier
-                    .alpha(skeleton.visibleOnTargetAlpha(true))
-                    .skeleton(true)
+                    .alpha(skeletonAlpha)
+                    .skeleton()
                     .constrainAs(skeletonField) {
                         width = Dimension.fillToConstraints
                         height = Dimension.fillToConstraints
-                        linkTo(
-                            top = parent.top,
-                            bottom = parent.bottom,
-                            start = parent.start,
-                            end = parent.end,
+                        linkToParent(
                             topMargin = 6.dp,
                             bottomMargin = 6.dp,
                             startMargin = safeContentPaddings.horizontal(minValue = 16.dp),
@@ -85,18 +81,14 @@ fun ColoredOtpNoteItem(
 
         Box(
             modifier = Modifier
-                .alpha(skeleton.visibleOnTargetAlpha(false))
+                .alpha(1f - skeletonAlpha)
                 .size(2.dp, 24.dp)
                 .background(
                     color = colorScheme.surfaceSchemas.surfaceScheme(animatedNote.current.group.keyColor).surfaceColor,
                     shape = RoundedCornerShape(2.dp),
                 )
                 .constrainAs(colorGroupField) {
-                    linkTo(
-                        start = parent.start,
-                        top = parent.top,
-                        bottom = parent.bottom,
-                        end = parent.end,
+                    linkToParent(
                         verticalBias = 0.5f,
                         horizontalBias = 0f,
                         startMargin = safeContentPaddings.horizontal(minValue = 16.dp),
@@ -107,15 +99,13 @@ fun ColoredOtpNoteItem(
         Text(
             text = animatedNote.current.issuer.takeIf { it.isNotBlank() }
                 ?: stringResource(id = R.string.no_issuer),
-            style = theme.typeScheme.typography.bodyMedium,
+            style = theme.typeScheme.body,
             fontWeight = FontWeight.Medium,
             modifier = Modifier
-                .alpha(skeleton.visibleOnTargetAlpha(false))
+                .alpha(1f - skeletonAlpha)
                 .constrainAs(siteField) {
                     width = Dimension.fillToConstraints
-                    linkTo(
-                        top = parent.top,
-                        bottom = parent.bottom,
+                    linkToParent(
                         start = colorGroupField.end,
                         end = loginField.start,
                         topMargin = 6.dp,
@@ -130,16 +120,14 @@ fun ColoredOtpNoteItem(
 
         Text(
             text = animatedNote.current.name,
-            style = theme.typeScheme.typography.bodyMedium
-                .copy(color = theme.colorScheme.androidColorScheme.primary),
+            style = theme.typeScheme.body
+                .copy(color = theme.colorScheme.textColors.primaryTextColor),
             fontWeight = FontWeight.Medium,
             modifier = Modifier
-                .alpha(skeleton.visibleOnTargetAlpha(false))
+                .alpha(1f - skeletonAlpha)
                 .constrainAs(loginField) {
                     width = Dimension.fillToConstraints
-                    linkTo(
-                        top = parent.top,
-                        bottom = parent.bottom,
+                    linkToParent(
                         start = siteField.end,
                         end = iconField.start,
                         topMargin = 6.dp,
@@ -153,13 +141,9 @@ fun ColoredOtpNoteItem(
         )
 
         Box(modifier = Modifier
-            .alpha(skeleton.visibleOnTargetAlpha(false))
+            .alpha(1f - skeletonAlpha)
             .constrainAs(iconField) {
-                linkTo(
-                    top = parent.top,
-                    bottom = parent.bottom,
-                    start = parent.start,
-                    end = parent.end,
+                linkToParent(
                     startMargin = safeContentPaddings.horizontal(minValue = 16.dp),
                     endMargin = safeContentPaddings.horizontal(minValue = 16.dp),
                     horizontalBias = 1f,
@@ -178,7 +162,7 @@ fun ColoredOtpNoteItem(
 @Composable
 @Preview
 fun ColoredOtpNoteSkeletonPreview() = DebugDarkContentPreview {
-    ColoredOtpNoteItem(otp = ColoredOtpNote(isLoaded = false))
+    ColoredOtpNoteElement(otp = ColoredOtpNote(isLoaded = false))
 }
 
 @OptIn(DebugOnly::class)
@@ -186,7 +170,7 @@ fun ColoredOtpNoteSkeletonPreview() = DebugDarkContentPreview {
 @Composable
 @Preview
 fun ColoredOtpNoteDummyPreview() = DebugDarkContentPreview {
-    ColoredOtpNoteItem(
+    ColoredOtpNoteElement(
         otp = ColoredOtpNote(
             issuer = "some.super.site.com",
             name = "potato",
@@ -204,7 +188,7 @@ fun ColoredOtpNoteDummyPreview() = DebugDarkContentPreview {
 @Composable
 @Preview
 fun ColoredOtpNoteDummyNoGroupPreview() = DebugDarkContentPreview {
-    ColoredOtpNoteItem(
+    ColoredOtpNoteElement(
         otp = ColoredOtpNote(
             issuer = "some.super.site.com",
             name = "potato",
@@ -219,7 +203,7 @@ fun ColoredOtpNoteDummyNoGroupPreview() = DebugDarkContentPreview {
 @Composable
 @Preview
 fun ColoredOtpNoteDummyIconPreview() = DebugDarkContentPreview {
-    ColoredOtpNoteItem(
+    ColoredOtpNoteElement(
         otp = ColoredOtpNote(
             issuer = "some.super.site.com",
             name = "potato",

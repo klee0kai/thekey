@@ -13,6 +13,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
+import com.github.klee0kai.thekey.core.utils.views.linkToParent
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 
 @Composable
@@ -28,11 +29,7 @@ fun PluginApplyingScreen(
 
         Text(
             modifier = Modifier.constrainAs(titleField) {
-                linkTo(
-                    start = parent.start,
-                    end = parent.end,
-                    top = parent.top,
-                    bottom = parent.bottom,
+                linkToParent(
                     verticalBias = 0.6f,
                     bottomMargin = 16.dp,
                 )

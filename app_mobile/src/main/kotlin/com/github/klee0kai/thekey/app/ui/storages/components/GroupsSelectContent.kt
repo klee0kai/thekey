@@ -1,12 +1,9 @@
 package com.github.klee0kai.thekey.app.ui.storages.components
 
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -20,7 +17,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -40,6 +36,7 @@ import com.github.klee0kai.thekey.core.utils.possitions.onGlobalPositionState
 import com.github.klee0kai.thekey.core.utils.possitions.rememberViewPosition
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
 import com.github.klee0kai.thekey.core.utils.views.animatedBackground
+import com.github.klee0kai.thekey.core.utils.views.linkToParent
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 
 @Composable
@@ -63,15 +60,11 @@ fun GroupsSelectContent(
 
         Text(
             text = stringResource(id = R.string.groups),
-            style = theme.typeScheme.typography.labelSmall,
-            color = theme.colorScheme.androidColorScheme.onSurface.copy(alpha = 0.4f),
-            fontWeight = FontWeight.Bold,
+            style = theme.typeScheme.header,
+            color = theme.colorScheme.textColors.hintTextColor,
             modifier = Modifier.constrainAs(groupsHint) {
-                linkTo(
-                    start = parent.start,
-                    top = parent.top,
+                linkToParent(
                     bottom = groupsList.top,
-                    end = parent.end,
                     horizontalBias = 0f,
                     startMargin = 16.dp,
                     verticalBias = 1f,
@@ -85,11 +78,8 @@ fun GroupsSelectContent(
             modifier = Modifier
                 .size(52.dp, 4.dp)
                 .constrainAs(indicator) {
-                    linkTo(
-                        start = parent.start,
-                        end = parent.end,
+                    linkToParent(
                         top = groupsList.bottom,
-                        bottom = parent.bottom,
                         verticalBias = 0f,
                     )
                 },
@@ -101,12 +91,8 @@ fun GroupsSelectContent(
                 .wrapContentHeight()
                 .fillMaxWidth()
                 .constrainAs(groupsList) {
-                    linkTo(
-                        top = parent.top,
-                        start = parent.start,
-                        bottom = parent.bottom,
-                        end = parent.end,
-                        verticalBias = 0.6f
+                    linkToParent(
+                        verticalBias = 0.6f,
                     )
                 })
         {

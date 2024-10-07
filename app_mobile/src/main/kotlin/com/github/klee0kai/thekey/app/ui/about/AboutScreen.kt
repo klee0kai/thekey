@@ -35,6 +35,7 @@ import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
+import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
 import com.github.klee0kai.thekey.core.ui.devkit.preview.PreviewDevices
@@ -48,6 +49,7 @@ import com.github.klee0kai.thekey.app.R as AppR
 @Composable
 fun AboutScreen() {
     val scope = rememberCoroutineScope()
+    val theme = LocalTheme.current
     val router = LocalRouter.current
     val viewWidth = LocalView.current.width
     val colorScheme = LocalColorScheme.current
@@ -170,8 +172,8 @@ fun AboutScreen() {
 
         Text(
             text = stringResource(id = R.string.version, BuildConfig.VERSION_NAME),
-            style = MaterialTheme.typography.labelMedium
-                .copy(color = colorScheme.hintTextColor),
+            style = theme.typeScheme.header,
+            color = theme.colorScheme.textColors.hintTextColor,
             modifier = Modifier
                 .constrainAs(versionFiled) {
                     linkTo(

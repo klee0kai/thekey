@@ -26,12 +26,12 @@ import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.AndroidHelpersModule
 import com.github.klee0kai.thekey.app.perm.PermissionsHelperDummy
-import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
+import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.navigation.model.TextProvider
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
-import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.animateTargetFaded
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.horizontal
 import com.github.klee0kai.thekey.dynamic.qrcodescanner.ui.navigation.cameraPermissions
@@ -51,12 +51,13 @@ sealed interface CameraState {
 @Composable
 fun ScanQRCodeScreen() {
     val scope = rememberCoroutineScope()
+    val theme = LocalTheme.current
     val router by LocalRouter.currentRef
     val context = LocalContext.current
     val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
     val permissionHelper = remember { DI.permissionsHelper() }
     var permGranded by remember { mutableStateOf(permissionHelper.checkPermissions(permissionHelper.cameraPermissions())) }
-    val permGrandedAnimated by animateTargetCrossFaded(permGranded)
+    val permGrandedAnimated by animateTargetFaded(permGranded)
     var cameraState by remember { mutableStateOf<CameraState>(CameraState.NoState) }
     var screenClosed by remember { mutableStateOf(false) }
     var isQrCodeError by remember { mutableStateOf(false) }
@@ -101,7 +102,7 @@ fun ScanQRCodeScreen() {
                         )
                         .fillMaxWidth()
                         .align(Alignment.BottomCenter),
-                    colors = LocalColorScheme.current.grayTextButtonColors,
+                    colors = theme.colorScheme.grayTextButtonColors,
                     onClick = {
                         scope.launch {
                             with(permissionHelper) {
@@ -115,7 +116,10 @@ fun ScanQRCodeScreen() {
                         }
                     }
                 ) {
-                    Text(text = "grand permission")
+                    Text(
+                        text = "grand permission",
+                        style = theme.typeScheme.buttonText,
+                    )
                 }
             }
 
@@ -128,7 +132,8 @@ fun ScanQRCodeScreen() {
                         )
                         .fillMaxWidth()
                         .align(Alignment.BottomCenter),
-                    text = stringResource(id = R.string.camera_error)
+                    text = stringResource(id = R.string.camera_error),
+                    style = theme.typeScheme.header,
                 )
             }
 
@@ -141,7 +146,8 @@ fun ScanQRCodeScreen() {
                         )
                         .fillMaxWidth()
                         .align(Alignment.BottomCenter),
-                    text = stringResource(id = R.string.camera_starting)
+                    text = stringResource(id = R.string.camera_starting),
+                    style = theme.typeScheme.header,
                 )
             }
         }

@@ -25,8 +25,8 @@ import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.EditNoteGroupDestination
 import com.github.klee0kai.thekey.app.ui.notegroup.presenter.EditNoteGroupsPresenterDummy
-import com.github.klee0kai.thekey.app.ui.storage.notes.ColoredNoteItem
-import com.github.klee0kai.thekey.app.ui.storage.notes.ColoredOtpNoteItem
+import com.github.klee0kai.thekey.app.ui.storage.notes.ColoredNoteElement
+import com.github.klee0kai.thekey.app.ui.storage.notes.ColoredOtpNoteElement
 import com.github.klee0kai.thekey.core.di.identifiers.NoteGroupIdentifier
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
@@ -34,7 +34,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.icons.AddCheckedIcon
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.common.Dummy
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkContentPreview
-import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.animateTargetFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.ifProduction
@@ -56,7 +56,7 @@ fun NoteSelectToGroupComponent(
     val safeContentPadding = WindowInsets.safeContent.asPaddingValues()
     val presenter by rememberOnScreenRef { DI.editNoteGroupPresenter(dest.identifier()) }
     val storageItems by presenter!!.filteredItems.collectAsState(key = Unit, initial = emptyList())
-    val isOtpModeAnimated by animateTargetCrossFaded(target = isOtpMode)
+    val isOtpModeAnimated by animateTargetFaded(target = isOtpMode)
 
     if (storageItems.isEmpty()) {
         return
@@ -75,7 +75,7 @@ fun NoteSelectToGroupComponent(
             when {
                 note != null -> {
                     item(key = storageItem.id, contentType = note::class) {
-                        ColoredNoteItem(
+                        ColoredNoteElement(
                             modifier = Modifier
                                 .ifProduction { animateItemPlacement() }
                                 .combinedClickable(
@@ -99,7 +99,7 @@ fun NoteSelectToGroupComponent(
 
                 otp != null -> {
                     item(key = storageItem.id, contentType = otp::class) {
-                        ColoredOtpNoteItem(
+                        ColoredOtpNoteElement(
                             modifier = Modifier
                                 .ifProduction { animateItemPlacement() }
                                 .combinedClickable(

@@ -24,7 +24,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.utils.views.animateContentSizeProduction
-import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.animateTargetFaded
 import com.github.klee0kai.thekey.core.utils.views.createAnchor
 import com.github.klee0kai.thekey.core.utils.views.horizontal
 import com.thedeanda.lorem.LoremIpsum
@@ -36,7 +36,7 @@ fun StatusPreference(
     text: String = "",
     hint: String = "",
     status: String = "",
-    statusColor: Color = LocalTheme.current.colorScheme.hintTextColor,
+    statusColor: Color = LocalTheme.current.colorScheme.textColors.hintTextColor,
     onClick: () -> Unit = {},
 ) {
     val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
@@ -45,9 +45,9 @@ fun StatusPreference(
         targetValue = statusColor,
         label = "status color"
     )
-    val textAnimated by animateTargetCrossFaded(target = text)
-    val hintAnimated by animateTargetCrossFaded(target = hint)
-    val statusAnimated by animateTargetCrossFaded(target = status)
+    val textAnimated by animateTargetFaded(target = text)
+    val hintAnimated by animateTargetFaded(target = hint)
+    val statusAnimated by animateTargetFaded(target = status)
 
     ConstraintLayout(
         modifier = modifier
@@ -84,13 +84,13 @@ fun StatusPreference(
                     )
                 },
             text = textAnimated.current,
+            style = theme.typeScheme.header,
         )
 
         if (hint.isNotBlank()) {
             Text(
                 modifier = Modifier
                     .animateContentSizeProduction()
-                    .alpha(0.5f)
                     .alpha(hintAnimated.alpha)
                     .constrainAs(hintField) {
                         width = Dimension.fillToConstraints
@@ -105,7 +105,8 @@ fun StatusPreference(
                         )
                     },
                 text = hintAnimated.current,
-                style = theme.typeScheme.typography.labelSmall,
+                style = theme.typeScheme.bodySmall,
+                color = theme.colorScheme.textColors.hintTextColor,
             )
         }
 
@@ -126,7 +127,7 @@ fun StatusPreference(
                 },
             text = statusAnimated.current,
             textAlign = TextAlign.Center,
-            style = theme.typeScheme.typography.bodyLarge,
+            style = theme.typeScheme.buttonText,
             color = statusColorAnimated,
         )
     }

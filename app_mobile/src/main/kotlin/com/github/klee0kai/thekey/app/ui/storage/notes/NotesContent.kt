@@ -56,7 +56,7 @@ import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebouncedArg
 import com.github.klee0kai.thekey.core.utils.views.rememberDerivedStateOf
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
-import com.github.klee0kai.thekey.core.utils.views.rememberTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.rememberTargetFaded
 import org.jetbrains.annotations.VisibleForTesting
 import com.github.klee0kai.thekey.core.R as CoreR
 
@@ -74,7 +74,7 @@ fun NotesContent(
     val presenter by rememberOnScreenRef { DI.storagePresenter(dest.identifier()) }
     val selectedGroup by presenter!!.selectedGroupId.collectAsState(key = Unit, initial = null)
     val groups by presenter!!.filteredColorGroups.collectAsState(key = Unit, initial = emptyList())
-    val otpGroupSelected by rememberTargetCrossFaded {
+    val otpGroupSelected by rememberTargetFaded {
         if (selectedGroup == ColorGroup.otpNotes().id) {
             groups.firstOrNull { it.id == selectedGroup }
         } else {

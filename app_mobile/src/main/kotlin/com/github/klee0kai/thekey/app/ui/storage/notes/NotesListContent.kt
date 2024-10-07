@@ -19,7 +19,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.klee0kai.stone.type.wrappers.getValue
@@ -81,8 +80,7 @@ fun NotesListContent(
         item("header") {
             Text(
                 text = stringResource(id = R.string.accounts),
-                style = theme.typeScheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
+                style = theme.typeScheme.header,
                 modifier = Modifier
                     .padding(start = 16.dp, top = 4.dp, bottom = 22.dp)
                     .ifProduction { animateItemPlacement() }
@@ -102,7 +100,7 @@ fun NotesListContent(
                     var showMenu by remember { mutableStateOf(false) }
                     val position = rememberViewPosition()
 
-                    ColoredNoteItem(
+                    ColoredNoteElement(
                         modifier = Modifier
                             .ifProduction { animateItemPlacement() }
                             .onGlobalPositionState(position)
@@ -152,7 +150,7 @@ fun NotesListContent(
                     var showMenu by remember { mutableStateOf(false) }
                     val position = rememberViewPosition()
 
-                    ColoredOtpNoteItem(
+                    ColoredOtpNoteElement(
                         modifier = Modifier
                             .ifProduction { animateItemPlacement() }
                             .onGlobalPositionState(position)

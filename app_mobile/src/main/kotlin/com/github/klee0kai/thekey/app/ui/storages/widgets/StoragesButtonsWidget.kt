@@ -37,7 +37,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.components.FabSimpleInContainer
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesButtonsWidgetState
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
-import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.animateTargetFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.isIme
@@ -53,14 +53,12 @@ fun StoragesButtonsWidget(
     val router by LocalRouter.currentRef
     val theme = LocalTheme.current
     val presenter by rememberOnScreenRef { DI.storagesPresenter() }
-    val isFindStoragesFeatureInstalled by presenter!!.installAutoSearchStatus.collectAsState(
-        key = Unit,
-        initial = null
-    )
+    val isFindStoragesFeatureInstalled by presenter!!.installAutoSearchStatus
+        .collectAsState(key = Unit, initial = null)
 
-    val imeIsVisibleAnimated by animateTargetCrossFaded(WindowInsets.isIme)
+    val imeIsVisibleAnimated by animateTargetFaded(WindowInsets.isIme)
 
-    val isShowInstallPluginPromo by animateTargetCrossFaded(
+    val isShowInstallPluginPromo by animateTargetFaded(
         target = isFindStoragesFeatureInstalled?.let {
             state.isExtStorageSelected && !it.isInstalled
         },
@@ -88,10 +86,13 @@ fun StoragesButtonsWidget(
                             .fillMaxWidth()
                             .padding(bottom = 12.dp),
                         colors = LocalColorScheme.current.grayTextButtonColors,
-                        onClick = { presenter?.importStorage(router) }
+                        onClick = rememberClickDebounced { presenter?.importStorage(router) }
                     ) {
                         val textRes = R.string.import_storage
-                        Text(stringResource(textRes))
+                        Text(
+                            text = stringResource(textRes),
+                            style = theme.typeScheme.buttonText,
+                        )
                     }
                 }
 
@@ -100,9 +101,12 @@ fun StoragesButtonsWidget(
                         modifier = Modifier
                             .fillMaxWidth()
                             .alpha(imeIsVisibleAnimated.alpha),
-                        onClick = { presenter?.installAutoSearchPlugin(router) }
+                        onClick = rememberClickDebounced { presenter?.installAutoSearchPlugin(router) }
                     ) {
-                        Text(stringResource(R.string.install))
+                        Text(
+                            text = stringResource(R.string.install),
+                            style = theme.typeScheme.buttonText,
+                        )
                     }
                 }
             }

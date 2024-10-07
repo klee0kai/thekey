@@ -1,12 +1,15 @@
 @file:OptIn(ExperimentalFoundationApi::class)
 
-package com.github.klee0kai.thekey.dynamic.findstorage.ui.storages.content
+package com.github.klee0kai.thekey.app.ui.storages.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,7 +18,6 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -30,12 +32,14 @@ import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.color.KeyColor
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkContentPreview
-import com.github.klee0kai.thekey.core.utils.views.toAnnotationString
+import com.github.klee0kai.thekey.core.utils.views.horizontal
+import com.github.klee0kai.thekey.core.utils.views.linkToParent
 import com.thedeanda.lorem.LoremIpsum
+import java.io.File
 
 
 @Composable
-fun FSColoredStorageItem(
+fun ColoredStorageElement(
     modifier: Modifier = Modifier,
     storage: ColoredStorage = ColoredStorage(),
     onClick: () -> Unit = {},
@@ -44,16 +48,7 @@ fun FSColoredStorageItem(
 ) {
     val theme = LocalTheme.current
     val colorScheme = theme.colorScheme
-    val pathInputHelper = remember { DI.pathInputHelper() }
-    val isDescNotEmpty = storage.description.isNotBlank() || storage.name.isNotBlank()
-
-    val pathShortPath = with(pathInputHelper) {
-        storage.path
-            .shortPath()
-            .toAnnotationString()
-            .coloredPath(accentColor = colorScheme.androidColorScheme.primary)
-            .coloredFileExt(extensionColor = theme.colorScheme.hintTextColor)
-    }
+    val safeContentPaddings = WindowInsets.safeContent.asPaddingValues()
 
     ConstraintLayout(
         modifier = modifier
@@ -64,7 +59,7 @@ fun FSColoredStorageItem(
                 onLongClick = onLongClick,
             )
     ) {
-        val (colorGroupField, pathField, nameField, iconField) = createRefs()
+        val (colorGroupField, nameField, descriptionField, iconField) = createRefs()
 
         Box(
             modifier = Modifier
@@ -76,15 +71,11 @@ fun FSColoredStorageItem(
                     shape = RoundedCornerShape(1.dp)
                 )
                 .constrainAs(colorGroupField) {
-                    linkTo(
-                        top = parent.top,
-                        bottom = parent.bottom,
-                        start = parent.start,
-                        end = parent.end,
+                    linkToParent(
                         topMargin = 12.dp,
                         bottomMargin = 12.dp,
-                        startMargin = 16.dp,
-                        endMargin = 16.dp,
+                        startMargin = safeContentPaddings.horizontal(minValue = 16.dp),
+                        endMargin = safeContentPaddings.horizontal(minValue = 16.dp),
                         horizontalBias = 0f,
                         verticalBias = 0.5f,
                     )
@@ -92,14 +83,15 @@ fun FSColoredStorageItem(
         )
 
         Text(
-            text = pathShortPath,
-            style = theme.typeScheme.typography.bodyMedium,
+            text = when {
+                storage.name.isNotBlank() -> storage.name
+                else -> File(storage.path).nameWithoutExtension
+            },
+            style = theme.typeScheme.body,
             modifier = Modifier
-                .constrainAs(pathField) {
+                .constrainAs(nameField) {
                     width = Dimension.fillToConstraints
-                    linkTo(
-                        top = parent.top,
-                        bottom = parent.bottom,
+                    linkToParent(
                         start = colorGroupField.end,
                         end = iconField.start,
                         topMargin = 6.dp,
@@ -107,24 +99,20 @@ fun FSColoredStorageItem(
                         startMargin = 16.dp,
                         endMargin = 16.dp,
                         horizontalBias = 0f,
-                        verticalBias = if (isDescNotEmpty) 0f else 0.5f,
+                        verticalBias = if (storage.description.isNotBlank()) 0f else 0.5f,
                     )
                 }
         )
 
-        if (isDescNotEmpty) {
+        if (storage.description.isNotBlank()) {
             Text(
-                text = when {
-                    storage.name.isNotBlank() && storage.description.isNotBlank() -> "${storage.name}  ~  ${storage.description}"
-                    else -> "${storage.name}${storage.description}"
-                },
-                style = theme.typeScheme.typography.bodySmall,
+                text = storage.description,
+                style = theme.typeScheme.bodySmall,
                 modifier = Modifier
-                    .constrainAs(nameField) {
+                    .constrainAs(descriptionField) {
                         width = Dimension.fillToConstraints
-                        linkTo(
-                            top = pathField.bottom,
-                            bottom = parent.bottom,
+                        linkToParent(
+                            top = nameField.bottom,
                             start = colorGroupField.end,
                             end = iconField.start,
                             topMargin = 4.dp,
@@ -134,19 +122,15 @@ fun FSColoredStorageItem(
                             horizontalBias = 0f,
                             verticalBias = 1f,
                         )
-                        top.linkTo(pathField.bottom, margin = 4.dp)
+                        top.linkTo(nameField.bottom, margin = 4.dp)
                     }
             )
         }
 
         Box(modifier = Modifier.constrainAs(iconField) {
-            linkTo(
-                top = parent.top,
-                bottom = parent.bottom,
-                start = parent.start,
-                end = parent.end,
-                startMargin = 16.dp,
-                endMargin = 16.dp,
+            linkToParent(
+                startMargin = safeContentPaddings.horizontal(minValue = 16.dp),
+                endMargin = safeContentPaddings.horizontal(minValue = 16.dp),
                 horizontalBias = 1f,
             )
         }) {
@@ -168,11 +152,11 @@ fun FSColoredStorageItem(
 @OptIn(DebugOnly::class)
 @Preview
 @Composable
-fun FSColoredStorageItemPreview() = DebugDarkContentPreview {
+fun ColoredStorageItemPreview() = DebugDarkContentPreview {
     DI.hardResetToPreview()
-    FSColoredStorageItem(
+    ColoredStorageElement(
         storage = ColoredStorage(
-            path = "/phoneStorage/Documents/pet.ckey",
+            path = "path",
             name = "name",
             description = "description",
             version = 1,
@@ -183,25 +167,25 @@ fun FSColoredStorageItemPreview() = DebugDarkContentPreview {
 @OptIn(DebugOnly::class)
 @Preview
 @Composable
-fun FSColoredStorageNoDescItemPreview() = DebugDarkContentPreview {
+fun ColoredStorageNoDescItemPreview() = DebugDarkContentPreview {
     DI.hardResetToPreview()
-    FSColoredStorageItem(
+    ColoredStorageElement(
         storage = ColoredStorage(
-            path = "/phoneStorage/Documents/pet.ckey",
+            path = "path",
+            name = "name",
             version = 1,
         ),
     )
 }
 
-
 @OptIn(DebugOnly::class)
 @Preview
 @Composable
-fun FSColoredStorageNotValidItemPreview() = DebugDarkContentPreview {
+fun ColoredStorageNoValidItemPreview() = DebugDarkContentPreview {
     DI.hardResetToPreview()
-    FSColoredStorageItem(
+    ColoredStorageElement(
         storage = ColoredStorage(
-            path = "/phoneStorage/Documents/pet.ckey",
+            path = "path",
             name = "name",
             description = "description"
         ),
@@ -211,26 +195,13 @@ fun FSColoredStorageNotValidItemPreview() = DebugDarkContentPreview {
 @OptIn(DebugOnly::class)
 @Preview
 @Composable
-fun FSColoredStorageLargeTestPreview() = DebugDarkContentPreview {
+fun ColoredStorageLargeItemPreview() = DebugDarkContentPreview {
     DI.hardResetToPreview()
-    FSColoredStorageItem(
+    ColoredStorageElement(
         storage = ColoredStorage(
-            path = "/" + LoremIpsum().getWords(1, 15).replace(" ", "/")+".ckey",
-            description = LoremIpsum().getWords(1, 15),
-        ),
-    )
-}
-
-@OptIn(DebugOnly::class)
-@Preview
-@Composable
-fun FSColoredStorageIconItemPreview() = DebugDarkContentPreview {
-    DI.hardResetToPreview()
-    FSColoredStorageItem(
-        storage = ColoredStorage(
-            path = "/phoneStorage/Documents/pet.ckey",
-            name = "name",
-            description = "description"
+            path = "/some/file.ext",
+            name = LoremIpsum().getWords(10, 15),
+            description = LoremIpsum().getWords(10, 15),
         ),
         icon = {
             Icon(

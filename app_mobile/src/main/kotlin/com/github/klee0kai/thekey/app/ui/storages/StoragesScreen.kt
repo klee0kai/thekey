@@ -44,7 +44,7 @@ import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesListWidgetSta
 import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesStatusBarWidgetState
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.accumulate
-import com.github.klee0kai.thekey.core.utils.views.animateTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.animateTargetFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.currentRef
 import com.github.klee0kai.thekey.core.utils.views.isIme
@@ -77,7 +77,7 @@ fun StoragesScreen() = Screen {
     }
     val isExtStorageSelected by rememberDerivedStateOf { selectedGroup == ColorGroup.externalStorages().id }
     val showStoragesTitle by rememberDerivedStateOf { dragProgress > 0.1f }
-    val imeIsVisibleAnimated by animateTargetCrossFaded(WindowInsets.isIme)
+    val imeIsVisibleAnimated by animateTargetFaded(WindowInsets.isIme)
 
     SimpleBottomSheetScaffold(
         topMargin = AppBarConst.appBarSize + safeContentPaddings.calculateTopPadding(),

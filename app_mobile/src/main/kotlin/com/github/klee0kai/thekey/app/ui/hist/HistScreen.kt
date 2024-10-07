@@ -38,8 +38,9 @@ import com.github.klee0kai.stone.type.wrappers.getValue
 import com.github.klee0kai.thekey.app.di.DI
 import com.github.klee0kai.thekey.app.di.hardResetToPreview
 import com.github.klee0kai.thekey.app.di.modules.PresentersModule
-import com.github.klee0kai.thekey.app.ui.hist.components.HistPasswItem
+import com.github.klee0kai.thekey.app.ui.hist.components.HistPasswElement
 import com.github.klee0kai.thekey.app.ui.hist.components.popup.HistPasswPopup
+import com.github.klee0kai.thekey.app.ui.hist.presenter.GenHistPresenter
 import com.github.klee0kai.thekey.app.ui.hist.presenter.HistPresenterDummy
 import com.github.klee0kai.thekey.app.ui.navigation.model.HistDestination
 import com.github.klee0kai.thekey.app.ui.navigation.noteIdentifier
@@ -47,7 +48,9 @@ import com.github.klee0kai.thekey.app.ui.navigation.storageIdentifier
 import com.github.klee0kai.thekey.app.ui.storage.model.SearchState
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
+import com.github.klee0kai.thekey.core.domain.model.HistPassw
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
+import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.ui.devkit.Screen
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarConst
 import com.github.klee0kai.thekey.core.ui.devkit.components.appbar.AppBarStates
@@ -56,6 +59,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.components.settings.SectionHead
 import com.github.klee0kai.thekey.core.ui.devkit.icons.BackMenuIcon
 import com.github.klee0kai.thekey.core.ui.devkit.overlay.PopupMenu
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
+import com.github.klee0kai.thekey.core.utils.common.buildListCount
 import com.github.klee0kai.thekey.core.utils.possitions.onGlobalPositionState
 import com.github.klee0kai.thekey.core.utils.possitions.rememberViewPosition
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
@@ -69,7 +73,7 @@ import com.github.klee0kai.thekey.core.utils.views.rememberClick
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebounced
 import com.github.klee0kai.thekey.core.utils.views.rememberClickDebouncedArg
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
-import com.github.klee0kai.thekey.core.utils.views.rememberTargetCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.rememberTargetFaded
 import org.jetbrains.annotations.VisibleForTesting
 import kotlin.time.Duration
 
@@ -80,6 +84,7 @@ private const val MainTitleId = 1
 fun GenHistScreen(
     dest: HistDestination = HistDestination(),
 ) = Screen {
+    val theme = LocalTheme.current
     val router by LocalRouter.currentRef
     val safeContentPadding = WindowInsets.safeContent.asPaddingValues()
     val scrollState = rememberLazyListState()
@@ -92,12 +97,13 @@ fun GenHistScreen(
             DI.genHistPresenter(dest.storageIdentifier()).apply { init() }
         }
     }
-    val histList by presenter!!.filteredHist.collectAsState(key = Unit, initial = null)
+    val histList by presenter!!.filteredHist
+        .collectAsState(key = Unit, initial = buildListCount(7) { HistPassw(isLoaded = false) })
     val searchState by presenter!!.searchState.collectAsState(key = Unit, initial = SearchState())
     val searchFocusRequester = remember { FocusRequester() }
-    val emptyListDummy by rememberTargetCrossFaded { histList != null && histList!!.isEmpty() }
+    val emptyListDummy by rememberTargetFaded { histList.isEmpty() }
 
-    val targetTitleId by rememberTargetCrossFaded {
+    val targetTitleId by rememberTargetFaded {
         when {
             searchState.isActive -> SearchTitleId
             else -> MainTitleId
@@ -122,10 +128,10 @@ fun GenHistScreen(
         }
 
         var oldChDate: String? = null
-        histList?.forEach { hist ->
+        histList.forEachIndexed { idx, hist ->
             if (!hist.changeDateStr.isNullOrBlank() && hist.changeDateStr != oldChDate) {
                 oldChDate = hist.changeDateStr
-                item("sec-${hist.changeDateStr}") {
+                item(if (hist.isLoaded) "sec-${hist.changeDateStr}" else "sec-idx-${idx}") {
                     SectionHeader(
                         modifier = Modifier
                             .ifProduction { animateItemPlacement() },
@@ -134,11 +140,11 @@ fun GenHistScreen(
                 }
             }
 
-            item(hist.id) {
+            item(if (hist.isLoaded) "p-${hist.id}" else "p-idx-${idx}") {
                 var showMenu by remember { mutableStateOf(false) }
                 val position = rememberViewPosition()
 
-                HistPasswItem(
+                HistPasswElement(
                     modifier = Modifier
                         .onGlobalPositionState(position)
                         .ifProduction { animateItemPlacement() }
@@ -147,7 +153,9 @@ fun GenHistScreen(
                                 showMenu = false
                                 presenter?.savePassw(hist.id, router)
                             },
-                            onLongClick = rememberClick(hist) { showMenu = !showMenu },
+                            onLongClick = rememberClick(hist) {
+                                showMenu = !showMenu
+                            },
                         )
                         .padding(horizontal = safeContentPadding.horizontal(minValue = 16.dp)),
                     passw = hist,
@@ -164,7 +172,9 @@ fun GenHistScreen(
                         onSave = if (noteIdentifier == null) rememberClickDebounced(hist) {
                             showMenu = false
                             presenter?.savePassw(hist.id, router)
-                        } else null,
+                        } else {
+                            null
+                        },
                         onCopy = rememberClickDebounced(hist) {
                             showMenu = false
                             presenter?.copyPassw(hist.id, router)
@@ -191,12 +201,13 @@ fun GenHistScreen(
         Box(
             modifier = Modifier
                 .alpha(emptyListDummy.alpha)
-                .alpha(0.4f)
                 .fillMaxSize(),
             contentAlignment = Alignment.Center,
         ) {
             Text(
-                text = stringResource(id = R.string.no_history)
+                text = stringResource(id = R.string.no_history),
+                style = theme.typeScheme.header,
+                color = theme.colorScheme.textColors.hintTextColor,
             )
         }
     }
@@ -279,6 +290,24 @@ fun GenHistScreenEmptyPreview() {
     DI.initPresenterModule(object : PresentersModule {
         override fun genHistPresenter(storageIdentifier: StorageIdentifier) =
             object : HistPresenterDummy(histCount = 0) {
+
+            }
+    })
+    DebugDarkScreenPreview {
+        GenHistScreen()
+    }
+}
+
+
+@OptIn(DebugOnly::class)
+@VisibleForTesting
+@Preview(device = Devices.PHONE)
+@Composable
+fun GenHistScreenSkeletonEarlyPreview() {
+    DI.hardResetToPreview()
+    DI.initPresenterModule(object : PresentersModule {
+        override fun genHistPresenter(storageIdentifier: StorageIdentifier) =
+            object : GenHistPresenter {
 
             }
     })

@@ -83,7 +83,7 @@ fun PathTextField(
             with(pathInputHelper) {
                 input.coloredPath(theme.colorScheme.androidColorScheme.primary)
                     .toTransformationText()
-                    .withTKeyExtension(theme.colorScheme.hintTextColor)
+                    .withTKeyExtension(theme.colorScheme.textColors.hintTextColor)
             }
         },
         value = value,
@@ -121,7 +121,7 @@ fun PathTextField(
                         horizontal = 8.dp,
                         vertical = 8.dp,
                     ),
-                    style = theme.typeScheme.typography.labelMedium,
+                    style = theme.typeScheme.body,
                 )
             }
 

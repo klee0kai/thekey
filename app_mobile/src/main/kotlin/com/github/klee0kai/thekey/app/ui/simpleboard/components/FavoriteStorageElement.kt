@@ -11,8 +11,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -24,11 +22,11 @@ import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkContentPreview
+import com.github.klee0kai.thekey.core.utils.views.linkToParent
 import com.github.klee0kai.thekey.core.utils.views.toAnnotationString
 
-
 @Composable
-fun FavoriteStorageItem(
+fun FavoriteStorageElement(
     modifier: Modifier = Modifier,
     storage: ColoredStorage = ColoredStorage(),
     onClick: () -> Unit = {},
@@ -44,7 +42,7 @@ fun FavoriteStorageItem(
             .shortPath()
             .toAnnotationString()
             .coloredPath(accentColor = colorScheme.androidColorScheme.primary)
-            .coloredFileExt(extensionColor = colorScheme.hintTextColor)
+            .coloredFileExt(extensionColor = theme.colorScheme.textColors.hintTextColor)
     }
 
     ConstraintLayout(
@@ -62,15 +60,11 @@ fun FavoriteStorageItem(
 
         Text(
             text = pathShortPath,
-            style = theme.typeScheme.typography.bodyMedium,
+            style = theme.typeScheme.body,
             modifier = Modifier
                 .constrainAs(pathField) {
                     width = Dimension.fillToConstraints
-                    linkTo(
-                        top = parent.top,
-                        bottom = parent.bottom,
-                        start = parent.start,
-                        end = parent.end,
+                    linkToParent(
                         topMargin = 6.dp,
                         bottomMargin = 6.dp,
                         startMargin = 16.dp,
@@ -87,13 +81,12 @@ fun FavoriteStorageItem(
                     storage.name.isNotBlank() && storage.description.isNotBlank() -> "${storage.name}  ~  ${storage.description}"
                     else -> "${storage.name}${storage.description}"
                 },
-                style = theme.typeScheme.typography.labelMedium,
-                fontWeight = FontWeight.W400,
+                style = theme.typeScheme.bodySmall,
+                color = theme.colorScheme.textColors.hintTextColor,
                 modifier = Modifier
-                    .alpha(0.4f)
                     .constrainAs(nameField) {
                         width = Dimension.fillToConstraints
-                        linkTo(
+                        linkToParent(
                             top = pathField.bottom,
                             bottom = parent.bottom,
                             start = parent.start,
@@ -118,7 +111,7 @@ fun FavoriteStorageItem(
 private fun FavoriteStorageItemPreview() {
     DI.hardResetToPreview()
     DebugDarkContentPreview {
-        FavoriteStorageItem(
+        FavoriteStorageElement(
             storage = ColoredStorage(
                 path = "/phoneStorage/Documents/business.ckey",
                 name = "business",
@@ -134,7 +127,7 @@ private fun FavoriteStorageItemPreview() {
 private fun FavoriteStorageItemNoDescPreview() {
     DI.hardResetToPreview()
     DebugDarkContentPreview {
-        FavoriteStorageItem(
+        FavoriteStorageElement(
             storage = ColoredStorage(
                 path = "/phoneStorage/Documents/business.ckey",
             )

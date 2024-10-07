@@ -12,7 +12,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.AppTheme
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesStatusBarWidgetState
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
-import com.github.klee0kai.thekey.core.utils.views.collectAsStateCrossFaded
+import com.github.klee0kai.thekey.core.utils.views.collectAsStateFaded
 import com.github.klee0kai.thekey.core.utils.views.rememberOnScreenRef
 import com.github.klee0kai.thekey.dynamic.findstorage.R
 import com.github.klee0kai.thekey.dynamic.findstorage.di.FSDI
@@ -25,7 +25,7 @@ fun FSStoragesStatusBarWidget(
     parent: @Composable (modifier: Modifier, state: StoragesStatusBarWidgetState) -> Unit = { _, _ -> },
 ) {
     val presenter by rememberOnScreenRef { FSDI.fsStoragesPresenter() }
-    val isStoragesSearching by presenter!!.isStoragesSearchingProgress.collectAsStateCrossFaded(key = Unit, initial = null)
+    val isStoragesSearching by presenter!!.isStoragesSearchingProgress.collectAsStateFaded(key = Unit, initial = null)
 
     when {
         isStoragesSearching.current == true -> {
