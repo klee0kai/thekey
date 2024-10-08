@@ -91,16 +91,18 @@ fun ColoredStorageItemWidget(
 @OptIn(DebugOnly::class)
 @Preview
 @Composable
-fun ColoredStorageSimpleItemPreview() = DebugDarkContentPreview {
+fun ColoredStorageSimpleItemPreview() {
     DI.hardResetToPreview()
-    ColoredStorageItemWidget(
-        state = StorageItemWidgetState(
-            ColoredStorage(
-                path = "path",
-                name = "name",
-                description = "description",
-                version = 1,
-            ),
+    DebugDarkContentPreview {
+        ColoredStorageItemWidget(
+            state = StorageItemWidgetState(
+                ColoredStorage(
+                    path = "path",
+                    name = "name",
+                    description = "description",
+                    version = 1,
+                ),
+            )
         )
-    )
+    }
 }

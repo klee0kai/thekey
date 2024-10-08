@@ -37,6 +37,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.components.FabSimpleInContainer
 import com.github.klee0kai.thekey.core.ui.devkit.theme.DefaultThemes
 import com.github.klee0kai.thekey.core.ui.navigation.model.StoragesButtonsWidgetState
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
+import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
 import com.github.klee0kai.thekey.core.utils.views.animateTargetFaded
 import com.github.klee0kai.thekey.core.utils.views.collectAsState
 import com.github.klee0kai.thekey.core.utils.views.currentRef
@@ -144,11 +145,14 @@ fun StoragesButtonsWidgetPromoPreview() = AppTheme(theme = DefaultThemes.darkThe
 @DebugOnly
 @Composable
 @Preview
-fun StoragesButtonsWidgetDefaultPreview() = AppTheme(theme = DefaultThemes.darkTheme) {
+fun StoragesButtonsWidgetDefaultPreview() {
     DI.hardResetToPreview()
-    StoragesButtonsWidget(
-        state = StoragesButtonsWidgetState(
-            isExtStorageSelected = true,
+
+    DebugDarkScreenPreview {
+        StoragesButtonsWidget(
+            state = StoragesButtonsWidgetState(
+                isExtStorageSelected = true,
+            )
         )
-    )
+    }
 }

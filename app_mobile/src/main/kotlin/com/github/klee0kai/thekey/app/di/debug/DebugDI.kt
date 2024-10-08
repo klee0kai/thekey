@@ -15,6 +15,7 @@ object DebugDI {
 
     fun AppComponent.initDummyModules() {
         initEngineModule(DummyEngineModule::class.java)
+        initPresenterModule(DummyPresentersModule(origin = presentersFactory()))
     }
 
 }

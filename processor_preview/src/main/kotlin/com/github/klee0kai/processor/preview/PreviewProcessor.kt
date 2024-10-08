@@ -8,8 +8,8 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.LambdaTypeName
-import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
@@ -53,25 +53,41 @@ class PreviewProcessor : AbstractProcessor() {
             .mapNotNull { env.elementUtils.getPackageOf(it)?.toString() }
             .findCommonPgk()
 
+        val contentTypeName = LambdaTypeName.get(
+            returnType = Unit::class.asTypeName(),
+        ).copy(
+            annotations = listOf(
+                AnnotationSpec.builder(composableAnnCl).build()
+            )
+        )
+
         val foundMethodType = TypeSpec.classBuilder("FoundPreviewMethod")
             .apply {
+                addProperty(
+                    PropertySpec
+                        .builder("pkg", String::class)
+                        .initializer("pkg")
+                        .build()
+                )
+                addProperty(
+                    PropertySpec
+                        .builder("methodName", String::class)
+                        .initializer("methodName")
+                        .build()
+                )
+                addProperty(
+                    PropertySpec
+                        .builder("content", contentTypeName)
+                        .initializer("content")
+                        .build()
+                )
+
                 primaryConstructor(
                     FunSpec.constructorBuilder()
                         .apply {
                             addParameter("pkg", String::class)
                             addParameter("methodName", String::class)
-                            addParameter(
-                                ParameterSpec.builder(
-                                    "content",
-                                    LambdaTypeName.get(
-                                        returnType = Unit::class.asTypeName(),
-                                    ).copy(
-                                        annotations = listOf(
-                                            AnnotationSpec.builder(composableAnnCl).build()
-                                        )
-                                    )
-                                ).build()
-                            )
+                            addParameter("content", contentTypeName)
                         }
                         .build()
                 )

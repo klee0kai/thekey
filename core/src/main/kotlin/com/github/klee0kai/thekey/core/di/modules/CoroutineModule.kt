@@ -38,7 +38,6 @@ interface CoroutineModule {
     @MainDispatcher
     fun mainDispatcher(): CoroutineDispatcher = Dispatchers.Main.immediate
 
-
     @IODispatcher
     fun ioDispatcher(): CoroutineDispatcher = Dispatchers.IO
 

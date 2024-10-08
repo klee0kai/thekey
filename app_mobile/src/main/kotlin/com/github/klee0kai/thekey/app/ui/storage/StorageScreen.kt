@@ -17,7 +17,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,7 +30,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -42,6 +40,7 @@ import com.github.klee0kai.thekey.app.di.modules.PresentersModule
 import com.github.klee0kai.thekey.app.ui.navigation.identifier
 import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.GenPasswordContent
+import com.github.klee0kai.thekey.app.ui.storage.genpassw.presenter.GenPasswPresenterDummy
 import com.github.klee0kai.thekey.app.ui.storage.model.SearchState
 import com.github.klee0kai.thekey.app.ui.storage.notes.NotesContent
 import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenterDummy
@@ -247,6 +246,10 @@ fun StorageScreenAccountsPreview() {
     DI.initPresenterModule(object : PresentersModule {
         override fun storagePresenter(storageIdentifier: StorageIdentifier) =
             StoragePresenterDummy()
+
+        override fun genPasswPresenter(storageIdentifier: StorageIdentifier) =
+            GenPasswPresenterDummy()
+
     })
 
     DebugDarkScreenPreview {
@@ -265,6 +268,10 @@ fun StorageScreenAccountsSearchPreview() {
     DI.initPresenterModule(object : PresentersModule {
         override fun storagePresenter(storageIdentifier: StorageIdentifier) =
             StoragePresenterDummy(isSearchActive = true)
+
+        override fun genPasswPresenter(storageIdentifier: StorageIdentifier) =
+            GenPasswPresenterDummy()
+
     })
 
     DebugDarkScreenPreview {
@@ -283,6 +290,10 @@ fun StorageScreenGeneratePreview() {
     DI.initPresenterModule(object : PresentersModule {
         override fun storagePresenter(storageIdentifier: StorageIdentifier) =
             StoragePresenterDummy()
+
+        override fun genPasswPresenter(storageIdentifier: StorageIdentifier) =
+            GenPasswPresenterDummy()
+
     })
 
     DebugDarkScreenPreview {
