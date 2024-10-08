@@ -164,7 +164,7 @@ fun GroupsSelectContent(
 @OptIn(DebugOnly::class)
 @Preview
 @Composable
-private fun GroupsSelectContentPreview() = DebugDarkScreenPreview {
+fun GroupsSelectContentPreview() = DebugDarkScreenPreview {
     GroupsSelectContent(
         selectedGroup = 1L,
         colorGroups = listOf(

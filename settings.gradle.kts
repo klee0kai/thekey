@@ -29,6 +29,7 @@ include(":core")
 include(":app_mobile")
 include(":dynamic_qrcodescanner")
 include(":dynamic_findstorage")
+include(":processor_preview")
 
 val isPrivateAvailable = file("private").list()?.isNotEmpty() ?: false
 

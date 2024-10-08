@@ -119,6 +119,7 @@ dependencies {
     commercialImplementation { project(":private:feature_firebase") }
     commercialImplementation { project(":private:feature_billing") }
     implementation(project(":core"))
+    kapt(project(":processor_preview"))
 
     implementation(platform(libs.compose.bom))
     implementation(libs.bundles.compose)

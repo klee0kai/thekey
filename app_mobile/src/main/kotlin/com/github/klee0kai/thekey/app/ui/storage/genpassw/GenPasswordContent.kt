@@ -38,6 +38,7 @@ import com.github.klee0kai.thekey.app.ui.navigation.model.StorageDestination
 import com.github.klee0kai.thekey.app.ui.storage.StorageScreen
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.model.GenPasswState
 import com.github.klee0kai.thekey.app.ui.storage.genpassw.presenter.GenPasswPresenter
+import com.github.klee0kai.thekey.app.ui.storage.genpassw.presenter.GenPasswPresenterDummy
 import com.github.klee0kai.thekey.app.ui.storage.presenter.StoragePresenterDummy
 import com.github.klee0kai.thekey.core.R
 import com.github.klee0kai.thekey.core.di.identifiers.StorageIdentifier
@@ -300,6 +301,10 @@ fun GenPasswordContentPreviewScreenPreview() {
     DI.initPresenterModule(object : PresentersModule {
         override fun storagePresenter(storageIdentifier: StorageIdentifier) =
             StoragePresenterDummy()
+
+        override fun genPasswPresenter(storageIdentifier: StorageIdentifier) =
+            GenPasswPresenterDummy()
+
     })
 
     DebugDarkScreenPreview {

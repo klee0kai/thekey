@@ -28,7 +28,10 @@ fun <BuildFeaturesT : BuildFeatures,
         ProductFlavorT : ProductFlavor,
         AndroidResourcesT : AndroidResources,
         InstallationT : Installation>
-        CommonExtension<BuildFeaturesT, BuildTypeT, DefaultConfigT, ProductFlavorT, AndroidResourcesT, InstallationT>.defaults(namespace: String, project: Project) {
+        CommonExtension<BuildFeaturesT, BuildTypeT, DefaultConfigT, ProductFlavorT, AndroidResourcesT, InstallationT>.defaults(
+    namespace: String,
+    project: Project,
+) {
     this.namespace = namespace
     compileSdk = 34
 

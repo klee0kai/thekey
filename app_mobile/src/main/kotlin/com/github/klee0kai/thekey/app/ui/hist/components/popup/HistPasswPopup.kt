@@ -47,7 +47,7 @@ fun HistPasswPopup(
 @OptIn(DebugOnly::class)
 @Preview
 @Composable
-private fun HistPasswPopupPreview() = DebugDarkContentPreview {
+fun HistPasswPopupPreview() = DebugDarkContentPreview {
     Box(modifier = Modifier.background(Color.White)) {
         HistPasswPopup(
             onSave = {},

@@ -3,7 +3,6 @@ package com.github.klee0kai.thekey.core.di
 import android.content.Context
 import androidx.activity.ComponentActivity
 import com.github.klee0kai.stone.KotlinWrappersStone
-import com.github.klee0kai.stone.Stone
 import com.github.klee0kai.stone.annotations.component.Component
 import com.github.klee0kai.stone.annotations.component.GcWeakScope
 import com.github.klee0kai.stone.annotations.component.RunGc

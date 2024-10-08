@@ -45,6 +45,7 @@ android {
 dependencies {
     implementation(project(":app_mobile"))
     implementation(project(":core"))
+    kapt(project(":processor_preview"))
 
     implementation(platform(libs.compose.bom))
     implementation(libs.bundles.compose)

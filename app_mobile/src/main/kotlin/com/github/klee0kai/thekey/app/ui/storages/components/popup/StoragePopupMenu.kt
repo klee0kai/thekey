@@ -175,7 +175,7 @@ fun StoragePopupMenu(
 @OptIn(DebugOnly::class)
 @Preview
 @Composable
-private fun StoragePopupMenuPreview() = DebugDarkContentPreview {
+fun StoragePopupMenuPreview() = DebugDarkContentPreview {
     Box(modifier = Modifier.background(Color.White)) {
         val selectedGroupId = Dummy.dummyId
         StoragePopupMenu(
@@ -200,7 +200,7 @@ private fun StoragePopupMenuPreview() = DebugDarkContentPreview {
 @OptIn(DebugOnly::class)
 @Preview
 @Composable
-private fun StorageNoGroupsPopupMenuPreview() = DebugDarkContentPreview {
+fun StorageNoGroupsPopupMenuPreview() = DebugDarkContentPreview {
     Box(modifier = Modifier.background(Color.White)) {
         StoragePopupMenu(
             onEdit = {},
