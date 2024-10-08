@@ -3,6 +3,7 @@ package com.github.klee0kai.thekey.core.domain.model
 import android.os.Parcelable
 import com.github.klee0kai.thekey.core.domain.basemodel.BaseModel
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
+import com.github.klee0kai.thekey.core.utils.common.Dummy
 import com.thedeanda.lorem.LoremIpsum
 import kotlinx.parcelize.Parcelize
 
@@ -38,7 +39,7 @@ fun ColoredStorage.isValid() = path.isNotBlank() && version > 0
 fun ColoredStorage.Companion.dummy(): ColoredStorage {
     val city = LoremIpsum.getInstance().city
     return ColoredStorage(
-        path = "/phoneStorage/Documents/${city}.ckey",
+        path = "/phoneStorage/Documents/${city}${Dummy.dummyId}.ckey",
         name = city,
         description = LoremIpsum().getWords(4),
     )
