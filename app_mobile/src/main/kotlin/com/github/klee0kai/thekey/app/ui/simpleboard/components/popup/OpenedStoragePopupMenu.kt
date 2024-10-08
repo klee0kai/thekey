@@ -39,7 +39,7 @@ fun OpenedStoragePopupMenu(
 @OptIn(DebugOnly::class)
 @Preview
 @Composable
-private fun OpenedStoragePopupMenuPreview() = DebugDarkContentPreview {
+fun OpenedStoragePopupMenuPreview() = DebugDarkContentPreview {
     Box(modifier = Modifier.background(Color.White)) {
         OpenedStoragePopupMenu(
             onLogout = {},

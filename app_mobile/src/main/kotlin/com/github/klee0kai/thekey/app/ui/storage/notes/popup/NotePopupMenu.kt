@@ -167,7 +167,7 @@ fun NotePopupMenu(
 @OptIn(DebugOnly::class)
 @Preview
 @Composable
-private fun NotePopupMenuPreview() = DebugDarkContentPreview {
+fun NotePopupMenuPreview() = DebugDarkContentPreview {
     Box(modifier = Modifier.background(Color.White)) {
         val selectedGroupId = Dummy.dummyId
         NotePopupMenu(

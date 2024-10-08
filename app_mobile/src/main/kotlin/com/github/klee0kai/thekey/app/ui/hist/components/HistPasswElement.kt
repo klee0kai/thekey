@@ -79,7 +79,7 @@ fun HistPasswElement(
 @OptIn(DebugOnly::class)
 @Preview
 @Composable
-private fun HistPasswItemSkeletonPreview() {
+fun HistPasswItemSkeletonPreview() {
     DebugDarkContentPreview {
         HistPasswElement(
             passw = HistPassw(isLoaded = false)
@@ -90,7 +90,7 @@ private fun HistPasswItemSkeletonPreview() {
 @OptIn(DebugOnly::class)
 @Preview
 @Composable
-private fun HistPasswItemPreview() {
+fun HistPasswItemPreview() {
     DebugDarkContentPreview {
         HistPasswElement(
             passw = HistPassw(

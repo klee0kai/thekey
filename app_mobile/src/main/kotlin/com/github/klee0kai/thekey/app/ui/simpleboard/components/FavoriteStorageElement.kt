@@ -108,7 +108,7 @@ fun FavoriteStorageElement(
 @OptIn(DebugOnly::class)
 @Preview(widthDp = 250)
 @Composable
-private fun FavoriteStorageItemPreview() {
+fun FavoriteStorageItemPreview() {
     DI.hardResetToPreview()
     DebugDarkContentPreview {
         FavoriteStorageElement(
@@ -124,7 +124,7 @@ private fun FavoriteStorageItemPreview() {
 @OptIn(DebugOnly::class)
 @Preview(widthDp = 450)
 @Composable
-private fun FavoriteStorageItemNoDescPreview() {
+fun FavoriteStorageItemNoDescPreview() {
     DI.hardResetToPreview()
     DebugDarkContentPreview {
         FavoriteStorageElement(
