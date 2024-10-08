@@ -115,7 +115,7 @@ jobs:
         with:
           name: screenshots
           path: |
-            ./**/src/test/snapshots/images/**
+            ./**/snapshots/images/**
 
   mikepenz_report:
     name: Prepare Mikepenz Test Report

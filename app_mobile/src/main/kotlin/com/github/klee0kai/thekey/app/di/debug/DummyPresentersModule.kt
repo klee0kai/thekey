@@ -31,7 +31,9 @@ open class DummyPresentersModule(
 
     override fun mainPresenter() = object : MainPresenter {}
 
-    override fun loginPresenter(storageIdentifier: StorageIdentifier) = object : LoginPresenter {}
+    override fun loginPresenter(
+        storageIdentifier: StorageIdentifier,
+    ) = object : LoginPresenter {}
 
     override fun simpleBoardPresenter() = object : SimpleBoardPresenter {}
 
@@ -44,7 +46,6 @@ open class DummyPresentersModule(
     override fun changeStoragePasswordPresenter(
         storageIdentifier: StorageIdentifier,
     ) = object : ChangeStoragePasswordPresenter {}
-
 
     override fun storagePresenter(
         storageIdentifier: StorageIdentifier,
@@ -89,6 +90,5 @@ open class DummyPresentersModule(
     override fun pluginPresenter(
         feature: DynamicFeature,
     ) = object : PluginPresenter {}
-
 
 }

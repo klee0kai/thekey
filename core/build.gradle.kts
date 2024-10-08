@@ -4,6 +4,7 @@ plugins {
     kotlin("kapt")
     id("kotlin-parcelize")
     kotlin("plugin.serialization")
+    id("app.cash.paparazzi")
 }
 
 android {
@@ -32,6 +33,8 @@ android {
 }
 
 dependencies {
+    kapt(project(":processor_preview"))
+
     implementation(platform(libs.compose.bom))
     implementation(libs.bundles.compose)
     implementation(libs.bundles.compose.debug)
@@ -58,7 +61,10 @@ dependencies {
 
     testImplementation(platform(libs.compose.bom))
     testImplementation(libs.junit)
+    testImplementation(libs.androidx.junit)
 
     androidTestImplementation(platform(libs.compose.bom))
+    androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso)
+    androidTestImplementation(libs.compose.test)
 }

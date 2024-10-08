@@ -31,6 +31,7 @@ import com.github.klee0kai.thekey.core.ui.devkit.LocalColorScheme
 import com.github.klee0kai.thekey.core.ui.devkit.LocalRouter
 import com.github.klee0kai.thekey.core.ui.devkit.LocalTheme
 import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
+import com.github.klee0kai.thekey.core.utils.annotations.IgnorePaparazzi
 import com.github.klee0kai.thekey.core.utils.views.DebugDarkScreenPreview
 import com.github.klee0kai.thekey.core.utils.views.collectAsStateFaded
 import com.github.klee0kai.thekey.core.utils.views.currentRef
@@ -113,7 +114,7 @@ fun NavigationBoardContainer(
 }
 
 
-@VisibleForTesting
+@IgnorePaparazzi
 @OptIn(DebugOnly::class)
 @Preview(device = Devices.PHONE)
 @Composable
@@ -132,7 +133,7 @@ fun NavigationBoardContainerPreview() {
 }
 
 
-@VisibleForTesting
+@IgnorePaparazzi
 @OptIn(DebugOnly::class)
 @Preview(device = Devices.PHONE)
 @Composable
@@ -147,26 +148,11 @@ fun NavigationBoardNoCurrentPreview() {
     }
 }
 
-@VisibleForTesting
+@IgnorePaparazzi
 @OptIn(DebugOnly::class)
 @Preview(device = Devices.PHONE)
 @Composable
 fun NavigationBoardEmptyPreview() {
-    DI.hardResetToPreview()
-    DI.initPresenterModule(object : PresentersModule {
-        override fun simpleBoardPresenter() = SimpleBoardPresenterDummy()
-    })
-    DebugDarkScreenPreview {
-        NavigationBoardContainer()
-    }
-}
-
-
-@VisibleForTesting
-@OptIn(DebugOnly::class)
-@Preview(device = Devices.TABLET)
-@Composable
-fun NavigationBoardTabletPreview() {
     DI.hardResetToPreview()
     DI.initPresenterModule(object : PresentersModule {
         override fun simpleBoardPresenter() = SimpleBoardPresenterDummy()

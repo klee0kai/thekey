@@ -4,11 +4,14 @@ import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
 import app.cash.paparazzi.detectEnvironment
 import com.android.ide.common.rendering.api.SessionParams
-import com.github.klee0kai.thekey.dynamic.qrcodescanner.ui.scanqr.ScanQRCodeScreenNoPermissionPreview
+import com.github.klee0kai.thekey.core.utils.annotations.DebugOnly
+import com.github.klee0kai.thekey.core.utils.annotations.IgnorePaparazzi
 import com.github.klee0kai.thekey.dynamic.qrcodescanner.ui.scanqr.ScanQRCodeScreenPreview
+import com.github.klee0kai.thekey.dynamic.qrcodescanner.ui.scanqr.gen.preview.allPreviews
 import org.junit.Rule
 import org.junit.Test
 
+@OptIn(DebugOnly::class)
 class QRCodeScannerScreens {
 
     @get:Rule
@@ -22,17 +25,19 @@ class QRCodeScannerScreens {
     )
 
     @Test
-    fun scanQRCodeScreenNoPermissionPreview() {
-        paparazzi.snapshot {
-            ScanQRCodeScreenNoPermissionPreview()
-        }
-    }
+    fun allScreenPreviews() {
+        allPreviews()
+            .filter { IgnorePaparazzi::class !in it.annotations }
+            .forEach { preview ->
+            println("screenshot ${preview.pkg} ${preview.methodName} ")
 
-    @Test
-    fun scanQRCodeScreenPreview() {
-        paparazzi.snapshot {
-            ScanQRCodeScreenPreview()
+            paparazzi.snapshot(
+                preview.methodName
+            ) {
+                preview.content()
+            }
         }
+
     }
 
 }

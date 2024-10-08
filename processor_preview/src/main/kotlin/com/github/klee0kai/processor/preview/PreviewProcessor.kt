@@ -5,12 +5,14 @@ import com.github.klee0kai.processor.preview.ext.findCommonPgk
 import com.google.auto.service.AutoService
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.LambdaTypeName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.WildcardTypeName
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
 import javax.annotation.processing.AbstractProcessor
@@ -21,6 +23,7 @@ import javax.annotation.processing.SupportedAnnotationTypes
 import javax.lang.model.element.ExecutableElement
 import javax.lang.model.element.PackageElement
 import javax.lang.model.element.TypeElement
+import kotlin.reflect.KClass
 
 @AutoService(Processor::class)
 @SupportedAnnotationTypes("*")
@@ -61,6 +64,17 @@ class PreviewProcessor : AbstractProcessor() {
             )
         )
 
+        val annotationsListTypeName = List::class.asTypeName()
+            .parameterizedBy(
+                KClass::class.asTypeName()
+                    .parameterizedBy(
+                        WildcardTypeName.producerOf(
+                            Annotation::class.asClassName(),
+                        )
+                    )
+            )
+
+
         val foundMethodType = TypeSpec.classBuilder("FoundPreviewMethod")
             .apply {
                 addProperty(
@@ -77,6 +91,12 @@ class PreviewProcessor : AbstractProcessor() {
                 )
                 addProperty(
                     PropertySpec
+                        .builder("annotations", annotationsListTypeName)
+                        .initializer("annotations")
+                        .build()
+                )
+                addProperty(
+                    PropertySpec
                         .builder("content", contentTypeName)
                         .initializer("content")
                         .build()
@@ -87,6 +107,7 @@ class PreviewProcessor : AbstractProcessor() {
                         .apply {
                             addParameter("pkg", String::class)
                             addParameter("methodName", String::class)
+                            addParameter("annotations", annotationsListTypeName)
                             addParameter("content", contentTypeName)
                         }
                         .build()
@@ -106,10 +127,23 @@ class PreviewProcessor : AbstractProcessor() {
                     val packageElement = preview.enclosingElements
                         .firstOrNull { it is PackageElement } as? PackageElement
                     val pkg = packageElement?.qualifiedName?.toString() ?: ""
+                    val allAnnotations = CodeBlock.builder()
+                        .apply {
+                            add("listOf( ")
+                            add(
+                                preview.annotationMirrors
+                                    .map { it.annotationType.asTypeName().toString() }
+                                    .filter { it.startsWith("com.github.klee0kai.thekey.core.utils.annotations.IgnorePaparazzi") }
+                                    .joinToString(",") { "${it}::class" }
+                            )
+                            add(" )")
+                        }.build()
+
                     addStatement(
-                        "yield( FoundPreviewMethod( %S, %S, { %L.%L() } ) )",
+                        "yield( FoundPreviewMethod( %S, %S, %L, { %L.%L() } ) )",
                         pkg,
                         preview.simpleName,
+                        allAnnotations,
                         pkg,
                         preview.simpleName,
                     )
